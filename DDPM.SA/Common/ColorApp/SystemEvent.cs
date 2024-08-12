@@ -1,0 +1,118 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using WinCopies.Util;
+
+namespace DDPM.ColorApp
+{
+    public class WindowFocusWatcher : IDisposable
+    {
+        #region Fields
+
+        private readonly Native.WinEventDelegate _delegate;
+        private readonly WindowFocusWatcherEvent _event;
+        private readonly IntPtr _hook;
+
+        #endregion Fields
+
+        #region Constructors
+
+        public WindowFocusWatcher(WindowFocusWatcherEvent e, uint HookEvent)
+        {
+            _event = e;
+            _delegate = WinEventProc;
+            _hook = Native.SetWinEventHook(HookEvent, HookEvent,/*Native.EVENT_OBJECT_FOCUS, Native.EVENT_OBJECT_FOCUS,*/
+                IntPtr.Zero,
+                _delegate, 0, 0, Native.WINEVENT_OUTOFCONTEXT | Native.WINEVENT_SKIPOWNPROCESS);
+        }
+
+        ~WindowFocusWatcher()
+        {
+            Dispose(false);
+        }
+
+        #endregion Constructors
+
+        #region Delegates
+
+        public delegate void WindowFocusWatcherEvent(IntPtr hwnd/*uint processId*/);
+
+        #endregion Delegates
+
+        #region Methods
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Native.UnhookWinEvent(_hook);
+            }
+        }
+
+        private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
+            uint dwEventThread, uint dwmsEventTime)
+        {
+            _event(hwnd);
+        }
+
+        #endregion Methods
+
+        #region Nested Types
+
+        public static class Native
+        {
+            #region Fields
+
+            public const uint EVENT_OBJECT_FOCUS = 0x8005;
+            public const uint EVENT_OBJECT_SELECTION = 0x8006;
+
+            public const int EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
+            public const int EVENT_OBJECT_NAMECHANGE = 0x800C;
+            public const int EVENT_OBJECT_VALUECHANGE = 0x800E;
+
+            public const int EVENT_SYSTEM_MOVESIZEEND = 0x000B;
+
+            public const uint WINEVENT_OUTOFCONTEXT = 0;
+            public const int WINEVENT_SKIPOWNPROCESS = 2;
+
+            #endregion Fields
+
+            #region Delegates
+
+            public delegate void WinEventDelegate(
+                IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread,
+                uint dwmsEventTime);
+
+            #endregion Delegates
+
+            #region Methods
+
+            [DllImport("user32.dll")]
+            public static extern IntPtr GetForegroundWindow();
+
+            [DllImport("user32.dll")]
+            public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+            [DllImport("user32.dll")]
+            public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
+                WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
+
+            [DllImport("user32.dll")]
+            public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
+            #endregion Methods
+        }
+
+        #endregion Nested Types
+
+    }
+}

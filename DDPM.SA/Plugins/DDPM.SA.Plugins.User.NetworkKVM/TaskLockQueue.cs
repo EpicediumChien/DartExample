@@ -1,0 +1,115 @@
+using Microsoft;
+using System;
+using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Management;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Globalization;
+using System.Collections.Generic;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.Interfaces;
+
+
+namespace NetworkKVM.Plugins
+{
+    public class LinkedNode<T>
+    {
+        public T Data { set; get; }
+        public LinkedNode<T> Next { set; get; }
+    }
+
+    public class LinkedListQueue<T>
+    {
+        private int _count = 0;
+        private LinkedNode<T> _node = null;
+
+        public virtual void Enqueue(T data)
+        {
+            var node = new LinkedNode<T> { Data = data, Next = null };
+
+            if (_node == null)
+                _node = node;
+            else
+            {
+                var ptr = _node;
+                while (ptr.Next != null)
+                    ptr = ptr.Next;
+
+                ptr.Next = node;
+            }
+            _count++;
+        }
+
+        public virtual bool IsEmpty()
+        {
+            return (_count == 0);
+        }
+
+        public virtual T Dequeue()
+        {
+            if (_node == null)
+                return default(T);
+
+            var ptr = _node;
+
+            _node = _node.Next;
+            _count--;
+
+            return ptr.Data;
+        }
+
+        public virtual bool Clear()
+        {
+            if (_node == null)
+            {
+                _count = 0;
+                return true;
+            }
+            else
+            {
+                try
+                {
+                    _node = null;
+                    _count = 0;
+
+                    return true;
+                }
+                catch { return false; }
+                finally
+                {
+                    _node = null;
+                    _count = 0;
+                }
+            }
+        }
+    }
+
+    public class TaskLockQueue<T> : LinkedListQueue<T>
+    {
+        private readonly object _TaskLockQueuelock = new object();
+
+        public override void Enqueue(T item)
+        {
+            lock (_TaskLockQueuelock) { base.Enqueue(item); }
+        }
+
+        public override bool IsEmpty()
+        {
+            lock (_TaskLockQueuelock) { return base.IsEmpty(); }
+        }
+
+        public override T Dequeue()
+        {
+            lock (_TaskLockQueuelock) { return base.Dequeue(); }
+        }
+
+        public override bool Clear()
+        {
+            lock (_TaskLockQueuelock) { return base.Clear(); }
+        }
+    }
+}

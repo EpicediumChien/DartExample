@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VcpCore.Common;
+
+namespace DDPM.SA.Common.Display
+{
+    public class PowerNapSetting
+    {
+        //public EDID DeviceInfo { get; set; }
+
+        public string ModelName { get; set; }
+        public string SerialNumber { get; set; }
+        public bool Status { get; set; }
+        public PowerNapType RunType { get; set; }
+    }
+
+    public enum PowerNapType
+    {
+        Off,
+        ReduceBrightness,
+        SleepIfRunning
+    }
+}

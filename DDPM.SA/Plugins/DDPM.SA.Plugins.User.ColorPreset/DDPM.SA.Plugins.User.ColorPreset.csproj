@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+		<ProjectReference Include="..\..\Common\ShowOsd\DDPM.ShowOsd.csproj" />
+    <ProjectReference Include="..\..\Common\ColorApp\DDPM.ColorApp.csproj" />
+    <ProjectReference Include="..\..\Common\MonitorBorker\DDPM.MonitorBorker.csproj" />
+    <ProjectReference Include="..\..\Common\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
+	</ItemGroup>
+
+
+
+</Project>

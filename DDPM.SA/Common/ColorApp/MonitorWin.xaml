@@ -1,0 +1,48 @@
+﻿<Window x:Class="DDPM.ColorApp.MonitorWin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DDPM.ColorApp" mc:Ignorable="d" ShowInTaskbar="False"
+        Title="ColorAppWnd" Height="450" Width="800" Loaded="Window_Loaded" Visibility="Hidden">
+    <Window.Resources>
+        <Style TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <ListView x:Name="lstApps" Grid.Column="0" Grid.Row="0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding AppName}"/>
+                    <GridViewColumn Header="Type" Width="Auto" DisplayMemberBinding="{Binding AppType}"/>
+                    <GridViewColumn Header="ID" Width="Auto" DisplayMemberBinding="{Binding AppUserModelID}"/>
+                    <GridViewColumn Header="Path" Width="Auto" DisplayMemberBinding="{Binding AppPath}"/>
+                    <GridViewColumn Header="Install Date" Width="Auto" DisplayMemberBinding="{Binding InstalledDate}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <StackPanel Grid.Column="0" Grid.Row="1" Background="LightGray">
+            <Label Content="Active Window Name"/>
+            <TextBlock x:Name="tbWndName" Text="NA" Margin="20,0,0,0"/>
+            <Label Content="Process ID"/>
+            <TextBlock x:Name="tbWndPID" Text="NA" Margin="20,0,0,0"/>
+            <Label Content="Module Name"/>
+            <TextBlock x:Name="tbWndModule" Text="NA" Margin="20,0,0,0"/>
+            <Label Content="Mapped Color preset"/>
+            <TextBlock x:Name="tbColorPreset" Text="NA" Margin="20,0,0,0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Background="LightBlue" Grid.Row="0" Grid.RowSpan="2">
+            <Button x:Name="btnRefresh" Click="btnRefresh_Click" Content="Refresh" Height="100" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>

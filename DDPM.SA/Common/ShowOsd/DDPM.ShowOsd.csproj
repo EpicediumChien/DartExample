@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64;ARM64</Platforms>
+	  <Version>2.0.0.5</Version>
+	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\VcpCore.Common\VcpCore.Common.csproj" />
+    <ProjectReference Include="..\Win32Lib\DDPM.Win32Lib.csproj" />
+  </ItemGroup>
+
+</Project>

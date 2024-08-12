@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
+    <Platforms>AnyCPU;x64</Platforms>
+	  <Version>2.0.0.32</Version>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
+		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,104 @@
+﻿#region LicenceHeader
+
+//
+// Copyright © 2022, Dell Inc., All Rights Reserved.
+// This material is confidential and a trade secret.  Permission to use this
+// work for any purpose must be obtained in writing from Dell Inc.
+//
+// IDPeMPlugin.cs created on 10/4/2022T3:37 PM
+//
+
+#endregion
+
+using System;
+using System.Threading.Tasks;
+using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.PluginConditions;
+using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
+
+namespace DDPM.SA.Common
+{
+    public interface IDPeMPlugin : IFrameworkPlugin
+    {
+        Task<PluginCondition> GetDPeMPluginConditionAsync();
+
+        event EventHandler<DeviceChangedEventArgs> Notify;
+
+        event EventHandler<bool> UpdateNotify;
+
+        event EventHandler<Tuple<string,string>> OverlayNotify;
+        event EventHandler<CollaborationMsg> CollaborationMsgNotify;
+        event EventHandler<bool> IsZoomCallbacksRegisteredChanged;
+        event EventHandler<bool> IsZoomMultipleCallsDetectedChanged;
+        event EventHandler<bool> CollabMultipleCallsDetectedChanged;
+        
+
+
+        void NotifyNow();
+
+        Task<DeviceHelper> GetDevices();
+
+        Task<RFDeviceHelper> GetRFDongleDevices();
+
+        Task<ClientInfo> GetDPeMClientInfo();
+
+        void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType);
+
+        Task<UpdateItemInfo> GetDPeMAssemblyUpdateInfo();
+
+        Task<UpdateHelper> GetFWUpdateInfo();
+
+        void SetDPIValue(int newDPIValue, Guid deviceId);
+
+        void SetDPILevel(int newDPILevel, Guid deviceId);
+
+    void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
+
+        void SetTouchScrollSensitivityLevel(int newTouchScrollSensitivityLevel, Guid deviceId);
+
+        void SetCollaborationKeyEnable(bool newValue, Guid deviceId);
+
+        void SetCollaborationCameraEnable(bool newValue, Guid deviceId);
+
+        void SetCollaborationScreenShareEnable(bool newValue, Guid deviceId);
+
+        void SetCollaborationChatEnable(bool newValue, Guid deviceId);
+
+        void SetCollaborationMicEnable(bool newValue, Guid deviceId);
+
+        void SetCollaborationBlinkEffectEnable(bool newValue, Guid deviceId);
+
+        void SetCollaborationDoubleTapEnable(bool newValue, Guid deviceId);
+
+        void SetBackLightingControls(int newValue, Guid deviceId);
+
+        void SetBackLightingLevel(int newValue, Guid deviceId);
+        void CheckForUpdate();
+        void StartPairing(Guid physicalDeviceId);
+        void StopPairing(Guid physicalDeviceId);
+        void UnPair(Guid logicalDeviceId);
+
+        void SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
+        void SetWiredAudioMicMuteSoundEnable(bool newValue, Guid deviceId);
+        void SetWiredAudioVolumeAdjustmentTone(int newValue, Guid deviceId);
+        void SetAncMode(int newValue, Guid deviceId);
+        void SetAncGain(int newValue, Guid deviceId);
+        void SetSelectedPreset(int newValue, Guid deviceId);
+        void SetBandsGain(int newValue, Guid deviceId, string bandGainNumber);
+        void SetMicNoiseCancellation(bool newValue, Guid deviceId);
+        void SetSidetone(bool newValue, Guid deviceId);
+        void SetSidetoneLevel(int newValue, Guid deviceId);
+        void SetWearDetection(int newValue, Guid deviceId);
+        void SetBusyLight(bool newValue, Guid deviceId);
+        void SetVoiceGuidance(bool newValue, Guid deviceId);
+        void SetMicNCIncoming(bool newValue, Guid deviceId);
+        public void SetIsMicEnumerationOn(bool newValue, Guid deviceId);
+    }
+
+    public interface IDPeMServiceRegPlugin : IFrameworkPlugin
+    {
+        IDPeMPlugin DPeMPlugin { get; }
+    }
+}

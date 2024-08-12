@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DDPM.SA.Common
+{
+    /// <summary>
+    /// Popup內容包
+    /// </summary>
+    public class PopupContentPackage
+    {
+        public string Title { get; set; }
+        public string Info { get; set; }
+        public bool IsInfo { get; set; }
+        public bool IsOnlyUpdate { get; set; }
+        public bool StayOpen { get; set; }
+        public int Timeout { get; set; }
+        /// <summary>
+        /// Popup事件回傳的物件
+        /// </summary>
+        public object Object { get; set; }
+        public PopupContentPackage()
+        {
+            IsInfo = true;
+            IsOnlyUpdate = false;
+            StayOpen = false;
+            Timeout = 5;
+        }
+    }
+}

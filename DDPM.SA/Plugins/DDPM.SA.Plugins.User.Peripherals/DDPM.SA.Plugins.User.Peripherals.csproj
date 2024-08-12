@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <BaseOutputPath></BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DTHPeripheralPlugin.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DPeMClientBroker">
+      <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
+    </Reference>
+    <Reference Include="DPeMPublic.Common">
+      <HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

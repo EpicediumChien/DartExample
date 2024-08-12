@@ -1,0 +1,26 @@
+﻿using Dell.Client.Framework.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using VcpCore.Common;
+using Windows.Graphics.Display;
+
+namespace DDPM.SA.Common
+{
+    public interface IDisplayProperties : IFrameworkPlugin
+    {
+        /// <summary>
+        /// HDR change event，return HDR status
+        /// </summary>
+        event EventHandler<bool> HDRChangeEvent;
+        Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType);
+        Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName);
+        Task<bool> SetDisplayPropertiest(string DisplayName, Properties properties, DisplayOrientation orientation);
+        Task<bool> CallWindowsDisplaySetting();
+        Task<bool> GetHDRStatus(EDID monitorEdid);
+        Task<bool> SetHDRStatus(EDID monitorEdid, bool onoff);
+        void SetExtendMode(MonitorInfo monitorInfo);
+    }
+}

@@ -1,0 +1,387 @@
+﻿using DDPM.SA.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Dell.Client.Framework.Interfaces;
+using VcpCore.Common;
+using System.Windows.Forms;
+using Dell.Client.Framework.Common.PluginConditions;
+using Microsoft;
+using System.Reflection;
+using System.Windows;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using Windows.System;
+using WinCopies.Util;
+using System.Windows.Interop;
+using System.Diagnostics;
+using DDPM.SA.Common.Display;
+using System.Reflection.Metadata;
+using System.Windows.Threading;
+
+namespace DDPM.SA.Plugins.User.Hotkey
+{
+    [Plugin(Common.IDs.DDPM_HOTKEY_PLUGIN_ID, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
+    [Descriptor(Description = pluginDescription)]
+    [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
+    [PublishedUnelevatedInterface(new[] { typeof(IHotkey) })]
+    [PluginRequires(Id = DDPM.SA.Common.IDs.Device_Manager_Plugin_ID, Version = "1.0.0", AllowDynamicResolving = true)]
+    public class HotkeyPlugin : BaseAgentPlugin, IHotkey, IDisposableObservable
+    {
+        #region Private Members
+        private const string pluginName = "HotkeyPlugin";
+        private const string pluginVersion = "1.0.0";
+        private const string pluginDescription = "This plugin implements Hotkey Plugin.";
+        private const string publisherCompany = "Wistron";
+        private const string publisherWebsite = "https://www.wistron.com";
+        private const string publisherSupport = "This plugin implements Hotkey Plugin.";
+
+        private IAgent _agent;
+        public const string PluginLogId = "Hotkey";
+        private Thread _hookThread;
+
+        private string[] _str0to9Ary = { "D0", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9" };
+        private string[] _strNumPad0to9Ary = { "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9" };
+        private string[] _strConverToNumPad0to9Ary = { "NUMBERPAD0", "NUMBERPAD1", "NUMBERPAD2", "NUMBERPAD3", "NUMBERPAD4", "NUMBERPAD5", "NUMBERPAD6", "NUMBERPAD7", "NUMBERPAD8", "NUMBERPAD9" };
+
+
+        private enum log_type
+        {
+            info = 0,
+            error
+        }
+
+
+        #endregion
+        #region keyboard hook
+
+        #region Constant, Structure and Delegate Definitions
+        /// <summary>
+        /// defines the callback type for the hook
+        /// </summary>
+        public delegate int keyboardHookProc(int code, int wParam, ref keyboardHookStruct lParam);
+
+        public struct keyboardHookStruct
+        {
+            public int vkCode;
+            public int scanCode;
+            public int flags;
+            public int time;
+            public int dwExtraInfo;
+        }
+
+        const int WH_KEYBOARD_LL = 13;
+        const int WM_KEYDOWN = 0x100;
+        const int WM_KEYUP = 0x101;
+        const int WM_SYSKEYDOWN = 0x104;
+        const int WM_SYSKEYUP = 0x105;
+        #endregion
+        #region Instance Variables
+        /// <summary>
+        /// Handle to the hook, need this to unhook and call the next hook
+        /// </summary>
+        IntPtr hhook = IntPtr.Zero;
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Occurs when one of the hooked keys is pressed
+        /// </summary>
+        public event KeyEventHandler KeyDown;
+        /// <summary>
+        /// Occurs when one of the hooked keys is released
+        /// </summary>
+        public event KeyEventHandler KeyUp;
+        #endregion
+        private static keyboardHookProc? callbackDelegate;
+        #region Public Methods
+        /// <summary>
+        /// Installs the global hook
+        /// </summary>
+        public bool hook()
+        {
+            if (callbackDelegate != null)
+            {
+                Debug.WriteLine("Can't hook more than once");
+                return true;
+            } 
+            
+            IntPtr hInstance = LoadLibrary("User32");
+
+            callbackDelegate = new keyboardHookProc(hookProc);
+            hhook = SetWindowsHookEx(WH_KEYBOARD_LL, callbackDelegate, hInstance, 0);
+            string errorMessage = new Win32Exception(Marshal.GetLastWin32Error()).Message;
+            Debug.WriteLine($"HotkeyPlugin-hook(): {errorMessage}");
+            return hhook == IntPtr.Zero? false: true;
+            /*if (hhook != IntPtr.Zero) throw new Win32Exception();
+            Debug.WriteLine("Hook(); Success--------");*/
+        }
+
+        /// <summary>
+        /// Uninstalls the global hook
+        /// </summary>
+        public bool unhook()
+        {
+            //UnhookWindowsHookEx(hhook);
+            if (callbackDelegate == null) return true;
+            bool ok = UnhookWindowsHookEx(hhook);
+            if (ok)
+            {
+                callbackDelegate = null;
+                return  true;
+            }
+            return ok;
+        }
+
+        /// <summary>
+        /// The callback for the keyboard hook
+        /// </summary>
+        /// <param name="code">The hook code, if it isn't >= 0, the function shouldn't do anyting</param>
+        /// <param name="wParam">The event type</param>
+        /// <param name="lParam">The keyhook event information</param>
+        /// <returns></returns>
+        public int hookProc(int code, int wParam, ref keyboardHookStruct lParam)
+        {
+
+            if (code >= 0)
+            {
+                Keys key = (Keys)lParam.vkCode;
+                //if (HookedKeys.Contains(key))
+                {
+                    KeyEventArgs kea = new KeyEventArgs(key);
+                    if ((wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) && (KeyDown != null))
+                    {
+                        KeyDown(this, kea);
+                    }
+                    else if ((wParam == WM_KEYUP || wParam == WM_SYSKEYUP) && (KeyUp != null))
+                    {
+                        KeyUp(this, kea);
+                    }
+                    if (kea.Handled)
+                        return 1;
+                }
+            }
+            return CallNextHookEx(hhook, code, wParam, ref lParam);
+        }
+        #endregion
+
+        #endregion
+        #region Constructor
+        public HotkeyPlugin(IAgent agent) : base(agent, PluginLogId)
+        {
+            _agent = agent;
+            writelog("HotkeyPlugin constructor ...");
+        }
+        #endregion
+
+        #region IDisposableObservable
+        /// <summary>
+        /// unhook
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    _agent.PluginManager.PluginsStarted -= PluginManagerOnPluginsStarted;
+                    _agent = null;
+                }
+
+                IsDisposed = true;
+            }
+            base.Dispose(disposing);
+        }
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// //
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="log_type">0 means info, others means error</param>
+        private void writelog(string text, log_type log_type = log_type.info)
+        {
+            text = "[Hotkey] " + text;
+            Console.WriteLine(text);
+            if (log_type == log_type.info)
+                Log.Info(text);
+            else
+                Log.Error(text);
+        }
+
+        private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
+        {
+
+            bool _altPressed = IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
+            bool _ctrlPressed = IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
+            bool _shiftPressed = IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
+
+
+            string strKey = e.KeyCode.ToString().ToUpper();
+            //AddDebugMsg(string.Format("KeyUp Event [{0}], Ctrl : {1}", , _ctrlPressed));
+            int pos = Array.IndexOf(_strNumPad0to9Ary, strKey);
+            if (pos > -1)
+            {
+                // the array contains the string and the pos variable will have its position in the array
+                strKey = _strConverToNumPad0to9Ary[pos];
+            }
+            else if (_str0to9Ary.Contains(strKey))
+                strKey = strKey.Substring(1);
+            else if (strKey == "LWIN")
+                strKey = "LEFTWINDOWS";
+            else if (strKey == "RWIN")
+                strKey = "RIGHTWINDOWS";
+            else if (strKey == "APPS")
+                strKey = "APPLICATION";
+
+            writelog($"KeyUp Event, {strKey}, Alt:{_altPressed.ToString()}, Ctrl:{_ctrlPressed.ToString()}, Shift:{_shiftPressed.ToString()}");
+
+            //var vKeyList = _RunShortcutKeysList.Where(c => "KEY_" + c.ShortcutKey.ToUpper() == strKey);
+        }
+        #endregion
+
+        #region Overriding methods
+        protected override void OnPluginStarting()
+        {
+            _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
+
+            PluginCondition = new PluginStartedCondition();
+            writelog("Hotkey plugin started");
+        }
+        #endregion
+        #region Event Handler
+        private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
+        {
+            if (e == null)
+                return;
+            if (e.ChangedPlugins == null)
+                return;
+            if (e.ChangedPlugins.Any() == false)
+                return;
+
+        }
+        #endregion
+
+        #region IHotkey implementation
+        public bool Hook()
+        {
+            bool ok=false;
+           // ThreadPool.QueueUserWorkItem
+           _hookThread = new Thread(() =>
+            {
+               ok = hook();
+                Debug.WriteLine("Hook(); Start--------");
+                // 啟動消息循環
+                System.Windows.Threading.Dispatcher.Run();
+                Debug.WriteLine("System.Windows.Threading.Dispatcher.Run(); end--------");
+            });
+
+            // 設定為單線程單元（STA），WPF需要STA模式
+            _hookThread.SetApartmentState(ApartmentState.STA);
+
+            // 啟動執行緒
+            _hookThread.Start();
+            return ok;
+        }
+
+        public bool Unhook()
+        {
+            try
+            {
+             bool ok= unhook();
+             Debug.WriteLine("Unhook()  ------exec--");
+            Task.Run(() => {
+            //System.Windows.Threading.Dispatcher.FromThread(_hookThread).BeginInvokeShutdown(DispatcherPriority.Send);
+            if(_hookThread != null && _hookThread.ThreadState == System.Threading.ThreadState.Running)
+                 System.Windows.Threading.Dispatcher.FromThread(_hookThread).InvokeShutdown();
+             Debug.WriteLine("Unhook() --InvokeShutdown; end--------");
+            });
+             return ok;
+            }
+            catch (Exception ex) 
+            {
+                Debug.WriteLine($"Unhook();Exception: {ex.Message}");
+            }
+            Debug.WriteLine("Unhook(); end--------");
+            return false;
+        }
+        #endregion
+
+        #region public Methods
+        public bool IsKeyPushedDown(System.Windows.Forms.Keys vKey)
+        {
+            return 0 != (GetAsyncKeyState(vKey) & 0x8000);
+        }
+
+
+            #endregion
+
+        #region DLL imports
+        /// <summary>
+        /// Sets the windows hook, do the desired event, one of hInstance or threadId must be non-null
+        /// </summary>
+        /// <param name="idHook">The id of the event you want to hook</param>
+        /// <param name="callback">The callback.</param>
+        /// <param name="hInstance">The handle you want to attach the event to, can be null</param>
+        /// <param name="threadId">The thread you want to attach the event to, can be null</param>
+        /// <returns>a handle to the desired hook</returns>
+        [DllImport("user32.dll")]
+        static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId);
+
+        /// <summary>
+        /// Unhooks the windows hook.
+        /// </summary>
+        /// <param name="hInstance">The hook handle that was returned from SetWindowsHookEx</param>
+        /// <returns>True if successful, false otherwise</returns>
+        [DllImport("user32.dll")]
+        static extern bool UnhookWindowsHookEx(IntPtr hInstance);
+
+        /// <summary>
+        /// Calls the next hook.
+        /// </summary>
+        /// <param name="idHook">The hook id</param>
+        /// <param name="nCode">The hook code</param>
+        /// <param name="wParam">The wparam.</param>
+        /// <param name="lParam">The lparam.</param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam);
+
+        /// <summary>
+        /// Loads the library.
+        /// </summary>
+        /// <param name="lpFileName">Name of the library</param>
+        /// <returns>A handle to the library</returns>
+        [DllImport("kernel32.dll")]
+        static extern IntPtr LoadLibrary(string lpFileName);
+
+        [DllImport("user32.dll")]
+        public static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetModuleHandle(string lpFileName);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        [DllImport("kernel32.dll")]
+        public static extern ushort GlobalAddAtom(string lpString);
+
+        [DllImport("kernel32.dll")]
+        public static extern ushort GlobalDeleteAtom(ushort nAtom);
+        #endregion
+    }
+}

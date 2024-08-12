@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64;ARM64</Platforms>
+	  <Version>2.0.0.5</Version>
+    <OutputType>Library</OutputType>
+    <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="H.Formatters.Inferno" Version="2.0.47" />
+    <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="13.0.47" />
+    <PackageReference Include="H.Pipes" Version="2.0.47" />
+    <PackageReference Include="H.Pipes.AccessControl" Version="2.0.47" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.7" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+    <ProjectReference Include="..\..\Common\ShowOsd\DDPM.ShowOsd.csproj" />
+    <ProjectReference Include="..\..\Common\ColorApp\DDPM.ColorApp.csproj" />
+
+
+  </ItemGroup>
+
+</Project>

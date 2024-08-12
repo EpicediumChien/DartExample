@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CLI.Subagent": {
+      "commandName": "Project",
+      "commandLineArgs": "/set -Display=ColorPreset -value=Standard"
+    }
+  }
+}

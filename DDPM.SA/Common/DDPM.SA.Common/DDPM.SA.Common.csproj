@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
+	  <UseWPF>true</UseWPF>
+	  <Version>2.0.0.5</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Interfaces\IDPeM.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="UpdateProgressPage\ProgressBackground.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+    <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.5" />
+    <PackageReference Include="WinCopies.Util" Version="3.21.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DPeMClientBroker">
+      <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
+    </Reference>
+    <Reference Include="DPeMPublic.Common">
+      <HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="UpdateProgressPage\ProgressBackground.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>

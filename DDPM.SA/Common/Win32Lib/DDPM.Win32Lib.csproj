@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <Version>2.0.0.5</Version>
+	  <Platforms>AnyCPU;x64;ARM64</Platforms>
+	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
+  </PropertyGroup>
+
+</Project>
