@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<OutputPath>..\bin</OutputPath>
+		<SignAssembly>false</SignAssembly>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+	    <ApplicationIcon>Resources\Icons\MyDell_Blue.ico</ApplicationIcon>
+	    <AssemblyName>DDPM</AssemblyName>
+		<Version>2.0.0.1</Version>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Icons\MyDell_Blue.ico" />
+	  <None Remove="Resources\Images\BACKGROUND.png" />
+	  <None Remove="Resources\Images\BackgroundKB.png" />
+	  <None Remove="Resources\Images\Masthead_Add_Icon.png" />
+	  <None Remove="Resources\Images\Masthead_Gear_Icon.png" />
+	  <None Remove="Resources\Images\splash-round.png" />
+	  <None Remove="Resources\Images\splash-square.png" />
+	  <None Remove="Resources\Images\Splash.png" />
+	  <None Remove="Resources\Images\splash4k-round.png" />
+	  <None Remove="Resources\Images\splash4k-square.png" />
+	  <None Remove="Resources\Images\Welcome1.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+	  <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
+	  <ProjectReference Include="..\Dell.UCA.ThickClientCore\Dell.UCA.ThickClientCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\Icons\MyDell_Blue.ico" />
+	  <Resource Include="Resources\Images\BACKGROUND.png" />
+	  <Resource Include="Resources\Images\BackgroundKB.png" />
+	  <Resource Include="Resources\Images\Masthead_Add_Icon.png" />
+	  <Resource Include="Resources\Images\Masthead_Gear_Icon.png" />
+	  <Resource Include="Resources\Images\splash-round.png" />
+	  <Resource Include="Resources\Images\splash-square.png" />
+	  <Resource Include="Resources\Images\splash4k-round.png" />
+	  <Resource Include="Resources\Images\splash4k-square.png" />
+	  <Resource Include="Resources\Images\Welcome1.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resource.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resource.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resource.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resource.Designer.cs</LastGenOutput>
+			<CustomToolNamespace>NGA.ThickClient</CustomToolNamespace>
+		</EmbeddedResource>
+	</ItemGroup>
+
+</Project>

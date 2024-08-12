@@ -1,0 +1,158 @@
+﻿<UserControl x:Class="DDPM.UI.Module.Kvm.KVMHotkeyFullView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
+             mc:Ignorable="d" Background="#FF0D121A"
+             d:DesignHeight="450" d:DesignWidth="800"
+             MouseDown="UserControl_MouseDown">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="60,8,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="44"/>
+                <RowDefinition Height="AUto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- LeftArrow -->
+            <!-- OLD, Robert_Lin, 2024-6-10, change to using Polyline to draw -->
+            <!-- 
+<UXControls:UXTextBlock Grid.Row="0" Grid.Column="0" Text="&#xe223; " 
+                        FontFamily="Segoe UI Symbol" FontSize="30"
+                        HorizontalAlignment="Left" TextBlockType="Header2"
+                        TextBlockSemanticColorType="Light" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown"/>
+-->
+            <!-- Robert_Lin, 2024-6-10, new approach -->
+            <Grid Width="24" Height="24" Cursor="Hand" VerticalAlignment="Center" HorizontalAlignment="Left" MouseLeftButtonDown="LeftArrow_MouseLeftButtonDown">
+                <Polyline Points="12,5 5,12 12,19"
+              Stroke="White" StrokeThickness="2"
+              StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                <Polyline Points="5,12 19,12"
+              Stroke="White" StrokeThickness="2"
+              StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Grid.Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="White" Direction="315" 
+                                              ShadowDepth="4" BlurRadius="6"
+                                              Opacity="0.7"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
+
+
+            <!-- Hotkey text -->
+            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="Hotkeys " 
+                                        HorizontalAlignment="Left" TextBlockType="Header2"
+                                        TextBlockSemanticColorType="DefaultHeader"
+                                        Foreground="White"
+                                        FontSize="24"/>
+        </Grid>
+        <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Name="displayHotkeyGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid HorizontalAlignment="Center" Margin="0,0,4,10">
+                <StackPanel Width="480">
+                    <Label  Content="Switch between PCs" FontSize="14" Foreground="White"/>
+                    <UXControls:UXTextBox  
+                    Text="{Binding SwitchPCsKey,Mode=TwoWay}" 
+                    Name="tbSwitchPCsKey" 
+                    Background="#141D28" Foreground="White" Width="472" Height="30"
+                    BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                    HorizontalAlignment="Center"
+                    AcceptsReturn="True"
+                    PreviewKeyDown="tbSwitchPCsKey_PreviewKeyDown"
+                    PreviewKeyUp="tbSwitchPCsKey_PreviewKeyUp"
+                    GotFocus="tbSwitchPCsKey_GotFocus"
+                    LostFocus="tbSwitchPCsKey_LostFocus"
+                    ContextMenuOpening="tbSwitchPCsKey_ContextMenuOpening"
+                    ContextMenu="{x:Null}"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,4,10">
+                <StackPanel Width="480">
+                    <Label  Content="Switch Keyboard and Mouse" FontSize="14" Foreground="White"/>
+                    <UXControls:UXTextBox  
+                              Text="{Binding SwitchKbMsKey,Mode=TwoWay}" 
+                              Name="tbSwitchKbMsKey"
+                              Background="#141D28" Foreground="White" Width="472" Height="30"
+                              BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                              HorizontalAlignment="Center"
+                              AcceptsReturn="True"
+                              PreviewKeyDown="tbSwitchKbMsKey_PreviewKeyDown"
+                              PreviewKeyUp="tbSwitchKbMsKey_PreviewKeyUp" 
+                              GotFocus="tbSwitchKbMsKey_GotFocus"
+                              LostFocus="tbSwitchKbMsKey_LostFocus"
+                              ContextMenuOpening="tbSwitchKbMsKey_ContextMenuOpening"
+                              ContextMenu="{x:Null}"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="2" HorizontalAlignment="Center" Margin="4,0,0,10">
+                <StackPanel Grid.Row="0" Width="480">
+                    <Label  Content="Change PIP position" FontSize="14" Foreground="White"/>
+                    <UXControls:UXTextBox
+                  Text="{Binding ChangePipKey,Mode=TwoWay}" 
+                  Background="#141D28" Foreground="White" Width="472" Height="30"
+                  Name="tbChangePipKey"
+                  BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                  HorizontalAlignment="Center"
+                  AcceptsReturn="True"
+                  PreviewKeyDown="tbChangePipKey_PreviewKeyDown"
+                  PreviewKeyUp="tbChangePipKey_PreviewKeyUp" 
+                  GotFocus="tbChangePipKey_GotFocus"
+                  LostFocus="tbChangePipKey_LostFocus"
+                  ContextMenuOpening="tbChangePipKey_ContextMenuOpening"
+                  ContextMenu="{x:Null}"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="3" HorizontalAlignment="Center" Margin="4,0,0,10">
+                <StackPanel Grid.Row="0" Width="480">
+                    <UXControls:UXCheckBox Grid.Row="1" Margin="0, 8, 8, 0" CheckBoxSize="Large"
+                        Content="Auto switch USB upstream port in PBP side-by-side mode"
+                        HorizontalAlignment="Left" FontSize="14" Foreground="White" 
+                        IsChecked="{Binding AutoSwitchChecked}"/>
+                    <UXControls:UXLink Content="Input Source Hotkeys" Click="InputSourceHotkey_Click" 
+                        IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
+                        LinkType="InLine" Margin="0,22,8,0"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Height="40"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="4" Grid.ColumnSpan="2" Width="954" Margin="0,30,0,0">
+                <UXControls:UXAlert>
+                    <UXControls:UXAlertItem AlertItemType="Info" Label="" Background="#364861" Margin="8,8,8,8"
+                                        Message="Example: &quot;Alt + P&quot;; &quot;Shift + F&quot;; &quot;Ctrl + Shift + F&quot;
+Note:For mutiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function." />
+                </UXControls:UXAlert>
+                <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99"/>
+            </Grid>
+
+        </Grid>
+
+
+    </Grid>
+</UserControl>

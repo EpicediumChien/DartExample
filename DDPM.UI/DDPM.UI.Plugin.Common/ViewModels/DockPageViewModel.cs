@@ -1,0 +1,103 @@
+﻿using System.ComponentModel;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
+using Microsoft;
+using System.Runtime.CompilerServices;
+using DDPM.SA.Common;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows;
+using Newtonsoft.Json.Linq;
+using DDPM.UI.Common;
+
+namespace DDPM.UI.Plugin.ViewModels
+{
+    public class DockPageViewModel : PeripheralViewModel, INotifyPropertyChanged
+    {
+        #region Variables
+        private readonly ILog _log;
+        private readonly IDeviceManagerSA _deviceManager;
+        private bool _isEnableUpdate = false;
+        #endregion
+
+        public new event PropertyChangedEventHandler? PropertyChanged;
+
+        public ICommand TabOffClickedCommand { get; }
+        public ICommand TabAdaptiveLightClickedCommand { get; }
+        public ICommand TabManualClickedCommand { get; }
+        //0614 Bruce 判斷是否需要顯示更新按鈕
+        public bool IsEnableUpdate { get => _isEnableUpdate; }
+
+        public DockPageViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        {
+            Requires.NotNull(console, nameof(console));
+            Requires.NotNull(log, nameof(log));
+
+            _log = log;
+            _deviceManager = deviceManager;
+
+        }
+
+        public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
+        {
+            DeviceInfos.Clear();
+            foreach (DeviceInfo deviceInfo in deviceInfos)
+            {
+                if (deviceInfo.LogicalDeviceType.Contains("Dock"))
+                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+            }
+        }
+
+        public override bool SetCurrentDevice(string instanceID)
+        {
+            if (!base.SetCurrentDevice(instanceID))
+                return false;
+            //0730 Bruce Add show Dock service tag
+            FirmwareVersion2 += $"\nServiceTag {CurrentDeviceInfo.DockServiceTag}";
+            FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
+            _isEnableUpdate = false;
+            foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
+            {
+                if (fWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "").Equals(instanceID))
+                {
+                    _isEnableUpdate = true;
+                    break;
+                }
+            }
+            return true;
+        }
+
+        public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
+        {
+            base.HandleNotification(changeType, di, property);
+            switch (changeType)
+            {
+                case DeviceChangedType.Peripherals_SettingsChange:
+                    if (DeviceInfos.ContainsKey(di.ID))
+                    {
+                        DeviceInfos.Remove(di.ID);
+                        DeviceInfos.Add(di.ID, di);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    if (di.ID == CurrentDeviceID)
+                    {
+                        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+
+                        GenerateInfo();
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    }
+}

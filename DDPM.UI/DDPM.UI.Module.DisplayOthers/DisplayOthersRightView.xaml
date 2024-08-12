@@ -1,0 +1,199 @@
+﻿<UserControl x:Class="DDPM.UI.Module.DisplayOthers.DisplayOthersRightView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:local="clr-namespace:DDPM.UI.Module.DisplayOthers"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <UXControls:UXScrollViewer>
+            <StackPanel>
+                <Border Style="{StaticResource RightGroupBorderStyle}">
+                            <StackPanel>
+                                <StackPanel.Resources>
+                                    <Style TargetType="{x:Type UXControls:UXTextBlock}">
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="FontSize" Value="16"/>
+                                        <Setter Property="Margin" Value="16,12,0,12"/>
+                                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Grid Grid.Row="0" Margin="0,0,0,8" Background="#132F54">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0" Margin="16">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid Grid.Column="0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <UXControls:UXTextBlock Grid.Column="0" Text="PowerNap" Foreground="White"
+                                                                TextBlockSemanticColorType="Light" TextBlockType="Caption"
+                                                                HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                                FontSize="20" LineHeight="28"/>
+                                        <Image Name="PowerNap_Hover" Grid.Column="1"
+                                            Width="16" Height="16" Margin="8,0"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                            Stretch="Uniform" HorizontalAlignment="Left">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="PowerNap helps you conserve power when your screensaver activates"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+                                    </Grid>
+                                    <UXControls:UXToggleSwitch Grid.Column="1" ContentPlacement="Left" ContentTextVisibility="True"
+                                                               Content="{Binding PowerNap_text}" IsChecked="{Binding PowerNap_Enable}" HorizontalAlignment="Right" 
+                                                               Foreground="White" FontSize="16" Width="67" Height="20"/>
+                                </Grid>
+                                <Grid Grid.Row="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <UXControls:UXTextBlock Grid.Row="0"
+                                                            Text="When screensaver activates (choose one):"
+                                                            Foreground="#F5F6F7" FontSize="16" LineHeight="28"
+                                                            TextBlockSemanticColorType="Light" TextBlockType="Caption"
+                                                            HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    <Grid Grid.Row="1" Margin="16,0" IsEnabled="{Binding PowerNap_Enable}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <UXControls:UXRadioButton Grid.Row="0" 
+                                                                  AutomationProperties.AutomationId="LargeRB1"
+                                                                  Content="Reduce brightness"
+                                                                  RadioButtonSize="Large" Foreground="#F5F6F7"
+                                                                  HorizontalAlignment="Left"
+                                                                  FontSize="16" IsChecked="{Binding Reducebrt_Checked}"/>
+                                        <UXControls:UXRadioButton Grid.Row="1" 
+                                                                  AutomationProperties.AutomationId="LargeRB1"
+                                                                  Content="Put the display to sleep"
+                                                                  RadioButtonSize="Large" Foreground="#F5F6F7"
+                                                                  HorizontalAlignment="Left"
+                                                                  FontSize="16" IsChecked="{Binding PutTosleep_Checked}"/>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <UXControls:UXButton Grid.Row="1" 
+                                                 ButtonType="Primary" ButtonSize="Medium"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Background="#0672CB" Click="tbOpenScreensaverSettings_Click">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <UXControls:UXTextBlock Text="Configure Screensaver Settings " Margin="8" 
+                                                            Foreground="White" 
+                                                            VerticalAlignment="Center"/>
+                                    <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" 
+                                           Margin="8" Width="16" Height="16"/>
+                                        </StackPanel>
+                                    </UXControls:UXButton>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0">
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <Style TargetType="{x:Type UXControls:UXTextBlock}">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="Margin" Value="16,12,0,12"/>
+                                <Setter Property="HorizontalAlignment" Value="Left"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <Grid Grid.Row="1" Margin="0,0,0,8" Background="#132F54">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <UXControls:UXTextBlock Grid.Column="0" Text="Application Settings" Foreground="White"
+                                                            TextBlockSemanticColorType="Light" TextBlockType="Caption"
+                                                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                                                            FontSize="20" LineHeight="28"/>
+                                    <Image Name="Settings_Hover" Grid.Column="1"
+                                        Width="16" Height="16" Margin="8,0"
+                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                        Stretch="Uniform" HorizontalAlignment="Left">
+                                        <Image.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="Export a configuration and important to another monitor of the same model"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                </Grid>
+                                <Grid Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <UXControls:UXButton Grid.Column="1" Margin="8" ButtonType="Secondary" ButtonSize="Medium"
+                                                         Content="Import" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                         Foreground="#F5F6F7" FontSize="14" BorderBrush="#F5F6F7" Name="import" Click="import_Click"/>
+                                    <UXControls:UXButton Grid.Column="2" Margin="8" ButtonType="Secondary" ButtonSize="Medium"
+                                                         Content="Export" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                         Foreground="#F5F6F7" FontSize="14" BorderBrush="#F5F6F7" Name="export" Click="export_Click"/>
+                                </Grid>
+                            </Grid>
+                            <UXControls:UXCheckBox Grid.Row="1" Margin="24, 8, 8, 0" CheckBoxSize="Large"
+                                                   Content="Automatically apply the settings when the same model is detected"
+                                                   HorizontalAlignment="Left" FontSize="14" Foreground="White" 
+                                                   IsChecked="{Binding AutoApply_Checked}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </UXControls:UXScrollViewer>
+    </Grid>
+</UserControl>

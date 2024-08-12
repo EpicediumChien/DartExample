@@ -1,0 +1,19 @@
+﻿<!-- Copyright © 2022, Dell Inc., All Rights Reserved. -->
+<wpf:ConsoleWindow
+    x:Class="NGA.ThickClient.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpf="clr-namespace:Dell.Client.Framework.UX.WPF.Console;assembly=DCF.UX.WPF"
+    Background="#F20D121A"
+    mc:Ignorable="d">
+    <wpf:ConsoleWindow.TopBackground>
+    <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill"/>
+  </wpf:ConsoleWindow.TopBackground>
+
+    <!--<Grid>
+    <Rectangle Fill="#0D121AF2"/>
+    <Image Source="/Resources/Images/DDPM_Dark_Background.png" Stretch="UniformToFill"/>
+  </Grid>-->
+</wpf:ConsoleWindow>

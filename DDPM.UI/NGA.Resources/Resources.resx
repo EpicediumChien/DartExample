@@ -1,0 +1,671 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutView_Gear_Text" xml:space="preserve">
+    <value>About {0}</value>
+  </data>
+  <data name="AboutView_Main_Text" xml:space="preserve">
+    <value>About {0}</value>
+  </data>
+  <data name="CopyRight_Text" xml:space="preserve">
+    <value>© Dell Inc. or its subsidiaries. All Rights Reserved.</value>
+  </data>
+  <data name="DELL_MYDELL" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="EXIT" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="MyDell" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="MyDellConsoleHelpFileName" xml:space="preserve">
+    <value>MyDellConsoleHelpFileName</value>
+  </data>
+  <data name="MYDELL_APP_SYSTRAY_HEADER" xml:space="preserve">
+    <value>{0} SysTray Console</value>
+  </data>
+  <data name="MYDELL_APP_SYSTRAY_SPLASHSCREEN" xml:space="preserve">
+    <value>{0} SysTray Console</value>
+  </data>
+  <data name="MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT" xml:space="preserve">
+    <value>{0} Console</value>
+  </data>
+  <data name="MYDELL_APP_THICKCLIENT_HEADER" xml:space="preserve">
+    <value>{0} Console</value>
+  </data>
+  <data name="MYDELL_APP_THICKCLIENT_SPLASHSCREEN" xml:space="preserve">
+    <value>{0} Console</value>
+  </data>
+  <data name="MYDELL_APP_SYSTRAY_WINDOW" xml:space="preserve">
+    <value>{0} Systray</value>
+  </data>
+  <data name="OPEN_MYDELL_THICKCLIENT" xml:space="preserve">
+    <value>Open {0}...</value>
+  </data>
+  <data name="OPEN_MYDELL_THICKCLIENT_ABOUT" xml:space="preserve">
+    <value>About...</value>
+  </data>
+  <data name="WindowHandleError" xml:space="preserve">
+    <value>Window Handle Error</value>
+  </data>
+  <data name="MYDELL_CONSOLE" xml:space="preserve">
+    <value>{0} Console</value>
+  </data>
+  <data name="Url_Dell" xml:space="preserve">
+    <value>https://dell.com/</value>
+  </data>
+  <data name="AboutView_Version_Text" xml:space="preserve">
+    <value>V E R S I O N   3.2</value>
+  </data>
+  <data name="AboutView_Url_LicenseAgreement" xml:space="preserve">
+    <value>https://www.dell.com/learn/us/en/uscorp1/terms-conditions/art-software-license-agreements</value>
+  </data>
+  <data name="AboutView_Url_PrivacyNotice" xml:space="preserve">
+    <value>https://www.dell.com/learn/us/en/uscorp1/policies-privacy</value>
+  </data>
+  <data name="AboutView_Url_ThirdPartyLicense" xml:space="preserve">
+    <value>https://dell.com/</value>
+  </data>
+  <data name="Preferences_CriticalAlerts_Text" xml:space="preserve">
+    <value>Receive critical system alerts for issues that may impact performance and productivity. Restore the state of critical system notifications you may have previously dismissed.</value>
+  </data>
+  <data name="Preferences_Notifications_Text" xml:space="preserve">
+    <value>I want to receive notifications from {0}</value>
+  </data>
+  <data name="Preferences_PrivacyNotice_Text" xml:space="preserve">
+    <value>All users of this PC agree to participate in the Dell customer experience improvement program for all Dell Software.</value>
+  </data>
+  <data name="Preferences_GearMenuItem" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="Preferences_Header_Text" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="AboutView_LicenseAgreement_Text" xml:space="preserve">
+    <value>Dell License Agreement</value>
+  </data>
+  <data name="AboutView_PrivacyNotice_Text" xml:space="preserve">
+    <value>{0} Privacy Notice</value>
+  </data>
+  <data name="AboutView_ThirdPartyLicenses_Text" xml:space="preserve">
+    <value>Third Party Licenses</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="AdditionalNotifications_Text" xml:space="preserve">
+    <value>Additional Notifications</value>
+  </data>
+  <data name="CarrotMenuItem_Text" xml:space="preserve">
+    <value>Options Menu</value>
+  </data>
+  <data name="ReturnToHomePage_Text" xml:space="preserve">
+    <value>Return to homepage</value>
+  </data>
+  <data name="Discovery_Notification_Button1" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="Discovery_Notification_Button2" xml:space="preserve">
+    <value>Remind me later</value>
+  </data>
+  <data name="Discovery_Notification_Heading" xml:space="preserve">
+    <value>Welcome to your new {0}</value>
+  </data>
+  <data name="Discovery_Notification_SubHeading" xml:space="preserve">
+    <value>Our tools, tips, and resources help you get the most out of your PC</value>
+  </data>
+  <data name="Inspiron" xml:space="preserve">
+    <value>Inspiron</value>
+  </data>
+  <data name="XPS" xml:space="preserve">
+    <value>XPS</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="CriticalAlertsText" xml:space="preserve">
+    <value>Critical Alerts</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="PrivacyNoticeText" xml:space="preserve">
+    <value>Privacy Notice</value>
+  </data>
+  <data name="ProductRegistration_GearMenuItem" xml:space="preserve">
+    <value>Register Product</value>
+  </data>
+  <data name="Url_DellProductRegistration" xml:space="preserve">
+    <value>https://www.dell.com/support/retail-registration/</value>
+  </data>
+  <data name="Vostro" xml:space="preserve">
+    <value>Vostro</value>
+  </data>
+  <data name="Shutdown_MessageBoxText" xml:space="preserve">
+    <value>No features are available in {0} at this time. {0} will shutdown now.</value>
+  </data>
+  <data name="UserGuide_GearMenuItem" xml:space="preserve">
+    <value>User Guide</value>
+  </data>
+  <data name="UserGuideUrl" xml:space="preserve">
+    <value>https://www.dell.com/support/home/en-in/product-support/product/mydell/docs</value>
+  </data>
+  <data name="Welcome_DetailText" xml:space="preserve">
+    <value>Get started</value>
+  </data>
+  <data name="Welcome_SubDetailText" xml:space="preserve">
+    <value>Customize settings, setup software and more.</value>
+  </data>
+  <data name="Welcome_TitleText" xml:space="preserve">
+    <value>WELCOME, {0}</value>
+  </data>
+  <data name="WelcomeBack_DetailText" xml:space="preserve">
+    <value>Get started</value>
+  </data>
+  <data name="WelcomeBack_SubDetailText" xml:space="preserve">
+    <value>Customize settings, setup software and more.</value>
+  </data>
+  <data name="WelcomeBack_TitleText" xml:space="preserve">
+    <value>WELCOME BACK, {0}</value>
+  </data>
+  <data name="PrivacyHTML" xml:space="preserve">
+    <value>&lt;html lang="en"&gt;
+
+&lt;head&gt;
+&lt;meta http-equiv=Content-Type content="text/html; charset=utf-8"&gt;
+&lt;meta name=Generator content="Microsoft Word 15 (filtered)"&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Roboto&amp;display=swap" rel="stylesheet"&gt;
+&lt;style&gt;
+&lt;!--
+ /* Font Definitions */
+ @font-face
+	{
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+@font-face
+	{
+	panose-1:2 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+h1
+	{mso-style-link:"Heading 1 Char";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	line-height:normal;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	color:#2E74B5;
+	font-weight:normal;}
+h2
+	{mso-style-link:"Heading 2 Char";
+	margin-top:2.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	line-height:normal;
+	page-break-after:avoid;
+	font-size:13.0pt;	
+	color:#2E74B5;
+	font-weight:normal;}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{mso-style-link:"Comment Text Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	font-size:10.0pt;
+	}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-link:"Header Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-link:"Footer Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	}
+a:link, span.MsoHyperlink
+	{color:#0563C1;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#954F72;
+	text-decoration:underline;}
+p.MsoCommentSubject, li.MsoCommentSubject, div.MsoCommentSubject
+	{mso-style-link:"Comment Subject Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	font-size:10.0pt;
+	
+	font-weight:bold;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-link:"Balloon Text Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:9.0pt;
+	}
+p.MsoRMPane, li.MsoRMPane, div.MsoRMPane
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{mso-style-link:"List Paragraph Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:.5in;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{mso-style-link:"List Paragraph Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{mso-style-link:"List Paragraph Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{mso-style-link:"List Paragraph Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:.5in;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+span.HeaderChar
+	{mso-style-name:"Header Char";
+	mso-style-link:Header;}
+span.FooterChar
+	{mso-style-name:"Footer Char";
+	mso-style-link:Footer;}
+span.ListParagraphChar
+	{mso-style-name:"List Paragraph Char";
+	mso-style-link:"List Paragraph";}
+span.CommentTextChar
+	{mso-style-name:"Comment Text Char";
+	mso-style-link:"Comment Text";}
+span.CommentSubjectChar
+	{mso-style-name:"Comment Subject Char";
+	mso-style-link:"Comment Subject";
+	font-weight:bold;}
+span.BalloonTextChar
+	{mso-style-name:"Balloon Text Char";
+	mso-style-link:"Balloon Text";
+	}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-link:"Heading 1";
+	
+	color:#2E74B5;}
+span.Heading2Char
+	{mso-style-name:"Heading 2 Char";
+	mso-style-link:"Heading 2";
+	
+	color:#2E74B5;}
+.MsoChpDefault
+	{}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:normal;}
+ /* Page Definitions */
+ @page WordSection1
+	{size:8.5in 11.0in;
+	margin:0.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+--&gt;
+&lt;/style&gt;
+
+&lt;script type="text/javascript"&gt;
+ // Change color and opacity
+ function updateForeground(color) { 
+   document.body.style.color = color;
+   document.body.style.opacity = 1;
+   console.log("updateForeground function has been called, body foreground color set to " + color);
+ } 
+&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;title&gt;Privacy Page&lt;/title&gt;
+&lt;body style="opacity:0"&gt;
+
+&lt;div  class=WordSection1 style="font-family:'Roboto', arial"&gt;
+    &lt;p class="MsoNormal" align="center" style="text-align:center"&gt;
+        &lt;b&gt; &lt;u&gt; &lt;span lang="EN-GB" style="font-size:10.0pt;"&gt;
+                    Data collection and use notice
+                &lt;/span&gt; &lt;/u&gt; &lt;/b&gt;
+    &lt;/p&gt;
+
+    &lt;p style="margin: 0;font-size: 10pt;"&gt;This Notice (“&lt;b&gt;Notice&lt;/b&gt;”) explains how &lt;a href="https://i.dell.com/sites/csdocuments/Learn_Docs/en/List-of-Dell-Technologies-Entities-for-Privacy-Statement-13May-2019-FINAL.pdf"&gt;Dell Technologies and its group of companies&lt;/a&gt;, on behalf of itself or for a third party or for its direct and indirect subsidiaries (“&lt;b&gt;Dell&lt;/b&gt;”), collects, uses and shares your data when you use Dell software. We collect and use certain types of data, described below, to personalize your experience with Dell products, to enhance our support and to improve our products, solutions and services (“&lt;b&gt;Dell Solutions&lt;/b&gt;”).&lt;/p&gt;
+
+&lt;p style="margin:0in;margin-bottom:.0001pt;text-align:justify"&gt;&lt;span style="font-size:10.0pt;font-family:&amp;quot;Arial&amp;quot;,sans-serif;mso-bidi-font-family:
+Calibri;mso-bidi-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fareast-language:
+EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:baseline;margin-bottom: 0;"&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;Information we automatically collect&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;We may automatically collect behavioral and usage information about how you use, access or interact with the Dell Solutions. This information may not necessarily reveal your identity directly but may include unique identification identifier and other information about the specific device you are using, such as your service tag, the hardware model, operating system version, hardware settings and system crashes, installed applications, their settings and usage, and/or (MAC) address, and other data that may uniquely identify your device or system.&lt;/p&gt;
+
+&lt;p style="margin:0in;margin-bottom:.0001pt;text-align:justify"&gt;&lt;span style="font-size:10.0pt;font-family:&amp;quot;Arial&amp;quot;,sans-serif;mso-bidi-font-family:
+Calibri;mso-bidi-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fareast-language:
+EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;We may also collect information about how your system or device has interacted with the Dell Solutions, such as statistical information, network connection indicators and routing. In some instances, the information collected may directly or indirectly identify an end-user and link an individual to certain online behavior to the extent required for the purposes provided in this Notice.&lt;/p&gt;
+
+&lt;p style="margin:0in;margin-bottom:.0001pt;text-align:justify"&gt;&lt;span style="font-size:10.0pt;font-family:&amp;quot;Arial&amp;quot;,sans-serif;mso-bidi-font-family:
+Calibri;mso-bidi-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fareast-language:
+EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;
+&lt;i style="mso-bidi-font-style:normal"&gt;Dell software may consolidate all or part of the aforementioned information in data logs that are transmitted to Dell when an internet connection is established.&lt;/i&gt;
+The types of technology used by Dell may change over time as technology evolves. For more information about our use of cookies and other similar tracking technologies please read our Cookies and Similar Technologies on Dell’s online &lt;a href="https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy"&gt;Privacy Statement&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;Data transfers&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;Data described in this Notice may be transferred outside of your country to other locations such in the USA, EU, Japan, including to third-party hosting sites. We will take all appropriate technical and organizational measures to safeguard the data that we transfer. &lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;a name="cuen"&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;
+mso-fareast-font-family:&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;
+mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;Retention of your data&lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/a&gt;&lt;span style="mso-bookmark:cuen"&gt;&lt;b&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:
+Calibri;mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/b&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;We will retain your personal data as necessary in connection with the purposes described in this Notice, and in accordance with Dell’s retention policies and applicable law. The data that is collected by Dell as described in this Notice will be kept in accordance with Dell’s retention policies and applicable law.&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span style="mso-bookmark:cuen"&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="mso-color-alt:windowtext"&gt;Personal information and privacy &lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/span&gt;&lt;span style="mso-bookmark:cuen"&gt;&lt;/span&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;
+mso-fareast-font-family:&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;
+mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;Dell’s collection, use and processing of Personal Information you provide is described in Dell’s Privacy Statement.  If you would like to contact us for any reason regarding our privacy practices, please email us at  &lt;a href="mailto:privacy@dell.com"&gt;privacy@dell.com&lt;/a&gt; or see our full &lt;a href="https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy"&gt;Privacy Statement&lt;/a&gt; online.&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;</value>
+  </data>
+  <data name="ConnectionIssue" xml:space="preserve">
+    <value>Sorry, there was an issue connecting to the host, please try again.</value>
+  </data>
+  <data name="Consent_Button" xml:space="preserve">
+    <value>Yes, I consent</value>
+  </data>
+  <data name="Done_Button" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="DontConsent_Button" xml:space="preserve">
+    <value>No, I don't consent</value>
+  </data>
+  <data name="TelemetryConsent_Part1_Text" xml:space="preserve">
+    <value>By clicking Yes, you have read our</value>
+  </data>
+  <data name="TelemetryConsent_Part2_Text" xml:space="preserve">
+    <value>, understood your rights and how Dell uses and protects your data.</value>
+  </data>
+  <data name="TelemetryConsent_URL" xml:space="preserve">
+    <value>https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy</value>
+  </data>
+  <data name="TelemetryConsent_URL_Text" xml:space="preserve">
+    <value>Privacy Statement</value>
+  </data>
+  <data name="ViewPrivacyNotice_Text" xml:space="preserve">
+    <value>View Data Collection and Use Notice</value>
+  </data>
+  <data name="Ok_Button" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="NarratePageBackButton" xml:space="preserve">
+    <value>Previous Page</value>
+  </data>
+  <data name="NarratePageForwardButton" xml:space="preserve">
+    <value>Next Page</value>
+  </data>
+  <data name="Preferences_Title" xml:space="preserve">
+    <value>Help us improve</value>
+  </data>
+  <data name="UXLinkType" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="UXTileType" xml:space="preserve">
+    <value>Tile</value>
+  </data>
+  <data name="UXGrabItemType" xml:space="preserve">
+    <value>Grab Item</value>
+  </data>
+  <data name="UXIconComboBoxType" xml:space="preserve">
+    <value>Combo box</value>
+  </data>
+  <data name="UXDraggableListBoxType" xml:space="preserve">
+    <value>Draggable List Box</value>
+  </data>
+  <data name="UXDraggableListBoxHelpText" xml:space="preserve">
+    <value>Use CTRL + SHIFT in combination with the Up and Down arrows to move an item</value>
+  </data>
+  <data name="UXInfoPresenterBackButtonText" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="UXInfoPresenterDoneButtonText" xml:space="preserve">
+    <value>Got It!</value>
+  </data>
+  <data name="UXInfoPresenterNextButtonText" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="RestoreAlerts" xml:space="preserve">
+    <value>Restore alerts</value>
+  </data>
+  <data name="Explore" xml:space="preserve">
+    <value>Explore</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>MyDell</value>
+  </data>
+  <data name="UXAlertCloseButtonAutomationText" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="SystrayIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\SystrayIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>

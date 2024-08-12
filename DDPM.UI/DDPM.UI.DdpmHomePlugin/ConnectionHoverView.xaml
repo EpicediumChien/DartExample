@@ -1,0 +1,405 @@
+﻿<UserControl x:Class="DDPM.UI.Plugin.DdpmHomePlugin.ConnectionHoverView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.UI.Plugin.DdpmHomePlugin"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:Background="Black">
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="ConnectionStyle1Brush" Color="White"/>
+            <SolidColorBrush x:Key="ConnectionStyle2Brush" Color="#839DB4"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter Property="Visibility" Value="Collapsed"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsConnectionHoverViewShow}" Value="True">
+                        <Setter Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+
+        <Viewbox Stretch="Uniform" MaxHeight="130">
+            <!-- IO Dongle -->
+            <Border x:Name="IO_Dongle" Height="130">
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource BorderConnection}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ConnectionHoverMode}" Value="IO_Dongle">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
+                        <Grid Width="16" Height="16" Margin="4,0,0,0">
+                            <Path Fill="White"
+                              Data="M11.8121 6.56276V3.41263C11.8121 1.53568 10.2765 0 8.39951 0C6.52256 0 5 1.53568 5 3.41263C5 3.43888 5.01313 6.3265 5.02625 6.9434C5.31501 6.57588 5.7219 6.20837 6.19442 5.91961V3.41263C6.19442 2.19196 7.19196 1.20755 8.39951 1.20755C9.60705 1.20755 10.6046 2.20509 10.6046 3.41263V6.56276C10.6046 7.78343 9.60705 8.76784 8.39951 8.76784C8.05824 8.76784 7.71698 8.67596 7.34947 8.46596C7.10008 8.74159 6.9557 9.08286 6.9557 9.43724V9.621C7.45447 9.85726 7.92699 9.97539 8.39951 9.97539C9.06891 9.97539 9.69893 9.75226 10.3421 9.29286C10.4865 9.18786 10.6046 9.09598 10.7096 8.99098C10.7096 8.99098 10.7096 8.99098 10.7227 8.97785C10.8277 8.87285 10.9327 8.76784 11.0246 8.64971C11.5365 7.99344 11.799 7.29779 11.799 6.57588L11.8121 6.56276Z"/>
+                            <Path Fill="White"
+                              Data="M5 9.43729V12.5874C5 14.4644 6.53569 16 8.41263 16C10.2896 16 11.8253 14.4644 11.8253 12.5874C11.8253 12.5612 11.8121 9.67355 11.799 9.05665C11.5103 9.42417 11.1034 9.79168 10.6308 10.0804V12.5874C10.6308 13.8081 9.63331 14.7925 8.42576 14.7925C7.21821 14.7925 6.22067 13.795 6.22067 12.5874V9.43729C6.22067 8.21662 7.21821 7.23221 8.42576 7.23221C8.76702 7.23221 9.10829 7.32408 9.4758 7.53409C9.72518 7.25846 9.86957 6.91719 9.86957 6.5628V6.37905C9.3708 6.14279 8.89828 6.02466 8.42576 6.02466C7.75636 6.02466 7.12633 6.24779 6.48318 6.72031C6.35193 6.82531 6.22067 6.91719 6.11567 7.0222C6.11567 7.0222 6.10254 7.03532 6.08942 7.04845C5.98441 7.15345 5.87941 7.25846 5.78753 7.37659C5.27564 8.01974 5.01313 8.71539 5.01313 9.45042L5 9.43729Z"/>
+                        </Grid>
+                        <UXControls:UXTextBlock Name="txtDongleHost" Foreground="#F5F6F7" 
+                                            Text="{Binding DongleHostText}"
+                                            VerticalAlignment="Center" Margin="7,0,0,0"
+                                            HorizontalAlignment="Center" FontFamily="Roboto"
+                                            FontSize="14" FontWeight="Bold"/>
+                    </StackPanel>
+                    <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="#1B385F" StrokeThickness="2"/>
+                    <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" 
+                                        Margin="20,13,0,0" Text="{Binding DongleFwVersion}"/>
+                    <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" 
+                                        Margin="20,15,0,0" Text="{Binding DongleSlot}"/>
+                </StackPanel>
+            </Border>
+        </Viewbox>
+
+        <Viewbox Stretch="Uniform" MaxHeight="92">
+            <!-- IO BLE -->
+            <!-- 
+                1 {BLE_Icon} Windows Machine A
+                2 {BLE_Icon} Windows Machine B
+                3 {BLE_Icon} Windows Machine C 
+        
+                BleHost{i}Style, where {i} = 1,2,3
+                0 = This row will be Collapsed
+                1 = This row is White color
+                2 = This row is Gray color
+                -->
+            <Border x:Name="IO_BLE" Height="92">
+                <!-- Only when ConnectionHoverMode=="IO_BLE" will show this Border -->
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource BorderConnection}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ConnectionHoverMode}" Value="IO_BLE">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+                <StackPanel Orientation="Vertical">
+                    <!-- Row 0: 1 {BLE_Icon} Windows Machine A -->
+                    <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
+                        <!-- Apply BleHost{i}Style -->
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding BleHost1Style}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <!-- "1" -->
+                        <UXControls:UXTextBlock Name="txt1" Text="1">
+                            <UXControls:UXTextBlock.Style>
+                                <Style TargetType="UXControls:UXTextBlock" BasedOn="{StaticResource UXTextBlockBaseStyle}">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BleHost1Style}" Value="2">
+                                            <Setter Property="Foreground" Value="#839DB4"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                        <!-- BLE Icon, 16x16 -->
+                        <Grid Width="16" Height="16" Margin="4,0,0,0">
+                            <Path Data="M7.5 15.95V9.40005L4.7 12L4 11.3L7.5 8.05005V7.95005L4 4.70005L4.7 4.00005L7.5 6.60005V0.0500488L12.35 4.90005L9 8.00005L12.35 11.1L7.5 15.95ZM8.5 8.90005V13.55L10.9 11.15L8.5 8.90005ZM8.5 2.45005V7.10005L10.9 4.85005L8.5 2.45005Z">
+                                <!-- Default is White, if BleHost1Style==2 then color is Gray -->
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Fill" Value="{StaticResource ConnectionStyle1Brush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BleHost1Style}" Value="2">
+                                                <Setter Property="Fill" Value="{StaticResource ConnectionStyle2Brush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
+                        <!-- "Windows Machine A", or "Ready to be paired" Binding to BleHost1Text -->
+                        <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" Text="{Binding BleHost1Text}">
+                            <UXControls:UXTextBlock.Style>
+                                <Style TargetType="UXControls:UXTextBlock" BasedOn="{StaticResource UXTextBlockBaseStyle}">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BleHost1Style}" Value="2">
+                                            <Setter Property="Foreground" Value="#839DB4"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                    </StackPanel>
+
+                    <!-- Row 1: 2 {BLE_Icon} Windows Machine B -->
+                    <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,18">
+                        <!-- Apply BleHost{i}Style -->
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding BleHost2Style}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <!-- "2" -->
+                        <UXControls:UXTextBlock Name="txt2" Text="2">
+                            <UXControls:UXTextBlock.Style>
+                                <Style TargetType="UXControls:UXTextBlock" BasedOn="{StaticResource UXTextBlockBaseStyle}">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BleHost2Style}" Value="2">
+                                            <Setter Property="Foreground" Value="#839DB4"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                        <!-- BLE Icon, 16x16 -->
+                        <Grid Width="16" Height="16" Margin="4,0,0,0">
+                            <Path Data="M7.5 15.95V9.40005L4.7 12L4 11.3L7.5 8.05005V7.95005L4 4.70005L4.7 4.00005L7.5 6.60005V0.0500488L12.35 4.90005L9 8.00005L12.35 11.1L7.5 15.95ZM8.5 8.90005V13.55L10.9 11.15L8.5 8.90005ZM8.5 2.45005V7.10005L10.9 4.85005L8.5 2.45005Z">
+                                <!-- Default is White, if BleHost1Style==2 then color is Gray -->
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Fill" Value="{StaticResource ConnectionStyle1Brush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BleHost2Style}" Value="2">
+                                                <Setter Property="Fill" Value="{StaticResource ConnectionStyle2Brush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
+                        <!-- "Windows Machine A", or "Ready to be paired" Binding to BleHost1Text -->
+                        <UXControls:UXTextBlock Name="txtBLHost2" Margin="4,0,0,0" Text="{Binding BleHost2Text}">
+                            <UXControls:UXTextBlock.Style>
+                                <Style TargetType="UXControls:UXTextBlock" BasedOn="{StaticResource UXTextBlockBaseStyle}">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BleHost2Style}" Value="2">
+                                            <Setter Property="Foreground" Value="#839DB4"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                    </StackPanel>
+
+                    <!-- Row 2: 3 {BLE_Icon} Windows Machine C -->
+                    <StackPanel Name="Host3" Orientation="Horizontal" Margin="20,0,0,18" >
+                        <!-- Apply BleHost{i}Style -->
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding BleHost3Style}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <!-- "3" -->
+                        <UXControls:UXTextBlock Name="txt3" Text="3">
+                            <UXControls:UXTextBlock.Style>
+                                <Style TargetType="UXControls:UXTextBlock" BasedOn="{StaticResource UXTextBlockBaseStyle}">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BleHost3Style}" Value="2">
+                                            <Setter Property="Foreground" Value="#839DB4"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                        <!-- BLE Icon, 16x16 -->
+                        <Grid Width="16" Height="16" Margin="4,0,0,0">
+                            <Path Data="M7.5 15.95V9.40005L4.7 12L4 11.3L7.5 8.05005V7.95005L4 4.70005L4.7 4.00005L7.5 6.60005V0.0500488L12.35 4.90005L9 8.00005L12.35 11.1L7.5 15.95ZM8.5 8.90005V13.55L10.9 11.15L8.5 8.90005ZM8.5 2.45005V7.10005L10.9 4.85005L8.5 2.45005Z">
+                                <!-- Default is White, if BleHost1Style==2 then color is Gray -->
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Fill" Value="{StaticResource ConnectionStyle1Brush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BleHost3Style}" Value="2">
+                                                <Setter Property="Fill" Value="{StaticResource ConnectionStyle2Brush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
+                        <!-- "Windows Machine A", or "Ready to be paired" Binding to BleHost1Text -->
+                        <UXControls:UXTextBlock Name="txtBLHost3" Margin="4,0,0,0" Text="{Binding BleHost3Text}">
+                            <UXControls:UXTextBlock.Style>
+                                <Style TargetType="UXControls:UXTextBlock" BasedOn="{StaticResource UXTextBlockBaseStyle}">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BleHost3Style}" Value="2">
+                                            <Setter Property="Foreground" Value="#839DB4"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Viewbox>
+        
+        <Viewbox Stretch="Uniform" MaxHeight="156">
+            <!-- Audio BLE -->
+            <!-- 
+                {BLE_Icon} Windows Machine A
+                {BLE_Icon} Windows Machine B
+                - - - - - - - - - - - - - - -
+                This device can be paired with 2
+                hosts simulaneously
+                -->
+            <Border x:Name="Audio_BLE">
+                <!-- Only when ConnectionHoverMode=="Audio_BLE" will show this Border -->
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource BorderConnection}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ConnectionHoverMode}" Value="Audio_BLE">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+
+                <StackPanel Orientation="Vertical">
+
+                    <!-- Row 0: {BLE_Icon} Windows Machine A -->
+                    <StackPanel Name="AudioHost1" Orientation="Horizontal" Margin="20,18,0,0">
+                        <!-- Apply BleHost{i}Style -->
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding BleHost1Style}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <!-- BLE Icon, 16x16 -->
+                        <Grid Width="16" Height="16" Margin="4,0,0,0">
+                            <Path Data="M7.5 15.95V9.40005L4.7 12L4 11.3L7.5 8.05005V7.95005L4 4.70005L4.7 4.00005L7.5 6.60005V0.0500488L12.35 4.90005L9 8.00005L12.35 11.1L7.5 15.95ZM8.5 8.90005V13.55L10.9 11.15L8.5 8.90005ZM8.5 2.45005V7.10005L10.9 4.85005L8.5 2.45005Z">
+                                <!-- Default is White, if BleHost1Style==2 then color is Gray -->
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Fill" Value="{StaticResource ConnectionStyle1Brush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BleHost1Style}" Value="2">
+                                                <Setter Property="Fill" Value="{StaticResource ConnectionStyle2Brush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
+
+                        <!-- "Windows Machine A", or "Ready to be paired" Binding to BleHost1Text -->
+                        <UXControls:UXTextBlock Name="txtAudioBLHost1" Margin="4,0,0,0" Text="{Binding BleHost1Text}">
+                            <UXControls:UXTextBlock.Style>
+                                <Style TargetType="UXControls:UXTextBlock" BasedOn="{StaticResource UXTextBlockBaseStyle}">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BleHost1Style}" Value="2">
+                                            <Setter Property="Foreground" Value="#839DB4"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+                    </StackPanel>
+
+                    <!-- Row 1: {BLE_Icon} Windows Machine B -->
+                    <StackPanel Name="AudioHost2" Orientation="Horizontal" Margin="20,18,0,0">
+                        <!-- Apply BleHost{i}Style -->
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding BleHost2Style}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <!-- BLE Icon, 16x16 -->
+                        <Grid Width="16" Height="16" Margin="4,0,0,0">
+                            <Path Data="M7.5 15.95V9.40005L4.7 12L4 11.3L7.5 8.05005V7.95005L4 4.70005L4.7 4.00005L7.5 6.60005V0.0500488L12.35 4.90005L9 8.00005L12.35 11.1L7.5 15.95ZM8.5 8.90005V13.55L10.9 11.15L8.5 8.90005ZM8.5 2.45005V7.10005L10.9 4.85005L8.5 2.45005Z">
+                                <!-- Default is White, if BleHost1Style==2 then color is Gray -->
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Fill" Value="{StaticResource ConnectionStyle1Brush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BleHost2Style}" Value="2">
+                                                <Setter Property="Fill" Value="{StaticResource ConnectionStyle2Brush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
+
+                        <!-- "Windows Machine B" Binding to BleHost1Text -->
+                        <UXControls:UXTextBlock Name="txtAudioBLHost2" Margin="4,0,0,0" Text="{Binding BleHost2Text}">
+                            <UXControls:UXTextBlock.Style>
+                                <Style TargetType="UXControls:UXTextBlock" BasedOn="{StaticResource UXTextBlockBaseStyle}">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BleHost2Style}" Value="2">
+                                            <Setter Property="Foreground" Value="#839DB4"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UXControls:UXTextBlock.Style>
+                        </UXControls:UXTextBlock>
+
+                    </StackPanel>
+
+                    <!-- Horz Line -->
+                    <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="#1B385F" StrokeThickness="2"/>
+
+                    <!--  
+                        This device can be paired with 2
+                        hosts simulaneously
+                    -->
+                    <UXControls:UXTextBlock Name="txtAudioBLText" Margin="20,16,20,16" Text="{Binding AudioBleText}"
+                                            Foreground="White" TextWrapping="Wrap"/>
+
+                </StackPanel>
+            </Border>
+
+        </Viewbox>
+        
+        
+    </Grid>
+</UserControl>

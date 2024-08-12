@@ -1,0 +1,53 @@
+using System.Windows.Controls;
+using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
+using DDPM.UI.Interfaces;
+using DDPM.UI.Module.Collaboration;
+using DDPM.UI.Plugin.ViewModels;
+
+namespace DDPM.UI.Module.Collaboration {
+  public class CollaborationModule : IDdpmModule {
+    private UserControl? _leftView = null;
+    private UserControl _rightView;
+
+    public CollaborationModule(KeyboardViewModel vm) {
+      _rightView = new CollaborationRightView(vm);
+
+    }
+    public string ModuleName { get => "CollaborationModule"; }
+
+    public UserControl? GetLeftView() {
+      return _leftView;
+    }
+
+    public UserControl GetRightView() {
+      return _rightView;
+    }
+    public HomeDevice SelectedHomeDevice { get; set; }
+        #region ModuleOwner
+        public IModuleOwner? ModuleOwner
+        {
+            //get => vm.ModuleOwner;
+            //set => vm.ModuleOwner = value;
+            get;
+            set;
+        }
+        #endregion
+
+        #region Event Handlers
+        public void OnSelectedHomeDeviceChanged()
+        {
+
+        }
+        public void OnActivated()
+        {
+
+        }
+        public void OnDeactivated()
+        {
+
+        }
+        #endregion
+    }
+
+}

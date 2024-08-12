@@ -1,0 +1,332 @@
+﻿<UserControl x:Class="DDPM.UI.Module.Kvm.InputSourceFullView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
+             mc:Ignorable="d" Background="#FF0D121A" 
+             d:DesignHeight="671" d:DesignWidth="1378">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Storyboard x:Key="StoryGotoTwoView">
+                <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
+        Duration="0:0:0.4" From="0" To="{Binding LeftFrameWidth}" FillBehavior="HoldEnd"/>
+            </Storyboard>
+
+            <SolidColorBrush x:Key="PageBkColor" Color="#FF0D121A"/>
+            <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B"/>
+            <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D"/>
+            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Image x:Name="imgBkGlow" 
+                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png" 
+                Stretch="UniformToFill"
+                HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <StackPanel>
+            <Grid Margin="24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="552"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Margin="76, 60, 0, 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Progressbar1.png" 
+                               HorizontalAlignment="Left" Height="5" Width="281" Visibility="{Binding SetInput}"/>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="400" HorizontalAlignment="Left">
+                        <UXControls:UXTextBlock Text="USB KVM SETUP" 
+                                                Foreground="#DAF5FD" 
+                                                FontSize="20" LineHeight="28"/>
+                    </Grid>
+                    <Grid Grid.Row="2" Margin="0, 8, 0 ,0" Width="476" HorizontalAlignment="Left">
+                        <UXControls:UXTextBlock Text="Connecting to &#x000A;your devices" 
+                                                Foreground="#F5F6F7" 
+                                                FontSize="48" LineHeight="76"/>
+                    </Grid>
+                    <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" HorizontalAlignment="Left">
+                        <UXControls:UXTextBlock Text="Please connect a video cable and USB cable between each PC to &#x000A;the monitor. You can connect up to 4 PCs (computers, gaming &#x000A;consoles, etc).&#10;&#10;Please select the cable type and assign a name to each source." 
+                                                Foreground="#F5F6F7" 
+                                                FontSize="16" LineHeight="24"/>
+                    </Grid>
+                    <Grid Grid.Row="4" Margin="0, 93, 0 ,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <!--<UXControls:UXProgressButton CompletedIconPosition="IconRight" PausedIconPosition="IconRight" RunningIconPosition="IconRight" NormalIconPosition="IconRight" AutomationProperties.Name="ProgressContent" Width="120"
+                                                         NormalContent="Next"
+                                                         ProgressButtonState="Normal"
+                                                         Click="OpenMKFullView"/>-->
+                            <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
+                                                 ButtonType="Primary" Padding="40, 8"
+                                                 ButtonSize="Medium" VerticalContentAlignment="Center"
+                                                 Content="Next ⭢"  Margin="0"
+                                                 IconAnimation="Move" Width="164" Height="40"
+                                                 Click="OpenMKFullView" Visibility="{Binding SetInput}"/>
+                            <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
+                                                 ButtonType="Primary" Padding="40, 8"
+                                                 ButtonSize="Medium" VerticalContentAlignment="Center"
+                                                 Content="Save"  Margin="0"
+                                                 IconAnimation="Move" Width="164" Height="40"
+                                                 Click="SaveInput" Visibility="{Binding EditInput}"/>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <UXControls:UXButton ButtonType="Tertiary" Width="90" Height="40"
+                                                 ButtonSize="Medium" Margin="10, 0"
+                                                 Content="Close" 
+                                                 IconAnimation="Move" 
+                                                 Click="CloseUSBKVM" Visibility="{Binding SetInput}"/>
+                            <UXControls:UXButton ButtonType="Tertiary" Width="90" Height="40"
+                                                 ButtonSize="Medium" Margin="10, 0"
+                                                 Content="Cancel" 
+                                                 IconAnimation="Move" 
+                                                 Click="CloseUSBKVM" Visibility="{Binding EditInput}"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Column="1" Margin="132, 60, 130, 40" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Margin="20, 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0" Background="#193457" Margin="0, 0, 8, 0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="PC1"
+                                                Foreground="#A4B8CD"
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName1}" Background="#141D28" Foreground="White" 
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="Video" 
+                                                        Foreground="#A4B8CD" 
+                                                        FontSize="16" LineHeight="24"
+                                                        HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="11*"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox AutomationProperties.Name="SelectedCheck" 
+                                          Style="{StaticResource DdpmComboBoxStyle}"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          ItemsSource="{Binding PCInputsList}" 
+                                          SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}" 
+                                          DisplayMemberPath="inputDisplayText" Grid.ColumnSpan="2"
+                                          BorderBrush="#293B4D" BorderThickness="1.5"/>
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="USB" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="4*"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                HorizontalAlignment="Left" VerticalAlignment="Center"
+                                ItemsSource="{Binding USBsList}"
+                                SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}" 
+                                DisplayMemberPath="inputDisplayText" Grid.ColumnSpan="3"/>
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Column="1" Background="#193457" Margin="0, 0, 8, 0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="PC2" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName2}" Background="#141D28" Foreground="White"
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="2"  Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="Video" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                HorizontalAlignment="Center" VerticalAlignment="Top"
+                                ItemsSource="{Binding PCInputsList}" Width="103" 
+                                SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}" 
+                                DisplayMemberPath="inputDisplayText"
+                                          BorderBrush="#293B4D" BorderThickness="1.5"/>
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="USB" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                ItemsSource="{Binding USBsList}" Width="103" 
+                                SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}" 
+DisplayMemberPath="inputDisplayText"/>
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Column="2" Background="#193457" Margin="0, 0, 8, 0" Visibility="{Binding PC3_Visibility}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="PC3" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName3}" Background="#141D28" Foreground="White"
+                                                      BorderBrush="#7E7E7E" BorderThickness="1" VerticalContentAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="Video" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                ItemsSource="{Binding PCInputsList}" Width="100" 
+                                SelectedItem="{Binding PC3Inputs_Selected, Mode=TwoWay}" 
+                                DisplayMemberPath="inputDisplayText"
+                                          BorderBrush="#293B4D" BorderThickness="1.5"/>
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="USB" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                ItemsSource="{Binding USBsList}" Width="103" 
+                                SelectedItem="{Binding PC3USB_Selected, Mode=TwoWay}" 
+DisplayMemberPath="inputDisplayText"/>
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Column="3" Background="#193457" Visibility="{Binding PC4_Visibility}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="16, 16, 16, 0">
+                                <UXControls:UXTextBlock Text="PC4" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="1" Margin="16, 2, 16, 8">
+                                <UXControls:UXTextBox Text="{Binding InputName4}" Background="#141D28" Foreground="White"
+                                                      BorderBrush="#7E7E7E" BorderThickness="1"/>
+                            </Grid>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="Video" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                ItemsSource="{Binding PCInputsList}" 
+                                SelectedItem="{Binding PC4Inputs_Selected, Mode=TwoWay}" 
+                                DisplayMemberPath="inputDisplayText"
+                                          BorderBrush="#293B4D" BorderThickness="1.5"/>
+                            </Grid>
+                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
+                                <UXControls:UXTextBlock Text="USB" 
+                                                Foreground="#A4B8CD" 
+                                                FontSize="16" LineHeight="24"
+                                                HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                ItemsSource="{Binding USBsList}" Width="103" 
+                                SelectedItem="{Binding PC4USB_Selected, Mode=TwoWay}" 
+                                DisplayMemberPath="inputDisplayText"/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid Grid.Row="1" HorizontalAlignment="Center">
+                        <!--<Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/USBKVM_4PCs.png"/>-->
+                        <Image Source="{Binding PCImage}" Stretch="Uniform"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </StackPanel>
+        <!--<StackPanel>
+            <TextBlock Text="This is Test1 FullView" FontSize="24" Foreground="Cyan"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Test1Value="/>
+                <TextBox Text="{Binding Test1Value}" Width="100"/>
+                <TextBlock Text="Test2Value=" Margin="20,0,0,0"/>
+                <TextBox Text="{Binding Test2Value}" Width="100"/>
+
+            </StackPanel>
+            <Button Content="Go to next page" Command="{Binding GotoNextCommand}"/>
+            <Button Content="Close FullView" Command="{Binding CloseFullViewCommand}"/>
+        </StackPanel>-->
+    </Grid>
+</UserControl>

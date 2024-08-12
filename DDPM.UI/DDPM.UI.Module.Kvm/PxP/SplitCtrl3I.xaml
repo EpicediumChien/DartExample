@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="DDPM.UI.Module.Kvm.PBPSplitCtrl3I"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
+             mc:Ignorable="d" 
+             d:Background="Black"
+             d:DesignHeight="306" d:DesignWidth="544">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="SplitStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource SplitCtrl_OutterBorder}">
+
+        <Grid Name="g0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Column="0" Grid.Row="0" Background="#00000000" MouseLeftButtonDown="PBP_MouseLeftDown2">
+                <Border Name="cell_3i1"  BorderBrush="{StaticResource BorderColor_SplitNormal}" />
+                <Border Name="pbp3_2"
+BorderBrush="#E6AC28" BorderThickness="3"
+CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border2Visibility}"/>
+                <Path Fill="#E6AC28" Data="M241.8811 83 L234.12109 75 L234.12109 91 L241.8811 83 Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick2"/>
+                <Path Fill="#E6AC28" Data="M135 131.8801 L143 124.12012 L127 124.12012 L135 131.8801Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick3"/>
+                <Grid Margin="100, 50">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="#A4B8CD">
+                        <TextBlock Text="{Binding PC2_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock Grid.Row="1" Text="PC2" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="2" Grid.Row="0" Background="#00000000" MouseLeftButtonDown="PBP_MouseLeftDown3">
+                <Border Name="cell_3i2"  BorderBrush="{StaticResource BorderColor_SplitNormal}"/>
+                <Border Name="pbp3_3" BorderBrush="#E6AC28" BorderThickness="3"
+CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border3Visibility}"/>
+                <Path Fill="#E6AC28" Data="M19.11891 83 L26.8789 75 L26.8789 91 L19.11891 83Z" Visibility="{Binding Border3Visibility}" MouseLeftButtonDown="PBP_SwapClick2"/>
+                <Path Fill="#E6AC28" Data="M135 131.8801 L143 124.12012 L127 124.12012 L135 131.8801Z" Visibility="{Binding Border3Visibility}" MouseLeftButtonDown="PBP_SwapClick3"/>
+                <Grid Margin="100,50">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="#A4B8CD">
+                        <TextBlock Text="{Binding PC3_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock Grid.Row="1" Text="PC3" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Background="#00000000" MouseLeftButtonDown="PBP_MouseLeftDown1">
+                <Border Name="cell_3i3" BorderBrush="{StaticResource BorderColor_SplitNormal}"/>
+                <Border Name="pbp3_1" BorderBrush="#E6AC28" BorderThickness="3"
+CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border1Visibility}"/>
+                <Path Fill="#E6AC28" Data="M135 19.11988 L143 26.8799 L127 26.8799 L135 19.11988Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick1"/>
+                <Path Fill="#E6AC28" Data="M406 19.11988 L414 26.8799 L398 26.8799 L406 19.11988Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick3"/>
+                <Grid Margin="230,50">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="#A4B8CD">
+                        <TextBlock Text="{Binding PC1_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock Grid.Row="1" Text="PC1" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Grid>
+            
+
+
+            <Rectangle Name="v1" Grid.Column="1" Grid.Row="0" 
+                   Width="{StaticResource ThickSplitter}"
+                   Style="{StaticResource RectangleStyle_Splitter}"/>
+            <Rectangle Name="h1"  Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
+                   Height="{StaticResource ThickSplitter}"
+                   Style="{StaticResource RectangleStyle_Splitter}"/>
+
+        </Grid>
+    </Border>
+</UserControl>

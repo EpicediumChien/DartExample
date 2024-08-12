@@ -6,7 +6,6 @@ src/SharedAssemblyInfo\.cs
 
 # User-specific files
 *.suo
-*.user
 *.sln.docstates
 *.VC.db
 

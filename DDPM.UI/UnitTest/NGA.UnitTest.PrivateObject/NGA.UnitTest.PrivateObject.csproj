@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>$(NGATargetFrameworksWindows)</TargetFramework>
+	  <SignAssembly>True</SignAssembly>
+	  <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	  <SonarQubeExclude>true</SonarQubeExclude>
+	  <AssemblyOriginatorKeyFile>NGAUnitTestPrivateObject.snk</AssemblyOriginatorKeyFile>
+	  <IsTestProject>true</IsTestProject>
+	  <Platforms>AnyCPU;ARM64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,127 @@
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
+using Moq;
+using NGA.UnitTest.PrivateObject;
+using NUnit.Framework;
+using System.Windows.Controls;
+
+namespace DDPM.UI.Module.ButtonSettings.Tests
+{
+    [TestFixture, Apartment(ApartmentState.STA)]
+    public class ButtonSettingsModuleTests
+    {
+        private ButtonSettingsModule? buttonSettingsModule;
+        private Mock<IConsole>? consoleMock;
+        private Mock<ILog>? logMock;
+        private Mock<IDeviceManagerSA>? deviceManagerMock;
+        private MouseViewModel? mouseViewModel;
+        private PrivateObject? privateObject;
+        [SetUp]
+        public void SetUp()
+        {
+            consoleMock = new Mock<IConsole>();
+            logMock = new Mock<ILog>();
+            deviceManagerMock = new Mock<IDeviceManagerSA>();
+
+            mouseViewModel = new MouseViewModel(consoleMock.Object, logMock.Object, deviceManagerMock.Object);
+            buttonSettingsModule = new ButtonSettingsModule(mouseViewModel);
+            privateObject=new PrivateObject(buttonSettingsModule);
+        }
+
+        [Test]
+        public void TestModuleName()
+        {
+            // Act
+            var result = buttonSettingsModule!.ModuleName;
+
+            // Assert
+            Assert.That(result, Is.EqualTo("ButtonSettingsModule"));
+        }
+
+        [Test]
+        public void TestGetLeftView()
+        {
+            // Act
+            var result = buttonSettingsModule!.GetLeftView();
+
+            // Assert
+            Assert.That(result, Is.Null);
+        }
+
+        [Test]
+        public void TestGetRightView()
+        {
+            // Act
+            var result = buttonSettingsModule!.GetRightView();
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.InstanceOf<UserControl>());
+        }
+
+        [Test]
+        public void TestSelectedHomeDevice()
+        {
+            // Arrange
+            var homeDevice = new HomeDevice();
+
+            // Act
+            buttonSettingsModule!.SelectedHomeDevice = homeDevice;
+            var result = buttonSettingsModule.SelectedHomeDevice;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(homeDevice));
+        }
+
+        [Test]
+        public void TestModuleOwner()
+        {
+            // Arrange
+            var moduleOwnerMock = new Mock<IModuleOwner>();
+
+            // Act
+            buttonSettingsModule!.ModuleOwner = moduleOwnerMock.Object;
+            var result = buttonSettingsModule.ModuleOwner;
+
+            // Assert
+            Assert.That(result, Is.EqualTo(moduleOwnerMock.Object));
+        }
+
+
+        [Test]
+        public void TestViewModelInitialization()
+        {
+            // Act
+            var viewModel = privateObject!.GetFieldOrProperty("_vm");
+
+            // Assert
+            Assert.That(viewModel, Is.Not.Null);
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChanged()
+        {
+            buttonSettingsModule.OnSelectedHomeDeviceChanged();
+            Assert.Pass();
+        }
+
+        [Test]
+        public void TestOnActivated()
+        {
+             buttonSettingsModule.OnActivated();
+             Assert.Pass();
+        }
+
+        [Test]
+        public void TestOnDeactivated()
+        {
+            buttonSettingsModule.OnDeactivated();
+            Assert.Pass();
+
+        }
+    }
+}

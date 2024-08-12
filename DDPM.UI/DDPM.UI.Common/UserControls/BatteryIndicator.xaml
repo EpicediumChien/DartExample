@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="DDPM.UI.Common.BatteryIndicator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:local="clr-namespace:DDPM.UI.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="200">
+    <!-- Robert_Lin: 2024-5-24, if the height of BatteryIndicator is changed, please help update to 
+         DdpmHomePage.xaml.cs, #region RWD HomeDevices
+    Robert_Lin, 2024-6-23, the fix width of outer Border(=111) need to remove (this is, should be auto),
+    When a monitor connected with Thunderbolt, the right margin will be too small. The requirements are
+    margin=12 at right and left side. So change horiz.align to center
+    Original:
+    
+  <Border Background="#99193457" CornerRadius="2" Width="111" Height="40">
+    -->
+  <Border Background="#99193457" CornerRadius="2" Height="40" HorizontalAlignment="Center">
+      <!-- Robert_Lin, 2024-6-23 to meet reqtirements of Dell UI team, both left and right side margin should be 12. -->
+    <Grid Margin="12,0">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <!--<Image x:Name="ConnectionType" Margin="0" Source="{Binding ImageSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
+             VerticalAlignment="Center" Stretch="UniformToFill" Width="16" Height="16"/>-->
+        <Image x:Name="ConnectionTypeImage" Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Port.png"
+             VerticalAlignment="Center" Stretch="UniformToFill" Width="16" Height="16"/>
+
+        <StackPanel Orientation="Horizontal" Name="stackPanel">
+          <!-- 
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NoBattery}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    -->
+
+          <Image x:Name="BatteryImage" Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Battery12.png"
+             VerticalAlignment="Center" Stretch="UniformToFill" Height="20"/>
+          <UXControls:UXTextBlock x:Name="BatteryLevelText" Text="100%" Margin="7,2.5,0,0" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" FontSize="14" />
+        </StackPanel>
+        <UXControls:UXTextBlock x:Name="txt1" Text="" Margin="8,0,2,0" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" FontSize="14" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</UserControl>

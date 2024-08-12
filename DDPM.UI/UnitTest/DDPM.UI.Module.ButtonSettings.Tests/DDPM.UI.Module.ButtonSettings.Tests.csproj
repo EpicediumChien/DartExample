@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <OutputPath>$(UnitTestsOutputPath)</OutputPath>
+	<IsPackable>false</IsPackable>
+
+	<SonarQubeExclude>true</SonarQubeExclude>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<IsTestProject>true</IsTestProject>
+	<SignAssembly>True</SignAssembly>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="Moq" Version="4.18.2" />
+    <PackageReference Include="coverlet.collector" Version="3.2.0" />
+    <PackageReference Include="NUnit" Version="4.1.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DDPM.UI.Module.ButtonSettings\DDPM.UI.Module.ButtonSettings.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
+    <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DDPM.SA.Common">
+      <HintPath>..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

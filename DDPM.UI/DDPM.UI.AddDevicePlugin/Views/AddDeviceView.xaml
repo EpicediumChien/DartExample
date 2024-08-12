@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="DDPM.UI.Plugin.AddDevicePlugin.AddDeviceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.UI.Plugin.AddDevicePlugin"
+             xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
+             xmlns:viewmodels="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common" 
+             d:DataContext="{d:DesignInstance Type=viewmodels:AddDeviceViewModel}"
+             mc:Ignorable="d" 
+             Loaded="UserControl_Loaded"
+             d:DesignHeight="671" d:DesignWidth="1374">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="312"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <!-- Right side: Header + RightView -->
+      <Border CornerRadius="13" Background="#99132F54" Grid.Column="1" Margin="8,80,0,0" Width="958" Height="527" 
+              HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Grid Grid.Column="1" Name="RightFrame">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+          <StackPanel>
+            <!--<Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="16,23,16,-5" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding AlertVisibility}">
+              <StackPanel Orientation="Horizontal">
+                <Grid VerticalAlignment="top">
+                  <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"  
+                       VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
+                  </Image>
+                  <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="870"
+                    VerticalAlignment="Center" HorizontalAlignment="Left" Margin="36,16,0,13" LineHeight="19.5" Padding="0,2,40,2" >
+                    <Run Text="{Binding AlertText}" 
+                       FontFamily="Roboto" FontWeight="Normal"/>
+                    <Run Text="Learn more" FontFamily="Roboto" Foreground="#31A2E3" FontWeight="Bold" Cursor="Hand" TextDecorations="Underline"/>
+                  </UXControls:UXTextBlock>
+                </Grid>
+              </StackPanel>
+            </Border>-->
+            <!-- RightViewHeader -->
+            <common:AddDeviceHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl" Margin="17,17,17,0"
+                                      SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
+                                      ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
+                                      SelectionChanged="RightViewHeaderCtrl_SelectionChanged"/>
+          <ContentControl Grid.Row="1" Name="RightFrame2" Content="{Binding RightView, Mode=TwoWay}"/>
+
+          </StackPanel>
+        </Grid>
+      </Border>
+      <Grid Grid.Column="0">
+        <!-- DeviceBar -->
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+          <ItemsControl Name="vbarList" Margin="0,80,0,0"
+                                  HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  ItemsSource="{Binding DeviceBarItems}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid>
+                  <ContentPresenter/>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </Grid>
+      </Grid>
+
+    </Grid>
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+      <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+          <Image Margin="64,19,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
+                   VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="GoBackHomepage">
+          </Image>
+          <UXControls:UXTextBlock Name="txtCaption" Margin="12,16,0,0" HorizontalAlignment="Left" Style="{StaticResource ProductNameTextStyle}" VerticalAlignment="Top" />
+        </StackPanel>
+        <UXControls:UXTextBox Name="txtPairingStatus" Text="{Binding PairingStatus}" TextChanged="PairingStatusChanged" Visibility="Hidden"/>
+      </StackPanel>
+    </Grid>
+  </Grid>
+</UserControl>

@@ -1,0 +1,672 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutView_Gear_Text" xml:space="preserve">
+    <value>关于 {0}</value>
+  </data>
+  <data name="AboutView_Main_Text" xml:space="preserve">
+    <value>关于 {0}</value>
+  </data>
+  <data name="CopyRight_Text" xml:space="preserve">
+    <value>© Dell Inc. 或其子公司。保留所有权利。</value>
+  </data>
+  <data name="DELL_MYDELL" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="EXIT" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="MyDell" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="MyDellConsoleHelpFileName" xml:space="preserve">
+    <value>MyDellConsoleHelpFileName</value>
+  </data>
+  <data name="MYDELL_APP_SYSTRAY_HEADER" xml:space="preserve">
+    <value>{0} SysTray 控制台</value>
+  </data>
+  <data name="MYDELL_APP_SYSTRAY_SPLASHSCREEN" xml:space="preserve">
+    <value>{0} SysTray 控制台</value>
+  </data>
+  <data name="MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT" xml:space="preserve">
+    <value>{0} 控制台</value>
+  </data>
+  <data name="MYDELL_APP_THICKCLIENT_HEADER" xml:space="preserve">
+    <value>{0} 控制台</value>
+  </data>
+  <data name="MYDELL_APP_THICKCLIENT_SPLASHSCREEN" xml:space="preserve">
+    <value>{0} 控制台</value>
+  </data>
+  <data name="MYDELL_APP_SYSTRAY_WINDOW" xml:space="preserve">
+    <value>{0} Systray</value>
+  </data>
+  <data name="OPEN_MYDELL_THICKCLIENT" xml:space="preserve">
+    <value>打开 {0}...</value>
+  </data>
+  <data name="OPEN_MYDELL_THICKCLIENT_ABOUT" xml:space="preserve">
+    <value>关于...</value>
+  </data>
+  <data name="WindowHandleError" xml:space="preserve">
+    <value>窗口句柄错误</value>
+  </data>
+  <data name="MYDELL_CONSOLE" xml:space="preserve">
+    <value>{0} 控制台</value>
+  </data>
+  <data name="Url_Dell" xml:space="preserve">
+    <value>https://dell.com/</value>
+  </data>
+  <data name="AboutView_Version_Text" xml:space="preserve">
+    <value>版本 3.2</value>
+  </data>
+  <data name="AboutView_Url_LicenseAgreement" xml:space="preserve">
+    <value>https://www.dell.com/learn/us/en/uscorp1/terms-conditions/art-software-license-agreements</value>
+  </data>
+  <data name="AboutView_Url_PrivacyNotice" xml:space="preserve">
+    <value>https://www.dell.com/learn/us/en/uscorp1/policies-privacy</value>
+  </data>
+  <data name="AboutView_Url_ThirdPartyLicense" xml:space="preserve">
+    <value>https://dell.com/</value>
+  </data>
+  <data name="Preferences_CriticalAlerts_Text" xml:space="preserve">
+    <value>接收有关可能会影响性能和工作效率的问题的关键系统警报。还原您之前可能已取消的关键系统通知的状态。</value>
+  </data>
+  <data name="Preferences_Notifications_Text" xml:space="preserve">
+    <value>我要从 {0} 接收通知</value>
+  </data>
+  <data name="Preferences_PrivacyNotice_Text" xml:space="preserve">
+    <value>此 PC 的所有用户均同意参与所有戴尔软件的戴尔客户体验改进计划</value>
+  </data>
+  <data name="Preferences_GearMenuItem" xml:space="preserve">
+    <value>首选项</value>
+  </data>
+  <data name="Preferences_Header_Text" xml:space="preserve">
+    <value>首选项</value>
+  </data>
+  <data name="AboutView_LicenseAgreement_Text" xml:space="preserve">
+    <value>Dell 许可协议</value>
+  </data>
+  <data name="AboutView_PrivacyNotice_Text" xml:space="preserve">
+    <value>{0} 隐私声明</value>
+  </data>
+  <data name="AboutView_ThirdPartyLicenses_Text" xml:space="preserve">
+    <value>第三方许可</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>最大化</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>最小化</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>还原</value>
+  </data>
+  <data name="AdditionalNotifications_Text" xml:space="preserve">
+    <value>其他通知</value>
+  </data>
+  <data name="CarrotMenuItem_Text" xml:space="preserve">
+    <value>选项菜单</value>
+  </data>
+  <data name="ReturnToHomePage_Text" xml:space="preserve">
+    <value>返回到主页</value>
+  </data>
+  <data name="CriticalAlertsText" xml:space="preserve">
+    <value>严重警报</value>
+  </data>
+  <data name="NotificationsText" xml:space="preserve">
+    <value>通知</value>
+  </data>
+  <data name="PrivacyNoticeText" xml:space="preserve">
+    <value>隐私声明</value>
+  </data>
+  <data name="Discovery_Notification_Button1" xml:space="preserve">
+    <value>了解更多信息</value>
+  </data>
+  <data name="Discovery_Notification_Button2" xml:space="preserve">
+    <value>稍后提醒</value>
+  </data>
+  <data name="Discovery_Notification_Heading" xml:space="preserve">
+    <value>欢迎使用新 {0}</value>
+  </data>
+  <data name="Discovery_Notification_SubHeading" xml:space="preserve">
+    <value>我们的工具、提示和资源可帮助您充分利用 PC</value>
+  </data>
+  <data name="Inspiron" xml:space="preserve">
+    <value>Inspiron 灵越</value>
+  </data>
+  <data name="Latitude" xml:space="preserve">
+    <value>Latitude</value>
+  </data>
+  <data name="Vostro" xml:space="preserve">
+    <value>Vostro 成就</value>
+  </data>
+  <data name="XPS" xml:space="preserve">
+    <value>XPS</value>
+  </data>
+  <data name="ProductRegistration_GearMenuItem" xml:space="preserve">
+    <value>注册产品</value>
+  </data>
+  <data name="Url_DellProductRegistration" xml:space="preserve">
+    <value>https://www.dell.com/support/retail-registration/</value>
+  </data>
+  <data name="Shutdown_MessageBoxText" xml:space="preserve">
+    <value>目前，{0} 中没有可用的功能。{0} 将立即关闭。</value>
+  </data>
+  <data name="UserGuide_GearMenuItem" xml:space="preserve">
+    <value>用户指南</value>
+  </data>
+  <data name="UserGuideUrl" xml:space="preserve">
+    <value>https://www.dell.com/support/home/en-in/product-support/product/mydell/docs</value>
+  </data>
+  <data name="Welcome_DetailText" xml:space="preserve">
+    <value>开始使用</value>
+  </data>
+  <data name="Welcome_SubDetailText" xml:space="preserve">
+    <value>自定义设置、设置软件等。</value>
+  </data>
+  <data name="Welcome_TitleText" xml:space="preserve">
+    <value>欢迎，{0}</value>
+  </data>
+  <data name="WelcomeBack_DetailText" xml:space="preserve">
+    <value>开始使用</value>
+  </data>
+  <data name="WelcomeBack_SubDetailText" xml:space="preserve">
+    <value>自定义设置、设置软件等。</value>
+  </data>
+  <data name="WelcomeBack_TitleText" xml:space="preserve">
+    <value>欢迎回来，{0}</value>
+  </data>
+  <data name="PrivacyHTML" xml:space="preserve">
+    <value>&lt;html lang="zh-CN"&gt;
+
+&lt;head&gt;
+&lt;meta http-equiv=Content-Type content="text/html; charset=utf-8"&gt;
+&lt;meta name=Generator content="Microsoft Word 15 (filtered)"&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=Roboto&amp;display=swap" rel="stylesheet"&gt;
+&lt;style&gt;
+&lt;!--
+ /* Font Definitions */
+ @font-face
+	{
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+@font-face
+	{
+	panose-1:2 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+h1
+	{mso-style-link:"Heading 1 Char";
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	line-height:normal;
+	page-break-after:avoid;
+	font-size:16.0pt;
+	color:#2E74B5;
+	font-weight:normal;}
+h2
+	{mso-style-link:"Heading 2 Char";
+	margin-top:2.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	line-height:normal;
+	page-break-after:avoid;
+	font-size:13.0pt;	
+	color:#2E74B5;
+	font-weight:normal;}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{mso-style-link:"Comment Text Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	font-size:10.0pt;
+	}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-link:"Header Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-link:"Footer Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	}
+a:link, span.MsoHyperlink
+	{color:#0563C1;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#954F72;
+	text-decoration:underline;}
+p.MsoCommentSubject, li.MsoCommentSubject, div.MsoCommentSubject
+	{mso-style-link:"Comment Subject Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	font-size:10.0pt;
+	
+	font-weight:bold;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-link:"Balloon Text Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:9.0pt;
+	}
+p.MsoRMPane, li.MsoRMPane, div.MsoRMPane
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{mso-style-link:"List Paragraph Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:.5in;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{mso-style-link:"List Paragraph Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{mso-style-link:"List Paragraph Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{mso-style-link:"List Paragraph Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:.5in;
+	line-height:normal;
+	font-size:11.0pt;
+	}
+span.HeaderChar
+	{mso-style-name:"Header Char";
+	mso-style-link:Header;}
+span.FooterChar
+	{mso-style-name:"Footer Char";
+	mso-style-link:Footer;}
+span.ListParagraphChar
+	{mso-style-name:"List Paragraph Char";
+	mso-style-link:"List Paragraph";}
+span.CommentTextChar
+	{mso-style-name:"Comment Text Char";
+	mso-style-link:"Comment Text";}
+span.CommentSubjectChar
+	{mso-style-name:"Comment Subject Char";
+	mso-style-link:"Comment Subject";
+	font-weight:bold;}
+span.BalloonTextChar
+	{mso-style-name:"Balloon Text Char";
+	mso-style-link:"Balloon Text";
+	}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-link:"Heading 1";
+	
+	color:#2E74B5;}
+span.Heading2Char
+	{mso-style-name:"Heading 2 Char";
+	mso-style-link:"Heading 2";
+	
+	color:#2E74B5;}
+.MsoChpDefault
+	{}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:normal;}
+ /* Page Definitions */
+ @page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+--&gt;
+&lt;/style&gt;
+
+&lt;script type="text/javascript"&gt;
+ // Change color and opacity
+ function updateForeground(color) { 
+   document.body.style.color = color;
+   document.body.style.opacity = 1;
+   console.log("updateForeground function has been called, body foreground color set to " + color);
+ } 
+&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;title&gt;Privacy Page&lt;/title&gt;
+&lt;body lang=zh-CN style="opacity:0"&gt;
+
+&lt;div  class=WordSection1 style="font-family:'Roboto', arial"&gt;
+    &lt;p class="MsoNormal" align="center" style="text-align:center"&gt;
+        &lt;b&gt; &lt;u&gt; &lt;span lang="EN-GB" style="font-size:10.0pt;"&gt;
+                    数据收集和使用通知
+                &lt;/span&gt; &lt;/u&gt; &lt;/b&gt;
+    &lt;/p&gt;
+
+    &lt;p style="margin: 0;font-size: 10pt;"&gt;本通知（下称“&lt;b&gt;通知&lt;/b&gt;”）说明在使用戴尔软件时，&lt;a href="https://i.dell.com/sites/csdocuments/Learn_Docs/en/List-of-Dell-Technologies-Entities-for-Privacy-Statement-13May-2019-FINAL.pdf"&gt;Dell Technologies 及其集团公司&lt;/a&gt;如何代表其自身或者第三方或其直接和间接子公司（“&lt;b&gt;戴尔&lt;/b&gt;”）收集、使用和共享您的数据。我们收集并使用如下所述的某些类型的数据，以便个性化您使用戴尔产品的体验，从而增强我们对您的支持并改进我们的产品、解决方案和服务（下称“&lt;b&gt;戴尔解决方案&lt;/b&gt;”）。&lt;/p&gt;
+
+&lt;p style="margin:0in;margin-bottom:.0001pt;text-align:justify;"&gt;&lt;span style="font-size:10.0pt;font-family:&amp;quot;Arial&amp;quot;,sans-serif;mso-bidi-font-family:
+Calibri;mso-bidi-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fareast-language:
+EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:baseline;margin-bottom: 0;"&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;我们自动收集的信息&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;我们可能会自动收集有关您如何使用、访问戴尔解决方案或与戴尔解决方案进行交互的行为和使用情况信息。这些信息可能不会直接揭示您的身份，但可能包括唯一的标识符和有关您正在使用的特定设备的其他信息，例如服务编号、硬件型号、操作系统版本、硬件设置和系统崩溃信息、已安装的应用程序及其设置与使用情况和/或 (MAC) 地址，以及可唯一标识您的设备或系统的其他数据。&lt;/p&gt;
+
+&lt;p style="margin:0in;margin-bottom:.0001pt;text-align:justify;"&gt;&lt;span style="font-size:10.0pt;font-family:&amp;quot;Arial&amp;quot;,sans-serif;mso-bidi-font-family:
+Calibri;mso-bidi-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fareast-language:
+EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;我们还可能会收集有关您的系统或设备如何与戴尔解决方案交互的信息，例如统计信息、网络连接指示灯和路由信息。在某些情况下，所收集的信息可能会直接或间接地标识终端用户身份，并在本通知中所述目的所需要的范围内，将个人联系到某些在线行为。&lt;/p&gt;
+
+&lt;p style="margin:0in;margin-bottom:.0001pt;text-align:justify;"&gt;&lt;span style="font-size:10.0pt;font-family:&amp;quot;Arial&amp;quot;,sans-serif;mso-bidi-font-family:
+Calibri;mso-bidi-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fareast-language:
+EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;
+&lt;i style="mso-bidi-font-style:normal"&gt;戴尔软件可能会将上述全部或部分信息整合到数据日志中，并在连接互联网时将信息传输给戴尔。&lt;/i&gt;
+随着技术的发展，戴尔所使用的技术类型可能会随着时间的推移而发生变化。有关我们使用 Cookie 和其他类似跟踪技术的详细信息，请参阅戴尔在线&lt;a href="https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy"&gt;隐私声明&lt;/a&gt;中的 Cookie 和类似技术。
+&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;数据传输&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;本通知中所述的数据可能会传输到您所在的国家/地区之外的其他位置，例如美国、欧盟、日本，包括传输到第三方托管站点。我们将采取一切适当的技术和组织措施来保护我们传输的数据。 &lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;a name="cuen"&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;
+mso-fareast-font-family:&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;
+mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;保留您的
+数据&lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/a&gt;&lt;span style="mso-bookmark:cuen"&gt;&lt;b&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:
+Calibri;mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/b&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;我们将遵循戴尔的保留政策和适用法律，根据本通知中所述的目的，在必要时保留您的个人数据。如本通知所述，戴尔收集的数据将根据戴尔的保留政策和适用法律予以保留。&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;mso-outline-level:3;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;mso-fareast-font-family:
+&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;
+mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;br/&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p class="MsoNormal" style="text-align:justify;;vertical-align:
+baseline;margin-bottom: 0;"&gt;&lt;span style="mso-bookmark:cuen"&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="mso-color-alt:windowtext"&gt;个人信息和隐私 &lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/span&gt;&lt;span style="mso-bookmark:cuen"&gt;&lt;/span&gt;&lt;b&gt;&lt;u&gt;&lt;span lang="EN-GB" style="font-size:10.0pt;
+mso-fareast-font-family:&amp;quot;Times New Roman&amp;quot;;mso-bidi-font-family:Calibri;
+mso-bidi-theme-font:minor-latin;mso-fareast-language:EN-IE"&gt;&lt;o:p&gt;&lt;/o:p&gt;&lt;/span&gt;&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;p style="margin: 0;font-size: 10pt;"&gt;戴尔隐私声明中对您提供的个人信息的收集、使用和处理进行了说明。如果您出于任何原因希望就我们的隐私做法与我们联系，请发送电子邮件至 &lt;a href="mailto:privacy@dell.com"&gt;privacy@dell.com&lt;/a&gt; 或在线查看我们的完整&lt;a href="https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy"&gt;隐私声明&lt;/a&gt;。&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;</value>
+  </data>
+  <data name="Consent_Button" xml:space="preserve">
+    <value>是的，我同意</value>
+  </data>
+  <data name="DontConsent_Button" xml:space="preserve">
+    <value>不，我不同意</value>
+  </data>
+  <data name="ConnectionIssue" xml:space="preserve">
+    <value>抱歉，连接到主机时出现问题，请重试。</value>
+  </data>
+  <data name="Done_Button" xml:space="preserve">
+    <value>完成</value>
+  </data>
+  <data name="TelemetryConsent_Part1_Text" xml:space="preserve">
+    <value>一旦单击“是”，即表明您已阅读我们的</value>
+  </data>
+  <data name="TelemetryConsent_Part2_Text" xml:space="preserve">
+    <value>，并且了解您的权利以及戴尔如何使用和保护您的数据。</value>
+  </data>
+  <data name="TelemetryConsent_URL" xml:space="preserve">
+    <value>https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy</value>
+  </data>
+  <data name="TelemetryConsent_URL_Text" xml:space="preserve">
+    <value>隐私声明</value>
+  </data>
+  <data name="ViewPrivacyNotice_Text" xml:space="preserve">
+    <value>查看数据收集和使用通知</value>
+  </data>
+  <data name="Ok_Button" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="NarratePageBackButton" xml:space="preserve">
+    <value>上一页</value>
+  </data>
+  <data name="NarratePageForwardButton" xml:space="preserve">
+    <value>下一页</value>
+  </data>
+  <data name="Preferences_Title" xml:space="preserve">
+    <value>帮助我们改进</value>
+  </data>
+  <data name="UXLinkType" xml:space="preserve">
+    <value>链接</value>
+  </data>
+  <data name="UXTileType" xml:space="preserve">
+    <value>磁贴</value>
+  </data>
+  <data name="UXGrabItemType" xml:space="preserve">
+    <value>抓取项</value>
+  </data>
+  <data name="UXIconComboBoxType" xml:space="preserve">
+    <value>组合框</value>
+  </data>
+  <data name="UXDraggableListBoxType" xml:space="preserve">
+    <value>可拖动列表框</value>
+  </data>
+  <data name="UXDraggableListBoxHelpText" xml:space="preserve">
+    <value>使用 CTRL + SHIFT 与向上和向下箭头组合移动项目</value>
+  </data>
+  <data name="UXInfoPresenterBackButtonText" xml:space="preserve">
+    <value>后退</value>
+  </data>
+  <data name="UXInfoPresenterDoneButtonText" xml:space="preserve">
+    <value>知道了!</value>
+  </data>
+  <data name="UXInfoPresenterNextButtonText" xml:space="preserve">
+    <value>下一步</value>
+  </data>
+  <data name="RestoreAlerts" xml:space="preserve">
+    <value>还原警报</value>
+  </data>
+  <data name="Explore" xml:space="preserve">
+    <value>探索</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>MyDell</value>
+  </data>
+  <data name="UXAlertCloseButtonAutomationText" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="SystrayIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\SystrayIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>

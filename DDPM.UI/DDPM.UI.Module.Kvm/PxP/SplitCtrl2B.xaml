@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="DDPM.UI.Module.Kvm.PBPSplitCtrl2B"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
+             mc:Ignorable="d" 
+             d:Background="Black"
+             d:DesignHeight="306" d:DesignWidth="544">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="SplitStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource SplitCtrl_OutterBorder}">
+
+        <Grid Name="g0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0"  Background="#00000000" MouseLeftButtonDown="PBP_MouseLeftDown1">
+                <Border Name="cell_2b1" BorderBrush="{StaticResource BorderColor_SplitNormal}" BorderThickness="0,0,0,0"/>
+                <Border Name="pbp2_1"
+        BorderBrush="#E6AC28" BorderThickness="3"
+        CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border1Visibility}"/>
+                <Path Fill="#E6AC28" Data="M270 131.8801 L278 124.12012 L262 124.12012 L270 131.8801Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick"/>
+                <Grid Margin="240,50">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="#A4B8CD">
+                        <TextBlock Text="{Binding PC1_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock Grid.Row="1" Text="PC1" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="2" Background="#00000000" MouseLeftButtonDown="PBP_MouseLeftDown2">
+                <Border Name="cell_2b2" BorderBrush="{StaticResource BorderColor_SplitNormal}" BorderThickness="0,0,0,0"/>
+                <Border Name="pbp2_2"
+BorderBrush="#E6AC28" BorderThickness="3"
+CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border2Visibility}"/>
+                <Path Fill="#E6AC28" Data="M8 11.8801 L16 4.12012 L0 4.12012 L8 11.8801Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick"/>
+                <Grid Margin="240,50">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="#A4B8CD">
+                        <TextBlock Text="{Binding PC2_Input}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBlock Grid.Row="1" Text="PC2" Foreground="White" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Grid>
+
+            <Rectangle Name="h1" Grid.Row="1" 
+                   Height="{StaticResource ThickSplitter}"
+                   Style="{StaticResource RectangleStyle_Splitter}"/>
+
+        </Grid>
+    </Border>
+</UserControl>

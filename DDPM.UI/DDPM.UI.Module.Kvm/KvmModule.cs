@@ -1,0 +1,72 @@
+
+using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
+using DDPM.UI.Interfaces;
+using System.Windows.Controls;
+
+namespace DDPM.UI.Module.Kvm
+{
+    public class KvmModule : IDdpmModule
+    {
+        private UserControl? _leftView; // = new KvmLeftView();
+        private UserControl _rightView;
+        private KvmViewModel vm = new KvmViewModel();
+
+        public bool isUSBKVM { get; set; } = false;
+
+        public KvmModule(IModuleOwner? moduleOwner)
+        {
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            vm.KvmModule = this;
+            _rightView = new KvmRightView(vm);
+            _rightView.DataContext = vm;
+            isUSBKVM = DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+            if (isUSBKVM)
+            {
+                _leftView = new KvmLeftView(vm);
+                _leftView.DataContext = vm;
+            }
+            else
+            {
+                _leftView = null;
+            }
+            vm.Invoke_RefreshData();
+        }
+        public string ModuleName { get => "KvmModule"; }
+
+        public UserControl? GetLeftView()
+        {
+            return (UserControl?)_leftView;
+        }
+
+        public UserControl GetRightView()
+        {
+            return _rightView;
+        }
+        public HomeDevice? SelectedHomeDevice { get; set; }
+        #region ModuleOwner
+        public IModuleOwner? ModuleOwner
+        {
+            get => vm.ModuleOwner;
+            set => vm.ModuleOwner = value;
+        }
+        #endregion
+
+        #region Event Handlers
+        public void OnSelectedHomeDeviceChanged()
+        {
+
+        }
+        public void OnActivated()
+        {
+
+        }
+        public void OnDeactivated()
+        {
+
+        }
+        #endregion
+    }
+
+}

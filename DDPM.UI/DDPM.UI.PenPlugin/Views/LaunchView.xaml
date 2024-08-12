@@ -1,0 +1,207 @@
+﻿<UserControl x:Class="DDPM.UI.Plugin.PenPlugin.LaunchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"            
+             xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
+             mc:Ignorable="d" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
+             d:DataContext="{d:DesignInstance Type=plugin:PenViewModel}"
+             d:DesignHeight="671" d:DesignWidth="1374"
+             >
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
+      <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
+      <Storyboard x:Key="StoryGotoTwoView">
+        <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
+                         Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd"/>
+      </Storyboard>
+      <Storyboard x:Key="StoryShrink">
+        <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" From="620" To="500" Duration="0:0:0.4" AutoReverse="False" />
+      </Storyboard>
+      <Storyboard x:Key="StoryEnlarge">
+        <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" Duration="0:0:0.4" From="500" To="620" />
+      </Storyboard>
+      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+        <Setter Property="Placement" Value="Top"/>
+        <Setter Property="VerticalOffset" Value="-5"/>
+        <Setter Property="HorizontalOffset">
+          <Setter.Value>
+            <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+              <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth"/>
+              <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth"/>
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </Style>
+      <Style x:Key="B1Style" TargetType="Image">
+        <Setter Property="Width" Value="45" />
+        <Setter Property="Height" Value="45" />
+      </Style>
+      <sys:Double x:Key="B2Width">43</sys:Double>
+      <sys:Double x:Key="B2Height">32</sys:Double>
+      <Style x:Key="B2Style" TargetType="Image">
+        <Setter Property="Width" Value="{DynamicResource B2Width}" />
+        <Setter Property="Height" Value="{DynamicResource B2Height}" />
+      </Style>
+      <Style x:Key="F3Style" TargetType="Image">
+        <Setter Property="Width" Value="45" />
+        <Setter Property="Height" Value="36" />
+      </Style>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <!-- Right side: Header + RightView -->
+      <Grid Grid.Column="1" Name="RightGrid" Width="0">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!-- RightViewHeader -->
+        <common:RightViewHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl" 
+                                            SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
+                                            ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
+                                            SelectionChanged="RightViewHeaderCtrl_SelectionChanged"/>
+        <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}"/>
+      </Grid>
+      <!--Layer 2 : Nav and Vbar-->
+      <Grid Grid.Column="0">
+        <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown"/>
+        <!--Image-->
+        <Grid>
+          <Viewbox Name="largeImage" Margin="30,60" MaxWidth="620">
+            <Grid>
+              <Grid>
+                <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="620"/>
+                <Image x:Name="imgTopButtonBackground" Source="{Binding TopButtonBackground}"  VerticalAlignment="Top" HorizontalAlignment="Right"
+                       Stretch="Uniform" Width="75" Height="75" Margin="0,130,-48,0" Visibility="Collapsed"/>
+              </Grid>
+              <Grid Name="SectionA" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,142,-35,0">
+                <StackPanel Orientation="Horizontal">
+                  <Image x:Name="TopButton" Source="{Binding TopButtonImageFile}" Style="{StaticResource B1Style}"
+                         MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsTopButtonVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                    <Image.ToolTip>
+                      <ToolTip Style="{StaticResource ButtonToolTipStyle}">
+                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding TopButtonTooltip}"/>
+                      </ToolTip>
+                    </Image.ToolTip>
+                  </Image>
+                </StackPanel>
+              </Grid>
+              <Grid Name="SectionB" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="210,272,0,0">
+                <StackPanel Orientation="Horizontal">
+                  <Image x:Name="TopBarrelButton" Source="{Binding TopBarrelButtonImageFile}" Style="{StaticResource B2Style}"
+                         MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsTopBarrelButtonVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                    <Image.ToolTip>
+                      <ToolTip Style="{StaticResource ButtonToolTipStyle}">
+                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding TopBarrelButtonTooltip}"/>
+                      </ToolTip>
+                    </Image.ToolTip>
+                  </Image>
+                </StackPanel>
+              </Grid>
+              <Grid Name="SectionC" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="159,301,0,0">
+                <StackPanel Orientation="Horizontal">
+                  <Image x:Name="BottomBarrelButton" Source="{Binding BottomBarrelButtonImageFile}" Style="{StaticResource B2Style}"
+                         MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsBottomBarrelButtonVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                    <Image.ToolTip>
+                      <ToolTip Style="{StaticResource ButtonToolTipStyle}">
+                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding BottomBarrelButtonTooltip}"/>
+                      </ToolTip>
+                    </Image.ToolTip>
+                  </Image>
+                </StackPanel>
+              </Grid>
+            </Grid>
+          </Viewbox>
+        </Grid>
+        <!--Vbar-->
+        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+          <ItemsControl Name="vbarList" Margin="0,10,0,0"
+                                  HorizontalAlignment="Right" VerticalAlignment="Top"
+                                  ItemsSource="{Binding VbarItems}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid>
+                  <ContentPresenter/>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </Grid>
+      </Grid>
+      <!--Name & Model-->    
+      <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+        <StackPanel Orientation="Vertical">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Fill"
+                   VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
+              <Image.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
+              </Image.InputBindings>
+            </Image>
+            <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
+                            Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <UXControls:UXTextBlock Text="{Binding Model2}" Margin="101,18,0,0" HorizontalAlignment="Left"
+                            Style="{StaticResource ModelNumberTextStyle}" />
+            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill" 
+                   VerticalAlignment="Top" Cursor="" Width="16" Height="16">
+              <Image.InputBindings>
+                <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
+              </Image.InputBindings>
+              <Image.ToolTip>
+                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                  <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                </ToolTip>
+              </Image.ToolTip>
+            </Image>
+            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/MultiDevice.png" Stretch="Fill" 
+                   VerticalAlignment="Top" Width="16" Height="16" Visibility="{Binding MultiDevicesInfoVisibility}">
+              <Image.ToolTip>
+                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                  <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding MultiDeviceTooltip}" TextWrapping="Wrap" Width="350" />
+                </ToolTip>
+              </Image.ToolTip>
+            </Image>
+          </StackPanel>
+        </StackPanel>
+      </Grid>
+      <!--Battery-->
+      <Grid VerticalAlignment="Bottom">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" 
+                BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom"/>
+            <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore">
+              <Grid>
+                <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center"
+                                      HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14"/>
+              </Grid>
+            </Border>
+            <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
+              <Grid>
+                <UXControls:UXTextBlock Name="txtUnpair" Foreground="#F5F6F7" VerticalAlignment="Center"
+                                      HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14"/>
+              </Grid>
+            </Border>
+          </StackPanel>
+        </StackPanel>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

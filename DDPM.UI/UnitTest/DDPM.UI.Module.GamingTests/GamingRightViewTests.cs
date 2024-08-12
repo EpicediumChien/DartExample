@@ -1,0 +1,26 @@
+﻿using DDPM.UI.Module.Gaming;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DDPM.UI.Module.Gaming.Tests
+{
+    [TestFixture, Apartment(ApartmentState.STA)]
+    public class GamingRightViewTests
+    {
+        [SetUp]
+        public void Setup()
+        {
+        }
+
+        [Test]
+        public void TestConstructor_InitializesComponent()
+        {
+            GamingRightView gamingRightView = new GamingRightView();
+            // Assert
+            Assert.That(gamingRightView, Is.Not.Null);
+        }
+    }
+}

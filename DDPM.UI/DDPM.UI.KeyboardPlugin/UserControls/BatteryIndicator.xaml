@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="DDPM.UI.Plugin.KeyboardPlugin.BatteryIndicator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="13" d:DesignWidth="20">
+  <Grid>
+    <StackPanel Orientation="Horizontal">
+      <Image Margin="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/BatteryOutline.png"
+             VerticalAlignment="Top" Stretch="UniformToFill" Width="20" Height="13"/>
+    </StackPanel>
+      <Rectangle x:Name="BatteryLevelIndicator" Height="7" Width="14" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                 Margin="2,3,0,0" Fill="Green"/>
+  </Grid>
+</UserControl>

@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="DDPM.Easy.Common.SplitCtrl2D"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DDPM.Easy.Common"
+             mc:Ignorable="d" 
+             d:Background="Black"
+             d:DesignHeight="60" d:DesignWidth="80"
+             d:DataContext="{DynamicResource vmDesign}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="EAStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:SplitCtrlVM x:Key="vmDesign" IsVertical="False" SplitMode="Work"
+                          IsEditable="True" HoveringCell="2a1"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!-- OuterBorder -->
+    <Border Style="{StaticResource OuterBorderStyle}">
+        <!-- BaseGrid -->
+        <Grid>
+
+            <!-- HorzBase -->
+            <Grid Name="g0" Style="{StaticResource SplitBaseStyle_Horz}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{Binding Settings[0], Mode=TwoWay}"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="{Binding Settings[1], Mode=TwoWay}"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Name="cell_2d1" Grid.Column="0">
+                    <Border.Style>
+                        <Style TargetType="Border" BasedOn="{StaticResource CellBorderStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HoveringCell}" Value="2d1">
+                                    <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+                <Border Name="cell_2d2" Grid.Column="2">
+                    <Border.Style>
+                        <Style TargetType="Border" BasedOn="{StaticResource CellBorderStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HoveringCell}" Value="2d2">
+                                    <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+
+                <GridSplitter Name="v1" Grid.Column="1" Style="{StaticResource SplitterStyle_Vert}"/>
+            </Grid>
+
+            <!-- VertBase -->
+            <Grid Name="G0" Style="{StaticResource SplitBaseStyle_Vert}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{Binding Settings[0], Mode=TwoWay}"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="{Binding Settings[1], Mode=TwoWay}"/>
+                </Grid.RowDefinitions>
+
+                <Border Name="cell_2D1" Grid.Row="0">
+                    <Border.Style>
+                        <Style TargetType="Border" BasedOn="{StaticResource CellBorderStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HoveringCell}" Value="2D1">
+                                    <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+                <Border Name="cell_2D2" Grid.Row="2">
+                    <Border.Style>
+                        <Style TargetType="Border" BasedOn="{StaticResource CellBorderStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HoveringCell}" Value="2D2">
+                                    <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+
+                <GridSplitter Name="H1" Grid.Row="1" Style="{StaticResource SplitterStyle_Horz}"/>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

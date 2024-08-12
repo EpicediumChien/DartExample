@@ -1,0 +1,795 @@
+﻿<UserControl
+    x:Class="DDPM.UI.Module.Brightness.BrightnessRightView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+    xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="950"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <UXControls:UXScrollViewer>
+            <Grid>
+                <StackPanel>
+                    <Grid>
+                        <Border Width="648" Height="53" CornerRadius="5" Margin="0,5,0,15" Background="#364861" Visibility="{Binding GreayoutAlart}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="38"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="7"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" CornerRadius="5,0,0,5" Background="#0E92F2" Width="7"/>
+                                    <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Path Data="M9 1.125C13.3313 1.125 16.875 4.66875 16.875 9C16.875 13.3312 13.3313 16.875 9 16.875C4.66875 16.875 1.125 13.3312 1.125 9C1.125 4.66875 4.66875 1.125 9 1.125ZM9 0C4.05 0 0 4.05 0 9C0 13.95 4.05 18 9 18C13.95 18 18 13.95 18 9C18 4.05 13.95 0 9 0Z" Fill="white"/>
+                                        <Path Data="M9.5625 7.3125L8.4375 7.3125L8.4375 14.2875L9.5625 14.2875L9.5625 7.3125Z" Fill="white"/>
+                                        <Path Data="M9 5.40039C9.46599 5.40039 9.84375 5.02263 9.84375 4.55664C9.84375 4.09065 9.46599 3.71289 9 3.71289C8.53401 3.71289 8.15625 4.09065 8.15625 4.55664C8.15625 5.02263 8.53401 5.40039 9 5.40039Z" Fill="white"/>
+                                    </Grid>
+                                </Grid>
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                    <TextBlock Foreground="White" FontSize="13" FontFamily="Roboto">
+                                        <Run Text="Brightness/Contrast is not available when "/>
+                                        <Hyperlink Click="Hyperlink_Click">
+                                            <Hyperlink.Style>
+                                            <Style TargetType="Hyperlink">
+                                                <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True"><Setter Property="Foreground" Value="#31A2E3"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Hyperlink.Style>
+                                            <Run Text="Smart HDR "/>
+                                        </Hyperlink>
+                                        <Run Text="is turned on" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <!--  RightGroupBorder.Manual  -->
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Visibility="{Binding isNormalBrightness}" IsEnabled="{Binding BrightnessEnable}" Opacity="{Binding BrightnessOpacity}">
+                        <Expander
+                            Name="Expander_Manual"
+                            Expanded="Expander_Manual_Expanded"
+                            Style="{StaticResource RightExpanderStyle}">
+                            <!--  IsExpanded="{Binding ExpanderGroup, Mode=TwoWay, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=0}">  -->
+                            <Expander.Header>
+                                <!--  Group Header: Manual  -->
+                                <Grid Height="60">
+                                    <UXControls:UXTextBlock
+                                        Margin="30,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="20"
+                                        Foreground="White"
+                                        Text="Manual"
+                                        TextBlockSemanticColorType="Light"
+                                        TextBlockType="Caption" />
+                                </Grid>
+                            </Expander.Header>
+
+                            <StackPanel>
+                                <!--  RightPartBorder  -->
+                                <Border Style="{StaticResource RightPartBorderStyle}">
+                                    <StackPanel>
+                                        <!--  Row: "Brightness"  -->
+                                        <Grid Height="40">
+                                            <UXControls:UXTextBlock
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                Foreground="White"
+                                                Text="Brightness"
+                                                TextBlockSemanticColorType="Light"
+                                                TextBlockType="Display1" />
+                                        </Grid>
+                                        <!--  Row: Brightness Slider  -->
+                                        <Grid Height="60">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Image
+                                                Grid.Column="0"
+                                                Width="20"
+                                                Height="20"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="{Binding BrightnessImage}" />
+
+                                            <UXControls:UXSlider
+                                                Name="B_slider"
+                                                Grid.Column="1"
+                                                Margin="8,0"
+                                                HorizontalContentAlignment="Stretch"
+                                                AutoToolTipPlacement="None"
+                                                AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
+                                                AutomationProperties.Name="SliderToolTipNone"
+                                                IsMoveToPointEnabled="True"
+                                                IsSnapToTickEnabled="True"
+                                                LargeChange="1"
+                                                Maximum="100"
+                                                Minimum="0"
+                                                SmallChange="1"
+                                                Value="{Binding Path=BrightnessValue, Mode=TwoWay}" />
+
+                                            <UXControls:UXTextBlock
+                                                Name="BrightnessTextBlock"
+                                                Grid.Column="2"
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource PercentageTextColor}"
+                                                Text="{Binding Path=BrightnessValue, StringFormat={}{0}%}"
+                                                TextBlockSemanticColorType="Light"
+                                                TextBlockType="Body2" />
+
+                                        </Grid>
+                                        <!--  Row: "Contrast"  -->
+                                        <Grid Height="40">
+                                            <UXControls:UXTextBlock
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                FontSize="16"
+                                                Foreground="White"
+                                                Text="Contrast"
+                                                TextBlockSemanticColorType="Light"
+                                                TextBlockType="Display1" />
+                                        </Grid>
+                                        <!--  Row: Contrast Slider  -->
+                                        <Grid Height="60">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Image
+                                                Grid.Column="0"
+                                                Width="20"
+                                                Height="20"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Source="{Binding ContrastImage}" />
+
+                                            <UXControls:UXSlider
+                                                Name="C_slider"
+                                                Grid.Column="1"
+                                                Margin="8,0"
+                                                HorizontalContentAlignment="Stretch"
+                                                AutoToolTipPlacement="None"
+                                                AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
+                                                AutomationProperties.Name="SliderToolTipNone"
+                                                IsMoveToPointEnabled="True"
+                                                IsSnapToTickEnabled="True"
+                                                LargeChange="1"
+                                                Maximum="100"
+                                                Minimum="0"
+                                                SmallChange="1"
+                                                Value="{Binding Path=ContrastValue, Mode=TwoWay}" />
+
+                                            <UXControls:UXTextBlock
+                                                Name="ContrastTextBlock"
+                                                Grid.Column="2"
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource PercentageTextColor}"
+                                                Text="{Binding Path=ContrastValue, StringFormat={}{0}%}"
+                                                TextBlockSemanticColorType="Light"
+                                                TextBlockType="Body2" />
+
+                                        </Grid>
+                                        <!--  Row: Buttons  -->
+                                        <Grid>
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <UXControls:UXButton
+                                                    Padding="24,8"
+                                                    ButtonSemanticColorType="Neutral"
+                                                    ButtonType="Secondary"
+                                                    Content="Hotkeys"
+                                                    Name="btnManualBrightnessContrast"
+                                                    Click="Hotkey_Click"
+                                                    CornerRadius="2"
+                                                    Foreground="White" />
+                                                <UXControls:UXButton
+                                                    Margin="8,0,0,0"
+                                                    Padding="24,8"
+                                                    ButtonSemanticColorType="Destructive"
+                                                    ButtonType="Primary"
+                                                    Click="Reset_Click"
+                                                    Content="Reset"
+                                                    CornerRadius="2"
+                                                    Foreground="White" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RightPartBorderStyle}" Visibility="{Binding isShowSynchronize}">
+                                    <!--  synchronize  -->
+                                    <Grid Height="60" IsEnabled="{Binding BrightnessEnable}" Opacity="{Binding BrightnessOpacity}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <UXControls:UXTextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            Foreground="White"
+                                            Text="Synchronize between monitors"
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Display1" />
+
+                                        <Image
+                                            Grid.Column="1"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="4,0"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                            Stretch="Uniform">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Apply the above brightness/luminance, contrast, and color&#x000A;preset controls to your connected monitors." />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+
+                                        <UXControls:UXToggleSwitch
+                                            Name="SynchronizeSwitch"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            AutomationProperties.Name="ToggleSwitchLeft"
+                                            Click="SynchronizeSwitch_Click"
+                                            Content="{Binding Path=IsSynchronize_String}"
+                                            ContentPlacement="Left"
+                                            ContentTextVisibility="True"
+                                            Foreground="White"
+                                            IsChecked="{Binding Path=IsSynchronize}" />
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Expander>
+                    </Border>
+
+                    <!--  RightGroupBorder.Manual.Luminance  -->
+                    <Border
+                        Name="LuminanceRightGroupBorder"
+                        Margin="0,16,0,0"
+                        Style="{StaticResource RightGroupBorderStyle}"
+                        Visibility="{Binding isLuminanceSupport}" IsEnabled="{Binding BrightnessEnable}" Opacity="{Binding BrightnessOpacity}">
+
+                        <Expander
+                            Name="Expander_Manual_Luminance"
+                            Expanded="Expander_Manual_Expanded_Luminance"
+                            Style="{StaticResource RightExpanderStyle}">
+                            <Expander.Header>
+                                <!--  Group Header: Manual.Luminance  -->
+                                <Grid Height="60">
+                                    <UXControls:UXTextBlock
+                                        Margin="30,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="20"
+                                        Foreground="White"
+                                        Text="Manual"
+                                        TextBlockSemanticColorType="Light"
+                                        TextBlockType="Caption" />
+                                </Grid>
+                            </Expander.Header>
+                            <Expander.Content>
+                                <StackPanel>
+                                    <!--  Row: Horz Line  -->
+                                    <Grid
+                                        Height="1"
+                                        Background="#FF263F6E"
+                                        Visibility="Collapsed" />
+                                    <!--  Row: "Luminance"  -->
+                                    <Grid Height="40">
+                                        <UXControls:UXTextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            Foreground="White"
+                                            Text="Luminance"
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Display1" />
+                                    </Grid>
+                                    <!--  Row: Luminance Slider  -->
+                                    <Grid Height="60">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Image
+                                            Grid.Column="0"
+                                            Width="20"
+                                            Height="20"
+                                            Margin="16,0,7,24"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Source="{Binding LuminanceImage}" />
+
+                                        <UXControls:UXSlider
+                                            Name="LuminanceSlider"
+                                            Grid.Column="1"
+                                            Margin="0,0,0,24"
+                                            HorizontalContentAlignment="Stretch"
+                                            AutoToolTipPlacement="None"
+                                            AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
+                                            AutomationProperties.Name="SliderToolTipNone"
+                                            IsMoveToPointEnabled="True"
+                                            IsSnapToTickEnabled="True"
+                                            LargeChange="1"
+                                            Maximum="{Binding Path=LuminanceMaxValue}"
+                                            Minimum="45"
+                                            SmallChange="1"
+                                            Value="{Binding Path=LuminanceValue, Mode=TwoWay}" />
+
+                                        <UXControls:UXTextBlock
+                                            Name="LuminanceTextBlock"
+                                            Grid.Column="2"
+                                            Margin="7,0,0,24"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Path=LuminanceValue, StringFormat={}{0} cd/m2}"
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Body2" />
+                                    </Grid>
+                                    <!--  Row: Buttons  -->
+                                    <Grid>
+                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                            <UXControls:UXButton
+                                                Margin="8,0,0,16"
+                                                Padding="24,8"
+                                                ButtonSemanticColorType="Neutral"
+                                                ButtonType="Secondary"
+                                                Content="Hotkeys"
+                                                Click="Hotkey_Click"
+                                                CornerRadius="2"
+                                                Foreground="White" />
+                                            <UXControls:UXButton
+                                                Margin="5,0,0,16"
+                                                Padding="24,8"
+                                                ButtonSemanticColorType="Destructive"
+                                                ButtonType="Primary"
+                                                Click="Reset_Click"
+                                                Content="Reset"
+                                                CornerRadius="2"
+                                                Foreground="White" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Expander.Content>
+                        </Expander>
+                    </Border>
+
+                    <!--  RightGroupBorder.Auto  -->
+                    <Border
+                        Margin="0,16,0,0"
+                        Style="{StaticResource RightGroupBorderStyle}"
+                        Visibility="{Binding isAlsSupported}" IsEnabled="{Binding BrightnessEnable}" Opacity="{Binding BrightnessOpacity}">
+                        <Expander
+                            Name="Expander_Auto"
+                            Expanded="Expander_Auto_Expanded"
+                            Style="{StaticResource RightExpanderStyle}">
+                            <!--  IsExpanded="{Binding ExpanderGroup, Mode=TwoWay, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=1}">  -->
+                            <Expander.Header>
+                                <!--  Group Header: Manual  -->
+                                <Grid Height="60">
+                                    <UXControls:UXTextBlock
+                                        Margin="30,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="20"
+                                        Foreground="White"
+                                        Text="Auto"
+                                        TextBlockSemanticColorType="Light"
+                                        TextBlockType="Caption" />
+                                </Grid>
+                            </Expander.Header>
+
+                            <StackPanel>
+
+                                <!--  synchronize  -->
+                                <Grid IsEnabled="{Binding BrightnessEnable}" Opacity="{Binding BrightnessOpacity}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0" Height="50">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <UXControls:UXTextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            Foreground="White"
+                                            Text="Auto Brightness  "
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Display1" />
+
+                                        <Image
+                                            Grid.Column="1"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="4,0"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                            Stretch="Uniform">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Adjusts the brightness of the display based on the lighting conditions in the surrounding space" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+                                        <UXControls:UXToggleSwitch
+                                            Name="AutoBrightnessSwitch"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            AutomationProperties.Name="ToggleSwitchLeft"
+                                            Content="{Binding Path=AutoBrightness_String}"
+                                            ContentPlacement="Left"
+                                            ContentTextVisibility="True"
+                                            Foreground="White"
+                                            IsChecked="{Binding Path=AutoBrightnessStatus}"
+                                            IsEnabled="{Binding Path=SupportedAutoBrightness}" />
+                                    </Grid>
+                                    <Grid Grid.Row="1" Height="50">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <UXControls:UXTextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            Foreground="White"
+                                            Text="Auto Brightness Range Level  "
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Display1"
+                                            Visibility="{Binding AutoBrightnessRangeLevelVisible}" />
+
+                                        <UXControls:UXTextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            FontWeight="Light"
+                                            Foreground="Gray"
+                                            Text="Auto Brightness Range Level  "
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Display1"
+                                            Visibility="{Binding AutoBrightnessRangeLevelVisible_invert}" />
+
+                                        <Image
+                                            Grid.Column="1"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="4,0"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                            Stretch="Uniform">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/ Mid/ Low)" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+                                        <ComboBox
+                                            x:Name="cbAutoBrightness"
+                                            Grid.Column="2"
+                                            Width="184"
+                                            Margin="0,0,10,0"
+                                            Padding="10,0,0,0"
+                                            HorizontalAlignment="Right"
+                                            IsEnabled="{Binding AutoBrightnessStatus}"
+                                            ItemsSource="{Binding AutoBrightnessRangeLevel}"
+                                            SelectedIndex="{Binding AutoBrightnessRangeLevel_SelectedIndex}"
+                                            Style="{StaticResource DdpmComboBoxStyle}" />
+                                    </Grid>
+                                    <Grid Grid.Row="2" Height="50">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <UXControls:UXTextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            Foreground="White"
+                                            Text="Auto Color Temperature  "
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Display1" />
+
+                                        <Image
+                                            Grid.Column="1"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="4,0"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                            Stretch="Uniform">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Adjusts the color temperature of the display automatically to match the light in the surrounding space." />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+                                        <UXControls:UXToggleSwitch
+                                            Name="AutoColorTempSwitch"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            AutomationProperties.Name="ToggleSwitchLeft"
+                                            Content="{Binding Path=AutoColorTemp_String}"
+                                            ContentPlacement="Left"
+                                            ContentTextVisibility="True"
+                                            Foreground="White"
+                                            IsChecked="{Binding Path=AutoColorTempStatus}"
+                                             />
+                                        <!--IsEnabled="{Binding Path=SupportedColorTemp}"-->
+                                    </Grid>
+                                    <Grid Grid.Row="3" Height="50">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <UXControls:UXTextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            Foreground="White"
+                                            Text="Primary Monitor for Sync  "
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Display1"
+                                            Visibility="{Binding PrimaryMonitorForSyncVisible}" />
+
+                                        <UXControls:UXTextBlock
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            FontWeight="Light"
+                                            Foreground="Gray"
+                                            Text="Primary Monitor for Sync  "
+                                            TextBlockSemanticColorType="Light"
+                                            TextBlockType="Display1"
+                                            Visibility="{Binding PrimaryMonitorForSyncVisible_invert}" />
+
+                                        <Image
+                                            Grid.Column="1"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="4,0"
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                            Stretch="Uniform">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="Synchronize the brightness, contrast, color preset and color temperature based on the primary monitor to other ALS monitors" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+                                        <UXControls:UXToggleSwitch
+                                            Name="PrimaryMonitorSyncSwitch"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            AutomationProperties.Name="ToggleSwitchLeft"
+                                            Content="{Binding Path=PrimaryMonitorSync_String}"
+                                            ContentPlacement="Left"
+                                            ContentTextVisibility="True"
+                                            Foreground="White"
+                                            IsChecked="{Binding Path=PrimaryMonitorSyncStatus}"
+                                            IsEnabled="{Binding Path=SupportedPrimaryMonitorSync}" />
+                                    </Grid>
+                                    <Border
+                                        Grid.Row="4"
+                                        Height="60"
+                                        Margin="3,5,3,10"
+                                        Style="{StaticResource RightPartBorderStyle}"
+                                        Visibility="{Binding AutoBrightnessRangeLevelVisible}">
+                                        <UXControls:UXTextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="14"
+                                            Foreground="White"
+                                            Text="{Binding AutoBrightnessRangeLevel_String}" />
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+
+                        </Expander>
+                    </Border>
+
+                    <!--  RightGroupBorder.Scheduled : Disabled  -->
+                    <Border
+                        Margin="0,16,0,0"
+                        Style="{StaticResource RightGroupBorderStyle}"
+                        Visibility="{Binding isScheduleSupport}" IsEnabled="{Binding BrightnessEnable}" Opacity="{Binding BrightnessOpacity}">
+                        <Expander
+                            Name="Expander_Schedule"
+                            Expanded="Expander_Schedule_Expanded"
+                            Style="{StaticResource RightExpanderStyle}">
+                            <!--  IsExpanded="{Binding ExpanderGroup, Mode=TwoWay, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=2}">  -->
+                            <Expander.Header>
+                                <Grid Height="60">
+                                    <UXControls:UXTextBlock
+                                        Margin="30,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="20"
+                                        Foreground="White"
+                                        Text="Scheduled"
+                                        TextBlockSemanticColorType="Light"
+                                        TextBlockType="Caption" />
+                                </Grid>
+                            </Expander.Header>
+
+                            <StackPanel>
+                                <!--  Preset 1  -->
+                                <Border Style="{StaticResource RightPartBorderStyle}" />
+                                <!--  Preset 2  -->
+                                <Border Margin="0,8" Style="{StaticResource RightPartBorderStyle}" />
+
+                                <!--  synchronize  -->
+                                <Grid Height="60">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <UXControls:UXTextBlock
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Foreground="White"
+                                        Text="Synchronize between monitors"
+                                        TextBlockSemanticColorType="Light"
+                                        TextBlockType="Display1" />
+
+                                    <Image
+                                        Grid.Column="1"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="4,0"
+                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
+                                        Stretch="Uniform">
+                                        <Image.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="Apply the above brightness/luminance, contrast, and color&#x000A;preset controls to your connected monitors." />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <UXControls:UXToggleSwitch
+                                        Name="SynchronizeSwitch_Scheduled"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        AutomationProperties.Name="ToggleSwitchLeft"
+                                        Click="SynchronizeSwitch_Click"
+                                        Content="OFF"
+                                        ContentPlacement="Left"
+                                        ContentTextVisibility="True"
+                                        Foreground="White"
+                                        IsChecked="False" />
+                                </Grid>
+                            </StackPanel>
+                        </Expander>
+                    </Border>
+                </StackPanel>
+
+                <Border Name="DisableAll" Background="#4C24273C">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBusy}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                IsActive="{Binding IsBusy}"/>
+                </Border>
+            </Grid>
+        </UXControls:UXScrollViewer>
+
+    </Grid>
+</UserControl>
