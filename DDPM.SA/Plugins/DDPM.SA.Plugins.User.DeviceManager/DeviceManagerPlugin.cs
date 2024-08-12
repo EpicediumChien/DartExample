@@ -2993,7 +2993,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //0812 check required plugins before init
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
 
-                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition, monitor count is {monitorInfos.Count}");
+                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -3013,7 +3013,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //0812 check required plugins before init
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
 
-                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition, monitor count is {monitorInfos.Count}");
+                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }
                 }
             });
@@ -3035,7 +3035,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _AllInfoMonitors.AddRange(monitorInfos);
 
             GetLockRotateStatus();
-            writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK");
+            writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK. Monitor count is {_AllInfoMonitors.Count}");
         }
 
         private void GetCurrentColorPresetCondition()
