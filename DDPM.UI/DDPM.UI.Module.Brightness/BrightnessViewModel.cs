@@ -311,7 +311,14 @@ namespace DDPM.UI.Module.Brightness
                 MonitorInfo? mo = DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo;
                 if (mo == null)
                     return;
-
+                //check if the same as active monitor and same vcp changed monitor
+                if (SelectedHomeDevice == null || SelectedHomeDevice.MonitorInfo == null)
+                    return;
+                if (!SelectedHomeDevice.MonitorInfo.DisplayName.ToUpper().Equals(mo.DisplayName.ToUpper()))
+                    return;
+                if (!SelectedHomeDevice.MonitorInfo.DisplayName.ToUpper().Equals(e.monitor.DisplayName.ToUpper()))
+                    return;
+                
                 Luminance_Value = Convert.ToDouble(e.value);
                 Brightness_Value = Convert.ToDouble(e.value);
 
@@ -322,6 +329,13 @@ namespace DDPM.UI.Module.Brightness
             {
                 MonitorInfo? mo = DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo;
                 if (mo == null)
+                    return;
+                //check if the same as active monitor and same vcp changed monitor
+                if (SelectedHomeDevice == null || SelectedHomeDevice.MonitorInfo == null)
+                    return;
+                if (!SelectedHomeDevice.MonitorInfo.DisplayName.ToUpper().Equals(mo.DisplayName.ToUpper()))
+                    return;
+                if (!SelectedHomeDevice.MonitorInfo.DisplayName.ToUpper().Equals(e.monitor.DisplayName.ToUpper()))
                     return;
 
                 Contrast_Value = Convert.ToDouble(e.value);
