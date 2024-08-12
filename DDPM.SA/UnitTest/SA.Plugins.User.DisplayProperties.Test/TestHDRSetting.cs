@@ -15,7 +15,6 @@ using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
 using WinCopies;
-using static DDPM.SA.Plugins.User.DisplayProperties.user32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 //using static VcpCore.Common.User32;
 

@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VcpCore.Common;
-using static DDPM.SA.Plugins.User.DisplayProperties.user32;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties
 {
