@@ -2981,12 +2981,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
-                        _AllInfoMonitors.Clear();
-                        //_AllInfoMonitorsRecord.Clear();
-                        List<MonitorInfo> monitorInfos = _DisplayManagerPlugin.GetMonitors().Result;
-                        _AllInfoMonitors.AddRange(monitorInfos);
-                        //_AllInfoMonitorsRecord.AddRange(monitorInfos);
-                        GetLockRotateStatus();
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         _DisplayManagerPlugin.EAEditCompleted += _DisplayManagerPlugin_EAEditCompleted;
@@ -2996,6 +2990,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.EAEditReturn += _DisplayManagerPlugin_EAEditReturn;
                         //Bruce, 2024-08-09 add new event
                         _DisplayManagerPlugin.HDRChangeEvent += OnHDRStatusChangeHandler;
+                        //0812 check required plugins before init
+                        DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition, monitor count is {monitorInfos.Count}");
                     }
@@ -3005,12 +3001,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
-                        _AllInfoMonitors.Clear();
-                        //_AllInfoMonitorsRecord.Clear();
-                        List<MonitorInfo> monitorInfos = _DisplayManagerPlugin.GetMonitors().Result;
-                        _AllInfoMonitors.AddRange(monitorInfos);
-                        //_AllInfoMonitorsRecord.AddRange(monitorInfos);
-                        GetLockRotateStatus();
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         _DisplayManagerPlugin.EAEditCompleted += _DisplayManagerPlugin_EAEditCompleted;
@@ -3020,11 +3010,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.EAEditReturn += _DisplayManagerPlugin_EAEditReturn;
                         //Bruce, 2024-08-09 add new event
                         _DisplayManagerPlugin.HDRChangeEvent += OnHDRStatusChangeHandler;
+                        //0812 check required plugins before init
+                        DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition, monitor count is {monitorInfos.Count}");
                     }
                 }
             });
+        }
+
+        //Required plugins:
+        //1. _DisplayManagerPlugin
+        //2. _SettingsPlugin
+        private void DoThingsAfterDisplayRelatedPluginsReady(string caller)
+        {
+            if(_DisplayManagerPlugin == null || _SettingsPlugin == null)
+            {
+                writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}");
+                writelog($"[DoThingsAfterDisplayRelatedPluginsReady] Has _DisplayManagerPlugin:{(_DisplayManagerPlugin == null)}, has _SettingsPlugin: {_SettingsPlugin == null}");
+                return;
+            }
+            _AllInfoMonitors.Clear();
+            List<MonitorInfo> monitorInfos = GetMonitors().Result;//it it used to active monitor settings
+            _AllInfoMonitors.AddRange(monitorInfos);
+
+            GetLockRotateStatus();
+            writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK");
         }
 
         private void GetCurrentColorPresetCondition()
@@ -3117,7 +3128,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             _SettingsPlugin.SetAppConfigData(config);
                             //0612 Bruce 自動旋轉畫面功能，因需使用display跟settings兩個Plugin，其中一個可能還沒被叫起來，故兩邊都新增取得狀態方法。
-                            GetLockRotateStatus();
+                            //GetLockRotateStatus();
+                            //0812 check required plugins before init
+                            DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
+
                             SetDelayFWUpdateInfoPackage();
                             CheckUODFWUInfoPackage();
                             //load hotkeysetting
@@ -3139,7 +3153,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             _SettingsPlugin.SetAppConfigData(config);
                             //0612 Bruce 自動旋轉畫面功能，因需使用display跟settings兩個Plugin，其中一個可能還沒被叫起來，故兩邊都新增取得狀態方法。
-                            GetLockRotateStatus();
+                            //GetLockRotateStatus();
+                            //0812 check required plugins before init
+                            DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
+
                             SetDelayFWUpdateInfoPackage();
                             CheckUODFWUInfoPackage();
                             //load hotkeysetting
