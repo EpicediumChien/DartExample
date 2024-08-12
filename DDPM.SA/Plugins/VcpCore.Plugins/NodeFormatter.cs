@@ -183,6 +183,8 @@ namespace VcpCore.Plugins
                 case "dc": return "Display Application";
                 case "de": return "Scratch Pad";
                 case "df": return "VCP Version";
+                case "e0": return "EnergySaver Modes: Dim or Mask";
+                case "e1": return "EnergySaver Modes: Power Save";
                 case "e2": return "Preset Modes Specific";
                 case "e3": return "SpectraView Engine (SVE)";
                 case "e5": return "PBP Mode Status";
@@ -264,14 +266,43 @@ namespace VcpCore.Plugins
         {
             switch (vcpControlName)
             {
+                case "01": return "Chinese";
                 case "02": return "English";
-                case "03": return "Francais";
-                case "04": return "Deutschi";
-                case "06": return "Japan";
+                case "03": return "French";   // "Francais";
+                case "04": return "German";   // "Deutschi";
+                case "05": return "Italian";
+                case "06": return "Japanese"; // "Japan";
+                case "07": return "Korean";
                 case "08": return "Portuguese";
                 case "09": return "Russian";
-                case "0a": return "Espanol";
-                case "0d": return "Chinese_S";
+                case "0a": return "Spanish";  // "Espanol";
+                case "0b": return "Swedish";
+                case "0c": return "Turkish";
+                case "0d": return "Chinese-Simplified";
+                case "0e": return "BrazilianPortuguese";
+                case "0f": return "Arabic";
+                case "10": return "Bulgarian";
+                case "11": return "Croatian";
+                case "12": return "Czech";
+                case "13": return "Danish";
+                case "14": return "Dutch";
+                case "15": return "Estonian";
+                case "16": return "Finnish";
+                case "17": return "Greek";
+                case "18": return "Hebrew";
+                case "19": return "Hindi";
+                case "1a": return "Hungarian";
+                case "1b": return "Latvian";
+                case "1c": return "Lithuanian";
+                case "1d": return "Norwegian";
+                case "1e": return "Polish";
+                case "1f": return "Romanian";
+                case "20": return "Serbian";
+                case "21": return "Slovak";
+                case "22": return "Slovenian";
+                case "23": return "Thai";
+                case "24": return "Ukrainian";
+                case "25": return "Vietnamese";
                 default: return null;
             }
         }
