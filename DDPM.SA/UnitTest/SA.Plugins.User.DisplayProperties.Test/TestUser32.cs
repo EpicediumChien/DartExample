@@ -12,9 +12,7 @@ using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using static DDPM.SA.Plugins.User.DisplayProperties.user32;
 using static VcpCore.Common.User32;
-using DEVMODE = DDPM.SA.Plugins.User.DisplayProperties.user32.DEVMODE;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 {
@@ -41,8 +39,8 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
         {
             DEVMODE devMode = new DEVMODE();
             var monitorInfoname = monitorInfo1.DisplayName;
-            int i = user32.ENUM_CURRENT_SETTINGS;  //ENUM_CURRENT_SETTINGS=-1
-            var result = user32.EnumDisplaySettings(monitorInfoname, i, ref devMode);
+            int i = ENUM_CURRENT_SETTINGS;  //ENUM_CURRENT_SETTINGS=-1
+            var result = EnumDisplaySettings(monitorInfoname, i, ref devMode);
             Assert.IsNotNull(result);
             // Assert.IsTrue(result);   需要用真实get的monitor才可以跑pass
         }
@@ -52,8 +50,8 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
         {
             DEVMODE devMode = new DEVMODE();
             var monitorInfoname = monitorInfo1.DisplayName;
-            int expectresult = user32.DISP_CHANGE_SUCCESSFUL;  //DISP_CHANGE_SUCCESSFUL=0;
-            int result = user32.ChangeDisplaySettingsEx(monitorInfoname, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
+            int expectresult = DISP_CHANGE_SUCCESSFUL;  //DISP_CHANGE_SUCCESSFUL=0;
+            int result = ChangeDisplaySettingsEx(monitorInfoname, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
             Assert.IsNotNull(result);
             // Assert.That(expectresult, Is.EqualTo(result)); 需要用真实get的monitor才可以跑pass
 
@@ -64,7 +62,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
         {
             //user32 use32 = new user32();
             string expectedMessage = "The operation completed successfully.";
-            var result = user32.GetLastErrMsg();
+            var result = GetLastErrMsg();
             Assert.IsNotNull(result);
             Assert.That(expectedMessage.Trim(new char[] { '\r', '\n' }), Is.EqualTo(result));
         }

@@ -21,7 +21,6 @@ using Windows.Media.AppBroadcasting;
 using Windows.UI.ViewManagement;
 using static VcpCore.Common.User32;
 using DDPM.SA.Plugins.User.DisplayProperties;
-using static DDPM.SA.Plugins.User.DisplayProperties.user32;
 using MS.WindowsAPICodePack.Internal;
 using System;
 using System.Windows.Documents;
