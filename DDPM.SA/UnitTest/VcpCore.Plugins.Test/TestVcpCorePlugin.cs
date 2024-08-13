@@ -63,6 +63,56 @@ namespace VcpCore.Plugins.Test
         Dictionary<string, Dictionary<string, string>> getstr;
         DisplayPropertiesPlugins displayPropertiesPlugin;
 
+        List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+
+        MonitorInfo_complex monitorInfoComplex1 = new MonitorInfo_complex()
+        {
+            //UnDefinedColorPreset,
+            //ColorPresentDescription,
+            //CapabilityDic,
+            AliasDeviceName = "Dell U2724DE (HDMI)",
+            Handle = 0x0000000000000000,
+            IsDellMonitor = true,
+            Index = 0,
+            CapabilityString = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) 66(0F02) 67 68 87 AA(00 01 02 04 )",
+            hMonitor = 0x0000000000e315fe,
+            hPhysicalMonitor = 0x0000000000000000,
+            szPhysicalMonitorDescription = "Dell U2724DE (HDMI)",
+            DisplayName = "\\\\.\\DISPLAY2",
+            DDCisON = true,
+            DDCCIFail = 0,
+            edid = new EDID() { SerialNumber = "808597589", ModelName = "DELLU2724DE" },
+            //DISPLAY_DEVICE displaydevice,
+            //pMonitorInfoEx,
+            //pDevmode,
+            //ColorPresetSupportList,
+            FwVersion = "M3T101",
+            inputSource = "HDMI-1",
+            //pathInfoTarget,
+            //SmartHDRSupportList,
+            modelName = "U2724DE",
+            series = "Dell UltraSharp (U) Series Monitors",
+        };
+
+        MonitorInfo monitorInfo1 = new MonitorInfo()
+        {
+            AliasDeviceName = "Dell U2724DE(HDMI)",
+            IsDellMonitor = true,
+            Index = 0,
+            CapabilityString = "(prot(monitor)type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C)E5 E7(02 03) E2(00 02 04 0C 0D 0F)",
+            DisplayName = "\\\\.\\DISPLAY2",
+            DDCisON = true,
+            FwVersion = "M3T101",
+            inputSource = "HDMI-1",
+            modelName = "U2724DE",
+            series = "Dell UltraSharp (U) Series Monitors",
+            edid = new EDID() { SerialNumber = "808597589", ModelName = "DELLU2724DE" },
+            //CapabilityDic = capabilityDic;
+        };
+
+
+
+
         [OneTimeSetUp]
         public void Setup()
         {
@@ -114,8 +164,18 @@ namespace VcpCore.Plugins.Test
         [Test]
         public void TestGetMonitors()
         {
+            //var getMonitors = vcpCorePlugin.GetMonitors().Result;
+            //Assert.Greater(getMonitors.Count, 0);
+            string displayName = monitorInfo1.DisplayName;
+            string modelName = monitorInfo1.modelName;
+            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
             var getMonitors = vcpCorePlugin.GetMonitors().Result;
             Assert.Greater(getMonitors.Count, 0);
+            Assert.That(displayName, Is.EqualTo(getMonitors[0].DisplayName));
+            Assert.That(modelName, Is.EqualTo(getMonitors[0].modelName));
+
 
         }
 

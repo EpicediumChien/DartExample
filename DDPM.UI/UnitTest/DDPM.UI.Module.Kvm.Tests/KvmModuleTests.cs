@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using DDPM.SA.Common;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -33,8 +34,8 @@ namespace DDPM.UI.Module.Kvm.Tests
             deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            deviceManagerMock.Setup(x => x.GetOnUSBKVM()).Returns(Task.FromResult(true));
-            kvmModule = new KvmModule();
+            deviceManagerMock.Setup(x => x.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            kvmModule = new KvmModule(moduleOwner);
             privateObject = new PrivateObject(kvmModule);
         }
 
@@ -57,7 +58,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             var result = kvmModule!.GetLeftView();
 
             // Assert
-            Assert.That(result, Is.Null);
+            Assert.That(result, Is.Not.Null);
         }
 
 

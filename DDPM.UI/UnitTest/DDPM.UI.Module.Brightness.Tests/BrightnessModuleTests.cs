@@ -3,10 +3,13 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
+using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
+using System.Reflection;
 using System.Windows.Controls;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.Brightness.Tests
 {
@@ -18,6 +21,9 @@ namespace DDPM.UI.Module.Brightness.Tests
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private Mock<IDeviceManagerSA>? deviceManagerMock;
+        private IDeviceManagerSA? deviceManagerSA;
+        private Mock<IConsole>? myConsoleMock;
+        private IConsole? myConsole;
 
         [SetUp]
         public void Setup()
@@ -25,7 +31,13 @@ namespace DDPM.UI.Module.Brightness.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-            brightnessModule = new BrightnessModule();
+            myConsoleMock=new Mock<IConsole>();
+            myConsole=myConsoleMock.Object;
+            DdpmCommonHelper.MyConsole=myConsole;
+            deviceManagerMock = new Mock<IDeviceManagerSA>();
+            deviceManagerSA = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+            brightnessModule = new BrightnessModule(moduleOwner);
             privateObject = new PrivateObject(brightnessModule);
         }
 
@@ -33,6 +45,9 @@ namespace DDPM.UI.Module.Brightness.Tests
         public void TestConstructor_BrightnessModule()
         {
             // Assert
+            var vm = privateObject.GetFieldOrProperty("vm");
+            Assert.That(vm, Is.Not.Null);
+            Assert.That(vm, Is.Not.SameAs(brightnessModule));
             Assert.That(brightnessModule.ModuleOwner, Is.Not.Null);
 
         }
@@ -115,15 +130,21 @@ namespace DDPM.UI.Module.Brightness.Tests
         {
             brightnessModule.OnSelectedHomeDeviceChanged();
             Assert.Pass();
-
         }
 
         [Test]
         public void TestOnActivated()
         {
+            var brightnessViewModel = new BrightnessViewModel();
+            var myModule = brightnessModule;
+            brightnessViewModel.MyModule = myModule;
+            brightnessViewModel.MyModule.SelectedHomeDevice = new HomeDevice();
+            brightnessViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            deviceManagerMock.Setup(x => x.GetHDRStatus(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
             brightnessModule.OnActivated();
             Assert.Pass();
         }
+
 
         [Test]
         public void TestOnDeactivated()
