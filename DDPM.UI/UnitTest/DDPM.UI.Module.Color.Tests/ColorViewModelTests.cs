@@ -26,9 +26,13 @@ using static System.Formats.Asn1.AsnWriter;
 using System.Drawing;
 using NSubstitute;
 using static DDPM.UI.Module.Color.ColorViewModel;
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common.Models;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.UI.Module.Color.Tests
 {
+    [Apartment(ApartmentState.STA)]
     public class ColorViewModelTests
     {
         private ColorViewModel? colorViewModel;
@@ -49,38 +53,17 @@ namespace DDPM.UI.Module.Color.Tests
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             privateObject = new PrivateObject(colorViewModel);
-
-        }
-
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestFile()
-        {
-            var file = new ICC_SupportDeviceName();
-            var myFile = new string("");
-            file.File = myFile;
-            Assert.That(file.File, Is.EqualTo(myFile));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestColorPreset()
+        public void TestLog()
         {
-            var colorPreset = new ICC_SupportDeviceName();
-            var myColorPreset = new string("");
-            colorPreset.ColorPreset = myColorPreset;
-            Assert.That(colorPreset.ColorPreset, Is.EqualTo(myColorPreset));
-        }
-
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestSHA256()
-        {
-            var sHA256 = new ICC_SupportDeviceName();
-            var mySHA256 = new string("");
-            sHA256.SHA256 = mySHA256;
-            Assert.That(sHA256.ColorPreset, Is.EqualTo(mySHA256));
+            var logMock=new Mock<ILog>();
+            ILog log = logMock.Object;
+            colorViewModel.Log = log;
+            var result= colorViewModel.Log;
+            Assert.That(result, Is.EqualTo(log));
         }
 
 
@@ -89,90 +72,91 @@ namespace DDPM.UI.Module.Color.Tests
         public void TestModuleOwner()
         {
             var moduleOwner = moduleOwnerMock!.Object;
-            Assert.That(DdpmCommonHelper.ModuleOwner, Is.EqualTo(moduleOwner));
+            colorViewModel.ModuleOwner= moduleOwner;
+            Assert.That(colorViewModel.ModuleOwner, Is.EqualTo(moduleOwner));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestMyModule()
         {
-            var myModle = new ColorViewModel();
             var myColorModule = new ColorModule();
-            myModle.MyModule = myColorModule;
-            Assert.That(myModle.MyModule, Is.EqualTo(myColorModule));
+            colorViewModel.MyModule = myColorModule;
+            Assert.That(colorViewModel.MyModule, Is.EqualTo(myColorModule));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TeststrICM_Folder()
-        {       
-            var strICM_Folder = new ColorViewModel();
-            var myColorModule = new string("");
-            strICM_Folder._ICC_Metadata.strICC_Folder = myColorModule;
-            Assert.That(strICM_Folder._ICC_Metadata.strICC_Folder, Is.EqualTo(myColorModule));
-        }
-
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestIs_SupportDeviceName()
-        {
-            var is_SupportDeviceName = new ColorViewModel();
-            var myColorModule = new bool();
-            is_SupportDeviceName._ICC_Metadata.Is_Support_ICC_DeviceName = myColorModule;
-            Assert.That(is_SupportDeviceName._ICC_Metadata.Is_Support_ICC_DeviceName, Is.EqualTo(myColorModule));
-        }
-       
-
-
-        [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestSupportColorPresets()
         {
-            var supportColorPresets = new ColorViewModel();
             var myColorModule = new List<string>();
-            supportColorPresets.SupportColorPresets = myColorModule;
-            Assert.That(supportColorPresets.SupportColorPresets, Is.EqualTo(myColorModule));
+            colorViewModel.SupportColorPresets = myColorModule;
+            Assert.That(colorViewModel.SupportColorPresets, Is.EqualTo(myColorModule));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestColorPresets_ItemsCollection()
         {
-            var colorPresets_ItemsCollection = new ColorViewModel();
             var myColorModule = new List<string>();
-            colorPresets_ItemsCollection.ColorPresets_ItemsCollection = myColorModule;
-            Assert.That(colorPresets_ItemsCollection.ColorPresets_ItemsCollection, Is.EqualTo(myColorModule));
-        }
-
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestSupportDeviceName()
-        {
-            var supportDeviceName = new ColorViewModel();
-            var myColorModule = new List<string>() { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW", "UP2720Q", "UP3221Q" };
-            //supportDeviceName.Support_ICC_DeviceName = myColorModule;
-            //Assert.That(supportDeviceName.Support_ICC_DeviceName, Is.EqualTo(myColorModule));
+            colorViewModel.ColorPresets_ItemsCollection = myColorModule;
+            Assert.That(colorViewModel.ColorPresets_ItemsCollection, Is.EqualTo(myColorModule));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestIsisAdvanced_Settings()
         {
-            var isisAdvanced_Settings = new ColorViewModel();
             var myColorModule = new Visibility();
-            isisAdvanced_Settings.IsisAdvanced_Settings = myColorModule;
-            Assert.That(isisAdvanced_Settings.IsisAdvanced_Settings, Is.EqualTo(myColorModule));
+            colorViewModel.IsisAdvanced_Settings = myColorModule;
+            Assert.That(colorViewModel.IsisAdvanced_Settings, Is.EqualTo(myColorModule));
+        }
+
+        [Test]
+        public void TestNightlightStatus()
+        {
+            var myColorModule = new string("");
+            colorViewModel.NightlightStatus = myColorModule;
+            Assert.That(colorViewModel.NightlightStatus, Is.EqualTo(myColorModule));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
+        public void TestColorPresetSelectedIndex()
+        {
+            var deviceManagerMock = new Mock<IDeviceManagerSA>();
+            var deviceManagerSA = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings())));
+            var moduleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwner = moduleOwnerMock!.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            colorViewModel.MyModule = new ColorModule();
+            colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            deviceManagerMock.Setup(x => x.GetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<int>())).Returns(Task.FromResult(new ALSConfig()));
+
+            var myColorModule = 1;
+            colorViewModel.ColorPresetSelectedIndex = myColorModule;
+            Assert.That(colorViewModel.ColorPresetSelectedIndex, Is.EqualTo(myColorModule));
+        }
+
+
+        [Test]
         public void TestUpdateColorPresetSelectedIndex()
         {
+            var deviceManagerMock = new Mock<IDeviceManagerSA>();
+            var deviceManagerSA = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(),new DDPMUserSettings())));
+            var moduleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwner = moduleOwnerMock!.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            colorViewModel.MyModule = new ColorModule();
+            colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo=new MonitorInfo();
+            deviceManagerMock.Setup(x => x.GetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<int>())).Returns(Task.FromResult(new ALSConfig()));
+
             colorViewModel.ColorPresetSelectedIndex = -1;
             colorViewModel.UpdateColorPresetSelectedIndex(1);
             Assert.That(colorViewModel.ColorPresetSelectedIndex, Is.EqualTo(1));
@@ -180,71 +164,73 @@ namespace DDPM.UI.Module.Color.Tests
 
         
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestColorManagement_isChecked()
         {
-            var colorManagement_isChecked = new ColorViewModel();
             var myColorManagement_isChecked = new bool();
-            colorManagement_isChecked.ColorManagement_isChecked = myColorManagement_isChecked;
-            Assert.That(colorManagement_isChecked.ColorManagement_isChecked, Is.EqualTo(myColorManagement_isChecked));
+            colorViewModel.ColorManagement_isChecked = myColorManagement_isChecked;
+            Assert.That(colorViewModel.ColorManagement_isChecked, Is.EqualTo(myColorManagement_isChecked));
         }
 
         [Test]
         [Apartment(ApartmentState.STA)]
         public void TestICCprofile_based_Colorpreset_enable()
         {
-            var iCCprofile_based_Colorpreset_enable = new ColorViewModel();
-            var myICCprofile_based_Colorpreset_enable = new bool();
-            iCCprofile_based_Colorpreset_enable.ICCprofile_based_Colorpreset_enable = myICCprofile_based_Colorpreset_enable;
-            Assert.That(iCCprofile_based_Colorpreset_enable.ICCprofile_based_Colorpreset_enable, Is.EqualTo(myICCprofile_based_Colorpreset_enable));
+            var myICCprofile_based_Colorpreset_enable = true;
+            colorViewModel.ICCprofile_based_Colorpreset_enable = myICCprofile_based_Colorpreset_enable;
+            Assert.That(colorViewModel.ICCprofile_based_Colorpreset_enable, Is.EqualTo(myICCprofile_based_Colorpreset_enable));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestNightlightStatus()
-        {
-            var nightlightStatus = new ColorViewModel();
-            var myColorModule = new string("");
-            nightlightStatus.NightlightStatus = myColorModule;
-            Assert.That(nightlightStatus.NightlightStatus, Is.EqualTo(myColorModule));
-        }
-
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestColorPresetSelectedIndex()
-        {
-            var colorPresetSelectedIndex = new ColorViewModel();
-            var myColorModule = new int();
-            colorPresetSelectedIndex.ColorPresetSelectedIndex = myColorModule;
-            Assert.That(colorPresetSelectedIndex.ColorPresetSelectedIndex, Is.EqualTo(myColorModule));
-        }
-
-        [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestDCM_Visibility()
         {
-            var dCM_Visibility = new ColorViewModel();
             var myColorModule = new Visibility();
-            dCM_Visibility.DCM_Visibility = myColorModule;
-            Assert.That(dCM_Visibility.DCM_Visibility, Is.EqualTo(myColorModule));
+            colorViewModel.DCM_Visibility = myColorModule;
+            Assert.That(colorViewModel.DCM_Visibility, Is.EqualTo(myColorModule));
         }
 
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestFullView()
         {
-            var fullView = new ColorViewModel();
             var myColorModule = new ContentControl();
-            fullView.FullView = myColorModule;
-            Assert.That(fullView.FullView, Is.EqualTo(myColorModule));
+            colorViewModel.FullView = myColorModule;
+            Assert.That(colorViewModel.FullView, Is.EqualTo(myColorModule));
+        }
+
+        [Test]
+        public void TestOpenFullView()
+        {
+            ContentControl content= new ContentControl();
+            try
+            {
+                colorViewModel.OpenFullView(content);
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
+        public void TestCloseFullView()
+        {
+            try
+            {
+                colorViewModel.CloseFullView();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+
+        [Test]
         public void Testget_index_of_json_config_for_cur_monitor()
         {
 
@@ -279,20 +265,18 @@ namespace DDPM.UI.Module.Color.Tests
 
         }
 
+        //[Test]
+        //public void TestBytesToString()
+        //{
+        //    byte[] bytes = new byte[] { 97, 98, 99 };
+        //    var result = ColorViewModel.BytesToString(bytes);
+
+        //    Assert.That(result, Is.EqualTo("616263"));
+        //}
+
+
         [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestBytesToString()
-        {
-            byte[] bytes = new byte[] { 97, 98, 99 };
-            //var result = ColorViewModel.BytesToString(bytes);
-
-            //Assert.That(result, Is.EqualTo("616263"));
-        }
-
-
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestSyncNightlightStatusOn()
+        public void TestSyncNightlightStatus()
         {
             //using RegistryKey registryKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
             //object obj = registryKey?.GetValue("Data");
@@ -310,7 +294,6 @@ namespace DDPM.UI.Module.Color.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestStopRegistryMonitor()
         {
             colorViewModel.registryMonitor_NightLight = new RegistryUtils.RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
@@ -323,7 +306,6 @@ namespace DDPM.UI.Module.Color.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestOnRegChanged_NightLight()
         {            
             colorViewModel.MyModule = new ColorModule();
@@ -346,6 +328,28 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
         }
 
+        //[Test]
+        //public void TestOnRegChanged_ICC()
+        //{
+        //    var MyModule = new ColorModule();
+        //    colorViewModel.MyModule = MyModule;
+        //    var SelectedHomeDevice = new HomeDevice();
+        //    var colorModule=new ColorModule();
+        //    colorModule.SelectedHomeDevice= SelectedHomeDevice;
+        //    colorViewModel.MyModule.SelectedHomeDevice=SelectedHomeDevice;
+        //    colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo() { modelName = "abc" };
+        //    try
+        //    {
+        //        colorViewModel.OnRegChanged_ICC(null,null);
+        //        Assert.True(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Assert.Fail("not invoked");
+        //    }
+        //}
+        
+
 
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -360,7 +364,15 @@ namespace DDPM.UI.Module.Color.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
+        public void TestAppsList()
+        {
+            ObservableCollection<AppData> observableCollection = new ObservableCollection<AppData>();
+            colorViewModel.AppsList = observableCollection;
+            Assert.That(colorViewModel.AppsList, Is.EqualTo(observableCollection));
+        }
+
+        
+        [Test]
         public void TestRefreshUI()
         {
             var appsListBef = privateObject.GetFieldOrProperty("AppsList");
@@ -377,8 +389,15 @@ namespace DDPM.UI.Module.Color.Tests
 
             Assert.AreNotSame(appsListBef, appsListAft);
             Assert.AreNotSame(colorPresets_ItemsCollectionBef, colorPresets_ItemsCollectionAft);
-
         }
+
+        [Test]
+        public void TestIsBusy()
+        {
+            colorViewModel.IsBusy=true;
+            Assert.That(colorViewModel.IsBusy, Is.EqualTo(true));
+        }
+        
 
 
 

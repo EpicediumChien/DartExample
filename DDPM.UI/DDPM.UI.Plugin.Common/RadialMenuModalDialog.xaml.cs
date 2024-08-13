@@ -56,11 +56,11 @@ namespace DDPM.UI.Plugin.Common {
 
       DrawPieChart();
 
-      SelectedMenuID = 1;
+      SelectedMenuID = 2;
       SelectedActionID = PenActions.RadialActions[1].AssignedAction.ID;
       txtTitleBar.Text = Strings.RadialMenu;
       txtFunction.Text = Strings.FunctionForSelectedRadial;
-      RefreshAction();
+      RefreshAction(true);
       txtLabel.Text = Strings.LabelForSelectedRadial;
       txtUseCenter.Text = Strings.UseCenterForEmulatingRightClick;
       tsUseCenter.IsChecked = PenActions.IsUseCenter;
@@ -249,7 +249,7 @@ namespace DDPM.UI.Plugin.Common {
       }
     }
 
-    void RefreshAction() {
+    void RefreshAction(bool all = false) {
       txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
       txtLabelText.Text = PenActions.RadialLabels[SelectedMenuID];
       MenuItems.ItemsSource = null;
@@ -257,7 +257,7 @@ namespace DDPM.UI.Plugin.Common {
       if(SelectedActionID > 7) {
         svMenu.ScrollToVerticalOffset(SelectedActionID * 29);
       }
-      RefreshLabel();
+      RefreshLabel(all);
       if(SelectedActionID == 2 || SelectedActionID == 3) {
         spLabel.Visibility = Visibility.Collapsed;
       }
@@ -267,28 +267,21 @@ namespace DDPM.UI.Plugin.Common {
     }
     void RefreshLabel(bool all = false) {
       if(all) {
+        for (int i = 1; i < 9; i++) {
+          var tb = (UXTextBlock)FindName($"Label{i}");
+          tb.Text = CheckLabel(PenActions.RadialLabels[i], i);
+        }
       }
       else {
         var tb = (UXTextBlock)FindName($"Label{SelectedMenuID}");
-        tb.Text = PenActions.RadialLabels[SelectedMenuID];
         tb.Text = CheckLabel(PenActions.RadialLabels[SelectedMenuID], SelectedMenuID);
-        //CheckLabel(tb, SelectedMenuID);
       }
     }
     string CheckLabel(string text, int id) {
       double width = id switch {
-        1 => 110,
+        1 or 4 or 5 or 8 => 110,
+        2 or 3 or 6 or 7 => 150,
       };
-      //tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-      //tb.InvalidateMeasure();
-      //tb.UpdateLayout();
-      //while(tb.DesiredSize.Width > width) {
-      //  text = text.Substring(0, text.Length - 2);
-      //  tb.Text = $"{text}...";
-      //  tb.InvalidateMeasure();
-      //  tb.UpdateLayout();
-      //  tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-      //}
       var typeface = new Typeface(new FontFamily("Roboto"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 
       var formattedText = new FormattedText(
@@ -351,7 +344,7 @@ namespace DDPM.UI.Plugin.Common {
     }
 
     private void LabelTextChanged(object sender, TextChangedEventArgs e) {
-
+      btnSave.IsEnabled = (txtLabelText.Text != PenActions.RadialLabels[SelectedMenuID] && txtLabelText.Text.Trim() != "");
     }
 
     private void EditActionClick(object sender, MouseButtonEventArgs e) {
@@ -414,11 +407,16 @@ namespace DDPM.UI.Plugin.Common {
     }
 
     private void RestoreClick(object sender, MouseButtonEventArgs e) {
-
+      PenActions.ResetRadialMenu();
+      ActionList.ExportActionList(PenActions, Model);
+      SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+      RefreshAction(true);
     }
 
     private void SaveClick(object sender, MouseButtonEventArgs e) {
-
+      PenActions.RadialLabels[SelectedMenuID] = txtLabelText.Text.Trim();
+      ActionList.ExportActionList(PenActions, Model);
+      RefreshLabel();
     }
 
     private void tsUseCenter_Click(object sender, RoutedEventArgs e) {

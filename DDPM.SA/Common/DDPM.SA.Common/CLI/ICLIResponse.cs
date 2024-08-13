@@ -77,6 +77,7 @@ namespace DDPM.SA.Common
         public string EdidVersion { get; set; } = "N/A";
         public string VideoInputType { get; set; } = "N/A";
         public string Size { get; set; } = "N/A";
+        public string PID { get; set; }
     }
 
     public class CLI_Get_EDID_RESPONSE : CLI_RESPONSE
@@ -93,7 +94,7 @@ namespace DDPM.SA.Common
     {
         //public string ID { get; set; }
         public string Manufacturer { get; set; }
-        //public string PID { get; set; }
+        public string PID { get; set; }
         public string ManufacturingYear { get; set; }
         public string ManufacturingWeek { get; set; }
         public string FirmwareVersion { get; set; }
@@ -326,6 +327,37 @@ namespace DDPM.SA.Common
         public string ColorManagement { get; set; }
         public string SpeakerMicrophone_enable { get; set; }
         public string SpeakerMicrophone_lock { get; set; }
+        public string SpeakerVolume { get; set; }
+        public string MicrophoneControl { get; set; }
+        public string Uniformity { get; set; }
+        public string PowerNap { get; set; }
+        public string OSD_language { get; set; }
+        public string PID { get; set; }
+    }
+    public class Get_Capabilitystring : CLI_RESPONSE
+    {
+        public string CapabilityString { get; set; }
+    }
+    public class Apply_Configuration : CLI_RESPONSE
+    {
+        public string OptimalResolution { get; set; }
+        public string Resolution { get; set; }
+        public string ActiveInputSource { get; set; }
+        public string ColorPreset { get; set; }
+        public string ScreenOrientation { get; set; }
+        public string BrightnessLevel { get; set; }
+        public string ContrastLevel { get; set; }
+        public string LuminanceLevel { get; set; }
+        public string AutoBrightness { get; set; }
+        public string AutoBrightnessRangeLevel { get; set; }
+        public string AutoColorTemp { get; set; }
+        public string PrimaryMonitorForSync { get; set; }
+        public string AspectRatio { get; set; }
+        public string USB_CPrioritization { get; set; }
+        public string ColorManagement { get; set; }
+        //public string SpeakerMicrophone_enable { get; set; }
+        //public string SpeakerMicrophone_lock { get; set; }
+        public string SpeakerMicrophone { get; set; }
         public string SpeakerVolume { get; set; }
         public string MicrophoneControl { get; set; }
         public string Uniformity { get; set; }

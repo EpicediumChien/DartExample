@@ -198,3 +198,4 @@ testcoverage/
 
 *.coveragexml
 /CLI.Subagent/CLI - Backup.Subagent.csproj
+/_BIN

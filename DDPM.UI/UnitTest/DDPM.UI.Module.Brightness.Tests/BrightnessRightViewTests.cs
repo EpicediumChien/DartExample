@@ -12,6 +12,7 @@ using DDPM.SA.Common;
 
 namespace DDPM.UI.Module.Brightness.Tests
 {
+    [Apartment(ApartmentState.STA)]
     public class BrightnessRightViewTests
     {
 
@@ -29,12 +30,10 @@ namespace DDPM.UI.Module.Brightness.Tests
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             //brightnessRightView = new BrightnessRightView();
             //privateObject = new PrivateObject(brightnessRightView);
-
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestConstructor_InitializesComponent()
         {
             brightnessRightView = new BrightnessRightView();

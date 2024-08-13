@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -19,18 +19,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\DDPM.UI.AddDevicePlugin\DDPM.UI.Plugin.AddDevicePlugin.csproj" />
-    <ProjectReference Include="..\..\..\DDPM.UI.DisplayPlugin\DDPM.UI.Plugin.DisplayPlugin.csproj" />
-    <ProjectReference Include="..\..\..\DDPM.UI.Module.AddDisplay\DDPM.UI.Module.AddDisplay.csproj" />
-    <ProjectReference Include="..\..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.AddDevicePlugin\DDPM.UI.Plugin.AddDevicePlugin.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.DisplayPlugin\DDPM.UI.Plugin.DisplayPlugin.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.Module.AddDisplay\DDPM.UI.Module.AddDisplay.csproj" />
+    <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="DDPM.SA.Common">
-      <HintPath>..\..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
+      <HintPath>..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
     </Reference>
     <Reference Include="VcpCore.Common">
-      <HintPath>..\..\..\CommonDll\VcpCore.Common.dll</HintPath>
+      <HintPath>..\..\CommonDll\VcpCore.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
 

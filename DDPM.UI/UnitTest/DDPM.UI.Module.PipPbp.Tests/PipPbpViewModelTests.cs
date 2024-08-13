@@ -30,6 +30,8 @@ namespace DDPM.UI.Module.PipPbp.Tests
         private IModuleOwner moduleOwner;
         private Mock<ICommand> commandMock;
         private ICommand command;
+        private Mock<IDeviceManagerSA>? deviceManagerSAMock;
+        private IDeviceManagerSA? deviceManagerSA;
 
         [SetUp]
         public void SetUp()
@@ -40,6 +42,11 @@ namespace DDPM.UI.Module.PipPbp.Tests
             moduleOwner = moduleOwnerMock.Object;
             commandMock = new Mock<ICommand>();
             command = commandMock.Object;
+            deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            deviceManagerSA = deviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+            DdpmCommonHelper.ModuleOwner=moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice);
             pipPbpViewModel = new PipPbpViewModel();
             privateObject = new PrivateObject(pipPbpViewModel);
         }
@@ -236,8 +243,24 @@ namespace DDPM.UI.Module.PipPbp.Tests
 
         }
 
+        [Test]
+        public void TestCurPxpMode()
+        {
+            var result = pipPbpViewModel.CurPxpMode;
+            Assert.That(result, Is.EqualTo(0));
+        }
+
 
         [Test]
+        public void TestIsFullscreenItemSelected()
+        {
+            bool result = pipPbpViewModel.IsFullscreenItemSelected;
+            Assert.That(result, Is.EqualTo(true));
+        }
+        
+
+
+         [Test]
         public void TestSelectedSplitItem()
         {
             //_selectedSplitItem != null&&_selectedSplitItem == value
@@ -332,6 +355,137 @@ namespace DDPM.UI.Module.PipPbp.Tests
             // Assert
             Assert.That(pipPbpViewModel.IsBusy, Is.EqualTo(true));
         }
-        
+
+        [Test]
+        public void TestIsVideoSwapComboBoxesVisible()
+        {
+            Assert.That(pipPbpViewModel.IsVideoSwapComboBoxesVisible, Is.EqualTo(false));
+
+            var _inputSourceList=new List<InputSourceObj>() { new InputSourceObj(),new InputSourceObj(),new InputSourceObj() };
+            pipPbpViewModel.InputSourceList = _inputSourceList;
+            Assert.That(pipPbpViewModel.IsVideoSwapComboBoxesVisible, Is.EqualTo(true));
+        }
+
+
+        [Test]
+        public void TestIsVideoSwapButtonVisible()
+        {
+            Assert.That(pipPbpViewModel.IsVideoSwapButtonVisible, Is.EqualTo(false));
+
+            var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj() };
+            pipPbpViewModel.InputSourceList = _inputSourceList;
+            pipPbpViewModel.SplitItem_Off = new SplitItem();
+            Assert.That(pipPbpViewModel.IsVideoSwapButtonVisible, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestIsVideoSwapButtonEnabled()
+        {
+            Assert.That(pipPbpViewModel.IsVideoSwapButtonEnabled, Is.EqualTo(false));
+
+            var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj() };
+            pipPbpViewModel.InputSourceList = _inputSourceList;
+            pipPbpViewModel.SplitItem_Off = new SplitItem();
+            Assert.That(pipPbpViewModel.IsVideoSwapButtonEnabled, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestExecuteVideoSwpa()
+        {
+            bool result=pipPbpViewModel.ExecuteVideoSwpa();
+            Assert.That(result, Is.EqualTo(false));
+
+            pipPbpViewModel.SelectedHomeDevice=new HomeDevice();
+            result = pipPbpViewModel.ExecuteVideoSwpa();
+            Assert.That(result, Is.EqualTo(false));
+
+            pipPbpViewModel.SelectedHomeDevice = new HomeDevice() { };
+            pipPbpViewModel.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            deviceManagerSAMock.Setup(x => x.VideoSwap(It.IsAny<MonitorInfo>(),It.IsAny<UInt16>(), It.IsAny<UInt16>())).Returns(Task.FromResult(true));
+            result = pipPbpViewModel.ExecuteVideoSwpa();
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestIsUsbSwitchButtonVisible()
+        {
+            //SelectedHomeDevice == null
+            bool result = pipPbpViewModel.IsUsbSwitchButtonVisible;
+            Assert.That(result, Is.EqualTo(false));
+
+            //SelectedHomeDevice.HasCapability_NetworkKvm==true
+            HomeDevice device = new HomeDevice();
+            PrivateObject privateObjecta = new PrivateObject(device);
+            privateObjecta.SetFieldOrProperty("_hasCapability_NetworkKvm", true);
+            pipPbpViewModel.SelectedHomeDevice = device;
+            privateObject.SetFieldOrProperty("_isNetworkKvmOn",true);
+            result = pipPbpViewModel.IsUsbSwitchButtonVisible;
+            Assert.That(result, Is.EqualTo(true));
+
+            //SelectedHomeDevice.HasCapability_UsbKvm==true
+            pipPbpViewModel.SelectedHomeDevice = new HomeDevice();
+            var monitorinfo=new MonitorInfo();
+            Dictionary<string, List<string>> CapabilityDic = new Dictionary<string, List<string>>();
+            CapabilityDic.Add("EE", new List<string>());
+            monitorinfo.CapabilityDic = CapabilityDic;
+            device.MonitorInfo = monitorinfo;
+            pipPbpViewModel.SelectedHomeDevice = device;
+            result = pipPbpViewModel.IsUsbSwitchButtonVisible;
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestIsUsbSwitchButtonEnabled()
+        {
+            var result = pipPbpViewModel.IsUsbSwitchButtonEnabled;
+            Assert.That(result, Is.EqualTo(false));
+
+            //SelectedHomeDevice.HasCapability_UsbKvm==true
+            pipPbpViewModel.SelectedSplitItem = new SplitItem();
+            HomeDevice device = new HomeDevice();
+            pipPbpViewModel.SelectedHomeDevice = new HomeDevice();
+            var monitorinfo = new MonitorInfo();
+            Dictionary<string, List<string>> CapabilityDic = new Dictionary<string, List<string>>();
+            CapabilityDic.Add("EE", new List<string>());
+            monitorinfo.CapabilityDic = CapabilityDic;
+            device.MonitorInfo = monitorinfo;
+            pipPbpViewModel.SelectedHomeDevice = device;
+            privateObject.SetFieldOrProperty("_isUsbKvmOn", true);
+            result = pipPbpViewModel.IsUsbSwitchButtonEnabled;
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestExecuteUsbSwitch()
+        {
+
+            pipPbpViewModel.SelectedHomeDevice = new HomeDevice();
+            deviceManagerSAMock.Setup(x => x.UsbSwitch1(It.IsAny<MonitorInfo>(), It.IsAny<UInt16>())).Returns(Task.FromResult(true));
+            var result = pipPbpViewModel.ExecuteUsbSwitch();
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnActivated()
+        {
+            DdpmCommonHelper.ModuleOwner=moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            deviceManagerSAMock.Setup(x => x.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            deviceManagerSAMock.Setup(x => x.GetOnNKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            pipPbpViewModel=new PipPbpViewModel();
+
+            try
+            {
+                pipPbpViewModel.OnActivated();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+
     }
 }
