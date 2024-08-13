@@ -109,7 +109,7 @@ namespace DDPM.UI.Module.Color
                 {                   
                     RunType = (int)ColorPresetRunType.Auto,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard"
+                    PresetForManual = "Standard/Native"
                 });
 
                 index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
@@ -142,7 +142,7 @@ namespace DDPM.UI.Module.Color
                 {                  
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(temp_selApps.AppName, new ColorPresetSettings_AppInfo()
                     {
-                        ColorPresetName = "Standard",
+                        ColorPresetName = "Standard/Native",
                         IconName = temp_selApps.AppIcon,
                         
                     });

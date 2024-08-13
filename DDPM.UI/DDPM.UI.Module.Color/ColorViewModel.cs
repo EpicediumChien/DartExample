@@ -197,22 +197,44 @@ namespace DDPM.UI.Module.Color
                                     int count = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName].Count;
 
                                     // add jim 20240725
-                                    int i = 0;
-                                    for (i = 0; i < count; i++)
-                                    {
-                                        RegistryUtils.MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
-                                    }
+                                    //int i = 0;
+                                    //for (i = 0; i < count; i++)
+                                    //{
+                                    //    RegistryUtils.MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                                    //}
 
-                                    for (i = 0; i < count; i++)
+                                    for (int i = 0; i < count; i++)
                                     {
-                                        if (string.Equals(SupportColorPresets[idex], "Standard", StringComparison.OrdinalIgnoreCase) && string.Equals(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset, "Native", StringComparison.OrdinalIgnoreCase))
+                                        string[] separators = { "|" };
+                                        string[] strICC_ColorPresets = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset.Split(separators, StringSplitOptions.None);
+
+                                        if (string.Equals(SupportColorPresets[idex], "Standard/Native", StringComparison.OrdinalIgnoreCase) )
                                         {
-                                            RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
-                                            break;
+                                            if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                                                break;
+                                            }                                          
+                                        }
+                                        else if (string.Equals(SupportColorPresets[idex], "Game/Game1", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                                                break;
+                                            }
+                                        }
+                                        else if (string.Equals(SupportColorPresets[idex], "Rec. 709 / BT.709", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                                                break;
+                                            }
                                         }
 
 
-                                        if (string.Equals(SupportColorPresets[idex], _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset, StringComparison.OrdinalIgnoreCase))
+                                        if (string.Equals(SupportColorPresets[idex], strICC_ColorPresets[0], StringComparison.OrdinalIgnoreCase))
                                         {
                                             RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
                                             break;
@@ -341,21 +363,21 @@ namespace DDPM.UI.Module.Color
                     DeviceInfo = mo.edid,                   
                     RunType = (int)ColorPresetRunType.Auto,                 
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard"
+                    PresetForManual = "Standard/Native"
                 });
 
                 index = get_index_of_json_config_for_cur_monitor(mo);
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard",
+                    ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
 
                 });
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard",
+                    ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
 
                 });
@@ -570,13 +592,13 @@ namespace DDPM.UI.Module.Color
                 {
                     config.AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                     {
-                        ColorPresetName = "Standard",
+                        ColorPresetName = "Standard/Native",
                         IconName = "Assets/palette.png",
 
                     });
                     config.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                     {
-                        ColorPresetName = "Standard",
+                        ColorPresetName = "Standard/Native",
                         IconName = "Assets/palette.png",
 
                     });
@@ -859,17 +881,44 @@ namespace DDPM.UI.Module.Color
                     {
                         // 20240619 jim modify
 
-                        if (string.Equals(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset, "Native", StringComparison.OrdinalIgnoreCase))
-                            DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Standard");
+                        //string strICC_ColorPreset = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset;
+
+                        string[] separators = { "," };
+                        string[] strICC_ColorPresets = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset.Split(separators, StringSplitOptions.None);
+
+                        if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
+                            DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Standard/Native");
+                        else if(string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
+                            DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Game/Game1");
+                        else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
+                            DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Rec. 709 / BT.709");
                         else
-                            DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset);
+                            DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, strICC_ColorPresets[0]);
 
 
-                        if (string.Equals(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset, "Native", StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                         {
                             foreach (string colorpreset in SupportColorPresets)
                             {
-                                if (string.Equals(colorpreset, "Standard", StringComparison.OrdinalIgnoreCase))
+                                if (string.Equals(colorpreset, "Standard/Native", StringComparison.OrdinalIgnoreCase))
+                                    break;
+                                index++;
+                            }
+                        }
+                        else if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
+                        {
+                            foreach (string colorpreset in SupportColorPresets)
+                            {
+                                if (string.Equals(colorpreset, "Game/Game1", StringComparison.OrdinalIgnoreCase))
+                                    break;
+                                index++;
+                            }
+                        }
+                        else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
+                        {
+                            foreach (string colorpreset in SupportColorPresets)
+                            {
+                                if (string.Equals(colorpreset, "Rec. 709 / BT.709", StringComparison.OrdinalIgnoreCase))
                                     break;
                                 index++;
                             }
@@ -879,7 +928,7 @@ namespace DDPM.UI.Module.Color
                             foreach (string colorpreset in SupportColorPresets)
                             {
 
-                                if (string.Equals(colorpreset, _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset, StringComparison.OrdinalIgnoreCase))
+                                if (string.Equals(colorpreset, strICC_ColorPresets[0], StringComparison.OrdinalIgnoreCase))
                                 {
                                     break;
                                 }
