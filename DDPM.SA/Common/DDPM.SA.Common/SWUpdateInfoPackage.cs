@@ -77,4 +77,35 @@ namespace DDPM.SA.Common
         UserAborted = 9,
         Unknow = 99
     }
+    /// <summary>
+    /// Metadata結構
+    /// </summary>
+    public class ChangeLog
+    {
+        public string Version { get; set; }
+        public string ServerPath { get; set; }
+        public List<string> SupportedOS { get; set; }
+        public string MinimumSoftware { get; set; }
+    }
+    /// <summary>
+    /// Metadata結構
+    /// </summary>
+    public class Software
+    {
+        public string SoftwareName { get; set; }
+        public string SoftwareVersion { get; set; }
+        public string ServerPath { get; set; }
+        public string InstallPath { get; set; }
+        public List<string> SupportedOS { get; set; }
+        public string MinimumSoftware { get; set; }
+    }
+    /// <summary>
+    /// Metadata結構
+    /// </summary>
+    public class SWUpdateHelper
+    {
+        public int Version { get; set; }
+        public ChangeLog ChangeLog { get; set; }
+        public List<Software> Softwares { get; set; }
+    }
 }

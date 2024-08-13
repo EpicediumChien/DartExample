@@ -29,6 +29,8 @@ using Timer = System.Timers.Timer;
 using DDPM.SA.Plugins.SWUpdate;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace DDPM.SA.Plugins.User.SWUpdate
 {
@@ -82,6 +84,7 @@ namespace DDPM.SA.Plugins.User.SWUpdate
         bool _IsShowNotify = true;
         bool _isDefer = false;
         bool _isForce = false;
+        string URL = $"https://clientperipherals.dell.com/DDPM/3fcf51beb3c8/Windows/Software/";
         #region Events 
         /// <summary>
         /// 呼叫DeviceManager呼叫我的檢查更新方法，用於排成定期檢查
@@ -106,6 +109,19 @@ namespace DDPM.SA.Plugins.User.SWUpdate
             _checkUpdateScheduleTimer = new Timer();
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
             _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+            if (localKey64 != null)
+            {
+                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
+                if (registryKey != null)
+                {
+                    string obj = registryKey?.GetValue("TestServerURL").ToString();
+                    if (!string.IsNullOrEmpty(obj))
+                    {
+                        URL = obj + "//ddpm//";
+                    }
+                }
+            }
         }
         #region Overriding methods
         #region IDisposableObservable Support
@@ -204,25 +220,20 @@ namespace DDPM.SA.Plugins.User.SWUpdate
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _SWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
-            return Task.FromResult(new List<SWUpdateInfo>());
-            //if (updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0)
+            SWUpdateHelper swUpdateHelper = DownloadMetadata();
+            if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
             {
-                //for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
+                for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
                 {
-                    string newVer = "65535";
-                    string CurrentVersion = "123";
-                    if (!int.TryParse(newVer, out _))
-                    {
-                        newVer = Convert.ToInt32(newVer, 16).ToString();
-                    }
+                    string CurrentVersion = "20001";
                     SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                     {
-                        TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
+                        TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
                         SoftwareVersion = Regex.Replace(Convert.ToInt32(CurrentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(CurrentVersion).ToString("D4").Length * 2) - 1),
-                        NeedUpdated = int.Parse(newVer) > int.Parse(CurrentVersion) ? true : false,
-                        ServerPath = "",
-                        FileSavepath = "C:\\Users\\Diablo16\\Downloads\\DDPM-Setup v2.0.0.28-NKVM-pwdDDPM\\DDPM-Setup v2.0.0.28-NKVM-TestingOnly.exe",
-                        SoftwareName = "DDPM"
+                        NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(CurrentVersion) ? true : false,
+                        ServerPath = swUpdateHelper.Softwares[i].ServerPath,
+                        SoftwareName = "DDPM",
+                        FileSavepath = swUpdateHelper.Softwares[i].InstallPath
                     };
                     _SWUpdateInfoPackage.SWUpdateInfo.Add(SWUpdateInfo);
                 }
@@ -233,6 +244,42 @@ namespace DDPM.SA.Plugins.User.SWUpdate
                 _logs.DebugMsg_1(nameof(CheckUpdate) + " done.");
             }
             return Task.FromResult(new List<SWUpdateInfo>());
+        }
+        private SWUpdateHelper DownloadMetadata()
+        {
+            //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
+                                                                                                                //Should enable server certificate validation on this SSL/TLS connection before formal release
+
+            // 使用 HttpClient 來取得 JSON 資料
+            using (HttpClient client = new HttpClient(handler))
+            {
+                try
+                {
+                    // 發送 GET 請求
+                    HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
+                    response.EnsureSuccessStatusCode();
+                    // 讀取 JSON 內容
+                    string jsonString = response.Content.ReadAsStringAsync().Result;
+                    // 替換 %1 為實際的 URL
+                    jsonString = jsonString.Replace("%1/", URL);
+                    // 解析 JSON
+                    SWUpdateHelper data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
+                    foreach (Software software in data.Softwares)
+                    {
+                        string version =
+                        Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
+                        software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup v{version}");
+                    }
+                    return data;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                }
+            }
+            return new SWUpdateHelper();
         }
         void HandleUpdateInfo()
         {
