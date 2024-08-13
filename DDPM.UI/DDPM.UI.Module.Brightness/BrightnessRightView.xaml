@@ -16,7 +16,11 @@
                 <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />
+            <!--<local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />-->
+
+            <local:BooleanToBrushConverter x:Key="BooleanToBrushConverter" TrueBrush="Gray" FalseBrush="White" />
+
+            <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -231,14 +235,16 @@
                                         </Grid.ColumnDefinitions>
 
                                         <UXControls:UXTextBlock
+                                            Name="SynchronizeTextBlock"
                                             Grid.Column="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="Synchronize between monitors"
                                             TextBlockSemanticColorType="Light"
-                                            TextBlockType="Display1" />
+                                            TextBlockType="Display1" 
+                                            />
 
                                         <Image
                                             Grid.Column="1"
@@ -274,8 +280,9 @@
                                             Content="{Binding Path=IsSynchronize_String}"
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
-                                            Foreground="White"
-                                            IsChecked="{Binding Path=IsSynchronize}" />
+                                            Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource BooleanToBrushConverter}}"
+                                            IsChecked="{Binding Path=IsSynchronize}" 
+                                            IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
                                     </Grid>
                                 </Border>
                             </StackPanel>

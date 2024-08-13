@@ -91,6 +91,8 @@ namespace DDPM.UI.Module.Brightness
                 vm.UpdateBrightnessContrast();                           
             }
             Trace.WriteLine($"3. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");*/
+            List<ALSConfig> alsSynchronizeList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
+            vm.CheckisShowSynchronize(alsSynchronizeList);
         }
         
         private void Expander_Manual_Expanded_Luminance(object sender, RoutedEventArgs e)
