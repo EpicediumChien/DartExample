@@ -11,7 +11,9 @@ namespace DDPM.SA.Common
 {
     public class ITSettingEventArgs : EventArgs //definition for ICliManagerIT
     {
-        public string serializedString_ITUpdate { get; set; }
+        public string target_feature { get; set; }
+        //force to use string as data transfer format
+        public string target_value { get; set; }
     }
 
     /// <summary>
@@ -20,7 +22,8 @@ namespace DDPM.SA.Common
     /// </summary>
     public interface ISettingsManagerIT : IFrameworkPlugin
     {
-        
+        Task<DDPMITConfig> ReadITConfigData(bool force_reload = false);
+        Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list);
     }
 
     /// <summary>
