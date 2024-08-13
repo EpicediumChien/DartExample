@@ -833,11 +833,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(als_connecte);
         }
         /// <summary>
-        /// Get All Exist Als Config
+        /// Delete duplicate data, return All Exist Als Config
         /// </summary>
         /// <returns>Return static AllALSConfig</returns>
         public Task<List<ALSConfig>> GetAllExistAlsConfig()
         {
+            var uniqueALSConfigs = new HashSet<(string DisplayName, string SerialNumber)>();
+            var distinctALSConfigList = new List<ALSConfig>();
+            if (AllALSConfig.Count > 1)
+            {
+                foreach (var config in AllALSConfig)
+                {
+                    var key = (config.DisplayName, config.serialNumber);
+                    if (uniqueALSConfigs.Add(key))
+                    {
+                        distinctALSConfigList.Add(config);
+                    }
+                }
+                AllALSConfig = distinctALSConfigList;
+            }
             return Task.FromResult(AllALSConfig);
         }
 
