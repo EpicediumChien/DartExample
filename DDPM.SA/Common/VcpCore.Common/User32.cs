@@ -323,6 +323,7 @@ namespace VcpCore.Common
 
         public enum DISPLAYCONFIG_TOPOLOGY_ID
         {
+            Zero = 0x0,
             DISPLAYCONFIG_TOPOLOGY_INTERNAL = 0x00000001,
             DISPLAYCONFIG_TOPOLOGY_CLONE = 0x00000002,
             DISPLAYCONFIG_TOPOLOGY_EXTEND = 0x00000004,
@@ -583,5 +584,123 @@ namespace VcpCore.Common
             FormatMessage(0x1300, ref TempPtr, (int)GetLastError(), 0, ref Msg, 255, ref TempPtr);
             return Msg.Trim(TrimChar);
         }
+
+        /// <summary>
+        /// 設定螢幕的參數
+        /// </summary>
+        /// <param name="lpszDeviceName"></param>
+        /// <param name="lpDevMode"></param>
+        /// <param name="hwnd"></param>
+        /// <param name="dwflags"></param>
+        /// <param name="lParam"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll")]
+        public static extern int ChangeDisplaySettingsEx(string lpszDeviceName, ref DEVMODE lpDevMode, IntPtr hwnd, ChangeDisplaySettingsFlags dwflags, IntPtr lParam);
+        /// <summary>
+        /// 設定延伸模式
+        /// </summary>
+        /// <param name="numPathArrayElements"></param>
+        /// <param name="pathArray"></param>
+        /// <param name="numModeArrayElements"></param>
+        /// <param name="modeArray"></param>
+        /// <param name="flags"></param>
+        /// <returns></returns>
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern long SetDisplayConfig(uint numPathArrayElements,
+        IntPtr pathArray, uint numModeArrayElements, IntPtr modeArray, uint flags);
+
+        public const int ENUM_REGISTRY_SETTINGS = -2;
+
+        public const int DISP_CHANGE_SUCCESSFUL = 0;
+        public const int DISP_CHANGE_BADDUALVIEW = -6;
+        public const int DISP_CHANGE_BADFLAGS = -4;
+        public const int DISP_CHANGE_BADMODE = -2;
+        public const int DISP_CHANGE_BADPARAM = -5;
+        public const int DISP_CHANGE_FAILED = -1;
+        public const int DISP_CHANGE_NOTUPDATED = -3;
+        public const int DISP_CHANGE_RESTART = 1;
+
+        public const int CDS_NONE = 0;
+        public const int CDS_UPDATEREGISTRY = 0x00000001;
+        public const int CDS_TEST = 0x00000002;
+        public const int CDS_FULLSCREEN = 0x00000004;
+        public const int CDS_GLOBAL = 0x00000008;
+        public const int CDS_SET_PRIMARY = 0x00000010;
+        public const int CDS_VIDEOPARAMETERS = 0x00000020;
+        public const int CDS_ENABLE_UNSAFE_MODES = 0x00000100;
+        public const int CDS_DISABLE_UNSAFE_MODES = 0x00000200;
+        public const int CDS_RESET = 0x40000000;
+        public const int CDS_RESET_EX = 0x20000000;
+        public const int CDS_NORESET = 0x10000000;
+
+
+        public const int DMDO_DEFAULT = 0;
+        public const int DMDO_90 = 1;
+        public const int DMDO_180 = 2;
+        public const int DMDO_270 = 3;
+
+        public enum ChangeDisplaySettingsFlags : uint
+        {
+            CDS_NONE = 0,
+            CDS_UPDATEREGISTRY = 0x01,
+            CDS_TEST = 0x02,
+            CDS_FULLSCREEN = 0x04,
+            CDS_GLOBAL = 0x08,
+            CDS_SET_PRIMARY = 0x10,
+            CDS_VIDEOPARAMETERS = 0x20,
+            CDS_ENABLE_UNSAFE_MODES = 0x100,
+            CDS_DISABLE_UNSAFE_MODES = 0x200,
+            CDS_RESET = 0x40000000,
+            CDS_RESET_EX = 0x20000000,
+            CDS_NORESET = 0x10000000
+        }
+        [Flags]
+        public enum SetDisplayConfigFlags : uint
+        {
+            SDC_TOPOLOGY_INTERNAL = 0x00000001,
+            SDC_TOPOLOGY_CLONE = 0x00000002,
+            SDC_TOPOLOGY_EXTEND = 0x00000004,
+            SDC_TOPOLOGY_EXTERNAL = 0x00000008,
+            SDC_APPLY = 0x00000080
+        }
+        #region DisplayConfig Enum/Sturct
+        
+        [StructLayout(LayoutKind.Sequential)]
+        public struct DISPLAYCONFIG_TARGET_PREFERRED_MODE
+        {
+            public DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+            public int width;
+            public int height;
+            public DISPLAYCONFIG_TARGET_MODE targetMode;
+        }
+        #endregion
+        [DllImport("user32")]
+        public static extern int QueryDisplayConfig(QDC flags, out int numPathArrayElements, [Out] DISPLAYCONFIG_PATH_INFO[] pathInfoArray, out int modeInfoArrayElements, [Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID id);
+
+        [DllImport("user32.dll")]
+        public static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_PREFERRED_MODE deviceMode);
+
+        [Flags]
+        public enum DisplaySettingsFlags
+        {
+            CDS_NONE = 0,
+            CDS_UPDATEREGISTRY = 1,
+            CDS_TEST = 2,
+            CDS_FULLSCREEN = 4,
+            CDS_GLOBAL = 8,
+            CDS_SET_PRIMARY = 0x10,
+            CDS_VIDEOPARAMETERS = 0x20,
+            CDS_ENABLE_UNSAFE_MODES = 0x100,
+            CDS_DISABLE_UNSAFE_MODES = 0x200,
+            CDS_RESET = 0x40000000,
+            CDS_RESET_EX = 0x20000000,
+            CDS_NORESET = 0x10000000
+        }
+        public enum MC_VCP_CODE_TYPE
+        {
+            MC_MOMENTARY,
+            MC_SET_PARAMETER
+        }
+        public const int EDD_GET_DEVICE_INTERFACE_NAME = 1;
     }
 }

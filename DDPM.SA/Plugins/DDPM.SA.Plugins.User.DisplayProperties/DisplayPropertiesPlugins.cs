@@ -7,28 +7,19 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
-using static DDPM.SA.Plugins.User.DisplayProperties.user32;
 using System.Diagnostics;
-using VcpCore.Common;
-using IDs = DDPM.SA.Common.IDs;
-using static VcpCore.Common.User32;
-using DEVMODE = DDPM.SA.Plugins.User.DisplayProperties.user32.DEVMODE;
-using QDC = DDPM.SA.Plugins.User.DisplayProperties.user32.QDC;
-using DISPLAYCONFIG_TOPOLOGY_ID = DDPM.SA.Plugins.User.DisplayProperties.user32.DISPLAYCONFIG_TOPOLOGY_ID;
-using DISPLAYCONFIG_TARGET_DEVICE_NAME = DDPM.SA.Plugins.User.DisplayProperties.user32.DISPLAYCONFIG_TARGET_DEVICE_NAME;
-using DISPLAYCONFIG_DEVICE_INFO_TYPE = DDPM.SA.Plugins.User.DisplayProperties.user32.DISPLAYCONFIG_DEVICE_INFO_TYPE;
-using DISPLAYCONFIG_PATH_INFO = DDPM.SA.Plugins.User.DisplayProperties.user32.DISPLAYCONFIG_PATH_INFO;
-using DISPLAYCONFIG_MODE_INFO = DDPM.SA.Plugins.User.DisplayProperties.user32.DISPLAYCONFIG_MODE_INFO;
-using LUID = DDPM.SA.Plugins.User.DisplayProperties.user32.LUID;
 using System.Windows.Controls;
 using System.Security.Cryptography.Xml;
 using Windows.Graphics.Display;
 using System.Linq;
-using DISPLAY_DEVICE = DDPM.SA.Plugins.User.DisplayProperties.user32.DISPLAY_DEVICE;
 using System.Globalization;
 using System.ComponentModel;
 using System.Drawing;
 using Dell.Client.Framework.Common.Extensions;
+using VcpCore.Common;
+using IDs = DDPM.SA.Common.IDs;
+using static VcpCore.Common.User32;
+using static VcpCore.Common.dxva2;
 
 
 namespace DDPM.SA.Plugins.User.DisplayProperties
@@ -87,7 +78,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         public Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName)
         {
             DEVMODE devMode = new DEVMODE();
-            if (EnumDisplaySettings(DisplayName, user32.ENUM_CURRENT_SETTINGS, ref devMode))
+            if (EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
             {
                 return Task.FromResult((DisplayOrientation)devMode.dmDisplayOrientation);
             }
@@ -211,7 +202,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation)
         {
             DEVMODE devMode = new DEVMODE();
-            if (EnumDisplaySettings(DisplayName, user32.ENUM_CURRENT_SETTINGS, ref devMode))
+            if (EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
             {
                 properties = new Properties()
                 {
@@ -345,7 +336,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 DEVMODE devMode = new DEVMODE();
                 devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
 
-                if (EnumDisplaySettings(DisplayName, user32.ENUM_CURRENT_SETTINGS, ref devMode))
+                if (EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
                 {
                     int w = properties.Resolutions_Width, h = properties.Resolutions_High;
                     if (properties.Resolutions_Width <= 0 && properties.Resolutions_High <= 0)
@@ -518,7 +509,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
                         System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
                         watch.Start();
-                        var info = new user32.MonitorInfoEx();
+                        var info = new MonitorInfoEx();
                         GetMonitorInfo(new HandleRef(null, hMonitor), info);
                         string DeviceName = new string(info.szDevice).Trim('\0');
                         //----
@@ -533,13 +524,13 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         for (int jj = 0; EnumDisplayDevices(DeviceName, (uint)jj, ref dd, 0); jj++)
                         {
 
-                            if ((dd.StateFlags & user32.DisplayDeviceStateFlags.AttachedToDesktop) == 0)
+                            if ((dd.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) == 0)
                                 continue;
 
                             realindex++;
 
                             DEVMODE devmode = new DEVMODE();
-                            bool success = EnumDisplaySettings(DeviceName, user32.ENUM_CURRENT_SETTINGS, ref devmode);
+                            bool success = EnumDisplaySettings(DeviceName, ENUM_CURRENT_SETTINGS, ref devmode);
                             MonitorInfo _TargetMonitor = new MonitorInfo();
                             _TargetMonitor.DisplayName = DeviceName;
                             if (!string.IsNullOrWhiteSpace(_TargetMonitor.DisplayName))
@@ -558,7 +549,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
                 //MonitorEnumDelegate lpfnEnum1 = _Get_Monitors;
 
-                if ((!user32.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, _Get_Monitors, IntPtr.Zero)))
+                if ((!EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, _Get_Monitors, IntPtr.Zero)))
                     throw new Win32Exception(Marshal.GetLastWin32Error());
 
                 _logs?.DebugMsg_1("_GetMonitors() ... done");

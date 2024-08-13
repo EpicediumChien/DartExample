@@ -2186,6 +2186,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.FromResult(_DisplayManagerPlugin.GetAllExistAlsConfig().Result);
         }
+        public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain)
+        {
+            return Task.FromResult(_DisplayManagerPlugin.UpdateExistAlsConfig(monitorInfoMain).Result);
+        }
+
         public Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS)
         {
             return Task.FromResult(_DisplayManagerPlugin.SynchronizeALSFeatureValue(monitorALS).Result);
@@ -2439,6 +2444,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     List<MonitorInfo> new_mo = new List<MonitorInfo>();
                     if (_AllInfoMonitors.Count > 0)
                         new_mo.AddRange(_AllInfoMonitors);
+
+                    _DisplayManagerPlugin.UpdateExistAlsConfig(new_mo).Wait();
 
                     writelog($"[DeviceManager] Got event SystemEvents_DisplaySettingsChanged, monitor count {_AllInfoMonitors.Count}");
                     if (_AllInfoMonitors.Count > 0)
@@ -2981,12 +2988,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
-                        _AllInfoMonitors.Clear();
-                        //_AllInfoMonitorsRecord.Clear();
-                        List<MonitorInfo> monitorInfos = _DisplayManagerPlugin.GetMonitors().Result;
-                        _AllInfoMonitors.AddRange(monitorInfos);
-                        //_AllInfoMonitorsRecord.AddRange(monitorInfos);
-                        GetLockRotateStatus();
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         _DisplayManagerPlugin.EAEditCompleted += _DisplayManagerPlugin_EAEditCompleted;
@@ -2996,8 +2997,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.EAEditReturn += _DisplayManagerPlugin_EAEditReturn;
                         //Bruce, 2024-08-09 add new event
                         _DisplayManagerPlugin.HDRChangeEvent += OnHDRStatusChangeHandler;
+                        //0812 check required plugins before init
+                        DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
 
-                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition, monitor count is {monitorInfos.Count}");
+                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -3005,12 +3008,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
-                        _AllInfoMonitors.Clear();
-                        //_AllInfoMonitorsRecord.Clear();
-                        List<MonitorInfo> monitorInfos = _DisplayManagerPlugin.GetMonitors().Result;
-                        _AllInfoMonitors.AddRange(monitorInfos);
-                        //_AllInfoMonitorsRecord.AddRange(monitorInfos);
-                        GetLockRotateStatus();
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         _DisplayManagerPlugin.EAEditCompleted += _DisplayManagerPlugin_EAEditCompleted;
@@ -3020,11 +3017,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.EAEditReturn += _DisplayManagerPlugin_EAEditReturn;
                         //Bruce, 2024-08-09 add new event
                         _DisplayManagerPlugin.HDRChangeEvent += OnHDRStatusChangeHandler;
+                        //0812 check required plugins before init
+                        DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
 
-                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition, monitor count is {monitorInfos.Count}");
+                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }
                 }
             });
+        }
+
+        //Required plugins:
+        //1. _DisplayManagerPlugin
+        //2. _SettingsPlugin
+        private void DoThingsAfterDisplayRelatedPluginsReady(string caller)
+        {
+            if(_DisplayManagerPlugin == null || _SettingsPlugin == null)
+            {
+                writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}");
+                writelog($"[DoThingsAfterDisplayRelatedPluginsReady] Has _DisplayManagerPlugin:{(_DisplayManagerPlugin == null)}, has _SettingsPlugin: {_SettingsPlugin == null}");
+                return;
+            }
+            _AllInfoMonitors.Clear();
+            List<MonitorInfo> monitorInfos = GetMonitors().Result;//it it used to active monitor settings
+            _AllInfoMonitors.AddRange(monitorInfos);
+
+            GetLockRotateStatus();
+            writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK. Monitor count is {_AllInfoMonitors.Count}");
         }
 
         private void GetCurrentColorPresetCondition()
@@ -3117,7 +3135,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             _SettingsPlugin.SetAppConfigData(config);
                             //0612 Bruce 自動旋轉畫面功能，因需使用display跟settings兩個Plugin，其中一個可能還沒被叫起來，故兩邊都新增取得狀態方法。
-                            GetLockRotateStatus();
+                            //GetLockRotateStatus();
+                            //0812 check required plugins before init
+                            DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
+
                             SetDelayFWUpdateInfoPackage();
                             CheckUODFWUInfoPackage();
                             //load hotkeysetting
@@ -3139,7 +3160,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             _SettingsPlugin.SetAppConfigData(config);
                             //0612 Bruce 自動旋轉畫面功能，因需使用display跟settings兩個Plugin，其中一個可能還沒被叫起來，故兩邊都新增取得狀態方法。
-                            GetLockRotateStatus();
+                            //GetLockRotateStatus();
+                            //0812 check required plugins before init
+                            DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
+
                             SetDelayFWUpdateInfoPackage();
                             CheckUODFWUInfoPackage();
                             //load hotkeysetting
@@ -3554,16 +3578,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Brightness_Value));
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo ,hotkeyType = job};
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Brightness_Value));
+                    }
                     break;
                 case HotkeyType.BrightnessIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Brightness_Value));
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    { 
+                       _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Brightness_Value));                   
+                    }
                     break;
                 case HotkeyType.ContrastReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Contrast_Value));
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    { 
+                       _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Contrast_Value));                  
+                    }
                     break;
                 case HotkeyType.ContrastIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Contrast_Value));
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {                    
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Contrast_Value));
+                    }
                     break;
                 case HotkeyType.LuminanceReduce:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Luminance_Value));
@@ -3838,6 +3894,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return string.Empty;
         }
 
+        private bool IsALSautobrightness(MonitorInfo monitorInfo)
+        {
+            List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
+            ALSConfig find = aLSConfigs.Find(x => x.serialNumber.Equals(monitorInfo.edid.SerialNumber) && x.isAutoBrightness);
+            return find != null;
+        }
+        private void HotkeyPopup(object o)
+        {
+            Task.Run(() =>
+            {
+                PopupBaseManage popupBaseManage = new PopupBaseManage();
+                popupBaseManage.LeftButtonClick += YesEvent;
+                popupBaseManage.RightButtonClick += NoEvent;
+                string title = @"Warning";
+                string info = @"Auto Brightness is currently enabled.Do you wish to override it?";
+                popupBaseManage.FWU_Show(title, info, "Yes", "No", o, true, -1);
+            });
+
+        }
+        private void YesEvent(object o, object ob)
+        {
+            //Auto Brightness OFF & Auto OFF & Manual ON?
+            HotkeyPopWrap hotkeyPopWrap = (HotkeyPopWrap)ob;
+            List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
+            ALSConfig find = aLSConfigs.Find(x => x.serialNumber.Equals(hotkeyPopWrap.monitorInfo.edid.SerialNumber));
+            //diable autobrightness
+            SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find , ALSFeatureQueryType.AutoBrightness, "");
+            switch (hotkeyPopWrap.hotkeyType)
+            {
+                case HotkeyType.BrightnessReduce:
+                     _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
+                    break;
+                case HotkeyType.BrightnessIncrease:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
+                    break;
+                case HotkeyType.ContrastReduce:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
+                    break;
+                case HotkeyType.ContrastIncrease:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
+                    break;
+            }
+        }
+
+        private void NoEvent(object o, object ob)
+        {
+            //do nothing
+        }
+
         private void Reduce_Brightness_Value(MonitorInfo monitorInfo, Object[] param)
         {
             ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
@@ -3958,13 +4063,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     case PowerNapType.ReduceBrightness:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
-                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
-                                        Debug.WriteLine($"{setting.ModelName} ReduceBrightness - Enqueue:true");
+                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
+                                        Debug.WriteLine($"{setting.ModelName} ReduceBrightness - Enqueue:false");
                                         break;
                                     case PowerNapType.SleepIfRunning:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
-                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
-                                        Debug.WriteLine($"{setting.ModelName} SleepIfRunning - Enqueue:true");
+                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
+                                        Debug.WriteLine($"{setting.ModelName} SleepIfRunning - Enqueue:false");
                                         break;
                                     case PowerNapType.Off:
                                         break;

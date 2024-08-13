@@ -628,13 +628,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         //GetALSMMS(als, ref als_param);
                         //Dean 0624 move down get ALS settings before check if support
                         GetALSupport(als, ref als_param);
-                        if (als_param.result == true && als_param.isSupportALS != 0)
+                        if (als_param.result == true && als_param.isSupportALS != 0)//Read the ALS value only if ALS is supported
                         {
                             GetALSAll(als, ref als_param);
-                            als_param.serialNumber = als.edid.SerialNumber;
-                            als_param.DisplayName = als.DisplayName;
-                            AllALSConfig.Add(als_param);
                         }
+                        als_param.serialNumber = als.edid.SerialNumber;
+                        als_param.DisplayName = als.DisplayName;
+                        AllALSConfig.Add(als_param);
                     }
                 }
                 catch (Exception ex)
@@ -661,10 +661,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     aconfig = new ALSConfig(); // 2024-06-11 Wayn fixed.
                     GetALSupport(monitorInfos, ref aconfig); //fixed releate PIMS-287891
-                    GetALSAll(monitorInfos, ref aconfig);
-                    if (!aconfig.result)
+                    if (aconfig.result == true && aconfig.isSupportALS != 0)//Read the ALS value only if ALS is supported
                     {
-                        aconfig = new ALSConfig();
+                        GetALSAll(monitorInfos, ref aconfig);
                     }
                     aconfig.serialNumber = monitorInfos.edid.SerialNumber;
                     aconfig.DisplayName = monitorInfos.DisplayName;
@@ -834,12 +833,44 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(als_connecte);
         }
         /// <summary>
-        /// Get All Exist Als Config
+        /// Delete duplicate data, return All Exist Als Config
         /// </summary>
         /// <returns>Return static AllALSConfig</returns>
         public Task<List<ALSConfig>> GetAllExistAlsConfig()
         {
+            var uniqueALSConfigs = new HashSet<(string DisplayName, string SerialNumber)>();
+            var distinctALSConfigList = new List<ALSConfig>();
+            if (AllALSConfig.Count > 1)
+            {
+                foreach (var config in AllALSConfig)
+                {
+                    var key = (config.DisplayName, config.serialNumber);
+                    if (uniqueALSConfigs.Add(key))
+                    {
+                        distinctALSConfigList.Add(config);
+                    }
+                }
+                AllALSConfig = distinctALSConfigList;
+            }
             return Task.FromResult(AllALSConfig);
+        }
+
+        /// <summary>
+        /// Update Connected ALS Config
+        /// </summary>
+        /// <returns>Return List<ALSConfig> type</returns>
+        public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain)
+        {
+            List<ALSConfig> als_connecte = new List<ALSConfig>();
+            List<MonitorInfo> monitorALS = GetMonitors().Result;
+            foreach (MonitorInfo monitorInfo in monitorInfoMain)
+            {
+                ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.ToUpper().Equals(monitorInfo.DisplayName.ToUpper()) && x.serialNumber.ToUpper().Equals(monitorInfo.edid.SerialNumber.ToUpper()));
+                if (aconfig != null)
+                    als_connecte.Add(aconfig);
+            }
+            AllALSConfig = als_connecte;
+            return Task.FromResult(als_connecte);
         }
         /// <summary>
         /// Synchronize ALSF eature Value
@@ -848,7 +879,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <returns>success or fail</returns>
         public Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS)
         {
-            ALSConfig alsTemp = new ALSConfig();
             ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.Equals(monitorALS.DisplayName) && x.serialNumber.Equals(monitorALS.serialNumber));//Dean 0624
             for (int i = 0; i < AllALSConfig.Count; i++)
             {
@@ -874,29 +904,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ALSConfig aconfig = AllALSConfig.Find(x => x.DisplayName.Equals(monitorInfos.DisplayName) && x.serialNumber.Equals(monitorInfos.edid.SerialNumber));//Dean 0624
             if (aconfig == null)
             {
-                ALSConfig alsTemp = new ALSConfig();
                 aconfig = new ALSConfig();
-                //GetALSMMS(monitorInfos, ref alsTemp);
-                //if (alsTemp.result == false)
-                //{ 
-                //    _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue GetALSMMS False...");
-                //    return Task.FromResult(false);
-                //}
-                GetALSAll(monitorInfos, ref alsTemp);
-                if (alsTemp.result == false)
-                {
-                    _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue GetALSAll False...");
-                    return Task.FromResult(false);
-                }
-                GetALSupport(monitorInfos, ref alsTemp);
-                if (alsTemp.result == false)
+                GetALSupport(monitorInfos, ref aconfig);
+                if (aconfig.result == false)
                 {
                     _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue GetALSupport False...");
                     return Task.FromResult(false);
                 }
-                alsTemp.DisplayName = monitorInfos.DisplayName;
-                alsTemp.serialNumber = monitorInfos.edid.SerialNumber;//Dean 0624
-                AllALSConfig.Add(alsTemp);
+                if (aconfig.result == true && aconfig.isSupportALS != 0)//Read the ALS value only if ALS is supported
+                {
+                    GetALSAll(monitorInfos, ref aconfig);
+                }
+                if (aconfig.result == false)
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue GetALSAll False...");
+                    return Task.FromResult(false);
+                }
+                aconfig.DisplayName = monitorInfos.DisplayName;
+                aconfig.serialNumber = monitorInfos.edid.SerialNumber;//Dean 0624
+                AllALSConfig.Add(aconfig);
                 return Task.FromResult(true);
             }
             return Task.FromResult(true);
@@ -934,51 +960,40 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         }
         /// <summary>
         /// Get ALS Support Status
+        /// Capabilities string: 
+        /// ALS full function: 66(00F2)
+        /// AlS without ALS_Primary: 66(00D2)
+        /// ALS without sensor: 66(0012)
+        /// Exception: U2724D/DE & U2424H/HE using old definition: 66(0F02) / 66(0D02) / 66(0102)
         /// </summary>
         /// <param name="monitorInfos">monitor Info</param>
         /// <param name="param">ALSConfig data</param>
         private void GetALSupport(MonitorInfo monitorInfos, ref ALSConfig param)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature into GetALSupport ...");
-            param.result = false;
-            string alsData = GetVCPCapabilities(monitorInfos).Result;
-            if (!string.IsNullOrEmpty(alsData))
+
+            if (monitorInfos.CapabilityString.Contains("66"))//Directly determine CapabilityString to improve performance
             {
-                JObject VCPjson = JObject.Parse(alsData);
-                if (VCPjson.ContainsKey("CapsDataMap"))
+                if (monitorInfos.CapabilityString.Contains("00F2") || monitorInfos.CapabilityString.Contains("0F02"))
                 {
-                    JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
-                    if (capsDataMap.ContainsKey("Ambient Light Sensor"))
-                    {
-                        JArray alslist = (JArray)capsDataMap["Ambient Light Sensor"];
-                        if (alslist == null)
-                        {
-                            param.isSupportALS = 0;
-                            _logs.DebugMsg($"[DisplayMangerPlugin] not support ALS from {monitorInfos.edid.ModelName}");
-                        }
-                        else
-                        {
-                            foreach (var tmp in alslist)
-                            {
-                                switch (tmp.ToString())
-                                {
-                                    case "ALS full function":
-                                        param.isSupportALS = 2;
-                                        break;
-                                    case "ALS without ALS_Primary":
-                                        param.isSupportALS = 1;
-                                        break;
-                                    case "ALS without sensor":
-                                        param.isSupportALS = 0;
-                                        break;
-                                }
-                            }
-                            param.result = true;
-                        }
-                    }
+                    param.isSupportALS = 2;
+                }
+                else if (monitorInfos.CapabilityString.Contains("00D2") || monitorInfos.CapabilityString.Contains("0D02"))
+                {
+                    param.isPrimaryMonitorSync = false;
+                    param.isSupportALS = 1;
+                }
+                else
+                {
+                    param.isSupportALS = 0;
                 }
             }
-
+            else
+            {
+                param.isSupportALS = 0;
+                _logs.DebugMsg($"[DisplayMangerPlugin] not support ALS from {monitorInfos.edid.ModelName}");
+            }
+            param.result = true;
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave GetALSupport ");
         }
         /// <summary>
