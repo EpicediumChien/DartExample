@@ -1,4 +1,6 @@
-﻿using DDPM.UI.Common.Interfaces;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.PipPbp.Tests
 {
@@ -17,13 +20,28 @@ namespace DDPM.UI.Module.PipPbp.Tests
         private PipPbpModule? pipPbpModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
+        private Mock<IDeviceManagerSA>? deviceManagerSAMock;
+        private IDeviceManagerSA? deviceManagerSA;
+        private PipPbpViewModel? viewModel;
+        private HomeDevice? selectedHomeDevice;
 
         [SetUp]
         public void SetUp()
         {
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
-            pipPbpModule = new PipPbpModule();
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            viewModel = new PipPbpViewModel();
+            selectedHomeDevice = new HomeDevice();
+            viewModel.SelectedHomeDevice = selectedHomeDevice;
+            viewModel.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            deviceManagerSA = deviceManagerSAMock.Object;
+            deviceManagerSAMock.Setup(x => x.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            deviceManagerSAMock.Setup(x => x.GetOnNKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+            pipPbpModule = new PipPbpModule(moduleOwner);
             privateObject = new PrivateObject(pipPbpModule);
         }
 

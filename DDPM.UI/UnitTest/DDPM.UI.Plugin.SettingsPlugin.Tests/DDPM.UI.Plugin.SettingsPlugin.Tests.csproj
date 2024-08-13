@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DDPM.UI.Module.Kvm\DDPM.UI.Module.Kvm.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.Plugin.SettingsPlugin\DDPM.UI.Plugin.SettingsPlugin.csproj" />
     <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
   </ItemGroup>
 
@@ -27,8 +27,8 @@
     <Reference Include="DDPM.SA.Common">
       <HintPath>..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
     </Reference>
-    <Reference Include="VcpCore.Common">
-      <HintPath>..\..\CommonDll\VcpCore.Common.dll</HintPath>
+    <Reference Include="DPeMPublic.Common">
+      <HintPath>..\..\CommonDll\DPeMPublic.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
 

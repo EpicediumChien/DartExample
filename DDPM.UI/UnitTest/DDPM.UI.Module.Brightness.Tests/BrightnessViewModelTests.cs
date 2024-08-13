@@ -18,15 +18,20 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Drawing;
 using Newtonsoft.Json.Linq;
+using Dell.Client.Framework.UX.WPF;
+using DDPM.SA.Common.Display;
 
 namespace DDPM.UI.Module.Brightness.Tests
 {
+    [Apartment(ApartmentState.STA)]
     public class BrightnessViewModelTests
     {
         private BrightnessViewModel? brightnessViewModel;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private Mock<IDeviceManagerSA>? deviceManagerMock;
+        private Mock<IConsole>? myConsoleMock;
+        private IConsole? myConsole;
 
         [SetUp]
         public void Setup()
@@ -40,12 +45,23 @@ namespace DDPM.UI.Module.Brightness.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
+            myConsoleMock = new Mock<IConsole>();
+            myConsole = myConsoleMock.Object;
+            DdpmCommonHelper.MyConsole = myConsole;
+        }
 
+        [Test]
+
+        public void TestMyModule()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            var brightnessModule = new BrightnessModule();
+            brightnessViewModel.MyModule = brightnessModule;
+            Assert.That(brightnessViewModel.MyModule, Is.EqualTo(brightnessModule));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestBrightnessImage()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -56,7 +72,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestContrastImage()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -66,7 +81,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestLuminanceImage()
         {           
             var brightnessViewModel = new BrightnessViewModel();
@@ -76,7 +90,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestIsSynchronize_String()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -92,7 +105,40 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
+        public void TestBrightnessEnable()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            Assert.That(brightnessViewModel.BrightnessEnable, Is.EqualTo(false));
+
+            privateObject = new PrivateObject(brightnessViewModel);
+            privateObject.SetFieldOrProperty("IsBrightnessEnable", true);
+            Assert.That(brightnessViewModel.BrightnessEnable, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestBrightnessOpacity()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            Assert.That(brightnessViewModel.BrightnessOpacity, Is.EqualTo("0.5"));
+
+            privateObject = new PrivateObject(brightnessViewModel);
+            privateObject.SetFieldOrProperty("IsBrightnessEnable", true);
+            Assert.That(brightnessViewModel.BrightnessOpacity, Is.EqualTo("1.0"));
+        }
+
+        [Test]
+        public void TestGreayoutAlart()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            Assert.That(brightnessViewModel.GreayoutAlart, Is.EqualTo(Visibility.Visible));
+
+            privateObject = new PrivateObject(brightnessViewModel);
+            privateObject.SetFieldOrProperty("IsBrightnessEnable", true);
+            Assert.That(brightnessViewModel.GreayoutAlart, Is.EqualTo(Visibility.Collapsed));
+        }
+       
+
+        [Test]
         public void TestBrightnessMinsKey()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -104,7 +150,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestBrightnessAddKey()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -117,7 +162,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestContrastMinsKey()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -130,7 +174,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestContrastAddKey()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -142,7 +185,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestLuminanceMinsKey()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -154,7 +196,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestLuminanceAddKey()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -166,7 +207,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestBrightnessViewModel()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -177,7 +217,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestIsSynchronize()
         {
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -190,7 +229,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestBrightnessValue()
         {
             moduleOwnerMock = new Mock<IModuleOwner>();
@@ -213,7 +251,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestContrastValue()
         {
             moduleOwnerMock = new Mock<IModuleOwner>();
@@ -236,7 +273,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestLuminanceValue()
         {
             moduleOwnerMock = new Mock<IModuleOwner>();
@@ -259,7 +295,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestLuminanceMaxValue()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -267,7 +302,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestUpdateBrightnessContrast()
         {
             var brightnessViewModel=new BrightnessViewModel();
@@ -289,7 +323,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestUpdateLuminance()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -311,7 +344,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestModuleOwner()
         {          
             var mockModuleOwner = new Mock<IModuleOwner>();
@@ -323,7 +355,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestExpanderGroup()
         {       
             var brightnessViewModel = new BrightnessViewModel();
@@ -336,7 +367,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestisScheduleSupport()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -346,62 +376,58 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestisNormalBrightness()
         {
             var brightnessViewModel = new BrightnessViewModel();
-            Visibility myBrightnessViewModel = 0;
+            Visibility myBrightnessViewModel = Visibility.Visible;
             brightnessViewModel.isNormalBrightness = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isNormalBrightness, Is.EqualTo(myBrightnessViewModel));
 
-            myBrightnessViewModel = (Visibility)1;
+            myBrightnessViewModel = Visibility.Hidden;
             brightnessViewModel.isNormalBrightness = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isNormalBrightness, Is.EqualTo(myBrightnessViewModel));
 
-            myBrightnessViewModel = (Visibility)2;
+            myBrightnessViewModel = Visibility.Collapsed;
             brightnessViewModel.isNormalBrightness = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isNormalBrightness, Is.EqualTo(myBrightnessViewModel));
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestisLuminanceSupport()
         {
             var brightnessViewModel = new BrightnessViewModel();
-            Visibility myBrightnessViewModel = 0;
+            Visibility myBrightnessViewModel = Visibility.Visible;
             brightnessViewModel.isLuminanceSupport = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isLuminanceSupport, Is.EqualTo(myBrightnessViewModel));
 
-            myBrightnessViewModel = (Visibility)1;
+            myBrightnessViewModel = Visibility.Hidden;
             brightnessViewModel.isLuminanceSupport = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isLuminanceSupport, Is.EqualTo((Visibility)2));
 
-            myBrightnessViewModel = (Visibility)2;
+            myBrightnessViewModel = Visibility.Collapsed;
             brightnessViewModel.isLuminanceSupport = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isLuminanceSupport, Is.EqualTo(myBrightnessViewModel));
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestisAlsSupported()
         {
             var brightnessViewModel = new BrightnessViewModel();
-            Visibility myBrightnessViewModel = 0;
+            Visibility myBrightnessViewModel = Visibility.Visible;
             brightnessViewModel.isLuminanceSupport = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isLuminanceSupport, Is.EqualTo(myBrightnessViewModel));
 
-            myBrightnessViewModel = (Visibility)1;
+            myBrightnessViewModel = Visibility.Hidden;
             brightnessViewModel.isAlsSupported = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isAlsSupported, Is.EqualTo(myBrightnessViewModel));
 
-            myBrightnessViewModel = (Visibility)2;
+            myBrightnessViewModel = Visibility.Collapsed;
             brightnessViewModel.isAlsSupported = myBrightnessViewModel;
             Assert.That(brightnessViewModel.isAlsSupported, Is.EqualTo(myBrightnessViewModel));
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestSetALSAll()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -419,7 +445,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestSupportedAutoBrightness()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -433,7 +458,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestAutoBrightnessStatus()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -466,7 +490,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestUpdate_AutoBrightnessStatus()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -477,12 +500,174 @@ namespace DDPM.UI.Module.Brightness.Tests
             brightnessViewModel.Update_AutoBrightnessStatus(false);
             result = brightnessViewModel.AutoBrightnessStatus;
             Assert.That(result, Is.EqualTo(false));
-
         }
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
+        public void TestAutoBrightness_String()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            var result = brightnessViewModel.AutoBrightness_String;
+            Assert.That(result, Is.EqualTo("OFF"));
+
+            brightnessViewModel.Start_ALSConfig.isPrimaryMonitorSync = true;
+            result = brightnessViewModel.PrimaryMonitorSync_String;
+            Assert.That(result, Is.EqualTo("ON"));
+        }
+
+        [Test]
+        public void TestSupportedAutoColorTemp()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            bool supportedAutoColorTemp = true;
+            brightnessViewModel.SupportedAutoColorTemp = supportedAutoColorTemp;
+            var result = brightnessViewModel.SupportedAutoColorTemp;
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+
+        [Test]
+        public void TestAutoColorTempStatus()
+        {
+            var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
+            deviceManagerSAMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig>()));
+            deviceManagerSAMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            var brightnessViewModel = new BrightnessViewModel();
+            brightnessViewModel.SelectedHomeDevice = new HomeDevice();
+            brightnessViewModel.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            bool autoColorTempStatus = true;
+            brightnessViewModel.AutoColorTempStatus = autoColorTempStatus;
+            var result = brightnessViewModel.AutoColorTempStatus;
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+
+        [Test]
+        public void TestUpdate_AutoColorTempStatus()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            PrivateObject privateObject=new PrivateObject(brightnessViewModel);
+            brightnessViewModel.Update_AutoColorTempStatus(true);            
+            var result=privateObject.GetFieldOrProperty("_autoColorTempStatus");
+            Assert.That(result,Is.EqualTo(true));
+        }
+
+
+        [Test]
+        public void TestAutoColorTemp_String()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            var result = brightnessViewModel.AutoColorTemp_String;
+            Assert.That(result, Is.EqualTo("OFF"));
+
+            brightnessViewModel.Start_ALSConfig.isAutoColorTemp = true;
+            result = brightnessViewModel.AutoColorTemp_String;
+            Assert.That(result, Is.EqualTo("ON"));
+        }
+
+        [Test]
+        public void TestSupportedPrimaryMonitorSync()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            bool supportedPrimaryMonitorSync = true;
+            brightnessViewModel.SupportedPrimaryMonitorSync= supportedPrimaryMonitorSync;
+            Assert.That(brightnessViewModel.SupportedPrimaryMonitorSync, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestPrimaryMonitorSyncStatus()
+        {
+            var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
+            deviceManagerSAMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig>()));
+            deviceManagerSAMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            var brightnessViewModel = new BrightnessViewModel();
+            brightnessViewModel.SelectedHomeDevice = new HomeDevice();
+            brightnessViewModel.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            bool primaryMonitorSyncStatus = true;
+            brightnessViewModel.PrimaryMonitorSyncStatus = primaryMonitorSyncStatus;
+            Assert.That(brightnessViewModel.PrimaryMonitorSyncStatus, Is.EqualTo(true));
+        }
+
+
+        [Test]
+        public void TestUpdate_PrimaryMonitorSyncStatus()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            PrivateObject privateObject = new PrivateObject(brightnessViewModel);
+            brightnessViewModel.Update_PrimaryMonitorSyncStatus(true);
+            var result = privateObject.GetFieldOrProperty("_primaryMonitorSyncStatus");
+            Assert.That(result, Is.EqualTo(true));
+
+            brightnessViewModel.Update_PrimaryMonitorSyncStatus(false);
+            result = privateObject.GetFieldOrProperty("_primaryMonitorSyncStatus");
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        
+
+
+
+        [Test]
+        public void TestPrimaryMonitorSync_String()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            var result= brightnessViewModel.PrimaryMonitorSync_String;
+            Assert.That(result, Is.EqualTo("OFF"));
+
+            brightnessViewModel.Start_ALSConfig.isPrimaryMonitorSync=true;
+            result = brightnessViewModel.PrimaryMonitorSync_String;
+            Assert.That(result, Is.EqualTo("ON"));
+        }
+
+
+        [Test]
+        public void TestAutoBrightnessRangeLevelVisible()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            var result = brightnessViewModel.AutoBrightnessRangeLevelVisible;
+            Assert.That(result, Is.EqualTo(Visibility.Collapsed));
+
+            brightnessViewModel.SelectedHomeDevice=new HomeDevice();
+            brightnessViewModel.SelectedHomeDevice.MonitorInfo=new MonitorInfo();
+            var deviceManagerSAMock=new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            deviceManagerSAMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig>()));
+            deviceManagerSAMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            moduleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwner = moduleOwnerMock!.Object;
+            brightnessViewModel.ModuleOwner=moduleOwner;
+           
+            brightnessViewModel.AutoBrightnessStatus=true;
+            result = brightnessViewModel.AutoBrightnessRangeLevelVisible;
+            Assert.That(result, Is.EqualTo(Visibility.Visible));
+        }
+
+        [Test]
+        public void TestAutoBrightnessRangeLevelVisible_invert()
+        {
+            var brightnessViewModel = new BrightnessViewModel();
+            var result = brightnessViewModel.AutoBrightnessRangeLevelVisible_invert;
+            Assert.That(result, Is.EqualTo(Visibility.Visible));
+
+            brightnessViewModel.SelectedHomeDevice = new HomeDevice();
+            brightnessViewModel.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
+            var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
+            deviceManagerSAMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig>()));
+            deviceManagerSAMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            moduleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwner = moduleOwnerMock!.Object;
+            brightnessViewModel.ModuleOwner = moduleOwner;
+
+            brightnessViewModel.AutoBrightnessStatus = true;
+            result = brightnessViewModel.AutoBrightnessRangeLevelVisible_invert;
+            Assert.That(result, Is.EqualTo(Visibility.Collapsed));
+        }
+        
+
+        [Test]
         public void TestUpdate_AutoBrightnessRangeLevelStatus()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -497,7 +682,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestAutoBrightnessSelectedIndex()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -507,9 +691,78 @@ namespace DDPM.UI.Module.Brightness.Tests
             Assert.That(brightnessViewModel.AutoBrightnessSelectedIndex, Is.EqualTo(myAutoBrightnessSelectedIndex));
         }
 
+        [Test]
+        public void TestAutoBrightnessRangeLevel_String()
+        {
+            //Start_ALSConfig.AutoBrightnessLevel.Count == 0
+            var brightnessViewModel = new BrightnessViewModel();
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo(""));
+
+            //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 0
+            brightnessViewModel.Start_ALSConfig=new ALSConfig();
+            List<AutoBrightnessRangeLevel> AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
+            AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 0 });
+            brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 40%"));
+
+            //Start_ALSConfig.AutoBrightnessLevel[0].level_value == 1
+            brightnessViewModel.Start_ALSConfig = new ALSConfig();
+            AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
+            AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 1 });
+            brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 60%"));
+            
+            //else
+            brightnessViewModel.Start_ALSConfig = new ALSConfig();
+            AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
+            AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 2 });
+            brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_String, Is.EqualTo("Brightness level: 100%"));
+        }
+
 
         [Test]
-        [Apartment(ApartmentState.STA)]
+        public void TestAutoBrightnessRangeLevel_SelectedIndex()
+        {
+
+            var brightnessViewModel = new BrightnessViewModel();
+            brightnessViewModel.SelectedHomeDevice = new HomeDevice();
+            var deviceManagerMock = new Mock<IDeviceManagerSA>();
+            var deviceManagerSA = deviceManagerMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+            var monitorInfo = new MonitorInfo();
+            brightnessViewModel.SelectedHomeDevice.MonitorInfo = monitorInfo;
+            deviceManagerMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            brightnessViewModel.Start_ALSConfig = new ALSConfig();
+            List<AutoBrightnessRangeLevel> AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
+            brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
+            //Start_ALSConfig.AutoBrightnessLevel.Count == 0
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(0));
+
+            AutoBrightnessLevel.Add(new AutoBrightnessRangeLevel() { level_name = null, level_value = 10 });
+            brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;
+
+            //value == 0
+            brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 0;
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value));
+            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name, Is.EqualTo("Low"));
+
+            //value == 1
+            brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 1;
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value));
+            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name, Is.EqualTo("Mid"));
+
+            //else
+            brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex = 2;
+            Assert.That(brightnessViewModel.AutoBrightnessRangeLevel_SelectedIndex, Is.EqualTo(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value));
+            Assert.That(brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_name, Is.EqualTo("High"));
+
+        }
+
+        
+
+
+        [Test]
         public void TestAutoBrightnessRangeLevel()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -523,7 +776,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestPrimaryMonitorForSyncVisible()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -533,7 +785,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestPrimaryMonitorForSyncVisible_invert()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -544,7 +795,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestisShowSynchronize()
         {
             var brightnessViewModel = new BrightnessViewModel();
@@ -562,7 +812,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestIsBusy()
         {
             var brightnessViewModel = new BrightnessViewModel();

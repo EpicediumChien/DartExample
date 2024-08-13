@@ -2,6 +2,7 @@ using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Collections.ObjectModel;
@@ -69,10 +70,14 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             var result = displayPropertiesViewModel!.HDRStatus_String;                       
             Assert.That(result, Is.EqualTo("OFF"));
 
-            deviceManagerMock.Setup(x => x.SetHDRStatus(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
+
+            deviceManagerMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
             displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
+            var MyConsoleMock = new Mock<IConsole>();
+            var myConsole = MyConsoleMock.Object;
+            DdpmCommonHelper.MyConsole = myConsole;
             var monitorInfo = new MonitorInfo();
             displayPropertiesViewModel.MyModule.SelectedHomeDevice.MonitorInfo = monitorInfo;
 
@@ -108,7 +113,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         [Test]
         public void TestSelectedResolution()
         {
-            //Bruce 08-09 Modify the incoming value
             deviceManagerMock.Setup(x => x.SetDisplayPropertiest(It.IsAny<MonitorInfo>(), It.IsAny<Properties>(), It.IsAny<DisplayOrientation>())).Returns(Task.FromResult(true));
 
             privateObject.SetFieldOrProperty("_selectedResolution", new UI_Properties());
@@ -143,7 +147,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         [Test]
         public void TestSelectedOrientation()
         {
-            //Bruce 08-09 Modify the incoming value
             deviceManagerMock.Setup(x => x.SetDisplayPropertiest(It.IsAny<MonitorInfo>(), It.IsAny<Properties>(), It.IsAny<DisplayOrientation>())).Returns(Task.FromResult(true));
             privateObject.SetFieldOrProperty("_selectedOrientation", new UI_Orientation());
 
@@ -171,7 +174,9 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
             displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
-
+            var MyConsoleMock = new Mock<IConsole>();
+            var myConsole = MyConsoleMock.Object;
+            DdpmCommonHelper.MyConsole= myConsole;
             var monitorInfo = new MonitorInfo();
             displayPropertiesViewModel.MyModule.SelectedHomeDevice.MonitorInfo = monitorInfo;
             bool myHDRStatus = true;
@@ -243,12 +248,16 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
 
             privateObject.SetFieldOrProperty("_selectedResolution", new UI_Properties());
 
+            deviceManagerMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
             displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
+            var MyConsoleMock = new Mock<IConsole>();
+            var myConsole = MyConsoleMock.Object;
+            DdpmCommonHelper.MyConsole = myConsole;
+            var monitorInfo = new MonitorInfo();
 
             var mySelectedResolution = new UI_Properties();
-            var monitorInfo = new MonitorInfo();
             monitorInfo.DisplayName = "123";
             displayPropertiesViewModel.MyModule.SelectedHomeDevice.MonitorInfo = monitorInfo;
             var mySelectedOrientation = new UI_Orientation();

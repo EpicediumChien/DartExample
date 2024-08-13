@@ -44,7 +44,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestkvmModule()
         {
-            var kvmModule=new KvmModule();
+            var kvmModule=new KvmModule(moduleOwner);
             inputSourceList.kvmModule=kvmModule;
             Assert.That(inputSourceList.kvmModule, Is.EqualTo(kvmModule));
         }
@@ -60,7 +60,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestUSBListkvmModule()
         {
-            var kvmModule = new KvmModule();
+            var kvmModule = new KvmModule(moduleOwner);
             var uSBList = new USBList();
             uSBList.kvmModule = kvmModule;
             Assert.That(uSBList.kvmModule, Is.EqualTo(kvmModule));
@@ -77,7 +77,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestPCInputtkvmModule()
         {
-            var kvmModule = new KvmModule();
+            var kvmModule = new KvmModule(moduleOwner);
             var pCInput = new PCInput();
             pCInput.kvmModule = kvmModule;
             Assert.That(pCInput.kvmModule, Is.EqualTo(kvmModule));
@@ -103,7 +103,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestkvmViewkvmModule()
         {
-            var kvmModule = new KvmModule();
+            var kvmModule = new KvmModule(moduleOwner);
             kvmViewModel.KvmModule = kvmModule;
             Assert.That(kvmViewModel.KvmModule, Is.EqualTo(kvmModule));
         }
@@ -283,6 +283,8 @@ namespace DDPM.UI.Module.Kvm.Tests
         public void TestisNoKVM()
         {
             var isNoKVM = true;
+            kvmViewModel.KvmModule = new KvmModule(moduleOwner);
+            kvmViewModel.KvmModule.isUSBKVM = true;
             kvmViewModel.isNoKVM = isNoKVM;
             Assert.That(kvmViewModel.isNoKVM, Is.EqualTo(true));
         }
@@ -292,6 +294,8 @@ namespace DDPM.UI.Module.Kvm.Tests
         public void TestisNKVM()
         {
             var isNKVM = true;
+            kvmViewModel.KvmModule = new KvmModule(moduleOwner);
+            kvmViewModel.KvmModule.isUSBKVM = true;
             kvmViewModel.isNKVM = isNKVM;
             Assert.That(kvmViewModel.isNKVM, Is.EqualTo(true));
         }
@@ -418,7 +422,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             var pcsList = new Dictionary<string, PCsInfo>();
             pcsList.Add("PC1", new PCsInfo());
             kvmViewModel.pcsList = pcsList;
-            var pC1USB_Selected = new USBList() { kvmModule = new KvmModule(), usb = "A" };
+            var pC1USB_Selected = new USBList() { kvmModule = new KvmModule(moduleOwner), usb = "A" };
             kvmViewModel.PC1USB_Selected = pC1USB_Selected;
             Assert.That(kvmViewModel.PC1USB_Selected, Is.EqualTo(pC1USB_Selected));
             Assert.That(kvmViewModel.pcsList["PC1"].USBUpstream, Is.EqualTo("A"));
@@ -431,7 +435,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             var pcsList = new Dictionary<string, PCsInfo>();
             pcsList.Add("PC2", new PCsInfo());
             kvmViewModel.pcsList = pcsList;
-            var pC2USB_Selected = new USBList() { kvmModule = new KvmModule(), usb = "A" };
+            var pC2USB_Selected = new USBList() { kvmModule = new KvmModule(moduleOwner), usb = "A" };
             kvmViewModel.PC2USB_Selected = pC2USB_Selected;
             Assert.That(kvmViewModel.PC2USB_Selected, Is.EqualTo(pC2USB_Selected));
             Assert.That(kvmViewModel.pcsList["PC2"].USBUpstream, Is.EqualTo("A"));
@@ -443,7 +447,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             var pcsList = new Dictionary<string, PCsInfo>();
             pcsList.Add("PC3", new PCsInfo());
             kvmViewModel.pcsList = pcsList;
-            var pC3USB_Selected = new USBList() { kvmModule = new KvmModule(), usb = "A" };
+            var pC3USB_Selected = new USBList() { kvmModule = new KvmModule(moduleOwner), usb = "A" };
             kvmViewModel.PC3USB_Selected = pC3USB_Selected;
             Assert.That(kvmViewModel.PC3USB_Selected, Is.EqualTo(pC3USB_Selected));
             Assert.That(kvmViewModel.pcsList["PC3"].USBUpstream, Is.EqualTo("A"));
@@ -455,7 +459,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             var pcsList = new Dictionary<string, PCsInfo>();
             pcsList.Add("PC4", new PCsInfo());
             kvmViewModel.pcsList = pcsList;
-            var pC4USB_Selected = new USBList() { kvmModule = new KvmModule(), usb = "A" };
+            var pC4USB_Selected = new USBList() { kvmModule = new KvmModule(moduleOwner), usb = "A" };
             kvmViewModel.PC4USB_Selected = pC4USB_Selected;
             Assert.That(kvmViewModel.PC4USB_Selected, Is.EqualTo(pC4USB_Selected));
             Assert.That(kvmViewModel.pcsList["PC4"].USBUpstream, Is.EqualTo("A"));
@@ -485,7 +489,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             var pcsList = new Dictionary<string, PCsInfo>();
             pcsList.Add("PC1", new PCsInfo() { InputType="A"});
             kvmViewModel.pcsList = pcsList;
-            var kvmmodule = new KvmModule();
+            var kvmmodule = new KvmModule(moduleOwner);
             kvmViewModel.KvmModule = kvmmodule;
             kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
 
@@ -803,7 +807,8 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestisOnUSBKVM()
         {
-            deviceManagerMock.Setup(x => x.SetOnUSBKVM(It.IsAny<bool>())).Returns(Task.FromResult(true));
+            kvmViewModel.KvmModule = new KvmModule(moduleOwner);
+            deviceManagerMock.Setup(x => x.SetOnUSBKVM(It.IsAny<MonitorInfo>(),It.IsAny<bool>())).Returns(Task.FromResult(true));
             try
             {
                 kvmViewModel.isOnUSBKVM(true);
@@ -820,7 +825,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         public void TestisOnNKVM()
         {
             deviceManagerMock.Setup(x => x.SupportedNKVMMonitors()).Returns(Task.FromResult(true));
-            deviceManagerMock.Setup(x => x.SetOnNKVM(It.IsAny<bool>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.SetOnNKVM(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
             try
             {
                 kvmViewModel.isOnNKVM(true);

@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DDPM.UI.Module.Kvm\DDPM.UI.Module.Kvm.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.DdpmHomePlugin\DDPM.UI.Plugin.DdpmHomePlugin.csproj" />
     <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
   </ItemGroup>
 
