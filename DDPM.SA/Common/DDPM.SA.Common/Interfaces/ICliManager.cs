@@ -48,6 +48,7 @@ namespace DDPM.SA.Common
         fail_read_settings,
         fail_write_settings,
         fail_no_analytics_options,
+        fail_analytics_option_notsupport,
         fail_notAdmin = 9999, //CLI is an IT/Admin tool, not allow normal privilege
         target_subagent_timeout,
         null_cli_manager,
@@ -59,7 +60,9 @@ namespace DDPM.SA.Common
         command_targettype_not_support,
         command_targetfeature_not_support,
         input_monitor_index_abnormal,
-        input_monitor_over_count
+        input_monitor_over_count,
+        null_settings_plugin_IT,
+        fail_SetSettings_ITSettingsValue
     }
 
     public class CLIEventArgs : EventArgs //definition for ICliManagerIT
