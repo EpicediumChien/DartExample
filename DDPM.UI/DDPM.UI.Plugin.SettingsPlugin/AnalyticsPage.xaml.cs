@@ -17,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Runtime.CompilerServices;
+
 [assembly: InternalsVisibleTo("DDPM.UI.Plugin.SettingsPlugin.Tests")]
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
