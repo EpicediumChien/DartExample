@@ -1062,6 +1062,7 @@ namespace NetworkKVM.Plugins
                 Process proc = new Process();
                 proc.StartInfo.FileName = strFullPath;
                 proc.StartInfo.Arguments = $"/Connect " + NamedpipeName;
+                _logs.DebugMsg("[NetworkKVM] Connect " + NamedpipeName);
                 proc.Start();
 
             }
