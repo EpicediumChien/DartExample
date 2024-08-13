@@ -397,12 +397,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //show OSD over colorpreset plugin
             _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name, true, true);
 
-            if (r)
-            {
+            //if (r)
+            //{
                 //write VCP over display manager
                 r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
 
-            }
+            //}
             return Task.FromResult(r);
         }
 
@@ -703,7 +703,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     // jim add 20240605
-                    MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
+                    if (MonitorBorkerWin != null) // jim add 20240809
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
                 }
             }
             else if (on_off.Equals("off", StringComparison.CurrentCultureIgnoreCase))
@@ -716,7 +717,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _SettingsPlugin.WriteColorPresetSettings(temp);
                     Thread.Sleep(100);
 
-                    MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false);
+                    if (MonitorBorkerWin != null) // jim add 20240809
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false);
                 }
             }
 

@@ -38,10 +38,9 @@ namespace DDPM.MonitorBorker
     /// </summary>
     public partial class MainWindow : Window
     {
-
         private static MonitorWin? ColorPresetWin = null;
-        private ShowOSDWin? OsdWin = null;
-        private IntPtr windowHandle = IntPtr.Zero;
+        //private ShowOSDWin? OsdWin = null;
+        //private IntPtr windowHandle = IntPtr.Zero;
 
         private IDeviceManagerSA ddmLib;// Dean 0626 SAST issue
         private MonitorInfo Mi;// Dean 0626 SAST issue
@@ -82,14 +81,15 @@ namespace DDPM.MonitorBorker
         {
             b_AUTO_ColorPresetConfig = blAUTO;
 
-            ColorPresetWin.Set_AUTO_ColorPresetConfig(blAUTO);
+            if (ColorPresetWin != null) // 20240809 jim add
+                ColorPresetWin.Set_AUTO_ColorPresetConfig(b_AUTO_ColorPresetConfig);
         }
 
         // jim add 20240620
         public void Notify_refresh_app_list()
         {
-            ColorPresetWin.Notify_refresh_app_list();
+            if (ColorPresetWin != null) // 20240809 jim add
+                ColorPresetWin.Notify_refresh_app_list();
         }
-
     }
 }

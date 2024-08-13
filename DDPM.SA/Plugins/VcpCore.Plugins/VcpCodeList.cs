@@ -234,11 +234,13 @@ namespace VcpCore.Plugins
 
         public static Dictionary<string, byte> VCPDC = new Dictionary<string, byte>
         {
+            { "Standard/Native", 0 }, // 20240731 jim add  "Game/Game1"
             { "Standard", 0 },
             { "Native", 0 },
             { "Multimedia", 2 },
             { "Movie", 3 },
             { "Nature", 4 },
+            { "Game/Game1", 5 },
             { "Game", 5 },
             { "Game1", 5 },
             { "Sport", 6 }
@@ -257,6 +259,9 @@ namespace VcpCore.Plugins
             { "xvMode", 3 },
             { "DICOM", 4 },
             { "CAL1", 5 },
+            { "Custom 1 / User 1", 193 },   // 20240731 jim add
+            { "Custom 2 / User 2", 194 },  // 20240731 jim add
+            { "Custom 3 / User 3", 195 }, // 20240731 jim add
             { "Custom 1", 193 },
             { "Custom 2", 194 },
             { "Custom 3", 195 },
@@ -266,16 +271,19 @@ namespace VcpCore.Plugins
             { "CAL2", 6 },
             { "Metro", 7 },
             { "Paper", 8 },
-            //{ "Rec. 709", 9 }, // 20240731 jim remove
+            { "Rec. 709 / BT.709", 9 },            
+            { "Rec. 709/BT.709", 9 },  // 20240731 jim remove
+            { "Rec.709/BT.709", 9 }, // 20240808 jim remove
+            { "Rec. 709", 9 }, // 20240808 jim add back
             { "Rec.709", 9 }, // 20240731 jim add
             { "Rec709", 9 },
-            { "BT.709", 9 },
-            //{ "Rec. 709/BT.709", 9 },  // 20240731 jim remove
-            { "Rec.709/BT.709", 9 }, // 20240731 jim add
+            { "Rec 709", 9 },
+            { "BT.709", 9 },           
             { "BT.709 D65 BT1886 L100", 9 },
             { "DCI-P3", 10 },
             { "DCI P3 D65 G2.4 L100", 10 },
             { "Rec2020", 11 },
+            { "BT.2020", 11 },
             { "BT.2020 D65 BT1886 L100", 11 },
             { "ComfortView", 12 },
             { "Game2", 13 },
@@ -326,11 +334,14 @@ namespace VcpCore.Plugins
 
         public static Dictionary<int, string> VCPE2 = new Dictionary<int, string>
         {
-            { 0, "Standard" },
+            { 0, "Standard/Native" },  // 20240731 jim add
+            //{ 0, "Standard" },
+            //{ 0, "Native" },  // 20240731 jim add
             { 1, "Multimedia" },
             { 2, "Movie" },
             { 3, "Nature" },
-            { 4, "Game" },
+            { 4, "Game/Game1" },  // 20240731 jim add
+            //{ 4, "Game" },
             { 5, "Sport" },
             { 6, "Text" },
             { 7, "AdobeRGB" },
@@ -350,8 +361,10 @@ namespace VcpCore.Plugins
             { 21, "CAL2" },
             { 24, "Metro" },
             { 25, "Paper" },
+            { 26, "Rec. 709 / BT.709" }, // 20240731 jim remove   
+            //{ 26, "Rec. 709/BT.709" }, // 20240731 jim remove           
             //{ 26, "Rec. 709" }, // 20240731 jim remove
-            { 26, "Rec.709" }, // 20240731 jim add
+            //{ 26, "Rec.709" }, // 20240731 jim add
             { 27, "DCI-P3" },
             { 28, "Rec2020" },
             { 29, "ComfortView" },
@@ -374,9 +387,12 @@ namespace VcpCore.Plugins
             { 61, "Display P3" },
             { 42, "AdobeRGB1" },
             { 43, "AdobeRGB2" },
-            { 44, "Custom 1" },
-            { 45, "Custom 2" },
-            { 46, "Custom 3" },
+            { 44, "Custom 1 / User 1" },
+            { 45, "Custom 2 / User 2" },
+            { 46, "Custom 3 / User 3" },
+            //{ 44, "Custom 1" },
+            //{ 45, "Custom 2" },
+            //{ 46, "Custom 3" },
             { 47, "SPORTS Game" },
         };
 
@@ -396,7 +412,8 @@ namespace VcpCore.Plugins
             { "Adobe RGB D50 G2.2 L250", 43 },
             { "sRGB D65 sRGB L250", 11 },
             { "DCI P3 D65 G2.4 L100", 27 },
-            //{ "Rec. 709/BT.709", 26 }, // 20240731 jim remove
+            { "Rec. 709 / BT.709", 26 }, // 20240731 jim remove
+            { "Rec. 709/BT.709", 26 }, // 20240731 jim remove
             { "Rec.709/BT.709", 26 }, // 20240731 jim add
             { "BT.709", 26 },
             { "Rec709", 26 }
