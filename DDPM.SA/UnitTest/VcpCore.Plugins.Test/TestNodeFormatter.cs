@@ -124,7 +124,7 @@ namespace VcpCore.Plugins.Test
         {
             string vcpControlName1 = "English";
             var expectvcpControlName1 = NodeFormatter.FormatVCP_CC("02");
-            string vcpControlName2 = "Deutschi";
+            string vcpControlName2 = "German";
             var expectvcpControlName2 = NodeFormatter.FormatVCP_CC("04");
             string vcpControlName3 = "Portuguese";
             var expectvcpControlName3 = NodeFormatter.FormatVCP_CC("08");
