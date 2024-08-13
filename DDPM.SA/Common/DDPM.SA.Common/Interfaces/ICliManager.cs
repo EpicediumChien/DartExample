@@ -61,6 +61,7 @@ namespace DDPM.SA.Common
         command_targetfeature_not_support,
         input_monitor_index_abnormal,
         input_monitor_over_count,
+        invalid_servicetag,
         null_settings_plugin_IT,
         fail_SetSettings_ITSettingsValue
     }
