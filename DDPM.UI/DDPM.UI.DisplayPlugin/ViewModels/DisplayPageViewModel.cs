@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using VcpCore.Common;
 using System.Runtime.CompilerServices;
+
 [assembly: InternalsVisibleTo("DDPM.UI.Plugin.DisplayPlugin.Tests")]
 namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
 {

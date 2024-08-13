@@ -60,7 +60,7 @@ namespace DDPM.Subagent
 
         static void Main(string[] args)
         {
-#if DEBUG
+//#if DEBUG
             /*
              * Get the executing assembly so the ProductVersion can be populated
              */
@@ -118,16 +118,17 @@ namespace DDPM.Subagent
                 MultiSessionAgent = false
             };
 
+            Console.WriteLine("DDPM.Subagent starting...");
             using (var agent = new Agent(agentConfig))
             {
                 agent.RunAndBlock();
             }
-            Console.WriteLine("Test...");
-#else
-            Console.WriteLine("\nERROR: Only the DEBUG build is supported");
-            Console.WriteLine("Hit any key to exit");
-            Console.ReadLine();
-#endif
+            Console.WriteLine("DDPM.Subagent exiting...");
+            //#else
+            //            Console.WriteLine("\nERROR: Only the DEBUG build is supported");
+            //            Console.WriteLine("Hit any key to exit");
+            //            Console.ReadLine();
+            //#endif
         }
     }
 }
