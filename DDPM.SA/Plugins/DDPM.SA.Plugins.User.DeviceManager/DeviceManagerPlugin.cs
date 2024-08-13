@@ -2186,6 +2186,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.FromResult(_DisplayManagerPlugin.GetAllExistAlsConfig().Result);
         }
+        public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain)
+        {
+            return Task.FromResult(_DisplayManagerPlugin.UpdateExistAlsConfig(monitorInfoMain).Result);
+        }
+
         public Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS)
         {
             return Task.FromResult(_DisplayManagerPlugin.SynchronizeALSFeatureValue(monitorALS).Result);
@@ -2439,6 +2444,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     List<MonitorInfo> new_mo = new List<MonitorInfo>();
                     if (_AllInfoMonitors.Count > 0)
                         new_mo.AddRange(_AllInfoMonitors);
+
+                    _DisplayManagerPlugin.UpdateExistAlsConfig(new_mo).Wait();
 
                     writelog($"[DeviceManager] Got event SystemEvents_DisplaySettingsChanged, monitor count {_AllInfoMonitors.Count}");
                     if (_AllInfoMonitors.Count > 0)

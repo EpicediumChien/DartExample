@@ -281,6 +281,7 @@ namespace DDPM.SA.Common
         Task<bool> SetALSFeatureValue(MonitorInfo monitorInfos, ALSConfig param, ALSFeatureQueryType type, string value);
         Task<List<ALSConfig>> GetConnectedALSConfig();
         Task<List<ALSConfig>> GetAllExistAlsConfig();
+        Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
         #endregion
 

@@ -395,10 +395,19 @@ namespace DDPM.UI.Module.Brightness
                 Update_AutoColorTempStatus(Start_ALSConfig.isAutoColorTemp);
                 Update_PrimaryMonitorSyncStatus(Start_ALSConfig.isPrimaryMonitorSync);
                 Update_AutoBrightnessRangeLevelStatus(Start_ALSConfig.AutoBrightnessRangeLevel);
-                Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
+				Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
             }
         }
-
+        private bool _isSynchronizeDisabled;
+        public bool IsSynchronizeDisabled
+        {
+            get { return _isSynchronizeDisabled; }
+            set
+            {
+                _isSynchronizeDisabled = value;
+                OnPropertyChanged(nameof(IsSynchronizeDisabled));
+            }
+        }
         private void InitComponentData()
         {
             Trace.WriteLine($"1. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
@@ -470,12 +479,52 @@ namespace DDPM.UI.Module.Brightness
                         if (Start_ALSConfig.AllValue == 0)//Need to Re-Get value
                             Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
                         GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
+                        CheckisShowSynchronize(alsList);
                     }
                 }
 
                 //OSD control back event
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
                 Trace.WriteLine($"7 {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
+            }
+        }
+
+        public void CheckisShowSynchronize(List<ALSConfig> alsSynchronizeList)//PIMS-285802 PIMS-285804
+        {
+            if (SelectedHomeDevice == null || DdpmCommonHelper.DeviceManagerSA == null)
+                return;
+
+            //Re-Check isShowSynchronize
+            if (DdpmCommonHelper.ModuleOwner.HomeDevices.Count > 1)//Only check if there is more than one monitor.
+            {
+                if (alsSynchronizeList.Count == 0)
+                {
+                    alsSynchronizeList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
+                }
+                int _isMutliAlsMonitorCount = 0;
+                foreach (var al in alsSynchronizeList)//ALS monitor count
+                {
+                    if (al.isSupportALS == 2)
+                        _isMutliAlsMonitorCount++;
+                }
+                if (_isMutliAlsMonitorCount < 2)//It is mean only 1 ALS monitors.
+                {
+                    IsSynchronizeDisabled = true;
+                    isShowSynchronize = Visibility.Collapsed;
+
+                }
+                else if (Start_ALSConfig.isAutoBrightness == true || Start_ALSConfig.isAutoColorTemp == true)//Only check if there are more than one ALS monitors.
+                {
+                    IsSynchronizeDisabled = true;
+                    isShowSynchronize = Visibility.Visible;
+                }
+                else if (Start_ALSConfig.isAutoBrightness == false || Start_ALSConfig.isAutoColorTemp == false)
+                {
+                    IsSynchronizeDisabled = false;
+                    isShowSynchronize = Visibility.Visible;
+                }
+                NotifyPropertyChanged("isShowSynchronize");
+                NotifyPropertyChanged("IsSynchronizeDisabled");
             }
         }
 
@@ -743,8 +792,11 @@ namespace DDPM.UI.Module.Brightness
         {
             if (DdpmCommonHelper.Settings_Cache == null)
                 DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-            IsSynchronizeMonitor = DdpmCommonHelper.Settings_Cache.UserSettings.IsSynchronizemonitor;
-            IsGetSynchronizeMonitor = true;
+            if (DdpmCommonHelper.Settings_Cache != null)
+            {
+                IsSynchronizeMonitor = DdpmCommonHelper.Settings_Cache.UserSettings.IsSynchronizemonitor;
+                IsGetSynchronizeMonitor = true;
+            }       
             return IsSynchronizeMonitor;
         }
 
