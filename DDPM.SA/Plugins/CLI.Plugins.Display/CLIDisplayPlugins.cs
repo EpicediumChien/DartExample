@@ -6003,6 +6003,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             return ((int)CLI_ExitCode.success, output);
         }
+
         #region PIP/PBP - (Robert_Lin 2024-6-13, Unused) (Added by Robert_Lin, 2024-6-5)
 
         //  arg[0]   arg[1]             arg[2]
@@ -6488,6 +6489,7 @@ namespace DDPM.CLI.Plugins.Display
             return (exitCode, JsonConvert.SerializeObject(CLIPxp.Responses, Formatting.Indented));
         }
         #endregion
+
         #region Malik
         private (int code, string result) GetDeviceData(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
@@ -6998,23 +7000,24 @@ namespace DDPM.CLI.Plugins.Display
 
         private static string get_language(string index)
         {
-            switch (index)
+            //Trace.WriteLine($"language = {(int.Parse(index)).ToString("x2")}");
+            switch ((int.Parse(index)).ToString("x2"))
             {
-                case "1": return "Chinese";
-                case "2": return "English";
-                case "3": return "French";   // "Francais";
-                case "4": return "German";   // "Deutschi";
-                case "5": return "Italian";
-                case "6": return "Japanese"; // "Japan";
-                case "7": return "Korean";
-                case "8": return "Portuguese";
-                case "9": return "Russian";
-                case "a": return "Spanish";  // "Espanol";
-                case "b": return "Swedish";
-                case "c": return "Turkish";
-                case "d": return "Chinese-Simplified";
-                case "e": return "BrazilianPortuguese";
-                case "f": return "Arabic";
+                case "01": return "Chinese";
+                case "02": return "English";
+                case "03": return "French";   // "Francais";
+                case "04": return "German";   // "Deutschi";
+                case "05": return "Italian";
+                case "06": return "Japanese"; // "Japan";
+                case "07": return "Korean";
+                case "08": return "Portuguese";
+                case "09": return "Russian";
+                case "0a": return "Spanish";  // "Espanol";
+                case "0b": return "Swedish";
+                case "0c": return "Turkish";
+                case "0d": return "Chinese-Simplified";
+                case "0e": return "BrazilianPortuguese";
+                case "0f": return "Arabic";
                 case "10": return "Bulgarian";
                 case "11": return "Croatian";
                 case "12": return "Czech";
@@ -7052,6 +7055,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             return a | b;
         }
+
         private (int code, string result) Getcapabilitystringx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command == "SET" || commandLineInput.Options.Count != 0)
@@ -7152,6 +7156,7 @@ namespace DDPM.CLI.Plugins.Display
 
             return ((int)CLI_ExitCode.success, output);
         }
+
         private (int code, string result) EnergysaverX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command.Equals("SET"))
@@ -7605,9 +7610,10 @@ namespace DDPM.CLI.Plugins.Display
 
             return ((int)CLI_ExitCode.success, output);
         }
+
         private (int code, string result) SetOSDLanguage(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "Get" || commandLineInput.Options.Count == 0)
+            if (commandLineInput.Command == "GET" || commandLineInput.Options.Count == 0)
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
@@ -7633,6 +7639,8 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Message = "Invalid command line syntax, missing -value=OSDLanguage or more than one -value=....";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
+
+            bool rc = true;
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
@@ -7689,7 +7697,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else
                     {
-                        bool rc = SetVCPCode(devMgr, monitor, "0xCC", language_code).Result;
+                        rc = SetVCPCode(devMgr, monitor, "0xCC", language_code).Result;
                         if (!rc)
                         {
                             cli_Response.Result = "FAIL";
@@ -7700,7 +7708,6 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Result = "PASS";
                         }
                     }
-                    //cli_Response.Message = $"value={commandLineInput.Options[0].Option_Value},language_code={language_code}";
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -7743,7 +7750,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else
                     {
-                        bool rc = SetVCPCode(devMgr, monitor, "0xCC", language_code).Result;
+                        rc = SetVCPCode(devMgr, monitor, "0xCC", language_code).Result;
                         if (!rc)
                         {
                             cli_Response.Result = "FAIL";
@@ -7754,7 +7761,6 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Result = "PASS";
                         }
                     }
-                    //cli_Response.Message = $"value={commandLineInput.Options[0].Option_Value},language_code={language_code}";
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -7797,7 +7803,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            bool rc = SetVCPCode(devMgr, monitor, "0xCC", language_code).Result;
+                            rc = SetVCPCode(devMgr, monitor, "0xCC", language_code).Result;
                             if (!rc)
                             {
                                 cli_Response.Result = "FAIL";
@@ -7808,18 +7814,17 @@ namespace DDPM.CLI.Plugins.Display
                                 cli_Response.Result = "PASS";
                             }
                         }
-                        //cli_Response.Message = $"value={commandLineInput.Options[0].Option_Value},language_code={language_code}";
-                        System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                         System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
             }
-            return ((int)CLI_ExitCode.success, output);
+            return (rc ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error , output);
         }
 
         private (int code, string result) GetMonitorCount(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "Set" || commandLineInput.Options.Count != 0)
+            if (commandLineInput.Command == "SET" || commandLineInput.Options.Count != 0)
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
@@ -7833,6 +7838,7 @@ namespace DDPM.CLI.Plugins.Display
                 return MonitorCounts(devMgr, commandLineInput).Result;
             }
         }
+
         private async Task<(int code, string result)> MonitorCounts(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
@@ -7861,6 +7867,7 @@ namespace DDPM.CLI.Plugins.Display
 
             return ((int)CLI_ExitCode.success, output);
         }
+
         private static int GetOSDLanguage_index(String language)
         {
             switch (language.ToLower())
@@ -7910,6 +7917,7 @@ namespace DDPM.CLI.Plugins.Display
                 default: return 0xff;
             }
         }
+
         private static string modify_Manufactur(string temp)
         {
             if (temp.ToUpper() == "DEL")
@@ -7918,6 +7926,7 @@ namespace DDPM.CLI.Plugins.Display
                 return "Alienware";
             return temp;
         }
+
         private (int code, string result) GetDiagnosticReport(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command == "SET" || commandLineInput.Options.Count == 0)
@@ -8076,6 +8085,7 @@ namespace DDPM.CLI.Plugins.Display
 
             StreamReader r = new StreamReader(commandLineInput.Options[0].Option_Value);
             string jsonString = r.ReadToEnd();
+            r.Close();
 
             if (string.IsNullOrWhiteSpace(jsonString))
             {
@@ -8117,13 +8127,17 @@ namespace DDPM.CLI.Plugins.Display
                     ApplyConfiguration.BrightnessLevel = "N/A";
                     ApplyConfiguration.LuminanceLevel = "N/A";
 
-                    int rc = SetCurrentInput(devMgr, (monitor.Index).ToString(), devicedata.ActiveInputSource).Result;
-                    if (rc != 0) ispass = false;
-                    else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
+                    //int rc = SetCurrentInput(devMgr, (monitor.Index).ToString(), devicedata.ActiveInputSource).Result;
+                    //if (rc != 0) ispass = false;
+                    //else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
 
                     bool retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(devicedata.ScreenOrientation)).Result;
                     if (!retcode) ispass = false;
                     else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
+
+                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(devicedata.ActiveInputSource).ToString()).Result;
+                    if (!retcode) ispass = false;
+                    else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
 
                     displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
                     string[] ss = devicedata.OptimalResolution.Split(" ");
@@ -8253,13 +8267,17 @@ namespace DDPM.CLI.Plugins.Display
                     ApplyConfiguration.BrightnessLevel = "N/A";
                     ApplyConfiguration.LuminanceLevel = "N/A";
 
-                    int rc = SetCurrentInput(devMgr, (monitor.Index).ToString(), devicedata.ActiveInputSource).Result;
-                    if (rc != 0) ispass = false;
-                    else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
+                    //int rc = SetCurrentInput(devMgr, (monitor.Index).ToString(), devicedata.ActiveInputSource).Result;
+                    //if (rc != 0) ispass = false;
+                    //else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
 
                     bool retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(devicedata.ScreenOrientation)).Result;
                     if (!retcode) ispass = false;
                     else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
+
+                    retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(devicedata.ActiveInputSource).ToString()).Result;
+                    if (!retcode) ispass = false;
+                    else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
 
                     displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
                     string[] ss = devicedata.OptimalResolution.Split(" ");
@@ -8388,13 +8406,17 @@ namespace DDPM.CLI.Plugins.Display
                         ApplyConfiguration.BrightnessLevel = "N/A";
                         ApplyConfiguration.LuminanceLevel = "N/A";
 
-                        int rc = SetCurrentInput(devMgr, (monitor.Index).ToString(), devicedata.ActiveInputSource).Result;
-                        if (rc != 0) ispass = false;
-                        else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
+                        //int rc = SetCurrentInput(devMgr, (monitor.Index).ToString(), devicedata.ActiveInputSource).Result;
+                        //if (rc != 0) ispass = false;
+                        //else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
 
                         bool retcode = SetVCPCode(devMgr, monitor, "0xAA", get_ScreenOrientation_code(devicedata.ScreenOrientation)).Result;
                         if (!retcode) ispass = false;
                         else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
+
+                        retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(devicedata.ActiveInputSource).ToString()).Result;
+                        if (!retcode) ispass = false;
+                        else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
 
                         displayPropertiesInfo = devMgr.GetDisplayPropertiesInfo(monitor).Result;
                         string[] ss = devicedata.OptimalResolution.Split(" ");
@@ -8548,6 +8570,7 @@ namespace DDPM.CLI.Plugins.Display
                 default: return "0";
             }
         }
+
         private static USBCPrioritizationType get_USBCPrioritization(string priority)
         {
             switch (priority)
@@ -8566,6 +8589,50 @@ namespace DDPM.CLI.Plugins.Display
                 case "REDUCEBRIGHTNESS": return PowerNapType.ReduceBrightness;
                 case "SLEEP": return PowerNapType.SleepIfRunning;
                 default: return PowerNapType.SleepIfRunning;
+            }
+        }
+
+        private static string get_InputSource_code(string input)
+        {
+            switch (input)
+            {
+                case "VGA-1": return "0x01";
+                case "VGA-2": return "0x02";
+                case "DVI-1": return "0x03";
+                case "DVI-2": return "0x04";
+                case "Composite video 1": return "0x05";
+                case "Composite video 2": return "0x06";
+                case "S-Video-1": return "0x07";
+                case "S-Video-2": return "0x08";
+                case "Tuner-1": return "0x09";
+                case "Tuner-2": return "0x0a";
+                case "Tuner-3": return "0x0b";
+                case "Component video (YPrPb/YCrCb) 1": return "0x0c";
+                case "Component video (YPrPb/YCrCb) 2": return "0x0d";
+                case "Component video (YPrPb/YCrCb) 3": return "0x0e";
+                case "DisplayPort-1": return "0x0f";
+                case "Mini DisplayPort-1": return "0x10";
+                case "HDMI-1": return "0x11";
+                case "HDMI-2": return "0x12";
+                case "DisplayPort-2": return "0x13";
+                case "Mini DisplayPort-2": return "0x14";
+                case "HDMI3": return "0x15";
+                case "HDMI4": return "0x16";
+                case "DisplayPort-3": return "0x17";
+                case "Mini DisplayPort-3": return "0x18";
+                case "Thunderbolt-1": return "0x19";
+                case "Thunderbolt-2": return "0x1a";
+                case "USB-C1": return "0x1b";
+                case "USB-C2": return "0x1c";
+                case "USB-C3": return "0x1d";
+                case "USB-C4": return "0x1e";
+                case "USB Comm from USB1 (Type-B, port 1)": return "0x80";
+                case "USB Comm from USB2 (Type-B, port 2)": return "0x81";
+                case "USB Comm from USB-C1 (Type-C, port 1)": return "0x82";
+                case "USB Comm from USB-C2 (Type-C, port 2)": return "0x83";
+                case "USB Comm from USB-C3 (Type-C, port 3)": return "0x84";
+                case "USB Comm from USB-C4 (Type-C, port 4)": return "0x85";
+                default: return "0x11";
             }
         }
         #endregion
