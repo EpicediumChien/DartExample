@@ -78,7 +78,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         #region ISettingsManagerSA implementation
         public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
 
-        //Target to notify CLIProxy
+        //Target to notify User setting
         private void OnITSettingsActionEventNotify(ITSettingEventArgs e)
         {
             if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)

@@ -27,6 +27,7 @@ using DDPM.SA.Common.Display;
 using Windows.System;
 using Newtonsoft.Json;
 using System.Drawing;
+using DDPM.SA.Common.Security;
 
 namespace NetworkKVM.Plugins
 {
@@ -582,12 +583,12 @@ namespace NetworkKVM.Plugins
             }
             _agent.StopAgent();
         }
+
         private void CreateNamedPipe()
         {
             string namedPipeName = Guid.NewGuid().ToString("D");
             _logs.DebugMsg("[NetworkKVM] Name: " + namedPipeName);
-            PipeSecurity pipeSecurity = CreatePipeSecurity();
-            pipeSecurity.AddAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), PipeAccessRights.ReadWrite, AccessControlType.Allow));
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
 
             pipeServer = NamedPipeServerStreamAcl.Create(namedPipeName,
                                                         PipeDirection.InOut,
@@ -643,16 +644,7 @@ namespace NetworkKVM.Plugins
             int bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length);
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
-        private PipeSecurity CreatePipeSecurity()
-        {
-            PipeSecurity security = new PipeSecurity();
 
-            var id = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
-
-            security.SetAccessRule(new PipeAccessRule(id, PipeAccessRights.ReadWrite, AccessControlType.Allow));
-
-            return security;
-        }
         private async Task<string> JsonstringParse(string jsonstring)
         {
             string type;

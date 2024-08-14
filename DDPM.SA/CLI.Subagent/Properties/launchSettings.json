@@ -2,7 +2,7 @@
   "profiles": {
     "CLI.Subagent": {
       "commandName": "Project",
-      "commandLineArgs": "/set -app=TelemetryConsent -Allow=Yes"
+      "commandLineArgs": "/get -display=brightnesslevel"
     }
   }
 }

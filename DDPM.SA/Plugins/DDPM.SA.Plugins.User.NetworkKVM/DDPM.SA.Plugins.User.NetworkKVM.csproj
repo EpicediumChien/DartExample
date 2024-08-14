@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dell.RPC.Transport" Version="1.5.1" />
     <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
