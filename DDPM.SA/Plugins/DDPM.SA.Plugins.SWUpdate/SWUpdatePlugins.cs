@@ -26,11 +26,14 @@ using System.Management;
 using System.Net.Http;
 using System.Threading;
 using Timer = System.Timers.Timer;
-using DDPM.SA.Plugins.SWUpdate;
 using Newtonsoft.Json;
 using System.Linq;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using DDPM.SA.Common.Settings;
+using PInvoke;
 
-namespace DDPM.SA.Plugins.User.SWUpdate
+namespace DDPM.SA.Plugins.SWUpdate
 {
     [Plugin(IDs.SWUpdate_PLUGIN_ID, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
     [Descriptor(Description = pluginDescription)]
@@ -82,6 +85,9 @@ namespace DDPM.SA.Plugins.User.SWUpdate
         bool _IsShowNotify = true;
         bool _isDefer = false;
         bool _isForce = false;
+        string URL = $"https://clientperipherals.dell.com/DDPM/";
+        string URL_Folder = $"/Windows/Application/";
+        string TestURL_Folder = $"/ddpm/Application/";
         #region Events 
         /// <summary>
         /// 呼叫DeviceManager呼叫我的檢查更新方法，用於排成定期檢查
@@ -106,6 +112,20 @@ namespace DDPM.SA.Plugins.User.SWUpdate
             _checkUpdateScheduleTimer = new Timer();
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
             _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+            URL = URL + URL_Folder;
+            if (localKey64 != null)
+            {
+                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
+                if (registryKey != null)
+                {
+                    string obj = registryKey?.GetValue("TestServerURL").ToString();
+                    if (!string.IsNullOrEmpty(obj))
+                    {
+                        URL = obj + TestURL_Folder;
+                    }
+                }
+            }
         }
         #region Overriding methods
         #region IDisposableObservable Support
@@ -204,25 +224,22 @@ namespace DDPM.SA.Plugins.User.SWUpdate
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _SWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
+            //暫時直接Return
             return Task.FromResult(new List<SWUpdateInfo>());
-            //if (updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0)
+            SWUpdateHelper swUpdateHelper = DownloadMetadata();
+            if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
             {
-                //for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
+                for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
                 {
-                    string newVer = "65535";
-                    string CurrentVersion = "123";
-                    if (!int.TryParse(newVer, out _))
-                    {
-                        newVer = Convert.ToInt32(newVer, 16).ToString();
-                    }
+                    string CurrentVersion = "20001";
                     SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                     {
-                        TheLatestVersion = Regex.Replace(Convert.ToInt32(newVer).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(newVer).ToString("D4").Length * 2) - 1),
+                        TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
                         SoftwareVersion = Regex.Replace(Convert.ToInt32(CurrentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(CurrentVersion).ToString("D4").Length * 2) - 1),
-                        NeedUpdated = int.Parse(newVer) > int.Parse(CurrentVersion) ? true : false,
-                        ServerPath = "",
-                        FileSavepath = "C:\\Users\\Diablo16\\Downloads\\DDPM-Setup v2.0.0.28-NKVM-pwdDDPM\\DDPM-Setup v2.0.0.28-NKVM-TestingOnly.exe",
-                        SoftwareName = "DDPM"
+                        NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(CurrentVersion) ? true : false,
+                        ServerPath = swUpdateHelper.Softwares[i].ServerPath,
+                        SoftwareName = "DDPM",
+                        FileSavepath = swUpdateHelper.Softwares[i].InstallPath
                     };
                     _SWUpdateInfoPackage.SWUpdateInfo.Add(SWUpdateInfo);
                 }
@@ -233,6 +250,38 @@ namespace DDPM.SA.Plugins.User.SWUpdate
                 _logs.DebugMsg_1(nameof(CheckUpdate) + " done.");
             }
             return Task.FromResult(new List<SWUpdateInfo>());
+        }
+        private SWUpdateHelper DownloadMetadata()
+        {
+            //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
+                                                                                                                //Should enable server certificate validation on this SSL/TLS connection before formal release
+
+            using (HttpClient client = new HttpClient(handler))
+            {
+                try
+                {
+                    client.Timeout = TimeSpan.FromSeconds(5);
+                    HttpResponseMessage response = client.GetAsync(URL + "MetaData.json").Result;
+                    response.EnsureSuccessStatusCode();
+                    string jsonString = response.Content.ReadAsStringAsync().Result;
+                    jsonString = jsonString.Replace("%1/", URL);
+                    SWUpdateHelper data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
+                    foreach (Software software in data.Softwares)
+                    {
+                        string version =
+                        Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
+                        software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup_v{version}");
+                    }
+                    return data;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                }
+            }
+            return new SWUpdateHelper();
         }
         void HandleUpdateInfo()
         {
@@ -304,6 +353,7 @@ namespace DDPM.SA.Plugins.User.SWUpdate
             try
             {
                 CACertificateCheck caCheck = new CACertificateCheck(_logs);
+                DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 for (int i = 0; i < swUpdateInfos.Count; i++)
                 {
                     _notificationStr = "";
@@ -315,17 +365,15 @@ namespace DDPM.SA.Plugins.User.SWUpdate
                     //if (caCheck.CheckCA(_sWUpdateInfo.ServerPath))
                     {
                         string url = swUpdateInfos[i].ServerPath;
-                        //0627 Bruce 因CLI可能會自訂路徑顧新增傳入參數，變新增判斷
                         string savePath;
                         if (string.IsNullOrEmpty(installPath))
                         {
-                            savePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "Dell Display and Peripheral Manager" + "\\" + swUpdateInfos[i].FileSavepath + "\\";
+                            savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + swUpdateInfos[i].FileSavepath + "\\";
                         }
                         else
                         {
                             savePath = installPath;
                         }
-                        _logs.DebugMsg_1($"savePath: {savePath}");
                         _downloadTimer = new Timer();
                         _downloadTimer.Interval = 1000;
                         _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
@@ -361,15 +409,11 @@ namespace DDPM.SA.Plugins.User.SWUpdate
                         string exeFilePath;
                         Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath);
 
-                        //測試用，OTATestClient(模擬正常安裝包流程)
-                        //exeFilePath = "C:\\FW_SW_ICC_Update\\OTATestSampleCode From_IndiLogic\\src\\OTATestClient\\bin\\Debug\\OTATestClient.exe";
-
                         _fileStream = null;
                         //暫時註解 等待check sha512和CA
                         //if (caCheck.CheckFileCA(exeFilePath))
                         {
-                            //Bruce 暫時使用Hotcode方式
-                            swUpdateInfos[i].InstallPaths = "C:\\Users\\Diablo16\\Downloads\\DDPM-Setup v2.0.0.28-NKVM-pwdDDPM\\DDPM-Setup v2.0.0.28-NKVM-TestingOnly.exe";//exeFilePath;
+                            swUpdateInfos[i].InstallPaths = exeFilePath;
                             swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
                         }
                         if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
@@ -579,19 +623,7 @@ namespace DDPM.SA.Plugins.User.SWUpdate
                 // 要運行的安裝程式路徑和命令行參數
                 string arguments = "";//"/silent" + " /pipename:" + _namedPipeName;
 
-                ProcessStartInfo startInfo = new ProcessStartInfo()
-                {
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    WindowStyle = ProcessWindowStyle.Normal,
-                    FileName = swUpdateInfo.InstallPaths,
-                    Arguments = arguments,
-                    WorkingDirectory = Path.GetDirectoryName(swUpdateInfo.InstallPaths),
-                    CreateNoWindow = false
-                };
                 Process _clientProcess = new Process();
-                _clientProcess.StartInfo = startInfo;
-                /*之後搬到System level 後要使用的虛擬代理人方法
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
@@ -601,13 +633,13 @@ namespace DDPM.SA.Plugins.User.SWUpdate
                     {
                         _clientProcess = new Process();
                         _clientProcess.StartInfo.UseShellExecute = false;
-                        _clientProcess.StartInfo.FileName = fwUpdateInfo.InstallPaths;
+                        _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
                         _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
                         _clientProcess.StartInfo.Arguments = arguments;
+                        _clientProcess.Start();
+                        //_clientProcess.WaitForExit();
                     }
-                });*/
-                _clientProcess.Start();
-                //_clientProcess.WaitForExit();
+                });
                 _updateErrorCode = SWUErrorCode.NoError;
                 return _updateErrorCode;
             }

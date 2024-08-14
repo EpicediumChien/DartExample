@@ -17,6 +17,7 @@
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugin.CLIManager\DDPM.SA.Plugins.CLIManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SettingsManager\DDPM.SA.Plugins.SettingsManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SWUpdate\DDPM.SA.Plugins.SWUpdate.csproj" />
+    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.FWUpdate\DDPM.SA.Plugins.FWUpdate.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,13 @@
 ﻿namespace DDPM.SA.Plugins.User.FWUpdate
 {
+    using DDPM.SA.Common.Security;
+    using Dell.Client.Framework.Security;
+    using Dell.RPC.Transport;
     using System;
     using System.Collections.Generic;
     using System.IO.Pipes;
+    using System.Security.AccessControl;
+    using System.Security.Principal;
     using System.Text;
 
     public class NamedPipeStreamServer : NamedPipeStreamBase
@@ -14,13 +19,15 @@
 
         public NamedPipeStreamServer(string pipeName) : base(pipeName)
         {
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
             this._Connections = new List<NamedPipeStreamConnection>();
-            NamedPipeServerStream state = new NamedPipeServerStream(base.PipeName, PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+            NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
         }
 
         private void ClientConnected(IAsyncResult result)
         {
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
             NamedPipeServerStream? asyncState = result.AsyncState as NamedPipeServerStream;
             if (asyncState != null)
             {
@@ -36,11 +43,10 @@
                         ClientConnectedEvent?.Invoke(this, new EventArgs());
                     }
                 }
-                NamedPipeServerStream state = new NamedPipeServerStream(base.PipeName, PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+                NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
                 state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
             }
         }
-
         private void Connection_DisconnectedEvent(object? sender, EventArgs e)
         {
             ClientDisconnectedEvent?.Invoke(this, e);
