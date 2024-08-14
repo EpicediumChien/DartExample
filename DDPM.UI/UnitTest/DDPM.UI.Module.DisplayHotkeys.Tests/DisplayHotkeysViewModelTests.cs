@@ -86,7 +86,15 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var toggleInputSourceKey = "Yes";
             displayHotkeysViewModel.ToggleInputSourceKey = toggleInputSourceKey;
             Assert.That(displayHotkeysViewModel.ToggleInputSourceKey, Is.EqualTo(toggleInputSourceKey));
+        }
 
+        [Test]
+        public void TestFavoriteInputSourceKey()
+        {
+            var displayHotkeysViewModel = new DisplayHotkeysViewModel();
+            var favoriteInputSourceKey = "Yes";
+            displayHotkeysViewModel.FavoriteInputSourceKey = favoriteInputSourceKey;
+            Assert.That(displayHotkeysViewModel.FavoriteInputSourceKey, Is.EqualTo(favoriteInputSourceKey));
         }
 
         [Test]
@@ -96,9 +104,8 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var switchInputSourceKey = "Yes";
             displayHotkeysViewModel.SwitchInputSourceKey = switchInputSourceKey;
             Assert.That(displayHotkeysViewModel.SwitchInputSourceKey, Is.EqualTo(switchInputSourceKey));
-
         }
-
+  
 
         [Test]
         public void TestChangePIPPositionKey()
@@ -107,7 +114,6 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var changePIPPositionKey = "Yes";
             displayHotkeysViewModel.ChangePIPPositionKey = changePIPPositionKey;
             Assert.That(displayHotkeysViewModel.ChangePIPPositionKey, Is.EqualTo(changePIPPositionKey));
-
         }
 
         [Test]
@@ -130,6 +136,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
 
         }
 
+        [Test]
         public void TestSwitchInput1_Selected()
         {
             var displayHotkeysViewModel = new DisplayHotkeysViewModel();
@@ -139,6 +146,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
 
         }
 
+        [Test]
         public void TestSwitchInput2_Selected()
         {
             var displayHotkeysViewModel = new DisplayHotkeysViewModel();
@@ -148,6 +156,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
 
         }
 
+        [Test]
         public void TestFavoriteInput_Selected()
         {
             var displayHotkeysViewModel = new DisplayHotkeysViewModel();

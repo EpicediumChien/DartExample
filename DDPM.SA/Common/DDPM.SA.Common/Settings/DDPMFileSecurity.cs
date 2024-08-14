@@ -43,7 +43,7 @@ namespace DDPM.SA.Common.Settings
         {
             try
             {
-                return ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser);
+                return ProtectedData.Protect(data, null, DataProtectionScope.LocalMachine);
             }
             catch (CryptographicException e)
             {
@@ -62,7 +62,7 @@ namespace DDPM.SA.Common.Settings
         {
             try
             {
-                return ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
+                return ProtectedData.Unprotect(data, null, DataProtectionScope.LocalMachine);
             }
             catch (CryptographicException e)
             {
@@ -95,7 +95,7 @@ namespace DDPM.SA.Common.Settings
             try
             {
                 byte[] decrypted_data = Encoding.UTF8.GetBytes(serialized_string);
-                //1. Calculate the signature
+                //1. Calculate the HASH
                 byte[] hash_sign = GetSHA512(decrypted_data, 0, decrypted_data.Length);
                 signature = Encoding.UTF8.GetString(hash_sign);
             }

@@ -19,7 +19,7 @@ namespace DDPM.UI.Common {
 
         public static Dictionary<string, byte> VCPDC = new Dictionary<string, byte>
         {
-            //{ "Standard/Native", 0x00 },
+            { "Standard/Native", 0x00 },
             { "Standard", 0x00 },
             { "Native", 0x00 },
             { "Multimedia", 0x02 },
@@ -31,8 +31,8 @@ namespace DDPM.UI.Common {
 
         public static Dictionary<string, byte> VCPF0 = new Dictionary<string, byte>
         {
-            { "Text", 1 },
-            { "AdobeRGB", 2 },
+            { "Text", 0x1 },
+            { "AdobeRGB", 0x2 },
             { "AdobeRGB1", 0x21 },
             { "AdobeRGB2", 0x22 },
             { "Adobe RGB D65 G2.2 L160", 0x21 },
@@ -48,7 +48,15 @@ namespace DDPM.UI.Common {
             { "CAL2", 0x6 },
             { "Metro", 0x7 },
             { "Paper", 0x8 },
+            { "Rec. 709 / BT.709", 0x9 },  // 20240731 jim remove
+            { "Rec. 709/BT.709", 0x9 },  // 20240731 jim remove
+            { "Rec.709/BT.709", 0x9 }, // 20240808 jim remove
+            { "Rec. 709", 0x9 }, // 20240808 jim add back
+            { "Rec.709", 0x9 }, // 20240731 jim add
+            { "Rec709", 0x9 },
             { "Rec 709", 0x9 },
+            { "BT.709", 0x9 },
+            { "BT.709 D65 BT1886 L100", 0x9 },
             { "DCI-P3", 0x0A },
             { "Rec2020", 0x0B },
             { "ComfortView", 0x0C },
@@ -86,9 +94,9 @@ namespace DDPM.UI.Common {
 
         public static Dictionary<int, string> VCPE2 = new Dictionary<int, string>
         {
-            //{ 0x00, "Standard/Native" },
-            { 0x00, "Standard" },
-            { 0x00, "Native" },
+            { 0x00, "Standard/Native" },
+            //{ 0x00, "Standard" },
+            //{ 0x00, "Native" },
             { 0x01, "Multimedia" },
             { 0x02, "Movie" },
             { 0x03, "Nature" },
@@ -117,7 +125,9 @@ namespace DDPM.UI.Common {
             { 0x15, "CAL2" },
             { 0x18, "Metro" },
             { 0x19, "Paper" },
-            { 0x1A, "Rec 709" },
+            { 0x1A, "Rec. 709 / BT.709" },
+            //{ 0x1A, "Rec. 709/BT.709" },
+            //{ 0x1A, "Rec 709" },
             { 0x1B, "DCI-P3" },
             { 0x1C, "Rec2020" },
             { 0x1D, "ComfortView" },

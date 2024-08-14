@@ -30,7 +30,6 @@ namespace DDPM.ColorApp
     /// </summary>
     public partial class MonitorWin : Window
     {
-
         private IDeviceManagerSA ddmLib;//Dean 0626 fix SAST issue, remove static as recommend and set as private
         private MonitorInfo Mi;//Dean 0626 fix SAST issue, remove static as recommend and set as private
         private string Pre_reqKey = string.Empty;//Dean 0626 fix SAST issue, remove static as recommend and set as private
@@ -44,22 +43,27 @@ namespace DDPM.ColorApp
         #region data region
         private List<AppCollectionData> _apps = new List<AppCollectionData>();
         private AppStatusQuery? appStatus = null;//Dean 0626 fix SAST issue, remove static as recommend
-        private List<ColorPresetSettings>? appconfigs = null;
+        private List<ColorPresetSettings>? appconfigs = null; 
+
         #endregion
 
         public MonitorWin(IDeviceManagerSA _ddmLib, MonitorInfo m)
         {
+            //Trace.WriteLine("ColorApp - MonitorWin");
+
             InitializeComponent();
 
             ddmLib = _ddmLib;
             Mi = m;
             this.WindowStyle = WindowStyle.None;
             AllowsTransparency = true;
-            Opacity = 0.0f;
+            Opacity = 0.0f;            
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //Trace.WriteLine("ColorApp - Window_Loaded");
+
             btnRefresh_Click(null, null);
 
             reload_color_settings_to_config();
@@ -82,6 +86,8 @@ namespace DDPM.ColorApp
 
         public void reload_color_settings_to_config()
         {
+            //Trace.WriteLine("ColorApp - reload_color_settings_to_config()");
+
             //Load saved app preset info
 
             // jim add 20240806
@@ -132,7 +138,8 @@ namespace DDPM.ColorApp
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-            _apps.Clear();
+            if (_apps != null)
+                _apps.Clear();
 
             Thread update = new Thread(refresh_app_list)
             {
@@ -222,6 +229,7 @@ namespace DDPM.ColorApp
 
                     if (!actived_mi.IsDellMonitor)
                     {
+                        writelog("actived_mi.IsDellMonitor is False");
                         return;
                     }
 
@@ -230,12 +238,15 @@ namespace DDPM.ColorApp
 
                     if (appconfigs == null)
                     {
+                        writelog("appconfigs is null");
+                        //Trace.WriteLine("appconfigs is null");
                         return;
                     }
                     //convert module name to app name, ex: 7zFM.exe -> 7-Zip File Manager
                     string reqAppName = string.Empty;
                     int index = _apps.FindIndex(x =>
-                                    forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppPath.ToLower().Trim()) >= 0 ||
+                                     forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppPath.ToLower().Trim()) >= 0 ||
+                                    //forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppName.ToLower().Trim()) >= 0 ||
                                     forgroundProcess.MainModule.ModuleName.ToLower().Trim().Replace(".exe", "") == x.AppName.ToLower().Trim().Replace(".exe", "")
                                     );
                     if (index < 0)
@@ -249,16 +260,35 @@ namespace DDPM.ColorApp
                         index = _apps.FindIndex(x => folder.Trim().IndexOf(x.AppPath.Trim()) >= 0);
                         if (index < 0)
                         {
+                            //writelog("index < 0 -1");
                             return;
                         }
+                        //writelog("index < 0 -2 ");
                     }
+
                     reqAppName = _apps[index].AppName;
+
+                    //Trace.WriteLine("reqAppName = " + reqAppName);
+
                     bool isDesktop = _apps[index].AppType.Equals("Desktop"); //besides are UWP
-                    string tmp = string.Empty;// used for UI display
+
+                    //Trace.WriteLine("isDesktop  = " + isDesktop);
+
+                    //string tmp = string.Empty;// used for UI display
+
+                    // jim add 20240809
+                    if (appconfigs != null)
+                        appconfigs.Clear();
+
+                    appconfigs = ddmLib.ReadColorPresetSettings().Result;
+
+                    //Trace.WriteLine("appconfigs.Count = " + appconfigs.Count.ToString());
+            
                     foreach (var config in appconfigs)
                     {
                         if (config.AppInfo == null || config.AppInfo.Count <= 0)
                         {
+                            //Trace.WriteLine("config.AppInfo.Count = " +  config.AppInfo.Count.ToString());
                             continue;
                         }
 
@@ -268,9 +298,56 @@ namespace DDPM.ColorApp
                         {
                             if (config.RunType != (int)ColorPresetRunType.Auto)
                             {
+                                writelog("config.RunType  is not ColorPresetRunType.Auto");
+                                //Trace.WriteLine("config.RunType  is not ColorPresetRunType.Auto");
                                 break;
                             }
+
                             string reqKey = string.Empty;
+
+                            /*foreach (var item_appname in config.AppInfo.Keys)
+                            {
+                                //Trace.WriteLine("item_appname = " + item_appname);
+
+                                if (!reqAppName.Contains(item_appname,StringComparison.OrdinalIgnoreCase))
+                                {
+
+                                    if (isDesktop)
+                                    {
+                                        if (config.AppInfo.ContainsKey("Desktop Application"))
+                                        {
+                                            reqKey = config.AppInfo["Desktop Application"].ColorPresetName.Trim();
+                                        }
+                                        else
+                                        {
+                                            //return;
+                                            continue;
+                                        }
+                                    }
+                                    else //UWP
+                                    {
+                                        if (config.AppInfo.ContainsKey("UWP Application"))
+                                        {
+                                            reqKey = config.AppInfo["UWP Application"].ColorPresetName.Trim();
+                                        }
+                                        else
+                                        {
+                                            //return;
+                                            continue;
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    reqKey = (config.AppInfo[item_appname]).ColorPresetName.Trim();
+                                    writelog("reqKey (ColorPresetName)  = " + reqKey);
+                                    //Trace.WriteLine("reqKey (ColorPresetName) = " + reqKey);
+                                    break;
+                                }
+
+                            }*/
+                      
                             if (!config.AppInfo.ContainsKey(reqAppName))
                             {
 
@@ -298,11 +375,19 @@ namespace DDPM.ColorApp
                                 }
                             }
                             else
+                            {
                                 reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
+                                writelog("reqKey = " + reqKey);
+                            }
+                            
+
                             if (string.IsNullOrEmpty(reqKey))
                             {
+                                writelog("reqKey is string.IsNullOrEmpty");
+                                //Trace.WriteLine("reqKey is string.IsNullOrEmpty");
                                 return;
                             }
+
 
                             if (!Pre_reqKey.Equals(reqKey))
                             {
@@ -311,21 +396,23 @@ namespace DDPM.ColorApp
                                 //Set request key to update color preset and draw OSD
                                 string outmsg = string.Empty;
                                 set_monitor_preset_by_request_key(actived_mi, reqKey, out outmsg);
-                                tmp = actived_mi.AliasDeviceName + ":" + reqKey;
+                                //tmp = actived_mi.AliasDeviceName + ":" + reqKey;
                                 break;
                             }
                             else
                             {
-
+                                writelog("Pre_reqKey and reqKey is the same");
+                                //Trace.WriteLine("Pre_reqKey and reqKey is the same");
                             }
                         }
                     }
-                    if (string.IsNullOrEmpty(tmp))
-                    {
-                        tbColorPreset.Text = "NA";
-                    }
-                    else
-                        tbColorPreset.Text = tmp;
+                    
+                    //if (string.IsNullOrEmpty(tmp))
+                    //{
+                    //    tbColorPreset.Text = "NA";
+                    //}
+                    //else
+                    //    tbColorPreset.Text = tmp;
                 }
             }
         }
@@ -335,7 +422,7 @@ namespace DDPM.ColorApp
             if (string.IsNullOrEmpty(reqKey))
             {
                 outmsg = string.Format($"SetVCP] {actived_mi.AliasDeviceName}, null request key!");
-
+                writelog("[set_monitor_preset_by_request_key] reqKey is string.IsNullOrEmpty");
                 return false;
             }
 

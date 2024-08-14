@@ -5,6 +5,7 @@ using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Media;
 using VcpCore.Common;
 
@@ -46,6 +47,7 @@ namespace DDPM.UI.Module.InputSource.Tests
         }
 
 
+        //class InputSourceViewModel
         [Test]
         public void TestModuleOwner()
         {
@@ -93,6 +95,39 @@ namespace DDPM.UI.Module.InputSource.Tests
             Assert.That(inputSourceViewModel.usbUpstream, Is.EqualTo(usbUpstream));
         }
 
+        [Test]
+        public void TestIsUSBH()
+        {
+            var inputSourceViewModel = new InputSourceViewModel();
+            inputSourceViewModel.IsUSBH = Visibility.Collapsed;
+            Assert.That(inputSourceViewModel.IsUSBH, Is.EqualTo(Visibility.Collapsed));
+        }
+
+        [Test]
+        public void TestNameHWidth()
+        {
+            var inputSourceViewModel = new InputSourceViewModel();
+            inputSourceViewModel.NameHWidth = "0.5*";
+            Assert.That(inputSourceViewModel.NameHWidth, Is.EqualTo("0.5*"));
+        }
+
+        [Test]
+        public void TestUSBHWidth()
+        {
+            var inputSourceViewModel = new InputSourceViewModel();
+            inputSourceViewModel.USBHWidth = "1.5*";
+            Assert.That(inputSourceViewModel.USBHWidth, Is.EqualTo("1.5*"));
+        }
+
+        [Test]
+        public void TestNameHColumn()
+        {
+            var inputSourceViewModel = new InputSourceViewModel();
+            inputSourceViewModel.NameHColumn = "1";
+            Assert.That(inputSourceViewModel.NameHColumn, Is.EqualTo("1"));
+        }
+
+
 
         [Test]
         public void TestInputsList()
@@ -113,10 +148,15 @@ namespace DDPM.UI.Module.InputSource.Tests
             var monitorInfo = new MonitorInfo();
             deviceManagerMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(),It.IsAny<string>(),It.IsAny< string>())).Returns(Task.FromResult(true));
             var inputSourceModule=new InputSourceModule();
-            inputSourceModule.SelectedHomeDevice.MonitorInfo=monitorInfo;          
+            inputSourceModule.SelectedHomeDevice.MonitorInfo=monitorInfo;
+            inputSourceModule.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>();
             var inputSourceViewModel = new InputSourceViewModel();
             inputSourceViewModel.InputSourceModule = inputSourceModule;
             var items_Selected = new InputSourceList();
+            var ModuleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwer = ModuleOwnerMock.Object;
+            ModuleOwnerMock.Setup(x => x.HomeDevices).Returns(new List<HomeDevice>());
+            inputSourceViewModel.ModuleOwner = moduleOwer;
             inputSourceViewModel.Items_Selected = items_Selected;
             Assert.That(inputSourceViewModel.Items_Selected, Is.EqualTo(items_Selected));
         }
@@ -129,6 +169,15 @@ namespace DDPM.UI.Module.InputSource.Tests
             inputSourceViewModel.InputSourceImage = inputSourceImage;
             Assert.That(inputSourceViewModel.InputSourceImage, Is.EqualTo(inputSourceImage));
         }
+
+        [Test]
+        public void TestIsBusy()
+        {
+            var inputSourceViewModel = new InputSourceViewModel();
+            inputSourceViewModel.IsBusy = true;
+            Assert.That(inputSourceViewModel.IsBusy, Is.EqualTo(true));
+        }
+
 
 
     }

@@ -75,6 +75,7 @@ namespace DDPM.SA.Common
         Task<bool> UpdateALSFeatureValue(MonitorInfo monitorInfos);
         Task<List<ALSConfig>> GetConnectedALSConfig();
         Task<List<ALSConfig>> GetAllExistAlsConfig();
+        Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfos);
         Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
         #endregion
 

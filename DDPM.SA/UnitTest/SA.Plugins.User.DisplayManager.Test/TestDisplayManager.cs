@@ -16,7 +16,6 @@ using Windows.Media.AppBroadcasting;
 using Windows.UI.ViewManagement;
 using static VcpCore.Common.User32;
 using DDPM.SA.Plugins.User.DisplayProperties;
-using static DDPM.SA.Plugins.User.DisplayProperties.user32;
 using MS.WindowsAPICodePack.Internal;
 using DDPM.SA.Common.Display;
 using WinCopies.Util;
@@ -1580,28 +1579,41 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         public void TestGetALSupport()
         {
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
-
-            string getVcpCapabilities = "{'CapsDataMap' : {'Ambient Light Sensor': ['ALS full function']}}";
+            string getVcpCapabilities = "{'CapsDataMap' : {'Ambient Light Sensor': ['ALS without sensor']}}";
             VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport GetVCPCapabilities
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
-
+            ALSConfig aconfig2 = new ALSConfig()
+            {
+                DisplayName = "DISPLAY7",
+                serialNumber = "808597589",
+                isSupportALS = 0,
+                isMMSEnable = false,
+                isPrimaryMonitorSync = false,
+                isAutoBrightness = false,
+                isAutoColorTemp = false,
+                LiftTone = 0,
+                AllValue = 0,
+                result = false,
+                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+            };
             PrivateObject privateObject = new PrivateObject(displayPlugin);
-            int issupportAls = 2;
+            int issupportAls = 0;
             if (!string.IsNullOrEmpty(getVcpCapabilities))
             {
-                var result = privateObject.Invoke("GetALSupport", monitorInfo1, aconfig);
-                Assert.That(issupportAls, Is.EqualTo(aconfig.isSupportALS));
-                Assert.IsTrue(aconfig.result);
+                var result = privateObject.Invoke("GetALSupport", monitorInfo1, aconfig2);
+                Assert.That(issupportAls, Is.EqualTo(aconfig2.isSupportALS));
+                Assert.IsTrue(aconfig2.result);
             }
             else
             {
-                var result = privateObject.Invoke("GetALSupport", monitorInfo1, aconfig);
+                var result = privateObject.Invoke("GetALSupport", monitorInfo1, aconfig2);
                 var log = privateObject.GetFieldOrProperty("_logs");
                 var log2 = "[DisplayMangerPlugin] ALSFeature into GetALSMMS ...";
                 Assert.That(log, Is.EqualTo(log2));
-                Assert.IsFalse(aconfig.result);
+                Assert.IsFalse(aconfig2.result);
             }
+
         }
 
         [Test]

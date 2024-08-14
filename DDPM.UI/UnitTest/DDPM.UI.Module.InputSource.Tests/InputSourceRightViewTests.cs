@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Windows.UI.ViewManagement;
 
@@ -98,6 +99,38 @@ namespace DDPM.UI.Module.InputSource.Tests
             var upstreamIndex = 2;
             item.UpstreamIndex = upstreamIndex;
             Assert.That(item.UpstreamIndex, Is.EqualTo(upstreamIndex));
+        }
+
+        [Test]
+        public void TestIsUSBCB()
+        {
+            Item item = new Item();
+            item.IsUSBCB = Visibility.Visible;
+            Assert.That(item.IsUSBCB, Is.EqualTo(Visibility.Visible));
+        }
+
+        [Test]
+        public void TestNameWidth()
+        {
+            Item item = new Item();
+            item.NameWidth = "NameWidth";
+            Assert.That(item.NameWidth, Is.EqualTo("NameWidth"));
+        }
+
+        [Test]
+        public void TestUSBWidth()
+        {
+            Item item = new Item();
+            item.USBWidth = "USBWidth";
+            Assert.That(item.USBWidth, Is.EqualTo("USBWidth"));
+        }
+
+        [Test]
+        public void TestNameColumn()
+        {
+            Item item = new Item();
+            item.NameColumn = "NameColumn";
+            Assert.That(item.NameColumn, Is.EqualTo("NameColumn"));
         }
 
     }

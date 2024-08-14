@@ -55,7 +55,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
          * ...
          */
         //Basic
-        private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        //private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         private static string folder_product = "Dell Display and Peripheral Manager";
         //Global
         //private static string folder_programdata_Applist = path_programdata + "\\" + folder_product + "\\DDPM\\AppLibrary";
@@ -230,7 +230,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     }
                     else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
-                        WriteLog($"{nameof(GetCurrentSysSettingsManagerPluginCondition)} - Sys SettingsManager Plugin is in a running/started condition");
+                        WriteLog($"{nameof(GetCurrentSysSettingsManagerPluginCondition)} - Sys SettingsManager Plugin is in a {nameof(pluginCondition)} condition");
                         if (!relay_registered && _SysSettingsPlugin != null)
                         {
                             DoRelayRegister();
@@ -263,12 +263,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
                 if (e == null || e == EventArgs.Empty)
                 {
-                    WriteLog("[IT Settings event] Got Empty CLIEventArgs!");
+                    WriteLog("[IT Settings event] Got Empty ITSettingEventArgs!");
                     return;
                 }
                 //
                 //Do Settings update action
                 //
+                string target_feature = e.target_feature;
+                string target_value = e.target_value;
             });
         }
 
@@ -339,7 +341,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             lock (_Setting_Locker)
             {
-                //_settings = InitDDPMUserConfigFile();
                 var ddpm_app = new DDPMAppSettings();
                 var ddpm_user = new DDPMUserSettings();
 
@@ -349,7 +350,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     {
                         if (_settings == null || force_reload == true)
                         {
-                            //_settings = DDPMSettings.getSettingsforImport(_settings_path, ref ddpm_app, ref ddpm_user);
                             string info;
                             string output = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);//, false);
                             _settings = JsonConvert.DeserializeObject<DDPMSettings>(output);
@@ -1180,7 +1180,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //ACL function to check exist rule and apply rule if not exist
             string info;
             if (!DDPMFileSecurity.ApplyFileACLNormalUser(_powerNapsettings_path, out info))
-                WriteLog($"[InitDDPMUserConfigFile] {info}");
+                WriteLog($"[InitPowerNapConfigFile] {info}");
 
             return _powerNapSettings;
         }

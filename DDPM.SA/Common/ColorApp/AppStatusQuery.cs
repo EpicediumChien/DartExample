@@ -45,7 +45,7 @@ namespace DDPM.ColorApp
 
         private static AppStatusQuery? INSTANCE = null;
 
-        WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS);
+        WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS | Native.WINEVENT_SKIPOWNPROCESS | Native.EVENT_OBJECT_LOCATIONCHANGE | Native.EVENT_OBJECT_SELECTION );
         WindowFocusWatcher moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
 
         private static string _LastforgroundTitle = string.Empty;
@@ -224,6 +224,13 @@ namespace DDPM.ColorApp
 
             pass_process_info_to_callback(pid, hWnd, forgroundTitle);
         }
+
+        public void ClearLastAppRecord(string requestor)
+        {
+            _LastforgroundTitle = string.Empty;
+            //logger.WriteLog($"[{requestor}]  Clear app record by requestor");
+        }
+
 
     }
 }

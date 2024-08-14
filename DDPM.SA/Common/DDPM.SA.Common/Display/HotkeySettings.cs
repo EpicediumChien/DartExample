@@ -24,7 +24,13 @@ namespace DDPM.SA.Common.Display
             HotkeyInfo = new List<HotkeyInfo>();
         }
     }
-
+	
+    public class HotkeyPopWrap
+    {
+        public MonitorInfo monitorInfo { get; set; }
+        public HotkeyType hotkeyType { get; set; }
+    }
+	
     public class HotkeyInfo
     {
         public string Description { get; set; }

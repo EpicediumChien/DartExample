@@ -871,7 +871,7 @@ namespace VcpCore.Plugins
                          new JProperty("CapsDataMap", new JObject(CapsDataMapJProperty))
                     );
 
-                    rcString = JsonConvert.SerializeObject(obj, Formatting.Indented);
+                    rcString = JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
 
                     CapsDataMapJProperty.Clear();
                     Array.Clear(Split_rcString);
@@ -2139,13 +2139,24 @@ namespace VcpCore.Plugins
                 bool TF_Boolean = ColorPresetHash.TryGetValue(ResourceName, out myresources);
                 if (TF_Boolean)
                 {
-                    if (myresources.ContainsKey(presetName))
+                    foreach (var item in myresources.Keys) 
                     {
-                        GetResourceName = ResourceName;
-                        GetPresetValue = myresources[presetName].ToString();
-                        GetResult = true;
-                        break;
+                        if (string.Equals(item, presetName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            GetResourceName = ResourceName;
+                            GetPresetValue = myresources[presetName].ToString();
+                            GetResult = true;
+                            break;
+                        }
                     }
+
+                    //if (myresources.ContainsKey(presetName))
+                    //{
+                    //    GetResourceName = ResourceName;
+                    //    GetPresetValue = myresources[presetName].ToString();
+                    //    GetResult = true;
+                    //    break;
+                    //}
                 }
             }
 
@@ -2464,13 +2475,15 @@ namespace VcpCore.Plugins
         {
             #region HastTable DC, F0, 14
             Dictionary<string, string> VCPDC = new Dictionary<string, string>();
-            //VCPDC.Add("Standard/Native", "00");
+            VCPDC.Add("Standard/Native", "00");
             VCPDC.Add("Standard", "00");
             VCPDC.Add("Native", "00");
             VCPDC.Add("Multimedia", "02");
             VCPDC.Add("Movie", "03");
             VCPDC.Add("Nature", "04");
             VCPDC.Add("Game/Game1", "05");
+            VCPDC.Add("Game", "05");
+            VCPDC.Add("Game1", "05");
             VCPDC.Add("Sport", "06");
 
             Dictionary<string, string> VCPF0 = new Dictionary<string, string>();
@@ -2487,12 +2500,26 @@ namespace VcpCore.Plugins
             VCPF0.Add("Custom 1 / User 1", "C1");
             VCPF0.Add("Custom 2 / User 2", "C2");
             VCPF0.Add("Custom 3 / User 3", "C3");
+            VCPF0.Add("Custom 1", "C1");
+            VCPF0.Add("Custom 2", "C2");
+            VCPF0.Add("Custom 3", "C3");
+            VCPF0.Add("User 1", "C1");
+            VCPF0.Add("User 2", "C2");
+            VCPF0.Add("User 3", "C3");
             VCPF0.Add("CAL2", "06");
             VCPF0.Add("Metro", "07");
-            VCPF0.Add("Raper", "08");
+            //VCPF0.Add("Raper", "08");
+            VCPF0.Add("Paper", "08");
+            VCPF0.Add("Rec. 709 / BT.709", "09");
+            VCPF0.Add("Rec.709/BT.709", "09");
             VCPF0.Add("Rec 709", "09");
+            VCPF0.Add("Rec.709", "09");
+            VCPF0.Add("Rec. 709", "09");
+            VCPF0.Add("BT.709", "09");
             VCPF0.Add("DCI-P3", "0A");
+            VCPF0.Add("Display P3", "A1");
             VCPF0.Add("Rec2020", "0B");
+            VCPF0.Add("BT.2020", "0B");
             VCPF0.Add("ComfortView", "0C");
             VCPF0.Add("Game2", "0D");
             VCPF0.Add("Game3", "0E");
@@ -2524,16 +2551,20 @@ namespace VcpCore.Plugins
             VCP14.Add("Custom Color", "0C"); ;
 
             Dictionary<string, string> VCPE2 = new Dictionary<string, string>();
-            //VCPE2.Add("Standard/Native", "00");
+            VCPE2.Add("Standard/Native", "00");
             VCPE2.Add("Standard", "00");
             VCPE2.Add("Native", "00");
             VCPE2.Add("Multimedia", "01");
             VCPE2.Add("Movie", "02");
             VCPE2.Add("Nature", "03");
-            VCPE2.Add("Game/Game1", "04");
+            VCPE2.Add("Game/Game1", "04"); // 20240731 jim add
+            VCPE2.Add("Game", "04");
+            VCPE2.Add("Game1", "04");
             VCPE2.Add("Sport", "05");
             VCPE2.Add("Text", "06");
             VCPE2.Add("AdobeRGB", "07");
+            VCPE2.Add("AdobeRGB1", "2A");
+            VCPE2.Add("AdobeRGB2", "2B");
             VCPE2.Add("AdobeRGB1 (D65G2.2L250)", "2A");
             VCPE2.Add("AdobeRGB2 (D50G2.2L250)", "2B");
             VCPE2.Add("xvMode", "08");
@@ -2552,12 +2583,26 @@ namespace VcpCore.Plugins
             VCPE2.Add("Custom 1 / User 1", "2C");
             VCPE2.Add("Custom 2 / User 2", "2D");
             VCPE2.Add("Custom 3 / User 3", "2E");
+            VCPE2.Add("Custom 1", "2C");
+            VCPE2.Add("Custom 2", "2D");
+            VCPE2.Add("Custom 3", "2E");
+            VCPE2.Add("User 1", "2C");
+            VCPE2.Add("User 2", "2D");
+            VCPE2.Add("User 3", "2E");
             VCPE2.Add("CAL2", "15");
             VCPE2.Add("Metro", "18");
             VCPE2.Add("Paper", "19");
+            VCPE2.Add("Rec. 709 / BT.709", "1A"); // 20240731 jim add
+            VCPE2.Add("Rec. 709/BT.709", "1A"); // 20240731 jim add
+            VCPE2.Add("Rec.709/BT.709", "1A"); // 20240731 jim add
             VCPE2.Add("Rec 709", "1A");
+            VCPE2.Add("Rec.709", "1A");
+            VCPE2.Add("Rec. 709", "1A");
+            VCPE2.Add("BT.709", "1A");
             VCPE2.Add("DCI-P3", "1B");
+            VCPE2.Add("Display P3", "3D");
             VCPE2.Add("Rec2020", "1C");
+            VCPE2.Add("BT.2020", "1C");
             VCPE2.Add("ComfortView", "1D");
             VCPE2.Add("Game2", "1E");
             VCPE2.Add("Game3", "1F");
@@ -2572,7 +2617,7 @@ namespace VcpCore.Plugins
             VCPE2.Add("Desktop", "27");
             VCPE2.Add("Reference", "28");
             VCPE2.Add("Multiscreen Match", "29");
-            VCPE2.Add("DisplayHDR", "3A");
+            VCPE2.Add("DisplayHDR", "3A");            
             VCPE2.Add("HDR10", "3B");
             VCPE2.Add("HLG", "3C");
             VCPE2.Add("Presets Disabled", "7F");

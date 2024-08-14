@@ -397,12 +397,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //show OSD over colorpreset plugin
             _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name, true, true);
 
-            if (r)
-            {
+            //if (r)
+            //{
                 //write VCP over display manager
                 r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
 
-            }
+            //}
             return Task.FromResult(r);
         }
 
@@ -703,7 +703,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     // jim add 20240605
-                    MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
+                    if (MonitorBorkerWin != null) // jim add 20240809
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
                 }
             }
             else if (on_off.Equals("off", StringComparison.CurrentCultureIgnoreCase))
@@ -716,7 +717,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _SettingsPlugin.WriteColorPresetSettings(temp);
                     Thread.Sleep(100);
 
-                    MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false);
+                    if (MonitorBorkerWin != null) // jim add 20240809
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false);
                 }
             }
 
@@ -2186,6 +2188,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.FromResult(_DisplayManagerPlugin.GetAllExistAlsConfig().Result);
         }
+        public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain)
+        {
+            return Task.FromResult(_DisplayManagerPlugin.UpdateExistAlsConfig(monitorInfoMain).Result);
+        }
+
         public Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS)
         {
             return Task.FromResult(_DisplayManagerPlugin.SynchronizeALSFeatureValue(monitorALS).Result);
@@ -2439,6 +2446,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     List<MonitorInfo> new_mo = new List<MonitorInfo>();
                     if (_AllInfoMonitors.Count > 0)
                         new_mo.AddRange(_AllInfoMonitors);
+
+                    _DisplayManagerPlugin.UpdateExistAlsConfig(new_mo).Wait();
 
                     writelog($"[DeviceManager] Got event SystemEvents_DisplaySettingsChanged, monitor count {_AllInfoMonitors.Count}");
                     if (_AllInfoMonitors.Count > 0)
@@ -3571,16 +3580,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Brightness_Value));
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo ,hotkeyType = job};
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Brightness_Value));
+                    }
                     break;
                 case HotkeyType.BrightnessIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Brightness_Value));
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    { 
+                       _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Brightness_Value));                   
+                    }
                     break;
                 case HotkeyType.ContrastReduce:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Contrast_Value));
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    { 
+                       _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Contrast_Value));                  
+                    }
                     break;
                 case HotkeyType.ContrastIncrease:
-                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Contrast_Value));
+                    if (IsALSautobrightness(monitorInfo))
+                    {
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
+                        HotkeyPopup(hotkeyPopWrap);
+                    }
+                    else
+                    {                    
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Contrast_Value));
+                    }
                     break;
                 case HotkeyType.LuminanceReduce:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Luminance_Value));
@@ -3855,6 +3896,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return string.Empty;
         }
 
+        private bool IsALSautobrightness(MonitorInfo monitorInfo)
+        {
+            List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
+            ALSConfig find = aLSConfigs.Find(x => x.serialNumber.Equals(monitorInfo.edid.SerialNumber) && x.isAutoBrightness);
+            return find != null;
+        }
+        private void HotkeyPopup(object o)
+        {
+            Task.Run(() =>
+            {
+                PopupBaseManage popupBaseManage = new PopupBaseManage();
+                popupBaseManage.LeftButtonClick += YesEvent;
+                popupBaseManage.RightButtonClick += NoEvent;
+                string title = @"Warning";
+                string info = @"Auto Brightness is currently enabled.Do you wish to override it?";
+                popupBaseManage.FWU_Show(title, info, "Yes", "No", o, true, -1);
+            });
+
+        }
+        private void YesEvent(object o, object ob)
+        {
+            //Auto Brightness OFF & Auto OFF & Manual ON?
+            HotkeyPopWrap hotkeyPopWrap = (HotkeyPopWrap)ob;
+            List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
+            ALSConfig find = aLSConfigs.Find(x => x.serialNumber.Equals(hotkeyPopWrap.monitorInfo.edid.SerialNumber));
+            //diable autobrightness
+            SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find , ALSFeatureQueryType.AutoBrightness, "");
+            switch (hotkeyPopWrap.hotkeyType)
+            {
+                case HotkeyType.BrightnessReduce:
+                     _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
+                    break;
+                case HotkeyType.BrightnessIncrease:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
+                    break;
+                case HotkeyType.ContrastReduce:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Reduce_Contrast_Value));
+                    break;
+                case HotkeyType.ContrastIncrease:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Increase_Contrast_Value));
+                    break;
+            }
+        }
+
+        private void NoEvent(object o, object ob)
+        {
+            //do nothing
+        }
+
         private void Reduce_Brightness_Value(MonitorInfo monitorInfo, Object[] param)
         {
             ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
@@ -3975,13 +4065,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     case PowerNapType.ReduceBrightness:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
-                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
-                                        Debug.WriteLine($"{setting.ModelName} ReduceBrightness - Enqueue:true");
+                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
+                                        Debug.WriteLine($"{setting.ModelName} ReduceBrightness - Enqueue:false");
                                         break;
                                     case PowerNapType.SleepIfRunning:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
-                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
-                                        Debug.WriteLine($"{setting.ModelName} SleepIfRunning - Enqueue:true");
+                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
+                                        Debug.WriteLine($"{setting.ModelName} SleepIfRunning - Enqueue:false");
                                         break;
                                     case PowerNapType.Off:
                                         break;
