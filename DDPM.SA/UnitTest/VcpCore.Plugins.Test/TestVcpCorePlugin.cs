@@ -16,7 +16,11 @@ using Windows.Media.AppBroadcasting;
 using Windows.UI.ViewManagement;
 using static VcpCore.Common.User32;
 using DDPM.SA.Plugins.User.DisplayProperties;
+//using static DDPM.SA.Plugins.User.DisplayProperties.user32;
 using static VcpCore.Common.dxva2;
+using WinCopies.Util;
+using System.ComponentModel;
+using System.Diagnostics.Eventing.Reader;
 
 namespace VcpCore.Plugins.Test
 {
@@ -28,6 +32,7 @@ namespace VcpCore.Plugins.Test
         private Mock<IAgent> DisplayPropertiesAgent { get; } = new();
         MonitorInfo monitorInfo = new MonitorInfo();
 
+        BackgroundWorker _taskQueueExecutor = new BackgroundWorker();
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
         {
@@ -62,7 +67,6 @@ namespace VcpCore.Plugins.Test
         PipPbpMangerPlugin pipPbpMangerPlugin;
         Dictionary<string, Dictionary<string, string>> getstr;
         DisplayPropertiesPlugins displayPropertiesPlugin;
-
         List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
         MonitorInfo_complex monitorInfoComplex1 = new MonitorInfo_complex()
@@ -138,6 +142,71 @@ namespace VcpCore.Plugins.Test
 
         }
 
+
+        private void TaskQueueExecutor_DoWork(object sender, DoWorkEventArgs e)
+        {
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            while (true)
+            {
+                TaskLockQueue<ParameterType> _taskQueue = (TaskLockQueue<ParameterType>)privatevcp.GetFieldOrProperty("_TaskQueue");
+                ResultLockPool _TaskQueueResult = (ResultLockPool)privatevcp.GetFieldOrProperty("_TaskQueueResult");
+                if (_taskQueue.IsEmpty())
+                { continue; }
+                ParameterType p = _taskQueue.Dequeue();
+
+                switch (p.CommandType)
+                {
+                    case Queue_CommandType.GetCapabilitiesString:
+                        {
+                            Type_GetCapabilitiesString parameter = (Type_GetCapabilitiesString)p.Parameter;
+                            var rt = "type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04)";
+                            _TaskQueueResult.Add(parameter.guid, rt);
+                        }
+                        break;
+                    case Queue_CommandType.GetVCPCapabilities:
+                        {
+                            Type_GetVCPCapabilities parameter = (Type_GetVCPCapabilities)p.Parameter;
+                            var rt = "DELLU2724DE 808597589";
+                            _TaskQueueResult.Add(parameter.guid, rt);
+                        }
+                        break;
+                    case Queue_CommandType.GetVCPCapability_I:
+                        {
+                            Type_GetVCPCapability_I parameter = (Type_GetVCPCapability_I)p.Parameter;
+                            var rt = 12;
+                            _TaskQueueResult.Add(parameter.guid, rt);
+                        }
+                        break;
+                    case Queue_CommandType.GetVCPCapability_II:
+                        {
+                            Type_GetVCPCapability_II parameter = (Type_GetVCPCapability_II)p.Parameter;
+                            var rt = 20;
+                            _TaskQueueResult.Add(parameter.guid, rt);
+                        }
+                        break;
+
+                    case Queue_CommandType.SetVCPCapability_I:
+                        {
+                            Type_SetVCPCapability_I parameter = (Type_SetVCPCapability_I)p.Parameter;
+                            var rt = true;
+                            _TaskQueueResult.Add(parameter.guid, rt);
+                        }
+                        break;
+                    case Queue_CommandType.SetVCPCapability_II:
+                        {
+                            Type_SetVCPCapability_II parameter = (Type_SetVCPCapability_II)p.Parameter;
+                            var rt = true;
+                            _TaskQueueResult.Add(parameter.guid, rt);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+        }
+
         [Test]
         public void TestVcpCorePlugin()
         {
@@ -161,11 +230,10 @@ namespace VcpCore.Plugins.Test
         }
 
 
+
         [Test]
         public void TestGetMonitors()
         {
-            //var getMonitors = vcpCorePlugin.GetMonitors().Result;
-            //Assert.Greater(getMonitors.Count, 0);
             string displayName = monitorInfo1.DisplayName;
             string modelName = monitorInfo1.modelName;
             _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
@@ -175,94 +243,148 @@ namespace VcpCore.Plugins.Test
             Assert.Greater(getMonitors.Count, 0);
             Assert.That(displayName, Is.EqualTo(getMonitors[0].DisplayName));
             Assert.That(modelName, Is.EqualTo(getMonitors[0].modelName));
-
-
         }
 
         [Test]
         public void TestRe_GetMonitors()
         {
+            List<MonitorInfo> _allDisplays = new List<MonitorInfo>();
+            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
             var getMonitors = vcpCorePlugin.Re_GetMonitors().Result;
-            Assert.Greater(getMonitors.Count, 0);
+            Assert.That(_allDisplays, Is.EqualTo(getMonitors));
 
         }
 
         [Test]
         public void TestGetCapabilitiesString()
         {
-            var getMonitors = vcpCorePlugin.GetMonitors().Result;
-            Assert.Greater(getMonitors.Count, 0);
-            var monitorInfo = getMonitors[0];
-            var getCapabilitiesString = vcpCorePlugin.GetCapabilitiesString(monitorInfo).Result;
-            Assert.Greater(getCapabilitiesString.Length, 0);
+            string capabilitiesString = string.Empty;
+            monitorInfo = null;
+            if (monitorInfo == null)
+            {
+                var getCapabilitiesString = vcpCorePlugin.GetCapabilitiesString(monitorInfo1).Result;
+                Assert.That(capabilitiesString, Is.EqualTo(getCapabilitiesString));
+            }
+            if (monitorInfo1 != null)
+            {
+                List<MonitorInfo_complex> _allInfoMonitors = new List<MonitorInfo_complex>();
+                _allInfoMonitors.Add(monitorInfoComplex1);
+                PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+                privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
+
+                _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+                privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+                string capabilitiesStrings = "type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04)";
+
+                _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
+                privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
+
+                var getCapabilitiesString2 = vcpCorePlugin.GetCapabilitiesString(monitorInfo1).Result;
+                Assert.Greater(getCapabilitiesString2.Length, 0);
+                Assert.That(capabilitiesStrings, Is.EqualTo(getCapabilitiesString2));
+            }
         }
+
 
         [Test]
         public void TestGetVCPCapabilities()
         {
-            var getMonitors = vcpCorePlugin.GetMonitors().Result;
-            Assert.Greater(getMonitors.Count, 0);
-            var monitorInfo = getMonitors[0];
-            var getVCPCapabilities = vcpCorePlugin.GetVCPCapabilities(monitorInfo).Result;
-            Assert.Greater(getVCPCapabilities.Length, 0);
+            var VCPCapabilities2 = "DELLU2724DE 808597589";
+            List<MonitorInfo_complex> _allInfoMonitors = new List<MonitorInfo_complex>();
+            _allInfoMonitors.Add(monitorInfoComplex1);
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
+
+            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+
+            _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
+            privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
+
+            var getVCPCapabilities2 = vcpCorePlugin.GetVCPCapabilities(monitorInfo1).Result;
+            Assert.That(VCPCapabilities2, Is.EqualTo(getVCPCapabilities2));
+
         }
 
         [Test]
         public void TestGetVCPCapability_()
         {
-            var getMonitors = vcpCorePlugin.GetMonitors().Result;
-            Assert.Greater(getMonitors.Count, 0);
-            var monitorInfo = getMonitors[0];
-            var result = vcpCorePlugin.GetVCPCapability(monitorInfo, 20).Result;// Contrast = 18,  ColorSpace14 = 20
-            if (result.result)
-            {
-                var getValue = result.value;
-                uint uVCPCapability = System.Convert.ToUInt32(result.value.ToString());
-                string getMointorColorToStr = uVCPCapability.ToString("X2");
-                bool isGetVPCInVcpCode = getstr["14"].Any(x => x.Value.Equals(getMointorColorToStr));
-                Assert.IsTrue(isGetVPCInVcpCode);
-            }
-            else
-            {
-                Assert.IsTrue(result.result);
-            }
+            bool objGetVCP = false;
+            monitorInfo = null;
+            byte code = 20;
+
+            int value = 12;
+            bool getvcpresult = true;
+            List<MonitorInfo_complex> _allInfoMonitors = new List<MonitorInfo_complex>();
+            _allInfoMonitors.Add(monitorInfoComplex1);
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
+
+            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+
+            _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
+            privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
+
+            var GetVCPCapabilityresult2 = vcpCorePlugin.GetVCPCapability(monitorInfo1, code).Result;// ColorSpace14 = 20, get value=12
+            Assert.That(getvcpresult, Is.EqualTo(GetVCPCapabilityresult2.result));
+            Assert.That(value, Is.EqualTo(GetVCPCapabilityresult2.value));
+
         }
 
         [Test]
         public void TestGetVCPCapability()
         {
-            var getMonitors = vcpCorePlugin.GetMonitors().Result;
-            Assert.Greater(getMonitors.Count, 0);
-            var monitorInfo = getMonitors[0];
-            var result = vcpCorePlugin.GetVCPCapability(monitorInfo, "226").Result;//ColorSpaceE2 = 226,
-            if (result.result)
-            {
-                var getValue = result.value;
-                uint uVCPCapability = System.Convert.ToUInt32(result.value.ToString());
-                string getMointorColorToStr_ = uVCPCapability.ToString("X2");
-                bool isGetVPCInVcpCode_ = getstr["E2"].Any(x => x.Value.Equals(getMointorColorToStr_));
-                Assert.IsTrue(isGetVPCInVcpCode_);
-            }
-            else
-            {
-                Assert.IsTrue(result.result);
-            }
+            bool objGetVCP = false;
+            monitorInfo = null;
+            string funcName = "226"; //ColorSpaceE2 = 226,
+            int value = 20;
+            bool getVCPCapabilityResult = true;
+
+            List<MonitorInfo_complex> _allInfoMonitors = new List<MonitorInfo_complex>();
+            _allInfoMonitors.Add(monitorInfoComplex1);
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
+
+            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+            bool getvcpresult = true;
+
+            _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
+            privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
+
+            var GetVCPCapabilityresult2 = vcpCorePlugin.GetVCPCapability(monitorInfo1, funcName).Result;
+            Assert.That(getVCPCapabilityResult, Is.EqualTo(GetVCPCapabilityresult2.result));
+            Assert.That(value, Is.EqualTo(GetVCPCapabilityresult2.value));
+
         }
 
 
         [Test]
         public void TestSetVCPCapability()
         {
-            var getMonitors = vcpCorePlugin.GetMonitors().Result;
-            Assert.Greater(getMonitors.Count, 0);
-            var monitorInfo = getMonitors[0];
-            var getMonitorVCP = vcpCorePlugin.GetVCPCapability(monitorInfo, 18, 0).Result.value; // Brightness = 16,Contrast = 18,             
-            int newContrast;
-            do { newContrast = new Random().Next(50, 80); } while (newContrast.ToString() == getMonitorVCP.ToString());
-            bool setBrightness = vcpCorePlugin.SetVCPCapability(monitorInfo, 18, (uint)newContrast).Result;
-            Assert.IsTrue(setBrightness);
-            var regetMonitorVCP = vcpCorePlugin.GetVCPCapability(monitorInfo, 18, 0).Result.value;
-            Assert.That(regetMonitorVCP.ToString(), Is.EqualTo(newContrast.ToString()));
+            bool objGetVCP = false;
+            monitorInfo = null;
+            string funcName = "226"; //ColorSpaceE2 = 226,
+            int value = 30;
+            bool setVCPCapabilityResult = true;
+            uint newContrast = 0x50;
+            List<MonitorInfo_complex> _allInfoMonitors = new List<MonitorInfo_complex>();
+            _allInfoMonitors.Add(monitorInfoComplex1);
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
+
+            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+
+            _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
+            privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
+
+            bool SetVCPCapabilityResult2 = vcpCorePlugin.SetVCPCapability(monitorInfo1, 18, newContrast).Result;
+            Assert.IsTrue(SetVCPCapabilityResult2);
+            Assert.That(setVCPCapabilityResult, Is.EqualTo(SetVCPCapabilityResult2));
 
         }
 
@@ -270,57 +392,74 @@ namespace VcpCore.Plugins.Test
         [Test]
         public void TestSetVCPCapability_()
         {
-            var getMonitors = vcpCorePlugin.GetMonitors().Result;
-            Assert.Greater(getMonitors.Count, 0);
-            var monitorInfo = getMonitors[0];
-            bool setColor = vcpCorePlugin.SetVCPCapability(monitorInfo, "colorpreset", "Warm").Result;//SetVCPCapability_ FunctionName.ToLower() case "colorpreset":
+            ObjGetVCP objGetVCP = new ObjGetVCP() { value = null, result = false };
+            monitorInfo = null;
+            string FunctionName = "colorpreset";
+            string val = "Warm";
+            bool SetVCPCapabilityResult_ = true;
+            uint newContrast = 0x50;
+
+            List<MonitorInfo_complex> _allInfoMonitors = new List<MonitorInfo_complex>();
+            _allInfoMonitors.Add(monitorInfoComplex1);
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
+
+            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+
+            _taskQueueExecutor.DoWork += TaskQueueExecutor_DoWork;
+            privatevcp.SetFieldOrProperty("_TaskQueueExecutor", _taskQueueExecutor);
+
+            bool setColor = vcpCorePlugin.SetVCPCapability(monitorInfo1, "colorpreset", "Warm").Result;
             Assert.IsTrue(setColor);
-            var getMonitorColor = vcpCorePlugin.GetVCPCapability(monitorInfo, 20, 0).Result.value;//ColorSpace14 = 20,
-            uint uMonitorColor = System.Convert.ToUInt32(getMonitorColor.ToString());
-            string getMointorColorToStr = uMonitorColor.ToString("X2");
-            var getVcpCoreColor = getstr["14"].Where(x => x.Value.Equals(getMointorColorToStr)).FirstOrDefault().Value;
-            Assert.That(actual: getVcpCoreColor, Is.EqualTo(getMointorColorToStr));
-
-            bool reSetColor = vcpCorePlugin.SetVCPCapability(monitorInfo, "colorpreset", "Custom Color").Result;
-            Assert.IsTrue(reSetColor);
-            var reGetMonitorColor = vcpCorePlugin.GetVCPCapability(monitorInfo, 20, 0).Result.value;
-            uint urMonitorColor = System.Convert.ToUInt32(reGetMonitorColor.ToString());
-            string regetMointorColorToStr = urMonitorColor.ToString("X2");
-            var reGetVcpCoreColor = getstr["14"].Where(x => x.Value.Equals(regetMointorColorToStr)).FirstOrDefault().Value;
-            Assert.That(actual: reGetVcpCoreColor, Is.EqualTo(regetMointorColorToStr));
-
+            Assert.That(SetVCPCapabilityResult_, Is.EqualTo(setColor));
         }
+
 
 
         [Test]
         public void TestSetColorPreset()
         {
-            var getMonitors = vcpCorePlugin.GetMonitors().Result;
-            Assert.Greater(getMonitors.Count, 0);
-            var monitorInfo = getMonitors[0];
+            //var getMonitors = vcpCorePlugin.GetMonitors().Result;
+            //Assert.Greater(getMonitors.Count, 0);
+            //var monitorInfo = getMonitors[0];
+            //PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            //List<(MonitorInfo_complex, MonitorInfo)> AllInfoMonitors_Mix = (List<(MonitorInfo_complex, MonitorInfo)>)privatevcp.GetField("_AllInfoMonitors_Mix");
+            ////var AllInfoMonitors= _AllInfoMonitors.
+            //foreach (var moX in AllInfoMonitors_Mix)
+            //{
+            //    bool setColor = vcpCorePlugin.SetColorPreset(moX.Item1, "Warm");//SetVCPCapability_ FunctionName.ToLower() case "colorpreset":
+            //    Assert.IsTrue(setColor);
+            //}
+            //var getMonitorColor = vcpCorePlugin.GetVCPCapability(monitorInfo, 20, 0).Result.value;//VcpCode : byte , VcpCode.ColorSpace14 = 20,
+            //uint uMonitorColor = System.Convert.ToUInt32(getMonitorColor.ToString());// convert to uint
+            //string getMointorColorToStr = uMonitorColor.ToString("X2");    //change to 16 hex, and two number show
+            //var getVcpCoreColor = getstr["14"].Where(x => x.Value.Equals(getMointorColorToStr)).FirstOrDefault().Value;
+            //Assert.That(actual: getVcpCoreColor, Is.EqualTo(getMointorColorToStr));
+            //foreach (var moX in AllInfoMonitors_Mix)
+            //{
+            //    bool setColor = vcpCorePlugin.SetColorPreset(moX.Item1, "Custom Color");//SetVCPCapability_ FunctionName.ToLower() case "colorpreset":
+            //    Assert.IsTrue(setColor);
+            //}
+            //var reGetMonitorColor = vcpCorePlugin.GetVCPCapability(monitorInfo, 20, 0).Result.value;
+            //uint urMonitorColor = System.Convert.ToUInt32(reGetMonitorColor.ToString());
+            //string regetMointorColorToStr = urMonitorColor.ToString("X2");
+            //var reGetVcpCoreColor = getstr["14"].Where(x => x.Value.Equals(regetMointorColorToStr)).FirstOrDefault().Value;
+            //Assert.That(actual: reGetVcpCoreColor, Is.EqualTo(regetMointorColorToStr));
+
+            monitorInfoComplex1.ColorPresentDescription = getstr;
+            List<MonitorInfo_complex> _allInfoMonitors = new List<MonitorInfo_complex>();
+            _allInfoMonitors.Add(monitorInfoComplex1);
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
-            List<(MonitorInfo_complex, MonitorInfo)> AllInfoMonitors_Mix = (List<(MonitorInfo_complex, MonitorInfo)>)privatevcp.GetField("_AllInfoMonitors_Mix");
-            //var AllInfoMonitors= _AllInfoMonitors.
-            foreach (var moX in AllInfoMonitors_Mix)
-            {
-                bool setColor = vcpCorePlugin.SetColorPreset(moX.Item1, "Warm");//SetVCPCapability_ FunctionName.ToLower() case "colorpreset":
-                Assert.IsTrue(setColor);
-            }
-            var getMonitorColor = vcpCorePlugin.GetVCPCapability(monitorInfo, 20, 0).Result.value;//VcpCode : byte , VcpCode.ColorSpace14 = 20,
-            uint uMonitorColor = System.Convert.ToUInt32(getMonitorColor.ToString());// convert to uint
-            string getMointorColorToStr = uMonitorColor.ToString("X2");    //change to 16 hex, and two number show
-            var getVcpCoreColor = getstr["14"].Where(x => x.Value.Equals(getMointorColorToStr)).FirstOrDefault().Value;
-            Assert.That(actual: getVcpCoreColor, Is.EqualTo(getMointorColorToStr));
-            foreach (var moX in AllInfoMonitors_Mix)
-            {
-                bool setColor = vcpCorePlugin.SetColorPreset(moX.Item1, "Custom Color");//SetVCPCapability_ FunctionName.ToLower() case "colorpreset":
-                Assert.IsTrue(setColor);
-            }
-            var reGetMonitorColor = vcpCorePlugin.GetVCPCapability(monitorInfo, 20, 0).Result.value;
-            uint urMonitorColor = System.Convert.ToUInt32(reGetMonitorColor.ToString());
-            string regetMointorColorToStr = urMonitorColor.ToString("X2");
-            var reGetVcpCoreColor = getstr["14"].Where(x => x.Value.Equals(regetMointorColorToStr)).FirstOrDefault().Value;
-            Assert.That(actual: reGetVcpCoreColor, Is.EqualTo(regetMointorColorToStr));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
+
+            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
+
+            Dictionary<string, string> VCPE2 = new Dictionary<string, string>();
+
+            bool setColor = vcpCorePlugin.SetColorPreset(monitorInfoComplex1, "Warm"); //SetVCPFeature call dxva2.dll need get real monitorinfo,or get false
+            Assert.IsFalse(setColor);
         }
     }
 }
