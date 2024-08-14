@@ -27,10 +27,7 @@ using DDPM.SA.Common.Display;
 using Windows.System;
 using Newtonsoft.Json;
 using System.Drawing;
-using Dell.Client.Framework.Security;
-using Dell.RPC.Transport.Interfaces;
-using Dell.RPC.Transport.Security;
-using Dell.RPC.Transport;
+using DDPM.SA.Common.Security;
 
 namespace NetworkKVM.Plugins
 {
@@ -587,45 +584,11 @@ namespace NetworkKVM.Plugins
             _agent.StopAgent();
         }
 
-        public static PipeSecurity CreatePipeSecurity()
-        {
-            var pipeSecurity = new TransportPipeSecurity();             
-            // by default, this pipe security object is meant for an elevated pipe
-            pipeSecurity.IsElevated = true;             
-            // Disable inherited permissions             
-            // Note, the first argument says to protect these rules from inheritance and the second argument is to remove current inherited rules
-            pipeSecurity.SetAccessRuleProtection(true, false);             
-            // Add default account rights             
-            // - Allow System group Full Control             
-            // - Allow Administrators group Full Control
-            var accessRule = new PipeAccessRule(LocalAccounts.Users.LocalSystemSid, PipeAccessRights.FullControl, AccessControlType.Allow);             
-            pipeSecurity.AddAccessRule(accessRule);             
-            // Allow Admin since they could just PSExec us to get to System so just make             
-            // easier for debugging reasons
-            accessRule = new PipeAccessRule(LocalAccounts.Groups.BuiltinAdminsSid, PipeAccessRights.FullControl, AccessControlType.Allow);             
-            pipeSecurity.AddAccessRule(accessRule);             
-            // Denying access to connections coming over the network.             
-            // Connections made from within a Remote Desktop (RDP) session still work. This is the behavior we want.
-            var securityId = new SecurityIdentifier(WellKnownSidType.NetworkSid, null);             
-            accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);             
-            pipeSecurity.AddAccessRule(accessRule);             
-            // Deny access to connections for AnonymousSid accounts
-            securityId = new SecurityIdentifier(WellKnownSidType.AnonymousSid, null);             
-            accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);             
-            pipeSecurity.AddAccessRule(accessRule);             
-            return pipeSecurity;         
-        }
-
         private void CreateNamedPipe()
         {
             string namedPipeName = Guid.NewGuid().ToString("D");
             _logs.DebugMsg("[NetworkKVM] Name: " + namedPipeName);
-            PipeSecurity pipeSecurity = CreatePipeSecurity();
-            //pipeSecurity.AddAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), PipeAccessRights.ReadWrite, AccessControlType.Allow));
-            //pipeSecurity.AddAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.AccountAdministratorSid, null), PipeAccessRights.FullControl, AccessControlType.Allow));
-            //pipeSecurity.AddAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.AnonymousSid, null), PipeAccessRights.FullControl, AccessControlType.Deny));
-            //pipeSecurity.AddAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.NetworkSid, null), PipeAccessRights.FullControl, AccessControlType.Deny));
-            //pipeSecurity.AddAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), PipeAccessRights.ReadWrite, AccessControlType.Allow));
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
 
             pipeServer = NamedPipeServerStreamAcl.Create(namedPipeName,
                                                         PipeDirection.InOut,
@@ -681,16 +644,7 @@ namespace NetworkKVM.Plugins
             int bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length);
             return Encoding.UTF8.GetString(buffer, 0, bytesRead);
         }
-        /*private PipeSecurity CreatePipeSecurity()
-        {
-            PipeSecurity security = new PipeSecurity();
 
-            var id = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
-
-            security.SetAccessRule(new PipeAccessRule(id, PipeAccessRights.ReadWrite, AccessControlType.Allow));
-
-            return security;
-        }*/
         private async Task<string> JsonstringParse(string jsonstring)
         {
             string type;
