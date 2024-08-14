@@ -369,13 +369,14 @@ namespace VcpCore.Plugins
         {
             switch (vcpControlName)
             {
-                //case "00": return "Standard/Native";
-                case "00": return "Standard";
+                case "00": return "Standard/Native";
+                //case "00": return "Standard";
                 //case "00": return "Native";
                 case "02": return "Multimedia";
                 case "03": return "Movie";
                 case "04": return "Nature";
                 case "05": return "Game/Game1";
+                //case "05": return "Game";
                 case "06": return "Sport";
                 default: return null;
             }
@@ -395,7 +396,9 @@ namespace VcpCore.Plugins
                 case "06": return "CAL2";
                 case "07": return "Metro";
                 case "08": return "Paper";
-                case "09": return "Rec 709";
+                //case "09": return "Rec 709";
+                //case "09": return "Rec.709";
+                case "09": return "Rec. 709 / BT.709";
                 case "0a": return "DCI-P3";
                 case "0b": return "Rec2020";
                 case "0c": return "ComfortView";
@@ -419,6 +422,9 @@ namespace VcpCore.Plugins
                 case "c1": return "Custom 1 / User 1";
                 case "c2": return "Custom 2 / User 2";
                 case "c3": return "Custom 3 / User 3";
+                //case "c1": return "Custom 1";
+                //case "c2": return "Custom 2";
+                //case "c3": return "Custom 3";
                 default: return null;
             }
         }
@@ -427,13 +433,14 @@ namespace VcpCore.Plugins
         {
             switch (vcpControlName)
             {
-                //case "00": return "Standard/Native";
-                case "00": return "Standard";
+                case "00": return "Standard/Native";
+                //case "00": return "Standard";
                 //case "00": return "Native";
                 case "01": return "Multimedia";
                 case "02": return "Movie";
                 case "03": return "Nature";
-                case "04": return "Game";
+                //case "04": return "Game";
+                case "04": return "Game/Game1";
                 case "05": return "Sport";
                 case "06": return "Text";
                 case "07": return "AdobeRGB";
@@ -454,7 +461,8 @@ namespace VcpCore.Plugins
                 case "18": return "Metro";
                 case "19": return "Paper";
                 //case "1a": return "Rec. 709"; // 20240731 jim remove
-                case "1a": return "Rec.709"; // 20240731 jim add
+                //case "1a": return "Rec.709"; // 20240731 jim add
+                case "1a": return "Rec. 709 / BT.709";
                 case "1b": return "DCI-P3";
                 case "1c": return "Rec2020";
                 case "1d": return "ComfortView";
@@ -473,9 +481,12 @@ namespace VcpCore.Plugins
                 case "29": return "Multiscreen Match";
                 case "2a": return "AdobeRGB1";
                 case "2b": return "AdobeRGB2";
-                case "2c": return "Custom 1";
-                case "2d": return "Custom 2";
-                case "2e": return "Custom 3";
+                case "2c": return "Custom 1 / User 1";
+                case "2d": return "Custom 2 / User 2";
+                case "2e": return "Custom 3 / User 3";
+                //case "2c": return "Custom 1";
+                //case "2d": return "Custom 2";
+                //case "2e": return "Custom 3";
                 case "3a": return "DisplayHDR";
                 case "3b": return "HDR10";
                 case "3c": return "HLG";

@@ -40,6 +40,7 @@ using System.Management;
 using static DDPM.UI.Module.Color.ColorViewModel;
 using WinRT;
 using MonitorProfile = DDPM.SA.Common.MonitorProfile;
+using static System.Windows.Forms.LinkLabel;
 
 namespace DDPM.UI.Module.Color
 {
@@ -307,7 +308,14 @@ namespace DDPM.UI.Module.Color
                         if (vm.registryMonitor_ICC.IsMonitoring)
                             vm.registryMonitor_ICC.Dispose();
                         vm.registryMonitor_ICC = null;
-                    }                   
+                    }
+
+                    int count = vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName].Count;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        RegistryUtils.MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                    }
                 }
             }
            
@@ -352,7 +360,57 @@ namespace DDPM.UI.Module.Color
                 }
             }
 
-        }       
-    
+        }
+
+        private void lb_AppList_PreviewDragEnter(object sender, System.Windows.DragEventArgs e)
+        {
+            System.Windows.DataObject dataObj = (System.Windows.DataObject)e.Data;
+            if (!dataObj.ContainsFileDropList())
+            {
+                //pathName = "Dragging object is not file list.";
+                //return false;
+            }
+            string[] dropFileNames = (string[])dataObj.GetData(System.Windows.DataFormats.FileDrop);
+            if (dropFileNames == null)
+            {
+                //pathName = "Dragging object is a file list, but it\'s empty.";
+                //return false;
+            }
+            if (dropFileNames.Length != 1)
+            {
+                //pathName = "Dragging object is not \"single\" file.";
+                //return false;
+            }
+            string extName = System.IO.Path.GetExtension(dropFileNames[0]);
+            if (!extName.Equals(".CSV", StringComparison.OrdinalIgnoreCase))
+            {
+                //pathName = "Dragging object is not a \".CSV\" file.";
+                //return false;
+            }
+            //pathName = dropFileNames[0];
+
+            string targetPath = dropFileNames[0];
+
+           
+
+            if (targetPath.EndsWith(".lnk"))
+            {
+                //ShellLinkObject linkedLnk = (ShellLinkObject)shell.NameSpace(targetPath).Items().Item().GetLink;
+                //targetPath = linkedLnk.Target.Path;
+                //targetPath = linkedLnk.Target.Path;
+
+                // IWshRuntimeLibrary is in the COM library "Windows Script Host Object Model"
+                IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
+
+                IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(targetPath);
+
+                string temp;
+                
+                temp = shortcut.TargetPath;
+            }
+
+        }
+
+
     }
 }

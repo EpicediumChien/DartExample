@@ -104,7 +104,11 @@
                                                      ItemsSource="{Binding AppsList, UpdateSourceTrigger=PropertyChanged}"
                                                      HorizontalContentAlignment="Stretch" 
                                                      ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                                                     ScrollViewer.CanContentScroll="True"  >
+                                                     ScrollViewer.CanContentScroll="True"  
+                                                     PreviewDragEnter="lb_AppList_PreviewDragEnter" 
+                                                     AllowDrop="True" 
+                                                   
+                                                     >
                                                 <ListBox.Resources>
                                                     <Style TargetType="Border">
                                                         <Setter Property="CornerRadius" Value="5"/>
