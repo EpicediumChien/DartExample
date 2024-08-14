@@ -18,7 +18,6 @@ using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using Security = Dell.Client.Framework.Security;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -587,7 +586,7 @@ namespace DDPM.SA.Common.Settings
         {
             info = "Valid";
             //check return code with Enum PathCheckErrorCodes            
-            PathCheckErrorCodes result = Security.PathHelper.ValidateFilePath(filePath);
+            PathCheckErrorCodes result = PathHelper.ValidateFilePath(filePath);
             if (result != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"IsFilePathValid: {nameof(result)}";
@@ -600,7 +599,7 @@ namespace DDPM.SA.Common.Settings
         {
             info = "Valid";
             //check return code with Enum PathCheckErrorCodes            
-            PathCheckErrorCodes result = Security.PathHelper.ValidateDirectoryPath(folderPath);
+            PathCheckErrorCodes result = PathHelper.ValidateDirectoryPath(folderPath);
             if (result != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"IsFolderPathValid: {nameof(result)}";
@@ -619,7 +618,7 @@ namespace DDPM.SA.Common.Settings
         {
             info = "Valid";
             //check return code with Enum PathCheckErrorCodes            
-            PathRedirectionReturn result = Security.PathHelper.CheckPathRedirection(Path);
+            PathRedirectionReturn result = PathHelper.CheckPathRedirection(Path);
             if (result != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"IsPathSymboliced: {nameof(result)}";
@@ -1079,7 +1078,7 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = Security.CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
             info = "Complete";
             return result;
         }
@@ -1105,7 +1104,7 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = Security.CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
             info = "Complete";
             return result;
         }

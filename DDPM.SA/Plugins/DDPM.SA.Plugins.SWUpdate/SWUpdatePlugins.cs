@@ -224,6 +224,8 @@ namespace DDPM.SA.Plugins.SWUpdate
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _SWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
+            //暫時直接Return
+            return Task.FromResult(new List<SWUpdateInfo>());
             SWUpdateHelper swUpdateHelper = DownloadMetadata();
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
             {
