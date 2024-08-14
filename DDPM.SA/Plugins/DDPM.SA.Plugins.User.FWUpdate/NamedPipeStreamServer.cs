@@ -1,8 +1,12 @@
 ﻿namespace DDPM.SA.Plugins.User.FWUpdate
 {
+    using Dell.Client.Framework.Security;
+    using Dell.RPC.Transport;
     using System;
     using System.Collections.Generic;
     using System.IO.Pipes;
+    using System.Security.AccessControl;
+    using System.Security.Principal;
     using System.Text;
 
     public class NamedPipeStreamServer : NamedPipeStreamBase
@@ -14,13 +18,15 @@
 
         public NamedPipeStreamServer(string pipeName) : base(pipeName)
         {
+            PipeSecurity pipeSecurity = CreatePipeSecurity();
             this._Connections = new List<NamedPipeStreamConnection>();
-            NamedPipeServerStream state = new NamedPipeServerStream(base.PipeName, PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+            NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
         }
 
         private void ClientConnected(IAsyncResult result)
         {
+            PipeSecurity pipeSecurity = CreatePipeSecurity();
             NamedPipeServerStream? asyncState = result.AsyncState as NamedPipeServerStream;
             if (asyncState != null)
             {
@@ -36,11 +42,40 @@
                         ClientConnectedEvent?.Invoke(this, new EventArgs());
                     }
                 }
-                NamedPipeServerStream state = new NamedPipeServerStream(base.PipeName, PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+                NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
                 state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
             }
         }
-
+        private PipeSecurity CreatePipeSecurity()
+        {
+            var pipeSecurity = new TransportPipeSecurity();
+            // by default, this pipe security object is meant for an elevated pipe
+            pipeSecurity.IsElevated = true;
+            // Disable inherited permissions             
+            // Note, the first argument says to protect these rules from inheritance and the second argument is to remove current inherited rules
+            pipeSecurity.SetAccessRuleProtection(true, false);
+            var accessRule = new PipeAccessRule(LocalAccounts.Groups.BuiltinUsersSid, PipeAccessRights.FullControl, AccessControlType.Allow);
+            pipeSecurity.AddAccessRule(accessRule);
+            // Add default account rights             
+            // - Allow System group Full Control             
+            // - Allow Administrators group Full Control
+            accessRule = new PipeAccessRule(LocalAccounts.Users.LocalSystemSid, PipeAccessRights.FullControl, AccessControlType.Allow);
+            pipeSecurity.AddAccessRule(accessRule);
+            // Allow Admin since they could just PSExec us to get to System so just make             
+            // easier for debugging reasons
+            accessRule = new PipeAccessRule(LocalAccounts.Groups.BuiltinAdminsSid, PipeAccessRights.FullControl, AccessControlType.Allow);
+            pipeSecurity.AddAccessRule(accessRule);
+            // Denying access to connections coming over the network.             
+            // Connections made from within a Remote Desktop (RDP) session still work. This is the behavior we want.
+            var securityId = new SecurityIdentifier(WellKnownSidType.NetworkSid, null);
+            accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);
+            pipeSecurity.AddAccessRule(accessRule);
+            // Deny access to connections for AnonymousSid accounts
+            securityId = new SecurityIdentifier(WellKnownSidType.AnonymousSid, null);
+            accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);
+            pipeSecurity.AddAccessRule(accessRule);
+            return pipeSecurity;
+        }
         private void Connection_DisconnectedEvent(object? sender, EventArgs e)
         {
             ClientDisconnectedEvent?.Invoke(this, e);

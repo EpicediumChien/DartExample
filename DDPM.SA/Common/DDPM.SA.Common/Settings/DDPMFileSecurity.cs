@@ -1,5 +1,6 @@
 ﻿using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Json;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
@@ -86,7 +88,7 @@ namespace DDPM.SA.Common.Settings
         public static bool SetJsonContentFromSerializedString(string serialized_string, string target_file, out string info, bool isEncrypt = false)
         {
             info = "Success";
-            if(string.IsNullOrEmpty(serialized_string))
+            if (string.IsNullOrEmpty(serialized_string))
             {
                 info = "Null json content as input";
                 return false;
@@ -104,7 +106,7 @@ namespace DDPM.SA.Common.Settings
                 info = "Calculate signature failed." + e.Message;
                 return false;
             }
-            if(string.IsNullOrEmpty(signature))
+            if (string.IsNullOrEmpty(signature))
             {
                 info = "Got null signature";
                 return false;
@@ -134,7 +136,7 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
-            if(string.IsNullOrEmpty(write_string))
+            if (string.IsNullOrEmpty(write_string))
             {
                 info = "Convert protect content to base64 string got null result";
                 return false;
@@ -163,7 +165,7 @@ namespace DDPM.SA.Common.Settings
             }
             //1. Read json content
             string json_content = File.ReadAllText(filePath);
-            if(string.IsNullOrEmpty(json_content))
+            if (string.IsNullOrEmpty(json_content))
             {
                 info = "Null content of json file";
                 Console.WriteLine(info);
@@ -190,7 +192,7 @@ namespace DDPM.SA.Common.Settings
                 info = e.Message;
                 return string.Empty;
             }
-            if(string.IsNullOrEmpty(serialized))
+            if (string.IsNullOrEmpty(serialized))
             {
                 info = "Retrieve content of json file failed";
                 Console.WriteLine(info);
@@ -204,7 +206,7 @@ namespace DDPM.SA.Common.Settings
             {
                 jObject = JObject.Parse(serialized);
                 //3. retrieve signature for comparison
-                signature = (string)jObject["Signature"];                
+                signature = (string)jObject["Signature"];
                 if (!string.IsNullOrEmpty(signature))
                 {
                     // Remove the "signature" property for hash generating
@@ -228,7 +230,7 @@ namespace DDPM.SA.Common.Settings
                 Console.WriteLine(info);
                 return string.Empty;
             }
-            if(jObject == null || jObject.Count == 0)
+            if (jObject == null || jObject.Count == 0)
             {
                 info = "Convert from json content got no object";
                 Console.WriteLine(info);
@@ -242,7 +244,7 @@ namespace DDPM.SA.Common.Settings
                 byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
                 byte[] sign = GetSHA512(body_array, 0, body_array.Length);
                 cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
-                if(string.IsNullOrEmpty(cal_sign))
+                if (string.IsNullOrEmpty(cal_sign))
                 {
                     info = "Null signature from hash calculation";
                     return string.Empty;
@@ -254,7 +256,7 @@ namespace DDPM.SA.Common.Settings
                 return string.Empty;
             }
             //4. Check if signature valid
-            if(cal_sign.ToLower().Equals(signature.ToLower()))
+            if (cal_sign.ToLower().Equals(signature.ToLower()))
                 //5. return serialized string
                 return modifiedJson;
             else
@@ -679,7 +681,7 @@ namespace DDPM.SA.Common.Settings
                 // In dotnet core, FileSystemAclExtensions.SetAccessControl method is the major function used to update file access right
                 fileInfo.SetAccessControl(fileSecurity);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 info = ex.Message;
                 return false;
@@ -772,7 +774,7 @@ namespace DDPM.SA.Common.Settings
         /// <returns></returns>
         public static bool CheckFileACL(string filePath, out string info, bool isApplyACL = false)
         {
-            if(!File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
                 info = $"CheckFileACL: {filePath} isn't exist.";
                 return false;
@@ -879,7 +881,7 @@ namespace DDPM.SA.Common.Settings
 
         public static bool CheckIfFileCanBeExecuted_Secure(string executablePath, bool NeedElevated = false)
         {
-            if(string.IsNullOrEmpty(executablePath))
+            if (string.IsNullOrEmpty(executablePath))
             {
                 throw new ArgumentException("Empty file path.");
             }
@@ -894,7 +896,7 @@ namespace DDPM.SA.Common.Settings
                 }
 
                 // Check if file exist
-                if(!File.Exists(filePath))
+                if (!File.Exists(filePath))
                 {
                     throw new ArgumentException("File isn't exist. ");
                 }
@@ -1072,7 +1074,7 @@ namespace DDPM.SA.Common.Settings
                 return null;
             }
             byte[] data = File.ReadAllBytes(filePath);
-            if(data == null)
+            if (data == null)
             {
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
@@ -1381,5 +1383,111 @@ namespace DDPM.SA.Common.Settings
             }
             return null;
         }*/
+        #region Bruce 0814 Move this method to DDPM.SA.Common
+        private enum WTS_INFO_CLASS
+        {
+            WTSUserName = 5,
+            WTSDomainName = 7,
+        }
+        [DllImport("Kernel32.dll")]
+        private static extern int WTSGetActiveConsoleSessionId();
+        private int WTSGetActiveConsoleSessionId_Public()
+        {
+            return WTSGetActiveConsoleSessionId();
+        }
+
+        [DllImport("Wtsapi32.dll")]
+        private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+        private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
+        {
+            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+        }
+
+        [DllImport("Wtsapi32.dll")]
+        private static extern void WTSFreeMemory(IntPtr pointer);
+        private void WTSFreeMemory_Public(IntPtr pointer)
+        {
+            WTSFreeMemory(pointer);
+        }
+        public string GetActiveUserLocalAppDataPath()
+        {
+            IntPtr buffer;
+            int bytesReturned = 0;
+            int sessionId = WTSGetActiveConsoleSessionId_Public(); // This gets the session ID of the user logged into the console
+            Console.WriteLine($"WTSGetActiveConsoleSessionId: {sessionId}");
+
+            if (WTSQuerySessionInformation_Public(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
+            {
+                string userName = Marshal.PtrToStringAnsi(buffer);
+                WTSFreeMemory_Public(buffer);
+                Console.WriteLine($"WTSQuerySessionInformation: user name ({userName})");
+
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    string userSid = GetUserSid(userName);
+                    if (!string.IsNullOrEmpty(userSid))
+                    {
+                        string regKey = $@"HKEY_USERS\{userSid}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders";
+                        string localAppDataPath = (string)Registry.GetValue(regKey, "Local AppData", null);
+                        Console.WriteLine($"Local app data from registry: {localAppDataPath}");
+                        return localAppDataPath;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Got null user name");
+                }
+            }
+            else
+            {
+                Console.WriteLine("WTSQuerySessionInformation: return false");
+            }
+            return null;
+        }
+        private string GetUserSid(string userName)
+        {
+            NTAccount f_normal, f_domain = null;
+            string accountName = $"{Environment.MachineName}\\{userName}";
+            f_normal = new NTAccount(accountName);
+            Console.WriteLine($"GetUserSid: Machine name: {Environment.MachineName}, User name:{userName}");
+            if (!string.IsNullOrEmpty(Environment.UserDomainName))
+            {
+                accountName = $"{Environment.UserDomainName}\\{userName}";
+                Console.WriteLine($"GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
+                f_domain = new NTAccount(Environment.UserDomainName, userName);
+            }
+            //NTAccount f = new NTAccount(accountName);
+            //writelog($"GetUserSid: final using: {accountName}");
+            String sidString;
+            try
+            {
+                SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
+                sidString = s.ToString();
+                Console.WriteLine($"GetUserSid(normal user): SID: {sidString}");
+            }
+            catch (Exception ex)
+            {
+                sidString = null;
+                Console.WriteLine($"GetUserSid(normal user): try translate fail: {ex.Message}");
+
+                //0724 add code that translate normal user and do translate domain user if fail.
+                if (f_domain != null)
+                {
+                    try
+                    {
+                        SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
+                        sidString = s.ToString();
+                        Console.WriteLine($"GetUserSid(domain user): SID: {sidString}");
+                    }
+                    catch (Exception e)
+                    {
+                        sidString = null;
+                        Console.WriteLine($"GetUserSid(domain user): try translate fail: {e.Message}");
+                    }
+                }
+            }
+            return sidString;
+        }
+        #endregion
     }
 }
