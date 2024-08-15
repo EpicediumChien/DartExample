@@ -79,5 +79,23 @@
         /// UniqueId for the thick client (NGA)
         /// </summary>
         public const string ThickClientUniqueGuid = "{5AB199D2-F7BF-4021-8741-A0FDE397B8D5}";
+
+#if RELEASE
+
+        public static readonly byte[] WST_Hash = new byte[]
+        {
+            //Wistron2 Thumbprint : c384f7d612768946c063876b74285956156c6a1
+            0xc3, 0x84, 0xf7, 0xd6, 0x12, 0x76, 0x89, 0x46, 0xc0, 0x6, 
+            0x38, 0x76, 0xb7, 0x42, 0x85, 0x95, 0x61, 0x56, 0xc6, 0xa1
+        };
+        //0
+
+        public static readonly byte[] WST2_Hash = new byte[]
+        {
+            //Wistron Thumbprint : 841c87c9f5a679dcdba8a9c7f743847d157cd598
+            0x84, 0x1c, 0x87, 0xc9, 0xf5, 0xa6, 0x79, 0xdc, 0xdb, 0xa8,
+            0xa9, 0xc7, 0xf7, 0x43, 0x84, 0x7d, 0x15, 0x7c, 0xd5, 0x98
+        };
+#endif
     }
 }

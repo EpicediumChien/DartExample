@@ -59,6 +59,11 @@ namespace DDPM.Subagent
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_MUTEX_ID);
 
+#if RELEASE
+        private static byte[][] certificateHash = { IDs.WST_Hash };
+#endif
+
+
         private static void Main(string[] args)
         {
             //#if DEBUG
@@ -118,6 +123,10 @@ namespace DDPM.Subagent
                  * More info: https://confluence.cpg.dell.com/display/DCF/DCF+%7C+Support+User-Mode%2C+Multi-Session+and+Dual-Execution+Agents
                  */
                 MultiSessionAgent = false
+#if RELEASE
+                ,
+                ValidCertificateHashes = certificateHash
+#endif
             };
 
             Console.WriteLine("DDPM.Subagent starting...");

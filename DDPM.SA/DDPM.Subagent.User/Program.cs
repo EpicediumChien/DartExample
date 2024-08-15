@@ -58,6 +58,10 @@ namespace DDPM.Subagent.User
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_USER_MUTEX_ID);
 
+#if RELEASE
+        private static byte[][] certificateHash = { IDs.WST_Hash };
+#endif
+
         private static void Main(string[] args)
         {
             //Dean 0626 remove to fix SAST issue
@@ -138,6 +142,10 @@ namespace DDPM.Subagent.User
                  * More info: https://confluence.cpg.dell.com/display/DCF/DCF+%7C+Support+User-Mode%2C+Multi-Session+and+Dual-Execution+Agents
                  */
                 MultiSessionAgent = true
+#if RELEASE
+                ,
+                ValidCertificateHashes = certificateHash
+#endif
             };
 
             Console.WriteLine("DDPM.Subagent.User starting...");
