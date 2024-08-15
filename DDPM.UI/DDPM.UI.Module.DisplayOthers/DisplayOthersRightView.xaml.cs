@@ -49,7 +49,7 @@ namespace DDPM.UI.Module.DisplayOthers
 
         private void export_Click(object sender, RoutedEventArgs e)
         {
-
+            vm.ExportSettings();
         }
     }
 }

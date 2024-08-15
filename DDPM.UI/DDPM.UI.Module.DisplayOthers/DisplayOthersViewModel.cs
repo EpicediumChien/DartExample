@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DDPM.UI.Common;
 using DDPM.SA.Common.Display;
+using System.Windows.Forms;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -139,6 +140,23 @@ namespace DDPM.UI.Module.DisplayOthers
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process
+        }
+
+        public bool ExportSettings()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.Filter = "json files (*.json)|*.json";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filename = saveFileDialog.FileName;
+                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayExportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, filename).Result;
+                if (b)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
