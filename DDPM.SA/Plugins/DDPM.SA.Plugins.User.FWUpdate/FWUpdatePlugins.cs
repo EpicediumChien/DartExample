@@ -40,6 +40,7 @@ using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Security.Interfaces;
 using Dell.Client.Framework.Security;
 using System.Security;
+using DDPM.SA.Common.Security;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -513,7 +514,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             try
             {
-                CACertificateCheck caCheck = new CACertificateCheck(_logs);
+                CertificateCheck caCheck = new CertificateCheck();
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
@@ -532,93 +533,96 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.PCBatteryTooLow;
                         break;
                     }
-                    //暫時註解 因現在使用測試伺服器故先將檢查CA註解
-                    //if (caCheck.CheckCA(_fWUpdateInfo.ServerPath))
+                    string url = fwUpdateInfos[i].ServerPath;
+                    /*暫時註解 因現在使用測試伺服器故先將檢查CA註解
+                    if (!caCheck.CheckURLCACertificate(url))//0815 Bruce Add Security
                     {
-                        string url = fwUpdateInfos[i].ServerPath;
-                        //0627 Bruce 因CLI可能會自訂路徑顧新增傳入參數，變新增判斷
-                        string savePath;
-                        if (string.IsNullOrEmpty(installPath))
-                        {
-                            savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + fwUpdateInfos[i].FileSavepath + "\\";
-                        }
-                        else
-                        {
-                            savePath = installPath;
-                        }
-                        if (!Directory.Exists(savePath))
-                        {
-                            Directory.CreateDirectory(savePath);
-                        }
-                        string FolderInfo;
-                        if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
-                            continue;
-                        }
-                        _downloadTimer = new Timer();
-                        _downloadTimer.Interval = 1000;
-                        _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " CA Fail");
+                        continue;
+                    }*/
+                    //0627 Bruce 因CLI可能會自訂路徑顧新增傳入參數，變新增判斷
+                    string savePath;
+                    if (string.IsNullOrEmpty(installPath))
+                    {
+                        savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + fwUpdateInfos[i].FileSavepath + "\\";
+                    }
+                    else
+                    {
+                        savePath = installPath;
+                    }
+                    if (!Directory.Exists(savePath))
+                    {
+                        Directory.CreateDirectory(savePath);
+                    }
+                    string FolderInfo;
+                    if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
+                    {
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
+                        continue;
+                    }
+                    _downloadTimer = new Timer();
+                    _downloadTimer.Interval = 1000;
+                    _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
 
-                        //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
-                        HttpClientHandler handler = new HttpClientHandler();
-                        handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
-                                                                                                                            //Should enable server certificate validation on this SSL/TLS connection before formal release
+                    //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
+                    HttpClientHandler handler = new HttpClientHandler();
+                    handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
+                                                                                                                        //Should enable server certificate validation on this SSL/TLS connection before formal release
 
-                        HttpClient client = new HttpClient(handler);
-                        client.Timeout = TimeSpan.FromMinutes(1);
-                        // 發送 HTTP GET 請求到指定的 URL
-                        HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        // 將儲存路徑與從 URL 中提取的檔案名稱組合
-                        string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                        // 從 URL 中取得回應標頭
-                        var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        // 從回應標頭中提取檔案大小
-                        _size = header.Content.Headers.ContentLength;
-                        // 取得包含 URL 內容的串流
-                        var stream = client.GetStreamAsync(url).Result;
-                        // 建立檔案串流以將下載的內容寫入
-                        _fileStream = File.Create(_installationFileStoragePath);
-                        _downloadTimer.Start();
-                        // 將串流的內容複製到檔案中
-                        stream.CopyToAsync(_fileStream).Wait();
-                        _downloadTimer.Stop();
-                        _fileStream.Close();
-                        string exeFilePath;
-                        if (!Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath))
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile:" + exeFilePath);
-                            continue;
-                        }
+                    HttpClient client = new HttpClient(handler);
+                    client.Timeout = TimeSpan.FromMinutes(1);
+                    // 發送 HTTP GET 請求到指定的 URL
+                    HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                    string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                    // 從 URL 中取得回應標頭
+                    var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    // 從回應標頭中提取檔案大小
+                    _size = header.Content.Headers.ContentLength;
+                    // 取得包含 URL 內容的串流
+                    var stream = client.GetStreamAsync(url).Result;
+                    // 建立檔案串流以將下載的內容寫入
+                    _fileStream = File.Create(_installationFileStoragePath);
+                    _downloadTimer.Start();
+                    // 將串流的內容複製到檔案中
+                    stream.CopyToAsync(_fileStream).Wait();
+                    _downloadTimer.Stop();
+                    _fileStream.Close();
+                    string exeFilePath;
+                    if (!Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath))
+                    {
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile:" + exeFilePath);
+                        continue;
+                    }
 
-                        //測試用，OTATestClient(模擬正常安裝包流程)
-                        //exeFilePath = "C:\\FW_SW_ICC_Update\\OTATestSampleCode From_IndiLogic\\src\\OTATestClient\\bin\\Debug\\OTATestClient.exe";
+                    //測試用，OTATestClient(模擬正常安裝包流程)
+                    //exeFilePath = "C:\\FW_SW_ICC_Update\\OTATestSampleCode From_IndiLogic\\src\\OTATestClient\\bin\\Debug\\OTATestClient.exe";
 
-                        _fileStream = null;
-                        FWUpdateInfo fWUpdateInfo_Status = new FWUpdateInfo()
-                        {
-                            DeviceName = fwUpdateInfos[i].DeviceName,
-                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = "Downloading",
-                            ProcessProgress = 100,
-                        };
-                        sendMessageToEvent(fWUpdateInfo_Status);
-                        //暫時註解 等待check sha512和CA
-                        //if (caCheck.CheckFileCA(exeFilePath))
-                        {
-                            fwUpdateInfos[i].InstallPaths = exeFilePath;
-                            fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
-                        }
-                        if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
-                        {
-                            NotificationFWupdate("FW info", _notificationStr);
-                        }
-                        else
-                        {
-                            NotificationFWupdate("Error", _notificationStr);
-                        }
+                    _fileStream = null;
+                    FWUpdateInfo fWUpdateInfo_Status = new FWUpdateInfo()
+                    {
+                        DeviceName = fwUpdateInfos[i].DeviceName,
+                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                        ProcessName = "Downloading",
+                        ProcessProgress = 100,
+                    };
+                    sendMessageToEvent(fWUpdateInfo_Status);
+                    //暫時註解 等待check sha512和CA
+                    //if (caCheck.CheckFileCA(exeFilePath))
+                    {
+                        fwUpdateInfos[i].InstallPaths = exeFilePath;
+                        fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
+                    }
+                    if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
+                    {
+                        NotificationFWupdate("FW info", _notificationStr);
+                    }
+                    else
+                    {
+                        NotificationFWupdate("Error", _notificationStr);
                     }
                 }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " done");

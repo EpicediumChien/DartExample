@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.Security
 {
-    public class CACertificateCheck
+    public class CertificateCheck
     {
         private List<X509Certificate2> TrustedPublisher = new List<X509Certificate2>();
         private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
@@ -277,6 +277,25 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
+        private bool ValidateProxyCertificate(X509Certificate2 certificate)
+        {
+            // Implement custom validation logic for proxy certificates
+            // For example, check specific attributes or extensions
+            Console.WriteLine("Going through Proxy");
+            // List all certificates in the store
+            foreach (X509Certificate2 cert in TrustedRoot)
+            {
+                Console.WriteLine("--------------------------------");
+                Console.WriteLine("CN: " + ExtractCN(cert.Subject));
+                Console.WriteLine("Subject: " + cert.Subject);
+                Console.WriteLine("Issuer: " + cert.Issuer);
+                Console.WriteLine("Thumbprint: " + cert.Thumbprint);
+                Console.WriteLine("Effective Date: " + cert.NotBefore);
+                Console.WriteLine("Expiration Date: " + cert.NotAfter);
+                Console.WriteLine("--------------------------------");
+            }
+            return true; // Assuming the proxy certificate is valid
+        }
         private string ExtractCN(string subject)
         {
             if (string.IsNullOrEmpty(subject))
@@ -300,24 +319,6 @@ namespace DDPM.SA.Common.Security
 
             // CN not found
             return null;
-        }
-
-        private bool ValidateProxyCertificate(X509Certificate2 certificate)
-        {
-            // Implement custom validation logic for proxy certificates
-            // For example, check specific attributes or extensions
-            Console.WriteLine("Going through Proxy");
-            // List all certificates in the store
-            foreach (X509Certificate2 cert in TrustedRoot)
-            {
-                Console.WriteLine("Subject: " + cert.Subject);
-                Console.WriteLine("Issuer: " + cert.Issuer);
-                Console.WriteLine("Thumbprint: " + cert.Thumbprint);
-                Console.WriteLine("Effective Date: " + cert.NotBefore);
-                Console.WriteLine("Expiration Date: " + cert.NotAfter);
-                Console.WriteLine();
-            }
-            return true; // Assuming the proxy certificate is valid
         }
     }
 }

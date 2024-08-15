@@ -128,6 +128,7 @@ namespace DDPM.SA.Common
         UserAbortedFail = 9,
         FolderIsNotSafe = 10,
         FileIsNoSafe = 11,
+        CAFail = 12,
         Unknow = 99
     }
 }

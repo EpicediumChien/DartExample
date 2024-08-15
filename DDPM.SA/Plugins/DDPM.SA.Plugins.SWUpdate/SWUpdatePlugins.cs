@@ -1,10 +1,13 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Dell.Client.Framework.Security;
+using Dell.Client.Framework.Security.Interfaces;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using PInvoke;
@@ -16,6 +19,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
@@ -373,7 +377,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             int dockCount = 0;
             try
             {
-                CACertificateCheck caCheck = new CACertificateCheck(_logs);
+                CertificateCheck caCheck = new CertificateCheck();
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 for (int i = 0; i < swUpdateInfos.Count; i++)
                 {
@@ -382,81 +386,84 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + nameof(DownloadAndInstall) + " start");
                     _updateErrorCode = SWUErrorCode.Unknow;
                     swUpdateInfos[i].SWUErrorCode = _updateErrorCode;
-                    //暫時註解 因現在使用測試伺服器故先將檢查CA註解
-                    //if (caCheck.CheckCA(_sWUpdateInfo.ServerPath))
+                    string url = swUpdateInfos[i].ServerPath;
+                    /*暫時註解 因現在使用測試伺服器故先將檢查CA註解
+                    if (!caCheck.CheckURLCACertificate(url))//0815 Bruce Add Security
                     {
-                        string url = swUpdateInfos[i].ServerPath;
-                        string savePath;
-                        if (string.IsNullOrEmpty(installPath))
-                        {
-                            savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + swUpdateInfos[i].FileSavepath + "\\";
-                        }
-                        else
-                        {
-                            savePath = installPath;
-                        }
-                        if (!Directory.Exists(savePath))
-                        {
-                            Directory.CreateDirectory(savePath);
-                        }
-                        string FolderInfo;
-                        if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
-                        {
-                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                            _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo);
-                            continue;
-                        }
-                        _downloadTimer = new Timer();
-                        _downloadTimer.Interval = 1000;
-                        _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " CA Fail");
+                        continue;
+                    }*/
+                    string savePath;
+                    if (string.IsNullOrEmpty(installPath))
+                    {
+                        savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + swUpdateInfos[i].FileSavepath + "\\";
+                    }
+                    else
+                    {
+                        savePath = installPath;
+                    }
+                    if (!Directory.Exists(savePath))
+                    {
+                        Directory.CreateDirectory(savePath);
+                    }
+                    string FolderInfo;
+                    if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
+                    {
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo);
+                        continue;
+                    }
+                    _downloadTimer = new Timer();
+                    _downloadTimer.Interval = 1000;
+                    _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
 
-                        //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
-                        HttpClientHandler handler = new HttpClientHandler();
-                        handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
-                                                                                                                            //Should enable server certificate validation on this SSL/TLS connection before formal release
+                    //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
+                    HttpClientHandler handler = new HttpClientHandler();
+                    handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
+                                                                                                                        //Should enable server certificate validation on this SSL/TLS connection before formal release
 
-                        HttpClient client = new HttpClient(handler);
-                        client.Timeout = TimeSpan.FromMinutes(1);
-                        // 發送 HTTP GET 請求到指定的 URL
-                        HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        // 將儲存路徑與從 URL 中提取的檔案名稱組合
-                        string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                        // 從 URL 中取得回應標頭
-                        var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        // 從回應標頭中提取檔案大小
-                        _size = header.Content.Headers.ContentLength;
-                        // 取得包含 URL 內容的串流
-                        var stream = client.GetStreamAsync(url).Result;
-                        // 建立檔案串流以將下載的內容寫入
-                        _fileStream = File.Create(_installationFileStoragePath);
-                        _downloadTimer.Start();
-                        // 將串流的內容複製到檔案中
-                        stream.CopyToAsync(_fileStream).Wait();
-                        _downloadTimer.Stop();
-                        _fileStream.Close();
-                        string exeFilePath;
-                        if (!Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath))
-                        {
-                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                            _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Unzip Faile:" + exeFilePath);
-                            continue;
-                        }
+                    HttpClient client = new HttpClient(handler);
+                    client.Timeout = TimeSpan.FromMinutes(1);
+                    // 發送 HTTP GET 請求到指定的 URL
+                    HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                    string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                    // 從 URL 中取得回應標頭
+                    var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    // 從回應標頭中提取檔案大小
+                    _size = header.Content.Headers.ContentLength;
+                    // 取得包含 URL 內容的串流
+                    var stream = client.GetStreamAsync(url).Result;
+                    // 建立檔案串流以將下載的內容寫入
+                    _fileStream = File.Create(_installationFileStoragePath);
+                    _downloadTimer.Start();
+                    // 將串流的內容複製到檔案中
+                    stream.CopyToAsync(_fileStream).Wait();
+                    _downloadTimer.Stop();
+                    _fileStream.Close();
+                    string exeFilePath;
+                    if (!Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath))
+                    {
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Unzip Faile:" + exeFilePath);
+                        continue;
+                    }
 
-                        _fileStream = null;
-                        //暫時註解 等待check sha512和CA
-                        //if (caCheck.CheckFileCA(exeFilePath))
-                        {
-                            swUpdateInfos[i].InstallPaths = exeFilePath;
-                            swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
-                        }
-                        if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
-                        {
-                            NotificationFWupdate("SW info", _notificationStr);
-                        }
-                        else
-                        {
-                            NotificationFWupdate("Error", _notificationStr);
-                        }
+                    _fileStream = null;
+                    //暫時註解 等待check sha512和CA
+                    //if (caCheck.CheckFileCA(exeFilePath))
+                    {
+                        swUpdateInfos[i].InstallPaths = exeFilePath;
+                        swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
+                    }
+                    if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
+                    {
+                        NotificationFWupdate("SW info", _notificationStr);
+                    }
+                    else
+                    {
+                        NotificationFWupdate("Error", _notificationStr);
                     }
                 }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " done");
@@ -743,7 +750,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         }
                     });
                 }
-                
+
                 _updateErrorCode = SWUErrorCode.NoError;
                 return _updateErrorCode;
             }
