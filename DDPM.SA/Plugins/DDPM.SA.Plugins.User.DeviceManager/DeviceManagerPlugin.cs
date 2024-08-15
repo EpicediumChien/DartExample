@@ -148,6 +148,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         private readonly object _MoLock = new object();
+        //Bruce 0815 Added new judgment whether to trigger DisplayChang event
+        bool displayInOut = true;
 
         #endregion
 
@@ -180,14 +182,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             PluginCondition = new PluginStartedCondition();
             writelog("DeviceManager plugin started");
 
-            //Bruce 08 - 09 Add a new event to determine whether it is a display signal event or a setting event.
-            //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
-            displayChange = new DisplayChange(Log);
-            Task.Run(() =>
-            {
-                displayChange.Initialize_DisplayChangeEvent();
-            });
-            displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
+            Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            //displayChange = new DisplayChange(Log);
+            //Task.Run(() =>
+            //{
+            //    displayChange.Initialize_DisplayChangeEvent();
+            //});
+            //displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
         }
         #endregion
 
@@ -399,8 +400,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //if (r)
             //{
-                //write VCP over display manager
-                r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
+            //write VCP over display manager
+            r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
 
             //}
             return Task.FromResult(r);
@@ -1578,7 +1579,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, DDPM.SA.Common.Properties properties, DisplayOrientation orientation)
         {
-            return Task.FromResult(_DisplayManagerPlugin.SetDisplayPropertiest(monitorInfos, properties, orientation).Result);
+            displayInOut = false;
+            bool result = _DisplayManagerPlugin.SetDisplayPropertiest(monitorInfos, properties, orientation).Result;
+            displayInOut = true;
+            return Task.FromResult(result);
         }
         public Task<bool> CallWindowsDisplaySetting()
         {
@@ -2419,48 +2423,51 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
-            writelog($"DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
+            if (displayInOut)
+            {
+                writelog($"DisplaySettingsChanged: {sender}, e:{e}, rescan monitor");
 
-            if (isLetDisplayServiceIdle == true)
-            {
-                writelog("The idle state is true to drop display settings change event, need caller to unblock this param");
-                return;
-            }
-            //Bruce 08-09 Added judgment that if the number of screens does not change, the screen orientation adjustment function will not be performed. (For example: PxP change will trigger this event, but the screen is not actually plugged in or out)
-            bool displayDeviceNumChange = false;
-            int AllScreens = Screen.AllScreens.Length;
-            if (_lastScreenCount != AllScreens)
-            {
-                displayDeviceNumChange = true;
-                _lastScreenCount = AllScreens;
-            }
-            Task.Run(() =>
-            {
-                lock (_PluginConditionLock)
+                if (isLetDisplayServiceIdle == true)
                 {
-                    //Call VCP to catch updated monitor info
-                    _AllInfoMonitors = _DisplayManagerPlugin.GetMonitors(true).Result;
-
-                    //List<MonitorInfo> pre_mo = new List<MonitorInfo>();
-                    //pre_mo.AddRange(_AllInfoMonitorsRecord);
-                    List<MonitorInfo> new_mo = new List<MonitorInfo>();
-                    if (_AllInfoMonitors.Count > 0)
-                        new_mo.AddRange(_AllInfoMonitors);
-
-                    _DisplayManagerPlugin.UpdateExistAlsConfig(new_mo).Wait();
-
-                    writelog($"[DeviceManager] Got event SystemEvents_DisplaySettingsChanged, monitor count {_AllInfoMonitors.Count}");
-                    if (_AllInfoMonitors.Count > 0)
-                        OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
-                    else
-                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, "DisplayChanged");
-
-                    if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                    {
-                        _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
-                    }
+                    writelog("The idle state is true to drop display settings change event, need caller to unblock this param");
+                    return;
                 }
-            });
+                //Bruce 08-09 Added judgment that if the number of screens does not change, the screen orientation adjustment function will not be performed. (For example: PxP change will trigger this event, but the screen is not actually plugged in or out)
+                bool displayDeviceNumChange = false;
+                int AllScreens = Screen.AllScreens.Length;
+                if (_lastScreenCount != AllScreens)
+                {
+                    displayDeviceNumChange = true;
+                    _lastScreenCount = AllScreens;
+                }
+                Task.Run(() =>
+                {
+                    lock (_PluginConditionLock)
+                    {
+                        //Call VCP to catch updated monitor info
+                        _AllInfoMonitors = _DisplayManagerPlugin.GetMonitors(true).Result;
+
+                        //List<MonitorInfo> pre_mo = new List<MonitorInfo>();
+                        //pre_mo.AddRange(_AllInfoMonitorsRecord);
+                        List<MonitorInfo> new_mo = new List<MonitorInfo>();
+                        if (_AllInfoMonitors.Count > 0)
+                            new_mo.AddRange(_AllInfoMonitors);
+
+                        _DisplayManagerPlugin.UpdateExistAlsConfig(new_mo).Wait();
+
+                        writelog($"[DeviceManager] Got event SystemEvents_DisplaySettingsChanged, monitor count {_AllInfoMonitors.Count}");
+                        if (_AllInfoMonitors.Count > 0)
+                            OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
+                        else
+                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, "DisplayChanged");
+
+                        if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
+                        {
+                            _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                        }
+                    }
+                });
+            }
         }
 
         protected virtual void OnVCPchanged(VCPchangedEventArgs e)
@@ -3033,7 +3040,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //2. _SettingsPlugin
         private void DoThingsAfterDisplayRelatedPluginsReady(string caller)
         {
-            if(_DisplayManagerPlugin == null || _SettingsPlugin == null)
+            if (_DisplayManagerPlugin == null || _SettingsPlugin == null)
             {
                 writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}");
                 writelog($"[DoThingsAfterDisplayRelatedPluginsReady] Has _DisplayManagerPlugin:{(_DisplayManagerPlugin == null)}, has _SettingsPlugin: {_SettingsPlugin == null}");
@@ -3582,7 +3589,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.BrightnessReduce:
                     if (IsALSautobrightness(monitorInfo))
                     {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo ,hotkeyType = job};
+                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
                         HotkeyPopup(hotkeyPopWrap);
                     }
                     else
@@ -3597,8 +3604,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         HotkeyPopup(hotkeyPopWrap);
                     }
                     else
-                    { 
-                       _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Brightness_Value));                   
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Brightness_Value));
                     }
                     break;
                 case HotkeyType.ContrastReduce:
@@ -3608,8 +3615,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         HotkeyPopup(hotkeyPopWrap);
                     }
                     else
-                    { 
-                       _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Contrast_Value));                  
+                    {
+                        _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Reduce_Contrast_Value));
                     }
                     break;
                 case HotkeyType.ContrastIncrease:
@@ -3619,7 +3626,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         HotkeyPopup(hotkeyPopWrap);
                     }
                     else
-                    {                    
+                    {
                         _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Increase_Contrast_Value));
                     }
                     break;
@@ -3922,11 +3929,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<ALSConfig> aLSConfigs = GetAllExistAlsConfig().Result;
             ALSConfig find = aLSConfigs.Find(x => x.serialNumber.Equals(hotkeyPopWrap.monitorInfo.edid.SerialNumber));
             //diable autobrightness
-            SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find , ALSFeatureQueryType.AutoBrightness, "");
+            SetALSFeatureValue(hotkeyPopWrap.monitorInfo, find, ALSFeatureQueryType.AutoBrightness, "");
             switch (hotkeyPopWrap.hotkeyType)
             {
                 case HotkeyType.BrightnessReduce:
-                     _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
+                    _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Reduce_Brightness_Value));
                     break;
                 case HotkeyType.BrightnessIncrease:
                     _hotkeyJobQueue.Enqueue(new JobInfo(hotkeyPopWrap.monitorInfo, null, Increase_Brightness_Value));
@@ -4388,8 +4395,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _agent = null;
 
                     //Bruce 08 - 09 Add a new event to determine whether it is a display signal event or a setting event.
-                    //Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
-                    displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
+                    Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
+                    //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
                 }
 
                 IsDisposed = true;
