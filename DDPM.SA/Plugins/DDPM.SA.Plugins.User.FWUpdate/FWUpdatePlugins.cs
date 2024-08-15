@@ -32,6 +32,8 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Common;
 using Newtonsoft.Json;
 using System.Linq;
+using PInvoke;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -466,6 +468,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 CACertificateCheck caCheck = new CACertificateCheck(_logs);
+                DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
                     _notificationStr = "";
@@ -491,13 +494,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         string savePath;
                         if (string.IsNullOrEmpty(installPath))
                         {
-                            savePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "Dell Display and Peripheral Manager" + "\\" + fwUpdateInfos[i].FileSavepath + "\\";
+                            savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + fwUpdateInfos[i].FileSavepath + "\\";
                         }
                         else
                         {
                             savePath = installPath;
                         }
-                        _logs.DebugMsg_1($"savePath: {savePath}");
                         _downloadTimer = new Timer();
                         _downloadTimer.Interval = 1000;
                         _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
@@ -925,22 +927,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 // 要運行的安裝程式路徑和命令行參數
                 string arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + _namedPipeName;
 
-                ProcessStartInfo startInfo = new ProcessStartInfo()
-                {
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    WindowStyle = ProcessWindowStyle.Normal,
-                    FileName = fwUpdateInfo.InstallPaths,
-                    Arguments = arguments,
-                    WorkingDirectory = Path.GetDirectoryName(fwUpdateInfo.InstallPaths),
-                    CreateNoWindow = false
-                };
-                _clientProcess = new Process();
-                _clientProcess.StartInfo = startInfo;
-                /*之後搬到System level 後要使用的虛擬代理人方法
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
+                if (fwUpdateInfo.IsUOD)
+                {
+                    NotificationFWupdate("Dock FW info", "Dock FW is being loaded. Do not disconnect the dock.");
+                }
+                else
+                {
+                    NotificationFWupdate("FW info", fwUpdateInfo.DeviceName + " FW is being Installing. Do not disconnect the device.");
+                }
+                _timerTimeOut.Enabled = true;
                 UserImpersonator.RunAsUser(token, () =>
                 {
                     using (Process clientProcess = new Process())
@@ -950,18 +948,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _clientProcess.StartInfo.FileName = fwUpdateInfo.InstallPaths;
                         _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
                         _clientProcess.StartInfo.Arguments = arguments;
+                        _clientProcess.Start();
+                        _clientProcess.WaitForExit();
                     }
-                });*/
-                if (fwUpdateInfo.IsUOD)
-                {
-                    NotificationFWupdate("Dock FW info", "Dock FW is being loaded. Do not disconnect the dock.");
-                }
-                else
-                {
-                    NotificationFWupdate("FW info", fwUpdateInfo.DeviceName + " FW is being Installing. Do not disconnect the device.");
-                }
-                _clientProcess.Start();
-                _clientProcess.WaitForExit();
+                });
                 if (fwUpdateInfo.IsUOD)
                 {
                     string ret = "";
@@ -1088,7 +1078,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         }
         private void _namedPipeServer_ClientConnectedEvent(object? sender, EventArgs e)
         {
-            _timerTimeOut.Enabled = true;
             //Console.WriteLine("Client connected"); // 客戶端連接成功提示
             //Console.WriteLine("Please connect or power on your device"); // 請求連接或開啟設備提示
         }
@@ -1339,7 +1328,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private void sendMessageToEvent(FWUpdateInfo fWUpdateInfo)
         {
             ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
-            Debug.WriteLine("sendMessageToEvent" + " " + fWUpdateInfo.ProcessName + " " + fWUpdateInfo.ProcessProgress + " " + DateTime.Now);
+            _logs.DebugMsg_1("sendMessageToEvent" + " " + fWUpdateInfo.ProcessName + " " + fWUpdateInfo.ProcessProgress + " " + DateTime.Now);
         }
     }
 }

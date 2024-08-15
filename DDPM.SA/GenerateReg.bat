@@ -56,6 +56,7 @@ echo [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{9bbe5845-8c
 echo "{F6909D0F-C70B-4B84-8EC3-9E506550A998}"="%BaseDir%\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.SettingsManager.dll">>%OutFile%
 echo "{2B76DC4B-39E7-4DBE-946E-5112CDAF37EA}"="%BaseDir%\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.CLIManager.dll">>%OutFile%
 echo "{F716E8C1-1F8D-4BC6-83DA-51CD26031335}"="%BaseDir%\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.SWUpdate.dll">>%OutFile%
+echo "{7D53B92E-5648-4ADB-9E33-4C74FFE7BE8C}"="%BaseDir%\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.FWUpdate.dll">>%OutFile%
 echo.>>%OutFile% 
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{2E365D80-A333-42E9-B855-F326DFEF2C34}]>>%OutFile%
 echo "ExecutablePath"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.User.exe">>%OutFile%
@@ -70,7 +71,6 @@ echo "{CF223214-FAF4-4595-8ED4-C6C1F65FA02C}"="%BaseDir%\\bin\\DDPM.Subagent.Use
 echo "{67A0D126-10BE-4EDB-95DC-8A4162AA3F6B}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DisplayProperties.dll">>%OutFile%
 echo "{AC2BD6A8-0678-482A-8274-3B8E80E12A81}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.ColorPreset.dll">>%OutFile%
 echo "{AFF8831F-5BEB-49F0-9098-DD59D313CB28}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.PipPbpManager.dll">>%OutFile%
-echo "{7D53B92E-5648-4ADB-9E33-4C74FFE7BE8C}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.FWUpdate.dll">>%OutFile%
 echo "{633ED971-086A-49E7-91E1-F6EB6E15CC13}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.USBKVM.dll">>%OutFile%
 echo "{149EF7F9-BF22-4E00-86B1-44CAC25CCA7E}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.NetworkKVM.dll">>%OutFile%
 echo "{C01C5C25-B7F8-4F08-8CD8-4E16928CC254}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.Hotkey.dll">>%OutFile%

@@ -111,7 +111,6 @@ namespace DDPM.Subagent.User
 					new Guid(IDs.Device_Manager_Plugin_ID),
                     new Guid(IDs.DisplayProperties_PLUGIN_ID),
                     new Guid(IDs.DDPM_COLOR_PRESET_PLUGIN_ID),
-                    new Guid(IDs.FWUPDATE_PLUGIN_ID),
                     new Guid(IDs.DDPM_USBKVM_PLUGIN_ID),
                     new Guid(IDs.DDPM_NKVM_PLUGIN_ID),
                     new Guid(IDs.DDPM_HOTKEY_PLUGIN_ID),
