@@ -8,6 +8,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:commonModel="clr-namespace:DDPM.UI.Common.Models;assembly=DDPM.UI.Common"
              xmlns:SAAlert="clr-namespace:DDPM.SA.Common.Alert;assembly=DDPM.SA.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Margin="5,4,60,120"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -32,8 +33,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <UXControls:UXTextBlock FontSize="20" Grid.Row="0" Text="Update available" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,20,8,8" />
-                        <UXControls:UXTextBlock FontSize="16" Grid.Row="1" Text="Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled." TextBlockType="Subtitle1" HorizontalAlignment="Left" Margin="20,8,8,8" />
+                        <UXControls:UXTextBlock FontSize="20" Grid.Row="0" Text="{Binding [Updates.0], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,20,8,8" />
+                        <UXControls:UXTextBlock FontSize="16" Grid.Row="1" Text="{Binding [Updates.1], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Subtitle1" HorizontalAlignment="Left" Margin="20,8,8,8" />
                     </Grid>
                     <Grid Grid.Row="1" x:Name="UpdatesPageUI">
                         <StackPanel Margin="24">
@@ -53,18 +54,18 @@
                                     </Grid.ColumnDefinitions>
                                     <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="CheckUpdate_Click" Cursor="Hand" Margin="20,20,8,8" Visibility="Visible" x:Name="btnFWU">
                                         <Grid>
-                                            <UXControls:UXTextBlock Text="Check for updates" Foreground="#F5F6F7" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14"/>
+                                            <UXControls:UXTextBlock Text="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="#F5F6F7" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14"/>
                                         </Grid>
                                     </Border>
                                     <Image Grid.Column="1" Source="Resources\double arrow.png" Height="20" Margin="16,0,4,0"/>
                                     <UXControls:UXTextBlock Grid.Column="2" FontSize="14" Text="{Binding Path=LastCheckDate}" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,8,8,8"/>
                                 </Grid>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}">
-                                    <SAAlert:AlertBase Height="53" Margin="20,16,0,0" AlertType="Info" Message="There are no available updates at this time."/>
+                                    <SAAlert:AlertBase Height="53" Margin="20,16,0,0" AlertType="Info" Message="{Binding [Updates.3], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoNetwork}">
                                     <UXControls:UXAlert Margin="20,16,0,0">
-                                        <UXControls:UXAlertItem AlertItemType="Critical" Margin="8,8,8,8" Label="" Message="Network error. Please try again." />
+                                        <UXControls:UXAlertItem AlertItemType="Critical" Margin="8,8,8,8" Label="" Message="{Binding [Updates.4], Source={x:Static lang:LangHelper.Instance}}" />
                                     </UXControls:UXAlert>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding Critical_UpdateList}">
@@ -118,9 +119,9 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXButton Grid.Column="0" ButtonType="Primary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Click="DownloadAndInstall_Click" Content="Download and install" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,8,8,8"/>
+                                    <UXControls:UXButton Grid.Column="0" ButtonType="Primary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Click="DownloadAndInstall_Click" Content="{Binding [Updates.5], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,8,8,8"/>
                                     <UXControls:UXBusyIndicator x:Name="DownloadUXBusyIndicator" Grid.Column="1" BusyIndicatorType="Secondary" HorizontalAlignment="Left" IsActive="False" Visibility="Hidden"/>
-                                    <UXControls:UXTextBlock x:Name="DownloadUXTextBlock" Grid.Column="2" Text="Preparing for updates. Please wait..." TextBlockType="Header1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Hidden"/>
+                                    <UXControls:UXTextBlock x:Name="DownloadUXTextBlock" Grid.Column="2" Text="{Binding [Updates.6], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Hidden"/>
                                 </Grid>
                             </Grid>
                         </StackPanel>
