@@ -88,6 +88,42 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Analytics.
+        /// </summary>
+        internal static string Analytics_0 {
+            get {
+                return ResourceManager.GetString("Analytics.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help Dell improve its products and services automatically sending diagnostics and usage data..
+        /// </summary>
+        internal static string Analytics_1 {
+            get {
+                return ResourceManager.GetString("Analytics.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dell&apos;s Privacy Policy.
+        /// </summary>
+        internal static string Analytics_2 {
+            get {
+                return ResourceManager.GetString("Analytics.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help Dell improve its products and services automatically.
+        /// </summary>
+        internal static string Analytics_3 {
+            get {
+                return ResourceManager.GetString("Analytics.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display.
         /// </summary>
         internal static string Display {
@@ -246,6 +282,69 @@ namespace DDPM.UI.Resources {
         internal static string Updates {
             get {
                 return ResourceManager.GetString("Updates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update available.
+        /// </summary>
+        internal static string Updates_0 {
+            get {
+                return ResourceManager.GetString("Updates.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled..
+        /// </summary>
+        internal static string Updates_1 {
+            get {
+                return ResourceManager.GetString("Updates.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for updates.
+        /// </summary>
+        internal static string Updates_2 {
+            get {
+                return ResourceManager.GetString("Updates.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no available updates at this time..
+        /// </summary>
+        internal static string Updates_3 {
+            get {
+                return ResourceManager.GetString("Updates.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network error. Please try again..
+        /// </summary>
+        internal static string Updates_4 {
+            get {
+                return ResourceManager.GetString("Updates.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download and install.
+        /// </summary>
+        internal static string Updates_5 {
+            get {
+                return ResourceManager.GetString("Updates.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preparing for updates. Please wait....
+        /// </summary>
+        internal static string Updates_6 {
+            get {
+                return ResourceManager.GetString("Updates.6", resourceCulture);
             }
         }
         
