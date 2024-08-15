@@ -3722,11 +3722,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!string.IsNullOrEmpty(nextInput))
             {
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
+                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}] #{setNextInput}");
             }
         }
         private void Kvm_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
         {
-            UsbSwitch1(monitorInfo);
+            bool usbSwitch=UsbSwitch1(monitorInfo).Result;
+            writelog($"Kvm_SwitchKbMsKey::[{monitorInfo.edid.SerialNumber}] #{usbSwitch}");
         }
         private void Kvm_ChangePIPPosition(MonitorInfo monitorInfo, Object[] param)
         {
@@ -3792,6 +3794,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
             bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
+            writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}] #{swapPxp}");
             /*if (subInputs != null && subInputs.Count > 0)
             {
                 allInputs.AddRange(subInputs);
@@ -3826,6 +3829,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (switchTo != null)
             {
                 bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
+                writelog($"Switch_InputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo}] #{setInput}");
             }
         }
 
@@ -3834,6 +3838,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             HotkeyInfo hotkey = (HotkeyInfo)param[0];
             InputSourceObj changeInput = hotkey.InputSource[0];
             bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput.Name).Result;
+            writelog($"Favorite_InputSource:[{monitorInfo.edid.SerialNumber}] to [{changeInput}] #{setNextInput}");
         }
         private void Toggle_InputSource(MonitorInfo monitorInfo, Object[] param)
         {
@@ -3857,6 +3862,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
+            writelog($"Toggle_InputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}] #{setNextInput}");
         }
 
         private string GetCurrentInputSource(MonitorInfo monitorInfo)
@@ -4045,11 +4051,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
                                         Debug.WriteLine($"{setting.ModelName} ReduceBrightness - Enqueue:true");
+                                        writelog($"powerNap [{setting.ModelName}] ReduceBrightness - Enqueue:true");
                                         break;
                                     case PowerNapType.SleepIfRunning:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
                                         Debug.WriteLine($"{setting.ModelName} SleepIfRunning - Enqueue:true");
+                                        writelog($"powerNap [{setting.ModelName}] SleepIfRunning - Enqueue:true");
                                         break;
                                     case PowerNapType.Off:
                                         break;
@@ -4085,11 +4093,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
                                         Debug.WriteLine($"{setting.ModelName} ReduceBrightness - Enqueue:false");
+                                        writelog($"powerNap [{setting.ModelName}] ReduceBrightness - Enqueue:false");
                                         break;
                                     case PowerNapType.SleepIfRunning:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
                                         Debug.WriteLine($"{setting.ModelName} SleepIfRunning - Enqueue:false");
+                                        writelog($"powerNap [{setting.ModelName}] SleepIfRunning - Enqueue:false");
                                         break;
                                     case PowerNapType.Off:
                                         break;

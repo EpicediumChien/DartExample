@@ -211,10 +211,13 @@ namespace DDPM.SA.Plugins.User.Hotkey
         {
             text = "[Hotkey] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
+            if (Log != null)
+            { 
+                if (log_type == log_type.info)
                 Log.Info(text);
-            else
+                else
                 Log.Error(text);
+            }
         }
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
@@ -282,6 +285,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
                 // 啟動消息循環
                 System.Windows.Threading.Dispatcher.Run();
                 Debug.WriteLine("System.Windows.Threading.Dispatcher.Run(); end--------");
+                writelog("Hook()...");
             });
 
             // 設定為單線程單元（STA），WPF需要STA模式
@@ -311,6 +315,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
                 Debug.WriteLine($"Unhook();Exception: {ex.Message}");
             }
             Debug.WriteLine("Unhook(); end--------");
+            writelog("hotkey UnHook()...");
             return false;
         }
         #endregion
