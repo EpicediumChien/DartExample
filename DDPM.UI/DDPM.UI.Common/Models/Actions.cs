@@ -44,24 +44,24 @@ namespace DDPM.UI.Common {
 
     public void ResetRadialMenu() {
       RadialLabels = new() {
-        { 1, Strings.PlayPause },
-        { 2, Strings.VolumeUp },
-        { 3, Strings.NextTrack },
-        { 4, Strings.WebBrowser },
-        { 5, Strings.Mute },
-        { 6, Strings.EMail },
-        { 7, Strings.PreviousTrack },
-        { 8, Strings.VolumeDown },
+        { 1, Strings.VolumeUp },
+        { 2, Strings.PlayPause },
+        { 3, Strings.VolumeDown },
+        { 4, Strings.PreviousTrack },
+        { 5, Strings.EMail },
+        { 6, Strings.Mute },
+        { 7, Strings.WebBrowser },
+        { 8, Strings.NextTrack },
       };
       RadialActions.Clear();
-      RadialActions.Add(1, new SelectedAction(16, new AssignedAction(16)));
-      RadialActions.Add(2, new SelectedAction(19, new AssignedAction(19)));
-      RadialActions.Add(3, new SelectedAction(17, new AssignedAction(17)));
-      RadialActions.Add(4, new SelectedAction(14, new AssignedAction(14)));
-      RadialActions.Add(5, new SelectedAction(21, new AssignedAction(21)));
-      RadialActions.Add(6, new SelectedAction(15, new AssignedAction(15)));
-      RadialActions.Add(7, new SelectedAction(18, new AssignedAction(18)));
-      RadialActions.Add(8, new SelectedAction(20, new AssignedAction(20)));
+      RadialActions.Add(1, new SelectedAction(19, new AssignedAction(19)));
+      RadialActions.Add(2, new SelectedAction(16, new AssignedAction(16)));
+      RadialActions.Add(3, new SelectedAction(20, new AssignedAction(20)));
+      RadialActions.Add(4, new SelectedAction(18, new AssignedAction(18)));
+      RadialActions.Add(5, new SelectedAction(15, new AssignedAction(15)));
+      RadialActions.Add(6, new SelectedAction(21, new AssignedAction(21)));
+      RadialActions.Add(7, new SelectedAction(14, new AssignedAction(14)));
+      RadialActions.Add(8, new SelectedAction(17, new AssignedAction(17)));
       IsUseCenter = true;
     }
 
