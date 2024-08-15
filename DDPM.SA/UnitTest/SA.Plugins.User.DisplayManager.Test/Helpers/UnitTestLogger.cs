@@ -1,5 +1,4 @@
 ﻿using Dell.Client.Framework.Common;
-using NUnit.Framework;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Dell.UnifyingAgent.Tests.Helpers
@@ -9,6 +8,7 @@ namespace Dell.UnifyingAgent.Tests.Helpers
     {
         public static bool ExceptionsRaised = false;
         private static object syncObject = new object();
+
         public UnitTestLogger(string subSystem = "UnitTest", LogFile logFile = null, string regKeyPath = null) : base(subSystem, logFile, regKeyPath)
         {
             this.LogEvent += UnitTestLogger_LogEvent;

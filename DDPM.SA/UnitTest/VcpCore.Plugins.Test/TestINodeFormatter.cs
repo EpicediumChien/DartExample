@@ -1,9 +1,4 @@
 ﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VcpCore.Plugins.Test
 {
@@ -20,7 +15,7 @@ namespace VcpCore.Plugins.Test
         }
     }
 
-    class INodeFormatterTest : INodeFormatter
+    internal class INodeFormatterTest : INodeFormatter
     {
         public string FormatNode(INode node)
         {

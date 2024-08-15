@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
 {
@@ -18,7 +13,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             homeDevicesPanel = new HomeDevicesPanel();
         }
 
-
         [Test]
         public void TestConstructor_HomeDevicesPanel()
         {
@@ -29,10 +23,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         public void TestHorizontalContentAlignment()
         {
             var horizontalContentAlignment = new HorizontalAlignment();
-            homeDevicesPanel.HorizontalContentAlignment= horizontalContentAlignment;
+            homeDevicesPanel.HorizontalContentAlignment = horizontalContentAlignment;
             Assert.That(homeDevicesPanel.HorizontalContentAlignment, Is.EqualTo(horizontalContentAlignment));
-
         }
-
     }
 }

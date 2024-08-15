@@ -1,36 +1,27 @@
 ﻿using DDPM.SA.Common;
-using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Media;
-using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Controls;
-using System.Windows.Input;
-using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
     public class HeadsetViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
+
         private readonly ILog _log;
         public IDeviceManagerSA _deviceManager;
         //private string _current_headset;
-        #endregion
+
+        #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
+
         //public string modelTest;
         public HeadsetViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
-
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
@@ -48,7 +39,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = true;
                     _configureMyAudioModesPageShow = true;
                     //_sidetonePageShow = false;
-                    //Page 2                   
+                    //Page 2
                     _wearDetectionPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
                     _automatedActionsQuickPausePageShow = true;
@@ -57,6 +48,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = true;
                     break;
+
                 case "WL5024"://Pegasus
                     //Page 1
                     _controlTheNoiseIHearPageShow = true;
@@ -70,6 +62,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = true;
                     break;
+
                 case "WH5024"://Winflo
                     //Page 1
                     _controlTheNoiseIHearPageShow = true;
@@ -79,6 +72,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 3
                     _voiceGuidancePageShow = true;
                     break;
+
                 case "WL3024"://Vaporify
                     //Page 1
                     _configureMyAudioModesPageShow = true;
@@ -88,6 +82,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = true;
                     break;
+
                 case "WH3024"://Airmax
                     //Page 1
                     _configureMyAudioModesPageShow = true;
@@ -96,11 +91,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 3
                     //defult page
                     break;
+
                 default:
                     break;
             }
             CheckHeadsetFunc();
         }
+
         public void CheckHeadsetFunc()
         {
             CheckSidetoneUI(false);
@@ -112,6 +109,7 @@ namespace DDPM.UI.Plugin.ViewModels
             CheckVoiceGuidanceUI(false);
             CheckANCUI(false);
         }
+
         private void CheckSidetoneUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.IsSidetoneSupported)
@@ -127,6 +125,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         private void CheckSidetoneLevelUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.IsSidetoneSupported)
@@ -144,6 +143,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         private void CheckBusyLightUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.IsBusyLightSupported)
@@ -172,6 +172,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         private void CheckMicNoiseCancellationUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.IsMicNoiseCancellationSupported)
@@ -184,6 +185,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 UpdateCollaborationAndultimediaUI(true, false);
             }
         }
+
         private void CheckWearDetectionUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.IsWearDetectionSupported)
@@ -253,6 +255,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         private void CheckPresetsUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.IsPresetsSupported)
@@ -266,6 +269,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         break;
+
                     case 2:
                         _isDefaultChecked = false;
                         _isBassBoostChecked = true;
@@ -273,6 +277,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         break;
+
                     case 3:
                         _isDefaultChecked = false;
                         _isBassBoostChecked = false;
@@ -280,6 +285,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = false;
                         break;
+
                     case 4:
                         _isDefaultChecked = false;
                         _isBassBoostChecked = false;
@@ -287,6 +293,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = true;
                         _isCustomChecked = false;
                         break;
+
                     case 101:
                         _isDefaultChecked = false;
                         _isBassBoostChecked = false;
@@ -294,6 +301,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isTrebleBoostChecked = false;
                         _isCustomChecked = true;
                         break;
+
                     default:
                         break;
                 }
@@ -309,9 +317,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged("IsTrebleBoostChecked");
                     OnPropertyChanged("IsCustomChecked");
                 }
-
             }
         }
+
         private void CheckVoiceGuidanceUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.VoiceGuidance)
@@ -331,6 +339,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged("IsEssentialChecked");
             }
         }
+
         private void CheckANCUI(bool PropertyChange)
         {
             if (CurrentDeviceInfo!.IsANCSupported)
@@ -342,11 +351,13 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isActiveNoiseCancellingChecked = false;
                         _isTransparencyChecked = false;
                         break;
+
                     case 1:
                         _isNoiseOffChecked = false;
                         _isActiveNoiseCancellingChecked = true;
                         _isTransparencyChecked = false;
                         break;
+
                     case 2:
                         _isNoiseOffChecked = false;
                         _isActiveNoiseCancellingChecked = false;
@@ -364,6 +375,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         private void UpdateCollaborationAndultimediaUI(bool Collaboration, bool Multimedia)
         {
             _isCollaborationChecked = Collaboration;
@@ -376,6 +388,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
         {
             DeviceInfos.Clear();
@@ -385,6 +398,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
             }
         }
+
         public override bool SetCurrentDevice(string deviceID)
         {
             deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
@@ -395,6 +409,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //    _current_headset = deviceID;
             return true;
         }
+
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
             base.HandleNotification(changeType, di, property);
@@ -408,21 +423,27 @@ namespace DDPM.UI.Plugin.ViewModels
                 case "MicNoiseCancellationChanged":
                     CheckMicNoiseCancellationUI(true);
                     break;
+
                 case "MicNCIncomingChanged":
                     CheckMicNCIncomingUI(true);
                     break;
+
                 case "SidetoneChanged":
                     CheckSidetoneUI(true);
                     break;
+
                 case "BusyLightChanged":
                     CheckBusyLightUI(true);
                     break;
+
                 case "VoiceGuidanceChanged":
                     CheckVoiceGuidanceUI(true);
                     break;
+
                 case "SelectedPresetChanged":
                     CheckPresetsUI(true);
                     break;
+
                 case "SidetoneLevelChanged":
                     CheckSidetoneLevelUI(true);
                     break;
@@ -431,14 +452,18 @@ namespace DDPM.UI.Plugin.ViewModels
                 case "BandsGainChanged":
 
                     break;
+
                 case "AncModeChanged":
                     CheckANCUI(true);
                     break;
+
                 case "AncGainChanged":
                     break;
+
                 case "WearDetectionChanged":
                     CheckWearDetectionUI(true);
                     break;
+
                 default:
                     break;
             }
@@ -465,10 +490,12 @@ namespace DDPM.UI.Plugin.ViewModels
                         GenerateInfo();
                     }
                     break;
+
                 default:
                     break;
             }
         }
+
         /// <summary>
         /// Set Bit Value
         /// </summary>
@@ -483,6 +510,7 @@ namespace DDPM.UI.Plugin.ViewModels
             number |= (uint)(value << startBitPosition);// Set the new value
             return number;
         }
+
         /// <summary>
         /// Set Bits Value
         /// </summary>
@@ -497,6 +525,7 @@ namespace DDPM.UI.Plugin.ViewModels
             number |= (uint)(value << startBitPosition);// Set the new value
             return number;
         }
+
         /// <summary>
         /// Get Bits Value
         /// </summary>
@@ -508,6 +537,7 @@ namespace DDPM.UI.Plugin.ViewModels
             uint bitValue = ((number >> startBitPosition) & 0b1u);// Get startBitPosition和startBitPosition+1 value
             return bitValue;
         }
+
         /// <summary>
         /// Get Bits Value
         /// </summary>
@@ -521,7 +551,9 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         #region Please Wait
+
         private bool _isPleaseWaitVisible;
+
         public bool IsPleaseWaitVisible
         {
             get => _isPleaseWaitVisible;
@@ -544,6 +576,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             IsPleaseWaitVisible = false;
         }
+
         // Please Wait logic
         public void Invoke_PleaseWait(string model)
         {
@@ -573,21 +606,24 @@ namespace DDPM.UI.Plugin.ViewModels
             HidePleaseWait();
         }
 
-        #endregion
+        #endregion Please Wait
 
         /// <summary>
         /// HeadsetAudioSettings Page
         /// </summary>
 
         #region HeadsetAudioSettings ToggleSwitch Binding
-        //Outgoing Audio ToggleSwitch 
+
+        //Outgoing Audio ToggleSwitch
         private string _isOutgoingAudio_String = "ON";
+
         public string OutgoingAudio_String
         {
             get => _isOutgoingAudioStatus ? "ON" : "OFF";
         }
 
         private bool _isOutgoingAudioStatus = false;
+
         public bool OutgoingAudioStatus
         {
             get
@@ -601,14 +637,16 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        //Incoming Audio ToggleSwitch 
+        //Incoming Audio ToggleSwitch
         private string _isIncomingAudio_String = "ON";
+
         public string IncomingAudio_String
         {
             get => _isIncomingAudioStatus ? "ON" : "OFF";
         }
 
         private bool _isIncomingAudioStatus = false;
+
         public bool IncomingAudioStatus
         {
             get
@@ -626,12 +664,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //MicNoiseCancellation ToggleSwitch
         private string _isMicNoiseCancellation_String = "ON";
+
         public string MicNoiseCancellation_String
         {
             get => _isMicNoiseCancellationStatus ? "ON" : "OFF";
         }
 
         private bool _isMicNoiseCancellationStatus;// = false;
+
         public bool MicNoiseCancellationStatus
         {
             get
@@ -649,12 +689,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //Sidetone ToggleSwitch
         private string _isSidetone_String = "ON";
+
         public string Sidetone_String
         {
             get => _isSidetoneStatus ? "ON" : "OFF";
         }
 
         private bool _isSidetoneStatus;// = false;
+
         public bool SidetoneStatus
         {
             get
@@ -672,6 +714,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private int _isidetoneSliderValue;
+
         public int SidetoneSliderValue
         {
             get
@@ -689,6 +732,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _isSidetoneSliderStatus;// = false;
+
         public bool SidetoneSliderStatus
         {
             get
@@ -701,11 +745,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 //OnPropertyChanged(nameof(SidetoneSliderStatus));
             }
         }
-        #endregion
+
+        #endregion HeadsetAudioSettings ToggleSwitch Binding
 
         #region HeadsetAudioSettings Grid Show/Hide
 
         private bool _controlTheNoiseIHearPageShow = false;
+
         public bool ControlTheNoiseIHearPageShow
         {
             get => _controlTheNoiseIHearPageShow;
@@ -717,6 +763,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _audioOutputPresetsPageShow = false;
+
         public bool AudioOutputPresetsPageShow
         {
             get => _audioOutputPresetsPageShow;
@@ -728,6 +775,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _configureMyAudioModesPageShow = false;
+
         public bool ConfigureMyAudioModesPageShow
         {
             get => _configureMyAudioModesPageShow;
@@ -739,6 +787,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _micNoiseCancellationPageShow = false;
+
         public bool MicNoiseCancellationPageShow
         {
             get => _micNoiseCancellationPageShow;
@@ -750,6 +799,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _micNoiseCancellationFewPageShow = false;
+
         public bool MicNoiseCancellationFewPageShow
         {
             get => _micNoiseCancellationFewPageShow;
@@ -761,6 +811,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _sidetonePageShow = false;
+
         public bool SidetonePageShow
         {
             get => _sidetonePageShow;
@@ -772,6 +823,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _transparencylevelLinePageShow = false;
+
         public bool TransparencylevelLinePageShow
         {
             get => _transparencylevelLinePageShow;
@@ -783,6 +835,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _micNoiseInfoMuchPageShow = false;
+
         public bool MicNoiseInfoMuchPageShow
         {
             get => _micNoiseInfoMuchPageShow;
@@ -794,6 +847,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _audioEqualizerGridPageShow = false;
+
         public bool AudioEqualizerGridPageShow
         {
             get => _audioEqualizerGridPageShow;
@@ -803,11 +857,15 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(AudioEqualizerGridPageShow));
             }
         }
-        #endregion
+
+        #endregion HeadsetAudioSettings Grid Show/Hide
 
         #region HeadsetAudioSettingsRightView
+
         //Group 1
+
         #region Group 1
+
         private bool _isActiveNoiseCancellingChecked;
         private bool _isTransparencyChecked;
         private bool _isNoiseOffChecked;
@@ -876,6 +934,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private int _isTransparencylevelSliderValue;
+
         public int TransparencylevelSliderValue
         {
             get
@@ -892,11 +951,16 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(TransparencylevelSliderValue));
             }
         }
-        #endregion
+
+        #endregion Group 1
+
         //Group 2
+
         #region Group 2
+
         private bool _isCollaborationChecked = true;
         private bool _isMultimediaChecked;
+
         public bool IsCollaborationChecked
         {
             get => _isCollaborationChecked;
@@ -931,14 +995,19 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
-        #endregion
+
+        #endregion Group 2
+
         //Group 3
+
         #region Group 3
+
         private bool _isDefaultChecked;
         private bool _isBassBoostChecked;
         private bool _isSpeechBoostChecked;
         private bool _isTrebleBoostChecked;
         private bool _isCustomChecked;
+
         public bool IsDefaultChecked
         {
             get => _isDefaultChecked;
@@ -959,6 +1028,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         public bool IsBassBoostChecked
         {
             get => _isBassBoostChecked;
@@ -979,6 +1049,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         public bool IsSpeechBoostChecked
         {
             get => _isSpeechBoostChecked;
@@ -999,6 +1070,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         public bool IsTrebleBoostChecked
         {
             get => _isTrebleBoostChecked;
@@ -1019,6 +1091,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
         public bool IsCustomChecked
         {
             get => _isCustomChecked;
@@ -1041,8 +1114,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
-        #endregion
-        #endregion
+
+        #endregion Group 3
+
+        #endregion HeadsetAudioSettingsRightView
 
         #region HeadsetAudioSettingsRightViewToolTip
 
@@ -1109,21 +1184,24 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _micNoiseCancellationToolTip;
         }
 
-        #endregion
+        #endregion HeadsetAudioSettingsRightViewToolTip
 
         /// <summary>
         /// HeadsetAutomatedActions Page
         /// </summary>
 
         #region HeadsetAutomatedActions ToggleSwitch Binding
+
         //Wear Detection ToggleSwitch
         private string _isWearDetection_String = "ON";
+
         public string WearDetection_String
         {
             get => _isWearDetectionStatus ? "ON" : "OFF";
         }
 
         private bool _isWearDetectionStatus = false;
+
         public bool WearDetectionStatus
         {
             get
@@ -1143,12 +1221,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //PauseMusic ToggleSwitch
         private string _isPauseMusic_String = "ON";
+
         public string PauseMusic_String
         {
             get => _isPauseMusicStatus ? "ON" : "OFF";
         }
 
         private bool _isPauseMusicStatus = false;
+
         public bool PauseMusicStatus
         {
             get
@@ -1168,12 +1248,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //Mute Microphone ToggleSwitch
         private string _isMuteMicrophone_String = "ON";
+
         public string MuteMicrophone_String
         {
             get => _isMuteMicrophoneStatus ? "ON" : "OFF";
         }
 
         private bool _isMuteMicrophoneStatus = false;
+
         public bool MuteMicrophoneStatus
         {
             get
@@ -1193,12 +1275,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //Quick Pause ToggleSwitch
         private string _isQuickPause_String = "ON";
+
         public string QuickPause_String
         {
             get => _isQuickPauseStatus ? "ON" : "OFF";
         }
 
         private bool _isQuickPauseStatus = false;
+
         public bool QuickPauseStatus
         {
             get
@@ -1218,12 +1302,14 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //AnswerCalls ToggleSwitch
         private string _isAnswerCalls_String = "ON";
+
         public string AnswerCalls_String
         {
             get => _isAnswerCallsStatus ? "ON" : "OFF";
         }
 
         private bool _isAnswerCallsStatus = false;
+
         public bool AnswerCallsStatus
         {
             get
@@ -1236,10 +1322,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged("AnswerCalls_String");
             }
         }
-        #endregion
+
+        #endregion HeadsetAutomatedActions ToggleSwitch Binding
 
         #region HeadsetAutomatedActions Grid Show/Hide
+
         private bool _wearDetectionPageShow = false;
+
         public bool WearDetectionPageShow
         {
             get => _wearDetectionPageShow;
@@ -1251,6 +1340,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _automatedActionsWhenHeadsetIsRemovedPageShow = false;
+
         public bool AutomatedActionsWhenHeadsetIsRemovedPageShow
         {
             get => _automatedActionsWhenHeadsetIsRemovedPageShow;
@@ -1262,6 +1352,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _automatedActionsSensitivityUpPageShow = false;
+
         public bool AutomatedActionsSensitivityUpPageShow
         {
             get => _automatedActionsSensitivityUpPageShow;
@@ -1273,6 +1364,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _automatedActionsQuickPausePageShow = false;
+
         public bool AutomatedActionsQuickPausePageShow
         {
             get => _automatedActionsQuickPausePageShow;
@@ -1284,6 +1376,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _automatedActionsSensitivityPageShow = false;
+
         public bool AutomatedActionsSensitivityPageShow
         {
             get => _automatedActionsSensitivityPageShow;
@@ -1295,6 +1388,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _automatedActionsAnswerCallPageShow = false;
+
         public bool AutomatedActionsAnswerCallPageShow
         {
             get => _automatedActionsAnswerCallPageShow;
@@ -1304,11 +1398,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(AutomatedActionsAnswerCallPageShow));
             }
         }
-        #endregion
+
+        #endregion HeadsetAutomatedActions Grid Show/Hide
 
         #region HeadsetAutomatedActionsRightView
+
         private bool _isLowChecked;
         private bool _isNormal2Checked;
+
         public bool IsNormal2Checked
         {
             get => _isNormal2Checked;
@@ -1349,6 +1446,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private bool _isNormalChecked;
         private bool _isSensitiveChecked;
+
         public bool IsNormalChecked
         {
             get => _isNormalChecked;
@@ -1387,7 +1485,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        #endregion
+        #endregion HeadsetAutomatedActionsRightView
 
         #region HeadsetAutomatedActionsToolTip
 
@@ -1397,7 +1495,6 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => _wearDetectionToolTip;
         }
-
 
         private string _pauseMusicToolTip = "Pauses music automatically when headset is removed. Music will resume automatically when headset is put on.";
 
@@ -1427,15 +1524,17 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _quickPauseToolTip;
         }
 
-        #endregion
+        #endregion HeadsetAutomatedActionsToolTip
 
         /// <summary>
         /// HeadsetDeviceSettings Page
         /// </summary>
 
         #region HeadsetDeviceSettings ToggleSwitch Binding
+
         //BusyLight ToggleSwitch
         private string _isBusyLight_String = "ON";
+
         public string BusyLight_String
         {
             get => CurrentDeviceInfo!.BusyLight ? "ON" : "OFF";
@@ -1444,10 +1543,10 @@ namespace DDPM.UI.Plugin.ViewModels
             //{
             //    _isBusyLightStatus = CurrentDeviceInfo!.BusyLight;
             //}
-
         }
 
         private bool _isBusyLightStatus = false;
+
         public bool BusyLightStatus
         {
             get
@@ -1462,11 +1561,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged("BusyLight_String");
             }
         }
-        #endregion
+
+        #endregion HeadsetDeviceSettings ToggleSwitch Binding
 
         #region HeadsetDeviceSettings Grid Show/Hide
 
         private bool _voiceGuidancePageShow = false;
+
         public bool VoiceGuidancePageShow
         {
             get => _voiceGuidancePageShow;
@@ -1478,6 +1579,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _deviceSettingsDownloadDellAudioPageShow = false;
+
         public bool DeviceSettingsDownloadDellAudioPageShow
         {
             get => _deviceSettingsDownloadDellAudioPageShow;
@@ -1488,11 +1590,13 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        #endregion
+        #endregion HeadsetDeviceSettings Grid Show/Hide
 
         #region HeadsetDeviceSettingsRightView
+
         private bool _isEssentialChecked;
         private bool _isAllChecked;
+
         public bool IsEssentialChecked
         {
             get
@@ -1534,7 +1638,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
-        #endregion
+
+        #endregion HeadsetDeviceSettingsRightView
 
         #region HeadsetDeviceSettingsToolTip
 
@@ -1552,6 +1657,6 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _voiceGuidanceToolTip;
         }
 
-        #endregion
+        #endregion HeadsetDeviceSettingsToolTip
     }
 }

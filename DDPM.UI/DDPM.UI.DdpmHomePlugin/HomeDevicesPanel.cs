@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows;
-using Panel = System.Windows.Controls.Panel;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using Panel = System.Windows.Controls.Panel;
 using Size = System.Windows.Size;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
@@ -45,7 +40,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     panelSize.Height += curLineSize.Height;
                     curLineSize = sz;
 
-                    if (sz.Width > constraint.Width) // if the element is wider then the constraint - give it a separate line                    
+                    if (sz.Width > constraint.Width) // if the element is wider then the constraint - give it a separate line
                     {
                         panelSize.Width = Math.Max(sz.Width, panelSize.Width);
                         panelSize.Height += sz.Height;
@@ -84,7 +79,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     accumulatedHeight += curLineSize.Height;
                     curLineSize = sz;
 
-                    if (sz.Width > arrangeBounds.Width) //the element is wider then the constraint - give it a separate line                    
+                    if (sz.Width > arrangeBounds.Width) //the element is wider then the constraint - give it a separate line
                     {
                         ArrangeLine(accumulatedHeight, sz, arrangeBounds.Width, i, ++i);
                         accumulatedHeight += sz.Height;

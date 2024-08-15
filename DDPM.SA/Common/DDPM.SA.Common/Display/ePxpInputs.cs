@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-
-namespace DDPM.SA.Common.Display
+﻿namespace DDPM.SA.Common.Display
 {
     //Used as the argument of VideoSwap(x, y)
     //For example, to swap main and sub2, you can call VideoSwap((UInt16)main, (UInt16)sub2)
@@ -14,6 +7,4 @@ namespace DDPM.SA.Common.Display
         invalid = -1,
         main = 0, sub1 = 1, sub2 = 2, sub3 = 3
     };
-
-
 }

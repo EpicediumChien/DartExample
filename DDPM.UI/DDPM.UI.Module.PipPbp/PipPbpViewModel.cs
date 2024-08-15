@@ -8,14 +8,7 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using VcpCore.Common;
 
@@ -25,11 +18,12 @@ namespace DDPM.UI.Module.PipPbp
     {
         //Workaround
         public HomeDevice SelectedHomeDevice;
+
         public IDeviceManagerSA DeviceManagerSA;
         public IModuleOwner? ModuleOwner { get; set; }
-        
 
         #region ctor
+
         public PipPbpViewModel()
         {
             //Setup defualts
@@ -41,12 +35,15 @@ namespace DDPM.UI.Module.PipPbp
 
             ModuleOwner = DdpmCommonHelper.ModuleOwner;
             SelectedHomeDevice = ModuleOwner.SelectedHomeDevice;
-            DeviceManagerSA = (IDeviceManagerSA) DdpmCommonHelper.DeviceManagerSA;
+            DeviceManagerSA = (IDeviceManagerSA)DdpmCommonHelper.DeviceManagerSA;
         }
-        #endregion
+
+        #endregion ctor
 
         #region Log
+
         public ILog? Log { get; set; }
+
         private void LogInfo(string msg)
         {
             if (Log != null)
@@ -54,14 +51,17 @@ namespace DDPM.UI.Module.PipPbp
                 Log.Info(msg);
             }
         }
-        #endregion
+
+        #endregion Log
 
         #region Special SplitItems - need View assign it before calling RefreshData()
+
         public SplitItem? SplitItem_Off { get; set; }
         public SplitItem? SplitItem_PipSmall { get; set; }
         public SplitItem? SplitItem_PipLarge { get; set; }
         public SplitListView? SplitListView_Pbp { get; set; }
-        #endregion
+
+        #endregion Special SplitItems - need View assign it before calling RefreshData()
 
         #region RefreshData - Init and SelectedHomeDevice changed
 
@@ -83,7 +83,6 @@ namespace DDPM.UI.Module.PipPbp
             IsBusy = true;
             bw.RunWorkerAsync();
         }
-
 
         private void DoWork_RefreshData(object? sender, DoWorkEventArgs e)
         {
@@ -221,7 +220,6 @@ namespace DDPM.UI.Module.PipPbp
         {
             IsBusy = false;
 
-
             //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
             if (e.Cancelled)
             {
@@ -256,10 +254,11 @@ namespace DDPM.UI.Module.PipPbp
                 }
             }
         }
-        #endregion
 
+        #endregion RefreshData - Init and SelectedHomeDevice changed
 
         #region FullView Demo
+
         private string _test1Value = "AAA";
 
         public string Test1Value
@@ -285,6 +284,7 @@ namespace DDPM.UI.Module.PipPbp
             get => _closeFullViewCommand;
             set => SetProperty(ref _closeFullViewCommand, value);
         }
+
         public ICommand? GotoNextCommand
         {
             get => _gotoNextCommand;
@@ -297,13 +297,15 @@ namespace DDPM.UI.Module.PipPbp
             set => SetProperty(ref _gotoPrevCommand, value);
         }
 
-        #endregion
+        #endregion FullView Demo
 
         #region ClickCommand of SplitItems
+
         /// <summary>
         /// The Command when 'Fullscreen' (PIP off) is clicked
         /// </summary>
         private ICommand? _fullScreenClickCommand;
+
         public ICommand? FullScreenClickCommand
         {
             get => _fullScreenClickCommand;
@@ -314,6 +316,7 @@ namespace DDPM.UI.Module.PipPbp
         /// The Command when 'PIP small' is clicked
         /// </summary>
         private ICommand? _pipSmallClickCommand;
+
         public ICommand? PipSmallClickCommand
         {
             get => _pipSmallClickCommand;
@@ -324,6 +327,7 @@ namespace DDPM.UI.Module.PipPbp
         /// The Command when 'PIP large' is clicked
         /// </summary>
         private ICommand? _pipLargeClickCommand;
+
         public ICommand? PipLargeClickCommand
         {
             get => _pipLargeClickCommand;
@@ -335,15 +339,17 @@ namespace DDPM.UI.Module.PipPbp
         ///
         /// </summary>
         private ICommand? _pbpItemClickCommand;
+
         public ICommand? PbpItemClickCommand
         {
             get => _pbpItemClickCommand;
             set => SetProperty(ref _pbpItemClickCommand, value);
         }
 
-        #endregion
+        #endregion ClickCommand of SplitItems
 
         #region ClickCommand default Handlers
+
         //To be set to private when issue fix
         //
         public void OnFullScreenClicked(SplitItem spItem)
@@ -351,11 +357,12 @@ namespace DDPM.UI.Module.PipPbp
             LogInfo("@ SetPxpMode=Off");
             //Update selectedSplitItem
             SelectedSplitItem = spItem;
-            bool blRes = 
+            bool blRes =
             DdpmCommonHelper.DeviceManagerSA.SetPipModeOff(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
 
             LogInfo($"  => SetPxpMode=Off, Result={blRes}");
         }
+
         public void OnPipSmallClicked(SplitItem spItem)
         {
             LogInfo($"@ OnPipSmallClicked");
@@ -401,7 +408,6 @@ namespace DDPM.UI.Module.PipPbp
             };
             IsBusy = true;
             bw.RunWorkerAsync();
-
         }
 
         public void OnPbpItemClicked(SplitItem spItem)
@@ -426,20 +432,23 @@ namespace DDPM.UI.Module.PipPbp
             };
             IsBusy = true;
             bw.RunWorkerAsync();
-
         }
-        #endregion
+
+        #endregion ClickCommand default Handlers
 
         #region Pxp VCP Code
+
         public const UInt16 PipMode_Off = 0;
         public const UInt16 PipMode_Small = 0x21;
         public const UInt16 PipMode_Large = 0x22;
 
         public const UInt16 PipMode_SizeToggle = 0x01;
         public const UInt16 PipMode_PositionToggle = 0x02;
-        #endregion
+
+        #endregion Pxp VCP Code
 
         #region PIP/PBP Capabilities
+
         private UInt16[] _pipPbpCaps = new UInt16[] { 0 };//SDL, change to use new
 
         public bool HasPxpCap(UInt16 cap)
@@ -478,9 +487,11 @@ namespace DDPM.UI.Module.PipPbp
             _pipPbpCaps = DdpmCommonHelper.ParsingHexStringToWords(pxpCapString);
             return true;
         }
-        #endregion
+
+        #endregion PIP/PBP Capabilities
 
         #region Current PxpMode
+
         private UInt16 _curPxpMode = 0;
         public UInt16 CurPxpMode => _curPxpMode;
 
@@ -501,6 +512,7 @@ namespace DDPM.UI.Module.PipPbp
                 //Current is PBP mode, will be selected from View
             }
         }
+
         public bool IsFullscreenItemSelected
         {
             get
@@ -508,16 +520,19 @@ namespace DDPM.UI.Module.PipPbp
                 return (SelectedSplitItem == SplitItem_Off);
             }
         }
-        #endregion
+
+        #endregion Current PxpMode
 
         #region Selected SplitItems
+
         private SplitItem? _selectedSplitItem;
+
         public SplitItem? SelectedSplitItem
         {
             get => _selectedSplitItem;
             set
             {
-                 //Unselected origainl selection
+                //Unselected origainl selection
                 if (_selectedSplitItem != null)
                 {
                     //If selected item is the same (no changed)
@@ -553,13 +568,16 @@ namespace DDPM.UI.Module.PipPbp
         //    get => _spItemClickCommand;
         //    set => SetProperty(ref _spItemClickCommand, value);
         //}
-        #endregion
+
+        #endregion Selected SplitItems
 
         #region PIP and Toggle Position
+
         /// <summary>
         /// The Command when 'Toggle position' is clicked
         /// </summary>
         private ICommand? _pipTogglePositionClickCommand;
+
         public ICommand? PipTogglePositionClickCommand
         {
             get => _pipTogglePositionClickCommand;
@@ -590,17 +608,20 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
-                if (SelectedSplitItem == null) 
+                if (SelectedSplitItem == null)
                     return false;
                 if (SelectedSplitItem.SplitOwner == eSplitOwner.PipList)
                     return true;
                 return false;
             }
         }
-        #endregion
+
+        #endregion PIP and Toggle Position
 
         #region InputSourceList
+
         private List<InputSourceObj> _inputSourceList = new List<InputSourceObj>();
+
         public List<InputSourceObj> InputSourceList
         {
             get => _inputSourceList;
@@ -628,8 +649,8 @@ namespace DDPM.UI.Module.PipPbp
 
         private void OnMainInputSourceSelectionChanged()
         {
-
         }
+
         private int InputSourceCount
         {
             get
@@ -637,10 +658,13 @@ namespace DDPM.UI.Module.PipPbp
                 return _inputSourceList.Count;
             }
         }
-        #endregion
+
+        #endregion InputSourceList
 
         #region Main Input Source
+
         private InputSourceObj _mainInputSource;
+
         public InputSourceObj MainInputSource
         {
             get => _mainInputSource;
@@ -671,7 +695,6 @@ namespace DDPM.UI.Module.PipPbp
                             _mainInputSource.Name;
                             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.UpdateBatteryIndicator();
                         }
-
                     };
                     bw.RunWorkerCompleted += delegate
                     {
@@ -682,14 +705,17 @@ namespace DDPM.UI.Module.PipPbp
                 }
             }
         }
-        #endregion
+
+        #endregion Main Input Source
 
         #region Sub Input Sources
+
         private List<InputSourceObj> _subInputs = new List<InputSourceObj>();
+
         public List<InputSourceObj> SubInputs
         {
             get => _subInputs;
-            set 
+            set
             {
                 SetProperty(ref _subInputs, value);
                 OnPropertyChanged("HasSub1Input");
@@ -699,12 +725,13 @@ namespace DDPM.UI.Module.PipPbp
         }
 
         private InputSourceObj? _sub1InputSource;
+
         public InputSourceObj? Sub1InputSource
         {
             get => _sub1InputSource;
             set
             {
-                bool isNeedUpdateToDevice = 
+                bool isNeedUpdateToDevice =
                 //It's  NOT the first time set value (we assume it's assigned from RefreshData())
                 (_sub1InputSource != null) &&
                 //AND value is changed
@@ -735,6 +762,7 @@ namespace DDPM.UI.Module.PipPbp
         }
 
         private InputSourceObj? _sub2InputSource;
+
         public InputSourceObj? Sub2InputSource
         {
             get => _sub2InputSource;
@@ -771,6 +799,7 @@ namespace DDPM.UI.Module.PipPbp
         }
 
         private InputSourceObj? _sub3InputSource;
+
         public InputSourceObj? Sub3InputSource
         {
             get => _sub3InputSource;
@@ -809,18 +838,23 @@ namespace DDPM.UI.Module.PipPbp
         public bool HasSub1Input => SubInputs.Count > 0;
         public bool HasSub2Input => SubInputs.Count > 1;
         public bool HasSub3Input => SubInputs.Count > 2;
-        #endregion
+
+        #endregion Sub Input Sources
 
         #region UI Enable Flags
+
         private bool _isBusy = false;
+
         public bool IsBusy
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        #endregion
+
+        #endregion UI Enable Flags
 
         #region Add SplitItems into SplitListView
+
         //Add SplitItems into SplitListView_Pbp based on PxpMode Capabilities
         //This method must be called only from UI thread
         private void RefreshPbpSplitListView()
@@ -841,10 +875,13 @@ namespace DDPM.UI.Module.PipPbp
                 }
             }
         }
-        #endregion
+
+        #endregion Add SplitItems into SplitListView
 
         #region Video Swap
+
         private bool _isVideoSwapButtonEnabled = false;
+
         public bool IsVideoSwapComboBoxesVisible
         {
             get
@@ -853,6 +890,7 @@ namespace DDPM.UI.Module.PipPbp
                 return (InputSourceCount >= 3);
             }
         }
+
         public bool IsVideoSwapButtonVisible
         {
             get
@@ -860,6 +898,7 @@ namespace DDPM.UI.Module.PipPbp
                 return (InputSourceCount == 2) && (!IsFullscreenItemSelected);
             }
         }
+
         public bool IsVideoSwapButtonEnabled
         {
             get
@@ -880,9 +919,11 @@ namespace DDPM.UI.Module.PipPbp
             }
             return false;
         }
-        #endregion
+
+        #endregion Video Swap
 
         #region USB Switch
+
         public bool IsUsbSwitchButtonVisible
         {
             get
@@ -899,6 +940,7 @@ namespace DDPM.UI.Module.PipPbp
                 return false;
             }
         }
+
         public bool IsUsbSwitchButtonEnabled
         {
             get
@@ -913,12 +955,12 @@ namespace DDPM.UI.Module.PipPbp
                 return false;
             }
         }
+
         private bool IsUsbKvmOn
         {
             get
             {
                 return _isUsbKvmOn;
-
             }
         }
 
@@ -927,19 +969,18 @@ namespace DDPM.UI.Module.PipPbp
             get
             {
                 return _isNetworkKvmOn;
-
             }
         }
 
         private bool _isUsbKvmOn = false;
         private bool _isNetworkKvmOn = false;
+
         private void ReadKvmSettings()
         {
             _isUsbKvmOn = DeviceManagerSA.GetOnUSBKVM(SelectedHomeDevice.MonitorInfo).Result;
             _isNetworkKvmOn = DeviceManagerSA.GetOnNKVM(SelectedHomeDevice.MonitorInfo).Result;
             OnPropertyChanged("IsUsbSwitchButtonVisible");
             OnPropertyChanged("IsUsbSwitchButtonEnabled");
-
         }
 
         public bool ExecuteUsbSwitch()
@@ -953,7 +994,8 @@ namespace DDPM.UI.Module.PipPbp
             }
             return false;
         }
-        #endregion
+
+        #endregion USB Switch
 
         public void OnActivated()
         {

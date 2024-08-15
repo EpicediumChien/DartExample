@@ -1,15 +1,12 @@
-﻿using NUnit.Framework;
-using Moq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using DDPM.SA.Common;
 using DDPM.UI.Plugin.ViewModels;
-using NGA.UnitTest.PrivateObject;
 using Dell.Client.Framework.Common;
-using DDPM.SA.Common;
 using Dell.Client.Framework.UX.WPF;
-using static System.Net.Mime.MediaTypeNames;
-using Windows.Management;
+using Moq;
+using NGA.UnitTest.PrivateObject;
+using NUnit.Framework;
+using System.Windows;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.Collaboration.Test
 {
@@ -26,7 +23,6 @@ namespace DDPM.UI.Module.Collaboration.Test
         [SetUp]
         public void SetUp()
         {
-
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
@@ -43,18 +39,17 @@ namespace DDPM.UI.Module.Collaboration.Test
             // Act
             var vmField = (KeyboardViewModel)privateObject!.GetFieldOrProperty("_vm");
 
-
             var txtCollabsCaptionText = privateObject!.GetFieldOrProperty("CollabsCaption1");
             var txtCollabsTooltipText = privateObject!.GetFieldOrProperty("CollaborationToolTip");
-            var cbCollaborationBlinkEffectTextContent = privateObject!.GetFieldOrProperty("CollaborationBlinkEffectText"); 
-            var cbCollaborationDoubleTapTextContent = privateObject!.GetFieldOrProperty("CollaborationDoubleTapText"); 
+            var cbCollaborationBlinkEffectTextContent = privateObject!.GetFieldOrProperty("CollaborationBlinkEffectText");
+            var cbCollaborationDoubleTapTextContent = privateObject!.GetFieldOrProperty("CollaborationDoubleTapText");
 
-            var txtAlert1Text = privateObject!.GetFieldOrProperty("Alert5"); 
-            var txtLearnMore1Text = privateObject!.GetFieldOrProperty("LearnMoreLink"); 
-            var txtVideoText = privateObject!.GetFieldOrProperty("VideoCaption"); 
-            var txtShareText = privateObject!.GetFieldOrProperty("ShareCaption"); 
-            var txtChatText = privateObject!.GetFieldOrProperty("ChatCaption"); 
-            var txtMicText = privateObject!.GetFieldOrProperty("MicCaption"); 
+            var txtAlert1Text = privateObject!.GetFieldOrProperty("Alert5");
+            var txtLearnMore1Text = privateObject!.GetFieldOrProperty("LearnMoreLink");
+            var txtVideoText = privateObject!.GetFieldOrProperty("VideoCaption");
+            var txtShareText = privateObject!.GetFieldOrProperty("ShareCaption");
+            var txtChatText = privateObject!.GetFieldOrProperty("ChatCaption");
+            var txtMicText = privateObject!.GetFieldOrProperty("MicCaption");
 
             // Assert
             Assert.That(vmField, Is.Not.Null);
@@ -72,7 +67,6 @@ namespace DDPM.UI.Module.Collaboration.Test
             Assert.That(txtShareText, Is.EqualTo("Share"));
             Assert.That(txtChatText, Is.EqualTo("Chat"));
             Assert.That(txtMicText, Is.EqualTo("Mic"));
-
         }
 
         [Test]
@@ -89,7 +83,7 @@ namespace DDPM.UI.Module.Collaboration.Test
             // Act
             privateObject.Invoke("CloseDescription", this, mouseButtonEventArgs);
             var bdrAlert = (UIElement)privateObject.GetFieldOrProperty("bdrAlert");
-            var txtCollabsCaptionText = privateObject.GetFieldOrProperty("CollabsCaption2") ;
+            var txtCollabsCaptionText = privateObject.GetFieldOrProperty("CollabsCaption2");
 
             // Assert
             Assert.That(bdrAlert.Visibility, Is.EqualTo(Visibility.Collapsed));

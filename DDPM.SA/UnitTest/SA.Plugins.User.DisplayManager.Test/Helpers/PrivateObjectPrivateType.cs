@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // ©Copyright 2021, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,9 +7,9 @@
 //
 // PrivateObjectPrivateType.cs created by Karthik_Vinnakota on 8/16/2021T3:26 PM
 //
+
 #endregion
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -1750,9 +1751,11 @@ namespace Dell.Client.Framework.UnitTestShared.Tests
                 {
                     case 0:
                         return 0;
+
                     case 1:
                         p1Less = true;
                         break;
+
                     case 2:
                         p2Less = true;
                         break;

@@ -1,21 +1,9 @@
 ﻿using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.UserControls
@@ -31,20 +19,23 @@ namespace DDPM.UI.Common.UserControls
         private SplitItemViewModel vm = new SplitItemViewModel();
 
         #region Init
+
         public SplitItem()
         {
             InitializeComponent();
             DataContext = vm;
         }
-        #endregion
 
-        #region  Content, ISplit
+        #endregion Init
+
+        #region Content, ISplit
+
         public object InnerContent
         {
             get { return (object)GetValue(InnerContentProperty); }
-            set 
+            set
             {
-                SetValue(InnerContentProperty, value); 
+                SetValue(InnerContentProperty, value);
                 if (value is ISplit)
                     vm.Split = (ISplit)value;
             }
@@ -78,9 +69,11 @@ namespace DDPM.UI.Common.UserControls
 
         //    }
         //}
-        #endregion
+
+        #endregion Content, ISplit
 
         #region SplitOwner
+
         public eSplitOwner SplitOwner
         {
             get
@@ -95,9 +88,11 @@ namespace DDPM.UI.Common.UserControls
                 vm.SplitOwner = value;
             }
         }
-        #endregion
+
+        #endregion SplitOwner
 
         #region IsSelected state
+
         public bool IsSelected
         {
             get { return (bool)GetValue(IsSelectedProperty); }
@@ -112,9 +107,11 @@ namespace DDPM.UI.Common.UserControls
         {
             var control = (SplitItem)d;
         }
-        #endregion
+
+        #endregion IsSelected state
 
         #region Item ClickCommand
+
         public ICommand ClickCommand
         {
             get { return (ICommand)GetValue(ClickCommandProperty); }
@@ -141,18 +138,20 @@ namespace DDPM.UI.Common.UserControls
             if (ClickCommand != null)
                 ClickCommand?.Execute(this);
         }
-        #endregion
+
+        #endregion Item ClickCommand
 
         #region Edit Icon
+
         public bool IsEditEnabled
         {
-            get 
+            get
             {
-                return (bool)GetValue(IsEditEnabledProperty); 
+                return (bool)GetValue(IsEditEnabledProperty);
             }
-            set 
+            set
             {
-                SetValue(IsEditEnabledProperty, value); 
+                SetValue(IsEditEnabledProperty, value);
                 //vm.IsEditEnabled = value;
             }
         }
@@ -160,8 +159,6 @@ namespace DDPM.UI.Common.UserControls
         // Using a DependencyProperty as the backing store for IsEditEnabled.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsEditEnabledProperty =
             DependencyProperty.Register("IsEditEnabled", typeof(bool), typeof(SplitItem), new PropertyMetadata(false));
-
-
 
         public ICommand EditClickCommand
         {
@@ -173,7 +170,6 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty EditClickCommandProperty =
             DependencyProperty.Register("EditClickCommand", typeof(ICommand), typeof(SplitItem));
 
-
         private void pencilIcon_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (EditClickCommand != null)
@@ -183,10 +179,9 @@ namespace DDPM.UI.Common.UserControls
             }
         }
 
-        #endregion
+        #endregion Edit Icon
 
         #region Del Icon
-
 
         public bool IsDeleteEnabled
         {
@@ -198,12 +193,12 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty IsDeleteEnabledProperty =
             DependencyProperty.Register("IsDeleteEnabled", typeof(bool), typeof(SplitItem), new PropertyMetadata(false));
 
-
-        #endregion
+        #endregion Del Icon
 
         #region For Easy Arrange
+
         public int CustomId;
 
-        #endregion
+        #endregion For Easy Arrange
     }
 }

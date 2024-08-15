@@ -1,15 +1,10 @@
-﻿using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common.Models;
+﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using DDPM.SA.Common;
 using VcpCore.Common;
 
 namespace DDPM.UI.Module.Kvm.Tests
@@ -22,7 +17,6 @@ namespace DDPM.UI.Module.Kvm.Tests
         private Mock<IModuleOwner>? moduleOwnerMock;
         private Mock<IDeviceManagerSA>? deviceManagerMock;
         private IDeviceManagerSA? deviceManagerSA;
-
 
         [SetUp]
         public void Setup()
@@ -39,7 +33,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             privateObject = new PrivateObject(kvmModule);
         }
 
-
         [Test]
         public void TestModuleName()
         {
@@ -49,7 +42,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             // Assert
             Assert.That(result, Is.EqualTo("KvmModule"));
         }
-
 
         [Test]
         public void TestGetLeftView()
@@ -61,7 +53,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(result, Is.Not.Null);
         }
 
-
         [Test]
         public void TestGetRightView()
         {
@@ -72,7 +63,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<UserControl>());
         }
-
 
         [Test]
         public void TestSelectedHomeDevice()
@@ -88,7 +78,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(result, Is.EqualTo(homeDevice));
         }
 
-
         [Test]
         public void TestModuleOwner()
         {
@@ -98,7 +87,6 @@ namespace DDPM.UI.Module.Kvm.Tests
 
             Assert.That(kvmModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
-
 
         [Test]
         public void TestViewModelInitialization()
@@ -151,7 +139,5 @@ namespace DDPM.UI.Module.Kvm.Tests
                 Assert.Fail("not invoked");
             }
         }
-
-
     }
 }

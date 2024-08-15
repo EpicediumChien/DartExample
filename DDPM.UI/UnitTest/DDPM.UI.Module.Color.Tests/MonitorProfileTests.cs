@@ -1,26 +1,16 @@
-﻿using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RegistryUtils;
-using static DDPM.UI.Module.Color.ColorViewModel;
-using DDPM.SA.Common;
-using NSubstitute;
+
 namespace DDPM.UI.Module.Color.Tests
 {
     [Apartment(ApartmentState.STA)]
     public class MonitorProfileTests
     {
-
         private RegistryUtils.MonitorProfile? monitorProfile;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
-
 
         [SetUp]
         public void Setup()
@@ -32,7 +22,6 @@ namespace DDPM.UI.Module.Color.Tests
             privateObject = new PrivateObject(monitorProfile);
         }
 
-
         [Test]
         public void TestGetMonitorProfile()
         {
@@ -40,34 +29,31 @@ namespace DDPM.UI.Module.Color.Tests
             var profileName = RegistryUtils.MonitorProfile.GetMonitorProfile();
 
             // Assert
-            Assert.That(monitorProfile, Is.Not.Null); 
+            Assert.That(monitorProfile, Is.Not.Null);
             Assert.That(profileName, Is.Not.Null);
         }
 
         //[Test]
         //public void TestSetMonitorProfile()
         //{
-            // Act
-            //var bRes = RegistryUtils.MonitorProfile.SetMonitorProfile("Dell_U3224KB_Native_v2.icm");
+        // Act
+        //var bRes = RegistryUtils.MonitorProfile.SetMonitorProfile("Dell_U3224KB_Native_v2.icm");
 
-            // Assert
-            //Assert.IsFalse(bRes);
+        // Assert
+        //Assert.IsFalse(bRes);
 
-            //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_DisplayP3_v2.icm");
-            //Assert.IsFalse(bRes);
+        //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_DisplayP3_v2.icm");
+        //Assert.IsFalse(bRes);
 
+        //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_DCIP3_v2.icm");
+        //Assert.IsFalse(bRes);
 
-            //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_DCIP3_v2.icm");
-            //Assert.IsFalse(bRes);
+        //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_sRGB_v2.icm");
+        //Assert.IsFalse(bRes);
 
-
-            //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_sRGB_v2.icm");
-            //Assert.IsFalse(bRes);
-
-
-            //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_Rec709_v2.icm");
-            //Assert.IsFalse(bRes);                            
-       // }
+        //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_Rec709_v2.icm");
+        //Assert.IsFalse(bRes);
+        // }
 
         //[Test]
         //public void TestIntsallMonitorProfile()
@@ -85,8 +71,6 @@ namespace DDPM.UI.Module.Color.Tests
         //    // Assert
         //    //Assert.That(monitorProfile, Is.Not.Null);
         //}
-        
-
 
         [Test]
         public void TestGetColorDirectory()
@@ -97,7 +81,5 @@ namespace DDPM.UI.Module.Color.Tests
             // Assert
             Assert.That(result, Is.Not.Null);
         }
-
-
     }
 }

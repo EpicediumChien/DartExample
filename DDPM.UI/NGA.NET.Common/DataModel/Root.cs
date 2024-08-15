@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Microsoft;
@@ -13,7 +15,7 @@ namespace NGA.NET.Common
     /// <summary>
     /// Root Model class
     /// </summary>
-    public  class Root
+    public class Root
     {
         #region properties
 
@@ -38,8 +40,8 @@ namespace NGA.NET.Common
         /// <param name="modelJson"></param>
         public Root(int modelVersion, string modelJson)
         {
-            Requires.NotDefault(modelVersion, nameof(modelVersion));        
-    
+            Requires.NotDefault(modelVersion, nameof(modelVersion));
+
             ModelVersion = modelVersion;
             ModelJson = modelJson;
         }

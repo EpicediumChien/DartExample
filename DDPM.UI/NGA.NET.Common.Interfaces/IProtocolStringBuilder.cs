@@ -1,12 +1,12 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
-#endregion
 
-using System;
+#endregion
 
 namespace NGA.NET.Common.Interfaces
 {
@@ -17,7 +17,7 @@ namespace NGA.NET.Common.Interfaces
     public interface IProtocolStringBuilder
     {
         /// <summary>
-        /// Creates an instance of ShowPluginCommand using the Guid argument 
+        /// Creates an instance of ShowPluginCommand using the Guid argument
         /// </summary>
         /// <param name="startingPlugin">Starting plugin</param>
         /// <returns>IProtocolStringBuilder</returns>

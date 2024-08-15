@@ -1,34 +1,15 @@
-﻿using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common;
-using Moq;
-using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Common;
-using DDPM.UI.Interfaces;
-using DDPM.SA.Common;
-using System.Windows;
-using System.Windows.Controls;
-using System.Reflection;
-using Microsoft.Win32;
-using System.Xml.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using Dell.Client.Framework.UX.WPF.Controls;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-using System.Management;
-using static System.Formats.Asn1.AsnWriter;
-using System.Drawing;
-using NSubstitute;
-using static DDPM.UI.Module.Color.ColorViewModel;
+﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
+using Moq;
+using NGA.UnitTest.PrivateObject;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.Color.Tests
 {
@@ -42,12 +23,10 @@ namespace DDPM.UI.Module.Color.Tests
         private ColorModule? colorModule;
         private ColorModule? myModleMock;
 
-
-
         [SetUp]
         public void Setup()
         {
-            colorViewModel = new ColorViewModel();  
+            colorViewModel = new ColorViewModel();
             //privateObject = new PrivateObject(monitorInfo);
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
@@ -55,27 +34,24 @@ namespace DDPM.UI.Module.Color.Tests
             privateObject = new PrivateObject(colorViewModel);
         }
 
-
         [Test]
         public void TestLog()
         {
-            var logMock=new Mock<ILog>();
+            var logMock = new Mock<ILog>();
             ILog log = logMock.Object;
             colorViewModel.Log = log;
-            var result= colorViewModel.Log;
+            var result = colorViewModel.Log;
             Assert.That(result, Is.EqualTo(log));
         }
-
 
         [Test]
         [Apartment(ApartmentState.STA)]
         public void TestModuleOwner()
         {
             var moduleOwner = moduleOwnerMock!.Object;
-            colorViewModel.ModuleOwner= moduleOwner;
+            colorViewModel.ModuleOwner = moduleOwner;
             Assert.That(colorViewModel.ModuleOwner, Is.EqualTo(moduleOwner));
         }
-
 
         [Test]
         public void TestMyModule()
@@ -85,7 +61,6 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(colorViewModel.MyModule, Is.EqualTo(myColorModule));
         }
 
-
         [Test]
         public void TestSupportColorPresets()
         {
@@ -94,7 +69,6 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(colorViewModel.SupportColorPresets, Is.EqualTo(myColorModule));
         }
 
-
         [Test]
         public void TestColorPresets_ItemsCollection()
         {
@@ -102,7 +76,6 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.ColorPresets_ItemsCollection = myColorModule;
             Assert.That(colorViewModel.ColorPresets_ItemsCollection, Is.EqualTo(myColorModule));
         }
-
 
         [Test]
         public void TestIsisAdvanced_Settings()
@@ -119,7 +92,6 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.NightlightStatus = myColorModule;
             Assert.That(colorViewModel.NightlightStatus, Is.EqualTo(myColorModule));
         }
-
 
         [Test]
         public void TestColorPresetSelectedIndex()
@@ -141,20 +113,19 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(colorViewModel.ColorPresetSelectedIndex, Is.EqualTo(myColorModule));
         }
 
-
         [Test]
         public void TestUpdateColorPresetSelectedIndex()
         {
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
-            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(),new DDPMUserSettings())));
+            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings())));
             var moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             colorViewModel.MyModule = new ColorModule();
-            colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo=new MonitorInfo();
+            colorViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
             deviceManagerMock.Setup(x => x.GetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<int>())).Returns(Task.FromResult(new ALSConfig()));
 
             colorViewModel.ColorPresetSelectedIndex = -1;
@@ -162,7 +133,6 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(colorViewModel.ColorPresetSelectedIndex, Is.EqualTo(1));
         }
 
-        
         [Test]
         public void TestColorManagement_isChecked()
         {
@@ -180,7 +150,6 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(colorViewModel.ICCprofile_based_Colorpreset_enable, Is.EqualTo(myICCprofile_based_Colorpreset_enable));
         }
 
-
         [Test]
         public void TestDCM_Visibility()
         {
@@ -188,8 +157,6 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.DCM_Visibility = myColorModule;
             Assert.That(colorViewModel.DCM_Visibility, Is.EqualTo(myColorModule));
         }
-
-
 
         [Test]
         public void TestFullView()
@@ -202,7 +169,7 @@ namespace DDPM.UI.Module.Color.Tests
         [Test]
         public void TestOpenFullView()
         {
-            ContentControl content= new ContentControl();
+            ContentControl content = new ContentControl();
             try
             {
                 colorViewModel.OpenFullView(content);
@@ -213,7 +180,6 @@ namespace DDPM.UI.Module.Color.Tests
                 Assert.Fail("not invoked");
             }
         }
-
 
         [Test]
         public void TestCloseFullView()
@@ -229,11 +195,9 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-
         [Test]
         public void Testget_index_of_json_config_for_cur_monitor()
         {
-
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
             temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
             monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
@@ -242,27 +206,22 @@ namespace DDPM.UI.Module.Color.Tests
             var result = colorViewModel.get_index_of_json_config_for_cur_monitor(monitorInfo);
 
             // Assert
-            Assert.AreNotEqual(-1,result);
-
+            Assert.AreNotEqual(-1, result);
         }
-        
-
 
         [Test]
         [Apartment(ApartmentState.STA)]
         public void Testget_cur_monitor_preset_config()
         {
-
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
             temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
             monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = temp;
 
-            var result =  colorViewModel.get_cur_monitor_preset_config(monitorInfo, temp);
+            var result = colorViewModel.get_cur_monitor_preset_config(monitorInfo, temp);
 
             // Assert
             Assert.That(result, Is.Not.Null);
-
         }
 
         //[Test]
@@ -273,7 +232,6 @@ namespace DDPM.UI.Module.Color.Tests
 
         //    Assert.That(result, Is.EqualTo("616263"));
         //}
-
 
         [Test]
         public void TestSyncNightlightStatus()
@@ -288,10 +246,9 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.MyModule = new ColorModule();
             PrivateObject pObj = new PrivateObject(colorViewModel);
             pObj.Invoke("SyncNightlightStatus", null);
-            
+
             Assert.That(colorViewModel.NightlightStatus, Is.EqualTo("On"));
         }
-
 
         [Test]
         public void TestStopRegistryMonitor()
@@ -301,19 +258,16 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.StopRegistryMonitor();
             Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
             Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
-
         }
-
 
         [Test]
         public void TestOnRegChanged_NightLight()
-        {            
+        {
             colorViewModel.MyModule = new ColorModule();
-            colorViewModel.OnRegChanged_NightLight(null,null);
+            colorViewModel.OnRegChanged_NightLight(null, null);
 
             Assert.That(colorViewModel.NightlightStatus, Is.EqualTo("On"));
         }
-
 
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -348,8 +302,6 @@ namespace DDPM.UI.Module.Color.Tests
         //        Assert.Fail("not invoked");
         //    }
         //}
-        
-
 
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -357,11 +309,10 @@ namespace DDPM.UI.Module.Color.Tests
         {
             colorViewModel.registryMonitor_NightLight = new RegistryUtils.RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
             colorViewModel.registryMonitor_ICC = new RegistryUtils.RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
-            colorViewModel.OnError_ICC(null,null);
+            colorViewModel.OnError_ICC(null, null);
             Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
             Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
         }
-
 
         [Test]
         public void TestAppsList()
@@ -371,7 +322,6 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(colorViewModel.AppsList, Is.EqualTo(observableCollection));
         }
 
-        
         [Test]
         public void TestRefreshUI()
         {
@@ -394,19 +344,8 @@ namespace DDPM.UI.Module.Color.Tests
         [Test]
         public void TestIsBusy()
         {
-            colorViewModel.IsBusy=true;
+            colorViewModel.IsBusy = true;
             Assert.That(colorViewModel.IsBusy, Is.EqualTo(true));
         }
-        
-
-
-
     }
-
-
-
-
 }
-
-
-

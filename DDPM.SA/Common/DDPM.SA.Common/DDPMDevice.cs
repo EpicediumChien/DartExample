@@ -2,12 +2,10 @@
 using DPeMPublic.Common.Enums;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
-using VcpCore.Common;
 
 namespace DDPM.SA.Common
 {
@@ -82,10 +80,12 @@ namespace DDPM.SA.Common
         public ICommand ToggleOptionCommand { get; set; }
 
         #region Physical Device Dongle Private Properties
-        string _pairingStatusName;
-        int _maxPairingSlots;
-        int _pairedDeviceCount;
-        #endregion
+
+        private string _pairingStatusName;
+        private int _maxPairingSlots;
+        private int _pairedDeviceCount;
+
+        #endregion Physical Device Dongle Private Properties
 
         #endregion Private Members
 
@@ -115,9 +115,6 @@ namespace DDPM.SA.Common
         public int InstanceNumber { get; set; }
         public int InstanceId { get; set; }
         public int ColorCode { get; set; }
-
-
-
 
         public string FirmwareVersion { get; set; }
 
@@ -213,7 +210,6 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
-
 
         public string PhysicalDeviceType
         {
@@ -555,8 +551,6 @@ namespace DDPM.SA.Common
             }
         }
 
-
-
         public int BackLightTabIndex
         {
             get => _backLightTabIndex;
@@ -613,7 +607,7 @@ namespace DDPM.SA.Common
 
         public string PhysicalDeviceFirmwareVersion { get; set; }
 
-        #endregion Physical Device Properties
+        #endregion Physical Device Dongle Properties
 
         #endregion Properties
 
@@ -632,6 +626,7 @@ namespace DDPM.SA.Common
                 // Perform any other actions here based on the checkbox state.
             }
         }
+
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -703,7 +698,6 @@ namespace DDPM.SA.Common
         public string message { get; set; }
     }
 
-
     public class CommandInput
     {
         public string jsonrpc { get; set; }
@@ -713,6 +707,7 @@ namespace DDPM.SA.Common
         public CommandParams Params { get; set; }
 
         #region CommandData instance
+
         private static CommandInput INSTANCE = null;
 
         public static CommandInput GetInstance()
@@ -724,19 +719,23 @@ namespace DDPM.SA.Common
 
             return INSTANCE;
         }
-        #endregion
+
+        #endregion CommandData instance
     }
 
     public class CommandOutput
     {
         public string jsonrpc { get; set; }
         public string id { get; set; }
+
         //public string deviceName { get; set; }
         public string methodName { get; set; }
+
         public CommandResult result { get; set; } = null;
         public CommandError error { get; set; } = null;
 
         #region CommandOutput instance
+
         private static CommandOutput INSTANCE = null;
 
         public static CommandOutput GetInstance()
@@ -748,7 +747,8 @@ namespace DDPM.SA.Common
 
             return INSTANCE;
         }
-        #endregion
+
+        #endregion CommandOutput instance
     }
 
     public class CommandInput_notifyDeviceConnection
@@ -778,6 +778,7 @@ namespace DDPM.SA.Common
     public class Peripheral_Listen_param
     {
         public string ID { get; set; }
+
         //public string InstanceId { get; set; } //no chance to use this
         public string deviceStatus { get; set; }
     }

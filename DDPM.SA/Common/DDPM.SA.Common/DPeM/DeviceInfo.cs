@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DPeMPublic.Common.Enums;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -100,8 +100,8 @@ namespace DDPM.SA.Common
         private string _isdServiceVersion;
         private string _isdDriverVersion;
 
-
         #region private webcam Properties
+
         private string _deviceSymbolicLink;
         private string _parentDevInstanceId;
         private bool _isESISupported;
@@ -115,17 +115,19 @@ namespace DDPM.SA.Common
         private bool _isWindowsHelloSupported;
         private bool _hasWindowsHelloPowerConstraint;
 
-        #endregion
+        #endregion private webcam Properties
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand ToggleOptionCommand { get; set; }
 
         #region Physical Device Dongle Private Properties
-        string _pairingStatusName;
-        int _maxPairingSlots;
-        int _pairedDeviceCount;
-        #endregion
+
+        private string _pairingStatusName;
+        private int _maxPairingSlots;
+        private int _pairedDeviceCount;
+
+        #endregion Physical Device Dongle Private Properties
 
         #endregion Private Members
 
@@ -596,6 +598,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public int MonitorCount { get; set; }
         public byte[] DockData { get; set; }
         public byte[] DockInfo { get; set; }
@@ -606,6 +609,7 @@ namespace DDPM.SA.Common
         public string DockPackageFwVersion { get; set; }
         public int DockFwUpdateStatus { get; set; }
         public int DockTBTConnectionStatus { get; set; }
+
         #region Physical Device Dongle Properties
 
         public string PairingStatusName
@@ -642,7 +646,7 @@ namespace DDPM.SA.Common
 
         public string PhysicalDeviceFirmwareVersion { get; set; }
 
-        #endregion Physical Device Properties
+        #endregion Physical Device Dongle Properties
 
         #region Audio Headsets Properties
 
@@ -1051,10 +1055,10 @@ namespace DDPM.SA.Common
             get => _isQuickPauseChecked && _isWearDetectionChecked;
         }
 
-
-        #endregion
+        #endregion Audio Headsets Properties
 
         #region Webcam Properties
+
         public string DeviceSymbolicLink
         {
             get => _deviceSymbolicLink;
@@ -1064,6 +1068,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public string ParentDevInstanceId
         {
             get => _parentDevInstanceId;
@@ -1073,6 +1078,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public bool IsESISupported
         {
             get => _isESISupported;
@@ -1082,6 +1088,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public string[] SupportedProperties
         {
             get => _supportedProperties;
@@ -1091,6 +1098,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public string[] FOVValues
         {
             get => _fOVValues;
@@ -1100,6 +1108,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public string[] SupportedResolutions
         {
             get => _supportedResolutions;
@@ -1109,6 +1118,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public int SupportedFeatures
         {
             get => _supportedFeatures;
@@ -1118,6 +1128,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public int CurrentFeatures
         {
             get => _currentFeatures;
@@ -1127,6 +1138,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public bool IsMicEnumerationSupported
         {
             get => _isMicEnumerationSupported;
@@ -1136,6 +1148,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public bool IsMicEnumerationOn
         {
             get => _isMicEnumerationOn;
@@ -1145,6 +1158,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public bool IsWindowsHelloSupported
         {
             get => _isWindowsHelloSupported;
@@ -1154,6 +1168,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public bool HasWindowsHelloPowerConstraint
         {
             get => _hasWindowsHelloPowerConstraint;
@@ -1164,8 +1179,7 @@ namespace DDPM.SA.Common
             }
         }
 
-
-        #endregion
+        #endregion Webcam Properties
 
         #region Pen Properties
 
@@ -1199,7 +1213,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion
+        #endregion Pen Properties
 
         #endregion Properties
 

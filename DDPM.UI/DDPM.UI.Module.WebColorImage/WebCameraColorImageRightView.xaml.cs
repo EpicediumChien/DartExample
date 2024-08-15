@@ -1,10 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+﻿using DDPM.UI.Plugin.ViewModels;
+using System.Windows;
 using System.Windows.Input;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
-using Windows.Media.Devices;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.WebCameraColorImage
@@ -32,13 +28,11 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     // Unhook the event handler, so that changing properties on the slider won't trigger an API call
                     BrightnessSlider.ValueChanged -= BrightnessSlider_ValueChanged;
 
-                    
                     var brightnessControl = _vm._mediaCapture.VideoDeviceController.Brightness;
 
                     BrightnessSlider.Minimum = _vm._mediaCapture.VideoDeviceController.Brightness.Capabilities.Min;
                     BrightnessSlider.Maximum = _vm._mediaCapture.VideoDeviceController.Brightness.Capabilities.Max;
                     BrightnessSlider.TickFrequency = _vm._mediaCapture.VideoDeviceController.Brightness.Capabilities.Step;
-                  
 
                     double dbvalue = 0.0f;
                     if (brightnessControl.TryGetValue(out dbvalue))
@@ -55,7 +49,6 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     AWBSlider.Minimum = _vm._mediaCapture.VideoDeviceController.WhiteBalance.Capabilities.Min;
                     AWBSlider.Maximum = _vm._mediaCapture.VideoDeviceController.WhiteBalance.Capabilities.Max;
                     AWBSlider.TickFrequency = _vm._mediaCapture.VideoDeviceController.WhiteBalance.Capabilities.Step * 100;
-                    
 
                     dbvalue = 0.0f;
                     if (awbControl.TryGetValue(out dbvalue))
@@ -72,7 +65,6 @@ namespace DDPM.UI.Module.WebCameraColorImage
                         {
                             _vm.IsChecked_AWB = true;
                             _vm.AWBStatus_String = "ON";
-
                         }
                         else
                         {
@@ -85,13 +77,11 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     // Unhook the event handler, so that changing properties on the slider won't trigger an API call
                     ContrastSlider.ValueChanged -= ContrastSlider_ValueChanged;
 
-                    
                     var contrastControl = _vm._mediaCapture.VideoDeviceController.Contrast;
 
                     ContrastSlider.Minimum = _vm._mediaCapture.VideoDeviceController.Contrast.Capabilities.Min;
                     ContrastSlider.Maximum = _vm._mediaCapture.VideoDeviceController.Contrast.Capabilities.Max;
                     ContrastSlider.TickFrequency = _vm._mediaCapture.VideoDeviceController.Contrast.Capabilities.Step;
-                    
 
                     dbvalue = 0.0f;
                     if (contrastControl.TryGetValue(out dbvalue))
@@ -103,22 +93,18 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     // Unhook the event handler, so that changing properties on the slider won't trigger an API call
                     SaturationSlider.ValueChanged -= SaturationSlider_ValueChanged;
 
-
                     var saturationControl = _vm._mediaCapture.VideoDeviceController.Hue;
 
                     SaturationSlider.Minimum = _vm._mediaCapture.VideoDeviceController.Hue.Capabilities.Min;
                     SaturationSlider.Maximum = _vm._mediaCapture.VideoDeviceController.Hue.Capabilities.Max;
                     SaturationSlider.TickFrequency = _vm._mediaCapture.VideoDeviceController.Hue.Capabilities.Step;
 
-
                     dbvalue = 0.0f;
                     if (saturationControl.TryGetValue(out dbvalue))
                         SaturationSlider.Value = dbvalue;
 
                     SaturationSlider.ValueChanged += SaturationSlider_ValueChanged;
-
                 }
-
             }
         }
 
@@ -132,7 +118,6 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             if (_vm != null && _vm._mediaCapture != null)
             {
-
                 var brightnessControl = _vm._mediaCapture.VideoDeviceController.Brightness;
 
                 // Make sure brightnessFactor is within the valid range
@@ -155,7 +140,6 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             if (_vm != null && _vm._mediaCapture != null)
             {
-
                 var contrastControl = _vm._mediaCapture.VideoDeviceController.Contrast;
 
                 // Make sure brightnessFactor is within the valid range
@@ -178,7 +162,6 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             if (_vm != null && _vm._mediaCapture != null)
             {
-
                 var saturationControl = _vm._mediaCapture.VideoDeviceController.Hue;
 
                 // Make sure brightnessFactor is within the valid range
@@ -201,7 +184,6 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             if (_vm != null && _vm._mediaCapture != null)
             {
-
                 var awbControl = _vm._mediaCapture.VideoDeviceController.WhiteBalance;
 
                 // Make sure zoomFactor is within the valid range
@@ -246,7 +228,6 @@ namespace DDPM.UI.Module.WebCameraColorImage
             //_vm.SetDPIValue();
         }
 
-
         private void TiltSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
@@ -255,17 +236,14 @@ namespace DDPM.UI.Module.WebCameraColorImage
 
         private void btnPair_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void AntiFlicker_50Hz_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void AntiFlicker_60Hz_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
     }
 }

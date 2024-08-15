@@ -3,26 +3,12 @@ using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
-using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Plugin.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.UI.Module.EzArrange
 {
@@ -79,7 +65,6 @@ namespace DDPM.UI.Module.EzArrange
         {
             foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
             {
-                
             }
         }
 
@@ -95,19 +80,18 @@ namespace DDPM.UI.Module.EzArrange
         {
             //InitRecentListView();
             //InitListViewItems();
-
         }
 
         private void InitRecentListView()
         {
             ISplitCtrl? sp0A = ISplitCtrl.Create(0, 'A');
-            if (sp0A != null) 
+            if (sp0A != null)
                 splitListView_Recent.AddItemToList(sp0A.UC);
         }
 
         private void InitListViewItems()
         {
-            foreach(ISplitCtrl spCtrl  in ISplitCtrl.Splits_EA)
+            foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
             {
                 SplitItem? spItem = null;
                 ISplitCtrl newSplit = spCtrl.New();
@@ -116,9 +100,11 @@ namespace DDPM.UI.Module.EzArrange
                     case 2:
                         spItem = splitListView_2w.AddItemToList(newSplit.UC);
                         break;
+
                     case 4:
                         spItem = splitListView_4w.AddItemToList(newSplit.UC);
                         break;
+
                     default:
                         break;
                 }
@@ -189,7 +175,7 @@ namespace DDPM.UI.Module.EzArrange
                         CustomNames = new List<string>(),
                         Settings = spCtrl.Settings
                     };
- #if ENABLE_CALL_SA
+#if ENABLE_CALL_SA
 
                     //Register a event handler for EditStarted event
                     _deviceManagerSA.EAEditStarted += _deviceManagerSA_EAEditStarted;
@@ -199,13 +185,12 @@ namespace DDPM.UI.Module.EzArrange
                         //If DDPM.SA.EAPlugin cannot addcept the EditCommand, we will unregister the EditStarted
                         // handler, because, we will never receive this event from DDPM.SA.EAplugin
                         _deviceManagerSA.EAEditStarted -= _deviceManagerSA_EAEditStarted;
-                        return; 
+                        return;
                     }
 #endif
                 }
             }
         }
-
 
         private void _deviceManagerSA_EAEditCompleted(object? sender, string e)
         {
@@ -221,8 +206,6 @@ namespace DDPM.UI.Module.EzArrange
                         _console.RaiseEvent("MainWindow.Activate", this, new EventManagerArgs());
                         //_console.RaiseEvent("MainWindow.Normal", this, new EventManagerArgs());
                         //_console.RaiseEvent("MainWindow.Show", this, new EventManagerArgs());
-
-
                     }
                     ));
                  }
@@ -248,7 +231,6 @@ namespace DDPM.UI.Module.EzArrange
                 }
                 //Register next event 'EditReturn'
                 _deviceManagerSA.EAEditReturn += _deviceManagerSA_EAEditReturn;
-
 
                 if (_console !=null)
                 {
@@ -301,7 +283,7 @@ namespace DDPM.UI.Module.EzArrange
 
             if (e.CustomId == 0)
             {
-                Dispatcher.Invoke(new Action(() => 
+                Dispatcher.Invoke(new Action(() =>
                 {
                     ISplitCtrl isp = ISplitCtrl.Create(e.CellCount, e.SplitKey);
                     if (isp != null)
@@ -312,10 +294,8 @@ namespace DDPM.UI.Module.EzArrange
                     SplitItem spItem = splitListView_Custom.AddItemToList(isp.UC);
                     spItem.CustomId = 1;
                 }));
-
             }
 #endif
         }
-
     }
 }

@@ -1,12 +1,12 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
-#endregion
 
-using System;
+#endregion
 
 namespace NGA.Common
 {
@@ -245,7 +245,7 @@ namespace NGA.Common
         /// Defines the Starting Plugin Priority name
         /// </summary>
         public const string StartingPluginPriority = "StartingPluginPriority";
-       
+
         /// <summary>
         /// Defines the Starting Plugin Parameter Model version
         /// </summary>
@@ -270,7 +270,7 @@ namespace NGA.Common
         /// HomePageLayout Plugin Id
         /// </summary>
         public const string HomePageLayoutPluginId = "{26FEFA64-A3E6-456B-9B5B-CBE248703C29}";
-        
+
         /// <summary>
         /// UniqueID for the Systray
         /// </summary>

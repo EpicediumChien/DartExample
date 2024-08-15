@@ -1,49 +1,48 @@
 ﻿<UserControl x:Class="DDPM.UI.Common.UserControls.TabHeaders"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="100" d:DesignWidth="660">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="TabHeaders_BkColor" Color="#FF0A2343"/>
-        <SolidColorBrush x:Key="FakeTransparent" Color="#02000000"/>
+        <SolidColorBrush x:Key="TabHeaders_BkColor" Color="#FF0A2343" />
+        <SolidColorBrush x:Key="FakeTransparent" Color="#02000000" />
 
         <LinearGradientBrush x:Key="RightView_Header_HiColor" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Offset="0" Color="#FF0672CB"/>
-            <GradientStop Offset="1" Color="#FF6E69CF"/>
+            <GradientStop Offset="0" Color="#FF0672CB" />
+            <GradientStop Offset="1" Color="#FF6E69CF" />
         </LinearGradientBrush>
 
         <Style x:Key="TextBlock_HeaderTextStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="14" />
         </Style>
-
     </UserControl.Resources>
-    
-    <Border Grid.Row="0" CornerRadius="4" Background="{StaticResource TabHeaders_BkColor}" 
-                Height="30" Margin="0,0,0,0">
+
+    <Border Grid.Row="0" CornerRadius="4" Background="{StaticResource TabHeaders_BkColor}"
+            Height="30" Margin="0,0,0,0">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Name="col1" Width="{Binding Col1Width}"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Name="col1" Width="{Binding Col1Width}" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- Header[0] -->
             <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouselLeftButtonDown">
-                <TextBlock Text="{Binding Text1, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" 
-                           Style="{StaticResource TextBlock_HeaderTextStyle}"/>
+                <TextBlock Text="{Binding Text1, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                           Style="{StaticResource TextBlock_HeaderTextStyle}" />
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Background" Value="{StaticResource FakeTransparent}"/>
+                        <Setter Property="Background" Value="{StaticResource FakeTransparent}" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding HightlightHeaderIndex,RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            <DataTrigger Binding="{Binding HightlightHeaderIndex,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                          Value="0">
-                                <Setter Property="Background" Value="{StaticResource RightView_Header_HiColor}"/>
+                                <Setter Property="Background" Value="{StaticResource RightView_Header_HiColor}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -52,16 +51,15 @@
 
             <!-- Header[1] -->
             <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown">
-                <TextBlock Text="{Binding Text2, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" 
-                           Style="{StaticResource TextBlock_HeaderTextStyle}"
-                           />
+                <TextBlock Text="{Binding Text2, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                           Style="{StaticResource TextBlock_HeaderTextStyle}" />
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Background" Value="{StaticResource FakeTransparent}"/>
+                        <Setter Property="Background" Value="{StaticResource FakeTransparent}" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding HightlightHeaderIndex,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                          Value="1">
-                                <Setter Property="Background" Value="{StaticResource RightView_Header_HiColor}"/>
+                                <Setter Property="Background" Value="{StaticResource RightView_Header_HiColor}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -70,16 +68,15 @@
 
             <!-- Header[2] -->
             <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown">
-                <TextBlock Text="{Binding Text3, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" 
-                           Style="{StaticResource TextBlock_HeaderTextStyle}"
-                               />
+                <TextBlock Text="{Binding Text3, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                           Style="{StaticResource TextBlock_HeaderTextStyle}" />
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Background" Value="{StaticResource FakeTransparent}"/>
+                        <Setter Property="Background" Value="{StaticResource FakeTransparent}" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding HightlightHeaderIndex,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                          Value="2">
-                                <Setter Property="Background" Value="{StaticResource RightView_Header_HiColor}"/>
+                                <Setter Property="Background" Value="{StaticResource RightView_Header_HiColor}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

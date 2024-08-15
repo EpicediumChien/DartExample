@@ -1,33 +1,26 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Security;
+using DdpmJsonCommon;
 using Dell.Client.Framework.Agent;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using DdpmJsonCommon;
 using WinCopies.Util;
-using System.Diagnostics;
-using System.Windows.Interop;
-using DDPM.SA.Common.Display;
 using Windows.System;
-using Newtonsoft.Json;
-using System.Drawing;
-using DDPM.SA.Common.Security;
 
 namespace NetworkKVM.Plugins
 {
@@ -38,6 +31,7 @@ namespace NetworkKVM.Plugins
     public class NKVMPlugin : BaseAgentPlugin, INKVMService
     {
         #region Private Members
+
         private const string pluginName = "NKVMPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements NKVM Plugin.";
@@ -64,18 +58,21 @@ namespace NetworkKVM.Plugins
         private object lock_wait = new object();
         private string response;
         private string command;
-        #endregion
+
+        #endregion Private Members
 
         #region Constructor
+
         public NKVMPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
             _logs = new Logs(Log);
-
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
@@ -85,9 +82,11 @@ namespace NetworkKVM.Plugins
             PluginCondition = new PluginStartedCondition();
             _ = Task.Run(async () => await NamedPipeServer());
         }
-        #endregion
+
+        #endregion Overriding methods
 
         #region INKVM implementation
+
         /// <summary>
         /// This function is used to distinc the monitor add or remove
         /// </summary>
@@ -95,9 +94,9 @@ namespace NetworkKVM.Plugins
         /// <returns></returns>
         public Task UpdateMonitorInfo(List<MonitorInfo> monitorInfos)
         {
-            if(monitorInfos == null || monitorInfos.Count == 0)
+            if (monitorInfos == null || monitorInfos.Count == 0)
             {
-                if(_AllInfoMonitors.Count == 0)
+                if (_AllInfoMonitors.Count == 0)
                     return Task.CompletedTask;//return directly, no change
 
                 //means unplug all connected dell monitors
@@ -112,7 +111,7 @@ namespace NetworkKVM.Plugins
             }
             else
             {
-                if(_AllInfoMonitors.Count == 0 && monitorInfos.Count > 0)
+                if (_AllInfoMonitors.Count == 0 && monitorInfos.Count > 0)
                 {
                     //means plugin 1 or more monitor in
                     //Call Func: OnMonitorPlugIn(List<MonitorInfo> mos);
@@ -127,11 +126,11 @@ namespace NetworkKVM.Plugins
                 else
                 {
                     List<MonitorInfo> unplug = _AllInfoMonitors
-                        .Where(x => !monitorInfos.Any(y => y.edid.ModelName == x.edid.ModelName && 
-                                                            y.edid.SerialNumber == x.edid.SerialNumber && 
+                        .Where(x => !monitorInfos.Any(y => y.edid.ModelName == x.edid.ModelName &&
+                                                            y.edid.SerialNumber == x.edid.SerialNumber &&
                                                             y.DisplayName == x.DisplayName))
                         .ToList();
-                    if(unplug.Count > 0)//means unplug
+                    if (unplug.Count > 0)//means unplug
                     {
                         //Call Func: OnMonitorUnPlug(unplug);
                         GetSupportedNKVM();
@@ -163,6 +162,7 @@ namespace NetworkKVM.Plugins
             }
             return Task.CompletedTask;
         }
+
         //public Task<bool> getNKVMStatus() //UI get to NKVM
         //{
         //    //to NKVM json....
@@ -184,25 +184,28 @@ namespace NetworkKVM.Plugins
         {
             //if (pipeServer.IsConnected)
             //{
-                //cid = cid + 1;
-                //_AllInfoMonitors.Clear();
-                //_SupportedMonitors = GetSupportedNKVM().Result;
-                MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
-                //_COMMAND.cid = cid;
-                //_COMMAND.type = "MONITOR_PLUG_DETECTION";
-                WriteAsync(_COMMAND.ToJson()).Wait();
+            //cid = cid + 1;
+            //_AllInfoMonitors.Clear();
+            //_SupportedMonitors = GetSupportedNKVM().Result;
+            MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
+            //_COMMAND.cid = cid;
+            //_COMMAND.type = "MONITOR_PLUG_DETECTION";
+            WriteAsync(_COMMAND.ToJson()).Wait();
             //}
             return Task.CompletedTask;
         }
+
         public Task ToNKVM_SupportedMonitorList(List<string> supportedMonitorList)
         {
             _SupportedMonitors = supportedMonitorList;
             return Task.CompletedTask;
         }
+
         public Task<List<string>> UpdateSupportMonitors()
         {
             return Task.FromResult(_SupportedMonitors);
         }
+
         public Task<List<string>> GetSupportedNKVM()
         {
             bool isAdd = false;
@@ -258,6 +261,7 @@ namespace NetworkKVM.Plugins
             //}
             return Task.FromResult(_SupportedMonitors);
         }
+
         public Task OnNKVM()
         {
             if (pipeServer.IsConnected)
@@ -271,6 +275,7 @@ namespace NetworkKVM.Plugins
             }
             return Task.CompletedTask;
         }
+
         public Task OffNKVM()
         {
             if (pipeServer.IsConnected)
@@ -284,6 +289,7 @@ namespace NetworkKVM.Plugins
             }
             return Task.CompletedTask;
         }
+
         public Task<bool> isSupportMonitor(MonitorInfo monitorInfo)
         {
             string ModelName = monitorInfo.modelName.Replace(" ", "");
@@ -362,6 +368,7 @@ namespace NetworkKVM.Plugins
             }
             return Task.FromResult(false);
         }
+
         public Task SetVCPNotify(MonitorInfo monitorInfo, int vcpcode, int value)
         {
             try
@@ -387,11 +394,13 @@ namespace NetworkKVM.Plugins
             }
             return Task.CompletedTask;
         }
+
         public Task ToNKVM_HotkeySettings(List<HotkeySettings> hotkeySettings)
         {
             _HotkeySettings = hotkeySettings;
             return Task.CompletedTask;
         }
+
         public Task<bool> SetHotkey(HotkeyInfo info)
         {
             if (info != null)
@@ -451,6 +460,7 @@ namespace NetworkKVM.Plugins
             }
             return Task.FromResult(false);
         }
+
         public Task NKVM_ChangeLimitedSW(MonitorInfo monitorInfo, bool isON)
         {
             try
@@ -496,9 +506,11 @@ namespace NetworkKVM.Plugins
 
             return Task.CompletedTask;
         }
-        #endregion
+
+        #endregion INKVM implementation
 
         #region Private Methods
+
         private void InitializeVcpCorePlugin()
         {
             if (_VcpCorePlugin != null)
@@ -534,6 +546,7 @@ namespace NetworkKVM.Plugins
                 }
             });
         }
+
         private void InitializeMonitorsList()
         {
             _AllInfoMonitors.Clear();
@@ -554,7 +567,7 @@ namespace NetworkKVM.Plugins
                 return Task.FromResult(_AllInfoMonitors);
             }
         }
-        
+
         private async Task NamedPipeServer()
         {
             CreateNamedPipe();
@@ -618,6 +631,7 @@ namespace NetworkKVM.Plugins
             cancellationTokenSource = new CancellationTokenSource();
             StartAsync(namedPipeName).Wait();
         }
+
         private async Task StartAsync(string NamedpipeName)
         {
             //Console.WriteLine("Wait Connection....." + "\n");
@@ -632,10 +646,12 @@ namespace NetworkKVM.Plugins
             WriteAsync(ResponseSupportedMonitor().Result).Wait();
             OnNKVM().Wait();
         }
+
         private void Stop()
         {
             cancellationTokenSource.Cancel();
         }
+
         private void Disconnect()
         {
             Stop();
@@ -647,6 +663,7 @@ namespace NetworkKVM.Plugins
             pipeServer.Close();
             pipeServer.Dispose();
         }
+
         private async Task WriteAsync(string message)
         {
             Console.WriteLine("WriteAsync : " + message);
@@ -655,6 +672,7 @@ namespace NetworkKVM.Plugins
             await pipeServer.FlushAsync();
             pipeServer.WaitForPipeDrain();
         }
+
         private async Task<string> ReadAsync()
         {
             byte[] buffer = new byte[2048];
@@ -670,20 +688,24 @@ namespace NetworkKVM.Plugins
             if (json.ContainsKey("type"))
             {
                 type = (string)json["type"];
-                switch (type) 
+                switch (type)
                 {
                     case "SET_VCP":
                         reStr = SetVCP(json).Result;
                         break;
+
                     case "GET_VCP":
                         reStr = GetVCP(json).Result;
                         break;
+
                     case "GET_MONITOR_INFO":
                         reStr = GetMonitorInfo(jsonstring).Result;
                         break;
+
                     case "GET_CURRENT_MONITOR_INDEX":
                         reStr = GetCurrentMonitorIndex(json).Result;
                         break;
+
                     case "IS_HOTKEY_AVAILABLE":
                         reStr = isHotkeyAvailable(jsonstring).Result;
                         break;
@@ -701,24 +723,28 @@ namespace NetworkKVM.Plugins
                             OnNKVM().Wait();
                         }
                         break;
+
                     case "ON_NKVM_RESPONSE":
                         if (!ResponseSucces(json).Result)
                         {
                             OnNKVM().Wait();
                         }
                         break;
+
                     case "OFF_NKVM_RESPONSE":
                         if (!ResponseSucces(json).Result)
-                        { 
+                        {
                             OffNKVM().Wait();
                         }
                         break;
+
                     case "SET_HOTKEY_RESPONSE":
                         if (!ResponseSucces(json).Result && _HotkeyInfo != null)
                         {
                             bool b = SetHotkey(_HotkeyInfo).Result;
                         }
                         break;
+
                     default:
                         reStr = NotFindType(json).Result;
                         break;
@@ -726,6 +752,7 @@ namespace NetworkKVM.Plugins
             }
             return reStr;
         }
+
         private async Task<string> SetVCP(JObject json)
         {
             byte b_vcpcode;
@@ -767,6 +794,7 @@ namespace NetworkKVM.Plugins
             }
             return set_VCP_R.ToJson();
         }
+
         private async Task<string> GetVCP(JObject json)
         {
             byte b_vcpcode;
@@ -820,6 +848,7 @@ namespace NetworkKVM.Plugins
             }
             return get_VCP_R.ToJson();
         }
+
         private async Task<string> GetMonitorInfo(string jsonstring)
         {
             GET_MONITOR_INFO get_MONITOR_INFO = new GET_MONITOR_INFO();
@@ -875,6 +904,7 @@ namespace NetworkKVM.Plugins
             }
             return get_MONITORINFO_R.ToJson();
         }
+
         private async Task<string> GetCurrentMonitorIndex(JObject json)
         {
             GET_CURRENT_MONITOR_INDEX_RESPONSE get_CURRENT_MONITOR_INDEX_R = new GET_CURRENT_MONITOR_INDEX_RESPONSE();
@@ -900,7 +930,7 @@ namespace NetworkKVM.Plugins
             }
             return get_CURRENT_MONITOR_INDEX_R.ToJson();
         }
-        
+
         private async Task<string> DisconnectNamedPipe()
         {
             //cid = cid + 1;
@@ -911,6 +941,7 @@ namespace NetworkKVM.Plugins
 
             return _COMMAND.ToJson();
         }
+
         private async Task<string> NotFindType(JObject json)
         {
             DDM_RESPONSE _RESPONSE = new DDM_RESPONSE();
@@ -920,14 +951,16 @@ namespace NetworkKVM.Plugins
             //_RESPONSE.type = (string)json["type"] + "_RESPONSE";
             return _RESPONSE.ToJson();
         }
+
         private async Task<bool> ResponseSucces(JObject json)
         {
             if ((bool)json["Success"])
-            { 
-                return true; 
+            {
+                return true;
             }
             return false;
         }
+
         private async Task<string> ResponseSupportedMonitor()
         {
             cid = cid + 1;
@@ -938,6 +971,7 @@ namespace NetworkKVM.Plugins
             SUPPORTED_MONITOR_LIST.Checksum = SUPPORTED_MONITOR_LIST.CalculateChecksum();
             return SUPPORTED_MONITOR_LIST.ToJson();
         }
+
         private bool IsSupportNKVM(string s)
         {
             try
@@ -966,6 +1000,7 @@ namespace NetworkKVM.Plugins
                 return (false);
             }
         }
+
         private async Task<string> isHotkeyAvailable(string jsonstring)
         {
             IS_HOTKEY_AVAILABLE is_HOTKEY_AVAILABLE = new IS_HOTKEY_AVAILABLE();
@@ -1008,6 +1043,7 @@ namespace NetworkKVM.Plugins
             }
             return is_HOTKEY_AVAILABLE_RESPONSE.ToJson();
         }
+
         private void SendChangeLimitedSW(MonitorInfo monitorInfo, bool isON)
         {
             CHANGE_LIMITED_SW chanage_LIMITED_SW = new CHANGE_LIMITED_SW();
@@ -1024,6 +1060,7 @@ namespace NetworkKVM.Plugins
 
             WriteAsync(chanage_LIMITED_SW.ToJson()).Wait();
         }
+
         private void VCPchangedEvent(object sender, VCPchangedEventArgs e)
         {
             _logs.DebugMsg("[NetworkKVM] VCPchangedEvent.....");
@@ -1042,6 +1079,7 @@ namespace NetworkKVM.Plugins
                 }
             }
         }
+
         private void CallNKVMConnent(string NamedpipeName)
         {
             var directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -1080,7 +1118,6 @@ namespace NetworkKVM.Plugins
                 proc.StartInfo.Arguments = $"/Connect " + NamedpipeName;
                 _logs.DebugMsg("[NetworkKVM] Connect " + NamedpipeName);
                 proc.Start();
-
             }
             catch (System.Exception ex)
             {
@@ -1091,8 +1128,11 @@ namespace NetworkKVM.Plugins
 #endregion
 
         #region Event Handler
+
         public delegate void NKVMPluginEventHandler(object sender, EventArgsjson eventArgsjson);
+
         public event NKVMPluginEventHandler NKVMPluginEvent;
+
         public class EventArgsjson : EventArgs
         {
             public EventArgsjson(string jsonstring)
@@ -1102,10 +1142,12 @@ namespace NetworkKVM.Plugins
 
             public string jsonString { get; set; }
         }
+
         private void OnVcpCorePluginConditionChangeHandler(object sender, EventArgs e)
         {
             GetCurrentVcpCoreCondition();
         }
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -1116,15 +1158,15 @@ namespace NetworkKVM.Plugins
                 return;
             return;
         }
+
         private void PluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e?.ChangedPlugins == null)
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
-
         }
 
-        #endregion
+        #endregion Event Handler
     }
 }

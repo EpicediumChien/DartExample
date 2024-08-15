@@ -4,11 +4,6 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using VcpCore.Common;
 
@@ -45,14 +40,13 @@ namespace DDPM.UI.Module.PipPbp.Tests
             privateObject = new PrivateObject(pipPbpModule);
         }
 
-
         [Test]
         public void TestConstructor_PipPbpModule()
         {
             // Assert
             Assert.That(pipPbpModule, Is.Not.Null);
-
         }
+
         [Test]
         public void TestModuleName()
         {
@@ -72,7 +66,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             // Assert
             Assert.That(result, Is.Null);
         }
-
 
         [Test]
         public void TestGetRightView()
@@ -108,7 +101,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
 
-
         [Test]
         public void TestViewModelInitialization()
         {
@@ -131,7 +123,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
 
         [Test]
@@ -146,7 +137,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
 
         [Test]
@@ -161,8 +151,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
-
     }
 }

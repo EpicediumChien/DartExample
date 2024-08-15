@@ -1,21 +1,18 @@
 ﻿<UserControl x:Class="DDPM.UI.Module.InputSource.InputSourceRightView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Module.InputSource"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="850" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-
-
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -26,95 +23,94 @@
 
                         <StackPanel>
                             <Grid Height="50">
-                                <UXControls:UXTextBlock AutomationProperties.Name="abc" Text="Current Input Source" 
+                                <UXControls:UXTextBlock AutomationProperties.Name="abc" Text="Current Input Source"
                                                         Foreground="White"
                                                         FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                <!-- 
-                                <UXControls:UXComboBox AutomationProperties.Name="SelectedCheck" 
-                                                        Background="{StaticResource UXComboBox_Background}" 
-                                                        BorderBrush="{StaticResource UXComboBox_BorderBrush}"
-                                                        BorderThickness="{StaticResource Tooltip_BdThick}"
-                                                        Foreground="{StaticResource UXComboBox_Foreground}"
-                                                       HorizontalAlignment="Right" Height="40" VerticalAlignment="Center"
-                                                       ItemsSource="{Binding ItemsCollection}" Width="184" 
-                                                       SelectedIndex="{Binding ItemsCollection_SelectedIndex}" 
-                                                       ShowSelectedCheck="False" SelectionChanged="UXComboBox_SelectionChanged"/>
-                                
+                                <!--
+                                <UXControls:UXComboBox AutomationProperties.Name="SelectedCheck"
+                                Background="{StaticResource UXComboBox_Background}"
+                                BorderBrush="{StaticResource UXComboBox_BorderBrush}"
+                                BorderThickness="{StaticResource Tooltip_BdThick}"
+                                Foreground="{StaticResource UXComboBox_Foreground}"
+                                HorizontalAlignment="Right" Height="40" VerticalAlignment="Center"
+                                ItemsSource="{Binding ItemsCollection}" Width="184"
+                                SelectedIndex="{Binding ItemsCollection_SelectedIndex}"
+                                ShowSelectedCheck="False" SelectionChanged="UXComboBox_SelectionChanged" />
+
                                 -->
                                 <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
-                                                       HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                       ItemsSource="{Binding InputsList}" Width="184" 
-                                                       SelectedItem="{Binding Items_Selected, Mode=TwoWay}" 
-                                                       DisplayMemberPath="inputDisplayText"/>
+                                          HorizontalAlignment="Right" VerticalAlignment="Center"
+                                          ItemsSource="{Binding InputsList}" Width="184"
+                                          SelectedItem="{Binding Items_Selected, Mode=TwoWay}"
+                                          DisplayMemberPath="inputDisplayText" />
                             </Grid>
                             <Grid Height="50">
-                                <UXControls:UXTextBlock AutomationProperties.Name="TextDisplay1" 
-                                                    Text="Rename Input Source and Assign USB Connectivity" 
+                                <UXControls:UXTextBlock AutomationProperties.Name="TextDisplay1"
+                                                        Text="Rename Input Source and Assign USB Connectivity"
                                                         Foreground="White" VerticalAlignment="Center"
-                                                    FontSize="16" HorizontalAlignment="Left" />
+                                                        FontSize="16" HorizontalAlignment="Left" />
                             </Grid>
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1.5*"/>
-                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1.5*" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
-                                <UXControls:UXTextBlock Grid.Column="0" AutomationProperties.Name="TextBody3" 
+                                <UXControls:UXTextBlock Grid.Column="0" AutomationProperties.Name="TextBody3"
                                                         Foreground="#FFA4B8CD" FontSize="14"
                                                         Text="Input" TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                 <Grid Grid.Column="1">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="{Binding NameHWidth}"/>
-                                        <ColumnDefinition Width="{Binding USBHWidth}"/>
+                                        <ColumnDefinition Width="{Binding NameHWidth}" />
+                                        <ColumnDefinition Width="{Binding USBHWidth}" />
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Grid.Column="{Binding NameHColumn}" x:Name="InputNameHeader"
-                                                            AutomationProperties.Name="TextBody3" Text="Input Name" 
+                                                            AutomationProperties.Name="TextBody3" Text="Input Name"
                                                             Foreground="#FFA4B8CD" FontSize="14"
                                                             TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                     <UXControls:UXTextBlock Grid.Column="1" x:Name="USBUpstreamHeader" Visibility="{Binding IsUSBH}"
-                                                            AutomationProperties.Name="TextBody3" Text="USB Upstream" 
+                                                            AutomationProperties.Name="TextBody3" Text="USB Upstream"
                                                             Foreground="#FFA4B8CD" FontSize="14"
                                                             TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                 </Grid>
-
                             </Grid>
                             <ItemsControl ItemsSource="{Binding items}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="0.5*"/>
-                                                <ColumnDefinition Width="1*"/>
-                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="0.5*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="2*" />
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0"
-                                                   Source="{Binding InputImage}" Stretch="Uniform" Margin="8"/>
+                                                   Source="{Binding InputImage}" Stretch="Uniform" Margin="8" />
                                             <Label Grid.Column="1" VerticalAlignment="Center"
-                                                   Content="{Binding InputType}" FontSize="14" Foreground="White"/>
+                                                   Content="{Binding InputType}" FontSize="14" Foreground="White" />
                                             <Grid Grid.Column="2">
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="{Binding NameWidth}"/>
-                                                    <ColumnDefinition Width="{Binding USBWidth}"/>
+                                                    <ColumnDefinition Width="{Binding NameWidth}" />
+                                                    <ColumnDefinition Width="{Binding USBWidth}" />
                                                 </Grid.ColumnDefinitions>
                                                 <UXControls:UXTextBox Grid.Column="{Binding NameColumn}" x:Name="InputName" Margin="2" Height="20"
-                                                                      Text="{Binding InputName}" TextChanged="TextBox_TextChanged" 
-                                                                      Tag="{Binding Index}" 
+                                                                      Text="{Binding InputName}" TextChanged="TextBox_TextChanged"
+                                                                      Tag="{Binding Index}"
                                                                       Background="#141D28" Foreground="White"
                                                                       BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                                                                      VerticalContentAlignment="Center"/>
+                                                                      VerticalContentAlignment="Center" />
                                                 <ComboBox Grid.Column="1" x:Name="USBCB" Margin="4"
-                                                          AutomationProperties.Name="SelectedCheck" 
+                                                          AutomationProperties.Name="SelectedCheck"
                                                           Style="{StaticResource DdpmComboBoxStyle}"
-                                                          HorizontalAlignment="Right" 
+                                                          HorizontalAlignment="Right"
                                                           ItemsSource="{Binding USBUpstream}"
                                                           Tag="{Binding Index}"
                                                           SelectedIndex="{Binding UpstreamIndex}"
-                                                          SelectionChanged="UXComboBox_SelectionChanged_1" 
-                                                          HorizontalContentAlignment="Right" 
+                                                          SelectionChanged="UXComboBox_SelectionChanged_1"
+                                                          HorizontalContentAlignment="Right"
                                                           VerticalContentAlignment="Center" FontSize="14"
                                                           Width="150"
                                                           BorderBrush="#40586D" BorderThickness="1"
-                                                          Visibility="{Binding IsUSBCB}"/>
+                                                          Visibility="{Binding IsUSBCB}" />
                                             </Grid>
                                         </Grid>
                                     </DataTemplate>
@@ -122,25 +118,24 @@
                             </ItemsControl>
                         </StackPanel>
                     </Border>
-
                 </StackPanel>
             </Grid>
         </UXControls:UXScrollViewer>
         <Border Name="DisableAll" Background="#4C24273C">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsBusy}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
             <!-- Add a UXBusyIndicator from Robert -->
             <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
-        HorizontalAlignment="Center" VerticalAlignment="Center"
-        IsActive="{Binding IsBusy}"/>
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        IsActive="{Binding IsBusy}" />
         </Border>
     </Grid>
 </UserControl>

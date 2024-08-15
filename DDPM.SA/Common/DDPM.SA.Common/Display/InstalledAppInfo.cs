@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using static VcpCore.Common.User32;
-using static VcpCore.Common.dxva2;
 
 namespace DDPM.SA.Common
 {
     [Serializable]
-
     public class InstalledAppInfo
     {
         public string AppName;
@@ -41,5 +37,4 @@ namespace DDPM.SA.Common
             AppUserModelID = appUserModelID;
         }
     }
-
 }

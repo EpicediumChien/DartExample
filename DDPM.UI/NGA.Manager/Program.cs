@@ -1,24 +1,26 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.Agent;
 using Dell.Client.Framework.Common;
 using Dell.UnifiedAgent.Common;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.ServiceProcess;
 using Constants = NGA.Common.Constants;
+
 //using DDPMConstants = DDPM.UI.Common.Constants;
 
-namespace NGA.Manager {
-  internal static class Program
+namespace NGA.Manager
+{
+    internal static class Program
     {
         /// <summary>
         ///     NGA Manager product name
@@ -40,8 +42,8 @@ namespace NGA.Manager {
         /// </summary>
         private static readonly Guid UniqueUserProcessMutexGuid = new("{23bd6462-af9d-55d1-bddb-abde62de4528}");
 
-        static void Main(string[] args)
-        {            
+        private static void Main(string[] args)
+        {
             var config = GetUnifiedAgentConfig();
             using var agent = new Agent(config);
             agent.RunAndBlock();

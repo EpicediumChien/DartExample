@@ -1,30 +1,27 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.Easy.Common;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
     public class ArrangeVM : ObservableObject
     {
         #region Enabled flag
+
         private bool _isFunctionEnabled = true;
 
         /// <summary>
-        /// Eanble/Disable EasyArrange functions, including Edit, Work, 
+        /// Eanble/Disable EasyArrange functions, including Edit, Work,
         /// </summary>
         public bool IsFunctionEnabled
         {
             get => _isFunctionEnabled;
             set => SetProperty(ref _isFunctionEnabled, value);
         }
-        #endregion
+
+        #endregion Enabled flag
 
         #region Option flags
+
         private bool _isWorkUIEnabled = true;
         private bool _isMoving = false;
 
@@ -44,13 +41,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public bool IsWorkUIEnabled
         {
             get => IsWorkUIEnabled;
-            set 
+            set
             {
                 SetProperty(ref _isWorkUIEnabled, value);
                 OnPropertyChanged("IsWorkUIShowing");
             }
         }
-
 
         /// <summary>
         /// The key flag to show UI, and let the moving (OnLocationChanged handler) to continue
@@ -58,21 +54,24 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public bool IsMoving
         {
             get => _isMoving;
-            set 
+            set
             {
                 SetProperty(ref _isMoving, value);
                 OnPropertyChanged("IsWorkUIShowing");
             }
         }
-        #endregion
+
+        #endregion Option flags
 
         #region Cursor position
+
         /// <summary>
         /// Cursor position (xCursor, yCursor) will be updated by (OnLocationChanged handler).
         /// and then use it to determine if the custor is inside a CellBorder.
         /// </summary>
         //xCursor
         private int _xCursor = 0;
+
         public int xCursor
         {
             get { return _xCursor; }
@@ -95,9 +94,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 OnPropertyChanged("yCursor");
             }
         }
-        #endregion
+
+        #endregion Cursor position
 
         #region Screen Scale
+
         private double _screenScale = 1.00;
 
         /// <summary>
@@ -109,9 +110,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             get => _screenScale;
             set => SetProperty(ref _screenScale, value);
         }
-        #endregion
+
+        #endregion Screen Scale
 
         #region Hovering Cell
+
         private CellObj? _hoveringCellObj = null;
 
         /// <summary>
@@ -124,7 +127,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             set => SetProperty(ref _hoveringCellObj, value);
         }
 
-
         private string _hoveringCell = "";
 
         /// <summary>
@@ -135,6 +137,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             get { return _hoveringCell; }
             set => SetProperty(ref _hoveringCell, value);
         }
-        #endregion
+
+        #endregion Hovering Cell
     }
 }

@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NGA.Manager.Interfaces
 {
@@ -16,7 +11,7 @@ namespace NGA.Manager.Interfaces
         /// IsPrivacyNoticeExpanded property
         /// </summary>
         [JsonProperty]
-        public bool IsPrivacyNoticeExpanded{ get; set; }
+        public bool IsPrivacyNoticeExpanded { get; set; }
 
         /// <summary>
         /// IsNotificationsExpanded property

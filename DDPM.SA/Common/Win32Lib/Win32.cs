@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -161,7 +158,6 @@ namespace DDPM.Win32Lib
             WS_EX_WINDOWEDGE = 0x00000100
         }
 
-
         /// <summary>
         /// Window Styles.
         /// The following styles can be specified wherever a window style is required. After the control has been created, these styles cannot be modified, except as noted.
@@ -235,7 +231,7 @@ namespace DDPM.Win32Lib
 
             /// <summary>
             /// The window is a control that can receive the keyboard focus when the user presses the TAB key.
-            /// Pressing the TAB key changes the keyboard focus to the next control with the WS_TABSTOP style.  
+            /// Pressing the TAB key changes the keyboard focus to the next control with the WS_TABSTOP style.
             /// You can turn this style on and off to change dialog box navigation. To change this style after a window has been created, use the SetWindowLong function.
             /// For user-created windows and modeless dialogs to work with tab stops, alter the message loop to call the IsDialogMessage function.
             /// </summary>
@@ -265,7 +261,6 @@ namespace DDPM.Win32Lib
 
         public static void HideWinFromAltTab(IntPtr hWnd)
         {
-
             int exStyle = (int)Win32Lib.Win32.GetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE);
 
             exStyle |= (int)Win32Lib.Win32.WindowStylesEx.WS_EX_TOOLWINDOW;
@@ -319,6 +314,7 @@ namespace DDPM.Win32Lib
         public static extern void SetLastError(int dwErrorCode);
 
         #region Read/Write INI file
+
         //Robert_Lin 2024-7-5 copy from VCPCorePlugin.cs, shared with other projects
         public static int IniReadInt(string sec, string key, int def, string pathName)
         {
@@ -331,11 +327,12 @@ namespace DDPM.Win32Lib
 
         //Uage:
         // //allocate string buffer, for large string you can allocate 4096 chars.
-        // StringBuilder sb1=new StringBuilder(255); 
+        // StringBuilder sb1=new StringBuilder(255);
         // int charsRet=GetPrivateProfileString("secName","key","defValue",sb1,sb1.Capacity,@"C:\temp\a.ini");
         // string result=sb1.ToString();
         [DllImport("kernel32")]
         public static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
-        #endregion
+
+        #endregion Read/Write INI file
     }
 }

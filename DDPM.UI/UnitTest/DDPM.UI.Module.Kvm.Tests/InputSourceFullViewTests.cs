@@ -1,12 +1,4 @@
-﻿using DDPM.UI.Common.EAEM;
-using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDPM.UI.Module.Kvm.Tests
+﻿namespace DDPM.UI.Module.Kvm.Tests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
     public class InputSourceFullViewTests

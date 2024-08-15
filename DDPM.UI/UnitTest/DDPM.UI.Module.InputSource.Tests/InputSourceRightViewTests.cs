@@ -1,14 +1,7 @@
 ﻿using DDPM.UI.Common;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using Windows.UI.ViewManagement;
 
 namespace DDPM.UI.Module.InputSource.Tests
 {
@@ -22,8 +15,7 @@ namespace DDPM.UI.Module.InputSource.Tests
         [SetUp]
         public void SetUp()
         {
-
-            inputSourceViewModel=new InputSourceViewModel();
+            inputSourceViewModel = new InputSourceViewModel();
             inputSourceRightView = new InputSourceRightView(inputSourceViewModel);
             privateObject = new PrivateObject(inputSourceRightView);
         }
@@ -35,7 +27,6 @@ namespace DDPM.UI.Module.InputSource.Tests
             Assert.That(inputSourceRightView, Is.Not.Null);
             Assert.That(inputSourceRightView.DataContext, Is.EqualTo(inputSourceViewModel));
         }
-
 
         [Test]
         public void TestIndex()
@@ -70,7 +61,6 @@ namespace DDPM.UI.Module.InputSource.Tests
             Assert.That(item.InputType, Is.EqualTo(inputType));
         }
 
-
         [Test]
         public void TestInputName()
         {
@@ -81,7 +71,6 @@ namespace DDPM.UI.Module.InputSource.Tests
             // Assert
             Assert.That(item.InputName, Is.EqualTo(inputName));
         }
-
 
         [Test]
         public void TestUSBUpstream()
@@ -132,6 +121,5 @@ namespace DDPM.UI.Module.InputSource.Tests
             item.NameColumn = "NameColumn";
             Assert.That(item.NameColumn, Is.EqualTo("NameColumn"));
         }
-
     }
 }

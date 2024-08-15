@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="DDPM.UI.Module.Brightness.DisplayHotkeyFullView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
              mc:Ignorable="d" Background="#FF0D121A"
@@ -13,47 +13,47 @@
             <local:BoolReverseToVisibilityConverter x:Key="BoolReverseToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="60,8,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="44"/>
-                <RowDefinition Height="AUto"/>
+                <RowDefinition Height="44" />
+                <RowDefinition Height="AUto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <!-- LeftArrow -->
             <!-- OLD, Robert_Lin, 2024-6-10, change to using Polyline to draw -->
-            <!-- 
-<UXControls:UXTextBlock Grid.Row="0" Grid.Column="0" Text="&#xe223; " 
-                        FontFamily="Segoe UI Symbol" FontSize="30"
-                        HorizontalAlignment="Left" TextBlockType="Header2"
-                        TextBlockSemanticColorType="Light" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown"/>
--->
+            <!--
+            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="0" Text="&#xe223; "
+            FontFamily="Segoe UI Symbol" FontSize="30"
+            HorizontalAlignment="Left" TextBlockType="Header2"
+            TextBlockSemanticColorType="Light" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown" />
+            -->
             <!-- Robert_Lin, 2024-6-10, new approach -->
             <Grid Width="24" Height="24" Cursor="Hand" VerticalAlignment="Center" HorizontalAlignment="Left" MouseLeftButtonDown="leftArrow_MouseLeftButtonDown">
                 <Polyline Points="12,5 5,12 12,19"
-              Stroke="White" StrokeThickness="2"
-              StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                          Stroke="White" StrokeThickness="2"
+                          StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                 <Polyline Points="5,12 19,12"
-              Stroke="White" StrokeThickness="2"
-              StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                          Stroke="White" StrokeThickness="2"
+                          StrokeStartLineCap="Round" StrokeEndLineCap="Round" />
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Grid.Effect">
                                     <Setter.Value>
-                                        <DropShadowEffect Color="White" Direction="315" 
-                                              ShadowDepth="4" BlurRadius="6"
-                                              Opacity="0.7"/>
+                                        <DropShadowEffect Color="White" Direction="315"
+                                                          ShadowDepth="4" BlurRadius="6"
+                                                          Opacity="0.7" />
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
@@ -62,145 +62,141 @@
                 </Grid.Style>
             </Grid>
 
-
             <!-- Hotkey text -->
-            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="Hotkeys " 
-                                        HorizontalAlignment="Left" TextBlockType="Header2"
-                                        TextBlockSemanticColorType="DefaultHeader"
-                                        Foreground="White"
-                                        FontSize="24"/>
+            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="Hotkeys "
+                                    HorizontalAlignment="Left" TextBlockType="Header2"
+                                    TextBlockSemanticColorType="DefaultHeader"
+                                    Foreground="White"
+                                    FontSize="24" />
         </Grid>
         <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Name="displayHotkeyGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
+
             <Grid HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Brightness -" FontSize="14" Foreground="White"/>
-                    <UXControls:UXTextBox  
-                    Text="{Binding BrightnessMinsKey,Mode=TwoWay}" 
-                    Name="tbBrightnessMins" 
-                    Background="#141D28" Foreground="White" Width="472" Height="30"
-                    BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                    HorizontalAlignment="Center"
-                    AcceptsReturn="True"
-                    PreviewKeyDown="tbBrightnessMins_PreviewKeyDown"
-                    PreviewKeyUp="tbBrightnessMins_PreviewKeyUp"
-                    GotFocus="tbBrightnessMins_GotFocus"
-                    LostFocus="tbBrightnessMins_LostFocus"
-                    ContextMenuOpening="tbBrightnessMins_ContextMenuOpening"
-                    ContextMenu="{x:Null}"/>
+                    <Label  Content="Brightness -" FontSize="14" Foreground="White" />
+                    <UXControls:UXTextBox
+                        Text="{Binding BrightnessMinsKey,Mode=TwoWay}"
+                        Name="tbBrightnessMins"
+                        Background="#141D28" Foreground="White" Width="472" Height="30"
+                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        HorizontalAlignment="Center"
+                        AcceptsReturn="True"
+                        PreviewKeyDown="tbBrightnessMins_PreviewKeyDown"
+                        PreviewKeyUp="tbBrightnessMins_PreviewKeyUp"
+                        GotFocus="tbBrightnessMins_GotFocus"
+                        LostFocus="tbBrightnessMins_LostFocus"
+                        ContextMenuOpening="tbBrightnessMins_ContextMenuOpening"
+                        ContextMenu="{x:Null}" />
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Brightness +" FontSize="14" Foreground="White"/>
-                    <UXControls:UXTextBox  
-                    Text="{Binding BrightnessAddKey,Mode=TwoWay}"
-                    Name="tbBrightnessAdd"
-                    Background="#141D28" Foreground="White" Width="472" Height="30"
-                    BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                    HorizontalAlignment="Center"
-                    AcceptsReturn="True"
-                    PreviewKeyDown="tbBrightnessAdd_PreviewKeyDown"
-                    PreviewKeyUp="tbBrightnessAdd_PreviewKeyUp" 
-                    GotFocus="tbBrightnessAdd_GotFocus"
-                    LostFocus="tbBrightnessAdd_LostFocus"
-                    ContextMenuOpening="tbBrightnessAdd_ContextMenuOpening"
-                    ContextMenu="{x:Null}"/>
+                    <Label  Content="Brightness +" FontSize="14" Foreground="White" />
+                    <UXControls:UXTextBox
+                        Text="{Binding BrightnessAddKey,Mode=TwoWay}"
+                        Name="tbBrightnessAdd"
+                        Background="#141D28" Foreground="White" Width="472" Height="30"
+                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        HorizontalAlignment="Center"
+                        AcceptsReturn="True"
+                        PreviewKeyDown="tbBrightnessAdd_PreviewKeyDown"
+                        PreviewKeyUp="tbBrightnessAdd_PreviewKeyUp"
+                        GotFocus="tbBrightnessAdd_GotFocus"
+                        LostFocus="tbBrightnessAdd_LostFocus"
+                        ContextMenuOpening="tbBrightnessAdd_ContextMenuOpening"
+                        ContextMenu="{x:Null}" />
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Contrast -" FontSize="14" Foreground="White"/>
-                    <UXControls:UXTextBox  
-                              Text="{Binding ContrastMinsKey,Mode=TwoWay}" 
-                              Name="tbContrastMins"
-                              Background="#141D28" Foreground="White" Width="472" Height="30"
-                              BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                              HorizontalAlignment="Center"
-                              AcceptsReturn="True"
-                              PreviewKeyDown="tbContrastMins_PreviewKeyDown"
-                              PreviewKeyUp="tbContrastMins_PreviewKeyUp" 
-                              GotFocus="tbContrastMins_GotFocus"
-                              LostFocus="tbContrastMins_LostFocus"
-                              ContextMenuOpening="tbContrastMins_ContextMenuOpening"
-                              ContextMenu="{x:Null}"/>
+                    <Label  Content="Contrast -" FontSize="14" Foreground="White" />
+                    <UXControls:UXTextBox
+                        Text="{Binding ContrastMinsKey,Mode=TwoWay}"
+                        Name="tbContrastMins"
+                        Background="#141D28" Foreground="White" Width="472" Height="30"
+                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        HorizontalAlignment="Center"
+                        AcceptsReturn="True"
+                        PreviewKeyDown="tbContrastMins_PreviewKeyDown"
+                        PreviewKeyUp="tbContrastMins_PreviewKeyUp"
+                        GotFocus="tbContrastMins_GotFocus"
+                        LostFocus="tbContrastMins_LostFocus"
+                        ContextMenuOpening="tbContrastMins_ContextMenuOpening"
+                        ContextMenu="{x:Null}" />
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Contrast +" FontSize="14" Foreground="White"/>
+                    <Label  Content="Contrast +" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
-                              Text="{Binding ContrastAddKey,Mode=TwoWay}" 
-                              Background="#141D28" Foreground="White" Width="472" Height="30"
-                              Name="tbContrastAdd"
-                              BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                              HorizontalAlignment="Center"
-                              AcceptsReturn="True"
-                              PreviewKeyDown="tbContrastAdd_PreviewKeyDown"
-                              PreviewKeyUp="tbContrastAdd_PreviewKeyUp" 
-                              GotFocus="tbContrastAdd_GotFocus"
-                              LostFocus="tbContrastAdd_LostFocus"
-                              ContextMenuOpening="tbContrastAdd_ContextMenuOpening"
-                              ContextMenu="{x:Null}"/>
+                        Text="{Binding ContrastAddKey,Mode=TwoWay}"
+                        Background="#141D28" Foreground="White" Width="472" Height="30"
+                        Name="tbContrastAdd"
+                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        HorizontalAlignment="Center"
+                        AcceptsReturn="True"
+                        PreviewKeyDown="tbContrastAdd_PreviewKeyDown"
+                        PreviewKeyUp="tbContrastAdd_PreviewKeyUp"
+                        GotFocus="tbContrastAdd_GotFocus"
+                        LostFocus="tbContrastAdd_LostFocus"
+                        ContextMenuOpening="tbContrastAdd_ContextMenuOpening"
+                        ContextMenu="{x:Null}" />
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Luminance -" FontSize="14" Foreground="White"/>
+                    <Label  Content="Luminance -" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
-                  Text="{Binding LuminanceMinsKey,Mode=TwoWay}" 
-                  Background="#141D28" Foreground="White" Width="472" Height="30"
-                  Name="tbLuminanceMins"
-                  BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                  HorizontalAlignment="Center"
-                  AcceptsReturn="True"
-                  PreviewKeyDown="tbLuminanceMins_PreviewKeyDown"
-                  PreviewKeyUp="tbLuminanceMins_PreviewKeyUp" 
-                  GotFocus="tbLuminanceMins_GotFocus"
-                  LostFocus="tbLuminanceMins_LostFocus"
-                  ContextMenuOpening="tbLuminanceMins_ContextMenuOpening"
-                  ContextMenu="{x:Null}"/>
+                        Text="{Binding LuminanceMinsKey,Mode=TwoWay}"
+                        Background="#141D28" Foreground="White" Width="472" Height="30"
+                        Name="tbLuminanceMins"
+                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        HorizontalAlignment="Center"
+                        AcceptsReturn="True"
+                        PreviewKeyDown="tbLuminanceMins_PreviewKeyDown"
+                        PreviewKeyUp="tbLuminanceMins_PreviewKeyUp"
+                        GotFocus="tbLuminanceMins_GotFocus"
+                        LostFocus="tbLuminanceMins_LostFocus"
+                        ContextMenuOpening="tbLuminanceMins_ContextMenuOpening"
+                        ContextMenu="{x:Null}" />
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Luminance +" FontSize="14" Foreground="White"/>
+                    <Label  Content="Luminance +" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
-                  Text="{Binding LuminanceAddKey,Mode=TwoWay}" 
-                  Background="#141D28" Foreground="White" Width="472" Height="30"
-                  Name="tbLuminanceAdd"
-                  BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
-                  HorizontalAlignment="Center"
-                  AcceptsReturn="True"
-                  PreviewKeyDown="tbLuminanceAdd_PreviewKeyDown"
-                  PreviewKeyUp="tbLuminanceAdd_PreviewKeyUp" 
-                  GotFocus="tbLuminanceAdd_GotFocus"
-                  LostFocus="tbLuminanceAdd_LostFocus"
-                  ContextMenuOpening="tbLuminanceAdd_ContextMenuOpening"
-                  ContextMenu="{x:Null}"/>
+                        Text="{Binding LuminanceAddKey,Mode=TwoWay}"
+                        Background="#141D28" Foreground="White" Width="472" Height="30"
+                        Name="tbLuminanceAdd"
+                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        HorizontalAlignment="Center"
+                        AcceptsReturn="True"
+                        PreviewKeyDown="tbLuminanceAdd_PreviewKeyDown"
+                        PreviewKeyUp="tbLuminanceAdd_PreviewKeyUp"
+                        GotFocus="tbLuminanceAdd_GotFocus"
+                        LostFocus="tbLuminanceAdd_LostFocus"
+                        ContextMenuOpening="tbLuminanceAdd_ContextMenuOpening"
+                        ContextMenu="{x:Null}" />
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="3" Grid.ColumnSpan="2" Width="954" Margin="0,30,0,0">
                 <UXControls:UXAlert>
                     <UXControls:UXAlertItem AlertItemType="Info" Label="" Background="#364861" Margin="8,8,8,8"
-                                        Message="Example: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.&#x0a;
-Note that for mutiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function." />
+                                            Message="Example: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.&#x0a;
+                                            Note that for mutiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function." />
                 </UXControls:UXAlert>
-                <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99"/>
+                <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
             </Grid>
-
         </Grid>
-
-
     </Grid>
 </UserControl>

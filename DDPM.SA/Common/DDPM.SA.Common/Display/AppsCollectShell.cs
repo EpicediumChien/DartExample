@@ -1,28 +1,16 @@
 ﻿using Microsoft.WindowsAPICodePack.Shell;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using static VcpCore.Common.User32;
-using static VcpCore.Common.dxva2;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Windows;
-
-using WinCopies.Util;
-using WinCopies.Extensions;
-
-using static System.Net.Mime.MediaTypeNames;
 
 namespace DDPM.SA.Common
 {
     [Serializable]
-
     public struct AppItemInfo
     {
         public string AppName;
@@ -35,7 +23,6 @@ namespace DDPM.SA.Common
 
         public string AppUserModelID;
     }
-
 
     public class AutomodeAppInfo
     {
@@ -85,7 +72,6 @@ namespace DDPM.SA.Common
         }
     }
 
-
     public class AppListDictionary
     {
         private static readonly string storageFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell Display and Peripheral Manager";
@@ -99,13 +85,11 @@ namespace DDPM.SA.Common
 
         private static readonly string iconFolder = storageFolder + "\\AppLibrary\\Icons";// Dean 0626 SAST issue
 
-
         private Thread ThthSaveAppDataFile;
 
         private static AppListDictionary INSTANCE = null;
 
         public Dictionary<string, InstalledAppInfo> AppInstallsList { get; set; } = new Dictionary<string, InstalledAppInfo>();
-
 
         public static AppListDictionary GetInstance()
         {
@@ -206,7 +190,6 @@ namespace DDPM.SA.Common
             }
             return filename;
         }
-
 
         public Dictionary<string, InstalledAppInfo> FindAppsbyShell()// ref Dictionary<string, InstalledAppInfo> installedApp)
         {
@@ -312,7 +295,7 @@ namespace DDPM.SA.Common
                     //logger.WriteLog($"[ColorApp][FindAppsbyShell] item:({item}), got null [item.Properties.System.Link.TargetParsingPath.Value], not desktop app");
                 }
                 //
-                // UWP application parsing 
+                // UWP application parsing
                 //
                 Bitmap bitmap = null;
                 try
@@ -427,5 +410,4 @@ namespace DDPM.SA.Common
             return installedApp;
         }
     }
-
 }

@@ -1,18 +1,12 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Security;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using System.Windows.Documents;
 using System.Security.Cryptography;
-using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -20,7 +14,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     public class CACertificateCheck
     {
         private Logs _logs;
-        bool SkippedCA;
+        private bool SkippedCA;
         private List<string> CAkeys = new List<string>();
         private List<string> DisabledCAList = new List<string>();
         private List<X509Certificate2> TrustedPublisher = new List<X509Certificate2>();
@@ -29,6 +23,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private readonly string[] Subject = { "CN=content-cdn.dell.com, O=Dell, C=US", "CN=localhost, O=DigiNow, C=US" };
         private string[] Issuers = new string[1];
         private string[] Subjects = new string[10];
+
         public CACertificateCheck(Logs logs)
         {
             _logs = logs;
@@ -38,6 +33,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 Subjects = Subject[i].Split(",");
             }
         }
+
         public bool CheckFileCA(string filePath)
         {
             _logs.DebugMsg_1(nameof(CheckFileCA) + " start");
@@ -54,7 +50,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1(nameof(CheckFileCA) + " done");
             return b;
         }
-        bool CheckSHA512(string filePath)
+
+        private bool CheckSHA512(string filePath)
         {
             try
             {
@@ -82,7 +79,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 return false;
             }
         }
-        string CalculateFileSHA512(string filePath)
+
+        private string CalculateFileSHA512(string filePath)
         {
             using (FileStream fileStream = File.OpenRead(filePath))
             {
@@ -95,8 +93,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
             }
         }
+
         //0613 Bruce 新增SHA256備用
-        string CalculateFileSHA256(string filePath)
+        private string CalculateFileSHA256(string filePath)
         {
             using (FileStream fileStream = File.OpenRead(filePath))
             {
@@ -109,6 +108,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
             }
         }
+
         public bool CheckCA(string URL)
         {
             _logs.DebugMsg_1(nameof(CheckCA) + " start");
@@ -163,6 +163,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1(nameof(CheckCA) + " done");
             return flag;
         }
+
         private bool CheckCAHTTP(string URL)
         {
             try
@@ -183,6 +184,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return false;
         }
+
         private bool ValidateCertificate(HttpRequestMessage request, X509Certificate2? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
         {
             if (certificate == null)
@@ -208,6 +210,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return CheckCertificateIsVaild(certificate) && CheckIssuerAndSubject(certificate);
         }
+
         private bool PinPublicKey(object? sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
         {
             if (certificate == null)
@@ -230,6 +233,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
             return CheckIssuerAndSubject(certificate2) && CheckCertificateIsVaild(certificate2);
         }
+
         private bool CheckHTTPAvailable(string URL)
         {
             try
@@ -245,6 +249,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return false;
         }
+
         private bool GetResponse(HttpClient client, string URL)
         {
             bool flag = false;
@@ -269,6 +274,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1(string.Format("[GetResponse] result:" + flag));
             return flag;
         }
+
         private void GetLocalTrustedCert()
         {
             try
@@ -292,6 +298,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1("[GetLocalTrustedCert] error:" + ex.Message.ToString());
             }
         }
+
         private bool CheckCertificateIsVaild(X509Certificate2 certificate)
         {
             bool result = false;
@@ -317,6 +324,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return result;
         }
+
         private bool CheckIssuerAndSubject(X509Certificate2 certificate)
         {
             try
@@ -345,6 +353,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return false;
         }
+
         private string CallCertificateCheck(string param)
         {
             string text = "";

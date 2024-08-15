@@ -1,17 +1,9 @@
-﻿using System.ComponentModel;
-using System.Globalization;
-using System.Runtime.CompilerServices;
+﻿using DDPM.UI.Plugin.ViewModels;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
-using Newtonsoft.Json.Linq;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.SpeakerAudioPreset
@@ -43,6 +35,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         private Point initialPositionNode1;
         private Point initialPositionNode2;
         private Point initialPositionNode3;
+
         /// <summary>
         /// Node move, Mouse Left Button Down event
         /// </summary>
@@ -96,7 +89,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             }
         }
 
-
         /// <summary>
         /// Node move, Mouse Left Button Up event
         /// </summary>
@@ -112,9 +104,11 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                     case "Node1":
                         //_vm._deviceManager.SetBandsGain(int.Parse(Node1Text.Text), _vm.CurrentDeviceInfo!.ID, "band1gain").Wait();
                         break;
+
                     case "Node2":
                         //_vm._deviceManager.SetBandsGain(int.Parse(Node2Text.Text), _vm.CurrentDeviceInfo!.ID, "band2gain").Wait();
                         break;
+
                     case "Node3":
                         //_vm._deviceManager.SetBandsGain(int.Parse(Node3Text.Text), _vm.CurrentDeviceInfo!.ID, "band3gain").Wait();
                         break;
@@ -220,6 +214,5 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             Segment2.Point2 = new Point((node2Position.X + node3Position.X) / 2, node3Position.Y);
             Segment2.Point3 = node3Position;
         }
-
     }
 }

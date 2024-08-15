@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
 namespace DDPM.Easy.Common
 {
@@ -21,6 +8,7 @@ namespace DDPM.Easy.Common
     public partial class SplitCtrl4A : UserControl, ISplitCtrl
     {
         #region ctor
+
         public SplitCtrl4A()
         {
             InitializeComponent();
@@ -29,19 +17,24 @@ namespace DDPM.Easy.Common
             InitCellList();
             InitSplitterList();
         }
-        #endregion
+
+        #endregion ctor
 
         #region ISplitCtrl Native Members
+
         public string CtrlClass => nameof(SplitCtrl4A);
         public int CellCount => 4;
         public char SplitKey => 'A';
         public UserControl UC => this;
-        #endregion
+
+        #endregion ISplitCtrl Native Members
 
         #region ViewModel
+
         private SplitCtrlVM vm = new SplitCtrlVM();
         public SplitCtrlVM VM => vm;
-        #endregion
+
+        #endregion ViewModel
 
         #region Create new instance
 
@@ -54,9 +47,11 @@ namespace DDPM.Easy.Common
             SplitCtrl4A ctrl = new SplitCtrl4A();
             return (ISplitCtrl)ctrl;
         }
-        #endregion
+
+        #endregion Create new instance
 
         #region Cell List
+
         private List<CellObj> cellListH = new List<CellObj>();
         private List<CellObj> cellListV = new List<CellObj>();
 
@@ -87,11 +82,14 @@ namespace DDPM.Easy.Common
             cellListV.Add(new CellObj("4A3", cell_4A3));
             cellListV.Add(new CellObj("4A4", cell_4A4));
         }
-        #endregion
+
+        #endregion Cell List
 
         #region Splitter List
+
         public List<GridSplitter> VSplitterList { get; set; } = new List<GridSplitter>();
         public List<GridSplitter> HSplitterList { get; set; } = new List<GridSplitter>();
+
         public void InitSplitterList()
         {
             VSplitterList.Clear();
@@ -102,14 +100,20 @@ namespace DDPM.Easy.Common
             HSplitterList.Add(h1);
             HSplitterList.Add(H1);
         }
-        #endregion
+
+        #endregion Splitter List
 
         #region Settings
+
         public List<double> DefaultSettings => new List<double>() { 1, 1, 1, 1, 1 };
-        #endregion        
+        #endregion Settings
+
+
 
         #region FriendlyName
+
         public string FriendlyName { get; set; }
-        #endregion
+
+        #endregion FriendlyName
     }
 }

@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Net.Http;
+
 #if WINDOWS
+
 using System.Diagnostics;
+
 #endif
+
 using System.Timers;
 using System.Text;
 using System.Xml;
@@ -27,7 +31,6 @@ using System.Runtime.Versioning;
 using DPeMPublic.Common.Enums;
 using System.Threading;
 using System.Management;
-using DDPM.SA.Common.Popup;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Common;
 using Newtonsoft.Json;
@@ -51,7 +54,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         #region Private Members
+
         private const string pluginName = "FWUpdatePlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements FW Update Plugin.";
@@ -60,87 +65,108 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private const string publisherSupport = "This plugin implements FW Update Plugin.";
 
         private IAgent _agent;
-        #endregion
+
+        #endregion Private Members
 
         public const string PluginLogId = "FWUpdate";
 
         private Logs _logs;
+
         /// <summary>
         /// 現在正在進行下載或安裝流程的裝置資訊
         /// </summary>
         private FWUpdateInfo _fWUpdateInfo = new FWUpdateInfo();
+
         /// <summary>
         /// 給UI或是CLI的全部韌體更新包
         /// </summary>
         private FWUpdateInfoPackage _fWUpdateInfoPackage;
+
         /// <summary>
         /// 從SettingsManager取得的延遲更新包，用於比對是否延遲次數為0
         /// </summary>
         private FWUpdateInfoPackage _DelayFWUpdateInfoPackage;
+
         /// <summary>
         /// 從DeviceManager取得的連接的裝置資訊列表，用於更新韌體前確認是否有插入多個Dock
         /// </summary>
         private List<DeviceInfo> _DeviceInfos;
+
         /// <summary>
         /// 要取得更新的裝置列表
         /// </summary>
         private List<DeviceType>? _DeviceTypeList;
-        long? _size = null;
-        FileStream? _fileStream = null;
+
+        private long? _size = null;
+        private FileStream? _fileStream = null;
+
         //安裝更新檔使用的命名管道伺服器
         private NamedPipeStreamServer? _namedPipeServer;
-        Process _clientProcess = new Process();
-        Timer _downloadTimer = new Timer();
-        Timer _checkUpdateScheduleTimer;
-        Timer _checkUODTimer;
-        Timer _timerTimeOut;
-        string _notificationStr = "";
-        FWUErrorCode _updateErrorCode;
-        bool _IsShowNotify = true;
-        bool _isDefer = false;
-        bool _isForce = false;
+
+        private Process _clientProcess = new Process();
+        private Timer _downloadTimer = new Timer();
+        private Timer _checkUpdateScheduleTimer;
+        private Timer _checkUODTimer;
+        private Timer _timerTimeOut;
+        private string _notificationStr = "";
+        private FWUErrorCode _updateErrorCode;
+        private bool _IsShowNotify = true;
+        private bool _isDefer = false;
+        private bool _isForce = false;
+
         /// <summary>
         /// 用於倒數次數計算
         /// </summary>
-        int _timeOutCount;
+        private int _timeOutCount;
+
         /// <summary>
         /// 用於設定逾時時間預設60次/秒
         /// </summary>
-        int _fwTimeOutCount = 60;
-        #region Events 
+        private int _fwTimeOutCount = 60;
+
+        #region Events
+
         /// <summary>
         /// 呼叫DeviceManager呼叫我的檢查更新方法，用於排成定期檢查
         /// </summary>
         public event EventHandler? CollCheckUpdate;
+
         /// <summary>
         /// 回傳更新事件進度
         /// </summary>
         public event EventHandler<FWUpdateInfo>? ProgressUpdate_Notify;
+
         /// <summary>
         /// 將延遲更新包傳給DeviceManager進行儲存
         /// </summary>
         public event EventHandler<FWUpdateInfoPackage>? CallSaveUpdateInfoPackage;
+
         /// <summary>
         /// 跟DeviceManager取得DeviceInfos
         /// </summary>
         public event EventHandler? CallGetDeviceInfos;
+
         /// <summary>
         /// 將使用UOD模式資訊包傳給DeviceManager進行儲存
         /// </summary>
         public event EventHandler<DokcUODUpdateInfoPackage>? CallSaveUODFWDeviceInfos;
+
         /// <summary>
         /// 根據排程時間，呼叫DeviceManager檢查UOD模式資訊包
         /// </summary>
         public event EventHandler? CallCheckUODFWInfos;
+
         /// <summary>
         /// 回傳更新事件結果提供給CLI使用
         /// </summary>
         public event EventHandler<List<FWUpdateInfo>> DownloadAndInstall_Result_Notify;
+
         /// <summary>
         /// 呼叫Popup通知
         /// </summary>
         public event EventHandler<PopupContentPackage> CallPopup;
-        #endregion
+
+        #endregion Events
 
         public FWUpdatePlugins(IAgent agent) : base(agent, PluginLogId)
         {
@@ -152,8 +178,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
             _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
         }
+
         #region Overriding methods
+
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -178,8 +207,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             base.Dispose(disposing);
         }
-        #endregion
+
+        #endregion IDisposableObservable Support
+
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -194,14 +226,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 Console.WriteLine("IFWUpdateService plugin started.");
             }
         }
-        #endregion
+
+        #endregion Event Handler
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             PluginCondition = new PluginStartedCondition();
             Console.WriteLine("FWUpdate plugin report started");
         }
-        #endregion
+
+        #endregion Overriding methods
+
         /// <summary>
         /// 啟動檢查更新排程
         /// </summary>
@@ -209,6 +245,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _checkUpdateScheduleTimer.Start();
         }
+
         public void SetDeviceinfo(List<DeviceInfo> DeviceInfos)
         {
             if (DeviceInfos != null && DeviceInfos.Count > 0)
@@ -216,6 +253,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _DeviceInfos = DeviceInfos;
             }
         }
+
         public void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo>? DeviceInfos)
         {
             string s = "";
@@ -284,6 +322,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 NotificationFWupdate("Dock UOD FW update info", s);
             }
         }
+
         /// <summary>
         /// 設定檔儲存的延遲更新資訊包
         /// </summary>
@@ -299,6 +338,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _DelayFWUpdateInfoPackage = new FWUpdateInfoPackage();
             }
         }
+
         /// <summary>
         /// 取得更新的資訊包
         /// </summary>
@@ -313,6 +353,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _ = CheckUpdate(updateHelper, isShowNotify, _DeviceTypeList, isUODMode).Result;
             return Task.FromResult(_fWUpdateInfoPackage);
         }
+
         /// <summary>
         /// 檢查更新資訊
         /// </summary>
@@ -400,7 +441,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }*/
             return Task.FromResult(new List<FWUpdateInfo>());
         }
-        void HandleUpdateInfo()
+
+        private void HandleUpdateInfo()
         {
             _logs.DebugMsg_1("HandleUpdateInfo");
             if (_fWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage != null)
@@ -458,6 +500,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1("HandleUpdateInfo done");
             }
         }
+
         /// <summary>
         /// 從伺服端下載更新檔，下載後會接續執行安裝方法
         /// </summary>
@@ -595,7 +638,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
         }
 
-        bool Unzip(string zipFilePath, string extractPath, out string exeFilePath)
+        private bool Unzip(string zipFilePath, string extractPath, out string exeFilePath)
         {
             try
             {
@@ -618,7 +661,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 return false;
             }
         }
-        string GetExeFilePath(string directory)
+
+        private string GetExeFilePath(string directory)
         {
             // 列舉資料夾中的所有 .exe 檔案
             string[] exeFiles = Directory.GetFiles(directory, "*.exe");
@@ -632,12 +676,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 return "";
             }
         }
+
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void DownloadTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        private void DownloadTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             if (_fileStream != null)
             {
@@ -656,12 +701,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 sendMessageToEvent(fWUpdateInfo);
             }
         }
+
         /// <summary>
         /// Check if the same device is connected
         /// </summary>
         /// <param name="currentFWInfo">Firmware information currently to be updated</param>
         /// <returns>Two Docks are connected at the same time return true; otherwise return false.</returns>
-        bool CheckSameDevice(FWUpdateInfo currentFWInfo)
+        private bool CheckSameDevice(FWUpdateInfo currentFWInfo)
         {
             bool isDockUpdate = false;
             if (currentFWInfo.DeviceType == DeviceType.LogicalDock)
@@ -706,12 +752,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return false;
         }
+
         /// <summary>
         /// Determine whether the computer battery power is less than 10% for Dock firmware update
         /// </summary>
         /// <param name="currentFWInfo">Firmware information currently to be updated</param>
         /// <returns>Computer power is less than 10% returns true; otherwise it returns false.</returns>
-        bool CheckPCBattery(FWUpdateInfo currentFWInfo)
+        private bool CheckPCBattery(FWUpdateInfo currentFWInfo)
         {
             bool isDockUpdate = false;
             if (currentFWInfo.DeviceType == DeviceType.LogicalDock)
@@ -730,12 +777,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return false;
         }
+
         /// <summary>
         /// 定期檢查更新排程
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
             //0612 Bruce 將檢查更新區間修改為5分鐘
@@ -745,19 +793,21 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
             }
         }
+
         /// <summary>
         /// 定期檢查是否有Dock韌體載入完成但還沒完成安裝
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void CheckDockUODScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        private void CheckDockUODScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             CallCheckUODFWInfos?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
+
         /// <summary>
         /// 跳出通知
         /// </summary>
-        void NotificationFWupdate(string title, string info, bool isInfo = true, bool isOnlyUpdate = false, bool stayOpen = false, int timeout = 5)
+        private void NotificationFWupdate(string title, string info, bool isInfo = true, bool isOnlyUpdate = false, bool stayOpen = false, int timeout = 5)
         {
             if (!string.IsNullOrEmpty(info) && _IsShowNotify)
             {
@@ -795,7 +845,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 //});
             }
         }
-        void CheckInput(ToastNotificationActivatedEventArgsCompat e)
+
+        private void CheckInput(ToastNotificationActivatedEventArgsCompat e)
         {
             /*if (e.Argument.Equals("Update"))
             {
@@ -834,9 +885,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     Process.Start(path);
                 }
             }
-
-
         }
+
         /// <summary>
         /// NotificationFWupdate 延遲更新事件
         /// </summary>
@@ -872,6 +922,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
             }
         }
+
         /// <summary>
         /// NotificationFWupdate 立即更新事件
         /// </summary>
@@ -887,7 +938,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             List<FWUpdateInfo> fWUpdateInfo = fWUpdateInfoPackage.FWUpdateInfo;
             DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(fWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
         }
-        void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+
+        private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
             {
@@ -895,19 +947,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _checkUpdateScheduleTimer.Stop();
                     _logs.DebugMsg_1("PC is sleep");
                     break;
+
                 case PowerModes.Resume:
                     _checkUpdateScheduleTimer.Start();
                     _logs.DebugMsg_1("PC is wakeup");
                     break;
+
                 case PowerModes.StatusChange:
                     _logs.DebugMsg_1("PC is status change");
                     break;
             }
         }
+
         /// <summary>
         /// 安裝下載好的更新檔
         /// </summary>
-        FWUErrorCode Install(FWUpdateInfo fwUpdateInfo)
+        private FWUErrorCode Install(FWUpdateInfo fwUpdateInfo)
         {
             //0614 Bruce 新增Dock韌體安裝功能
             try
@@ -992,13 +1047,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 return _updateErrorCode;
             }
         }
+
         /// <summary>
         /// 取得特定裝置的裝置例項路徑
         /// </summary>
         /// <param name="VID">要取得裝置的VID</param>
         /// <param name="PID">要取得裝置的PID</param>
         /// <returns></returns>
-        string GetDevicePNPDeviceID(string deviceName)
+        private string GetDevicePNPDeviceID(string deviceName)
         {
             try
             {
@@ -1061,6 +1117,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             return "";
         }
+
         private void _timerTimeOut_Tick(object sender, EventArgs e)
         {
             _timeOutCount--;
@@ -1072,21 +1129,25 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1("Get E6:Firmware update timeout");
             }
         }
+
         private void _namedPipeServer_ClientDisconnectedEvent(object? sender, EventArgs e)
         {
             //Console.WriteLine("Client disconnected"); // 客戶端斷開連接提示
         }
+
         private void _namedPipeServer_ClientConnectedEvent(object? sender, EventArgs e)
         {
             //Console.WriteLine("Client connected"); // 客戶端連接成功提示
             //Console.WriteLine("Please connect or power on your device"); // 請求連接或開啟設備提示
         }
+
         private void _namedPipeServer_MessageReceived(object? sender, MessageEventArgs args)
         {
             _timeOutCount = _fwTimeOutCount;
             string message = Encoding.UTF8.GetString(args.Message); // 解析收到的訊息
             pasreMessage(message); // 解析訊息
         }
+
         private void pasreMessage(string message)
         {
             string messageWithRoot = "<Root>" + message;
@@ -1306,9 +1367,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
             }
         }
+
         [SupportedOSPlatform("windows")]
         [SupportedOSPlatform("windows10.0.19041.0")]
-        void resetState()
+        private void resetState()
         {
             _timerTimeOut.Enabled = false;
             if (OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041))
@@ -1325,6 +1387,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
             }
         }
+
         private void sendMessageToEvent(FWUpdateInfo fWUpdateInfo)
         {
             ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);

@@ -1,19 +1,7 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -51,12 +39,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #region Call out events
+
         public event EventHandler EditStarted;
+
         public event EventHandler<string> EditCompleted;
+
         public event EventHandler<EAArgs> EditReturn;
-        #endregion
+
+        #endregion Call out events
 
         #region Input SplitCtrl
+
         private ISplitCtrl inputSplitCtrl = new SplitCtrl0A();
         private EAArgs _inputArgs;
 
@@ -89,8 +82,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// </summary>
         /// <param name="args">The EAArgs object to specify the argument for the editing.</param>
         /// <returns>
-        /// true: if the input args is accepted, and the caller (EAPlugin) can signal EditStarted to 
-        ///       its caller (DDPM.UI). the edit window to be display soon.        /// 
+        /// true: if the input args is accepted, and the caller (EAPlugin) can signal EditStarted to
+        ///       its caller (DDPM.UI). the edit window to be display soon.        ///
         /// false: otherwise. The args is invalid, caller (EAPlugin can get the error message from EAEditWindow.LastError
         /// </returns>
         public bool SetInputArg(EAArgs args, bool isVertical = false)
@@ -120,24 +113,27 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             splitCtrl.Content = inputSplitCtrl.UC;
             return true;
-
-
         }
 
-        public string LastError { get {  return _lastError; } }
-        #endregion
+        public string LastError
+        { get { return _lastError; } }
+
+        #endregion Input SplitCtrl
 
         #region Dragable Dlg (Unused)
-//        private nDragElement.DragElementHandler saveDlgDragHandler = new nDragElement.DragElementHandler();
+
+        //        private nDragElement.DragElementHandler saveDlgDragHandler = new nDragElement.DragElementHandler();
 
         //private void InitDragDlg()
         //{
         //    saveDlgDragHandler.Init(saveCustomDlg, dragContainer);
 
         //}
-        #endregion
+
+        #endregion Dragable Dlg (Unused)
 
         #region SaveDlg Button Clicks
+
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
             if (EditCompleted != null)
@@ -152,7 +148,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void saveCustomWidow_CancelButtonClick(object sender, EventArgs e)
         {
-
             //if (EditCompleted != null)
             //    EditCompleted(this, "");
 
@@ -165,6 +160,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 EditReturn(this, retArgs);
             }
         }
+
         private void saveCustomWidow_SaveButtonClick(object sender, EventArgs e)
         {
             //if (EditCompleted != null)
@@ -180,6 +176,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 EditReturn(this, retArgs);
             }
         }
-        #endregion
+
+        #endregion SaveDlg Button Clicks
     }
 }

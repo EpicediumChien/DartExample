@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Microsoft;
@@ -12,12 +14,12 @@ using System.ComponentModel;
 namespace NGA.ThickClient.Interfaces.BannerNotifications
 {
     /// <summary>
-    /// Class defining Banner Notification Results within the ConsoleWindow. 
+    /// Class defining Banner Notification Results within the ConsoleWindow.
     /// </summary>
     public class BannerNotificationInteraction : IBannerNotificationInteraction
     {
         /// <summary>
-        /// Gets and Sets Unique BannerId. 
+        /// Gets and Sets Unique BannerId.
         /// </summary>
         /// <remarks>
         /// This is mandatory for every notification instance, could be passed in constructor while creating it.

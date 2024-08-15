@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,6 +7,7 @@
 //
 // IDs.cs created on 10/4/2022T3:37 PM
 //
+
 #endregion
 
 using System.Collections.Generic;
@@ -13,13 +15,11 @@ using VcpCore.Common;
 
 namespace DDPM.SA.Common
 {
-
     public class ColorPresetSettings_AppInfo
     {
         public string ColorPresetName;
 
         public string IconName;
-
 
         public ColorPresetSettings_AppInfo()
         {
@@ -34,7 +34,6 @@ namespace DDPM.SA.Common
         }
     }
 
-
     public class ColorPresetSettings
     {
         public EDID DeviceInfo { get; set; }
@@ -48,8 +47,6 @@ namespace DDPM.SA.Common
 
         //public Dictionary<string, string> AppInfo { get; set; } = new Dictionary<string, string>() { };
 
-
         public string PresetForManual { get; set; }
     }
-
 }

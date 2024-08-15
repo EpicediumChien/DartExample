@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DDPM.SA.Common
 {
@@ -26,6 +22,7 @@ namespace DDPM.SA.Common
         public string level_name { get; set; } = string.Empty;
         public double level_value { get; set; } = 0.0;
     }
+
     /// <summary>
     /// Record ALS value
     /// </summary>

@@ -1,13 +1,12 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
-#endregion
 
-using System;
-using System.Threading.Tasks;
+#endregion
 
 namespace NGA.Manager.Interfaces;
 
@@ -25,7 +24,7 @@ public interface IPreferenceUnelevated
     /// <exception cref="ArgumentNullException">This exception would be thrown if <paramref name="userSid"/> is null</exception>
     /// <exception cref="ArgumentException">This exception would be thrown if <paramref name="userSid"/> is empty/whitespace.
     /// Or if <paramref name="preferenceId"/> is empty</exception>
-    /// <exception cref="GetPreferenceException">This exception would be thrown if the data is not found for the passed in key or 
+    /// <exception cref="GetPreferenceException">This exception would be thrown if the data is not found for the passed in key or
     /// if the decoded/deserialized data is null</exception>
     /// <remarks>The combination of <paramref name="userSid"/> and <paramref name="preferenceId"/> is used as key</remarks>
     Task<string> GetUserPreferenceAsync(string userSid, Guid preferenceId);
@@ -75,7 +74,7 @@ public interface IPreferenceUnelevated
     /// <param name="preferenceId">Id of the requested preference data</param>
     /// <returns>The string data</returns>
     /// <exception cref="ArgumentException">This exception would be thrown if <paramref name="preferenceId"/> is empty</exception>
-    /// <exception cref="GetPreferenceException">This exception would be thrown if the data is not found for the passed in key or 
+    /// <exception cref="GetPreferenceException">This exception would be thrown if the data is not found for the passed in key or
     /// if the decoded/deserialized data is null</exception>
     Task<string> GetSystemPreferenceAsync(Guid preferenceId);
 

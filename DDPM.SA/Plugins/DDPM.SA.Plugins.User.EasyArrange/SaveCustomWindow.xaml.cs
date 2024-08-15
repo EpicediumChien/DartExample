@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -20,13 +9,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     public partial class SaveCustomWindow : Window
     {
         #region Input/Output
+
         //Setup before calling Show()
         public EventHandler? SaveButtonClick;
+
         public EventHandler? CancelButtonClick;
         public string CustomName;
         public List<string> CustomNames;
-        #endregion
 
+        #endregion Input/Output
 
         public SaveCustomWindow()
         {
@@ -43,7 +34,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CancelButtonClick != null) 
+            if (CancelButtonClick != null)
             {
                 CancelButtonClick(this, e);
             }
