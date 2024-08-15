@@ -48,6 +48,11 @@ namespace CLI.Subagent
         private const int TIMEOUT_IN_SECONDS = 30;
         private int _exitcode = (int)CLI_ExitCode.unknow_command;
 
+#if RELEASE
+        private byte[][] certificateHash = { IDs.WST_Hash };
+
+#endif
+
         #endregion
 
         #region Constructor
@@ -86,6 +91,10 @@ namespace CLI.Subagent
                 //},
                 AllowUnelevatedExecution = true,
                 MultiSessionAgent = true
+#if RELEASE
+                ,
+                ValidCertificateHashes = certificateHash
+#endif
             };
 
             _Agent = new Agent(agentConfig);
