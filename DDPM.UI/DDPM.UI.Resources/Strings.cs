@@ -314,5 +314,19 @@ namespace DDPM.UI.Common {
     public static readonly string SelectAFile = "Select a file";
     public static readonly string SelectedFile = "Selected file";
 
+    //Pen settings
+    public static readonly string PenSettings = "Pen Settings";
+    public static readonly string TipSensitivity = "Tip Sensitivity";
+    public static readonly string TipTooltip = "Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure";
+    public static readonly string TiltSensitivity = "Tilt Sensitivity";
+    public static readonly string TiltTooltip = "Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle";
+    public static readonly string PairWithTile = "Pair with Tile";
+    public static readonly string PairTooltip = "Pair your pen to your mobile device using\nthe Tile app";
+    public static readonly string GetStarted2 = "Get started";
+    public static readonly string PairTile1 = "Enable Bluetooth on your device.";
+    public static readonly string PairTile2 = "Scan the QR Code to download Tile on to your mobile device.";
+    public static readonly string PairTile3 = "Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.";
+    public static readonly string DownloadTile = "Download tile";
+
   }
 }
