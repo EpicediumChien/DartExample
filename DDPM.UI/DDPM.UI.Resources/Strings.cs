@@ -4,14 +4,16 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using Windows.ApplicationModel.Resources.Core;
+using Windows.Devices.HumanInterfaceDevice;
 using ResourceManager=System.Resources.ResourceManager;
 
 namespace DDPM.UI.Common {
-    [Obsolete("please use DDPM.UI.Resources.Helper.LangHelper",false)]//gavin 2024/08/02
+    [Obsolete("please use DDPM.UI.Resources.Helper.LangHelper if static text",false)]//gavin 2024/08/02
     public static class Strings {
     private static ResourceManager resManager = Resources.Resources.ResourceManager;
     private static string GetString(string key) {
-      return resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+      string str= resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+      return System.Text.RegularExpressions.Regex.Unescape(str);
     }
 
     public static readonly string AdaptiveLight = GetString("AdaptiveLight");
@@ -314,5 +316,22 @@ namespace DDPM.UI.Common {
     public static readonly string SelectAFile = "Select a file";
     public static readonly string SelectedFile = "Selected file";
 
-  }
+    // add device
+    public static readonly string AddDevice = GetString("AddDevice");
+    public static readonly string AddDevice_Display = GetString("AddDevice.Display");
+    public static readonly string AddDevice_Webcam = GetString("AddDevice.Webcam");
+    public static readonly string AddDevice_KnM = GetString("AddDevice.KnM");
+    public static readonly string AddDevice_Pen = GetString("AddDevice.Pen");
+    public static readonly string AddDevice_Headset = GetString("AddDevice.Headset");
+    public static readonly string AddDevice_Speaker = GetString("AddDevice.Speaker");
+    public static readonly string AddDevice_Dock = GetString("AddDevice.Dock");
+    public static readonly string AddDeviceTypeBluetooth = GetString("AddDevice.Type.Bluetooth");
+    public static readonly string AddDeviceTypeWireless = GetString("AddDevice.Type.Wireless");
+    public static readonly string AddDeviceTypeWired = GetString("AddDevice.Type.Wired");
+    public static readonly string AddDeviceTypeOther = GetString("AddDevice.Type.Other");
+    public static readonly string AddDeviceMsgCancelBtn = GetString("AddDevice.Msg.CancelBtn");
+    public static readonly string AddDeviceMsgWaitingCap = GetString("AddDevice.Msg.WaitingCap");
+    public static readonly string AddDeviceMsgWaitingMsg = GetString("AddDevice.Msg.WaitingMsg");
+    public static readonly string AddDeviceMsgWaitingAlert = GetString("AddDevice.Msg.WaitingAlert");
+    }
 }

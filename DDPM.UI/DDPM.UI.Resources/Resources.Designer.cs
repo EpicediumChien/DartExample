@@ -79,6 +79,150 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Device.
+        /// </summary>
+        internal static string AddDevice {
+            get {
+                return ResourceManager.GetString("AddDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display.
+        /// </summary>
+        internal static string AddDevice_Display {
+            get {
+                return ResourceManager.GetString("AddDevice.Display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dock.
+        /// </summary>
+        internal static string AddDevice_Dock {
+            get {
+                return ResourceManager.GetString("AddDevice.Dock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Headset.
+        /// </summary>
+        internal static string AddDevice_Headset {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard\nand Mouse.
+        /// </summary>
+        internal static string AddDevice_KnM {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string AddDevice_Msg_CancelBtn {
+            get {
+                return ResourceManager.GetString("AddDevice.Msg.CancelBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pairing may take some time. Do not disconnect your device.
+        /// </summary>
+        internal static string AddDevice_Msg_WaitingAlert {
+            get {
+                return ResourceManager.GetString("AddDevice.Msg.WaitingAlert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding device, please wait....
+        /// </summary>
+        internal static string AddDevice_Msg_WaitingCap {
+            get {
+                return ResourceManager.GetString("AddDevice.Msg.WaitingCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pairing.
+        /// </summary>
+        internal static string AddDevice_Msg_WaitingMsg {
+            get {
+                return ResourceManager.GetString("AddDevice.Msg.WaitingMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pen.
+        /// </summary>
+        internal static string AddDevice_Pen {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speakerphone\nand Soundbar.
+        /// </summary>
+        internal static string AddDevice_Speaker {
+            get {
+                return ResourceManager.GetString("AddDevice.Speaker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bluetooth.
+        /// </summary>
+        internal static string AddDevice_Type_Bluetooth {
+            get {
+                return ResourceManager.GetString("AddDevice.Type.Bluetooth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string AddDevice_Type_Other {
+            get {
+                return ResourceManager.GetString("AddDevice.Type.Other", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wired.
+        /// </summary>
+        internal static string AddDevice_Type_Wired {
+            get {
+                return ResourceManager.GetString("AddDevice.Type.Wired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wireless receiver.
+        /// </summary>
+        internal static string AddDevice_Type_Wireless {
+            get {
+                return ResourceManager.GetString("AddDevice.Type.Wireless", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Webcam.
+        /// </summary>
+        internal static string AddDevice_Webcam {
+            get {
+                return ResourceManager.GetString("AddDevice.Webcam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Analytics.
         /// </summary>
         internal static string Analytics {

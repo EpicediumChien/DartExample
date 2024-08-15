@@ -31,23 +31,23 @@ namespace DDPM.UI.Plugin.AddDevicePlugin {
     private readonly IConsole _console;
     private readonly AddDeviceViewModel? _vm;
 
-    private readonly string Caption = "Add Device";
+    private readonly string Caption = Strings.AddDevice;
     private int selectedTab = -1;
-    private readonly string Display = "Display";
-    private readonly string Webcam = "Webcam";
-    private readonly string KnM = "Keyboard\nand Mouse";
-    private readonly string Pen = "Pen";
-    private readonly string Headset = "Headset";
-    private readonly string Speaker = "Speakerphone\nand Soundbar";
-    private readonly string Dock = "Dock";
-    private readonly string Bluetooth = "Bluetooth";
-    private readonly string WirelessReceiver = "Wireless receiver";
-    private readonly string Wired = "Wired";
-    private readonly string Other = "Other";
-    readonly string CancelButtonCaption = "Cancel";
-    readonly string WaitingCaption = "Adding device, please wait...";
-    readonly string WaitingMessage = "Pairing";
-    readonly string WaitingAlert = "Pairing may take some time. Do not disconnect your device";
+    private readonly string Display = Strings.AddDevice_Display;
+    private readonly string Webcam = Strings.AddDevice_Webcam;
+    private readonly string KnM = Strings.AddDevice_KnM;
+    private readonly string Pen = Strings.AddDevice_Pen;
+    private readonly string Headset = Strings.AddDevice_Headset;
+    private readonly string Speaker = Strings.AddDevice_Speaker;
+    private readonly string Dock =Strings.AddDevice_Dock;
+    private readonly string Bluetooth = Strings.AddDeviceTypeBluetooth;
+    private readonly string WirelessReceiver = Strings.AddDeviceTypeWireless;
+    private readonly string Wired = Strings.AddDeviceTypeWired;
+    private readonly string Other = Strings.AddDeviceTypeOther;
+    readonly string CancelButtonCaption = Strings.AddDeviceMsgCancelBtn;
+    readonly string WaitingCaption = Strings.AddDeviceMsgWaitingCap;
+    readonly string WaitingMessage = Strings.AddDeviceMsgWaitingMsg;
+    readonly string WaitingAlert = Strings.AddDeviceMsgWaitingAlert;
 
     public AddDeviceView() {
       InitializeComponent();
