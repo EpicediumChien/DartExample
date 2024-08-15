@@ -110,13 +110,13 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 switch (currentNode.Name)
                 {
                     case "Node1":
-                        _vm._deviceManager.SetBandsGain(int.Parse(Node1Text.Text), _vm.CurrentDeviceInfo!.ID, "band1gain").Wait();
+                        //_vm._deviceManager.SetBandsGain(int.Parse(Node1Text.Text), _vm.CurrentDeviceInfo!.ID, "band1gain").Wait();
                         break;
                     case "Node2":
-                        _vm._deviceManager.SetBandsGain(int.Parse(Node2Text.Text), _vm.CurrentDeviceInfo!.ID, "band2gain").Wait();
+                        //_vm._deviceManager.SetBandsGain(int.Parse(Node2Text.Text), _vm.CurrentDeviceInfo!.ID, "band2gain").Wait();
                         break;
                     case "Node3":
-                        _vm._deviceManager.SetBandsGain(int.Parse(Node3Text.Text), _vm.CurrentDeviceInfo!.ID, "band3gain").Wait();
+                        //_vm._deviceManager.SetBandsGain(int.Parse(Node3Text.Text), _vm.CurrentDeviceInfo!.ID, "band3gain").Wait();
                         break;
                 }
 
@@ -190,10 +190,14 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 double minValue = 0;
                 double maxValue = 150;
                 double minOutput = -6;
-                double maxOutput = 4;
+                double maxOutput = 5;
 
-                int normalizedValue = (int)(maxOutput - ((Canvas.GetTop(node) - minValue) / (maxValue - minValue) * (maxOutput - minOutput)));
+                double normalizedValue = maxOutput - ((Canvas.GetTop(node) - minValue) / (maxValue - minValue) * (maxOutput - minOutput));
+                normalizedValue = Convert.ToInt16(Math.Floor(normalizedValue));
+                if (normalizedValue >= 5)
+                    normalizedValue = 4;
                 textBlock.Text = normalizedValue.ToString("0");
+                //Debug.WriteLine("SetNodeValue normalizedValue : " + normalizedValue.ToString());
             }
         }
 
