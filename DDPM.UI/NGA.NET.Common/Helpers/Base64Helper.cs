@@ -1,12 +1,13 @@
 ﻿#region LicenseHeader
+
 //
 // ©Copyright 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
 using System.Text;
 
 namespace NGA.NET.Common.Helpers

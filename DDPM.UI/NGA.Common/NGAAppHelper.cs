@@ -1,26 +1,23 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NGA.Common
 {
     /// <summary>
-    /// Class to handle Systray and ThickClient at Process level. 
+    /// Class to handle Systray and ThickClient at Process level.
     /// </summary>
     public static class NgaAppHelper
     {
@@ -73,7 +70,7 @@ namespace NGA.Common
 
                 // PathHelper.CheckPathRedirection does all the validations on processFullPath, also throws appropriate exceptions
                 var pathRedirection = PathHelper.CheckPathRedirection(processFullPath);
-                
+
                 if (pathRedirection != PathRedirectionReturn.PathIsNormal)
                     throw new ArgumentException($"appName is {appName}, PathRedirection value is {pathRedirection}");
 
@@ -128,7 +125,7 @@ namespace NGA.Common
         }
 
         /// <summary>
-        /// Returns Window Handle on passing window title. 
+        /// Returns Window Handle on passing window title.
         /// </summary>
         /// <returns cref="IntPtr">Windows Handle</returns>
         ///<exception cref = "ArgumentNullException" > Thrown if <paramref name="mainWindowTitle"/> is null or empty</exception>

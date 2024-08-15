@@ -33,7 +33,6 @@ namespace VcpCore.Plugins
 
         public string HexString { get; private set; } = string.Empty;
 
-
         public void Push(byte[] blocks)
         {
             for (int i = 0; i < blocks.Length; i++)
@@ -204,7 +203,6 @@ namespace VcpCore.Plugins
             {
                 ;
             }
-
 
             return year;
         }

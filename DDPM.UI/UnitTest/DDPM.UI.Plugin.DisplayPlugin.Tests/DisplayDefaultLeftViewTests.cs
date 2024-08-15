@@ -17,12 +17,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
     public class DisplayDefaultLeftViewTests
     {
         private DisplayDefaultLeftView? displayDefaultLeftView;
-        private PrivateObject?privateObject;
+        private PrivateObject? privateObject;
 
         [SetUp]
         public void Setup()
         {
-            displayDefaultLeftView=new DisplayDefaultLeftView();
+            displayDefaultLeftView = new DisplayDefaultLeftView();
             privateObject = new PrivateObject(displayDefaultLeftView);
         }
 
@@ -33,7 +33,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             // Assert
             Assert.That(displayDefaultLeftView, Is.Not.Null);
             Assert.That(txtRestoreText, Is.EqualTo("Restore to default"));
-
         }
     }
 }

@@ -1,23 +1,24 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
-using NGA.ThickClientCore;
+using Dell.Client.Framework.UX.WPF.ResourceManager.Enums;
 using Dell.UnifiedAgent.RemotePlugin.Client.Console;
 using NGA.ThickClient.Interfaces;
+using NGA.ThickClientCore;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using Constants = NGA.Common.Constants;
-using Dell.Client.Framework.UX.WPF.ResourceManager.Enums;
-using System;
 
 namespace NGA.ThickClient
 {
@@ -43,12 +44,12 @@ namespace NGA.ThickClient
         /// </summary>
         //private const string NgaSysTrayProcessName = "Dell.UCA.SysTray.exe";
         private const string NgaSysTrayProcessName = "";
+
         private static readonly string NgaSysTrayProcessFullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, NgaSysTrayProcessName);
         private MainWindow? _mainWindow;
         private SplashScreen? _splashScreen;
 
         #endregion
-
 
         //2024-5-8 Robert_Lin, to fix the issue that will cause exception in filelock.cs,
         // FileLock ctor below code:
@@ -91,8 +92,7 @@ namespace NGA.ThickClient
             };
         }
 
-
-        /// <inheritdoc/>        
+        /// <inheritdoc/>
         public override ResourceManager CreateResourceManager()
         {
             return new ResourceManager(PreDefinedColorType.PreDefinedDarkUI/*PreDefinedLightUI*/);
@@ -131,7 +131,7 @@ namespace NGA.ThickClient
 
             // if __effective__ screen size is 4k or above, use the bigger splash asset
             if (SystemParameters.PrimaryScreenWidth >= 3840 && SystemParameters.PrimaryScreenHeight >= 2160)
-                sz = Constants.SplashScreenResolution4K;             
+                sz = Constants.SplashScreenResolution4K;
 
             _splashScreen = new SplashScreen(Assembly.GetExecutingAssembly(), $"Resources/Images/splash{sz}-round.png");
 
@@ -162,7 +162,6 @@ namespace NGA.ThickClient
             }
 
             _mainWindow = new MainWindow(formBuilder, args);
-
 
             return _mainWindow;
         }

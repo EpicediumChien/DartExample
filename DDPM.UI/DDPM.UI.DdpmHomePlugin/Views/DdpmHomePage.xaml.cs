@@ -1,25 +1,13 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Interfaces;
-using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
-using DDPM.UI.Plugin.DdpmHomePlugin.Model;
-using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
-using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using Microsoft.VisualBasic.Logging;
-using System;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
 using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 
@@ -55,7 +43,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //Unused
         private void deviceCollectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
             /*
             e.Handled = true;
             if (e.AddedItems == null)
@@ -123,7 +110,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             if (_ddpmHomePageViewModel != null)
             {
-
                 //If the DdpmHomePageViewModel.PrepareMonitorInfos() was called,
                 //then we can remove below assignment
                 //_ddpmHomePageViewModel.HomeDevices = DdpmHomePlugin.HomeDevices;
@@ -179,23 +165,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //    }
 
             //}
-
         }
 
         #region RWD HomeDevices
+
         //v1.03 2024-6-22 Robert_Lin, 4 items per row first
         // ItemCount = 1~3, use the same rule with v1.02
         // If ItemCount >= 4, Arrange 4 item per row first
         // Calculate methods: CalculateItemWidthV3_xxxx
         private const double minWidth = 280;
+
         private const double minGap = 32;
-
-
 
         //v1.02 2024-5-18 Robert_lin
         // No maxWidth limitation (that means maxWidth can be removed)
         // The ItemsPerRow can be determined by the Breakpoints (bkpt?)
         private const double maxWidth = 500;
+
         //private const double minWidth = 280;
         //private const double minGap = 32;
         private double ratioItemView = (640.000 / 730.000);
@@ -203,10 +189,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //The height of BatteryIndicator
         private const double cyBatteryIndicator = 40.000;
 
-        //The break-points 
+        //The break-points
         //bkpt2: if (cxView<bkpt2) then ItemsPerRow=1
         //bkpt3: if (xView<bkpt3) then ItemsPerRow<=2
         private const double bkpt2 = minWidth * 2 + minGap * 3; //656
+
         private const double bkpt3 = minWidth * 3 + minGap * 4; //968
         private const double bkpt4 = minWidth * 4 + minGap * 5; //1280
         private const double bkpt5 = minWidth * 5 + minGap * 6;
@@ -250,7 +237,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         newWidth = CalculateItemWidthV3_ItemsPerRow2(cxView, cyView);
 
                     //Robert_Lin debug, force small icon to test ConnectionHoverView
-                    //newWidth = minWidth - 100; 
+                    //newWidth = minWidth - 100;
                 }
                 else if (_ddpmHomePageViewModel.HomeDevices.Count == 3)
                 {
@@ -320,7 +307,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (!DdpmCommonHelper.IsMainWindowAtPrimaryScreen)
                     scale = 1.0000;
 
-                Dispatcher.Invoke(new Action(() => {
+                Dispatcher.Invoke(new Action(() =>
+                {
                     DataContext = null;
                     foreach (HomeDevice dev in _ddpmHomePageViewModel.HomeDevices)
                     {
@@ -328,11 +316,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     }
                     _ddpmHomePageViewModel.cxItem = newWidth;
                     DataContext = _ddpmHomePageViewModel;
-
                 }));
-             }
+            }
         }
-
 
         private double CalculateItemWidthV3_ItemsPerRow1(double cxView, double cyView)
         {
@@ -348,6 +334,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             return sizeItem;
         }
+
         private double CalculateItemWidthV3_ItemsPerRow2(double cxView, double cyView)
         {
             double cxItem = (cxView - (minGap * 3.000)) / 2.000;
@@ -363,7 +350,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
             return sizeItem;
         }
-        
+
         private double CalculateItemWidthV3_ItemsPerRow4(double cxView, double cyView)
         {
             //Add margin in cxItem to avoid internal margin
@@ -377,7 +364,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private double CalculateItemWidth_ItemsPerRow1(double cxView, double cyView)
         {
             //sizeView = min (cxView, cyView)
-            double sizeView = Math.Min(cxView, cyView-cyBatteryIndicator*2);
+            double sizeView = Math.Min(cxView, cyView - cyBatteryIndicator * 2);
 
             //Calculate the sizeItem
             double sizeItem = sizeView - (minGap * 2); //sizeView * ratioItemView;
@@ -392,7 +379,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //Robert_Lin, 2024-8-7 Unused code, can be removed
         private double CalculateItemWidth_ItemsPerRow2(double cxView, double cyView)
         {
-            double cxItem = (cxView - (minGap*3.000)) / 2.000;
+            double cxItem = (cxView - (minGap * 3.000)) / 2.000;
             double cyItem = (cyView - (minGap * 2.000));
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
             return sizeItem;
@@ -477,10 +464,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
             return minWidth;*/
         }
+
         //Robert_Lin, 2024-8-7 Unused code, can be removed
         private double CalculateItemWidth_ItemsPerRowN(double cxView, double cyView, int n)
         {
-            double cxItem = (cxView - (minGap * (n+1))) / n;
+            double cxItem = (cxView - (minGap * (n + 1))) / n;
             double cyItem = (cyView - (minGap * 2.000));
             double sizeItem = Math.Min(cxItem, cyItem - cyBatteryIndicator * 2);
             return sizeItem;
@@ -510,9 +498,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             RefreshListViewItemWidth();
         }
-        #endregion
+
+        #endregion RWD HomeDevices
 
         #region HomeDevice Selection and Navigate to Landing Page
+
         //Mouse left button down
         private void devListViewItemRoot_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -527,7 +517,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     //Robert_Lin, 2024-8-8 Move below code segment into NavigateToDeviceLandingPage()
                     //
-                    if (dev != null) 
+                    if (dev != null)
                     {
                         NavigateToDeviceLandingPage(dev);
                     }
@@ -574,7 +564,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Check if it's fake device
             if(dev.DeviceInfo == null)
               return;
-
 
             //IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
             //console?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId);
@@ -638,7 +627,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     } */
                 }
             }
-                    
         }
 
         //Keyboard Enter down
@@ -748,9 +736,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
-            
         }
-        #endregion
+
+        #endregion HomeDevice Selection and Navigate to Landing Page
 
         #region Debug - RWD self testing
 
@@ -778,6 +766,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             info.edid.VideoInputType = "digital singal";
             return info;
         }
+
         private void addItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (_ddpmHomePageViewModel != null)
@@ -846,23 +835,26 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             };
             _ddpmHomePageViewModel.AddDemoHomeDevice(demo);
             RefreshListViewItemWidth();
-            
         }
-        #endregion
+
+        #endregion Debug - RWD self testing
 
         #region CollectionView for HomeDevice Sort and grouping
+
         private void InitCollectionViews()
         {
-        	//Robert_lin, 2024-7-10, unused, use DdpmHomePageViewModel.RefreshCollectionView() instead.
+            //Robert_lin, 2024-7-10, unused, use DdpmHomePageViewModel.RefreshCollectionView() instead.
             //if (_ddpmHomePageViewModel != null)
             //{
             //    ListCollectionView colView = (ListCollectionView)CollectionViewSource.GetDefaultView(_ddpmHomePageViewModel.HomeDevices);
             //    colView.CustomSort = new HomeDeviceSorter();
             //}
         }
-        #endregion
+
+        #endregion CollectionView for HomeDevice Sort and grouping
 
         #region HomeDevices Changed event handler
+
         //Robert_Lin, 2024-6-24, when HomeDevices changed, we need to recalculate the item width,
         //that it, rearranged with RWD rule.
         private void _ddpmHomePageViewModel_HomeDevicesChanged(object? sender, EventArgs e)
@@ -871,8 +863,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //InitCollectionViews();
         }
 
-
-        #endregion
+        #endregion HomeDevices Changed event handler
 
         private void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
@@ -881,6 +872,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         #region Read/Write INI file
+
         //Robert_Lin 2024-7-5 copy from VCPCorePlugin.cs, shared with other projects
         public static int IniReadInt(string sec, string key, int def, string pathName)
         {
@@ -893,14 +885,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         //Uage:
         // //allocate string buffer, for large string you can allocate 4096 chars.
-        // StringBuilder sb1=new StringBuilder(255); 
+        // StringBuilder sb1=new StringBuilder(255);
         // int charsRet=GetPrivateProfileString("secName","key","defValue",sb1,sb1.Capacity,@"C:\temp\a.ini");
         // string result=sb1.ToString();
         [DllImport("kernel32")]
         public static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
-        #endregion
+
+        #endregion Read/Write INI file
 
         #region Connection Hover View
+
         private ConnectionHoverView? _connHoverView = null;
 
         private void batteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -950,8 +944,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             homeDevice.IsConnectionHoverViewShow = false;
             //connHover.Visibility = Visibility.Collapsed;
         }
-        #endregion
 
+        #endregion Connection Hover View
 
         private void RenderingDone()
         {

@@ -2,11 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DDPM.SA.Common
 {
@@ -20,14 +16,12 @@ namespace DDPM.SA.Common
         public DeviceType DeviceType { get; set; }
         public bool IsMultipleDongleFound { get; set; }
         public int PairedDeviceCount { get; set; }
-    public int MaxPairingSlots { get; set; }
-    public List<Guid> LogicalDeviceIDs { get; set; }
+        public int MaxPairingSlots { get; set; }
+        public List<Guid> LogicalDeviceIDs { get; set; }
 
-
-    protected void OnPropertyChanged([CallerMemberName] string name = null)
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
     }
 }

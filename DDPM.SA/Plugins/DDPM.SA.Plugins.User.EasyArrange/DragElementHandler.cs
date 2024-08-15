@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Point = System.Windows.Point;
@@ -41,7 +36,7 @@ namespace nDragElement
             //
             //1. Get the Center point of DragElement (relate to the DragElement)
             Point ptCenterElement = new Point(0, 0);
-                //new Point(DragElement.ActualWidth / 2, DragElement.ActualHeight / 2);
+            //new Point(DragElement.ActualWidth / 2, DragElement.ActualHeight / 2);
             //2. Translate ptCenterElement to "relate to Container"
             Point ptDragCenter = DragElement.TranslatePoint(ptCenterElement, ContainerElement);
 
@@ -64,7 +59,7 @@ namespace nDragElement
             if (DragElement == null)
                 return;
 
-            DragElement.RenderTransform = new TranslateTransform() 
+            DragElement.RenderTransform = new TranslateTransform()
             {
                 X = 0,
                 Y = 0
@@ -98,6 +93,7 @@ namespace nDragElement
             //Start capture mouse
             DragElement.CaptureMouse();
         }
+
         private void DragElement_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (!DragElement.IsMouseCaptured)
@@ -145,7 +141,5 @@ namespace nDragElement
             //End of Capture
             DragElement.ReleaseMouseCapture();
         }
-
- 
     }
 }

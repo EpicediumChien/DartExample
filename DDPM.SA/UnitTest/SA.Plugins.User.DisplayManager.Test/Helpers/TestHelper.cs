@@ -1,5 +1,4 @@
 ﻿using Dell.Client.Framework.Common;
-using System;
 
 namespace Dell.UnifyingAgent.Tests.Helpers
 {

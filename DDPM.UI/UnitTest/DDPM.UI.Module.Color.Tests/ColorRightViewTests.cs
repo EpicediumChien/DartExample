@@ -1,9 +1,4 @@
 ﻿using DDPM.SA.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VcpCore.Common;
 
 namespace DDPM.UI.Module.Color.Tests
@@ -11,13 +6,10 @@ namespace DDPM.UI.Module.Color.Tests
     [Apartment(ApartmentState.STA)]
     public class ColorRightViewTests
     {
-
         [SetUp]
         public void Setup()
         {
-
         }
-
 
         [Test]
         public void TestConstructor_InitializesComponent()
@@ -28,7 +20,7 @@ namespace DDPM.UI.Module.Color.Tests
         }
 
         [Test]
-        public void Testget_index_of_json_config_for_cur_monitor() 
+        public void Testget_index_of_json_config_for_cur_monitor()
         {
             ColorRightView colorRightView = new ColorRightView();
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
@@ -40,10 +32,6 @@ namespace DDPM.UI.Module.Color.Tests
 
             // Assert
             Assert.AreNotEqual(-1, result);
-
         }
-
-
-
     }
 }

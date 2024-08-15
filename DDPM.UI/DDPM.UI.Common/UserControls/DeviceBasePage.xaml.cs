@@ -1,23 +1,10 @@
-﻿using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common.Models;
+﻿using DDPM.UI.Common.Models;
 using DDPM.UI.Common.ViewModels;
 using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.UserControls
@@ -87,14 +74,13 @@ namespace DDPM.UI.Common.UserControls
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
-        #endregion
+        #endregion Leave from LandingMode
 
         public event RoutedEventHandler? LeftArrowClick;
 
@@ -113,7 +99,7 @@ namespace DDPM.UI.Common.UserControls
 
             viewModel.RightViewHeaderSelectedIndex = rightViewHeaderCtrl.SelectedIndex;
             /*
-            int newSelId = 
+            int newSelId =
             if (newSelId != displaySettingsSelIdx)
             {
                 if (_ivm != null)
@@ -127,8 +113,8 @@ namespace DDPM.UI.Common.UserControls
         }
 
         public void SetLeftFrameWidth(double width)
-        { 
-            viewModel.LeftFrameWidth = width; 
+        {
+            viewModel.LeftFrameWidth = width;
         }
 
         public void SetHomeDevices(List<HomeDevice> devices)

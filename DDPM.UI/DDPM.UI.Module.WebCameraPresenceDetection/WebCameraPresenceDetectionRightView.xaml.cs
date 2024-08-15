@@ -1,9 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
+﻿using DDPM.UI.Plugin.ViewModels;
+using System.Windows;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.WebCameraPresenceDetection
@@ -32,7 +28,6 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             //_vm.SetDPIValue();
         }
 
-
         private void TiltSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
@@ -41,7 +36,6 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
 
         private void btnPair_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void CallWindowsHello_Click(object sender, RoutedEventArgs e)

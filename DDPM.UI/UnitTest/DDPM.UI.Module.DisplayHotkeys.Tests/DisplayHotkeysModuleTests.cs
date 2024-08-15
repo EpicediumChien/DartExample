@@ -1,25 +1,16 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using DDPM.SA.Common.Display;
-using VcpCore.Common;
 
 namespace DDPM.UI.Module.DisplayHotkeys.Tests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
     public class DisplayHotkeysModuleTests
     {
-
-
         private DisplayHotkeysModule? displayHotkeysModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
@@ -31,7 +22,6 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-
         }
 
         [Test]
@@ -40,7 +30,6 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             displayHotkeysModule = new DisplayHotkeysModule();
             // Assert
             Assert.That(displayHotkeysModule.ModuleOwner, Is.Not.Null);
-
         }
 
         [Test]
@@ -57,7 +46,6 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             Assert.That(viewModel, Is.InstanceOf<DisplayHotkeysViewModel>());
         }
 
-
         [Test]
         public void TestModuleName()
         {
@@ -68,7 +56,6 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             // Assert
             Assert.That(result, Is.EqualTo("DisplayHotkeysModule"));
         }
-
 
         [Test]//Test method
         public void TestSelectedHomeDevice()
@@ -86,9 +73,7 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             slectedHomeDevice = new HomeDevice();
             displayHotkeysModule.SelectedHomeDevice = slectedHomeDevice;
             Assert.That(displayHotkeysModule!.SelectedHomeDevice, Is.EqualTo(moduleOwner.SelectedHomeDevice));
-
         }
-
 
         [Test]
         public void TestGetLeftView()
@@ -128,22 +113,20 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             Assert.That(displayHotkeysModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
 
-
         [Test]
         [Apartment(ApartmentState.STA)]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            var displayHotkeysModule = new DisplayHotkeysModule(); 
+            var displayHotkeysModule = new DisplayHotkeysModule();
             displayHotkeysModule.OnSelectedHomeDeviceChanged();
             Assert.Pass();
-
         }
 
         [Test]
         [Apartment(ApartmentState.STA)]
         public void TestOnActivated()
         {
-            var displayHotkeysModule = new DisplayHotkeysModule(); 
+            var displayHotkeysModule = new DisplayHotkeysModule();
             displayHotkeysModule.OnActivated();
             Assert.Pass();
         }
@@ -155,8 +138,6 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
             var displayHotkeysModule = new DisplayHotkeysModule();
             displayHotkeysModule.OnDeactivated();
             Assert.Pass();
-
         }
     }
 }
-

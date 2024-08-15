@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 namespace NGA.ThickClient.Interfaces
@@ -29,13 +31,13 @@ namespace NGA.ThickClient.Interfaces
         int NotificationQueueCount { get; }
 
         /// <summary>
-        /// Method to add In-Application Banner notifications Immediately or Queue It depending on the current banner state. 
+        /// Method to add In-Application Banner notifications Immediately or Queue It depending on the current banner state.
         /// </summary>
         /// <param name="notificationData" cref="IBannerNotificationDisplayData"></param>
         void AddNotification(IBannerNotificationDisplayData notificationData);
 
         /// <summary>
-        /// Method to update an existing banner notifications currently displayed or queued for display. 
+        /// Method to update an existing banner notifications currently displayed or queued for display.
         /// </summary>
         /// <param name="notificationData" cref="IBannerNotificationDisplayData"></param>
         /// <returns>True on Successfully updating Banner, else false</returns>
@@ -49,7 +51,7 @@ namespace NGA.ThickClient.Interfaces
         bool RemoveNotification(Guid bannerId);
 
         /// <summary>
-        /// Removes the Group of notifications from the queue or display belonging to same GroupId. 
+        /// Removes the Group of notifications from the queue or display belonging to same GroupId.
         /// </summary>
         /// <param name="bannerGroupId" cref="IBannerNotificationDisplayData.BannerGroupId">Banner Id of specific set of banners</param>
         /// <returns>Number of notifications removed</returns>

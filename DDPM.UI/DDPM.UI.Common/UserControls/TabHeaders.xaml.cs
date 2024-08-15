@@ -1,22 +1,7 @@
 ﻿using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common.Models;
-using Microsoft.Windows.Themes;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.UserControls
@@ -31,8 +16,8 @@ namespace DDPM.UI.Common.UserControls
             InitializeComponent();
         }
 
-
         #region ItemsSource
+
         private int _itemCount = 0;
 
         public IEnumerable<ITabHeader> ItemsSource
@@ -89,17 +74,16 @@ namespace DDPM.UI.Common.UserControls
             }
             else //itemCount == 1
             {
-
             }
         }
-        void newValueINotifyCollectionChanged_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+
+        private void newValueINotifyCollectionChanged_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             //Do your stuff here.
             //SetHeaders();
         }
-        #endregion
 
-
+        #endregion ItemsSource
 
         public string Text1
         {
@@ -111,9 +95,6 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty Text1Property =
             DependencyProperty.Register("Text1", typeof(string), typeof(TabHeaders), new PropertyMetadata(String.Empty));
 
-
-
-
         public string Text2
         {
             get { return (string)GetValue(Text2Property); }
@@ -123,9 +104,6 @@ namespace DDPM.UI.Common.UserControls
         // Using a DependencyProperty as the backing store for Text2.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty Text2Property =
             DependencyProperty.Register("Text2", typeof(string), typeof(TabHeaders), new PropertyMetadata(String.Empty));
-
-
-
 
         public string Text3
         {
@@ -137,16 +115,12 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty Text3Property =
             DependencyProperty.Register("Text3", typeof(string), typeof(TabHeaders), new PropertyMetadata(String.Empty));
 
-
-
-
-
         public int SelectedIndex
         {
             get { return (int)GetValue(SelectedIndexProperty); }
-            set 
+            set
             {
-                SetValue(SelectedIndexProperty, value); 
+                SetValue(SelectedIndexProperty, value);
                 if (_itemCount >= 3)
                 {
                     HightlightHeaderIndex = SelectedIndex;
@@ -167,9 +141,6 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty SelectedIndexProperty =
             DependencyProperty.Register("SelectedIndex", typeof(int), typeof(TabHeaders), new PropertyMetadata(0));
 
-
-
-
         public int HightlightHeaderIndex
         {
             get { return (int)GetValue(HightlightHeaderIndexProperty); }
@@ -180,9 +151,6 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty HightlightHeaderIndexProperty =
             DependencyProperty.Register("HightlightHeaderIndex", typeof(int), typeof(TabHeaders), new PropertyMetadata(0));
 
-
-
-
         public ICommand? ClickCommand
         {
             get { return (ICommand?)GetValue(ClickCommandProperty); }
@@ -192,8 +160,6 @@ namespace DDPM.UI.Common.UserControls
         // Using a DependencyProperty as the backing store for ClickCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ClickCommandProperty =
             DependencyProperty.Register("ClickCommand", typeof(ICommand), typeof(TabHeaders));
-
-
 
         private void header1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

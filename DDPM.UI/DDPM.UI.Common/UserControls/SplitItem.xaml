@@ -1,10 +1,10 @@
 ﻿<UserControl x:Class="DDPM.UI.Common.UserControls.SplitItem"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="68" d:DesignWidth="88"
              Background="#02000000"
              Name="root">
@@ -14,97 +14,92 @@
                 <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+            <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="{StaticResource Color_FakeTransparent}" />
+            <!--
+            <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE" />
+            -->
+            <SolidColorBrush x:Key="SplitItem_HoverBdColor" Color="#FF5CC1EE" />
 
-        <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54"/>
-        <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="{StaticResource Color_FakeTransparent}"/>
-        <!-- 
-        <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE"/>
-        -->
-        <SolidColorBrush x:Key="SplitItem_HoverBdColor" Color="#FF5CC1EE"/>
+            <!--
+            <LinearGradientBrush x:Key="SplitItem_HoverBdColor" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0" Color="#FF0672CB" />
+            <GradientStop Offset="0.5" Color="#FF0078D4" />
+            <GradientStop Offset="1" Color="#FF6E69CF" />
+            </LinearGradientBrush>
+            -->
 
-        <!-- 
-        <LinearGradientBrush x:Key="SplitItem_HoverBdColor" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Offset="0" Color="#FF0672CB"/>
-            <GradientStop Offset="0.5" Color="#FF0078D4"/>
-            <GradientStop Offset="1" Color="#FF6E69CF"/>
-        </LinearGradientBrush>
-        -->
-            
-        <LinearGradientBrush x:Key="SplitItem_SelectedBdColor" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Offset="0" Color="#FF0672CB"/>
-            <GradientStop Offset="0.5" Color="#FF0078D4"/>
-            <GradientStop Offset="1" Color="#FF6E69CF"/>
-        </LinearGradientBrush>
+            <LinearGradientBrush x:Key="SplitItem_SelectedBdColor" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Offset="0" Color="#FF0672CB" />
+                <GradientStop Offset="0.5" Color="#FF0078D4" />
+                <GradientStop Offset="1" Color="#FF6E69CF" />
+            </LinearGradientBrush>
 
-        <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B"/>
-        <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D"/>
-        <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7"/>
+            <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+            <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
+            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
 
-        <!-- Border Style of Normal State -->
-        <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
-            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}"/>
-            <Setter Property="BorderThickness" Value="4"/>
-            <Setter Property="Padding" Value="0"/>
-        </Style>
+            <!-- Border Style of Normal State -->
+            <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}" />
+                <Setter Property="BorderThickness" Value="4" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
 
-        <!-- 2024-6-22, Robert_Lin, exchange Hover and Selected state Setters to fix the issue:
-             Hover state and Selected states are inverted. 
+            <!-- 2024-6-22, Robert_Lin, exchange Hover and Selected state Setters to fix the issue:
+            Hover state and Selected states are inverted.
             The SplitItem_HoverBdColor and are also be inverted later.
-             the 
-        -->
-        <!-- Border Style of Hover State -->
-        <Style x:Key="SplitItemBorder_Selected" TargetType="Border">
-            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}"/>
-            <Setter Property="BorderThickness" Value="4"/>
-            <Setter Property="Padding" Value="0"/>
-        </Style>
+            the
+            -->
+            <!-- Border Style of Hover State -->
+            <Style x:Key="SplitItemBorder_Selected" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+                <Setter Property="BorderThickness" Value="4" />
+                <Setter Property="Padding" Value="0" />
+            </Style>
 
-        <!-- Border Style of Selected State -->
-        <Style x:Key="SplitItemBorder_Hover" TargetType="Border">
-            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedBdColor}"/>
-            <Setter Property="BorderThickness" Value="1.5"/>
-        </Style>
-
+            <!-- Border Style of Selected State -->
+            <Style x:Key="SplitItemBorder_Hover" TargetType="Border">
+                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedBdColor}" />
+                <Setter Property="BorderThickness" Value="1.5" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown" >
+
+    <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
         <Grid.ToolTip>
-            <ToolTip >
+            <ToolTip>
                 <Border Background="{StaticResource ToolipBkColor}"
-                                        BorderBrush="{StaticResource ToolipBdColor}"
-                                        CornerRadius="4" Padding="8,12">
+                        BorderBrush="{StaticResource ToolipBdColor}"
+                        CornerRadius="4" Padding="8,12">
                     <Border.Resources>
                         <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}"/>
-                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
+                            <Setter Property="FontSize" Value="12" />
                         </Style>
                     </Border.Resources>
 
-
                     <StackPanel>
-                        <TextBlock Text="{Binding ToolTipText}"/>
+                        <TextBlock Text="{Binding ToolTipText}" />
                     </StackPanel>
                 </Border>
             </ToolTip>
         </Grid.ToolTip>
 
-
         <ContentControl Content="{Binding InnerContent, ElementName=root}" Margin="4"
                         Background="{StaticResource FakeTransparent}"
-                        MouseLeftButtonDown="spItem_MouseLeftButtonDown" 
-                        />
+                        MouseLeftButtonDown="spItem_MouseLeftButtonDown" />
 
         <!-- Hover Layer -->
         <Border Name="bdHover" Width="88" Height="68" CornerRadius="6">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}"/>
-                    <Setter Property="BorderThickness" Value="1.5"/>
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+                    <Setter Property="BorderThickness" Value="1.5" />
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding ElementName=root, Path=IsMouseOver}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -116,15 +111,15 @@
                         Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3"
                         DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
                         MouseLeftButtonDown="pencilIcon_MouseLeftButtonDown">
-                    <Path Data="M7.035 0L1.42 5.615L0.59 7.745L0.5 8L0.755 7.91L2.89 7.075L8.5 1.465L7.035 0ZM1.435 7.065L1.865 5.955L2.55 6.63L1.435 7.065ZM2.935 6.26L2.23 5.56L6.23 1.56L6.935 2.255L2.935 6.255V6.26ZM6.62 1.18L7.035 0.765L7.735 1.465L7.325 1.875L6.62 1.18Z" 
-                          Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Path Data="M7.035 0L1.42 5.615L0.59 7.745L0.5 8L0.755 7.91L2.89 7.075L8.5 1.465L7.035 0ZM1.435 7.065L1.865 5.955L2.55 6.63L1.435 7.065ZM2.935 6.26L2.23 5.56L6.23 1.56L6.935 2.255L2.935 6.255V6.26ZM6.62 1.18L7.035 0.765L7.735 1.465L7.325 1.875L6.62 1.18Z"
+                          Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=root, Path=IsEditEnabled}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -134,82 +129,77 @@
                 <!-- closeX icon -->
                 <Border Width="16" Height="16" Margin="0,9,8.5,0" HorizontalAlignment="Right" VerticalAlignment="Top"
                         Background="{StaticResource Brush_GradientButtonCyan}" CornerRadius="3">
-                    <Path Data="M8.5 0.41L8.09 0L4.5 3.6L0.91 0.025L0.5 0.435L4.075 4L0.525 7.565L0.935 8L4.5 4.425L8.065 8L8.475 7.59L4.9 4L8.5 0.41Z" 
-                          Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Path Data="M8.5 0.41L8.09 0L4.5 3.6L0.91 0.025L0.5 0.435L4.075 4L0.525 7.565L0.935 8L4.5 4.425L8.065 8L8.475 7.59L4.9 4L8.5 0.41Z"
+                          Fill="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=root, Path=IsDeleteEnabled}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
                 </Border>
-
             </Grid>
 
             <Border.ToolTip>
-                <ToolTip >
+                <ToolTip>
                     <Border Background="{StaticResource ToolipBkColor}"
-                                        BorderBrush="{StaticResource ToolipBdColor}"
-                                        CornerRadius="4" Padding="8,12">
+                            BorderBrush="{StaticResource ToolipBdColor}"
+                            CornerRadius="4" Padding="8,12">
                         <Border.Resources>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}"/>
-                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
+                                <Setter Property="FontSize" Value="12" />
                             </Style>
                         </Border.Resources>
 
-
                         <StackPanel>
-                            <TextBlock Text="{Binding ToolTipText}"/>
+                            <TextBlock Text="{Binding ToolTipText}" />
                         </StackPanel>
                     </Border>
                 </ToolTip>
             </Border.ToolTip>
-
         </Border>
 
         <!--  Background="{StaticResource FakeTransparent}" -->
         <Border Name="bdSelected" Width="88" Height="68" CornerRadius="6">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedBdColor}"/>
-                    <Setter Property="BorderThickness" Value="4"/>
-                    <Setter Property="Padding" Value="0"/>
-                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedBdColor}" />
+                    <Setter Property="BorderThickness" Value="4" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Visibility" Value="Hidden" />
                     <!-- Robert_Lin, 2024-8-5, fix cannot click in Selected state issue
-                     <Setter Property="Background" Value="{StaticResource FakeTransparent}"/>
-                   -->
+                    <Setter Property="Background" Value="{StaticResource FakeTransparent}" />
+                    -->
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding ElementName=root, Path=IsSelected}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
             <Border.ToolTip>
-                <ToolTip >
+                <ToolTip>
                     <Border Background="{StaticResource ToolipBkColor}"
-                                        BorderBrush="{StaticResource ToolipBdColor}"
-                                        CornerRadius="4" Padding="8,12">
+                            BorderBrush="{StaticResource ToolipBdColor}"
+                            CornerRadius="4" Padding="8,12">
                         <Border.Resources>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}"/>
-                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
+                                <Setter Property="FontSize" Value="12" />
                             </Style>
                         </Border.Resources>
 
-
                         <StackPanel>
-                            <TextBlock Text="{Binding ToolTipText}"/>
+                            <TextBlock Text="{Binding ToolTipText}" />
                         </StackPanel>
                     </Border>
                 </ToolTip>
             </Border.ToolTip>
         </Border>
-
     </Grid>
 </UserControl>

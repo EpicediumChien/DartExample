@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties
 {
@@ -35,7 +33,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
         public string HexString { get; private set; } = string.Empty;
 
-
         public void Push(byte[] blocks)
         {
             for (int i = 0; i < blocks.Length; i++)
@@ -49,7 +46,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         {
             return HexString.IndexOf(EDID_Header) >= 0;
         }
-
 
         public string GetManufacturerID()
         {
@@ -90,9 +86,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 vendorid = text.Substring(startIndex, length) + text.Substring(startIndex2, length);
             }
             return vendorid;
-
         }
-
 
         public string GetSerialNum()
         {
@@ -193,7 +187,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             {
                 ;
             }
-
 
             return year;
         }

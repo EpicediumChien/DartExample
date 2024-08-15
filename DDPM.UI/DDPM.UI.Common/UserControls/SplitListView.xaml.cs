@@ -2,20 +2,9 @@
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.UserControls
@@ -51,7 +40,7 @@ namespace DDPM.UI.Common.UserControls
             return spItem;
         }
 
-        public SplitItem AddItemToList(ContentControl contentControl) 
+        public SplitItem AddItemToList(ContentControl contentControl)
         {
             SplitItem spItem = new SplitItem();
             spItem.InnerContent = contentControl;
@@ -78,7 +67,6 @@ namespace DDPM.UI.Common.UserControls
         // Using a DependencyProperty as the backing store for ClickCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemClickCommandProperty =
             DependencyProperty.Register("ItemClickCommand", typeof(ICommand), typeof(SplitListView));
-
 
         //public ICommand? SplitItemClickCommand
         //{
@@ -114,7 +102,7 @@ namespace DDPM.UI.Common.UserControls
             //    <SplitListView Name="splitLV1" />   (remove ItemClickCommand binding)
         }
 
-         #endregion
+        #endregion Click and Item Selection
 
         public event RoutedEventHandler? SelectionChanged;
 
@@ -138,7 +126,7 @@ namespace DDPM.UI.Common.UserControls
         {
             vm.GoToNextPage();
         }
-        #endregion
+        #endregion Page Navigation
 
         #region SplitItem Edit Command
         /// <summary>
@@ -151,8 +139,6 @@ namespace DDPM.UI.Common.UserControls
                 ItemEditCommand.Execute(spItem);
         }
 
-
-
         public ICommand ItemEditCommand
         {
             get { return (ICommand)GetValue(ItemEditCommandProperty); }
@@ -163,8 +149,6 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty ItemEditCommandProperty =
             DependencyProperty.Register("ItemEditCommand", typeof(ICommand), typeof(SplitListView));
 
-
-
-        #endregion
+        #endregion SplitItem Edit Command
     }
 }

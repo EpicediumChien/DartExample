@@ -1,13 +1,14 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.Common.Extensions;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 

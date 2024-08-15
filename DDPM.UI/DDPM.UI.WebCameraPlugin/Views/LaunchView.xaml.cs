@@ -1,42 +1,28 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
+using DDPM.UI.Module.WebCameraCapture;
+using DDPM.UI.Module.WebCameraColorImage;
+using DDPM.UI.Module.WebCameraMicrophone;
+using DDPM.UI.Module.WebCameraPresenceDetection;
+using DDPM.UI.Module.WebCameraSettings;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
-using DDPM.UI.Plugin.Common;
+using System.IO;
 using System.Net;
+using System.Windows;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using DDPM.UI.Module.WebCameraSettings;
-using System.Runtime.InteropServices;
 using System.Windows.Threading;
-using System.Windows.Media;
-
-
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
+using Windows.Devices.Sensors;
+using Windows.Foundation;
+using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
-using System.IO;
-using Windows.Graphics.Imaging;
-
-using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
-using Windows.Foundation;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
-using Windows.Devices.Sensors;
-using Windows.Graphics.Display;
-using DDPM.UI.Module.WebCameraColorImage;
-using DDPM.UI.Module.WebCameraPresenceDetection;
-using DDPM.UI.Module.WebCameraCapture;
-using DDPM.UI.Module.WebCameraMicrophone;
+using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -63,21 +49,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // Reference: http://msdn.microsoft.com/en-us/library/windows/apps/xaml/hh868174.aspx
         private static readonly Guid RotationKey = new Guid("C380465D-2271-428C-9B83-ECEA3B4A85C1");
 
-
         private readonly WebCameraViewModel? _vm;
 
-        readonly int[] _rightFrameWidth = new int[] { 0, 500, 500, 500, 500, 500 };//SDL, change to use new
+        private readonly int[] _rightFrameWidth = new int[] { 0, 500, 500, 500, 500, 500 };//SDL, change to use new
         private readonly string Restore = "Restore to default";
         private readonly string Unpair = "Unpair";
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
-        readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
-        readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
+        private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
+        private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
         private readonly string WebCameraButton = "Button\nCustomization";
 
         // 20240731
         private DispatcherTimer _timer;
+
         private int _countdownValue;
 
         public LaunchView()
@@ -107,7 +93,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         }
 
         //  Jim remove 20240626
-        async private void LaunchView_Unloaded(object sender, RoutedEventArgs e)
+        private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -117,10 +103,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 Debug.WriteLine("MediaCapture CleanupMediaCaptureAsync failed: " + Exc.Message);
             }
-
         }
 
         #region Init for Modules
+
         /// <summary>
         /// Base on specified monitor's capabiliies to build the Vbar items, and headers/modules
         /// </summary>
@@ -168,12 +154,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader("Microphone", new WebCameraMicrophoneModule(_vm!));
             groups.Add(moduleGroup);
 
-
             _vm!.ModuleGroups = groups;
         }
-        #endregion
+
+        #endregion Init for Modules
 
         #region Vbar
+
         private void OnVbarItemClicked(VbarItem newItem)
         {
             if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
@@ -204,11 +191,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             btnUnpair.Visibility = Visibility.Collapsed;
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
-
         }
-        #endregion
+
+        #endregion Vbar
 
         #region RightViewHeader
+
         private void RightViewHeaderCtrl_SelectionChanged(object sender, RoutedEventArgs e)
         {
             if (sender == null)
@@ -224,9 +212,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //}
         }
 
-        #endregion
+        #endregion RightViewHeader
 
         #region Mode Change
+
         private void InvokeGotoTwoViewModeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -236,13 +225,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
+
         private void InvokeShrinkAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -252,13 +241,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
+
         private void InvokeEnlargeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -268,14 +257,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
-        #endregion
+
+        #endregion Mode Change
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -377,6 +366,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 BLConnection.Visibility = Visibility.Visible;
             }
         }
+
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             DongleConnection.Visibility = Visibility.Collapsed;
@@ -385,13 +375,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
         }
 
-        // 20240626 jim add 
+        // 20240626 jim add
         private async void Button_Preview_Click(object sender, RoutedEventArgs e)
         {
-            // 20240626 jim add 
+            // 20240626 jim add
             if (_vm.captureManagerInitialized == true)
             {
                 return;
@@ -409,24 +398,22 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                // 20240626 jim add 
+                // 20240626 jim add
                 MediaFrameSourceGroup? selectedFrameSourceGroup = frameSourceGroups[0];
 
                 int index_matched_webcam = 0;
 
                 for (index_matched_webcam = 0; index_matched_webcam < frameSourceGroups.Count; index_matched_webcam++)
                 {
-
                     selectedFrameSourceGroup = frameSourceGroups[index_matched_webcam];
 
                     if (_vm != null && _vm.CurrentDeviceInfo != null)
                     {
-                        if (selectedFrameSourceGroup.DisplayName.ToUpper().Contains(_vm.CurrentDeviceInfo.ModelNumber.ToUpper()))                        
+                        if (selectedFrameSourceGroup.DisplayName.ToUpper().Contains(_vm.CurrentDeviceInfo.ModelNumber.ToUpper()))
                             break;
                     }
                     else
                         selectedFrameSourceGroup = null;
-
                 }
 
                 // 20240626  jim add to avoid exception
@@ -472,7 +459,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 Debug.WriteLine("MediaCapture initialization failed: " + Exc.Message);
             }
-
         }
 
         /// <summary>
@@ -498,7 +484,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 CameraImage.Dispatcher.BeginInvoke(async () =>
                 {
                     if (_vm._running) return;
-                        _vm._running = true;
+                    _vm._running = true;
 
                     CameraImage.Source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
 
@@ -508,7 +494,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         }
 
         /// <summary>
-        /// Convert SoftwareBitmap to BitmapImage 
+        /// Convert SoftwareBitmap to BitmapImage
         /// </summary>
         /// <param name="src">SoftwareBitmap</param>
         /// <returns> result</returns>
@@ -531,7 +517,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private async void Button_Record_Click(object sender, RoutedEventArgs e)
         {
-            // jim add 20240625      
+            // jim add 20240625
 
             if (!_vm._isRecording)
             {
@@ -550,7 +536,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 await StopRecordingAsync();
             }
-
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -565,7 +550,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 CountdownText.Text = "";
                 StartRecordingAsync().RunSynchronously();
                 _timer.Stop();
-                
             }
         }
 
@@ -633,10 +617,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 case SimpleOrientation.Rotated90DegreesCounterclockwise:
                     return 90;
+
                 case SimpleOrientation.Rotated180DegreesCounterclockwise:
                     return 180;
+
                 case SimpleOrientation.Rotated270DegreesCounterclockwise:
                     return 270;
+
                 case SimpleOrientation.NotRotated:
                 default:
                     return 0;
@@ -649,10 +636,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <returns>The camera orientation in space, with an inverted rotation in the case the camera is mounted on the device and is facing the user</returns>
         private SimpleOrientation GetCameraOrientation()
         {
-
             // Cameras that are not attached to the device do not rotate along with it, so apply no rotation
             return SimpleOrientation.NotRotated;
-
         }
 
         // 20240626 jim add
@@ -674,6 +659,5 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             Debug.WriteLine("Media preview has canceled.");
         }
-
     }
 }

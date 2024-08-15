@@ -1,19 +1,18 @@
 ﻿<UserControl x:Class="DDPM.UI.Module.Kvm.PxPSplitCtrl0A"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:Background="Black"
              d:DesignHeight="306" d:DesignWidth="544">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="SplitStyles.xaml"/>
+                <ResourceDictionary Source="SplitStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-
     </UserControl.Resources>
 
     <Border Style="{StaticResource SplitCtrl_OutterBorder}">
@@ -22,28 +21,27 @@
             <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Width="44" Height="48">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Background="#A4B8CD">
-                        <TextBlock Text="{Binding PC1_Input}" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding PC1_Input}" Foreground="White" HorizontalAlignment="Center" />
                     </Grid>
-                    <TextBlock Grid.Row="1" Text="PC1" FontSize="14" Foreground="White" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Row="1" Text="PC1" FontSize="14" Foreground="White" HorizontalAlignment="Center" />
                     <!--<Grid Width="8" Height="8">
-                        <Polyline Points="0.5,0.5 7.5,7.5" 
-                                  StrokeStartLineCap="Flat"
-                                  StrokeEndLineCap="Flat"  
-                                  Stroke="{StaticResource BorderColor_SplitNormal}" 
-                                  StrokeThickness="1"/>
-                        <Polyline Points="7.5,0.5 0.5,7.5" 
-                                  StrokeStartLineCap="Flat"
-                                  StrokeEndLineCap="Flat"  
-                                  Stroke="{StaticResource BorderColor_SplitNormal}" 
-                                  StrokeThickness="1"/>
+                    <Polyline Points="0.5,0.5 7.5,7.5"
+                    StrokeStartLineCap="Flat"
+                    StrokeEndLineCap="Flat"
+                    Stroke="{StaticResource BorderColor_SplitNormal}"
+                    StrokeThickness="1" />
+                    <Polyline Points="7.5,0.5 0.5,7.5"
+                    StrokeStartLineCap="Flat"
+                    StrokeEndLineCap="Flat"
+                    Stroke="{StaticResource BorderColor_SplitNormal}"
+                    StrokeThickness="1" />
                     </Grid>-->
                 </Grid>
             </Viewbox>
         </Grid>
-
     </Border>
 </UserControl>

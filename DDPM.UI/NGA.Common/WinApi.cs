@@ -1,12 +1,13 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -39,7 +40,7 @@ namespace NGA.Common
             /// <param name="lpClassName"></param>
             /// <param name="lpWindowName"></param>
             /// <returns>The window handle</returns>
-            /// <remarks>We have this method defined in Dell.Client.Framework.UX.WPF.WinApi.NativeMethods but, 
+            /// <remarks>We have this method defined in Dell.Client.Framework.UX.WPF.WinApi.NativeMethods but,
             /// copying it here as it's internal to use in WPF and we need this at Application level. </remarks>
             [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
             internal static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
@@ -60,7 +61,7 @@ namespace NGA.Common
 
             /// <summary>
             /// Retrieves the length, in characters, of the specified window's title bar text
-            /// (if the window has a title bar). 
+            /// (if the window has a title bar).
             /// </summary>
             /// <param name="hWnd"></param>
             /// <returns>

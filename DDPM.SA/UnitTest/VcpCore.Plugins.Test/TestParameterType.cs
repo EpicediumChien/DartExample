@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Common;
+﻿using VcpCore.Common;
 
 //namespace VcpCore.Plugins.ParameterTypeTest
 namespace VcpCore.Plugins.Test
@@ -12,7 +7,6 @@ namespace VcpCore.Plugins.Test
     {
         public class ParameterTypeTest
         {
-
             [Test]
             public void TestParametertype()
             {
@@ -23,43 +17,33 @@ namespace VcpCore.Plugins.Test
                 ParameterType parameterType = new ParameterType(ActualcommandType, Actualparameter);
                 Assert.That(ActualcommandType, Is.EqualTo(parameterType.CommandType));
                 Assert.That(Actualparameter, Is.EqualTo(parameterType.Parameter));
-
             }
-
         }
 
         public class Type_Initialize0x52toEmptyTest
         {
-
             [Test]
             public void TestType_Initialize0x52toEmpty()
             {
                 Guid ActualdGuid = Guid.NewGuid();
                 Type_Initialize0x52toEmpty expectGUID = new Type_Initialize0x52toEmpty(ActualdGuid);
                 Assert.That(ActualdGuid, Is.EqualTo(expectGUID.guid));
-
             }
-
         }
-
 
         public class Type_Watcher0x52Test
         {
-
             [Test]
             public void TestType_Watcher0x52()
             {
                 Guid ActualdGuid = Guid.NewGuid();
                 Type_Watcher0x52 expectGUID = new Type_Watcher0x52(ActualdGuid);
                 Assert.That(ActualdGuid, Is.EqualTo(expectGUID.guid));
-
             }
-
         }
 
         public class Type_GetCapabilitiesStringTest
         {
-
             [Test]
             public void TestType_GetCapabilitiesString()
             {
@@ -69,12 +53,10 @@ namespace VcpCore.Plugins.Test
                 Assert.That(ActualGuid, Is.EqualTo(type_GetCapabilitiesString.guid));
                 Assert.That(ActualmonitorInfoX, Is.EqualTo(type_GetCapabilitiesString.monitorInfoX));
             }
-
         }
 
         public class Type_GetVCPCapabilitiesTest
         {
-
             [Test]
             public void TestType_GetVCPCapabilities()
             {
@@ -84,13 +66,10 @@ namespace VcpCore.Plugins.Test
                 Assert.That(ActualGuid, Is.EqualTo(type_GetVCPCapabilities.guid));
                 Assert.That(ActualmonitorInfoX, Is.EqualTo(type_GetVCPCapabilities.monitorInfoX));
             }
-
         }
-
 
         public class Type_GetVCPCapability_ITest
         {
-
             [Test]
             public void TestType_GetVCPCapability_I()
             {
@@ -105,13 +84,10 @@ namespace VcpCore.Plugins.Test
                 Assert.That(ActualCode, Is.EqualTo(type_GetVCPCapability_I.code));
                 Assert.That(ActualOpt, Is.EqualTo(type_GetVCPCapability_I.opt));
             }
-
         }
-
 
         public class Type_GetVCPCapability_IITest
         {
-
             [Test]
             public void TestType_GetVCPCapability_II()
             {
@@ -126,13 +102,10 @@ namespace VcpCore.Plugins.Test
                 Assert.That(ActualFunctionName, Is.EqualTo(type_GetVCPCapability_II.FunctionName));
                 Assert.That(Actualopt, Is.EqualTo(type_GetVCPCapability_II.opt));
             }
-
         }
-
 
         public class Type_SetVCPCapability_ITest
         {
-
             [Test]
             public void TestType_SetVCPCapability_I()
             {
@@ -147,13 +120,10 @@ namespace VcpCore.Plugins.Test
                 Assert.That(ActualCode, Is.EqualTo(type_SetVCPCapability_I.code));
                 Assert.That(ActualVal, Is.EqualTo(type_SetVCPCapability_I.val));
             }
-
         }
-
 
         public class Type_SetVCPCapability_IITest
         {
-
             [Test]
             public void TestType_SetVCPCapability_II()
             {
@@ -168,7 +138,6 @@ namespace VcpCore.Plugins.Test
                 Assert.That(ActualFunctionName, Is.EqualTo(type_SetVCPCapability_II.FunctionName));
                 Assert.That(ActualVal, Is.EqualTo(type_SetVCPCapability_II.val));
             }
-
         }
     }
 }

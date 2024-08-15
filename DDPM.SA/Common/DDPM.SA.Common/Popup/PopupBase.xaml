@@ -15,22 +15,22 @@
     <Border Background="#0D121A" BorderThickness="0" CornerRadius="5">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="0.2*"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="0.2*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" x:Name="Header" FontFamily="Roboto" FontSize="20" Margin="10" Grid.Row="0" Foreground="White"/>
-                <Button Grid.Column="1" x:Name="CloseButton" Content="X" Margin="5" Click="CloseButton_Click" Background="Transparent"  BorderThickness="0" Foreground="White"/>
+                <TextBlock Grid.Column="0" x:Name="Header" FontFamily="Roboto" FontSize="20" Margin="10" Grid.Row="0" Foreground="White" />
+                <Button Grid.Column="1" x:Name="CloseButton" Content="X" Margin="5" Click="CloseButton_Click" Background="Transparent"  BorderThickness="0" Foreground="White" />
             </Grid>
-            <TextBlock x:Name="SubHeader" MaxWidth="372" Grid.Row="1" FontFamily="Roboto" FontSize="15" Margin="6" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" Foreground="White"/>
+            <TextBlock x:Name="SubHeader" MaxWidth="372" Grid.Row="1" FontFamily="Roboto" FontSize="15" Margin="6" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" Foreground="White" />
             <StackPanel x:Name="ButtonPanel" Orientation="Horizontal" Grid.Row="2" Margin="0,20,0,10" Visibility="{Binding ShowButton}">
-                <Button x:Name="LeftButton" MaxHeight="40" MaxWidth="182" Width="81" Height="40" Background="Transparent" BorderThickness="1" BorderBrush="White" Foreground="White" HorizontalAlignment="Left" Margin="24,0,8,0" Click="LeftButton_Click"/>
-                <Button x:Name="RightButton" MaxHeight="40" MaxWidth="182" Width="81" Height="40" Background="#0672CB" BorderThickness="0" BorderBrush="White" Foreground="White" HorizontalAlignment="Right" Margin="24,0,8,0" Click="RightButton_Click"/>
+                <Button x:Name="LeftButton" MaxHeight="40" MaxWidth="182" Width="81" Height="40" Background="Transparent" BorderThickness="1" BorderBrush="White" Foreground="White" HorizontalAlignment="Left" Margin="24,0,8,0" Click="LeftButton_Click" />
+                <Button x:Name="RightButton" MaxHeight="40" MaxWidth="182" Width="81" Height="40" Background="#0672CB" BorderThickness="0" BorderBrush="White" Foreground="White" HorizontalAlignment="Right" Margin="24,0,8,0" Click="RightButton_Click" />
             </StackPanel>
         </Grid>
     </Border>

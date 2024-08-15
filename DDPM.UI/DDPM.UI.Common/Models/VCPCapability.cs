@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DDPM.UI.Common {
+﻿namespace DDPM.UI.Common
+{
     [Serializable]
     public class VCPCapability
     {
@@ -16,7 +14,6 @@ namespace DDPM.UI.Common {
 
     public static class VcpCodeList
     {
-
         public static Dictionary<string, byte> VCPDC = new Dictionary<string, byte>
         {
             { "Standard/Native", 0x00 },
@@ -150,7 +147,6 @@ namespace DDPM.UI.Common {
             { 0x7F, "Presets Disabled" }
         };
 
-
         public struct VcpValue
         {
             public byte Vcp;
@@ -161,7 +157,6 @@ namespace DDPM.UI.Common {
                 return $"VCP: 0x{Vcp.ToString("X")}, Value:{Value}";
             }
         }
-
 
         public static VcpValue? getVcpAndValue(string presetName)
         {

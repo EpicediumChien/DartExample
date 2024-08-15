@@ -1,11 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+﻿using DDPM.UI.Plugin.ViewModels;
+using System.Windows;
 using System.Windows.Input;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
-using Windows.Media.Capture;
-using Windows.Media.Devices;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.WebCameraSettings
@@ -16,20 +11,20 @@ namespace DDPM.UI.Module.WebCameraSettings
     public partial class WebCameraSettingsRightView : UserControl
     {
         private readonly WebCameraViewModel _vm;
+
         public WebCameraSettingsRightView(WebCameraViewModel vm)
         {
             InitializeComponent();
-            _vm = vm;           
+            _vm = vm;
         }
 
         //  Jim add 20240628
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        { 
+        {
             if (_vm != null && _vm._mediaCapture != null)
             {
                 if (_vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
                 {
-
                     // Unhook the event handler, so that changing properties on the slider won't trigger an API call
                     ZoomSlider.ValueChanged -= ZoomSlider_ValueChanged;
 
@@ -42,7 +37,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                     //ZoomSlider.Value = value;
 
                     double dbvalue = 0.0f;
-                    if  ( zoomControl.TryGetValue(out dbvalue) )
+                    if (zoomControl.TryGetValue(out dbvalue))
                         ZoomSlider.Value = dbvalue;
 
                     ZoomSlider.ValueChanged += ZoomSlider_ValueChanged;
@@ -71,19 +66,17 @@ namespace DDPM.UI.Module.WebCameraSettings
                         autofocusControl.TryGetAuto(out isAuto);
                         Autofocus_ToggleSwitch.IsChecked = isAuto;
                         if (isAuto)
-                        {                          
+                        {
                             _vm.IsChecked_Autofocus = true;
                             _vm.AutofocusStatus_String = "ON";
-
                         }
-                        else {
+                        else
+                        {
                             _vm.IsChecked_Autofocus = false;
                             _vm.AutofocusStatus_String = "OFF";
-                        }  
+                        }
                     }
-
                 }
-              
             }
         }
 
@@ -97,7 +90,6 @@ namespace DDPM.UI.Module.WebCameraSettings
         {
             if (_vm != null && _vm._mediaCapture != null)
             {
-
                 var zoomControl = _vm._mediaCapture.VideoDeviceController.Zoom;
 
                 // Make sure zoomFactor is within the valid range
@@ -105,7 +97,7 @@ namespace DDPM.UI.Module.WebCameraSettings
 
                 // Make sure zoomFactor is a multiple of Step, snap to the next lower step
                 level -= (level % (float)_vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Step);
-             
+
                 zoomControl.TrySetValue(level);
             }
         }
@@ -120,7 +112,6 @@ namespace DDPM.UI.Module.WebCameraSettings
         {
             if (_vm != null && _vm._mediaCapture != null)
             {
-
                 var autofocusControl = _vm._mediaCapture.VideoDeviceController.Focus;
 
                 // Make sure zoomFactor is within the valid range
@@ -165,7 +156,6 @@ namespace DDPM.UI.Module.WebCameraSettings
             //_vm.SetDPIValue();
         }
 
-
         private void TiltSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
@@ -174,27 +164,22 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void btnPair_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void TrackingSensitivity_Normal_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void TrackingSensitivity_Fast_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void FrameSize_Narrow_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void FrameSize_Standard_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void FOV_65_Button_Click(object sender, MouseButtonEventArgs e)
@@ -202,12 +187,10 @@ namespace DDPM.UI.Module.WebCameraSettings
             _vm.FOV_IsSelected[0] = true;
             _vm.FOV_IsSelected[1] = false;
             _vm.FOV_IsSelected[2] = false;
-
-            
         }
 
         private void FOV_78_Button_Click(object sender, MouseButtonEventArgs e)
-        {            
+        {
             _vm.FOV_IsSelected[0] = false;
             _vm.FOV_IsSelected[1] = true;
             _vm.FOV_IsSelected[2] = false;
@@ -217,17 +200,15 @@ namespace DDPM.UI.Module.WebCameraSettings
         {
             _vm.FOV_IsSelected[0] = false;
             _vm.FOV_IsSelected[1] = false;
-            _vm.FOV_IsSelected[2] = true;   
+            _vm.FOV_IsSelected[2] = true;
         }
 
         private void Priority_Exposure_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void Priority_FrameRate_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void CallWindowsHello_Click(object sender, RoutedEventArgs e)
@@ -242,7 +223,6 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-
         }
     }
 }

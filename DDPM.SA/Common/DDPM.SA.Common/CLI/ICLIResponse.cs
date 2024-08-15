@@ -1,12 +1,7 @@
-﻿using DDPM.SA.Common.Display;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Common
@@ -27,6 +22,7 @@ namespace DDPM.SA.Common
         public string Value { get; set; }
         public string Result { get; set; }
         public string Message { get; set; }
+
         public CLI_RESPONSE()
         {
             Model = "N/A";
@@ -40,10 +36,12 @@ namespace DDPM.SA.Common
             Message = "N/A";
             GUID = new List<string>();
         }
+
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
+
         public string OutputLog(object o, CommandLineInput commandLineInput)
         {
             if (!string.IsNullOrEmpty(commandLineInput.LogPath))
@@ -52,7 +50,7 @@ namespace DDPM.SA.Common
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
                 }
-                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.     
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
                 {
                     sw.WriteLine(DateTime.Now);
                     sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
@@ -89,11 +87,12 @@ namespace DDPM.SA.Common
     {
         public string FWVer { get; set; } = "N/A";
     }
-	
-	public class ConnectedDevices : CLI_RESPONSE
+
+    public class ConnectedDevices : CLI_RESPONSE
     {
         //public string ID { get; set; }
         public string Manufacturer { get; set; }
+
         public string PID { get; set; }
         public string ManufacturingYear { get; set; }
         public string ManufacturingWeek { get; set; }
@@ -139,6 +138,7 @@ namespace DDPM.SA.Common
     {
         public string IsSupportedHDR { get; set; }
         public string HDR { get; set; }
+
         public CLI_Get_Properties_HDR_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
             this.Index = cli_RESPONSE.Index;
@@ -154,6 +154,7 @@ namespace DDPM.SA.Common
     {
         public string SupportedUSBCPrioritization { get; set; }
         public string USBCPrioritizationType { get; set; }
+
         public CLI_Get_Properties_USBCPrioritization_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
             this.Index = cli_RESPONSE.Index;
@@ -168,6 +169,7 @@ namespace DDPM.SA.Common
     public class CLI_Get_Properties_Orientation_RESPONSE : CLI_RESPONSE
     {
         public string Orientation { get; set; }
+
         public CLI_Get_Properties_Orientation_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
             this.Orientation = "N/A";
@@ -184,6 +186,7 @@ namespace DDPM.SA.Common
     {
         public string CurrentResolutionRefreshRate { get; set; }
         public string BitsPerPixel { get; set; }
+
         public CLI_Get_Properties_CurrentResolutionRefreshRate_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
             this.Index = cli_RESPONSE.Index;
@@ -194,9 +197,11 @@ namespace DDPM.SA.Common
             this.Model = cli_RESPONSE.Model;
         }
     }
+
     public class CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE : CLI_RESPONSE
     {
         public List<string> AllResolutionRefreshRate { get; set; }
+
         public CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
             AllResolutionRefreshRate = new List<string>();
@@ -212,6 +217,7 @@ namespace DDPM.SA.Common
     public class CLI_Get_Properties_SupportedOrientation_RESPONSE : CLI_RESPONSE
     {
         public List<string> SupportedOrientation { get; set; }
+
         public CLI_Get_Properties_SupportedOrientation_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
             SupportedOrientation = new List<string>();
@@ -227,6 +233,7 @@ namespace DDPM.SA.Common
     public class CLI_FWU_RESPONSE : CLI_RESPONSE
     {
         public List<string> FWUpdateRESPONSE { get; set; }
+
         public CLI_FWU_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
             FWUpdateRESPONSE = new List<string>();
@@ -239,12 +246,10 @@ namespace DDPM.SA.Common
         }
     }
 
-
     public class CLI_Set_Input_RESPONSE : CLI_RESPONSE
     {
         public string Set_ActiveInputSource { get; set; }
     }
-
 
     #region ColorProfile
 
@@ -252,7 +257,6 @@ namespace DDPM.SA.Common
     {
         public string Get_ActiveColorPresetList { get; set; }
     }
-
 
     public class CLI_Get_AllSupportedColorPresetList_RESPONSE : CLI_RESPONSE
     {
@@ -282,9 +286,10 @@ namespace DDPM.SA.Common
         public string Get_AllMonitorProfile { get; set; }
     }
 
-    #endregion
+    #endregion ColorProfile
 
     #region Pxp - Robert_Lin added 2024-6-12
+
     public class CLI_RESPONSE_PxpMode : CLI_RESPONSE
     {
         public string[] SupportedModes { get; set; }
@@ -299,7 +304,8 @@ namespace DDPM.SA.Common
         public string Sub2InputSource { get; set; }
         public string Sub3InputSource { get; set; }
     }
-    #endregion
+
+    #endregion Pxp - Robert_Lin added 2024-6-12
 
     public class Get_DeviceData : CLI_RESPONSE
     {
@@ -334,10 +340,12 @@ namespace DDPM.SA.Common
         public string OSD_language { get; set; }
         public string PID { get; set; }
     }
+
     public class Get_Capabilitystring : CLI_RESPONSE
     {
         public string CapabilityString { get; set; }
     }
+
     public class Apply_Configuration : CLI_RESPONSE
     {
         public string OptimalResolution { get; set; }
@@ -355,14 +363,15 @@ namespace DDPM.SA.Common
         public string AspectRatio { get; set; }
         public string USB_CPrioritization { get; set; }
         public string ColorManagement { get; set; }
+
         //public string SpeakerMicrophone_enable { get; set; }
         //public string SpeakerMicrophone_lock { get; set; }
         public string SpeakerMicrophone { get; set; }
+
         public string SpeakerVolume { get; set; }
         public string MicrophoneControl { get; set; }
         public string Uniformity { get; set; }
         public string PowerNap { get; set; }
         public string OSD_language { get; set; }
     }
-
 }

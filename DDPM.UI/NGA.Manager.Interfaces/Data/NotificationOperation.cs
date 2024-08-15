@@ -1,13 +1,13 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
-using System.Collections.Generic;
 using Microsoft;
 using Newtonsoft.Json;
 
@@ -130,12 +130,12 @@ public class NotificationOperation : INotificationOperation
     /// Constructor for NewNotificationAsync
     /// </summary>
     /// <param name="notificationParameters">NotificationParameters</param>
-    /// <param name="bodyParameters">BodyParameters</param>    
+    /// <param name="bodyParameters">BodyParameters</param>
     /// <param name="notificationDuration">notification duration</param>
     /// <param name="createDateTime">Create time</param>
     public NotificationOperation(NotificationParameters notificationParameters, BodyParameters bodyParameters,
         NotificationDuration notificationDuration, DateTime? createDateTime = null)
-    {        
+    {
         Requires.NotNull(bodyParameters, nameof(bodyParameters));
         BodyParameter = bodyParameters;
 
@@ -143,7 +143,7 @@ public class NotificationOperation : INotificationOperation
         InitializeSourceTypeAndOperationType(NotificationSourceType.NewNotification, NotificationOperationType.NewOperation);
     }
 
-    /// <summary> 
+    /// <summary>
     /// Constructor for NewNotificationWithButtonsAsync
     /// </summary>
     /// <param name="notificationParameters">NotificationParameters</param>
@@ -152,7 +152,7 @@ public class NotificationOperation : INotificationOperation
     /// <param name="createDateTime">Create time</param>
     public NotificationOperation(NotificationParameters notificationParameters, NewNotificationWithButtonsParameters parameters,
         NotificationDuration notificationDuration, DateTime? createDateTime = null)
-    {        
+    {
         Requires.NotNull(parameters, nameof(parameters));
         BodyParameter = parameters.BodyParameters;
         Button1Parameter = parameters.ButtonParameters[0];
@@ -171,7 +171,7 @@ public class NotificationOperation : INotificationOperation
     /// <param name="createDateTime">Create time</param>
     public NotificationOperation(NotificationParameters notificationParameters, NewProgressBarParameters parameters,
         NotificationDuration notificationDuration, DateTime? createDateTime = null)
-    {        
+    {
         Requires.NotNull(parameters, nameof(parameters));
         BodyParameter = parameters.BodyParameters;
         Progress = parameters.Progress;
@@ -191,7 +191,7 @@ public class NotificationOperation : INotificationOperation
     /// <param name="createDateTime">Create time</param>
     public NotificationOperation(NotificationParameters notificationParameters, NewProgressBarWithButtonsParameters parameters,
         NotificationDuration notificationDuration, DateTime? createDateTime = null)
-    {        
+    {
         Requires.NotNull(parameters, nameof(parameters));
         BodyParameter = parameters.BodyParameters;
         Progress = parameters.Progress;
@@ -212,7 +212,7 @@ public class NotificationOperation : INotificationOperation
     /// <param name="createDateTime">Create time</param>
     public NotificationOperation(NotificationParameters notificationParameters, UpdateProgressBarParameters parameters,
         DateTime? createDateTime = null)
-    {        
+    {
         Requires.NotNull(parameters, nameof(parameters));
         Progress = parameters.Progress;
         ValueStringOverride = parameters.ValueStringOverride;
@@ -230,9 +230,9 @@ public class NotificationOperation : INotificationOperation
     /// <param name="bindValues">Dictionary of key/value pairs for update values</param>
     /// <param name="createDateTime">Create time</param>
     public NotificationOperation(NotificationParameters notificationParameters, string xmlPayload,
-        NotificationDuration notificationDuration, Dictionary<string, string> bindValues = null, 
+        NotificationDuration notificationDuration, Dictionary<string, string> bindValues = null,
         DateTime? createDateTime = null)
-    {        
+    {
         Requires.NotNullOrWhiteSpace(xmlPayload, nameof(xmlPayload));
         XmlPayload = xmlPayload;
         BindValues = bindValues;
@@ -249,7 +249,7 @@ public class NotificationOperation : INotificationOperation
     /// <param name="createDateTime">Create time</param>
     public NotificationOperation(NotificationParameters notificationParameters, Dictionary<string, string> bindValues,
         DateTime? createDateTime = null)
-    {        
+    {
         Requires.NotNull(bindValues, nameof(bindValues));
         BindValues = bindValues;
 
@@ -263,7 +263,7 @@ public class NotificationOperation : INotificationOperation
     /// <param name="notificationParameters">NotificationParameters</param>
     /// <param name="notificationType"></param>
     /// <param name="createDateTime">Create time</param>
-    public NotificationOperation(NotificationParameters notificationParameters, 
+    public NotificationOperation(NotificationParameters notificationParameters,
         NotificationType notificationType = NotificationType.ActionCenter,
         DateTime? createDateTime = null)
     {
@@ -283,7 +283,7 @@ public class NotificationOperation : INotificationOperation
     /// </summary>
     /// <param name="notificationParameters">NotificationParameters</param>
     /// <param name="sysTrayPluginId">Systray PluginId</param>
-    /// <param name="customNotification">Custom string</param>    
+    /// <param name="customNotification">Custom string</param>
     /// <param name="notificationDuration">notification duration</param>
     /// <param name="notificationType">Notification type</param>
     /// <param name="createDateTime">Create time</param>
@@ -307,7 +307,7 @@ public class NotificationOperation : INotificationOperation
     /// </summary>
     /// <param name="notificationParameters">NotificationParameters</param>
     /// <param name="sysTrayPluginId">Systray PluginId</param>
-    /// <param name="customNotification">Custom string</param>    
+    /// <param name="customNotification">Custom string</param>
     /// <param name="notificationType">Notification type</param>
     /// <param name="createDateTime">Create time</param>
     public NotificationOperation(NotificationParameters notificationParameters, Guid sysTrayPluginId, string customNotification,
@@ -326,9 +326,9 @@ public class NotificationOperation : INotificationOperation
 
     #region Private methods
 
-    private void InitializeNewOperation(NotificationParameters notificationParameters, NotificationDuration notificationDuration, 
+    private void InitializeNewOperation(NotificationParameters notificationParameters, NotificationDuration notificationDuration,
         DateTime? createDateTime)
-    {        
+    {
         InitializeOperation(notificationParameters, createDateTime);
         Requires.NotNull(notificationDuration, nameof(notificationDuration));
 
@@ -346,7 +346,7 @@ public class NotificationOperation : INotificationOperation
         CreateDateTime = createDateTime ?? DateTime.Now;
     }
 
-    private void InitializeCustomOperation(NotificationOperationType notificationOperationType, NotificationType notificationType, 
+    private void InitializeCustomOperation(NotificationOperationType notificationOperationType, NotificationType notificationType,
         Guid sysTrayPluginId, string customNotification)
     {
         NotificationOperationType = notificationOperationType;

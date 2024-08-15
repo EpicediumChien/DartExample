@@ -12,10 +12,9 @@ namespace DDPM.UI.Module.Gaming
         private UserControl _rightView = new GamingRightView();
         private GamingViewModel vm = new GamingViewModel();
 
-
         //Robert_Lin 20240530-remove argument on ctor
         //public GamingModule(HomeDevice? SelectedHomeDevice)
-        public GamingModule(IModuleOwner? moduleOwner=null)
+        public GamingModule(IModuleOwner? moduleOwner = null)
         {
             //Robert_Lin 20240530-remove argument on ctor
             //this.SelectedHomeDevice = SelectedHomeDevice;
@@ -25,6 +24,7 @@ namespace DDPM.UI.Module.Gaming
             vm.MyModule = this;
             vm.Invoke_RefreshData();
         }
+
         public string ModuleName { get => "GamingModule"; }
 
         public UserControl? GetLeftView()
@@ -36,30 +36,34 @@ namespace DDPM.UI.Module.Gaming
         {
             return _rightView;
         }
+
         public HomeDevice? SelectedHomeDevice { get; set; }
+
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
             set => vm.ModuleOwner = value;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             vm.Invoke_RefreshData();
-
         }
+
         public void OnActivated()
         {
-
         }
+
         public void OnDeactivated()
         {
-
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

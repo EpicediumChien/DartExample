@@ -1,13 +1,9 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using DDPM.UI.Common;
+﻿using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
-using DDPM.UI.Common.Interfaces;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.HeadsetDeviceSettings
 {

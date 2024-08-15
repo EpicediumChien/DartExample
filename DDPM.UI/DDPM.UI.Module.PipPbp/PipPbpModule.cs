@@ -1,4 +1,3 @@
-
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
@@ -15,15 +14,16 @@ namespace DDPM.UI.Module.PipPbp
         private UserControl _rightView;
         private PipPbpViewModel vm = new PipPbpViewModel();
 
-        public PipPbpModule(IModuleOwner? moduleOwner=null)
+        public PipPbpModule(IModuleOwner? moduleOwner = null)
         {
             if (DdpmCommonHelper.MyConsole != null)
             {
-                vm.Log = (ILog?) DdpmCommonHelper.MyConsole.CreateLog("PXP");
+                vm.Log = (ILog?)DdpmCommonHelper.MyConsole.CreateLog("PXP");
             }
             _leftView = null;// new PipPbpLeftView();
             _rightView = new PipPbpRightView(vm);
         }
+
         public string ModuleName { get => "PipPbpModule"; }
 
         public UserControl? GetLeftView()
@@ -35,6 +35,7 @@ namespace DDPM.UI.Module.PipPbp
         {
             return _rightView;
         }
+
         public HomeDevice? SelectedHomeDevice { get; set; }
 
         private void PrepareInputSourceList()
@@ -49,6 +50,7 @@ namespace DDPM.UI.Module.PipPbp
         }
 
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
@@ -57,24 +59,28 @@ namespace DDPM.UI.Module.PipPbp
                 vm.ModuleOwner = value;
             }
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("PipPbpModule.OnSelectedHomeDeviceChanged");
             //vm.RefreshData();
         }
+
         public void OnActivated()
         {
             Trace.WriteLine("PipPbpModule.OnActivated");
             vm.OnActivated();
         }
+
         public void OnDeactivated()
         {
             Trace.WriteLine("PipPbpModule.OnDeactivated");
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

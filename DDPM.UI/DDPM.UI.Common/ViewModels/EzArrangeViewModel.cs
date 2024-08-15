@@ -7,15 +7,8 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using VcpCore.Common;
-
 
 namespace DDPM.UI.Common.ViewModels
 {
@@ -26,28 +19,27 @@ namespace DDPM.UI.Common.ViewModels
         private ICommand? _listViewItemClickCommand;
         private ILog _log;
 
-
         public EzArrangeViewModel(HomeDevice homeDev)
         {
             _homeDevice = homeDev;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
- 
+
             //Any item in SplitListView is clicked, will notify to below handler
             //Default handler, but currently it will be handled by RightView
             _listViewItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
 
             _splitItemEditCommand = new RelayCommand<SplitItem>(OnSplitItemEditCommand);
             Invoke_InitData();
-
         }
 
         private bool _isEaFunctionEnabled;
+
         public bool IsEaFunctionEnabled
         {
             get => _isEaFunctionEnabled;
             set
             {
-                bool res =  _deviceManagerSA.SetEAFunctionEnabled(value).Result;
+                bool res = _deviceManagerSA.SetEAFunctionEnabled(value).Result;
                 if (res)
                 {
                     _isEaFunctionEnabled = value;
@@ -56,6 +48,7 @@ namespace DDPM.UI.Common.ViewModels
         }
 
         #region Init Data
+
         private void Invoke_InitData()
         {
             BackgroundWorker bw = new BackgroundWorker
@@ -68,6 +61,7 @@ namespace DDPM.UI.Common.ViewModels
 
             bw.RunWorkerAsync();
         }
+
         private void DoWork_InitData(object? sender, DoWorkEventArgs e)
         {
 #if ENABLE_CALL_SA
@@ -77,9 +71,9 @@ namespace DDPM.UI.Common.ViewModels
 #endif
             e.Result = "OK";
         }
+
         private void RunWorkerCompleted_InitData(object sender, RunWorkerCompletedEventArgs e)
         {
-
             //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
             if (e.Cancelled)
             {
@@ -112,10 +106,12 @@ namespace DDPM.UI.Common.ViewModels
                 }
             }
         }
-        #endregion
+
+        #endregion Init Data
 
         #region Get/Set to SA
-        public void SetWorkSplit(int cellCount, char splitKey, List<double>? settings=null)
+
+        public void SetWorkSplit(int cellCount, char splitKey, List<double>? settings = null)
         {
             BackgroundWorker bw = new BackgroundWorker()
             {
@@ -138,9 +134,11 @@ namespace DDPM.UI.Common.ViewModels
             //IsBusy = true;
             bw.RunWorkerAsync();
         }
-#endregion
+
+        #endregion Get/Set to SA
 
         #region ListViewItem Click Commands
+
         public ICommand? ListViewItemClickCommand
         {
             get => _listViewItemClickCommand;
@@ -150,14 +148,14 @@ namespace DDPM.UI.Common.ViewModels
         public void OnListViewItemClicked(SplitItem spItem)
         {
             SelectedSplitItem = spItem;
-
- 
- 
         }
-        #endregion
+
+        #endregion ListViewItem Click Commands
 
         #region Selected Item
+
         private SplitItem? _selectedSplitItem;
+
         public SplitItem? SelectedSplitItem
         {
             get => _selectedSplitItem;
@@ -186,23 +184,28 @@ namespace DDPM.UI.Common.ViewModels
                 }
             }
         }
-        #endregion
+
+        #endregion Selected Item
 
         #region SplitItem Edit Command
+
         private ICommand? _splitItemEditCommand;
+
         public ICommand? SplitItemEditCommand
         {
             get => _splitItemEditCommand;
             set => SetProperty(ref _splitItemEditCommand, value);
         }
+
         public void OnSplitItemEditCommand(SplitItem splitItem)
         {
             //Not handled here, it will be handled by HandleSplitItemEditCommand() in RightView
         }
 
-        #endregion
+        #endregion SplitItem Edit Command
 
         #region Log
+
         public void CreateLog(IConsole console, string logName)
         {
             _log = console.CreateLog(logName);
@@ -215,6 +218,7 @@ namespace DDPM.UI.Common.ViewModels
                 _log.Info(message);
             }
         }
-        #endregion
+
+        #endregion Log
     }
 }

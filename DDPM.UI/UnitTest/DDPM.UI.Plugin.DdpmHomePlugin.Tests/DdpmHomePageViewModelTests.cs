@@ -1,20 +1,12 @@
 ﻿using DDPM.SA.Common;
-using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
-using DDPM.UI.Plugin.DdpmHomePlugin.Model;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using Microsoft.VisualBasic.Logging;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using VcpCore.Common;
 
@@ -30,7 +22,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         private IConsole? console;
         private Mock<ILog>? logMock;
         private ILog? log;
-        private PrivateObject?privateObject;
+        private PrivateObject? privateObject;
 
         [SetUp]
         public void Setup()
@@ -42,15 +34,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             logMock = new Mock<ILog>();
             log = logMock.Object;
             ddpmHomePageViewModel = new DdpmHomePageViewModel(console, log);
-            privateObject=new PrivateObject(ddpmHomePageViewModel);
-            
+            privateObject = new PrivateObject(ddpmHomePageViewModel);
         }
 
         [Test]
         public void TestConstructor_DdpmHomePageViewModel()
         {
             Assert.That(ddpmHomePageViewModel, Is.Not.Null);
-            Assert.That(privateObject.GetFieldOrProperty("_console"),Is.Not.Null);
+            Assert.That(privateObject.GetFieldOrProperty("_console"), Is.Not.Null);
             Assert.That(privateObject.GetFieldOrProperty("_log"), Is.Not.Null);
             Assert.That(privateObject.GetFieldOrProperty("_connectButtonClickCommand"), Is.Not.Null);
         }
@@ -61,7 +52,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             Assert.That(ddpmHomePageViewModel.Log, Is.EqualTo(privateObject.GetFieldOrProperty("_log")));
         }
 
-
         [Test]
         public void TestHomeDevices()
         {
@@ -69,7 +59,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             ddpmHomePageViewModel.HomeDevices = homeDevices;
             Assert.That(ddpmHomePageViewModel.HomeDevices, Is.EqualTo(homeDevices));
         }
-
 
         [Test]
         public void TestSelectedHomeDevice()
@@ -82,16 +71,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestHomeDeviceCount()
         {
-            var homeDevices = new ObservableCollection<HomeDevice>() {  new HomeDevice() };
+            var homeDevices = new ObservableCollection<HomeDevice>() { new HomeDevice() };
             ddpmHomePageViewModel.HomeDevices = homeDevices;
             Assert.That(ddpmHomePageViewModel.HomeDeviceCount, Is.EqualTo(homeDevices.Count));
         }
 
-
         [Test]
         public void TestPrepareMonitorInfos()
         {
-            List<MonitorInfo> monitorInfos=new List<MonitorInfo>();
+            List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
             try
             {
                 ddpmHomePageViewModel.PrepareMonitorInfos(monitorInfos);
@@ -106,7 +94,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestPrepareDeviceInfos()
         {
-            List<DeviceInfo> deviceInfos = new List<DeviceInfo> ();
+            List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
             try
             {
                 ddpmHomePageViewModel.PrepareDeviceInfos(deviceInfos);
@@ -150,8 +138,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestConnectButtonClickCommand()
         {
-            var ICommandMock=new Mock<ICommand>();
-            var ConnectButtonClickCommand=ICommandMock.Object;
+            var ICommandMock = new Mock<ICommand>();
+            var ConnectButtonClickCommand = ICommandMock.Object;
             ddpmHomePageViewModel.ConnectButtonClickCommand = ConnectButtonClickCommand;
             Assert.That(ddpmHomePageViewModel.ConnectButtonClickCommand, Is.EqualTo(ConnectButtonClickCommand));
         }
@@ -185,14 +173,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             }
         }
 
-
         [Test]
         public void TestcxItem()
         {
             ddpmHomePageViewModel.cxItem = 1.0;
             Assert.That(ddpmHomePageViewModel.cxItem, Is.EqualTo(1.0));
         }
-        
-
     }
 }

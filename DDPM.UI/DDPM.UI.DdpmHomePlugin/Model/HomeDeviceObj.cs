@@ -1,11 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using VcpCore.Common;
 
@@ -20,11 +14,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Model
 
         private MonitorInfo? _monitorInfo;
 
-
         public HomeDeviceObj_Unused()
         {
-                
         }
+
         public ImageSource? DeviceImage
         {
             get => _deviceImage;
@@ -39,11 +32,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Model
 
         public eDeviceCategory DeviceCategory
         {
-            get => _deviceCategory; 
+            get => _deviceCategory;
             set => SetProperty(ref _deviceCategory, value);
         }
 
         #region RWD Adjustment
+
         public double NormalWidth
         {
             get => _normalWidth;
@@ -69,11 +63,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Model
             {
                 return NormalWidth * 1.1;
             }
-
         }
-        #endregion
 
-
+        #endregion RWD Adjustment
 
         public MonitorInfo? MonitorInfo
         {

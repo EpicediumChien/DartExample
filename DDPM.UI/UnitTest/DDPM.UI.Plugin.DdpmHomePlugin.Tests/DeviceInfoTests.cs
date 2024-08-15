@@ -1,6 +1,5 @@
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.DdpmHomePlugin.Model;
-using System.Windows.Media;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
 {
@@ -12,7 +11,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [SetUp]
         public void Setup()
         {
-             deviceInfo_Unused = new DeviceInfo_Unused();
+            deviceInfo_Unused = new DeviceInfo_Unused();
         }
 
         [Test]
@@ -38,10 +37,5 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             deviceInfo_Unused.DeviceCategory = deviceCategory;
             Assert.That(deviceInfo_Unused.DeviceCategory, Is.EqualTo(deviceCategory));
         }
-
-
-
-
-
     }
 }

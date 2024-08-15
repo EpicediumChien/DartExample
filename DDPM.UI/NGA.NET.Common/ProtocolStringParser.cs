@@ -1,15 +1,16 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.Common;
 using Microsoft;
 using NGA.NET.Common.Helpers;
-using System;
 using System.Text;
 using System.Text.Json;
 
@@ -79,7 +80,7 @@ namespace NGA.NET.Common
                 Requires.NotNullOrWhiteSpace(base64EncodedParam, nameof(base64EncodedParam));
 
                 var rootObject = JsonSerializer.Deserialize(Base64Helper.Base64Decode(base64EncodedParam), typeof(Root));
-                if (rootObject is Root { ModelVersion: Versions.ModelVersion1 } root 
+                if (rootObject is Root { ModelVersion: Versions.ModelVersion1 } root
                     && root.ModelJson != null)
                 {
                     return root;
@@ -88,8 +89,8 @@ namespace NGA.NET.Common
             catch (FormatException ex)
             {
                 log?.Error(ex, $"{nameof(GetRootFromEncodedString)} - {nameof(FormatException)}");
-            } 
-            catch(JsonException ex)
+            }
+            catch (JsonException ex)
             {
                 log?.Error(ex, $"{nameof(GetRootFromEncodedString)} - {nameof(JsonException)}");
             }

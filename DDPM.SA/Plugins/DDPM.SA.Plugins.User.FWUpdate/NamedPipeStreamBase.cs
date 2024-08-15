@@ -70,6 +70,7 @@
         }
 
         public abstract void SendMessage(byte[] message);
+
         public abstract void SendMessage(string message);
 
         public string PipeName

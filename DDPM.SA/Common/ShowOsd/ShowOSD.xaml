@@ -4,11 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.ShowOSD" Background="Gold"
-        mc:Ignorable="d"  ShowInTaskbar="False" WindowStartupLocation="Manual" Topmost="True" WindowStyle="None" AllowsTransparency="True" 
+        mc:Ignorable="d"  ShowInTaskbar="False" WindowStartupLocation="Manual" Topmost="True" WindowStyle="None" AllowsTransparency="True"
         Title="" Height="{Binding ElementName=tbShowText, Path=ActualHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Width="{Binding ElementName=tbShowText, Path=ActualWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }"  Loaded="Window_Loaded">
     <Grid>
         <TextBlock x:Name="tbShowText" Text="Standard" Foreground="White" FontSize="80" FontFamily="Arial" FontWeight="Bold" />
     </Grid>
-    
-    
 </Window>

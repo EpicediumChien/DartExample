@@ -1,23 +1,11 @@
-﻿using DDPM.SA.Common;
-using DDPM.SA.Common.Display;
+﻿using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Windows.System;
 
 namespace DDPM.UI.Module.DisplayHotkeys
@@ -27,26 +15,26 @@ namespace DDPM.UI.Module.DisplayHotkeys
     /// </summary>
     public partial class DisplayHotkeysRightView : UserControl
     {
-        string _strTbToggleInputSourcePreviousKey = string.Empty;
-        string _strTbFavoriteInputSourcePreviousKey = string.Empty;
-        string _strTbSwitchInputSourcePreviousKey = string.Empty;
-        string _strTbSwapPIPPBPInputSourcePreviousKey = string.Empty;
-        string _strTbChangePIPPositionPreviousKey = string.Empty;
-        
-        List<VirtualKey> ToggleInputSourceNewKeys = new List<VirtualKey>();
-        List<VirtualKey> FavoriteInputSourceNewKeys = new List<VirtualKey>();
-        List<VirtualKey> SwitchInputSourceNewKeys = new List<VirtualKey>();
-        List<VirtualKey> SwapPIPPBPInputSourceNewKeys = new List<VirtualKey>();
-        List<VirtualKey> ChangePIPPositionNewKeys = new List<VirtualKey>();
-        
+        private string _strTbToggleInputSourcePreviousKey = string.Empty;
+        private string _strTbFavoriteInputSourcePreviousKey = string.Empty;
+        private string _strTbSwitchInputSourcePreviousKey = string.Empty;
+        private string _strTbSwapPIPPBPInputSourcePreviousKey = string.Empty;
+        private string _strTbChangePIPPositionPreviousKey = string.Empty;
 
-        bool updateKeys = false;
-        List<VirtualKey> newKeys = new List<VirtualKey>();
+        private List<VirtualKey> ToggleInputSourceNewKeys = new List<VirtualKey>();
+        private List<VirtualKey> FavoriteInputSourceNewKeys = new List<VirtualKey>();
+        private List<VirtualKey> SwitchInputSourceNewKeys = new List<VirtualKey>();
+        private List<VirtualKey> SwapPIPPBPInputSourceNewKeys = new List<VirtualKey>();
+        private List<VirtualKey> ChangePIPPositionNewKeys = new List<VirtualKey>();
+
+        private bool updateKeys = false;
+        private List<VirtualKey> newKeys = new List<VirtualKey>();
 
         private DisplayHotkeysViewModel vm
         {
-            get=> (DisplayHotkeysViewModel)DataContext;
+            get => (DisplayHotkeysViewModel)DataContext;
         }
+
         public DisplayHotkeysRightView(DisplayHotkeysViewModel vm)
         {
             InitializeComponent();
@@ -64,7 +52,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref ToggleInputSourceNewKeys);
             vm.ToggleInputSourceKey = swHortcutText;*/
             e.Handled = true;
-        } 
+        }
 
         private void tbToggleInputSource_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
@@ -137,10 +125,12 @@ namespace DDPM.UI.Module.DisplayHotkeys
             vm.ChangePIPPositionKey = swHortcutText;*/
             e.Handled = true;
         }
+
         private void tbChangePIPPosition_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             e.Handled = true;
         }
+
         private void tbToggleInputSource_GotFocus(object sender, RoutedEventArgs e)
         {
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
@@ -152,6 +142,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 vm.ToggleInputSourceKey = string.Empty;
             }
         }
+
         private void tbFavoriteInputSource_GotFocus(object sender, RoutedEventArgs e)
         {
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
@@ -163,6 +154,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 vm.FavoriteInputSourceKey = string.Empty;
             }
         }
+
         private void tbSwitchInputSource_GotFocus(object sender, RoutedEventArgs e)
         {
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
@@ -186,6 +178,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 vm.SwapPIPPBPInputSourceKey = string.Empty;
             }
         }
+
         private void tbChangePIPPosition_GotFocus(object sender, RoutedEventArgs e)
         {
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
@@ -204,7 +197,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             {
                 //save hotkey
                 // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid,hotkeyInfo).Result;
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid, hotkeyInfo).Result;
                 vm.Invoke_RefreshData();
             }
             else
@@ -214,15 +207,19 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     case HotkeyType.ToggleInputSource:
                         vm.ToggleInputSourceKey = prStr;
                         break;
+
                     case HotkeyType.FavoriteInputSource:
                         vm.FavoriteInputSourceKey = prStr;
                         break;
+
                     case HotkeyType.SwitchInputSource:
                         vm.SwitchInputSourceKey = prStr;
                         break;
+
                     case HotkeyType.SwapIputPIPPBP:
                         vm.SwapPIPPBPInputSourceKey = prStr;
                         break;
+
                     case HotkeyType.ChangePIPPosition:
                         vm.ChangePIPPositionKey = prStr;
                         break;
@@ -231,28 +228,28 @@ namespace DDPM.UI.Module.DisplayHotkeys
             keys.Clear();
         }
 
-
-        private void SaveHotkeysSetting(string preKey,string crtKey,HotkeyType hotkeyType, ref List<VirtualKey> keys,string des)
+        private void SaveHotkeysSetting(string preKey, string crtKey, HotkeyType hotkeyType, ref List<VirtualKey> keys, string des)
         {
             List<HotkeyInfo> hotkeyInfoList = new List<HotkeyInfo>();
             HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid).Result;
             List<HotkeySettings> List = new List<HotkeySettings>();
-            List<InputSourceObj> inputSourceList= new List<InputSourceObj>();
+            List<InputSourceObj> inputSourceList = new List<InputSourceObj>();
 
             switch (hotkeyType)
             {
                 case HotkeyType.FavoriteInputSource:
                     inputSourceList.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputDisplayText));
                     break;
+
                 case HotkeyType.SwitchInputSource:
                     inputSourceList.Add(new InputSourceObj(vm.SwitchInput1_Selected.inputDisplayText));
                     inputSourceList.Add(new InputSourceObj(vm.SwitchInput2_Selected.inputDisplayText));
-                    break ;
+                    break;
             }
 
-           /* _FavoriteInputSelect = vm.InputsList.Find(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
-            _swapInput1Select = _inputsList.Find(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
-            _swapInput2Select = _inputsList.Where(x => x.inputDisplayText != _swapInput1Select.inputDisplayText).First();*/
+            /* _FavoriteInputSelect = vm.InputsList.Find(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
+             _swapInput1Select = _inputsList.Find(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
+             _swapInput2Select = _inputsList.Where(x => x.inputDisplayText != _swapInput1Select.inputDisplayText).First();*/
 
             HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(hotkeyType));
             var hotkeys = keys.Distinct().ToList();
@@ -276,7 +273,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         InputSource = inputSourceList
                     };
 
-                    if (curHotkey.HotkeyInfo.Count != 0) {
+                    if (curHotkey.HotkeyInfo.Count != 0)
+                    {
                         curHotkey.HotkeyInfo.Add(newhotkeyInfo);
                         List.Add(curHotkey);
                     }
@@ -318,6 +316,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
+
         private void tbFavoriteInputSource_LostFocus(object sender, RoutedEventArgs e)
         {
             if (FavoriteInputSourceNewKeys.Count == 0)
@@ -360,7 +359,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 hotkeyInfo.Hotkey = SwitchInputSourceNewKeys.Distinct().ToList();
                 hotkeyInfo.InputSource.Add(new InputSourceObj(vm.SwitchInput1_Selected.inputDisplayText));
                 hotkeyInfo.InputSource.Add(new InputSourceObj(vm.SwitchInput2_Selected.inputDisplayText));
-                doLostFocus(hotkeyInfo,_strTbSwitchInputSourcePreviousKey, vm.SwitchInputSourceKey, ref SwitchInputSourceNewKeys);
+                doLostFocus(hotkeyInfo, _strTbSwitchInputSourcePreviousKey, vm.SwitchInputSourceKey, ref SwitchInputSourceNewKeys);
                 SwitchInputSourceNewKeys.Clear();
             }
             //hook
@@ -383,7 +382,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.SwapIputPIPPBP;
                 hotkeyInfo.Hotkey = SwapPIPPBPInputSourceNewKeys.Distinct().ToList();
-                doLostFocus(hotkeyInfo,_strTbSwapPIPPBPInputSourcePreviousKey, vm.SwapPIPPBPInputSourceKey, ref SwapPIPPBPInputSourceNewKeys);
+                doLostFocus(hotkeyInfo, _strTbSwapPIPPBPInputSourcePreviousKey, vm.SwapPIPPBPInputSourceKey, ref SwapPIPPBPInputSourceNewKeys);
                 SwapPIPPBPInputSourceNewKeys.Clear();
             }
             //hook
@@ -412,7 +411,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
-        
+
         private void setUXTextBoxPreviewKey(object sender, KeyEventArgs e)
         {
             e.Handled = true;
@@ -487,7 +486,6 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 {
                     newKeys.Add(thisVirtualKey);
                 }*/
-
             }
             string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref newKeys);
@@ -498,20 +496,23 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 case "tbToggleInputSource":
                     ToggleInputSourceNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbFavoriteInputSource":
                     FavoriteInputSourceNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbSwitchInputSource":
                     SwitchInputSourceNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbSwapPIPPBPInputSource":
                     SwapPIPPBPInputSourceNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbChangePIPPosition":
                     ChangePIPPositionNewKeys.AddRange(newKeys);
                     break;
             }
         }
-
     }
 }

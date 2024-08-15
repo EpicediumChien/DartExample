@@ -1,17 +1,7 @@
-﻿using DDPM.UI.Common;
-using DDPM.UI.Module.Color;
-using DDPM.UI.Plugin.DisplayPlugin.ViewModels;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.Common;
+﻿using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using Microsoft.VisualBasic.Logging;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Tests
 {
@@ -40,7 +30,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             console = consoleMock.Object;
             dispatcherWrapperMock = new Mock<IDispatcherWrapper>();
             dispatcherWrapper = dispatcherWrapperMock.Object;
-            pluginManagerMock=new Mock<IPluginManager>();
+            pluginManagerMock = new Mock<IPluginManager>();
             pluginManager = pluginManagerMock.Object;
             _logMock = new Mock<ILog>();
             _log = _logMock.Object;
@@ -53,7 +43,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
         public void TestConstructor_InitializesComponent()
         {
             var _console = privateObject.GetFieldOrProperty("_console");
-            var _pluginManager= privateObject.GetFieldOrProperty("_pluginManager");
+            var _pluginManager = privateObject.GetFieldOrProperty("_pluginManager");
             Assert.That(displayPlugin, Is.Not.Null);
             Assert.That(_console, Is.EqualTo(console));
             Assert.That(_pluginManager, Is.EqualTo(pluginManager));
@@ -71,7 +61,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
 
         [Test]
@@ -86,7 +75,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
 
         //[Test]
@@ -103,7 +91,5 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
         //    }
 
         //}
-
-
     }
 }

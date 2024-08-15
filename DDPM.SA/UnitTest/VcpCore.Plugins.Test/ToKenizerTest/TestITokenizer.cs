@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VcpCore.Plugins.Test.ToKenizerTest
+﻿namespace VcpCore.Plugins.Test.ToKenizerTest
 {
     public class TestITokenizer
     {
@@ -17,7 +11,8 @@ namespace VcpCore.Plugins.Test.ToKenizerTest
             Assert.IsNotNull(tokens);
             Assert.That(count, Is.EqualTo(tokens.Count()));
         }
-        class MockTokenizer : ITokenizer
+
+        private class MockTokenizer : ITokenizer
         {
             public IEnumerable<IToken> GetTokens(string inputString)    // 创建一个模拟的 ITokenizer 实现类
             {
@@ -28,7 +23,5 @@ namespace VcpCore.Plugins.Test.ToKenizerTest
                 };
             }
         }
-
-
     }
 }

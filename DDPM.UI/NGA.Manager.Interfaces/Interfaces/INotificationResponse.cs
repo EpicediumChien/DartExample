@@ -1,13 +1,13 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System.Threading;
-using System.Threading.Tasks;
 using Dell.Client.Framework.Common;
 
 namespace NGA.Manager.Interfaces;
@@ -18,7 +18,7 @@ namespace NGA.Manager.Interfaces;
 public interface INotificationResponse : IFrameworkPlugin
 {
     /// <summary>
-    /// NotificationActivated: Notification activated (from user interaction) by NGA.Systray.NotificationPlugin 
+    /// NotificationActivated: Notification activated (from user interaction) by NGA.Systray.NotificationPlugin
     /// </summary>
     /// <param name="userAction">User action</param>
     /// <param name="cancellationToken">cancellation token</param>

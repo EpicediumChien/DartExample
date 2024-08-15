@@ -1,23 +1,25 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.Common;
-using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.Common;
+using Dell.Client.Framework.UX.Common.DataModel;
+using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Console;
+using Dell.Client.Framework.UX.WPF.ResourceManager;
+using Microsoft;
+using NGA.BaseClientCore;
 using NGA.Common;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics;
 using System.Windows;
-using Microsoft;
-using Dell.Client.Framework.UX.Common.DataModel;
-using Dell.Client.Framework.UX.WPF.ResourceManager;
-using NGA.BaseClientCore;
 
 namespace NGA.ThickClientCore
 {
@@ -77,6 +79,7 @@ namespace NGA.ThickClientCore
             //Ensure Thick Client has only one instance running.
             _instanceMutex = new Mutex(false, "Local\\{" + thickClientUniqueGuid + "}", out _bFirstInstance);
         }
+
         #endregion
 
         #region Virtual and abstract methods
@@ -88,7 +91,7 @@ namespace NGA.ThickClientCore
 
         /// <summary>
         /// Gets Splash screen instance
-        /// </summary>       
+        /// </summary>
         protected abstract SplashScreen? GetSplashScreen();
 
         /// <summary>
@@ -164,7 +167,7 @@ namespace NGA.ThickClientCore
             catch (Exception ex)
             {
                 EventLogHelper.WriteEventLog(
-                    $"{string.Format(NGA.Resources.Resources.MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT, _applicationName)} - Unable to set the Thick Client core styles. {ex}", 
+                    $"{string.Format(NGA.Resources.Resources.MYDELL_APP_THICKCLIENT_CONSOLE_WINDOWTEXT, _applicationName)} - Unable to set the Thick Client core styles. {ex}",
                     EventLogEntryType.Error);
             }
 
@@ -300,7 +303,7 @@ namespace NGA.ThickClientCore
         }
 
         /// <summary>
-        /// Starts Systray if it's not running and Updates the status if Thick client has started it. 
+        /// Starts Systray if it's not running and Updates the status if Thick client has started it.
         /// </summary>
         private void ValidateAndStartSystray()
         {

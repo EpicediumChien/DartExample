@@ -1,14 +1,15 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System.Linq;
-using System.Management;
 using Dell.Client.Framework.Common;
+using System.Management;
 
 namespace NGA.Common.Wmi
 {
@@ -34,7 +35,7 @@ namespace NGA.Common.Wmi
         public IBiosInfo? Discover(string computerName)
         {
             using var wmi = new WmiHelper("root\\cimv2", "Win32_BIOS", computerName);
-            if (wmi.ObjectCount == 0) 
+            if (wmi.ObjectCount == 0)
                 return null;
 
             var m = wmi.Collection.OfType<ManagementObject>().First();

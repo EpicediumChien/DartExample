@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
@@ -18,7 +17,6 @@ namespace VcpCore.Common
         public static extern bool GetMonitorInfo(HandleRef hmonitor, [In, Out] MonitorInfoEx info);
 
         [DllImport("user32.dll", SetLastError = true)]
-        //public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lpRect, MonitorEnumProc callback, int dwData);
         public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumDelegate lpfnEnum, IntPtr dwData);
 
         [DllImport("user32.dll", CharSet = CharSet.Ansi)]
@@ -58,6 +56,7 @@ namespace VcpCore.Common
             public Rect rcMonitor = new Rect();
             public Rect rcWork = new Rect();
             public int dwFlags = 0;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
             public string szDevice;
         }
@@ -231,6 +230,7 @@ namespace VcpCore.Common
         public const int ENUM_CURRENT_SETTINGS = -1;
 
         #region DisplayConfig APIs
+
         [DllImport("user32")]
         public static extern int GetDisplayConfigBufferSizes(QDC flags, out int numPathArrayElements, out int numModeInfoArrayElements);
 
@@ -251,9 +251,11 @@ namespace VcpCore.Common
 
         [DllImport("user32.dll")]
         public static extern int DisplayConfigSetDeviceInfo(ref DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE requestPacket);
-        #endregion
+
+        #endregion DisplayConfig APIs
 
         #region DisplayConfig Enum/Sturct
+
         public enum DISPLAYCONFIG_DEVICE_INFO_TYPE
         {
             DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME = 1,
@@ -267,8 +269,10 @@ namespace VcpCore.Common
             DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO = 9,
             DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE = 10,
             DISPLAYCONFIG_DEVICE_INFO_GET_SDR_WHITE_LEVEL = 11,
+
             //Undocumented device info types
             DISPLAYCONFIG_DEVICE_INFO_GET_DPI_SCALE = -3,
+
             DISPLAYCONFIG_DEVICE_INFO_SET_DPI_SCALE = -4
         }
 
@@ -416,6 +420,7 @@ namespace VcpCore.Common
             public int HighPart;
 
             public long Value => ((long)HighPart << 32) | LowPart;
+
             public override string ToString() => Value.ToString();
         }
 
@@ -528,6 +533,7 @@ namespace VcpCore.Common
         public struct DISPLAYCONFIG_SOURCE_DEVICE_NAME
         {
             public DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
             public string viewGdiDeviceName;
         }
@@ -547,8 +553,10 @@ namespace VcpCore.Common
             public ushort edidManufactureId; // Hex.
             public ushort edidProductCodeId; // int
             public uint connectorInstance;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
             public string monitorFriendlyDeviceName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
             public string monitorDevicePat;
         }
@@ -559,7 +567,6 @@ namespace VcpCore.Common
             public bool advancedColorEnabled;
         }
 
-
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
@@ -568,15 +575,17 @@ namespace VcpCore.Common
             public int right;
             public int bottom;
         }
-        #endregion
+
+        #endregion DisplayConfig Enum/Sturct
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public extern static int FormatMessage(int flag, ref IntPtr source, int msgid, int langid, ref string buff, int size, ref IntPtr args);
+        public static extern int FormatMessage(int flag, ref IntPtr source, int msgid, int langid, ref string buff, int size, ref IntPtr args);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
         public static extern long GetLastError();
 
         private static readonly char[] TrimChar = { '\r', '\n' };// Dean 0626 SAST issue
+
         public static string GetLastErrMsg()
         {
             IntPtr TempPtr = IntPtr.Zero;
@@ -596,6 +605,7 @@ namespace VcpCore.Common
         /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern int ChangeDisplaySettingsEx(string lpszDeviceName, ref DEVMODE lpDevMode, IntPtr hwnd, ChangeDisplaySettingsFlags dwflags, IntPtr lParam);
+
         /// <summary>
         /// 設定延伸模式
         /// </summary>
@@ -633,7 +643,6 @@ namespace VcpCore.Common
         public const int CDS_RESET_EX = 0x20000000;
         public const int CDS_NORESET = 0x10000000;
 
-
         public const int DMDO_DEFAULT = 0;
         public const int DMDO_90 = 1;
         public const int DMDO_180 = 2;
@@ -654,6 +663,7 @@ namespace VcpCore.Common
             CDS_RESET_EX = 0x20000000,
             CDS_NORESET = 0x10000000
         }
+
         [Flags]
         public enum SetDisplayConfigFlags : uint
         {
@@ -663,8 +673,9 @@ namespace VcpCore.Common
             SDC_TOPOLOGY_EXTERNAL = 0x00000008,
             SDC_APPLY = 0x00000080
         }
+
         #region DisplayConfig Enum/Sturct
-        
+
         [StructLayout(LayoutKind.Sequential)]
         public struct DISPLAYCONFIG_TARGET_PREFERRED_MODE
         {
@@ -673,7 +684,9 @@ namespace VcpCore.Common
             public int height;
             public DISPLAYCONFIG_TARGET_MODE targetMode;
         }
-        #endregion
+
+        #endregion DisplayConfig Enum/Sturct
+
         [DllImport("user32")]
         public static extern int QueryDisplayConfig(QDC flags, out int numPathArrayElements, [Out] DISPLAYCONFIG_PATH_INFO[] pathInfoArray, out int modeInfoArrayElements, [Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID id);
 
@@ -696,11 +709,13 @@ namespace VcpCore.Common
             CDS_RESET_EX = 0x20000000,
             CDS_NORESET = 0x10000000
         }
+
         public enum MC_VCP_CODE_TYPE
         {
             MC_MOMENTARY,
             MC_SET_PARAMETER
         }
+
         public const int EDD_GET_DEVICE_INTERFACE_NAME = 1;
     }
 }

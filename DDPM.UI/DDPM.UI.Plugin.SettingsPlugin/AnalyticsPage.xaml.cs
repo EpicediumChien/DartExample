@@ -1,25 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Plugin.SettingsPlugin.Tests")]
+
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
     internal class AnalyticsViewModel : ObservableObject, INotifyPropertyChanged
@@ -111,10 +100,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
         }
 
-
         public AnalyticsViewModel()
         {
-
         }
 
         private void NotifyPropertyChanged(string info)
@@ -125,6 +112,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
         }
     }
+
     /// <summary>
     /// Interaction logic for AnalyticsPage.xaml
     /// </summary>
@@ -152,7 +140,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
             catch (Exception)
             {
-
             }
         }
 

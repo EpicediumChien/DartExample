@@ -1,20 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DDPM.UI.Common.Interfaces;
 using DDPM.SA.Common;
-using System;
-using System.Collections.Generic;
+using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using DDPM.UI.Common;
-using Windows.Graphics.Display;
-using System.Windows.Media;
-using System.Windows.Xps.Packaging;
 using System.Diagnostics;
+using System.Windows;
+using System.Windows.Media;
 
 namespace DDPM.UI.Module.InputSource
 {
@@ -22,6 +14,7 @@ namespace DDPM.UI.Module.InputSource
     {
         public string inputSource = String.Empty;
         public InputSourceModule inputSourceModule { get; set; }
+
         public string inputDisplayText
         {
             get
@@ -30,6 +23,7 @@ namespace DDPM.UI.Module.InputSource
             }
         }
     }
+
     public class InputSourceViewModel : ObservableObject
     {
         private InputSourceList _selectInput = new InputSourceList();
@@ -38,20 +32,24 @@ namespace DDPM.UI.Module.InputSource
 
         public IModuleOwner? ModuleOwner { get; set; }
         public InputSourceModule InputSourceModule { get; set; }
+
         //public int ItemsCollection_SelectedIndex { get; set; }
         //public ObservableCollection<string> ItemsCollection { get; set; }
         public ObservableCollection<Item> items { get; set; }
-        public Dictionary<string, InputInfo> inputList {  get; set; }
+
+        public Dictionary<string, InputInfo> inputList { get; set; }
         public List<string> usbUpstream { get; set; } = new List<string>();
         public Visibility IsUSBH { get; set; } = Visibility.Collapsed;
         public string NameHWidth { get; set; } = "0.5*";
         public string USBHWidth { get; set; } = "1.5*";
         public string NameHColumn { get; set; } = "1";
+
         public List<InputSourceList> InputsList
         {
             get => _inputsList;
             set => SetProperty(ref _inputsList, value);
         }
+
         public InputSourceList Items_Selected
         {
             get => _selectInput;
@@ -73,19 +71,25 @@ namespace DDPM.UI.Module.InputSource
                 }
             }
         }
+
         public ImageSource? InputSourceImage
         {
             get => _inputImage;
             set => SetProperty(ref _inputImage, value);
         }
+
         #region UI Enable Flags
+
         private bool _isBusy = false;
+
         public bool IsBusy
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        #endregion
+
+        #endregion UI Enable Flags
+
         public void Invoke_RefreshData()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -98,6 +102,7 @@ namespace DDPM.UI.Module.InputSource
             bw.RunWorkerAsync(); //myArg is the optional argument
             IsBusy = true;
         }
+
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try //2024-06-19 Elie, add try catch to get exception.
@@ -245,11 +250,10 @@ namespace DDPM.UI.Module.InputSource
             }
             catch (Exception)
             {
-
                 ;
             }
-            
         }
+
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process

@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.Common;
@@ -16,6 +18,7 @@ namespace NGA.ThickClientCore
     /// Custom thick client functionality provided to all plugins
     /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
+
     public sealed class ThickClientConsole : IThickClientConsole, IDisposable
     {
         private readonly ILog? _log;
@@ -50,7 +53,7 @@ namespace NGA.ThickClientCore
         /// <param name="dispatcherWrapper"></param>
         public ThickClientConsole(IPluginManager pluginManager, ILogFactory logFactory, IDispatcherWrapper dispatcherWrapper)
         {
-            _log = logFactory.CreateLogger("ThickCon",typeof(ThickClientConsole));
+            _log = logFactory.CreateLogger("ThickCon", typeof(ThickClientConsole));
             _pluginManager = pluginManager;
             _dispatcherWrapper = dispatcherWrapper;
 
@@ -101,7 +104,7 @@ namespace NGA.ThickClientCore
         /// </summary>
         /// <param name="titleText">Tile TitleText</param>
         /// <param name="region">region the tile to be placed</param>
-        /// <returns>TileModel</returns>   
+        /// <returns>TileModel</returns>
         public TileModel? FindTileOnHomePage(string titleText, Guid? region = null)
         {
             region ??= Guid.Empty;
@@ -246,7 +249,7 @@ namespace NGA.ThickClientCore
 
         private void GetHomePagePlugin()
         {
-            if (_homePagePlugin != null) 
+            if (_homePagePlugin != null)
                 return;
 
             _log?.Trace($"{nameof(GetHomePagePlugin)} - {nameof(_homePagePlugin)} is null, Finding {nameof(_homePagePlugin)} in {nameof(_pluginManager)}");
@@ -255,7 +258,7 @@ namespace NGA.ThickClientCore
 
         private void Dispose(bool disposing)
         {
-            if (_disposedValue) 
+            if (_disposedValue)
                 return;
 
             if (disposing)
@@ -279,5 +282,6 @@ namespace NGA.ThickClientCore
             GC.SuppressFinalize(this);
         }
     }
+
 #pragma warning restore CS0618 // Type or member is obsolete
 }

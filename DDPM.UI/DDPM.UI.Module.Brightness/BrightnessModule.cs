@@ -3,13 +3,12 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.Brightness
 {
-    public class BrightnessModule: IDdpmModule
+    public class BrightnessModule : IDdpmModule
     {
         private UserControl? _leftView = null;
         private UserControl? _rightView = new BrightnessRightView();
@@ -18,9 +17,9 @@ namespace DDPM.UI.Module.Brightness
 
         //Robert_Lin 2024-5-30, remove argument from all Module's ctor
         //public BrightnessModule(HomeDevice? homeDevice)
-        public BrightnessModule(IModuleOwner? moduleOwner=null)
-        {            
-            if(vm == null)
+        public BrightnessModule(IModuleOwner? moduleOwner = null)
+        {
+            if (vm == null)
                 vm = new BrightnessViewModel(); //BrightnessViewModel.GetInstance(); //do not use getinstance here due to all monitors share the same view model
 
             if (vm != null && _rightView != null)
@@ -38,7 +37,7 @@ namespace DDPM.UI.Module.Brightness
 
         public UserControl? GetLeftView()
         {
-           return (UserControl?)_leftView;
+            return (UserControl?)_leftView;
         }
 
         public UserControl GetRightView()
@@ -49,14 +48,17 @@ namespace DDPM.UI.Module.Brightness
         public HomeDevice? SelectedHomeDevice { get; set; }
 
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
             set => vm.ModuleOwner = value;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
@@ -65,6 +67,7 @@ namespace DDPM.UI.Module.Brightness
                 //vm.Invoke_RefreshBrightnessPage();
             }
         }
+
         public void OnActivated()
         {
             Trace.WriteLine("BrightnessModule.OnActivated");
@@ -72,11 +75,12 @@ namespace DDPM.UI.Module.Brightness
             if (_rightView == null)
                 return;
         }
+
         public void OnDeactivated()
         {
             Trace.WriteLine("BrightnessModule.OnDeactivated");
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

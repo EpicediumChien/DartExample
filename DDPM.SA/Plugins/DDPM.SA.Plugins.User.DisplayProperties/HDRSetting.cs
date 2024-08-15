@@ -1,12 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Management;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using VcpCore.Common;
 using static VcpCore.Common.User32;
 
@@ -68,6 +63,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return result;
         }
+
         private bool GetDisplayConfigPath(EDID monitorEdid, out DISPLAYCONFIG_PATH_INFO outPath)
         {
             bool result = false;
@@ -106,6 +102,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return result;
         }
+
         private bool GetDisplayConfigTargetDeviceName(DISPLAYCONFIG_PATH_INFO path, out DISPLAYCONFIG_TARGET_DEVICE_NAME info)
         {
             bool result = false;
@@ -124,6 +121,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
             return result;
         }
+
         private bool GetDisplayConfigEdidByDisplayConfigPath(DISPLAYCONFIG_PATH_INFO path, out EDID outEdid)
         {
             bool result = false;
@@ -154,6 +152,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
             return result;
         }
+
         private bool GetMontitorIdPathForWMI(string RegPath, out string outValue)
         {
             bool blResult = false;
