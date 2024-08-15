@@ -1,48 +1,56 @@
-﻿using System.Diagnostics;
+﻿using DDPM.UI.Plugin.ViewModels;
+using System.Diagnostics;
 using System.Windows.Controls;
-using DDPM.UI.Plugin.ViewModels;
 
-namespace DDPM.UI.Module.AddHeadset_BL {
-  /// <summary>
-  /// Interaction logic for AddHeadset_BLRightView.xaml
-  /// </summary>
-  public partial class AddHeadset_BLRightView : UserControl {
-    private readonly AddDeviceViewModel _vm;
+namespace DDPM.UI.Module.AddHeadset_BL
+{
+    /// <summary>
+    /// Interaction logic for AddHeadset_BLRightView.xaml
+    /// </summary>
+    public partial class AddHeadset_BLRightView : UserControl
+    {
+        private readonly AddDeviceViewModel _vm;
 
-    private readonly string Caption = "Bluetooth Connection";
-    private readonly string Caption2 = "For USB wireless receiver free and on-the-go connectivity";
-    private readonly string Step1 = "Power ON headset";
-    private readonly string Step2 = "Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth";
-    private readonly string Step3 = "Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.";
-    private readonly string Step3_1 = "Windows Settings";
+        private readonly string Caption = "Bluetooth Connection";
+        private readonly string Caption2 = "For USB wireless receiver free and on-the-go connectivity";
+        private readonly string Step1 = "Power ON headset";
+        private readonly string Step2 = "Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth";
+        private readonly string Step3 = "Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.";
+        private readonly string Step3_1 = "Windows Settings";
 
-    public AddHeadset_BLRightView(AddDeviceViewModel vm) {
-      InitializeComponent();
-      _vm = vm;
+        public AddHeadset_BLRightView(AddDeviceViewModel vm)
+        {
+            InitializeComponent();
+            _vm = vm;
 
-      txtCaption.Text = Caption;
-      txtCaption2.Text = Caption2;
-      txtStep1.Text = Step1;
-      txtStep2.Text = Step2;
-      txtStep3.Text = Step3;
-      txtStep3_1.Text = Step3_1;
-    }
+            txtCaption.Text = Caption;
+            txtCaption2.Text = Caption2;
+            txtStep1.Text = Step1;
+            txtStep2.Text = Step2;
+            txtStep3.Text = Step3;
+            txtStep3_1.Text = Step3_1;
+        }
 
-    private void OpenWindowsSettings(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-      Version win10Version = new(10, 0);
-      Version currentVersion = Environment.OSVersion.Version;
+        private void OpenWindowsSettings(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Version win10Version = new(10, 0);
+            Version currentVersion = Environment.OSVersion.Version;
 #pragma warning disable CA1416
-      if(currentVersion >= win10Version) {
-        Process.Start(new ProcessStartInfo("ms-settings:bluetooth") {
-          UseShellExecute = true
-        });
-      }
-      else {
-        Process.Start(new ProcessStartInfo("control", "bthprops.cpl") {
-          UseShellExecute = true
-        });
-      }
+            if (currentVersion >= win10Version)
+            {
+                Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                {
+                    UseShellExecute = true
+                });
+            }
+            else
+            {
+                Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                {
+                    UseShellExecute = true
+                });
+            }
 #pragma warning restore CA1416
+        }
     }
-  }
 }

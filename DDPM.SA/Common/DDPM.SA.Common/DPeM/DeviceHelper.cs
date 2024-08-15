@@ -103,7 +103,6 @@ namespace DDPM.SA.Common
             {
                 AppendCommonDeviceLine(sb, item);
             }
-
         }
 
         private static void AppendCommonDeviceLine(StringBuilder sb, DeviceInfo item)
@@ -133,18 +132,18 @@ namespace DDPM.SA.Common
                 sb.AppendLine($"{nameof(item.BatteryLevel)} (get)                         : {item.BatteryLevel}%");
                 sb.AppendLine($"{nameof(item.BatteryStatus)} (get)                        : {item.BatteryStatus}");
             }
-            sb.AppendLine($"{nameof(item.TotalNumberOfPairedHostName)} (get)              : { item.TotalNumberOfPairedHostName}");
+            sb.AppendLine($"{nameof(item.TotalNumberOfPairedHostName)} (get)              : {item.TotalNumberOfPairedHostName}");
 
             for (int i = 0; i < item.TotalNumberOfPairedHostName; i++)
             {
                 sb.AppendLine($"PairHostName{i + 1}(get)                                     : {item.PairedHostNames[0]}");
             }
 
-            //if (item.TotalNumberOfPairedHostName > 0)                             
+            //if (item.TotalNumberOfPairedHostName > 0)
             //    sb.AppendLine($"{nameof(item.PairedHostName1)}(get)                         : {item.PairedHostName1}");
-            //if (item.TotalNumberOfPairedHostName > 1)                             
+            //if (item.TotalNumberOfPairedHostName > 1)
             //    sb.AppendLine($"{nameof(item.PairedHostName2)} (get)                        : {item.PairedHostName2}");
-            //if (item.TotalNumberOfPairedHostName > 2)                             
+            //if (item.TotalNumberOfPairedHostName > 2)
             //    sb.AppendLine($"{nameof(item.PairedHostName3)} (get)                        : {item.PairedHostName3}");
 
             sb.AppendLine($"{nameof(item.IsCollabsKeysSupported)} (get)                   : {item.IsCollabsKeysSupported}");
@@ -183,7 +182,6 @@ namespace DDPM.SA.Common
             {
                 sb.AppendLine($"PairHostName{i + 1}(get)                                     : {item.PairedHostNames[0]}");
             }
-
 
             sb.AppendLine($"{nameof(item.MousePrimaryButton)} (get,set)                   : {item.MousePrimaryButton}");
 
@@ -284,6 +282,5 @@ namespace DDPM.SA.Common
             sb.AppendLine($"{nameof(item.Band5Gain)} (get, set)                         : {item.Band5Gain}");
             sb.AppendLine("----------");
         }
-
     }
 }

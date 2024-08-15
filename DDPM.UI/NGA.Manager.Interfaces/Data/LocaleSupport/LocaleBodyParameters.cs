@@ -1,15 +1,16 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System.Collections.Generic;
-using System.Globalization;
 using Microsoft;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace NGA.Manager.Interfaces
 {
@@ -27,7 +28,7 @@ namespace NGA.Manager.Interfaces
         public BodyParameters DefaultParameters { get; protected set; }
 
         /// <summary>
-        /// Localized BodyParameters 
+        /// Localized BodyParameters
         /// </summary>
         [JsonProperty]
         public Dictionary<CultureInfo, BodyParameters> LocalizedParameters { get; protected set; }
@@ -46,7 +47,7 @@ namespace NGA.Manager.Interfaces
         /// Constructor
         /// </summary>
         /// <param name="defaultParameters"></param>
-        /// <param name="localizedParameters"></param>      
+        /// <param name="localizedParameters"></param>
         public LocaleBodyParameters(BodyParameters defaultParameters, Dictionary<CultureInfo, BodyParameters> localizedParameters)
         {
             Requires.NotNull(defaultParameters, nameof(defaultParameters));

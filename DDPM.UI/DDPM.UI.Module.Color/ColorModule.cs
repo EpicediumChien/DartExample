@@ -22,10 +22,10 @@ namespace DDPM.UI.Module.Color
             vm = new ColorViewModel();
             _rightView.DataContext = vm;
             vm.MyModule = this;
-             
-            vm.Invoke_RefreshData();
 
+            vm.Invoke_RefreshData();
         }
+
         public string ModuleName { get => "ColorModule"; }
 
         public UserControl? GetLeftView()
@@ -39,28 +39,34 @@ namespace DDPM.UI.Module.Color
         }
 
         public HomeDevice? SelectedHomeDevice { get; set; }
+
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
             set => vm.ModuleOwner = value;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("ColorModule.OnSelectedHomeDeviceChanged");
         }
+
         public void OnActivated()
         {
             Trace.WriteLine("ColorModule.OnActivated");
         }
+
         public void OnDeactivated()
         {
             Trace.WriteLine("ColorModule.OnDeactivated");
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

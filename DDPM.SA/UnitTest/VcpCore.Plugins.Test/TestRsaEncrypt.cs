@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography.Xml;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VcpCore.Plugins.Test
+﻿namespace VcpCore.Plugins.Test
 {
     public class TestRsaEncrypt
     {
@@ -18,6 +9,7 @@ namespace VcpCore.Plugins.Test
             Assert.IsNotNull(keyPair.Key);
             Assert.IsNotNull(keyPair.Value);
         }
+
         [Test]
         public void TestEncrypt()
         {
@@ -37,6 +29,5 @@ namespace VcpCore.Plugins.Test
             string decryptedContent = RsaEncrypt.Encrypt(content, decryptKey);
             Assert.IsNotNull(decryptedContent);
         }
-
     }
 }

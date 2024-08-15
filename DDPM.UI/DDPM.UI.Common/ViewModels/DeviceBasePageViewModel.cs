@@ -6,16 +6,9 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Windows.Security.Cryptography.Core;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.ViewModels
@@ -23,6 +16,7 @@ namespace DDPM.UI.Common.ViewModels
     public class DeviceBasePageViewModel : ObservableObject, IModuleOwner
     {
         #region ModuleGroups
+
         private List<ModuleGroup> _moduleGroups = new List<ModuleGroup>();
         private int _groupSelectedIndex = -1; //-1 = no selection, the DisplayPage is in Landing Mode
 
@@ -110,7 +104,6 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-
         public ModuleGroup? SelectedGroup
         {
             get
@@ -126,13 +119,15 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        public bool IsLandingMode { get => (GroupSelectedIndex<0); }
+        public bool IsLandingMode { get => (GroupSelectedIndex < 0); }
 
-        #endregion
+        #endregion ModuleGroups
 
         #region VbarCtrl
+
 #if USE_VBARITEM1
         private List<VbarItem1> _vbarItems = new List<VbarItem1>();
+
         public List<VbarItem1> VbarItems
         {
             get => _vbarItems;
@@ -150,7 +145,7 @@ namespace DDPM.UI.Common.ViewModels
                 {
                     Index = idx++,
                     //Text = mg.GroupName, //Robert_Lin,2024-7-26, GroupName is ID used to identify a Group
-                    Text=mg.VbarText,      // VbarText is the display string on VbarItem
+                    Text = mg.VbarText,      // VbarText is the display string on VbarItem
                     //IconTemplate = mg.IconTemplate
                     IconImage = mg.GroupIcon
                 };
@@ -182,7 +177,6 @@ namespace DDPM.UI.Common.ViewModels
                 if (LeaveLandingMode != null)
                     LeaveLandingMode(this, new RoutedEventArgs());
 
-
                 foreach (VbarItem1 vbarItem in _vbarItems)
                 {
                     //vbarItem.SetLadningMode(false);
@@ -202,6 +196,7 @@ namespace DDPM.UI.Common.ViewModels
             //clickedItem.IsSelected = true;
             //_vbarItems[2].Visibility = Visibility.Collapsed;
         }
+
 #else
         private List<VbarItem> _vbarItems = new List<VbarItem>();
         public List<VbarItem> VbarItems
@@ -209,10 +204,9 @@ namespace DDPM.UI.Common.ViewModels
             get => _vbarItems;
         }
 
-
         /// <summary>
         /// Called by ModuleGroups setter when the ModuleGroups reset, will return to Landing Mode
-        /// 
+        ///
         /// </summary>
         private void RebuildVbarItems()
         {
@@ -246,14 +240,13 @@ namespace DDPM.UI.Common.ViewModels
                 if (LeaveLandingMode != null)
                     LeaveLandingMode(this, new RoutedEventArgs());
 
-
                 foreach (VbarItem vbarItem in _vbarItems)
                 {
                     vbarItem.SetLadningMode(false);
                 }
             }
 
-            if (clickedItem == null) 
+            if (clickedItem == null)
                 return;
 
             //Check if clickedItem is the same Group (selection is NOT changed)
@@ -266,15 +259,16 @@ namespace DDPM.UI.Common.ViewModels
 
 #endif
 
-
-
         //Provide to DeviceBasePage to register a event hander. when we are levaing LandingMode
         public event RoutedEventHandler? LeaveLandingMode;
-        #endregion
+
+        #endregion VbarCtrl
 
         #region RightViewHeader
-        private ObservableCollection<RightViewHeader> _rightViewHeaders 
+
+        private ObservableCollection<RightViewHeader> _rightViewHeaders
                                 = new ObservableCollection<RightViewHeader>();
+
         public ObservableCollection<RightViewHeader> RightViewHeaders
         {
             get
@@ -310,6 +304,7 @@ namespace DDPM.UI.Common.ViewModels
                     RightViewHeaderChanged(this, new RoutedEventArgs());
             }
         }
+
         public int RightViewHeaderSelectedIndex
         {
             get
@@ -348,10 +343,12 @@ namespace DDPM.UI.Common.ViewModels
 
         public event RoutedEventHandler? RightViewHeaderChanged;
 
-        #endregion
+        #endregion RightViewHeader
 
         #region LeftView
+
         private UserControl? _defaultLeftView;
+
         public UserControl? DefaultLeftView
         {
             get
@@ -389,7 +386,6 @@ namespace DDPM.UI.Common.ViewModels
                                 return modLeftView;
                         }
                     }
-
                 }
                 return DefaultLeftView;
             }
@@ -399,6 +395,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
         */
+
         //NEW Code:
         public UserControl? LeftView
         {
@@ -418,12 +415,12 @@ namespace DDPM.UI.Common.ViewModels
                                 return modLeftView;
                         }
                     }
-
                 }
                 return DefaultLeftView;
             }
         }
-        #endregion
+
+        #endregion LeftView
 
         #region RightView
 
@@ -443,17 +440,14 @@ namespace DDPM.UI.Common.ViewModels
                         {
                             ActiveModule = mod;
                             return mod?.GetRightView();
-                            
                         }
                         else
                         {
                             selHeader.DdpmModule = (IDdpmModule)Activator.CreateInstance(selHeader.ModuleType, this);
                             ActiveModule = selHeader.DdpmModule;
                             return ActiveModule.GetRightView();
-
                         }
                     }
-
                 }
                 return null;
             }
@@ -478,14 +472,16 @@ namespace DDPM.UI.Common.ViewModels
                 return "(ERROR)";
             }
         }
-        #endregion
 
+        #endregion RightView
 
         #region HomeDevices
+
         private List<HomeDevice>? _homeDevices;
-        public List<HomeDevice>? HomeDevices 
-        { 
-            get => _homeDevices; 
+
+        public List<HomeDevice>? HomeDevices
+        {
+            get => _homeDevices;
             set
             {
                 SetProperty(ref _homeDevices, value);
@@ -496,10 +492,11 @@ namespace DDPM.UI.Common.ViewModels
         }
 
         private HomeDevice? _selectedHomeDevice;
+
         public HomeDevice? SelectedHomeDevice
         {
             get => _selectedHomeDevice;
-            set 
+            set
             {
                 bool isOrgNull = (_selectedHomeDevice == null);
                 bool isChanged = (value != _selectedHomeDevice);
@@ -511,9 +508,8 @@ namespace DDPM.UI.Common.ViewModels
                         //Selection changed
                         HandleSelectedHomeDeviceChanged();
                     }
-
                 }
-            } 
+            }
         }
 
         public int HomeDeviceCount
@@ -538,6 +534,7 @@ namespace DDPM.UI.Common.ViewModels
                 }
             }
         }
+
         public Visibility SelectedHomeDeviceTextVisibiliity
         {
             get
@@ -549,19 +546,25 @@ namespace DDPM.UI.Common.ViewModels
                 }
             }
         }
-        #endregion
+
+        #endregion HomeDevices
 
         #region LeftFrameWidth
+
         private double _leftFrameWidth = 680;
+
         public double LeftFrameWidth
         {
             get => _leftFrameWidth;
             set => SetProperty(ref _leftFrameWidth, value);
         }
-        #endregion
+
+        #endregion LeftFrameWidth
 
         #region FullView
+
         private ContentControl? _fullView;
+
         public ContentControl? FullView
         {
             get => _fullView;
@@ -577,48 +580,53 @@ namespace DDPM.UI.Common.ViewModels
             //    OpenFullViewCommand?.Execute(this);
             FullView = content;
             FullView.Visibility = Visibility.Visible;
-
-            
         }
 
         public void CloseFullView()
         {
             FullView = null;
         }
-        #endregion
+
+        #endregion FullView
 
         #region HandleSelectedHomeDeviceChanged
+
         public void HandleSelectedHomeDeviceChanged()
         {
-            foreach(ModuleGroup group in ModuleGroups)
+            foreach (ModuleGroup group in ModuleGroups)
             {
-                foreach(RightViewHeader header in group.Headers)
+                foreach (RightViewHeader header in group.Headers)
                 {
                     if (header.DdpmModule != null)
                         header.DdpmModule.OnSelectedHomeDeviceChanged();
                 }
             }
         }
-        #endregion
+
+        #endregion HandleSelectedHomeDeviceChanged
 
         #region Handle Module Activated/Deactivated
+
         private IDdpmModule? _activeModule;
+
         public IDdpmModule? ActiveModule
         {
             get => _activeModule;
             set
             {
-                if (_activeModule == value) 
+                if (_activeModule == value)
                     return;
                 if (_activeModule != null)
                     _activeModule.OnDeactivated();
                 SetProperty(ref _activeModule, value);
-                    _activeModule?.OnActivated();
+                _activeModule?.OnActivated();
             }
         }
-        #endregion
+
+        #endregion Handle Module Activated/Deactivated
 
         #region Module Capabilities
+
         public void RefreshGroupManagerUIByModuleCapabilities()
         {
             if (SelectedHomeDevice == null)
@@ -641,7 +649,6 @@ namespace DDPM.UI.Common.ViewModels
             //KVM Capability
             bool hasCapability_KVM = homeDev.HasCapability_KVM;
 
-
             //Search for ModuleGroup which ModuleName is "KVM"
             ModuleGroup? mgKvm = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals("KVM"));
             if (mgKvm != null)
@@ -649,7 +656,7 @@ namespace DDPM.UI.Common.ViewModels
                 VbarItem1? vbarItem = VbarItems.Find(x => x.Text.Equals(mgKvm.VbarText));
                 if (vbarItem != null)
                 {
-                    vbarItem.Visibility = (hasCapability_KVM? Visibility.Visible: Visibility.Collapsed);
+                    vbarItem.Visibility = (hasCapability_KVM ? Visibility.Visible : Visibility.Collapsed);
                 }
             }
 
@@ -680,9 +687,10 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        #endregion
+        #endregion Module Capabilities
 
         #region Handler when DDC/CI off
+
         public void HandleDdcCiOffEvent(bool isDdcCiOn)
         {
             //Find the "EasyArrange" group
@@ -704,7 +712,7 @@ namespace DDPM.UI.Common.ViewModels
             {
                 //If current is LandingMode, then no selectied item
                 //If not Landing mode
-                if(!IsLandingMode)
+                if (!IsLandingMode)
                 {
                     //Change Group selection to "EasyArrange"
                     if (idxEA >= 0)
@@ -718,14 +726,15 @@ namespace DDPM.UI.Common.ViewModels
                 //For the non-visible groupes. we don't need to change them
                 if (vbar.Visibility != Visibility.Visible)
                     continue;
-                //If it's not EA 
+                //If it's not EA
                 if (!vbar.Text.Equals(vbarText_EA, StringComparison.OrdinalIgnoreCase))
                 {
                     vbar.LeaveHoverState();
                     vbar.IsEnabled = isDdcCiOn;
-                 }
+                }
             }
         }
-        #endregion
+
+        #endregion Handler when DDC/CI off
     }
 }

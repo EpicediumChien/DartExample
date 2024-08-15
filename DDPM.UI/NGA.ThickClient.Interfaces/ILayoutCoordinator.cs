@@ -1,12 +1,12 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
-#endregion
 
-using System.Collections;
+#endregion
 
 namespace NGA.ThickClient.Interfaces;
 
@@ -42,5 +42,5 @@ public interface ILayoutCoordinator<T>
     /// <param name="content"></param>
     /// <returns>Returns true if the content is added</returns>
     /// <exception cref = "ArgumentNullException"> Thrown when content is null</exception>
-    Task<bool> AddContentAsync(T  content);
+    Task<bool> AddContentAsync(T content);
 }

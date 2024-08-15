@@ -1,14 +1,9 @@
-﻿using DDPM.UI.Common.Interfaces;
+﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDPM.UI.Common.Models;
-using DDPM.SA.Common;
 using VcpCore.Common;
 
 namespace DDPM.UI.Module.Gaming.Tests
@@ -16,7 +11,6 @@ namespace DDPM.UI.Module.Gaming.Tests
     [TestFixture, Apartment(ApartmentState.STA)]
     public class GamingViewModelTests
     {
-
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
         private Mock<IDeviceManagerSA>? deviceManagerMock;
@@ -51,11 +45,10 @@ namespace DDPM.UI.Module.Gaming.Tests
         [Test]
         public void TestMyModule()
         {
-            var myModule=new GamingModule();
+            var myModule = new GamingModule();
             gamingViewModel.MyModule = myModule;
             Assert.That(gamingViewModel.MyModule, Is.EqualTo(myModule));
         }
-
 
         [Test]
         public void TesResolution_ItemsCollection()
@@ -80,7 +73,6 @@ namespace DDPM.UI.Module.Gaming.Tests
             gamingViewModel.Orientation_ItemsCollection = orientation_ItemsCollection;
             Assert.That(gamingViewModel.Orientation_ItemsCollection, Is.EqualTo(orientation_ItemsCollection));
         }
-
 
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -147,7 +139,6 @@ namespace DDPM.UI.Module.Gaming.Tests
             Assert.That(gamingViewModel.IsHighResolution, Is.EqualTo(my_IsHighResolution));
         }
 
-
         [Test]
         public void TestSupportedHDR()
         {
@@ -178,8 +169,6 @@ namespace DDPM.UI.Module.Gaming.Tests
 
             Assert.That(gamingViewModel.IsBusy, Is.EqualTo(myIsBusy));
         }
-
-
 
         [Test]
         public void TestRefreshUI()
@@ -246,11 +235,10 @@ namespace DDPM.UI.Module.Gaming.Tests
             Assert.That(isHighResolutionAft, Is.Not.SameAs(isHighResolutionBef));
         }
 
-
         [Test]
         public void TestConstructor_InitializesComponent()
         {
-           // Assert
+            // Assert
             Assert.That(gamingViewModel, Is.Not.Null);
         }
 

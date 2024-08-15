@@ -1,12 +1,12 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
-#endregion
 
-using System;
+#endregion
 
 namespace NGA.Manager.Interfaces;
 
@@ -93,7 +93,7 @@ public enum ResultType
     FailureDueToCustomPopupPluginNotBeingFound = 5,
 
     /// <summary>
-    /// Did not receive CustomToastData from CustomNotificationPlugin 
+    /// Did not receive CustomToastData from CustomNotificationPlugin
     /// </summary>
     FailureDueToEmptyCustomToastData = 6,
 
@@ -108,7 +108,7 @@ public enum ResultType
     FailureDueToNotificationDisplayDisabled = 8,
 
     /// <summary>
-    /// Did not receive CustomPopupMetaData from CustomPopupPlugin 
+    /// Did not receive CustomPopupMetaData from CustomPopupPlugin
     /// </summary>
     FailureDueToEmptyPopupMetaData = 9,
 

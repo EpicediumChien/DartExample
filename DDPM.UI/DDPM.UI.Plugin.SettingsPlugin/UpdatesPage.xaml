@@ -1,8 +1,8 @@
 ﻿<UserControl x:Class="DDPM.UI.Plugin.SettingsPlugin.UpdatesPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ModuleStyle.xaml"/>
+                <ResourceDictionary Source="ModuleStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -23,14 +23,14 @@
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Border Background="#99132F54" CornerRadius="13" Grid.Row="1" Margin="20"/>
+                    <Border Background="#99132F54" CornerRadius="13" Grid.Row="1" Margin="20" />
                     <Grid Grid.Row="0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <UXControls:UXTextBlock FontSize="20" Grid.Row="0" Text="Update available" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,20,8,8" />
                         <UXControls:UXTextBlock FontSize="16" Grid.Row="1" Text="Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled." TextBlockType="Subtitle1" HorizontalAlignment="Left" Margin="20,8,8,8" />
@@ -39,28 +39,28 @@
                         <StackPanel Margin="24">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid Grid.Row="0" Margin="0,0,0,24">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="CheckUpdate_Click" Cursor="Hand" Margin="20,20,8,8" Visibility="Visible" x:Name="btnFWU">
                                         <Grid>
-                                            <UXControls:UXTextBlock Text="Check for updates" Foreground="#F5F6F7" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14"/>
+                                            <UXControls:UXTextBlock Text="Check for updates" Foreground="#F5F6F7" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                                         </Grid>
                                     </Border>
-                                    <Image Grid.Column="1" Source="Resources\double arrow.png" Height="20" Margin="16,0,4,0"/>
-                                    <UXControls:UXTextBlock Grid.Column="2" FontSize="14" Text="{Binding Path=LastCheckDate}" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,8,8,8"/>
+                                    <Image Grid.Column="1" Source="Resources\double arrow.png" Height="20" Margin="16,0,4,0" />
+                                    <UXControls:UXTextBlock Grid.Column="2" FontSize="14" Text="{Binding Path=LastCheckDate}" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,8,8,8" />
                                 </Grid>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoUpdateAlert}">
-                                    <SAAlert:AlertBase Height="53" Margin="20,16,0,0" AlertType="Info" Message="There are no available updates at this time."/>
+                                    <SAAlert:AlertBase Height="53" Margin="20,16,0,0" AlertType="Info" Message="There are no available updates at this time." />
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding NoNetwork}">
                                     <UXControls:UXAlert Margin="20,16,0,0">
@@ -68,14 +68,14 @@
                                     </UXControls:UXAlert>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding Critical_UpdateList}">
-                                    <UXControls:UXTextBlock Margin="20,16,0,0" FontSize="16" Grid.Row="0" Text="Critical" TextBlockType="Header1" HorizontalAlignment="Left"/>
+                                    <UXControls:UXTextBlock Margin="20,16,0,0" FontSize="16" Grid.Row="0" Text="Critical" TextBlockType="Header1" HorizontalAlignment="Left" />
                                     <ListBox ItemsSource="{Binding Critical_UpdateList_UI}" Name="listTopics" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
-                                                    <UXControls:UXCheckBox FontSize="14" IsEnabled="{Binding IsEnableCheckBox}" Content="{Binding UpdateInfo}" IsChecked="{Binding IsCheckUpdate}" Foreground="WhiteSmoke" Margin="0,20,0,20"/>
+                                                    <UXControls:UXCheckBox FontSize="14" IsEnabled="{Binding IsEnableCheckBox}" Content="{Binding UpdateInfo}" IsChecked="{Binding IsCheckUpdate}" Foreground="WhiteSmoke" Margin="0,20,0,20" />
                                                     <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17">
-                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6"/>
+                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
                                                     </UXControls:UXAlert>
                                                 </StackPanel>
                                             </DataTemplate>
@@ -83,14 +83,14 @@
                                     </ListBox>
                                 </StackPanel>
                                 <StackPanel Grid.Row="2" Margin="0,0,0,24" Visibility="{Binding Recommended_UpdateList}">
-                                    <UXControls:UXTextBlock FontSize="16" Grid.Row="0" Text="Recommended" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,16,0,0"/>
+                                    <UXControls:UXTextBlock FontSize="16" Grid.Row="0" Text="Recommended" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,16,0,0" />
                                     <ListBox ItemsSource="{Binding Recommended_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
-                                                    <UXControls:UXCheckBox FontSize="14" IsEnabled="{Binding IsEnableCheckBox}" Content="{Binding UpdateInfo}" IsChecked="{Binding IsCheckUpdate}" Foreground="WhiteSmoke" Margin="0,20,0,20"/>
+                                                    <UXControls:UXCheckBox FontSize="14" IsEnabled="{Binding IsEnableCheckBox}" Content="{Binding UpdateInfo}" IsChecked="{Binding IsCheckUpdate}" Foreground="WhiteSmoke" Margin="0,20,0,20" />
                                                     <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17">
-                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6"/>
+                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
                                                     </UXControls:UXAlert>
                                                 </StackPanel>
                                             </DataTemplate>
@@ -103,9 +103,9 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
-                                                    <UXControls:UXCheckBox FontSize="14" IsEnabled="{Binding IsEnableCheckBox}" Content="{Binding UpdateInfo}" IsChecked="{Binding IsCheckUpdate}" Foreground="WhiteSmoke" Margin="0,20,0,20"/>
+                                                    <UXControls:UXCheckBox FontSize="14" IsEnabled="{Binding IsEnableCheckBox}" Content="{Binding UpdateInfo}" IsChecked="{Binding IsCheckUpdate}" Foreground="WhiteSmoke" Margin="0,20,0,20" />
                                                     <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17">
-                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6"/>
+                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
                                                     </UXControls:UXAlert>
                                                 </StackPanel>
                                             </DataTemplate>
@@ -114,13 +114,13 @@
                                 </StackPanel>
                                 <Grid Grid.Row="4" Margin="4" Visibility="{Binding IsAnyUpdate}">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXButton Grid.Column="0" ButtonType="Primary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Click="DownloadAndInstall_Click" Content="Download and install" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,8,8,8"/>
-                                    <UXControls:UXBusyIndicator x:Name="DownloadUXBusyIndicator" Grid.Column="1" BusyIndicatorType="Secondary" HorizontalAlignment="Left" IsActive="False" Visibility="Hidden"/>
-                                    <UXControls:UXTextBlock x:Name="DownloadUXTextBlock" Grid.Column="2" Text="Preparing for updates. Please wait..." TextBlockType="Header1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Hidden"/>
+                                    <UXControls:UXButton Grid.Column="0" ButtonType="Primary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Click="DownloadAndInstall_Click" Content="Download and install" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,8,8,8" />
+                                    <UXControls:UXBusyIndicator x:Name="DownloadUXBusyIndicator" Grid.Column="1" BusyIndicatorType="Secondary" HorizontalAlignment="Left" IsActive="False" Visibility="Hidden" />
+                                    <UXControls:UXTextBlock x:Name="DownloadUXTextBlock" Grid.Column="2" Text="Preparing for updates. Please wait..." TextBlockType="Header1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Hidden" />
                                 </Grid>
                             </Grid>
                         </StackPanel>

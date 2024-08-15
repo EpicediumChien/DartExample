@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,6 +7,7 @@
 //
 // IDs.cs created on 10/4/2022T3:37 PM
 //
+
 #endregion
 
 namespace VcpCore.Common
@@ -14,11 +16,13 @@ namespace VcpCore.Common
     {
         //VcpCore
         public const string VCP_CORE_PLUGIN_ID = "{A409E0AF-E2C3-4568-A194-B2D173DA26D4}";
+
         public const string VCP_CORE_AGENT_ID = "{41AADF9D-EF03-43E6-A88E-AE82A100B102}";
         public const string VCP_CORE_MUTEX_ID = "{FABC8B73-9743-424B-88EF-151BBD94CDE1}";
 
         //DisplayManager
         public const string Display_Manager_PLUGIN_ID = "{39A9CF54-2EC0-434E-A0BF-49FF43F8C824}";
+
         public const string Display_Manager_AGENT_ID = "{464160F1-2E14-4724-A78E-5375D9E80C6F}";
         public const string Display_Manager_MUTEX_ID = "{96F17284-F2F3-4419-8F02-F2EC6CD26143}";
 

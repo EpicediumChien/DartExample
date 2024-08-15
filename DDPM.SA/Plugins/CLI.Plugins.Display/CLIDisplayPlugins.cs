@@ -1,37 +1,22 @@
-﻿using IDs = DDPM.SA.Common.IDs;
+﻿using CLI.Plugins.Display;
+using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using VcpCore.Common;
-using DDPM.SA.Common;
-using System.Linq;
-using System.Globalization;
-using DDPM.SA.Common.Settings;
-using static DDPM.SA.Common.ICLICommandTable;
-using WinCopies;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
-using System.Threading;
-using Console = System.Console;
-using DDPM.SA.Common.Display;
-using Convert = System.Convert;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-using CLI.Plugins.Display;
-using WinCopies.Util;
-using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
-using Windows.ApplicationModel.Background;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using MS.WindowsAPICodePack.Internal;
-using System.Security.Cryptography;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
-using Newtonsoft.Json.Schema;
-using Windows.Graphics.Display;
+using System.Threading.Tasks;
+using VcpCore.Common;
+using static DDPM.SA.Common.ICLICommandTable;
+using Console = System.Console;
+using Convert = System.Convert;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.CLI.Plugins.Display
 {
@@ -40,10 +25,10 @@ namespace DDPM.CLI.Plugins.Display
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedInterface(new[] { typeof(ICLIDisplay) })]
     [DependencyKnownTypes(new[] { typeof(ICLIDisplay) })]
-
     public class CLIDisplayPlugins : BaseAgentPlugin, IDisposableObservable, ICLIDisplay
     {
         #region Private Members
+
         private const string pluginName = "CLIDisplayPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CLI Display Plugin.";
@@ -69,18 +54,20 @@ namespace DDPM.CLI.Plugins.Display
         // jim remove 20240607
         ///private List<string> _SupportedColorPreset = new List<string>();
 
-        #endregion
+        #endregion Private Members
 
         #region Constructor
+
         public CLIDisplayPlugins(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
             writelog("CLIDisplayPlugins constructor ...");
         }
-        #endregion
+
+        #endregion Constructor
 
         #region interface implementation
-		
+
         private bool input_param_validation(IDeviceManagerSA devMgr, CommandLineInput commandLineInput, ref CLIEventResult result)
         {
             //check if no monitor connected, direct response no monitor
@@ -155,7 +142,6 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (!(monitor.edid.ServiceTag.ToUpper().Equals(tag.ToUpper())))
                         {
-
                             CLI_RESPONSE rsp = new CLI_RESPONSE()
                             {
                                 Command = commandLineInput.Command,
@@ -182,11 +168,11 @@ namespace DDPM.CLI.Plugins.Display
             CLIEventResult result = new CLIEventResult();
             result.command_guid_string = input.command_guid_string;
             result.ticket = DateTime.Now;
-			/*
+            /*
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
 
-            //check if no monitor connected, direct response no monitor 
+            //check if no monitor connected, direct response no monitor
             if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
             {
                 CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -206,28 +192,29 @@ namespace DDPM.CLI.Plugins.Display
 
             switch (commandLineInput.TargetFeature)
             {
-			 	case "CONNECTEDDEVICES":
-					{
+                case "CONNECTEDDEVICES":
+                    {
                         int exitcode = 0;
                         result.serialize_Json_response = ConnectedDevicesX(commandLineInput, devMgr, ref exitcode);
                         result.ExitCode = exitcode;
-                    	break;
-					}
+                        break;
+                    }
                 case "DETECTMONITORS":
                     {
                         var ret = DetectMonitorsX(commandLineInput, devMgr);
                         result.serialize_Json_response = ret.result;
                         result.ExitCode = ret.code;
-                        if (ret.code != 0) 
+                        if (ret.code != 0)
                             return result;
                     }
                     break;
+
                 case "BRIGHTNESSLEVEL"://change from brightness to BrightnessLevel to align with spec
                     {
                         var ret = BrightnessX(commandLineInput, devMgr);
                         result.serialize_Json_response = ret.result;
                         result.ExitCode = ret.code;
-                        if (ret.code != 0) 
+                        if (ret.code != 0)
                             return result;
                     }
                     break;
@@ -249,6 +236,7 @@ namespace DDPM.CLI.Plugins.Display
                             return result;
                     }
                     break;
+
                 case "EDID":
                     {
                         var ret = EDIDX(commandLineInput, devMgr);
@@ -258,6 +246,7 @@ namespace DDPM.CLI.Plugins.Display
                             return result;
                     }
                     break;
+
                 case "DECODEDEDID":
                     {
                         var ret = DECODEDEDIDX(commandLineInput, devMgr);
@@ -267,6 +256,7 @@ namespace DDPM.CLI.Plugins.Display
                             return result;
                     }
                     break;
+
                 case "FWVERSION":
                     {
                         var ret = FWVersionX(commandLineInput, devMgr);
@@ -276,6 +266,7 @@ namespace DDPM.CLI.Plugins.Display
                             return result;
                     }
                     break;
+
                 case "ACTIVEINPUTSOURCE":
                     {
                         var ret = InputSource(devMgr, commandLineInput).Result;
@@ -285,6 +276,7 @@ namespace DDPM.CLI.Plugins.Display
                             return result;
                     }
                     break;
+
                 case "INPUTSOURCELIST":
                     {
                         var ret = InputSourceList(devMgr, commandLineInput).Result;
@@ -294,7 +286,9 @@ namespace DDPM.CLI.Plugins.Display
                             return result;
                     }
                     break;
+
                 #region display properties
+
                 case "OPTIMALRESOLUTION":
                 case "HDR":
                 case "USBCPRIORITIZATION":
@@ -309,7 +303,9 @@ namespace DDPM.CLI.Plugins.Display
                     result.serialize_Json_response = value.result;
                     result.ExitCode = value.code;
                     return result;
-                #endregion
+
+                #endregion display properties
+
                 case "COLORPRESET":
                     if (commandLineInput.Command.Equals("GET"))
                     {
@@ -340,6 +336,7 @@ namespace DDPM.CLI.Plugins.Display
                         result.ExitCode = exitcode;
                     }
                     break;
+
                 case "AUTOBRIGHTNESS":
                 case "AUTOBRIGHTNESSRANGELEVEL"://Mark 0723
                 case "AUTOCOLORTEMP":
@@ -418,6 +415,7 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
+
                 case "RESTORELEVELDEFAULTS":
                     if (commandLineInput.Command.Equals("SET"))
                     {
@@ -460,7 +458,9 @@ namespace DDPM.CLI.Plugins.Display
                         result.ExitCode = exitcode;
                     }
                     break;
+
                 #region PxP (Robert_Lin 2024-6-13)
+
                 case "PXP":
                 case "ASSIGNSUBINPUT":
                 case "SUBINPUT":
@@ -471,7 +471,9 @@ namespace DDPM.CLI.Plugins.Display
                     result.ExitCode = pxp.code;
                     result.serialize_Json_response = pxp.result;
                     return result;
-                #endregion
+
+                #endregion PxP (Robert_Lin 2024-6-13)
+
                 case "POWERNAP":
                     {
                         var powernap = PowerNapX(devMgr, commandLineInput);
@@ -479,14 +481,16 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = powernap.result;
                     };
                     break;
-				case "DEVICEDATA":
-					{
-						var ret = GetDeviceData(devMgr, commandLineInput);
-						result.ExitCode = ret.code;
-						result.serialize_Json_response = ret.result;
-						return result;
-					}
-					break;
+
+                case "DEVICEDATA":
+                    {
+                        var ret = GetDeviceData(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                        return result;
+                    }
+                    break;
+
                 case "ENERGYSAVER":
                     {
                         var autocolorpreset = EnergysaverX(devMgr, commandLineInput);
@@ -494,6 +498,7 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = autocolorpreset.result;
                     };
                     break;
+
                 case "CAPABILITIESSTRING":
                     {
                         var ret = Getcapabilitystringx(devMgr, commandLineInput);
@@ -502,6 +507,7 @@ namespace DDPM.CLI.Plugins.Display
                         return result;
                     }
                     break;
+
                 case "AUTOCOLORPRESET":
                     {
                         var autocolorpreset = AutocolorpresetX(devMgr, commandLineInput);
@@ -527,6 +533,7 @@ namespace DDPM.CLI.Plugins.Display
                         return result;
                     }
                     break;
+
                 case "DIAGNOSTICREPORT":
                     {
                         var ret = GetDiagnosticReport(devMgr, commandLineInput);
@@ -535,6 +542,7 @@ namespace DDPM.CLI.Plugins.Display
                         return result;
                     }
                     break;
+
                 case "APPLYCONFIGURATION":
                     {
                         var ret = ApplyConfigurationX(devMgr, commandLineInput);
@@ -543,6 +551,7 @@ namespace DDPM.CLI.Plugins.Display
                         return result;
                     }
                     break;
+
                 default:
                     CLI_RESPONSE rsp = new CLI_RESPONSE()
                     {
@@ -556,11 +565,12 @@ namespace DDPM.CLI.Plugins.Display
                     return result;
             }
             return result;
-
         }
-        #endregion
+
+        #endregion interface implementation
 
         #region Private methods
+
         private (int code, string result) ProcessAlsFunction(IDeviceManagerSA devMgr, CommandLineInput input)
         {
             if (devMgr == null)
@@ -605,7 +615,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 string idx = index[i];
 
-                if(_AllInfoMonitors.Count <= int.Parse(idx))
+                if (_AllInfoMonitors.Count <= int.Parse(idx))
                 {
                     return WriteALSResponse(_AllInfoMonitors, idx, input, CLI_ExitCode.unknow_command, false, "Index out of range");
                 }
@@ -634,12 +644,14 @@ namespace DDPM.CLI.Plugins.Display
 
             return (exit, output);
         }
+
         private string ConnectedDevicesX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr, ref int exitcode)
         {
             var result = ConnectedDevices(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag).Result;
             exitcode = result.code;
             return result.result; ;
         }
+
         public string FirstCharSubstring(string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -648,8 +660,9 @@ namespace DDPM.CLI.Plugins.Display
             }
             return $"{input[0].ToString().ToUpper()}{input.Substring(1)}";
         }
+
         private async Task<(int code, string result)> ConnectedDevices(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
-        { 
+        {
             ConnectedDevices G_ConnectedDevices_RESPONSE = new ConnectedDevices();
 
             //if (devMgr == null)
@@ -830,6 +843,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
         }
+
         #region Jarvis methods
 
         private (int code, string result) DetectMonitorsX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
@@ -944,7 +958,7 @@ namespace DDPM.CLI.Plugins.Display
                             exitcode = value.code;
                             output += "\n" + value.result;
                         }
-                        if (exitcode != 0) 
+                        if (exitcode != 0)
                             return (exitcode, output);
                     }
                     return (exitcode, output);
@@ -996,10 +1010,10 @@ namespace DDPM.CLI.Plugins.Display
                         if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE"))
                         {
                             var value = Luminus(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
-                            output += "\n"+value.result;
+                            output += "\n" + value.result;
                             exitcode = value.code;
                         }
-                        if (exitcode != 0) 
+                        if (exitcode != 0)
                             return (exitcode, output);
                     }
                     return (exitcode, output);
@@ -1066,6 +1080,7 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_EDID_RESPONSE, Formatting.Indented));
             }
         }
+
         private (int code, string result) DECODEDEDIDX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
         {
             if (commandLineInput.Command.Equals("GET"))
@@ -1092,6 +1107,7 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_EDID_RESPONSE, Formatting.Indented));
             }
         }
+
         private (int code, string result) FWVersionX(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
         {
             if (commandLineInput.Command.Equals("GET"))
@@ -1306,7 +1322,6 @@ namespace DDPM.CLI.Plugins.Display
                                 System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
                             }
-
                         }
                     }
 
@@ -1392,14 +1407,13 @@ namespace DDPM.CLI.Plugins.Display
                                     System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                                     output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
                                 }
-                                else 
+                                else
                                 {
                                     S_Brightness_RESPONSE.TargetFeature = "LUMINANCE";
                                     S_Brightness_RESPONSE.Result = "PASS";
                                     System.Console.WriteLine(JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                                     output += "\n" + JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented);
                                 }
-                                
                             }
                         }
                     }
@@ -1463,7 +1477,6 @@ namespace DDPM.CLI.Plugins.Display
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
                             }
-                            
                         }
                     }
 
@@ -1544,7 +1557,6 @@ namespace DDPM.CLI.Plugins.Display
                             G_Brightness_RESPONSE.Command = "GET";
                             G_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";//change from brightness to brightnesslevel to align with spec
 
-
                             if (!rc.result)
                             {
                                 G_Brightness_RESPONSE.Brightness = "N/A";
@@ -1580,7 +1592,6 @@ namespace DDPM.CLI.Plugins.Display
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
                                     output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
                                 }
-                                    
                             }
                         }
                     }
@@ -1590,7 +1601,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 return ((int)CLI_ExitCode.success, output);
             }
-            else 
+            else
             {
                 S_Brightness_RESPONSE.Command = type;
                 S_Brightness_RESPONSE.TargetFeature = "BRIGHTNESSLEVEL";
@@ -1876,7 +1887,6 @@ namespace DDPM.CLI.Plugins.Display
                             G_Contrast_RESPONSE.Command = "GET";
                             G_Contrast_RESPONSE.TargetFeature = "CONTRASTLEVEL";//change from contrast to contrastlevel to align with spec
 
-
                             if (!rc.result)
                             {
                                 G_Contrast_RESPONSE.Contrast = "N/A";
@@ -2147,7 +2157,6 @@ namespace DDPM.CLI.Plugins.Display
                             G_Luminus_RESPONSE.Command = "GET";
                             G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
 
-
                             if (!rc.result)
                             {
                                 G_Luminus_RESPONSE.Luminus = "N/A";
@@ -2174,7 +2183,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 return ((int)CLI_ExitCode.success, output);
             }
-            else 
+            else
             {
                 S_Luminus_RESPONSE.Result = "Un-supported command";
                 S_Luminus_RESPONSE.Message = "Un-supported command";
@@ -2703,6 +2712,7 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_EDID_RESPONSE, Formatting.Indented));
             }
         }
+
         private async Task<(int code, string result)> GetMonitors(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
         {
             CLI_Get_MONITORS_RESPONSE G_Monitos_RESPONSE = new CLI_Get_MONITORS_RESPONSE();
@@ -2725,7 +2735,7 @@ namespace DDPM.CLI.Plugins.Display
                     G_Monitos_RESPONSE.TargetFeature = "DETECTMONITORS";
 
                     int count = 0;
-                    foreach(var mo in _AllInfoMonitors)
+                    foreach (var mo in _AllInfoMonitors)
                     {
                         G_Monitos_RESPONSE.Monitors.Add("[" + count.ToString() + "] " + mo.AliasDeviceName);
                         count++;
@@ -2748,7 +2758,6 @@ namespace DDPM.CLI.Plugins.Display
             else
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_Monitos_RESPONSE, Formatting.Indented));
         }
-
 
         private async Task<(int code, string result)> FWVersion(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
         {
@@ -2896,7 +2905,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 return ((int)CLI_ExitCode.success, output);
             }
-            else 
+            else
             {
                 G_FW_RESPONSE.FWVer = "N/A";
                 G_FW_RESPONSE.Value = "N/A";
@@ -2908,7 +2917,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        #endregion
+        #endregion Jarvis methods
 
         private async Task<int> ProcessListMonitorsOptionAsync(IDeviceManagerSA devMgr, bool reget = false)
         {
@@ -2984,6 +2993,7 @@ namespace DDPM.CLI.Plugins.Display
             else
                 Log.Error(text);
         }
+
         private static string get_inputsource_type(string index)
         {
             switch (index)
@@ -3048,6 +3058,7 @@ namespace DDPM.CLI.Plugins.Display
                 default: return 0;
             }
         }
+
         //Input Source
         //06.07 Jason
         private async Task<(int code, string result)> InputSource(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
@@ -3072,7 +3083,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         //CLI_Set_Input_RESPONSE _Set_Input_RESPONSE = new CLI_Set_Input_RESPONSE();
                         //foreach (var monitor in _AllInfoMonitors)
-                        for(int i=0; i < _AllInfoMonitors.Count; i++)
+                        for (int i = 0; i < _AllInfoMonitors.Count; i++)
                         {
                             var monitor = _AllInfoMonitors[i];
 
@@ -3408,6 +3419,7 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.success, output);
             }
         }
+
         //06.07 Jason
         private async Task<(int code, string result)> InputSourceList(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
@@ -3561,6 +3573,7 @@ namespace DDPM.CLI.Plugins.Display
             temp.Message = "Un-supported command";
             return ((int)CLI_ExitCode.fail_GetInputListFail, temp.ToJson());
         }
+
         //06.06 Jason
         private async Task<List<string>> GetInputsList(IDeviceManagerSA devMgr, string index)
         {
@@ -3617,6 +3630,7 @@ namespace DDPM.CLI.Plugins.Display
             System.Console.WriteLine("USBUpstream : " + inputSourceList[input].USBUpstream);
             return (int)CLI_ExitCode.success;
         }
+
         //06.06 Jason add
         private async Task<string> GetCurrentInput(IDeviceManagerSA devMgr, string index)
         {
@@ -3634,6 +3648,7 @@ namespace DDPM.CLI.Plugins.Display
             //System.Console.WriteLine("Current Input : " + current);
             return current;
         }
+
         //06.06 Jason
         private async Task<string> GetCurrentInput(IDeviceManagerSA devMgr, MonitorInfo mo)
         {
@@ -3649,6 +3664,7 @@ namespace DDPM.CLI.Plugins.Display
             System.Console.WriteLine("Current Input : " + current);
             return current;
         }
+
         //06.06 Jason
         private async Task<int> SetCurrentInput(IDeviceManagerSA devMgr, string index, string input)
         {
@@ -3673,7 +3689,7 @@ namespace DDPM.CLI.Plugins.Display
                     return (int)CLI_ExitCode.fail_SetVCPCapability;
                 }
             }
-            catch 
+            catch
             {
                 return (int)CLI_ExitCode.success;
             }
@@ -3741,7 +3757,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Set_SupportedColorPreset_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 // 20240614 jim modify
                 if (index.Count != 0)
@@ -3812,13 +3827,12 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
-                if(ever_fail)
+                if (ever_fail)
                 {
                     return ((int)CLI_ExitCode.functional_error, output);
                 }
                 return ((int)CLI_ExitCode.success, output);
             }
-
             else if (type == "GET")//Dean 0726, should check its wording, not only use "else" to do get command
             {
                 // jim add 20240718
@@ -3841,7 +3855,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (string.IsNullOrEmpty(_ActiveColorPreset))
                         {
-                            _Get_ActiveColorPresetList_RESPONSE.Result = "fail";                            
+                            _Get_ActiveColorPresetList_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
                             return ((int)CLI_ExitCode.functional_error, output);
@@ -3855,7 +3869,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Get_ActiveColorPresetList_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 // 20240614 jim modify
                 if (index.Count != 0)
@@ -3890,7 +3903,6 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string tag in serviceTag)
                     {
-
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
@@ -4039,7 +4051,7 @@ namespace DDPM.CLI.Plugins.Display
                             if (!r)
                             {
                                 _Set_AllMonitorProfile_RESPONSE.Result = "fail";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));                                
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                                 return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
                             }
                             else
@@ -4053,7 +4065,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 return ((int)CLI_ExitCode.success, output);
             }
-            else if(type == "GET") //Dean 0726 should check if type matched as well
+            else if (type == "GET") //Dean 0726 should check if type matched as well
             {
                 // jim add 20240608
                 CLI_Get_AllMonitorProfile_RESPONSE _Get_AllMonitorProfile_RESPONSE = new CLI_Get_AllMonitorProfile_RESPONSE();
@@ -4087,7 +4099,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 // 20240614 jim modify
                 if (index.Count != 0)
@@ -4117,7 +4128,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 // 20240614 jim modify
                 if (serviceTag.Count != 0)
@@ -4165,7 +4175,7 @@ namespace DDPM.CLI.Plugins.Display
                 };
                 output = JsonConvert.SerializeObject(ret, Formatting.Indented);
                 return ((int)CLI_ExitCode.unknow_command, output);
-            }            
+            }
         }
 
         // jim add 20240607
@@ -4262,7 +4272,6 @@ namespace DDPM.CLI.Plugins.Display
 
                         foreach (MonitorInfo mo in tmp)
                         {
-
                             r = devMgr.WriteColorPresetByColorProfile(mo, value).Result;
 
                             _Set_AllActiveColorPreset_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
@@ -4349,7 +4358,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 // 20240614 jim modify
                 if (index.Count != 0)
@@ -4378,9 +4386,7 @@ namespace DDPM.CLI.Plugins.Display
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
-
                     }
-
                 }
                 // 20240614 jim modify
                 if (serviceTag.Count != 0)
@@ -4430,6 +4436,7 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.unknow_command, output);
             }
         }
+
         private async Task<(int code, string result)> RestoreLevelDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
         {
             if (_AllInfoMonitors == null)
@@ -4469,7 +4476,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 if (index.Count != 0)
                 {
@@ -4496,9 +4502,7 @@ namespace DDPM.CLI.Plugins.Display
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
-
                     }
-
                 }
                 if (serviceTag.Count != 0)
                 {
@@ -4586,7 +4590,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 if (index.Count != 0)
                 {
@@ -4613,9 +4616,7 @@ namespace DDPM.CLI.Plugins.Display
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
-
                     }
-
                 }
                 if (serviceTag.Count != 0)
                 {
@@ -4687,11 +4688,11 @@ namespace DDPM.CLI.Plugins.Display
                                 value = "Lock";
                                 r = devMgr.SetVCPCapability(monitor, 0xCA, 0x01).Result;
                                 break;
+
                             case "UNLOCK":
                                 value = "UnLock";
                                 r = devMgr.SetVCPCapability(monitor, 0xCA, 0x02).Result;
                                 break;
-
                         }
 
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -4715,7 +4716,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 if (index.Count != 0)
                 {
@@ -4727,11 +4727,11 @@ namespace DDPM.CLI.Plugins.Display
                                 value = "Lock";
                                 r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x01).Result;
                                 break;
+
                             case "UNLOCK":
                                 value = "UnLock";
                                 r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x02).Result;
                                 break;
-
                         }
 
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base(idx);
@@ -4754,9 +4754,7 @@ namespace DDPM.CLI.Plugins.Display
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
-
                     }
-
                 }
                 if (serviceTag.Count != 0)
                 {
@@ -4772,11 +4770,11 @@ namespace DDPM.CLI.Plugins.Display
                                     value = "Lock";
                                     r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
                                     break;
+
                                 case "UNLOCK":
                                     value = "UnLock";
                                     r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
                                     break;
-
                             }
 
                             _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo).ToString());
@@ -4816,9 +4814,11 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.unknow_command, output);
             }
         }
-        #endregion
+
+        #endregion Private methods
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -4842,9 +4842,11 @@ namespace DDPM.CLI.Plugins.Display
             }
             base.Dispose(disposing);
         }
-        #endregion
+
+        #endregion IDisposableObservable Support
 
         #region Bruce display properties
+
         private int GetSupportedDisplayProperties(DisplayPropertiesInfo displayPropertiesInfo, CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE supportedResolutionRefreshRate_RESPONSE)
         {
             string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
@@ -4858,6 +4860,7 @@ namespace DDPM.CLI.Plugins.Display
 
             return (int)CLI_ExitCode.success;
         }
+
         private int GetCurrentDisplayProperties(DisplayPropertiesInfo displayPropertiesInfo, object o)
         {
             CLI_Get_Properties_HDR_RESPONSE cli_HDR_RESPONSE = o as CLI_Get_Properties_HDR_RESPONSE;
@@ -4892,6 +4895,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             return (int)CLI_ExitCode.success;
         }
+
         private (int code, string result) SetDisplayProperties(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             //if (devMgr == null)
@@ -4967,6 +4971,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             return ((int)CLI_ExitCode.success, output);
         }
+
         private (int code, string result) PropertiesFunc(IDeviceManagerSA devMgr, MonitorInfo monitorInfo, CommandLineInput commandLineInput, CLI_RESPONSE cLI_RESPONSE)
         {
             bool? ret = false;
@@ -4998,6 +5003,7 @@ namespace DDPM.CLI.Plugins.Display
                             displayPropertiesInfo.CurrentOrientation).Result;
                     cLI_RESPONSE.Result = ret == true ? "pass" : "FAIL";
                     break;
+
                 case "HDR":
                     HDR_RESPONSE = new CLI_Get_Properties_HDR_RESPONSE(cLI_RESPONSE);
                     HDR_RESPONSE.IsSupportedHDR = displayPropertiesInfo.SupportedHDR ? "Yes" : "No";
@@ -5049,6 +5055,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     HDR_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "USBCPRIORITIZATION":
                     USBCPrioritization_RESPONSE = new CLI_Get_Properties_USBCPrioritization_RESPONSE(cLI_RESPONSE);
                     USBCPrioritization_RESPONSE.SupportedUSBCPrioritization = displayPropertiesInfo.SupportedUSBCPrioritization ? "Yes" : "No";
@@ -5100,6 +5107,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     USBCPrioritization_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "RESOLUTION":
                     try
                     {
@@ -5133,6 +5141,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "REFRESHRATE":
                     try
                     {
@@ -5169,6 +5178,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "ORIENTATION":
                     CurrentOrientation_RESPONSE = new CLI_Get_Properties_Orientation_RESPONSE(cLI_RESPONSE);
                     try
@@ -5216,15 +5226,19 @@ namespace DDPM.CLI.Plugins.Display
                                         case "LANDSCAPE":
                                             displayOrientation = DisplayOrientation.Angle0;
                                             break;
+
                                         case "PORTRAIT":
                                             displayOrientation = DisplayOrientation.Angle90;
                                             break;
+
                                         case "LANDSCAPE(FLIPPED)":
                                             displayOrientation = DisplayOrientation.Angle180;
                                             break;
+
                                         case "PORTRAIT(FLIPPED)":
                                             displayOrientation = DisplayOrientation.Angle270;
                                             break;
+
                                         default:
                                             ret = false;
                                             break;
@@ -5244,6 +5258,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     CurrentOrientation_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "RESOLUTIONREFRESHRATE":
                     try
                     {
@@ -5297,6 +5312,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "CURRENTRESOLUTIONREFRESHRATE"://"CURRENTDISPLAYPROPERTIES":
                     if (commandLineInput.Options.Count > 0)
                     {
@@ -5312,6 +5328,7 @@ namespace DDPM.CLI.Plugins.Display
                     ret = GetCurrentDisplayProperties(displayPropertiesInfo, CurrentResolutionRefreshRate_RESPONSE) == 0 ? true : false;
                     CurrentResolutionRefreshRate_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "ALLRESOLUTIONREFRESHRATE":
                     if (commandLineInput.Options.Count > 0)
                     {
@@ -5327,6 +5344,7 @@ namespace DDPM.CLI.Plugins.Display
                     ret = GetSupportedDisplayProperties(displayPropertiesInfo, SupportedResolutionRefreshRate_RESPONSE) == 0 ? true : false;
                     SupportedResolutionRefreshRate_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "LOCKROTATE":
                     if (commandLineInput.Options.Count > 1)
                     {
@@ -5348,12 +5366,13 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 default:
                     cLI_RESPONSE.Command = commandLineInput.Command;
                     cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
                     cLI_RESPONSE.Result = "Un-supported feature";
                     cLI_RESPONSE.Message = "Un-supported feature";
-                    return ((int)CLI_ExitCode.fail_configHDR_inputfail,JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
+                    return ((int)CLI_ExitCode.fail_configHDR_inputfail, JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
             }
             if (HDR_RESPONSE != null)
             {
@@ -5398,10 +5417,11 @@ namespace DDPM.CLI.Plugins.Display
                 return ((int)CLI_ExitCode.fail_NotSupport, output);
             }
         }
-        #endregion
+
+        #endregion Bruce display properties
 
         private (int code, string result) GetALSPropertiesAsync(IDeviceManagerSA device, CommandLineInput target_type, string val)
-        {           
+        {
             if (device == null)
             {
                 return WriteALSResponse(_AllInfoMonitors, val.ToString(), target_type, CLI_ExitCode.null_device_manager, false, "Input null IDeviceManagerSA");
@@ -5418,18 +5438,23 @@ namespace DDPM.CLI.Plugins.Display
                 case "AUTOBRIGHTNESS":
                     type = ALSFeatureQueryType.AutoBrightness;
                     break;
+
                 case "AUTOBRIGHTNESSRANGELEVEL": //CLI: Mark 0723
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
+
                 case "AUTOCOLORTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
+
                 case "PRIMARYMONITORSYNC":
                     type = ALSFeatureQueryType.PrimaryMonitorSync;
                     break;
+
                 case "MULTIMONITORSYNC"://Dean 0611
                     type = ALSFeatureQueryType.MMS;
                     break;
+
                 default:
                     return WriteALSResponse(_AllInfoMonitors, val.ToString(), target_type, CLI_ExitCode.unknow_command, false, "Unknow command");
             }
@@ -5462,18 +5487,23 @@ namespace DDPM.CLI.Plugins.Display
                 case "AUTOBRIGHTNESS":
                     type = ALSFeatureQueryType.AutoBrightness;
                     break;
+
                 case "AUTOBRIGHTNESSRANGELEVEL": //CLI: Mark 0723
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
+
                 case "AUTOCOLORTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
+
                 case "PRIMARYMONITORSYNC":
                     type = ALSFeatureQueryType.PrimaryMonitorSync;
                     break;
+
                 case "MULTIMONITORSYNC"://Dean 0611
                     type = ALSFeatureQueryType.MMS;
                     break;
+
                 default:
                     return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.unknow_command, false, target_type.TargetFeature.ToString());
             }
@@ -5493,12 +5523,15 @@ namespace DDPM.CLI.Plugins.Display
                         case "LOW":
                             value = "0";
                             break;
+
                         case "MID":
                             value = "1";
                             break;
+
                         case "HIGH":
                             value = "2";
                             break;
+
                         default:
                             return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.unknow_command, false, "The input AutoBrightnessRangeLevel value error");
                     }
@@ -5518,21 +5551,27 @@ namespace DDPM.CLI.Plugins.Display
                 case ALSFeatureQueryType.MMS:
                     set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.MMS, value).Result;
                     break;
+
                 case ALSFeatureQueryType.PrimaryMonitorSync:
                     set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.PrimaryMonitorSync, value).Result;
                     break;
+
                 case ALSFeatureQueryType.AutoColorTemperature:
                     set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoColorTemperature, value).Result;
                     break;
+
                 case ALSFeatureQueryType.AutoBrightness:
                     set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoBrightness, value).Result;
                     break;
+
                 case ALSFeatureQueryType.AutoBrightnessRangeLevel:
                     set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoBrightnessRangeLevel, value).Result;
                     break;
+
                 case ALSFeatureQueryType.All:
                     set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.All, value).Result;
                     break;
+
                 default:
                     return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.unknow_command, false, "");
             }
@@ -5572,21 +5611,27 @@ namespace DDPM.CLI.Plugins.Display
                     case CLI_ExitCode.null_device_manager:
                         msg = "Null device manager";
                         break;
+
                     case CLI_ExitCode.no_monitor_connected:
                         msg = "No monitor connected";
                         break;
+
                     case CLI_ExitCode.fail_GetAlsFeatureFail:
                         msg = "Fail GetAlsFeatureFail";
                         break;
+
                     case CLI_ExitCode.fail_SetAlsFeatureFail:
                         msg = "Fail SetAlsFeatureFail";
                         break;
+
                     case CLI_ExitCode.no_matched_monitor_found:
                         msg = "No matched monitor";
                         break;
+
                     case CLI_ExitCode.unknow_command:
                         msg = "Unknow Command : " + other_errorinfo;
                         break;
+
                     default:
                         msg = other_errorinfo;
                         break;
@@ -5605,15 +5650,19 @@ namespace DDPM.CLI.Plugins.Display
                         case "AUTOBRIGHTNESS":
                             ALS_RESPONSE.Value = param.isAutoBrightness ? "ON" : "OFF";
                             break;
+
                         case "AUTOBRIGHTNESSRANGELEVEL": //CLI: Mark0723
                             ALS_RESPONSE.Value = param.AutoBrightnessRangeLevel[0].level_name.ToUpper();
                             break;
+
                         case "AUTOCOLORTEMP":
                             ALS_RESPONSE.Value = param.isAutoColorTemp ? "ON" : "OFF";
                             break;
+
                         case "PRIMARYMONITORSYNC":
                             ALS_RESPONSE.Value = param.isPrimaryMonitorSync ? "ON" : "OFF";
                             break;
+
                         case "MULTIMONITORSYNC":
                             ALS_RESPONSE.Value = param.isMMSEnable ? "ON" : "OFF";
                             break;
@@ -5637,7 +5686,7 @@ namespace DDPM.CLI.Plugins.Display
                     return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_PopwerNap_RESPONSE, Formatting.Indented));
                 }
                 else
-                {    
+                {
                     return PowerNap(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
                 }
             }
@@ -5677,7 +5726,6 @@ namespace DDPM.CLI.Plugins.Display
                 System.Console.WriteLine(JsonConvert.SerializeObject(PopwerNap_RESPONSE, Formatting.Indented));
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(PopwerNap_RESPONSE, Formatting.Indented));
             }
-                
         }
 
         private async Task<(int code, string result)> PowerNap(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value)
@@ -5710,7 +5758,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
                         S_PowerNap_RESPONSE.Command = "SET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
-                        
+
                         List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
@@ -5785,8 +5833,8 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Value = "Sleep";
                         else
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
-						
-						output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
+
+                        output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
                     return ((int)CLI_ExitCode.success, output);
                 }
@@ -5878,9 +5926,8 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Value = "Sleep";
                         else
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
-                    
-					    output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
 
+                        output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
                     return ((int)CLI_ExitCode.success, output);
                 }
@@ -5975,7 +6022,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                                 S_PowerNap_RESPONSE.Value = tmp_rst.RunType.ToString();
 
-							output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
+                            output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
                         return ((int)CLI_ExitCode.success, output);
                     }
@@ -6024,14 +6071,14 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             PowerNapSetting temp = read_list[idx];
                             S_PowerNap_RESPONSE.Result = "PASS";
-                            if ( temp.RunType.ToString().Equals("SleepIfRunning"))
+                            if (temp.RunType.ToString().Equals("SleepIfRunning"))
                                 S_PowerNap_RESPONSE.Value = "Sleep";
                             else
                                 S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                         }
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
-					return ((int)CLI_ExitCode.success, output);
+                    return ((int)CLI_ExitCode.success, output);
                 }
                 else if (index.Count != 0)
                 {
@@ -6072,9 +6119,9 @@ namespace DDPM.CLI.Plugins.Display
                             else
                                 S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                         }
-                        output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);                        
+                        output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
-					return ((int)CLI_ExitCode.success, output);
+                    return ((int)CLI_ExitCode.success, output);
                 }
                 else if (serviceTag.Count != 0)
                 {
@@ -6208,7 +6255,6 @@ namespace DDPM.CLI.Plugins.Display
             Console.WriteLine("\r\n] }");
             return (int)CLI_ExitCode.success;
         }
-
 
         //  arg[0]   arg[1]     arg[2]       arg[3]
         // /display /PxpSetMode monitorIndex modeCode
@@ -6400,7 +6446,6 @@ namespace DDPM.CLI.Plugins.Display
             Console.WriteLine($"PxpGetSubInputs: {arg2}");
             writelog($"PxpGetSubInputs: {arg2}");
 
-
             if (devMgr == null)
             {
                 writelog("PxpSetMode: IDeviceManagerSA is null.");
@@ -6451,7 +6496,6 @@ namespace DDPM.CLI.Plugins.Display
                 return (int)CLI_ExitCode.success;
             }
 
-
             Console.WriteLine("\"Subinputs\" :[");
             int idx = 0;
             foreach (InputSourceObj source in inputSources)
@@ -6492,7 +6536,6 @@ namespace DDPM.CLI.Plugins.Display
                 }
             }
             writelog($"Monitor count = {_AllInfoMonitors.Count}");
-
 
             string arg2 = args[2];
             //arg2 = zero based index to Monitors
@@ -6550,9 +6593,11 @@ namespace DDPM.CLI.Plugins.Display
             Console.WriteLine("Result=Error");
             return (int)CLI_ExitCode.functional_error;
         }
-        #endregion
+
+        #endregion PIP/PBP - (Robert_Lin 2024-6-13, Unused) (Added by Robert_Lin, 2024-6-5)
 
         #region Helper functions (Robert_Lin 2024-6-13 Unused if remove PIP/PBP region)
+
         //Try to convert input string to int.
         // strIn    outValue
         // "20"     20
@@ -6576,6 +6621,7 @@ namespace DDPM.CLI.Plugins.Display
                 Console.WriteLine($"ConvertToInt(\"{strIn}\") return {ConvertToInt(strIn, out outValue)}, outValue={outValue}");
             }
         */
+
         private bool ConvertToInt(string strIn, out int outValue)
         {
             strIn = strIn.Trim();
@@ -6601,25 +6647,28 @@ namespace DDPM.CLI.Plugins.Display
             {
                 ePxpInputs ret = (ePxpInputs)System.Enum.Parse(typeof(ePxpInputs), str, true);
                 return ret;
-
             }
             catch (Exception e)
             {
             }
             return ePxpInputs.invalid;
         }
-        #endregion
+
+        #endregion Helper functions (Robert_Lin 2024-6-13 Unused if remove PIP/PBP region)
 
         #region PxP CLI - Robert_Lin 2024-6-13 for new CLI command syntax
+
         private async Task<(int code, string result)> CLI_Pxp(IDeviceManagerSA devMgr, CommandLineInput cmdLineInput)
         {
             int exitCode = CLIPxp.Execute(devMgr, cmdLineInput);
             System.Console.WriteLine(JsonConvert.SerializeObject(CLIPxp.Responses, Formatting.Indented));
             return (exitCode, JsonConvert.SerializeObject(CLIPxp.Responses, Formatting.Indented));
         }
-        #endregion
+
+        #endregion PxP CLI - Robert_Lin 2024-6-13 for new CLI command syntax
 
         #region Malik
+
         private (int code, string result) GetDeviceData(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command == "SET" || commandLineInput.Options.Count != 0)
@@ -6706,7 +6755,6 @@ namespace DDPM.CLI.Plugins.Display
 
                     rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
                     get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
-
 
                     if (monitor.CapabilityDic.ContainsKey("12"))
                     {
@@ -6861,7 +6909,6 @@ namespace DDPM.CLI.Plugins.Display
                     rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
                     get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
 
-
                     if (monitor.CapabilityDic.ContainsKey("12"))
                     {
                         rc = GetVCPCode(devMgr, monitor, "0x12").Result;
@@ -7012,7 +7059,6 @@ namespace DDPM.CLI.Plugins.Display
 
                         rc = GetVCPCode(devMgr, monitor, "0xAA").Result;
                         get_DeviceData.ScreenOrientation = Orientations_Str[((uint)rc.value) - 1];
-
 
                         if (monitor.CapabilityDic.ContainsKey("12"))
                         {
@@ -7227,7 +7273,6 @@ namespace DDPM.CLI.Plugins.Display
                     output += "\n" + JsonConvert.SerializeObject(get_Capabilitystring, Formatting.Indented);
                     return ((int)CLI_ExitCode.success, output);
                 }
-
             }
             else if (commandLineInput.DeviceIndex.Count > 0)
             {
@@ -7258,7 +7303,6 @@ namespace DDPM.CLI.Plugins.Display
 
                     foreach (MonitorInfo monitor in tmp)
                     {
-
                         get_Capabilitystring = new Get_Capabilitystring();
                         get_Capabilitystring.Command = commandLineInput.Command;
                         get_Capabilitystring.Model = monitor.AliasDeviceName;
@@ -7273,7 +7317,6 @@ namespace DDPM.CLI.Plugins.Display
                         output += "\n" + JsonConvert.SerializeObject(get_Capabilitystring, Formatting.Indented);
                         return ((int)CLI_ExitCode.success, output);
                     }
-
                 }
                 get_Capabilitystring = new Get_Capabilitystring();
                 get_Capabilitystring.Command = "GET";
@@ -7324,13 +7367,11 @@ namespace DDPM.CLI.Plugins.Display
                 System.Console.WriteLine(JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
             }
-
         }
 
         private async Task<(int code, string result)> Energysaver(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value)
         {
             CLI_RESPONSE S_Energysaver_RESPONSE = new CLI_RESPONSE();
-
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
@@ -7551,13 +7592,11 @@ namespace DDPM.CLI.Plugins.Display
                 System.Console.WriteLine(JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented));
                 return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented));
             }
-
         }
 
         private async Task<(int code, string result)> Autocolorpreset(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value)
         {
             CLI_RESPONSE S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
-
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
@@ -7943,12 +7982,12 @@ namespace DDPM.CLI.Plugins.Display
                                 cli_Response.Result = "PASS";
                             }
                         }
-                         System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                        System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
             }
-            return (rc ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error , output);
+            return (rc ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
         private (int code, string result) GetMonitorCount(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
@@ -8100,7 +8139,6 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> DiagnosticReport(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-
             string output = string.Empty;
 
             if (_AllInfoMonitors == null)
@@ -8164,7 +8202,6 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) ApplyConfigurationX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-
             if (commandLineInput.Command == "GET" || commandLineInput.Options.Count == 0)
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
@@ -8318,7 +8355,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     if (monitor.CapabilityDic.ContainsKey("62"))
                     {
-                        retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64 
+                        retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
                         if (!retcode) ispass = false;
                         else ApplyConfiguration.SpeakerVolume = devicedata.SpeakerVolume;
                     }
@@ -8458,7 +8495,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     if (monitor.CapabilityDic.ContainsKey("62"))
                     {
-                        retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64 
+                        retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
                         if (!retcode) ispass = false;
                         else ApplyConfiguration.SpeakerVolume = devicedata.SpeakerVolume;
                     }
@@ -8597,7 +8634,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (monitor.CapabilityDic.ContainsKey("62"))
                         {
-                            retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64 
+                            retcode = SetVCPCode(devMgr, monitor, "0x62", devicedata.SpeakerVolume).Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
                             if (!retcode) ispass = false;
                             else ApplyConfiguration.SpeakerVolume = devicedata.SpeakerVolume;
                         }
@@ -8764,6 +8801,7 @@ namespace DDPM.CLI.Plugins.Display
                 default: return "0x11";
             }
         }
-        #endregion
+
+        #endregion Malik
     }
 }

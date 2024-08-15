@@ -1,4 +1,3 @@
-
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
@@ -33,6 +32,7 @@ namespace DDPM.UI.Module.Kvm
             }
             vm.Invoke_RefreshData();
         }
+
         public string ModuleName { get => "KvmModule"; }
 
         public UserControl? GetLeftView()
@@ -44,29 +44,33 @@ namespace DDPM.UI.Module.Kvm
         {
             return _rightView;
         }
+
         public HomeDevice? SelectedHomeDevice { get; set; }
+
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
             set => vm.ModuleOwner = value;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
-
         }
+
         public void OnActivated()
         {
-
         }
+
         public void OnDeactivated()
         {
-
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

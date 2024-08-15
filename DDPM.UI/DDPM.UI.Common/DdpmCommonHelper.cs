@@ -3,31 +3,25 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Views;
 using Dell.Client.Framework.UX.WPF;
-using Dell.Client.Framework.UX.WPF.Dialogs.WPF;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 
 namespace DDPM.UI.Common
 {
-    public static class DdpmCommonHelper 
+    public static class DdpmCommonHelper
     {
-         /// <summary>
-         /// Create an ImageSource object, which load from DDPM.Common.Resources
-         /// </summary>
-         /// <param name="resourceName">The filename of the image file, for example, "Resources/dell.png"</param>
-         /// <returns></returns>
-        public static ImageSource GetImageSourceFromCommonResource(string resourceName, string assemblyName="")
+        /// <summary>
+        /// Create an ImageSource object, which load from DDPM.Common.Resources
+        /// </summary>
+        /// <param name="resourceName">The filename of the image file, for example, "Resources/dell.png"</param>
+        /// <returns></returns>
+        public static ImageSource GetImageSourceFromCommonResource(string resourceName, string assemblyName = "")
         {
-
             if (String.IsNullOrWhiteSpace(assemblyName))
-                    assemblyName = "DDPM.UI.Common";
+                assemblyName = "DDPM.UI.Common";
 
             try
             {
@@ -36,16 +30,14 @@ namespace DDPM.UI.Common
             }
             catch (Exception ex)
             {
-
-                
             }
             return null;
         }
 
-        //DdpmHomePlugin will set this value 
-        public static IConsole? MyConsole { get; set; } 
+        //DdpmHomePlugin will set this value
+        public static IConsole? MyConsole { get; set; }
 
-        public static IDeviceManagerSA?  DeviceManagerSA{ get; set; }
+        public static IDeviceManagerSA? DeviceManagerSA { get; set; }
         public static DDPMSettings? Settings_Cache { get; set; }
 
         public static IModuleOwner? ModuleOwner { get; set; }
@@ -53,7 +45,7 @@ namespace DDPM.UI.Common
         public static bool DDPMMesssageBox(string title, string text)
         {
             //MessageBoxResult result = System.Windows.MessageBox.Show(text, "Confirmation", MessageBoxButton.YesNo);
-            DDPMMsgBox msgBox = new DDPMMsgBox(title, text);
+            DDPMMsgBox msgBox = new DDPMMsgBox(title, text, null);
             msgBox.ShowDialog();
 
             //if (result == MessageBoxResult.Yes)
@@ -63,15 +55,21 @@ namespace DDPM.UI.Common
                 return false;
         }
 
+        public static void DDPMPureMesssageBox(string title, string text, bool IsCloseButton, Window Owner)
+        {
+            DDPMMsgBox msgBox = new DDPMMsgBox(title, text, IsCloseButton, Owner);
+            msgBox.ShowDialog();
+        }
+
         public static bool IsMainWindowAtPrimaryScreen = true;
 
         /// <summary>
         ///Parsing hex value blank separated string to a WORD array
         ///Support format:
-        ///1 All Bytes: "02 04 05 08 10 12" 
+        ///1 All Bytes: "02 04 05 08 10 12"
         ///2 All Words: "0002 0004 0105 0208 1006 AE12"
         ///3 Mix: "02 0208 04 05 AE12"
-        ///4 Multiple space chars: "  02 04  05     08 10 1006    12" 
+        ///4 Multiple space chars: "  02 04  05     08 10 1006    12"
         /// </summary>
         /// <param name="inStr"></param>
         /// <returns>

@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.UI.Common
 {
@@ -49,7 +38,7 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (vm.IsLandingMode) 
+            if (vm.IsLandingMode)
             {
                 VisualStateManager.GoToState(this, "LandingNormal", false);
             }
@@ -60,7 +49,6 @@ namespace DDPM.UI.Common
         }
 
         //public event RoutedEventHandler? Click;
-
 
         public ICommand? ClickCommand { get; set; }
 

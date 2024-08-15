@@ -1,7 +1,6 @@
-
 using System.Globalization;
-using System.Windows.Data;
 using System.Windows;
+using System.Windows.Data;
 
 namespace DDPM.UI.Plugin.Common
 {
@@ -51,10 +50,13 @@ namespace DDPM.UI.Plugin.Common
                 {
                     case 1:
                         return new Thickness(marginValues[0]);
+
                     case 2:
                         return new Thickness(marginValues[0], marginValues[1], marginValues[0], marginValues[1]);
+
                     case 4:
                         return new Thickness(marginValues[0], marginValues[1], marginValues[2], marginValues[3]);
+
                     default:
                         return new Thickness();
                 }
@@ -68,36 +70,45 @@ namespace DDPM.UI.Plugin.Common
         }
     }
 
-  public class CenterToolTipConverter : IMultiValueConverter {
-    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-      if(values.FirstOrDefault(v => v == DependencyProperty.UnsetValue) != null) {
-        return double.NaN;
-      }
-      double placementTargetWidth = (double)values[0];
-      double toolTipWidth = (double)values[1];
-      return (placementTargetWidth / 2.0) - (toolTipWidth / 2.0);
+    public class CenterToolTipConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.FirstOrDefault(v => v == DependencyProperty.UnsetValue) != null)
+            {
+                return double.NaN;
+            }
+            double placementTargetWidth = (double)values[0];
+            double toolTipWidth = (double)values[1];
+            return (placementTargetWidth / 2.0) - (toolTipWidth / 2.0);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
     }
 
-    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
-      throw new NotSupportedException();
-    }
-  }
-  public class CenterVToolTipConverter : IMultiValueConverter {
-    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-      if(values.FirstOrDefault(v => v == DependencyProperty.UnsetValue) != null) {
-        return double.NaN;
-      }
-      double placementTargetHeight = (double)values[0];
-      double toolTipHeight = (double)values[1];
-      return (placementTargetHeight / 2.0) - (toolTipHeight / 2.0);
+    public class CenterVToolTipConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.FirstOrDefault(v => v == DependencyProperty.UnsetValue) != null)
+            {
+                return double.NaN;
+            }
+            double placementTargetHeight = (double)values[0];
+            double toolTipHeight = (double)values[1];
+            return (placementTargetHeight / 2.0) - (toolTipHeight / 2.0);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
     }
 
-    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
-      throw new NotSupportedException();
-    }
-  }
-
-  public class EqualityConverter : IValueConverter
+    public class EqualityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -114,16 +125,20 @@ namespace DDPM.UI.Plugin.Common
         }
     }
 
-  public class HeightConverter : IMultiValueConverter {
-    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-      if(values[0] is double parentHeight && parameter is string param && double.TryParse(param, out double constant)) {
-        return parentHeight - constant;
-      }
-      return double.NaN;
-    }
+    public class HeightConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is double parentHeight && parameter is string param && double.TryParse(param, out double constant))
+            {
+                return parentHeight - constant;
+            }
+            return double.NaN;
+        }
 
-    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
-      throw new NotImplementedException();
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
-  }
 }

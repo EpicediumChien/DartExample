@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,6 +7,7 @@
 //
 // Program.cs created on 10/4/2022T3:37 PM
 //
+
 #endregion
 
 using System;
@@ -23,19 +25,18 @@ namespace DDPM.Subagent
     /// Nuget packages required to make this process a DTH subagent:
     ///     - Dell.UnifiedAgent.DellTechHubSetting
     ///     - Dell.UnifiedAgent.Client
-    ///     
+    ///
     /// Grab latest version from https://confluence.cpg.dell.com/pages/viewpage.action?pageId=389065517
     /// </summary>
     internal class Program
     {
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
+        private static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        const int SW_HIDE = 0;
-
+        private const int SW_HIDE = 0;
 
         /// <summary>
         ///     A name for your product.
@@ -58,9 +59,9 @@ namespace DDPM.Subagent
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_MUTEX_ID);
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-//#if DEBUG
+            //#if DEBUG
             /*
              * Get the executing assembly so the ProductVersion can be populated
              */

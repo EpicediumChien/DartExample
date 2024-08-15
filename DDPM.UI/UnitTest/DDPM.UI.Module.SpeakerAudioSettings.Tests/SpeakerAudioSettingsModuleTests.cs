@@ -1,12 +1,12 @@
+using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using NGA.UnitTest.PrivateObject;
 using Moq;
-using DDPM.SA.Common;
+using NGA.UnitTest.PrivateObject;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.SpeakerAudioSettings.Tests
@@ -44,7 +44,6 @@ namespace DDPM.UI.Module.SpeakerAudioSettings.Tests
             vm.CurrentDeviceInfo = CurrentDeviceInfo;
             speakerAudioSettingsModule = new SpeakerAudioSettingsModule(vm);
             privateObject = new PrivateObject(speakerAudioSettingsModule);
-
         }
 
         [Test]
@@ -64,7 +63,6 @@ namespace DDPM.UI.Module.SpeakerAudioSettings.Tests
             // Assert
             Assert.That(result, Is.EqualTo("SpeakerAudioSettingsModule"));
         }
-
 
         [Test]//Test method
         public void TestSelectedHomeDevice()
@@ -110,7 +108,6 @@ namespace DDPM.UI.Module.SpeakerAudioSettings.Tests
 
             Assert.That(speakerAudioSettingsModule.ModuleOwner, Is.EqualTo(mockModuleOwner.Object));
         }
-
 
         [Test]
         public void TestOnSelectedHomeDeviceChanged()

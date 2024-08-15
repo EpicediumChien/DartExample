@@ -7,7 +7,6 @@ using System.Text;
 
 namespace DDPM.SA.Common
 {
-
     public static class PrintDataExtensions
     {
         #region Print Columns
@@ -130,7 +129,7 @@ namespace DDPM.SA.Common
                 return column.DataType.ToString() + (column.AllowDBNull && column.DataType.IsClass == false ? "?" : string.Empty);
         }
 
-        #endregion
+        #endregion Print Columns
 
         #region Print DataTable
 
@@ -174,7 +173,7 @@ namespace DDPM.SA.Common
             PrintRows(dataTable, dataTable.AsEnumerable(), rowOrdinals, top, toString, columnNames);
         }
 
-        #endregion
+        #endregion Print DataTable
 
         #region Print DataView
 
@@ -218,7 +217,7 @@ namespace DDPM.SA.Common
             PrintRows(dataView, rowOrdinals, top, toString, columnNames);
         }
 
-        #endregion
+        #endregion Print DataView
 
         #region Print DataSet
 
@@ -263,7 +262,7 @@ namespace DDPM.SA.Common
                 Print(dataTable, rowOrdinals, top, toString, columnNames);
         }
 
-        #endregion
+        #endregion Print DataSet
 
         #region Print DataRow[]
 
@@ -307,7 +306,7 @@ namespace DDPM.SA.Common
             PrintRows((dataRows.Length != 0 ? dataRows[0].Table : null), dataRows, rowOrdinals, top, toString, columnNames);
         }
 
-        #endregion
+        #endregion Print DataRow[]
 
         #region Print Helper Methods
 
@@ -512,7 +511,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion
+        #endregion Print Helper Methods
 
         #region PrintList DataTable
 
@@ -561,7 +560,7 @@ namespace DDPM.SA.Common
             PrintListRows(dataTable, dataTable.AsEnumerable(), rowOrdinals, top, toString, repeatColumns, repeatDirection, delimiter, columnNames);
         }
 
-        #endregion
+        #endregion PrintList DataTable
 
         #region PrintList DataView
 
@@ -610,7 +609,7 @@ namespace DDPM.SA.Common
             PrintListRows(dataView, rowOrdinals, top, toString, repeatColumns, repeatDirection, delimiter, columnNames);
         }
 
-        #endregion
+        #endregion PrintList DataView
 
         #region PrintList DataSet
 
@@ -660,7 +659,7 @@ namespace DDPM.SA.Common
                 PrintList(dataTable, rowOrdinals, top, toString, repeatColumns, repeatDirection, delimiter, columnNames);
         }
 
-        #endregion
+        #endregion PrintList DataSet
 
         #region PrintList DataRow[]
 
@@ -709,7 +708,7 @@ namespace DDPM.SA.Common
             PrintListRows((dataRows.Length != 0 ? dataRows[0].Table : null), dataRows, rowOrdinals, top, toString, repeatColumns, repeatDirection, delimiter, columnNames);
         }
 
-        #endregion
+        #endregion PrintList DataRow[]
 
         #region PrintList Helper Methods
 
@@ -912,14 +911,16 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion
+        #endregion PrintList Helper Methods
 
         #region Write, WriteLine
 
         public delegate void WriteHandler(string value = null, params object[] args);
+
         public delegate void WriteLineHandler(string value = null, params object[] args);
 
         public static event WriteHandler Write = ConsoleWrite;
+
         public static event WriteLineHandler WriteLine = ConsoleWriteLine;
 
         public static void SetOutput(WriteHandler writeHandler, WriteLineHandler writeLineHandler)
@@ -979,7 +980,7 @@ namespace DDPM.SA.Common
                 Console.WriteLine(value, args);
         }
 
-        #endregion
+        #endregion Console
 
         #region StringBuilder
 
@@ -1011,7 +1012,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion
+        #endregion StringBuilder
 
         #region Stream
 
@@ -1047,9 +1048,9 @@ namespace DDPM.SA.Common
             stream.Write(buffer, 0, buffer.Length);
         }
 
-        #endregion
+        #endregion Stream
 
-        #endregion
+        #endregion Write, WriteLine
 
         #region Border
 
@@ -1130,10 +1131,6 @@ namespace DDPM.SA.Common
             ExtendedASCIIBorder();
         }
 
-        #endregion
+        #endregion Border
     }
-
-
-
-
 }

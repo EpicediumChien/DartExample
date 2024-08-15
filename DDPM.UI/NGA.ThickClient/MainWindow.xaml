@@ -9,11 +9,11 @@
     Background="#F20D121A"
     mc:Ignorable="d">
     <wpf:ConsoleWindow.TopBackground>
-    <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill"/>
-  </wpf:ConsoleWindow.TopBackground>
+        <ImageBrush ImageSource="/Resources/Images/Background.png" Stretch="UniformToFill" />
+    </wpf:ConsoleWindow.TopBackground>
 
     <!--<Grid>
-    <Rectangle Fill="#0D121AF2"/>
-    <Image Source="/Resources/Images/DDPM_Dark_Background.png" Stretch="UniformToFill"/>
-  </Grid>-->
+    <Rectangle Fill="#0D121AF2" />
+    <Image Source="/Resources/Images/DDPM_Dark_Background.png" Stretch="UniformToFill" />
+    </Grid>-->
 </wpf:ConsoleWindow>

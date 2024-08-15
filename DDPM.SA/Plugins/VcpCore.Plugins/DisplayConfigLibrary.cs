@@ -1,23 +1,16 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using static VcpCore.Common.dxva2;
-using static VcpCore.Common.User32;
 using VcpCore.Common;
+using static VcpCore.Common.User32;
 
 namespace VcpCore.Plugins
 {
     //https://stackoverflow.com/questions/66155083/windows-api-to-get-whether-hdrhigh-dynamic-range-is-active
     public class DisplayConfigLibrary
     {
-        //Common.MonitorInfo 
+        //Common.MonitorInfo
         public static bool GetDisplayConfigPath(EDID monitorEdid, out DISPLAYCONFIG_PATH_INFO outPath)
         {
             bool result = false;
@@ -101,7 +94,6 @@ namespace VcpCore.Plugins
             catch (Exception) { }
             return result;
         }
-
 
         private static bool GetDisplayConfigTargetDeviceName(DISPLAYCONFIG_PATH_INFO path, out DISPLAYCONFIG_TARGET_DEVICE_NAME info)
         {

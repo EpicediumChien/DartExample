@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using static VcpCore.Common.User32;
-using static VcpCore.Common.dxva2;
 
 namespace VcpCore.Common
 {
     [Serializable]
-
     public class MonitorInfo_complex
     {
         public List<string> UnDefinedColorPreset;

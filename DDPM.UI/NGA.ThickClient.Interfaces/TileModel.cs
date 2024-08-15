@@ -1,13 +1,15 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using Microsoft;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -114,7 +116,7 @@ namespace NGA.ThickClient.Interfaces
         }
 
         /// <summary>
-        /// Tile icon for the tile control. In SVG format.        
+        /// Tile icon for the tile control. In SVG format.
         /// </summary>
         public Geometry? Icon
         {
@@ -181,7 +183,7 @@ namespace NGA.ThickClient.Interfaces
 
         /// <summary>
         /// Creates a TileModel object for use with HomePagePlugin and UXTile.
-        /// Use properties to set non-default values for UseCustomContent, 
+        /// Use properties to set non-default values for UseCustomContent,
         /// CustomContent, HeroImage, EnableSecondaryTileIcon and SecondaryTileIcon
         /// </summary>
         /// <param name="tileDetails">Tile string details</param>
@@ -199,7 +201,7 @@ namespace NGA.ThickClient.Interfaces
 
         /// <summary>
         /// Creates a TileModel object for use with HomePagePlugin and UXTile.
-        /// Use properties to set non-default values for UseCustomContent, 
+        /// Use properties to set non-default values for UseCustomContent,
         /// CustomContent, HeroImage, EnableSecondaryTileIcon and SecondaryTileIcon
         /// </summary>
         /// <param name="tileDetails">Tile string details</param>

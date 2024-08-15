@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DDPM.SA.Common
 {
@@ -14,42 +10,51 @@ namespace DDPM.SA.Common
         Angle180 = 2,
         Angle270 = 3,
     }
+
     public enum USBCPrioritizationType
     {
         Unknow = -1,
         HighDataSpeed = 0,
         HighResolution = 1
     }
+
     /// <summary>
     /// 螢幕所有屬性(解析度、HDR等)
     /// </summary>
     public class DisplayPropertiesInfo
     {
         public string DisplayName;
+
         /// <summary>
         /// 是否支援HDR
         /// </summary>
         public bool SupportedHDR;
+
         /// <summary>
         /// HDR狀態
         /// </summary>
         public bool isHDREnable;
+
         /// <summary>
         /// 是否支援USB-C Prioritization
         /// </summary>
         public bool SupportedUSBCPrioritization;
+
         /// <summary>
         /// USB-C Prioritization狀態
         /// </summary>
         public USBCPrioritizationType USBCPrioritizationType;
+
         /// <summary>
         /// 現在螢幕畫面方向
         /// </summary>
         public DisplayOrientation CurrentOrientation;
+
         /// <summary>
         /// 螢幕可支援的解析度刷新率、方向列表(含現在值、建議值)
         /// </summary>
         public DisplaySupportedProperties SupportedProperties;
+
         public DisplayPropertiesInfo()
         {
             SupportedProperties = new DisplaySupportedProperties();
@@ -57,6 +62,7 @@ namespace DDPM.SA.Common
             USBCPrioritizationType = USBCPrioritizationType.Unknow;
         }
     }
+
     /// <summary>
     /// 螢幕可支援的解析刷新率、方向
     /// </summary>
@@ -64,12 +70,14 @@ namespace DDPM.SA.Common
     {
         public List<Properties> Properties { get; set; }
         public DisplayOrientation[] Orientations { get; set; }
+
         public DisplaySupportedProperties()
         {
             Properties = new List<Properties>();
             Orientations = new DisplayOrientation[4];
         }
     }
+
     /// <summary>
     /// 顯示器資訊
     /// </summary>
@@ -79,26 +87,32 @@ namespace DDPM.SA.Common
         /// 解析度:寬
         /// </summary>
         public int Resolutions_Width;
+
         /// <summary>
         /// 解析度:高
         /// </summary>
         public int Resolutions_High;
+
         /// <summary>
         /// 刷新率
         /// </summary>
         public int Frequency;
+
         /// <summary>
         /// 位元深度
         /// </summary>
         public int BitsPerPixel;
+
         /// <summary>
         /// 是否為建議值
         /// </summary>
         public bool isRecommended;
+
         /// <summary>
         /// 是否為現在值
         /// </summary>
         public bool isCurrent;
+
         public Properties()
         {
             Resolutions_Width = 0;
@@ -108,6 +122,7 @@ namespace DDPM.SA.Common
             isRecommended = false;
             isCurrent = false;
         }
+
         public bool Equals(Properties properties)
         {
             return this.Resolutions_Width == properties.Resolutions_Width &&

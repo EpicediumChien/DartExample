@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.Display
 {
@@ -13,8 +9,8 @@ namespace DDPM.SA.Common.Display
     {
         public InputSourceObj()
         {
-
         }
+
         public InputSourceObj(UInt16 code)
         {
             Code = code;
@@ -22,6 +18,7 @@ namespace DDPM.SA.Common.Display
             if (idx >= 0)
                 Name = InputSourceMappingTable[idx].Name;
         }
+
         public InputSourceObj(string name)
         {
             Name = name;
@@ -35,9 +32,9 @@ namespace DDPM.SA.Common.Display
             Code = code;
             Name = name;
         }
+
         public UInt16 Code { get; set; } = 0;
         public string Name { get; set; } = string.Empty;
-
 
         //InputSource {VCP 0x60 Code, Input Source Name} mapping table
         // Sample code to use:

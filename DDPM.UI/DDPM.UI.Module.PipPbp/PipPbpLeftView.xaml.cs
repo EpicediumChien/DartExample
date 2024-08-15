@@ -1,20 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.UI.Module.PipPbp
 {
@@ -31,7 +18,6 @@ namespace DDPM.UI.Module.PipPbp
         public PipPbpLeftView()
         {
             InitializeComponent();
- 
         }
 
         private void fullViewTestButton_Click(object sender, RoutedEventArgs e)
@@ -47,10 +33,8 @@ namespace DDPM.UI.Module.PipPbp
             {
                 foreach (HomeDevice d in vm.ModuleOwner.HomeDevices)
                 {
-
                 }
             }
-
         }
 
         private void ShowF1ViewCommand()
@@ -59,12 +43,14 @@ namespace DDPM.UI.Module.PipPbp
             test1FullView.DataContext = vm;
             vm.ModuleOwner?.OpenFullView(test1FullView);
         }
+
         private void ShowF2ViewCommand()
         {
             Test2FullView test2FullView = new Test2FullView();
             test2FullView.DataContext = vm;
             vm.ModuleOwner?.OpenFullView(test2FullView);
         }
+
         private void HandleCloseFullViewCommand()
         {
             vm.ModuleOwner?.CloseFullView();
@@ -73,9 +59,9 @@ namespace DDPM.UI.Module.PipPbp
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             vm.GotoNextCommand = new RelayCommand(ShowF2ViewCommand);
-            vm.GotoPrevCommand = new RelayCommand(() => 
-            { 
-                ShowF1ViewCommand(); 
+            vm.GotoPrevCommand = new RelayCommand(() =>
+            {
+                ShowF1ViewCommand();
             });
             vm.CloseFullViewCommand = new RelayCommand(() => { HandleCloseFullViewCommand(); });
         }

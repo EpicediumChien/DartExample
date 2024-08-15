@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,16 +7,16 @@
 //
 // Program.cs created on 22/4/2022T11:25 AM
 //
+
 #endregion
 
+using DDPM.SA.Common;
+using Dell.Client.Framework.Agent;
+using Dell.UnifiedAgent.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using DDPM.SA.Common;
-using Dell.Client.Framework.Agent;
-using Dell.UnifiedAgent.Common;
 
 namespace DDPM.Subagent.User
 {
@@ -23,12 +24,11 @@ namespace DDPM.Subagent.User
     /// Nuget packages required to make this process a DTH subagent:
     ///     - Dell.UnifiedAgent.DellTechHubSetting
     ///     - Dell.UnifiedAgent.Client
-    ///     
+    ///
     /// Grab latest version from https://confluence.cpg.dell.com/pages/viewpage.action?pageId=389065517
     /// </summary>
     internal class Program
     {
-
         //[DllImport("kernel32.dll")]
         //static extern IntPtr GetConsoleWindow();
         //
@@ -58,7 +58,7 @@ namespace DDPM.Subagent.User
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_USER_MUTEX_ID);
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //Dean 0626 remove to fix SAST issue
             //var handle = GetConsoleWindow();
@@ -69,7 +69,7 @@ namespace DDPM.Subagent.User
             /*
              * Only allow this application in debug mode
              */
-//#if DEBUG
+            //#if DEBUG
             /*
              * Get the executing assembly so the ProductVersion can be populated
              */
@@ -106,19 +106,20 @@ namespace DDPM.Subagent.User
                 PluginsToPublish = new List<Guid>
                 {
                     new Guid(IDs.VCP_CORE_PLUGIN_ID),
-					new Guid(IDs.Display_Manager_PLUGIN_ID),
+                    new Guid(IDs.Scheduler_Manager_Plugin_ID),
+                    new Guid(IDs.Display_Manager_PLUGIN_ID),
                     new Guid(IDs.DDPM_PERIPHERALS_PLUGIN_ID),
-					new Guid(IDs.Device_Manager_Plugin_ID),
+                    new Guid(IDs.Device_Manager_Plugin_ID),
                     new Guid(IDs.DisplayProperties_PLUGIN_ID),
                     new Guid(IDs.DDPM_COLOR_PRESET_PLUGIN_ID),
                     new Guid(IDs.DDPM_USBKVM_PLUGIN_ID),
                     new Guid(IDs.DDPM_NKVM_PLUGIN_ID),
                     new Guid(IDs.DDPM_HOTKEY_PLUGIN_ID),
                     new Guid(IDs.DDPM_EAPlugin_PLUGIN_ID),
-                    new Guid(IDs.PipPbp_Manager_PLUGIN_ID), 
+                    new Guid(IDs.PipPbp_Manager_PLUGIN_ID),
                     new Guid(IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID),
                     new Guid(IDs.DDPM_CLI_Proxy_Plugin),
-                    new Guid(IDs.CLI_Plugin_Display), 
+                    new Guid(IDs.CLI_Plugin_Display),
                     new Guid(IDs.CLI_Plugin_Peripherals),
                 },
                 /*
@@ -148,11 +149,11 @@ namespace DDPM.Subagent.User
 
             Console.WriteLine("DDPM.Subagent.User exiting...");
 
-//#else
-//            Console.WriteLine("\nERROR: Only the DEBUG build is supported");
-//            Console.WriteLine("Hit any key to exit");
-//            Console.ReadLine();
-//#endif
+            //#else
+            //            Console.WriteLine("\nERROR: Only the DEBUG build is supported");
+            //            Console.WriteLine("Hit any key to exit");
+            //            Console.ReadLine();
+            //#endif
         }
     }
 }

@@ -1,14 +1,12 @@
 using DDPM.SA.Common;
 using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System.Windows.Controls;
 using System.Windows;
-using System.Globalization;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
@@ -27,7 +25,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
-
 
         [SetUp]
         public void Setup()
@@ -49,7 +46,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             privateObject = new PrivateObject(headsetAudioSettingsRightView);
         }
 
-
         [Test]
         public void TestConstructor_HeadsetAudioSettingsModule()
         {
@@ -67,7 +63,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             var node = new Image();
             try
             {
-                headsetAudioSettingsRightView.SetNodeValue(node,2.0);
+                headsetAudioSettingsRightView.SetNodeValue(node, 2.0);
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -82,8 +78,8 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
         {
             // Act
             CollaborationCheckedToVisibilityConverter collaborationCheckedToVisibilityConverter = new CollaborationCheckedToVisibilityConverter();
-            var viewModel= new HeadsetViewModel(console, log, deviceManagerSA);
-            collaborationCheckedToVisibilityConverter.ViewModel=viewModel;
+            var viewModel = new HeadsetViewModel(console, log, deviceManagerSA);
+            collaborationCheckedToVisibilityConverter.ViewModel = viewModel;
             // Assert
             Assert.That(collaborationCheckedToVisibilityConverter, Is.Not.Null);
             Assert.That(collaborationCheckedToVisibilityConverter.ViewModel, Is.EqualTo(viewModel));
@@ -93,7 +89,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
         public void TestConvert()
         {
             CollaborationCheckedToVisibilityConverter collaborationCheckedToVisibilityConverter = new CollaborationCheckedToVisibilityConverter();
-            var res=collaborationCheckedToVisibilityConverter.Convert(null, null, null, null);
+            var res = collaborationCheckedToVisibilityConverter.Convert(null, null, null, null);
             Assert.That(res, Is.EqualTo(Visibility.Collapsed));
 
             //var parameter == "",isChecked && ViewModel.Model == "WL7024"
@@ -101,7 +97,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             var viewModel = new HeadsetViewModel(console, log, deviceManagerSA);
             viewModel.Model = "WL7024";
             collaborationCheckedToVisibilityConverter.ViewModel = viewModel;
-            res = collaborationCheckedToVisibilityConverter.Convert(true,null, parameter, null);
+            res = collaborationCheckedToVisibilityConverter.Convert(true, null, parameter, null);
             Assert.That(res, Is.EqualTo(Visibility.Collapsed));
 
             //parameter == "MicNoiseCancellationPageShow"&&isChecked,viewModel.Model == "WL7024"
@@ -156,7 +152,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             //value is not bool boolean
             res = inverseBooleanConverter.Convert(null, null, null, null);
             Assert.That(res, Is.EqualTo(false));
-
         }
 
         [Test]
@@ -179,7 +174,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             BooleanToInverseForegroundConverter booleanToInverseForegroundConverter = new BooleanToInverseForegroundConverter();
             //value==true
             var res = booleanToInverseForegroundConverter.Convert(true, null, null, null);
-            Assert.That(res, Is.EqualTo(Brushes.Gray ));
+            Assert.That(res, Is.EqualTo(Brushes.Gray));
 
             //value==false
             res = booleanToInverseForegroundConverter.Convert(false, null, null, null);
@@ -189,9 +184,5 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             res = booleanToInverseForegroundConverter.Convert(null, null, null, null);
             Assert.That(res, Is.EqualTo(Brushes.White));
         }
-
-
-
-
     }
 }

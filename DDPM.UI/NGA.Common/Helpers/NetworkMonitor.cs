@@ -1,23 +1,22 @@
 ﻿#region LicenseHeader
+
 //
 // ©Copyright 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
 using System.Net;
-using System.Net.Http;
 using System.Net.NetworkInformation;
-using System.Threading.Tasks;
-using NGA.Resources;
 
-namespace NGA.Common.Helpers {
-  /// <summary>
-  /// Implementation of Network Monitor interface
-  /// </summary>
-  public class NetworkMonitor : INetworkMonitor,IDisposable
+namespace NGA.Common.Helpers
+{
+    /// <summary>
+    /// Implementation of Network Monitor interface
+    /// </summary>
+    public class NetworkMonitor : INetworkMonitor, IDisposable
     {
         private bool _isNetworkOnline;
         private bool _disposed;
@@ -111,15 +110,15 @@ namespace NGA.Common.Helpers {
         /// Network change event handler.
         /// this method is triggered periodically after timespan elapsed
         /// </summary>
-       
+
         private void OnNetworkChange()
         {
             var isInternetConnected = false;
-           
+
             //Check Internet connectivity only when Network Connectivity Status is true
             if (_isNetworkOnline)
             {
-                var internetConnectivityTask  =  CheckForInternetConnection();
+                var internetConnectivityTask = CheckForInternetConnection();
                 isInternetConnected = internetConnectivityTask.Result;
             }
 
@@ -136,7 +135,7 @@ namespace NGA.Common.Helpers {
         /// <returns></returns>
         private static async Task<bool> CheckForInternetConnection()
         {
-            HttpClient httpClient = 
+            HttpClient httpClient =
                 new()
                 {
                     Timeout = TimeSpan.FromSeconds(5)

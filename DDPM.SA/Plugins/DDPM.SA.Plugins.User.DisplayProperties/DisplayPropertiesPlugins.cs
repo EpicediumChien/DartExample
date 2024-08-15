@@ -1,26 +1,20 @@
 ﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Interfaces;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System;
-using System.Threading;
-using System.Windows.Forms;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Windows.Controls;
-using System.Security.Cryptography.Xml;
-using Windows.Graphics.Display;
-using System.Linq;
-using System.Globalization;
-using System.ComponentModel;
-using System.Drawing;
 using Dell.Client.Framework.Common.Extensions;
+using Dell.Client.Framework.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using VcpCore.Common;
-using IDs = DDPM.SA.Common.IDs;
-using static VcpCore.Common.User32;
 using static VcpCore.Common.dxva2;
-
+using static VcpCore.Common.User32;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties
 {
@@ -32,6 +26,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
     public class DisplayPropertiesPlugins : BaseAgentPlugin, IDisplayProperties
     {
         #region Private Members
+
         private const string pluginName = "DisplayPropertiesPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Display Properties Plugin.";
@@ -40,10 +35,13 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         private const string publisherSupport = "This plugin implements Display Properties Plugin.";
 
         private IAgent _agent;
-        #endregion
+
+        #endregion Private Members
+
         private DisplayPropertiesInfo _displayPropertiesInfo;
         public const string PluginLogId = "DisplayProperties";
         public static Logs? _logs;
+
         /// <summary>
         /// HDR變更事件，回傳HDR狀態
         /// </summary>
@@ -55,6 +53,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             _logs = new Logs(Log, PluginLogId);
             _displayPropertiesInfo = new DisplayPropertiesInfo();
         }
+
         /// <summary>
         /// 取得螢幕屬性(現在解析度、刷新率)
         /// </summary>
@@ -70,6 +69,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return Task.FromResult(new DisplayPropertiesInfo());
         }
+
         /// <summary>
         /// 取得螢幕方向
         /// </summary>
@@ -84,7 +84,8 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return Task.FromResult(DisplayOrientation.Unknow);
         }
-        bool RefreshDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType)
+
+        private bool RefreshDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType)
         {
             //Bruce 0605 修改註記:因讀取時間過長(約5000mS)，故修改軟體目前降至(約2800mS)
             try
@@ -133,6 +134,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 return false;
             }
         }
+
         /// <summary>
         /// 取得螢幕的所有可支援的解析度
         /// </summary>
@@ -140,7 +142,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="currentProperties">現在的螢幕解析度屬性</param>
         /// <param name="currentOrientation">現在的螢幕畫面方向</param>
         /// <returns></returns>
-        List<Properties> GetSupportedResolutions(MonitorInfo monitorInfo, Properties currentProperties, DisplayOrientation currentOrientation)
+        private List<Properties> GetSupportedResolutions(MonitorInfo monitorInfo, Properties currentProperties, DisplayOrientation currentOrientation)
         {
             SortedList<(int, int, int), Properties> resolutions = new SortedList<(int, int, int), Properties>(Comparer<(int, int, int)>.Create((x, y) =>
             {
@@ -192,6 +194,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return resolutions.Values.ToList();
         }
+
         /// <summary>
         /// 取得螢幕設定檔
         /// </summary>
@@ -199,7 +202,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="Resolution">回傳值:解析度</param>
         /// <param name="displayOrientation">回傳值:畫面旋轉角</param>
         /// <returns>是否成功取得</returns>
-        bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation)
+        private bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation)
         {
             DEVMODE devMode = new DEVMODE();
             if (EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
@@ -218,6 +221,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             displayOrientation = DisplayOrientation.Unknow;
             return false;
         }
+
         /// <summary>
         /// 比對傳入的螢幕屬性並比對，用於找出建議解析度、頻率
         /// </summary>
@@ -225,7 +229,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="Properties">要比對的螢幕參數</param>
         /// <param name="displayOrientation">現在螢幕的畫面方向，因涉及寬高的數值</param>
         /// <returns>如果比對成功則回傳true代表傳入的螢幕參數是建議值，否則false</returns>
-        bool GetOptimalScreenResolution(MonitorInfo monitorInfo, Properties Properties, DisplayOrientation displayOrientation)
+        private bool GetOptimalScreenResolution(MonitorInfo monitorInfo, Properties Properties, DisplayOrientation displayOrientation)
         {
             int numPathArrayElements = 0;
             int numModeInfoArrayElements = 0;
@@ -294,6 +298,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return false;
         }
+
         /// <summary>
         /// 取得螢幕在特定解析度下的最高刷新率，用於找到建議值
         /// </summary>
@@ -301,10 +306,9 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="dispWidth">要計算的螢幕的解析度寬</param>
         /// <param name="dispHeight">要計算的螢幕的解析度高</param>
         /// <param name="refreshRate">回傳該螢幕該解析度下最高的刷新率值</param>
-        void GetMaxRefreshRateByWidthAndHeight(string deviceName, int dispWidth, int dispHeight, out int refreshRate)
+        private void GetMaxRefreshRateByWidthAndHeight(string deviceName, int dispWidth, int dispHeight, out int refreshRate)
 
         {
-
             refreshRate = 0;
 
             DEVMODE deviceMode = new DEVMODE();
@@ -316,12 +320,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     (deviceMode.dmPelsWidth == dispWidth && deviceMode.dmPelsHeight == dispHeight))
 
                 {
-
                     refreshRate = deviceMode.dmDisplayFrequency;
-
                 }
             }
         }
+
         /// <summary>
         /// 設定螢幕的解析度和畫面旋轉角
         /// </summary>
@@ -362,6 +365,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                                 h = tmp;
                             }
                             break;
+
                         case DisplayOrientation.Angle180:
                             if (w < h)
                             {
@@ -370,6 +374,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                                 h = tmp;
                             }
                             break;
+
                         case DisplayOrientation.Angle270:
                             if (w > h)
                             {
@@ -379,6 +384,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                             }
 
                             break;
+
                         default:
                             if (w < h)
                             {
@@ -407,7 +413,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         devMode.dmPelsHeight = h;
                     }
 
-
                     int result = ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
                     if (result == DISP_CHANGE_SUCCESSFUL)
                     {
@@ -431,6 +436,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 return Task.FromResult(false);
             }
         }
+
         /// <summary>
         /// 呼叫windows的顯示器設定畫面
         /// </summary>
@@ -447,6 +453,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 return Task.FromResult(false);
             }
         }
+
         /// <summary>
         /// Get monitor HDR status
         /// </summary>
@@ -459,6 +466,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             hDRSetting.GetWindowsHDRStatus(monitorEdid, out HDRStatus);
             return Task.FromResult(HDRStatus);
         }
+
         /// <summary>
         /// 設定螢幕的HDR狀態
         /// </summary>
@@ -482,6 +490,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 return Task.FromResult(false);
             }
         }
+
         public void SetExtendMode(MonitorInfo info)
         {
             List<MonitorInfo> monitorInfos = _GetMonitors();
@@ -492,6 +501,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 Thread.Sleep(1000);
             }
         }
+
         private List<MonitorInfo> _GetMonitors()
         {
             try
@@ -504,7 +514,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 {
                     try
                     {
-
                         _logs?.DebugMsg_1("_Get_Monitors collection start ...");
 
                         System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
@@ -523,7 +532,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         int realindex = -1;
                         for (int jj = 0; EnumDisplayDevices(DeviceName, (uint)jj, ref dd, 0); jj++)
                         {
-
                             if ((dd.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) == 0)
                                 continue;
 

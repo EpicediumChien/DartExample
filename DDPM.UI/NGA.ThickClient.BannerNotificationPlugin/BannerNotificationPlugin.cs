@@ -1,27 +1,25 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System.Windows;
+using CommunityToolkit.Mvvm.Input;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
-using CommunityToolkit.Mvvm.Input;
 using NGA.ThickClient.BannerNotificationPlugin.ViewModels;
 using NGA.ThickClient.Interfaces;
 using NGA.ThickClient.Interfaces.BannerNotifications;
+using System.Windows;
 using System.Windows.Data;
 using Application = System.Windows.Application;
-using System.Collections.Generic;
-using System.Threading;
-using System;
-using System.Linq;
 
 namespace NGA.ThickClient.BannerNotificationPlugin
 {
@@ -98,11 +96,12 @@ namespace NGA.ThickClient.BannerNotificationPlugin
             };
 
             customWindowLayout.NotificationIcon.SetBinding(UXBell.IsNotificationAvailableProperty, notificationAvailableBinding);
-
         }
+
         #endregion
 
         #region Properties
+
         /// <summary>
         /// It verifies if the banner notification is currently displayed or not. (Corresponds to IsOpen property)
         /// </summary>
@@ -167,8 +166,9 @@ namespace NGA.ThickClient.BannerNotificationPlugin
         #endregion
 
         #region Methods
+
         /// <summary>
-        /// Method to add In-Application Banner notifications Immediately or Queue It depending on the current banner state. 
+        /// Method to add In-Application Banner notifications Immediately or Queue It depending on the current banner state.
         /// </summary>
         /// <param name="notificationData" cref="IBannerNotificationDisplayData">IBannerNotificationDisplayData.</param>
         public void AddNotification(IBannerNotificationDisplayData notificationData)
@@ -184,7 +184,7 @@ namespace NGA.ThickClient.BannerNotificationPlugin
                     Log.Trace($"Any Banner Notification Currently Displayed :{IsAnyNotificationCurrentlyDisplayedWithoutLock}.");
                     if (!IsAnyNotificationCurrentlyDisplayedWithoutLock)
                     {
-                        //Add Banner to Queue                        
+                        //Add Banner to Queue
                         AddBannerToQueue((BannerNotificationDisplayData)notificationData);
 
                         //Update Binding
@@ -278,7 +278,7 @@ namespace NGA.ThickClient.BannerNotificationPlugin
         }
 
         /// <summary>
-        /// Removes the Group of notifications from the queue or display belonging to same GroupId. 
+        /// Removes the Group of notifications from the queue or display belonging to same GroupId.
         /// </summary>
         /// <param name="bannerGroupId" cref="IBannerNotificationDisplayData.BannerGroupId">Banner <paramref name="bannerGroupId"/> of specific set of banners</param>
         /// <returns>Number of notifications removed</returns>
@@ -329,7 +329,6 @@ namespace NGA.ThickClient.BannerNotificationPlugin
                 Log.Trace($"Exit from RemoveNotificationByGroup.");
             }
         }
-
 
         /// <summary>
         /// Removes all notifications from queue or display matching plugin Owner.
@@ -385,7 +384,7 @@ namespace NGA.ThickClient.BannerNotificationPlugin
         }
 
         /// <summary>
-        /// Method to update an existing banner notifications currently displayed or queued for display. 
+        /// Method to update an existing banner notifications currently displayed or queued for display.
         /// </summary>
         /// <param name="notificationData" cref="IBannerNotificationDisplayData">IBannerNotificationDisplayData.</param>
         /// <returns>True on Successfully updating Banner, else false</returns>
@@ -416,13 +415,13 @@ namespace NGA.ThickClient.BannerNotificationPlugin
                     {
                         Log.Trace($"Banner to update :{notificationData.BannerId} exists in Queue.");
 
-                        // Move Banner In Queue Based On Priority                        
+                        // Move Banner In Queue Based On Priority
                         var oldIndex = _bannerNotificationQueue.IndexOf(queueNotificationData);
                         _bannerNotificationQueue[oldIndex] = (BannerNotificationDisplayData)notificationData;
 
                         Log.Trace($"Moved Banner :{notificationData.BannerId} with Priority :{notificationData.DisplayPriority} In Queue Based On Priority.");
 
-                        //Process Queue Change   
+                        //Process Queue Change
                         SortQueue();
 
                         var isCurrentNotificationLowPriority = _bannerNotificationQueue.Any(x => x.BannerId == CurrentlyDisplayedNotificationWithoutLock && x.DisplayPriority < notificationData.DisplayPriority);
@@ -470,7 +469,7 @@ namespace NGA.ThickClient.BannerNotificationPlugin
 
         /// <summary>
         /// Set Binding of Banner.
-        /// </summary>        
+        /// </summary>
         private void SetBinding()
         {
             Log.Trace($"Set Binding for Banner:{_uxAlertViewModel.BannerId}");

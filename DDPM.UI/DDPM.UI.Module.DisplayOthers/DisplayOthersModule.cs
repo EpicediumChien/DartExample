@@ -21,6 +21,7 @@ namespace DDPM.UI.Module.DisplayOthers
             _rightView = new DisplayOthersRightView(vm);
             vm.Invoke_RefreshData();
         }
+
         public string ModuleName { get => "DisplayOthersModule"; }
 
         public UserControl? GetLeftView()
@@ -34,28 +35,34 @@ namespace DDPM.UI.Module.DisplayOthers
         }
 
         public HomeDevice? SelectedHomeDevice { get; set; }
+
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
             set => vm.ModuleOwner = value;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("DisplayOthersModule.OnSelectedHomeDeviceChanged");
         }
+
         public void OnActivated()
         {
             Trace.WriteLine("DisplayOthersModule.OnActivated");
         }
+
         public void OnDeactivated()
         {
             Trace.WriteLine("DisplayOthersModule.OnDeactivated");
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

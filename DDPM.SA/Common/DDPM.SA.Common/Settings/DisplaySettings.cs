@@ -1,11 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -14,7 +7,8 @@ namespace DDPM.SA.Common.Settings
     /// </summary>
     public class ModelSettings
     {
-        public ModelSettings() { 
+        public ModelSettings()
+        {
         }
 
         public string SerialNumber { get; set; }
@@ -43,7 +37,7 @@ namespace DDPM.SA.Common.Settings
         public override string ToString()
         {
             string output = "{\n" + $" {ModelName}\n";
-            foreach(var dut in DUTs)
+            foreach (var dut in DUTs)
             {
                 output += " {\n";
                 output += "  " + dut.ToString() + "\n";

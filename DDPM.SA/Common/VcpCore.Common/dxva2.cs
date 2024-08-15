@@ -14,10 +14,10 @@ namespace VcpCore.Common
             IntPtr hMonitor, byte code, IntPtr i, out uint currentValue, out uint maxValue);
 
         [DllImport("dxva2.dll", SetLastError = true)]
-        public extern static bool GetPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, uint dwPhysicalMonitorArraySize, [Out] PHYSICAL_MONITOR[] pPhysicalMonitorArray);
+        public static extern bool GetPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, uint dwPhysicalMonitorArraySize, [Out] PHYSICAL_MONITOR[] pPhysicalMonitorArray);
 
         [DllImport("dxva2.dll", SetLastError = true)]
-        public extern static bool GetNumberOfPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, ref uint pdwNumberOfPhysicalMonitors);
+        public static extern bool GetNumberOfPhysicalMonitorsFromHMONITOR(IntPtr hMonitor, ref uint pdwNumberOfPhysicalMonitors);
 
         [DllImport("dxva2.dll", SetLastError = true)]
         public static extern bool GetCapabilitiesStringLength(IntPtr hMonitor, out uint length);

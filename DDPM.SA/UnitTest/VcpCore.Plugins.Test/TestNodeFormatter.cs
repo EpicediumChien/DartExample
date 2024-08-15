@@ -1,16 +1,10 @@
-﻿using Dell.Client.Framework.UnitTestShared.Tests;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Moq;
 
 namespace VcpCore.Plugins.Test
 {
     public class TestNodeFormatter
     {
-        NodeFormatter formatter = new NodeFormatter();
+        private NodeFormatter formatter = new NodeFormatter();
 
         [Test]
         public void TestFormatVCPControlName()
@@ -241,7 +235,6 @@ namespace VcpCore.Plugins.Test
             Assert.That(vcpControlName5, Is.EqualTo(expectvcpControlName5));
             Assert.That(vcpControlName6, Is.EqualTo(expectvcpControlName6));
         }
-
 
         [Test]
         public void TestFormatVCP_E2()

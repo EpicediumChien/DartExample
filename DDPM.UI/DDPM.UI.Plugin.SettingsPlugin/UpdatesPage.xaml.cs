@@ -1,26 +1,9 @@
 ﻿using DDPM.SA.Common;
-using DDPM.SA.Common.Popup;
 using DDPM.UI.Common;
-using Dell.Client.Framework.UX.WPF.Dialogs.WPF;
-using DPeMPublic.Common.Enums;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using static System.Net.Mime.MediaTypeNames;
-using PopupBase = DDPM.UI.Common.UserControls.PopupBase;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -34,6 +17,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             InitializeComponent();
             DdpmCommonHelper.DeviceManagerSA.FWU_UILock_Notify += _FWUpdatePlugin_UIFreezes_Notify;
         }
+
         private void _FWUpdatePlugin_UIFreezes_Notify(object sender, bool lockStatus)
         {
             Dispatcher.Invoke(() =>
@@ -42,6 +26,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 vm.RefreshUI();
             });
         }
+
         private void CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
@@ -49,6 +34,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             vm.SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
             vm.RefreshUI();
         }
+
         private void DownloadAndInstall_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
@@ -67,7 +53,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 }
             }
         }
-        void CallFWU(SettingsPageViewModel vm)
+
+        private void CallFWU(SettingsPageViewModel vm)
         {
             List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo).Result;
             bool b = false;
@@ -96,7 +83,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         // Free resources associated with process.
                         process.Close();
                     }
-
                 }
                 if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
                 {

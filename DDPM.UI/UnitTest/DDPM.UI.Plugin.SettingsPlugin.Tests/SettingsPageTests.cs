@@ -2,19 +2,13 @@
 using DDPM.UI.Common;
 using DPeMPublic.Common.Enums;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace DDPM.UI.Plugin.SettingsPlugin.Tests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
     public class SettingsPageTests
     {
-        SettingsPage? settingsPage;
+        private SettingsPage? settingsPage;
 
         [SetUp]
         public void Setup()
@@ -32,7 +26,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             Assert.That(settingsPage, Is.Not.Null);
             Assert.That(settingsPage.DataContext, Is.Not.Null);
-
         }
     }
 }

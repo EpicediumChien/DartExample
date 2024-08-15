@@ -1,14 +1,13 @@
+using DDPM.SA.Common;
+using DDPM.UI.Common;
+
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
-using Dell.Client.Framework.UX.WPF;
-using NGA.UnitTest.PrivateObject;
-using Moq;
-using DDPM.SA.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
-using System;
-using Microsoft.VisualBasic.Logging;
+using Dell.Client.Framework.UX.WPF;
+using Moq;
+using NGA.UnitTest.PrivateObject;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
@@ -16,7 +15,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
     [TestFixture, Apartment(ApartmentState.STA)]
     public class SpeakerAudioPresetModuleTests
     {
-
         private SpeakerAudioPresetModule? speakerAudioPresetModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
@@ -35,19 +33,18 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-            deviceManagerMock=new Mock<IDeviceManagerSA>();
+            deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
             DdpmCommonHelper.MyConsole = console;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new SoundBarViewModel(console, log,deviceManager);
+            vm = new SoundBarViewModel(console, log, deviceManager);
             CurrentDeviceInfo = new DeviceInfo() { IsWiredAudioIMicNSEnable = true, IsWiredAudioMicMuteSoundEnable = true, WiredAudioVolumeAdjustmentTone = 1 };
             vm.CurrentDeviceInfo = CurrentDeviceInfo;
             speakerAudioPresetModule = new SpeakerAudioPresetModule(vm);
             privateObject = new PrivateObject(speakerAudioPresetModule);
-
         }
 
         [Test]
@@ -67,7 +64,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
             // Assert
             Assert.That(result, Is.EqualTo("SpeakerAudioPresetModule"));
         }
-
 
         [Test]//Test method
         public void TestSelectedHomeDevice()
@@ -113,7 +109,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
 
             Assert.That(speakerAudioPresetModule.ModuleOwner, Is.EqualTo(mockModuleOwner.Object));
         }
-
 
         [Test]
         public void TestOnSelectedHomeDeviceChanged()

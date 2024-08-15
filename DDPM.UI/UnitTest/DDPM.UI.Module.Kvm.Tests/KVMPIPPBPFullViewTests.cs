@@ -1,11 +1,4 @@
-﻿using DDPM.UI.Common.EAEM;
-using DDPM.UI.Common.UserControls;
-using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NGA.UnitTest.PrivateObject;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {

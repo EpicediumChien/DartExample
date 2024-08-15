@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using System;
@@ -36,7 +38,7 @@ namespace NGA.Common.Extensions
         /// <summary>
         /// String extension to validate whether it contains any text
         /// It throws <see cref="ArgumentNullException"/> if the string value is null or whitespace
-        /// otherwise it would return the string value as is 
+        /// otherwise it would return the string value as is
         /// </summary>
         /// <param name="inputStr"></param>
         /// <param name="parameterName"></param>

@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using System.Windows;
@@ -32,7 +34,7 @@ namespace NGA.ThickClient.Interfaces
         /// It receives an InAppNotificationCloseReason parameter indicating the reason the notification was closed.
         /// </param>
         /// <param name="duration">
-        /// The duration, in seconds, for which the notification should remain open. 
+        /// The duration, in seconds, for which the notification should remain open.
         /// Defaults to 10 seconds. The notification will auto-close after the elapsed duration.
         /// </param>
         Task<bool> OpenAsync(FrameworkElement content, InAppNotificationClosed function, int duration = 10);

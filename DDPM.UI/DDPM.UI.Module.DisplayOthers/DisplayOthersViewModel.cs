@@ -1,15 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DDPM.UI.Common.Interfaces;
-using DDPM.SA;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDPM.UI.Common;
 using DDPM.SA.Common.Display;
+using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
+using System.ComponentModel;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -21,8 +14,9 @@ namespace DDPM.UI.Module.DisplayOthers
         public DisplayOthersModule DisplayOthersModule { get; set; }
 
         private string _powerNapText;
-        public string PowerNap_text 
-        { 
+
+        public string PowerNap_text
+        {
             get => _powerNapText;
             set
             {
@@ -32,11 +26,12 @@ namespace DDPM.UI.Module.DisplayOthers
         }
 
         private bool _powerNapEnabled;
-        public bool PowerNap_Enable 
+
+        public bool PowerNap_Enable
         {
             get => _powerNapEnabled;
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _powerNapEnabled, value);
                 PowerNap_text = _powerNapEnabled ? "ON" : "OFF";
                 OnPropertyChanged("PowerNap_Enable");
@@ -44,8 +39,8 @@ namespace DDPM.UI.Module.DisplayOthers
             }
         }
 
-
         private bool _reducebrtChecked;
+
         public bool Reducebrt_Checked
         {
             get => _reducebrtChecked;
@@ -58,6 +53,7 @@ namespace DDPM.UI.Module.DisplayOthers
         }
 
         private bool _putTosleepChecked;
+
         public bool PutTosleep_Checked
         {
             get => _putTosleepChecked;
@@ -81,7 +77,7 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 setting.RunType = PowerNapType.Off;
             }
-            else 
+            else
             {
                 setting.RunType = PutTosleep_Checked ? PowerNapType.SleepIfRunning : PowerNapType.ReduceBrightness;
             }
@@ -89,6 +85,7 @@ namespace DDPM.UI.Module.DisplayOthers
         }
 
         public System.Windows.Media.Brush PowerNap_Color { get; set; }
+
         public void Invoke_RefreshData()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -100,9 +97,10 @@ namespace DDPM.UI.Module.DisplayOthers
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
         }
+
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            try 
+            try
             {
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 _powerNapEnabled = false;
@@ -110,17 +108,18 @@ namespace DDPM.UI.Module.DisplayOthers
                 List<SA.Common.Display.PowerNapSetting> settings = DdpmCommonHelper.DeviceManagerSA.ReadPowerNapSettings().Result;
                 string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber;
                 settings.RemoveAll(x => x.SerialNumber == null);
-                PowerNapSetting crtSetting =  settings.Find(x => x.SerialNumber == crtSn);
-                if (crtSetting != null) 
+                PowerNapSetting crtSetting = settings.Find(x => x.SerialNumber == crtSn);
+                if (crtSetting != null)
                 {
                     _powerNapEnabled = crtSetting.Status;
                     _powerNapText = _powerNapEnabled ? "ON" : "OFF";
-                    switch (crtSetting.RunType) 
-                    { 
-                       case PowerNapType.ReduceBrightness:
+                    switch (crtSetting.RunType)
+                    {
+                        case PowerNapType.ReduceBrightness:
                             _reducebrtChecked = true;
                             _putTosleepChecked = false;
                             break;
+
                         case PowerNapType.SleepIfRunning:
                             _reducebrtChecked = false;
                             _putTosleepChecked = true;
@@ -131,11 +130,12 @@ namespace DDPM.UI.Module.DisplayOthers
                 OnPropertyChanged("Reducebrt_Checked");
                 OnPropertyChanged("PutTosleep_Checked");
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 ;
             }
         }
+
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process

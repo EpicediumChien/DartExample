@@ -1,10 +1,5 @@
-using Microsoft;
 using System;
 using System.Collections.Generic;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Common.PluginConditions;
-using Dell.Client.Framework.Interfaces;
 
 namespace VcpCore.Plugins
 {

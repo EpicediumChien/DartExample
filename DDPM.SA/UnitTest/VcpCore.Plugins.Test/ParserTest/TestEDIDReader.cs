@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Common;
-using static VcpCore.Plugins.EDIDReader;
+﻿using static VcpCore.Plugins.EDIDReader;
 
 namespace VcpCore.Plugins.Test.ParserTest
 {
@@ -24,7 +18,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             int expected = 5;
             int actual = EDIDReader.MaximumCommonDivisor(num4, num5);
             Assert.That(expected, Is.EqualTo(actual));
-
         }
 
         [Test]
@@ -46,7 +39,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             char result = EDIDReader.ToCharByASCIIShort(a); //66 B
             Assert.That(ch1, Is.EqualTo(result));
         }
-
 
         [Test]
         public void TestContains()
@@ -121,14 +113,12 @@ namespace VcpCore.Plugins.Test.ParserTest
         [Test]
         public void TestManufacturer_Name_()
         {
-
             byte byte8 = 0x10;
             byte byte9 = 0xAC;
             string Manufacturer_Name2 = "DEL";
 
             var result = Vendor_Product_Identification.Manufacturer_Name(byte8, byte9);
             Assert.That(Manufacturer_Name2, Is.EqualTo(result));
-
         }
 
         [Test]
@@ -377,7 +367,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 {
                     var result = Display_Parameters.Video_White_and_Sync_Levels(validEdid);
                     Assert.That(Video_White_and_Sync_Levels2, Is.EqualTo(result));
-
                 }
                 else if ((validEdid[20] & 0x60) == 0x60)//11
                 {
@@ -574,7 +563,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestVSync_Pulse_Must_Be_Serrated()
         {
@@ -697,7 +685,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestMax_Display_Size()
         {
@@ -745,6 +732,5 @@ namespace VcpCore.Plugins.Test.ParserTest
                 Assert.That(Max_Display_Size_CH2, Is.EqualTo(result));
             }
         }
-
     }
 }

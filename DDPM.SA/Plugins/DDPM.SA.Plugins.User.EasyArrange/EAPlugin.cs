@@ -1,23 +1,20 @@
-
+using CommunityToolkit.Mvvm.DependencyInjection;
+using DDPM.Easy.Common;
 using DDPM.SA.Common;
-using Dell.Client.Framework.Common.Annotations;
+using DDPM.SA.Common.Interfaces;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using Dell.Client.Framework.Common.PluginConditions;
+using Microsoft.Extensions.DependencyInjection;
+using nsWinEventHook;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using System.Windows;
-using nsWinEventHook;
-using DDPM.Easy.Common;
-using DDPM.SA.Common.Interfaces;
 using VcpCore.Common;
-using IDs= DDPM.SA.Common.IDs;
-using Windows.Media.Streaming.Adaptive;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -31,6 +28,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     public class EAPlugin : BaseAgentPlugin, IDisposableObservable, IEasyArrangeService
     {
         #region Private Members
+
         private const string pluginName = "EAPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements EasyArrange Plugin functions.";
@@ -41,26 +39,31 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
         private IAgent _agent;
         private const string PluginLogId = "SAEA";
+
         //private Logs _logs;
         private ILog? _log;
 
         //IDisplayService Plugin - Robert_Lin 2024-7-5, to be replaced with DeviceManagerSA
         private IDisplayService _displayManagerPlugin;
+
         private PluginCondition _displayManagerPluginCondition;
         private bool _displayManagerPluginUsable = false;
 
         //IDeviceManagerSA Plugin - Robert_Lin 2024-7-5 added
         private IDeviceManagerSA _deviceManagerPlugin;
+
         private PluginCondition _deviceManagerPluginCondition;
         private bool _deviceManagerPluginUsable = false;
 
         private readonly object _PluginConditionLock = new object();
-        #endregion
+
+        #endregion Private Members
 
         public static readonly Ioc PluginIoc = new();
         private bool _isConfigured = false;
 
         #region Constructor
+
         public EAPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
@@ -70,9 +73,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //_logs.DebugMsg($"[EAPlugin] is constructed, IsAdministrator={_IsAdministrator}.", true);
             _log?.Info($"[{pluginName}] is constructed.");
         }
-        #endregion
+
+        #endregion Constructor
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -95,9 +100,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             base.Dispose(disposing);
         }
-        #endregion   
+
+        #endregion IDisposableObservable Support
+
+
 
         #region Overriding methods
+
         //The method is called by Agent when the plugin is starting
         protected override void OnPluginStarting()
         {
@@ -109,9 +118,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //InitializeDeviceManagerPlugin();
             //InitializeDisplayManagerPlugin();
         }
-        #endregion
+
+        #endregion Overriding methods
 
         #region PluginManager related
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -126,7 +137,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //{
             //    _log?.Info($"      Name=[{plugin.} @PluginManagerOnPluginsStarted, ChangedPlugins.Count={e.ChangedPlugins.Count}");
             //}
-
         }
 
         // DeviceManager Plugin
@@ -146,10 +156,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             _log?.Info($"[{pluginName}] Initializing DeviceManager plugin.");
         }
+
         private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
         {
             GetCurrentDeviceManagerPluginCondition();
         }
+
         private void GetCurrentDeviceManagerPluginCondition()
         {
             _ = Task.Run(async () =>
@@ -198,6 +210,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 GetCurrentDisplayManagerPluginCondition();
             }
         }
+
         private void GetCurrentDisplayManagerPluginCondition()
         {
             _ = Task.Run(async () =>
@@ -220,16 +233,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                         //Only after DisplayManager is ready to use, will start the EasyArrange service
                         EABroker_Start();
-
                     }
                 }
             });
         }
+
         private void OnDisplayManagerPluginConditionChangeHandler(object sender, EventArgs e)
         {
             GetCurrentDisplayManagerPluginCondition();
         }
-        #endregion
+
+        #endregion PluginManager related
 
         #region IEasyArrangeService Implementation
 
@@ -239,9 +253,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             set => _vmArrange.IsFunctionEnabled = value;
         }
 
-        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings=null)
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
         {
-
             EAWorkWindow? workWin = FindWorkWindowByMonitorInfo(monitorInfo);
             if (workWin == null)
             {
@@ -249,7 +262,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             bool res = workWin.SetWorkingSplit(cellCount, splitKey, settings);
             return Task.FromResult(res);
-
 
             /*
             Thread thread = new Thread(() =>
@@ -261,7 +273,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
                 bool res = workWin.SetWorkingSplit(cellCount, splitKey, settings);
                 System.Windows.Threading.Dispatcher.Run();
-
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -282,9 +293,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Thread thread = new Thread(() =>
             {
                 Console.WriteLine("[EAPlugin] RequestEditSplit().");
-                UI_RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings); 
+                UI_RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
                 System.Windows.Threading.Dispatcher.Run();
-
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -363,7 +373,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         public event EventHandler<string> EditCompleted;
+
         public event EventHandler<string> EditStarted;
+
         public event EventHandler<EAArgs> EditReturn;
 
         /// <summary>
@@ -388,7 +400,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 UI_EditCommand(monitorInfo, args);
                 System.Windows.Threading.Dispatcher.Run();
-
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -396,6 +407,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return Task.FromResult(true);
         }
+
         private bool UI_EditCommand(MonitorInfo monitorInfo, EAArgs args)
         {
             //Get the DisplayName from MonitorInfo
@@ -425,7 +437,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //    {
             //        EditReturn(this, retArgs);
             //    }
-            //    return false; 
+            //    return false;
             //}
 
             //Stop WorkWindow fade out animation
@@ -486,14 +498,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return true;
         }
-        #endregion
+
+        #endregion IEasyArrangeService Implementation
 
         #region EA Broker
+
         /// <summary>
         /// A <Display.DeviceName, WorkWindow> dictionary, each display will allcate a WorkWindow to serve it.
-        /// where Display.DeviceName example: "\\.\DISPLAY1" 
+        /// where Display.DeviceName example: "\\.\DISPLAY1"
         /// </summary>
         private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
+
         private readonly object _eaBrokerLock = new object();
         private bool _isEaBrokerStarted = false;
         private ArrangeVM _vmArrange = new ArrangeVM();
@@ -501,7 +516,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public void EABroker_Start()
         {
-            lock (_eaBrokerLock) 
+            lock (_eaBrokerLock)
             {
                 if (!_isEaBrokerStarted)
                 {
@@ -514,7 +529,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     InitWorkWindows();
                     WinEventHook_Start();
                     System.Windows.Threading.Dispatcher.Run();
-
                 });
 
                 thread.SetApartmentState(ApartmentState.STA);
@@ -534,7 +548,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 ClearWorkWindows();
 
                 System.Windows.Threading.Dispatcher.Run();
-
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -561,7 +574,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             ClearWorkWindows();
 
-            if (allMonitors.Count <= 0) 
+            if (allMonitors.Count <= 0)
             {
                 Log?.Info($"[{pluginName}] @InitWorkWindows, No any Monitor found.");
                 return;
@@ -578,7 +591,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 Log?.Info($"[{pluginName}] @InitWorkWindows, Attached Monitors: Count=[{attachedMonitors.Count}]:");
                 int dellMoniorCount = 0;
-                foreach(MonitorInfo mi in attachedMonitors)
+                foreach (MonitorInfo mi in attachedMonitors)
                 {
                     Log?.Info($"        [{mi.Index}] Name={mi.AliasDeviceName}, IsDellMonitor=[{mi.IsDellMonitor}]");
                     if (mi.IsDellMonitor)
@@ -605,7 +618,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 workWin.SetWorkingSplit(workCellCount, workSplitKey, workSettings);
                 workWin.Show();
                 _workWindows.Add(s.DeviceName, workWin);
-
             }
         }
 
@@ -620,11 +632,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void RefreshWorkWindows()
         {
-
         }
-        #endregion
+
+        #endregion EA Broker
 
         #region Window Event Hook
+
         private WinEventHook _winEventHook = new WinEventHook();
 
         private void WinEventHook_Start()
@@ -651,6 +664,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         private bool _isDebuggingOnWindowStartMoving = true;
+
         private void OnWindowStartMovingProc(IntPtr hWnd)
         {
             if (_isDebuggingOnWindowStartMoving)
@@ -698,8 +712,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _vmArrange.ScreenScale = dpiX;
             _vmArrange.IsMoving = true;
             RefreshCellRects();
-
-
         }
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
@@ -720,7 +732,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Check if user cancel the window moving by pressing [Esc] key
             //Assumption:
             // When user moving window, the mouse [LeftButton] is pressed and hold.
-            // When user canceling the moving, he/she press [Esc] key and the 
+            // When user canceling the moving, he/she press [Esc] key and the
             //     mouse [LeftButton] is strll pressed and hold.
             //
             if (WinEventHook.IsUserCancelMoving())
@@ -731,7 +743,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             rcArrange.Inflate(6, 6);
             WinEventHook.SetWindowPosition(hWnd, rcArrange);
-
         }
 
         private void OnLocationChangedProc(int x, int y)
@@ -792,16 +803,21 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             return null;
         }
+
         #region GetAsyncKeyState
+
         private const short VK_ESCAPE = 0x1b;
         private const short VK_LBUTTON = 0x01;
 
         [DllImport("User32.dll")]
         private static extern short GetAsyncKeyState(System.Int32 vKey);
-        #endregion
-        #endregion
+
+        #endregion GetAsyncKeyState
+
+        #endregion Window Event Hook
 
         #region Helpers
+
         private EAWorkWindow? FindWorkWindowByMonitorInfo(MonitorInfo monitorInfo)
         {
             EAWorkWindow workWindow = null;
@@ -812,6 +828,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             return null;
         }
+
         /// <summary>
         /// Format a Rectangle to string, format: "(0,0)-(1920,1200)1920x1200"
         /// </summary>
@@ -821,20 +838,21 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
         }
-        #endregion
+
+        #endregion Helpers
 
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
-
         }
 
         #region Debug Msg
+
         public static void Dmsg(string msg)
         {
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + msg);
         }
-        #endregion
 
+        #endregion Debug Msg
 
         //It should be call once DeviceManagerSA is loaded
         private void ConfigureServices()
@@ -851,5 +869,4 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             PluginIoc.ConfigureServices(services.BuildServiceProvider());
         }
     }
-
 }

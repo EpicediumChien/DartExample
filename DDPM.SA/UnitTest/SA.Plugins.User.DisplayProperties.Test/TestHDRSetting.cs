@@ -1,28 +1,12 @@
-﻿using DDPM.SA.Common;
-using DDPM.SA.Plugins.User.DisplayManager;
-using DDPM.SA.Plugins.User.PipPbpManger;
-using Dell.Client.Framework.Interfaces;
-using Dell.Client.Framework.UnitTestShared.Tests;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Common;
-using VcpCore.Interfaces;
-using VcpCore.Plugins;
-using WinCopies;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+﻿using VcpCore.Common;
+
 //using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 {
     public class TestHDRSetting
     {
-        MonitorInfo monitorInfo1 = new MonitorInfo()
+        private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
             IsDellMonitor = true,
@@ -38,7 +22,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             //CapabilityDic = capabilityDic;
         };
 
-        EDID eDID = new EDID()
+        private EDID eDID = new EDID()
         {
             ManufactureID = "DELL",
             VendorID = "42DD",
@@ -52,7 +36,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             ServiceTag = "CN073K0",
             SerialNumber = "808597688",
             Edid = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED"
-
         };
 
         [Test]
@@ -104,7 +87,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 Assert.IsTrue(blOffon);
                 result = hDRSetting.SetWindowsHDRStatus(eDID, boff);
                 Assert.IsTrue(result);
-
             }
             else
             {
@@ -112,6 +94,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 Assert.IsNotNull(result3);
             }
         }
+
         [Test]
         public void TestSetWindowsHDRStatus()
         {
@@ -156,7 +139,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 result = hDRSetting.SetWindowsHDRStatus(eDID, blOff);
                 Assert.IsNotNull(result);
                 Assert.IsTrue(result);
-
             }
             else
             {
@@ -164,7 +146,5 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 Assert.IsNotNull(result3);
             }
         }
-
-
     }
 }

@@ -1,14 +1,8 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
 using Moq;
-using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -30,7 +24,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             KvmModule kvmModule = new KvmModule(moduleOwner);
-            kvmViewModel.KvmModule= kvmModule;
+            kvmViewModel.KvmModule = kvmModule;
             kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
             kvmLeftView = new KvmLeftView(kvmViewModel);
         }
@@ -38,7 +32,6 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestConstructor_kvmLeftView()
         {
-
             Assert.That(kvmLeftView, Is.Not.Null);
             Assert.That(kvmLeftView.DataContext, Is.EqualTo(kvmViewModel));
         }

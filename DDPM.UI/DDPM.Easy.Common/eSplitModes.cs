@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDPM.Easy.Common
+﻿namespace DDPM.Easy.Common
 {
     public enum eSplitModes
     {
-         /// <summary>
+        /// <summary>
         /// The SplitCtrl is used as an Icon in GUI, for example, in a SplitListView.
         /// It's default mode.
         /// </summary>

@@ -20,6 +20,7 @@ namespace DDPM.UI.Module.ButtonSettings.Tests
         private Mock<IDeviceManagerSA>? deviceManagerMock;
         private MouseViewModel? mouseViewModel;
         private PrivateObject? privateObject;
+
         [SetUp]
         public void SetUp()
         {
@@ -29,7 +30,7 @@ namespace DDPM.UI.Module.ButtonSettings.Tests
 
             mouseViewModel = new MouseViewModel(consoleMock.Object, logMock.Object, deviceManagerMock.Object);
             buttonSettingsModule = new ButtonSettingsModule(mouseViewModel);
-            privateObject=new PrivateObject(buttonSettingsModule);
+            privateObject = new PrivateObject(buttonSettingsModule);
         }
 
         [Test]
@@ -91,7 +92,6 @@ namespace DDPM.UI.Module.ButtonSettings.Tests
             Assert.That(result, Is.EqualTo(moduleOwnerMock.Object));
         }
 
-
         [Test]
         public void TestViewModelInitialization()
         {
@@ -112,8 +112,8 @@ namespace DDPM.UI.Module.ButtonSettings.Tests
         [Test]
         public void TestOnActivated()
         {
-             buttonSettingsModule.OnActivated();
-             Assert.Pass();
+            buttonSettingsModule.OnActivated();
+            Assert.Pass();
         }
 
         [Test]
@@ -121,7 +121,6 @@ namespace DDPM.UI.Module.ButtonSettings.Tests
         {
             buttonSettingsModule.OnDeactivated();
             Assert.Pass();
-
         }
     }
 }

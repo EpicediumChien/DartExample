@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -42,6 +37,23 @@ namespace DDPM.UI.Module.Brightness
             throw new NotSupportedException();
         }
     }
+
+    public class BoolReverseConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+                return false;
+            else
+                return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class BooleanToBrushConverter : IValueConverter
     {
         public Brush TrueBrush { get; set; }
@@ -58,6 +70,7 @@ namespace DDPM.UI.Module.Brightness
             throw new NotImplementedException();
         }
     }
+
     public class InverseBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

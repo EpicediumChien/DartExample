@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Resources;
 
 namespace DDPM.UI.Resources.Helper
 {
     public class LangHelper : INotifyPropertyChanged
     {
-
         private readonly ResourceManager _resourceManager;
         private static readonly Lazy<LangHelper> _lazy = new Lazy<LangHelper>(() => new LangHelper());
         public static LangHelper Instance => _lazy.Value;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public LangHelper()
@@ -38,7 +33,7 @@ namespace DDPM.UI.Resources.Helper
                     throw new ArgumentNullException(nameof(name));
                 }
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-                string str = _resourceManager.GetString(name, CultureInfo.InstalledUICulture)?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ??"";
+                string str = _resourceManager.GetString(name, CultureInfo.InstalledUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 return str;
             }
         }

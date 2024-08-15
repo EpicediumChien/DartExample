@@ -1,21 +1,10 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Windows.System;
 
 namespace DDPM.UI.Module.Kvm
@@ -25,28 +14,30 @@ namespace DDPM.UI.Module.Kvm
     /// </summary>
     public partial class KVMHotkeyFullView : UserControl
     {
-        string _strTbSwitchPCsKeyPreviousKey = string.Empty;
-        string _strTbSwitchKbMsKeyPreviousKey = string.Empty;
-        string _strTbChangePipKeyPreviousKey = string.Empty;
+        private string _strTbSwitchPCsKeyPreviousKey = string.Empty;
+        private string _strTbSwitchKbMsKeyPreviousKey = string.Empty;
+        private string _strTbChangePipKeyPreviousKey = string.Empty;
 
-        List<VirtualKey> SwitchPCsKeyNewKeys = new List<VirtualKey>();
-        List<VirtualKey> SwitchKbMsKeyNewKeys = new List<VirtualKey>();
-        List<VirtualKey> ChangePipKeyNewKeys = new List<VirtualKey>();
+        private List<VirtualKey> SwitchPCsKeyNewKeys = new List<VirtualKey>();
+        private List<VirtualKey> SwitchKbMsKeyNewKeys = new List<VirtualKey>();
+        private List<VirtualKey> ChangePipKeyNewKeys = new List<VirtualKey>();
 
-        bool updateKeys = false;
-        List<VirtualKey> newKeys = new List<VirtualKey>();
+        private bool updateKeys = false;
+        private List<VirtualKey> newKeys = new List<VirtualKey>();
+
         public KVMHotkeyFullView()
         {
             InitializeComponent();
         }
 
-        private KvmViewModel vm 
-        { 
-            get 
-            { 
-                return(KvmViewModel)DataContext;
-            } 
+        private KvmViewModel vm
+        {
+            get
+            {
+                return (KvmViewModel)DataContext;
+            }
         }
+
         private void tbSwitchPCsKey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             setUXTextBoxPreviewKey(sender, e);
@@ -77,7 +68,6 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-
                 //for single key
                 updateKeys = false;
                 newKeys.Clear();
@@ -149,7 +139,6 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-
                 //for single key
                 updateKeys = false;
                 newKeys.Clear();
@@ -230,11 +219,12 @@ namespace DDPM.UI.Module.Kvm
             tbCleanFocus.Focus();
             Keyboard.ClearFocus();
         }
+
         private void InputSourceHotkey_Click(object sender, RoutedEventArgs e)
         {
             //todo
-
         }
+
         private void setUXTextBoxPreviewKey(object sender, KeyEventArgs e)
         {
             e.Handled = true;
@@ -309,7 +299,6 @@ namespace DDPM.UI.Module.Kvm
                 {
                     newKeys.Add(thisVirtualKey);
                 }*/
-
             }
             string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref newKeys);
@@ -320,14 +309,17 @@ namespace DDPM.UI.Module.Kvm
                 case "tbSwitchPCsKey":
                     SwitchPCsKeyNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbSwitchKbMsKey":
                     SwitchKbMsKeyNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbChangePipKey":
                     ChangePipKeyNewKeys.AddRange(newKeys);
                     break;
             }
         }
+
         private void doLostFocus(HotkeyInfo hotkeyInfo, string prStr, string crStr, ref List<VirtualKey> keys)
         {
             if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
@@ -344,9 +336,11 @@ namespace DDPM.UI.Module.Kvm
                     case HotkeyType.KvmSwitchInputSource:
                         vm.SwitchPCsKey = prStr;
                         break;
+
                     case HotkeyType.KvmChangePIPPosition:
                         vm.ChangePipKey = prStr;
                         break;
+
                     case HotkeyType.KvmSwitchKbMsKey:
                         vm.SwitchKbMsKey = prStr;
                         break;

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace VcpCore.Plugins.Test.ParserTest
+﻿namespace VcpCore.Plugins.Test.ParserTest
 {
     public class TestIParser
     {
@@ -18,7 +11,8 @@ namespace VcpCore.Plugins.Test.ParserTest
             var tokens = tokenizer.Parse(tokens2);
             Assert.IsNotNull(tokens);
         }
-       public class MockParser : IParser
+
+        public class MockParser : IParser
         {
             public INode Parse(IEnumerable<IToken> tokens)    // 创建一个模拟的 IParser 实现类
             {
@@ -26,9 +20,7 @@ namespace VcpCore.Plugins.Test.ParserTest
                 var rootNode = new RootNode();
                 rootNode.Nodes = nodeStack;
                 return rootNode;
-
             }
         }
-
     }
 }
