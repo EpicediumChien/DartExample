@@ -2417,6 +2417,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
         #endregion
+
+        #region ImpExpSettings
+        public Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path)
+        {
+            if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
+            {
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+        #endregion
         #endregion
 
         #region Private Methods

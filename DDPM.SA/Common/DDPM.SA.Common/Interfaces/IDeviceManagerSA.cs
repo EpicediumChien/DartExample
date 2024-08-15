@@ -297,6 +297,9 @@ namespace DDPM.SA.Common
         Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, string installPath = "");
         #endregion
 
+        #region public for ImpExpSettings
+        Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
+        #endregion
         //public for GUI to get the changes of display and peripherals
         event EventHandler<DeviceChangedEventArgs> DeviceChanged;
     }
