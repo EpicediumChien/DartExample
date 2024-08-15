@@ -225,12 +225,12 @@
 
                                 <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_Line2.png" Canvas.Left="350" Canvas.Top="0" Width="5" Height="159.18" />
                                 <!-- 曲線 -->
-                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="7" StrokeThickness="2.3" Width="410">
+                                <Path Name="CurvePath" Stroke="#FF0672CB" Canvas.Left="0" Canvas.Top="0" StrokeThickness="2.3" Width="410">
                                     <Path.Data>
                                         <PathGeometry>
-                                            <PathFigure StartPoint="90,60" IsClosed="False" x:Name="CurvePathFigure">
-                                                <BezierSegment x:Name="Segment1" Point1="100,60" Point2="150,60" Point3="150,60" />
-                                                <BezierSegment x:Name="Segment2" Point1="200,60" Point2="250,60" Point3="350,60" />
+                                            <PathFigure StartPoint="90,65" IsClosed="False" x:Name="CurvePathFigure">
+                                                <BezierSegment x:Name="Segment1" Point1="100,65" Point2="150,65" Point3="150,65" />
+                                                <BezierSegment x:Name="Segment2" Point1="200,65" Point2="250,65" Point3="350,65" />
                                             </PathFigure>
                                         </PathGeometry>
                                     </Path.Data>

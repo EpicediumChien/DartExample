@@ -3,6 +3,10 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Forms;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -23,13 +27,13 @@ namespace DDPM.UI.Plugin.Common
         private const double CenterX = 200;
         private const double CenterY = 200;
 
-        private int SelectedMenuID = 1;
-        private int SelectedActionID = 0;
-        private bool IsComboOpen = false;
-        readonly SolidColorBrush NormalFillBrush = new();
-        readonly SolidColorBrush NormalBorderBrush = new();
-        readonly LinearGradientBrush FocusFillBrush = new();
-        readonly LinearGradientBrush FocusBorderBrush = new();
+    private int SelectedMenuID = 2;
+    private int SelectedActionID = 0;
+    private bool IsComboOpen = false;
+    readonly SolidColorBrush NormalFillBrush = new();
+    readonly SolidColorBrush NormalBorderBrush = new();
+    readonly LinearGradientBrush FocusFillBrush = new();
+    readonly LinearGradientBrush FocusBorderBrush = new();
 
         public RadialMenuModalDialog(double width, double height, PenActions penActions, string model)
         {
@@ -41,67 +45,63 @@ namespace DDPM.UI.Plugin.Common
 
             DrawPieChart();
 
-            SelectedMenuID = 2;
-            SelectedActionID = PenActions.RadialActions[1].AssignedAction.ID;
-            txtTitleBar.Text = Strings.RadialMenu;
-            txtFunction.Text = Strings.FunctionForSelectedRadial;
-            RefreshAction(true);
-            txtLabel.Text = Strings.LabelForSelectedRadial;
-            txtUseCenter.Text = Strings.UseCenterForEmulatingRightClick;
-            tsUseCenter.IsChecked = PenActions.IsUseCenter;
-            if (PenActions.IsUseCenter)
-            {
-                tsUseCenter.Content = Strings.On;
-            }
-            else
-            {
-                tsUseCenter.Content = Strings.Off;
-            }
-            btnRestore.Caption = Strings.RestoreToDefault;
-            btnSave.Caption = Strings.Save;
+      SelectedMenuID = 2;
+      SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+      txtTitleBar.Text = Strings.RadialMenu;
+      txtFunction.Text = Strings.FunctionForSelectedRadial;
+      RefreshAction(true);
+      txtLabel.Text = Strings.LabelForSelectedRadial;
+      txtUseCenter.Text = Strings.UseCenterForEmulatingRightClick;
+      tsUseCenter.IsChecked = PenActions.IsUseCenter;
+      if(PenActions.IsUseCenter) {
+        tsUseCenter.Content = Strings.On;
+      }
+      else {
+        tsUseCenter.Content = Strings.Off;
+      }
+      btnRestore.Caption = Strings.RestoreToDefault;
+      btnSave.Caption = Strings.Save;
 
-            NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
-            NormalBorderBrush.Color = Color.FromRgb(0x1E, 0x3F, 0x6C);
-            FocusFillBrush.StartPoint = new Point(0, 0);
-            FocusFillBrush.EndPoint = new Point(1, 0);
-            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x06, 0x72, 0xCB), 0));
-            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
-            FocusBorderBrush.StartPoint = new Point(0, 0);
-            FocusBorderBrush.EndPoint = new Point(1, 0);
-            FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x55, 0xB4, 0xFD), 0));
-            FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
-        }
+      NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
+      //NormalBorderBrush.Color = Color.FromRgb(0x1E, 0x3F, 0x6C);
+      NormalBorderBrush.Color = Color.FromRgb(0x13, 0x2F, 0x54);
+      FocusFillBrush.StartPoint = new Point(0, 0);
+      FocusFillBrush.EndPoint = new Point(1, 0);
+      FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x06, 0x72, 0xCB), 0));
+      FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
+      FocusBorderBrush.StartPoint = new Point(0, 0);
+      FocusBorderBrush.EndPoint = new Point(1, 0);
+      FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x55, 0xB4, 0xFD), 0));
+      FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
+    }
 
-        private void DrawPieChart()
-        {
-            //CenterX=canvas.po
-            int numberOfSections = 8;
-            double angleStep = 360.0 / numberOfSections;
+    private void DrawPieChart() {
+      int numberOfSections = 8;
+      double angleStep = 360.0 / numberOfSections;
 
-            for (int i = 0; i < numberOfSections; i++)
-            {
-                // Calculate start and end angles for each section
-                double startAngle = i * angleStep;
-                double endAngle = startAngle + angleStep;
+      for(int i = 0; i < numberOfSections; i++) {
+        double startAngle = i * angleStep;
+        double endAngle = startAngle + angleStep;
 
-                // Create a path for each section
-                Path path = new Path
-                {
-                    Fill = (i == 0) ? FocusFillBrush : NormalFillBrush,
-                    Stroke = (i == 0) ? FocusBorderBrush : NormalBorderBrush,
-                    StrokeThickness = 1
-                };
+        // Create a path for each section
+        Path path = new Path {
+          Name = $"Path{i+1}",
+          Fill = (i == 1) ? FocusFillBrush : NormalFillBrush,
+          Stroke = (i == 1) ? FocusBorderBrush : NormalBorderBrush,
+          StrokeThickness = 1
+        };
 
-                path.Data = CreatePieSliceGeometry(startAngle, endAngle);
-                canvas.Children.Add(path);
-            }
-        }
+        path.Data = CreatePieSliceGeometry(startAngle, endAngle);
+        path.MouseEnter += Path_MouseEnter;
+        path.MouseLeave += Path_MouseLeave;
+        path.MouseLeftButtonDown += Path_MouseLeftButtonDown;
+        canvas.Children.Add(path);
+      }
+    }
 
-        private Geometry CreatePieSliceGeometry(double startAngle, double endAngle)
-        {
-            // Convert angles from degrees to radians
-            double startRadians = startAngle * Math.PI / 180;
-            double endRadians = endAngle * Math.PI / 180;
+    private Geometry CreatePieSliceGeometry(double startAngle, double endAngle) {
+      double startRadians = startAngle * Math.PI / 180;
+      double endRadians = endAngle * Math.PI / 180;
 
             // Calculate points on the outer circle
             Point startOuterPoint = new Point(
@@ -260,50 +260,40 @@ namespace DDPM.UI.Plugin.Common
             }
         }
 
-        void RefreshAction(bool all = false)
-        {
-            txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
-            txtLabelText.Text = PenActions.RadialLabels[SelectedMenuID];
-            MenuItems.ItemsSource = null;
-            MenuItems.ItemsSource = Actions.RadialMenuActionsList;
-            if (SelectedActionID > 7)
-            {
-                svMenu.ScrollToVerticalOffset(SelectedActionID * 29);
-            }
-            RefreshLabel(all);
-            if (SelectedActionID == 2 || SelectedActionID == 3)
-            {
-                spLabel.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                spLabel.Visibility = Visibility.Visible;
-            }
+    void RefreshAction(bool all = false) {
+      txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
+      txtLabelText.Text = PenActions.RadialLabels[SelectedMenuID];
+      MenuItems.ItemsSource = null;
+      MenuItems.ItemsSource = Actions.RadialMenuActionsList;
+      if(SelectedActionID > 7) {
+        svMenu.ScrollToVerticalOffset(SelectedActionID * 29);
+      }
+      RefreshLabel(all);
+      if(SelectedActionID == 2 || SelectedActionID == 3) {
+        spLabel.Visibility = Visibility.Collapsed;
+      }
+      else {
+        spLabel.Visibility = Visibility.Visible;
+      }
+    }
+    void RefreshLabel(bool all = false) {
+      if(all) {
+        for (int i = 1; i < 9; i++) {
+          var tb = (UXTextBlock)FindName($"Label{i}");
+          tb.Text = CheckLabel(PenActions.RadialLabels[i], i);
         }
-        void RefreshLabel(bool all = false)
-        {
-            if (all)
-            {
-                for (int i = 1; i < 9; i++)
-                {
-                    var tb = (UXTextBlock)FindName($"Label{i}");
-                    tb.Text = CheckLabel(PenActions.RadialLabels[i], i);
-                }
-            }
-            else
-            {
-                var tb = (UXTextBlock)FindName($"Label{SelectedMenuID}");
-                tb.Text = CheckLabel(PenActions.RadialLabels[SelectedMenuID], SelectedMenuID);
-            }
-        }
-        string CheckLabel(string text, int id)
-        {
-            double width = id switch
-            {
-                1 or 4 or 5 or 8 => 110,
-                2 or 3 or 6 or 7 => 150,
-            };
-            var typeface = new Typeface(new FontFamily("Roboto"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+      }
+      else {
+        var tb = (UXTextBlock)FindName($"Label{SelectedMenuID}");
+        tb.Text = CheckLabel(PenActions.RadialLabels[SelectedMenuID], SelectedMenuID);
+      }
+    }
+    string CheckLabel(string text, int id) {
+      double width = id switch {
+        1 or 4 or 5 or 8 => 150,
+        2 or 3 or 6 or 7 => 110,
+      };
+      var typeface = new Typeface(new FontFamily("Roboto"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 
             var formattedText = new FormattedText(
                 text,
@@ -460,20 +450,78 @@ namespace DDPM.UI.Plugin.Common
             RefreshLabel();
         }
 
-        private void tsUseCenter_Click(object sender, RoutedEventArgs e)
-        {
-            if (tsUseCenter.IsChecked!.Value)
-            {
-                tsUseCenter.Content = Strings.On;
-                imgCenter.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                tsUseCenter.Content = Strings.Off;
-                imgCenter.Visibility = Visibility.Collapsed;
-            }
-            PenActions.IsUseCenter = tsUseCenter.IsChecked!.Value;
-            ActionList.ExportActionList(PenActions, Model);
-        }
+    private void tsUseCenter_Click(object sender, RoutedEventArgs e) {
+      if(tsUseCenter.IsChecked!.Value) {
+        tsUseCenter.Content = Strings.On;
+        imgCenter.Visibility = Visibility.Visible;
+      }
+      else {
+        tsUseCenter.Content = Strings.Off;
+        imgCenter.Visibility = Visibility.Collapsed;
+      }
+      PenActions.IsUseCenter = tsUseCenter.IsChecked!.Value;
+      ActionList.ExportActionList(PenActions, Model);
     }
+
+    private void Path_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e) {
+      if(sender is Path path) {
+        path.Fill = FocusFillBrush;
+        path.Stroke = FocusBorderBrush;
+      }
+      if(sender is UXTextBlock tb) {
+        int id = int.Parse(tb.Name.Substring(5, 1));
+        var pa = (Path)canvas.Children[id-1];
+        pa.Fill = FocusFillBrush;
+        pa.Stroke = FocusBorderBrush;
+      }
+    }
+
+    private void Path_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e) {
+      if(sender is Path path) {
+        int id = int.Parse(path.Name.Substring(4, 1));
+        if(id == SelectedMenuID) { return; }
+        path.Fill = NormalFillBrush;
+        path.Stroke = NormalBorderBrush;
+      }
+      if(sender is UXTextBlock tb) {
+        int id = int.Parse(tb.Name.Substring(5, 1));
+        if(id == SelectedMenuID) { return; }
+        var pa = (Path)canvas.Children[id - 1];
+        pa.Fill = NormalFillBrush;
+        pa.Stroke = NormalBorderBrush;
+      }
+    }
+
+    private void Path_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+      if(sender is Path path) {
+        int id = int.Parse(path.Name.Substring(4, 1));
+        if(id == SelectedMenuID) { return; }
+
+        var pa = (Path)canvas.Children[SelectedMenuID - 1];
+        pa.Fill = NormalFillBrush;
+        pa.Stroke = NormalBorderBrush;
+
+        path.Fill = FocusFillBrush;
+        path.Stroke = FocusBorderBrush;
+
+        SelectedMenuID = id;
+      }
+      if(sender is UXTextBlock tb) {
+        int id = int.Parse(tb.Name.Substring(5, 1));
+        if(id == SelectedMenuID) { return; }
+
+        var pa = (Path)canvas.Children[SelectedMenuID - 1];
+        pa.Fill = NormalFillBrush;
+        pa.Stroke = NormalBorderBrush;
+
+        pa = (Path)canvas.Children[id - 1];
+        pa.Fill = FocusFillBrush;
+        pa.Stroke = FocusBorderBrush;
+
+        SelectedMenuID = id;
+      }
+      SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+      RefreshAction();
+    }
+  }
 }

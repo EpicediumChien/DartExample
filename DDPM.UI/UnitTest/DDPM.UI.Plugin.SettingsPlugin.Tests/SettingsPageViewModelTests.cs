@@ -218,6 +218,25 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         }
 
         [Test]
+        public void TestNoNetwork()
+        {
+            var result = settingsPageViewModel.NoNetwork;
+            Assert.That(result, Is.EqualTo(Visibility.Collapsed));
+        }
+
+        [Test]
+        public void TestCritical_UpdateList()
+        {
+            var result = settingsPageViewModel.Critical_UpdateList;
+            Assert.That(result, Is.EqualTo(Visibility.Collapsed));
+
+            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo()) { } };
+            settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
+            result = settingsPageViewModel.Critical_UpdateList;
+            Assert.That(result, Is.EqualTo(Visibility.Visible));
+        }
+
+        [Test]
         public void TestRefreshUI()
         {
             //Before RefreshUI
@@ -287,6 +306,42 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             {
                 Assert.Fail("not invoked");
             }
+        }
+
+        [Test]
+        public void TestRecommended_UpdateList()
+        {
+            var result = settingsPageViewModel.Recommended_UpdateList;
+            Assert.That(result, Is.EqualTo(Visibility.Collapsed));
+
+            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo()) { } };
+            settingsPageViewModel.Recommended_UpdateList_UI = Recommended_UpdateList_UI;
+            result = settingsPageViewModel.Recommended_UpdateList;
+            Assert.That(result, Is.EqualTo(Visibility.Visible));
+        }
+
+        [Test]
+        public void TestOptional_UpdateList()
+        {
+            var result = settingsPageViewModel.Optional_UpdateList;
+            Assert.That(result, Is.EqualTo(Visibility.Collapsed));
+
+            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo()) { } };
+            settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
+            result = settingsPageViewModel.Optional_UpdateList;
+            Assert.That(result, Is.EqualTo(Visibility.Visible));
+        }
+
+        [Test]
+        public void TestIsAnyUpdate()
+        {
+            var result = settingsPageViewModel.IsAnyUpdate;
+            Assert.That(result, Is.EqualTo(Visibility.Collapsed));
+
+            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo()) { } };
+            settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
+            result = settingsPageViewModel.IsAnyUpdate;
+            Assert.That(result, Is.EqualTo(Visibility.Visible));
         }
 
         [Test]

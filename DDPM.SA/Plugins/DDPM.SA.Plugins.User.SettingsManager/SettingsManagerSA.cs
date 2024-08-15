@@ -20,6 +20,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ISettingsManagerDev) })]
+
     public class SettingsManagerSA : BaseAgentPlugin, IDisposableObservable, ISettingsManagerDev
     {
         public const string PluginLogId = "User.SettingsManager";
@@ -97,7 +98,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _appiconfolder_path { get; set; }
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private Dictionary<string, List<DDPMMonitorSettings>> _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
-        private List<DDPMMonitorSettings> _monitorSettings { get; set; } = new List<DDPMMonitorSettings>();
         private string _display_path { get; set; }
         private List<ColorPresetSettings> _preset_settings = new List<ColorPresetSettings>();//Dean 0626 fix SAST issue
 
@@ -741,10 +741,57 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult<EAMonitorSettings>(null);
             }
         }
+        #endregion
 
-        #endregion EasyArrange Settings
+        #region DisplayImpExpSettings
+        public Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path)
+        {
+            DDPMImpExpSettings impexpSettings = new DDPMImpExpSettings();
 
-        #endregion ISettingManagerDev implementation
+            DDPMSettings settings = ReloadAppConfigData().Result;
+
+            impexpSettings.AppSettings = settings.AppSettings;
+            impexpSettings.UserSettings = settings.UserSettings;
+
+            List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
+
+            if (path.Substring(path.Length - 5, 5) != ".json")
+            {
+                path = path + ".json";
+            }
+
+            foreach (DDPMMonitorSettings _settings in monitorSettings)
+            {
+                if (_settings.ServiceTag == seriveTag)
+                {
+                    impexpSettings.MonitorSettings = _settings;
+
+                    //export file
+                    FileInfo fileInfo = new FileInfo(path);
+                    fileInfo.Create().Close();
+                    //init data to file
+                    if (WriteImpExpSettings(path, impexpSettings))
+                    {
+                        WriteLog("[ExportSettingsFile] Monitor settings file create and write success");
+                        return Task.FromResult<bool>(true);
+                    }
+                    else
+                    {
+                        WriteLog("[ExportSettingsFile] Monitor settings file create and write failed");
+                        return Task.FromResult<bool>(false);
+                    }
+                }
+            }
+
+
+            return Task.FromResult<bool>(false);
+        }
+        public Task<bool> DisplayImportSettings(string path)
+        {
+            return Task.FromResult<bool>(false);
+        }
+        #endregion
+        #endregion
 
         private string GetActiveUserLocalAppDataPath()
         {
@@ -966,6 +1013,57 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         }
 
         #endregion Monitor Settings
+
+        #region ImpExpSettings
+        private string RunSerializeObject(string path, DDPMImpExpSettings impExpSettings)
+        {
+            string jsonString = string.Empty;
+            jsonString = JsonConvert.SerializeObject(impExpSettings);
+            using (StreamWriter writer = new StreamWriter(path))
+            {
+                writer.Write(jsonString);
+            }
+
+            return jsonString;
+        }
+        private DDPMImpExpSettings RunImpExpDeserializeObject(string value)
+        {
+            DDPMImpExpSettings impexpSettings = new DDPMImpExpSettings();
+
+            try
+            {
+                impexpSettings = JsonConvert.DeserializeObject<DDPMImpExpSettings>(value);
+            }
+            catch (Exception)
+            {
+                ;
+            }
+
+            return impexpSettings;
+        }
+        private bool WriteImpExpSettings(string path, DDPMImpExpSettings impexpSettings)
+        {
+            if (impexpSettings == null)
+            {
+                return false;
+            }
+            //JArray jArray = new JArray();
+            //jArray.Add(JObject.FromObject(monitorSettings));
+            string str = RunSerializeObject(path, impexpSettings);
+            if (string.IsNullOrEmpty(str))
+            {
+                return false;
+            }
+            //string info;
+            //if (!DDPMFileSecurity.SetJsonContentFromSerializedString(jArray.ToString(), monitorSettings_path, out info))//, false))
+            //{
+            //    WriteLog(info);
+            //    return Task.FromResult(false);
+            //}
+
+            return true;
+        }
+        #endregion
 
         private DDPMSettings InitDDPMUserConfigFile()
         {

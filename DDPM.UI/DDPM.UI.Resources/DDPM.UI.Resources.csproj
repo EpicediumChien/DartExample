@@ -23,6 +23,7 @@
     <None Remove="Resources\Images\BLConnection.png" />
     <None Remove="Resources\Images\Bluetooth.png" />
     <None Remove="Resources\Images\Bluetooth2.png" />
+    <None Remove="Resources\Images\BluetoothBig.png" />
     <None Remove="Resources\Images\CameraCapture.png" />
     <None Remove="Resources\Images\CameraColorImage.png" />
     <None Remove="Resources\Images\CameraControl.png" />
@@ -37,6 +38,7 @@
     <None Remove="Resources\Images\Dongle.png" />
     <None Remove="Resources\Images\DongleC.png" />
     <None Remove="Resources\Images\Down.png" />
+    <None Remove="Resources\Images\DownloadTile.png" />
     <None Remove="Resources\Images\EOLDongle.png" />
     <None Remove="Resources\Images\GearConnection.png" />
     <None Remove="Resources\Images\Group 1010105297.png" />
@@ -139,6 +141,7 @@
     <None Remove="Resources\Images\MS7421W_1.png" />
     <None Remove="Resources\Images\MS900.png" />
     <None Remove="Resources\Images\MultiDevice.png" />
+    <None Remove="Resources\Images\PairTile.png" />
     <None Remove="Resources\Images\PButton11.png" />
     <None Remove="Resources\Images\PButton12.png" />
     <None Remove="Resources\Images\PButton13.png" />
@@ -182,6 +185,9 @@
     <None Remove="Resources\Images\Port.png" />
     <None Remove="Resources\Images\Product_WB7022.png" />
     <None Remove="Resources\Images\PowerOn.png" />
+    <None Remove="Resources\Images\R1.png" />
+    <None Remove="Resources\Images\R2.png" />
+    <None Remove="Resources\Images\R3.png" />
     <None Remove="Resources\Images\Right.png" />
     <None Remove="Resources\Images\SB3022.png" />
     <None Remove="Resources\Images\ScrollButton1.png" />
@@ -270,6 +276,7 @@
     <Resource Include="Resources\Images\BLConnection.png" />
     <Resource Include="Resources\Images\Bluetooth.png" />
     <Resource Include="Resources\Images\Bluetooth2.png" />
+    <Resource Include="Resources\Images\BluetoothBig.png" />
     <Resource Include="Resources\Images\CameraCapture.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -292,6 +299,7 @@
     <Resource Include="Resources\Images\Dongle.png" />
     <Resource Include="Resources\Images\DongleC.png" />
     <Resource Include="Resources\Images\Down.png" />
+    <Resource Include="Resources\Images\DownloadTile.png" />
     <Resource Include="Resources\Images\EOLDongle.png" />
     <Resource Include="Resources\Images\GearConnection.png" />
     <Resource Include="Resources\Images\HandTouch.png" />
@@ -308,6 +316,7 @@
     <Resource Include="Resources\Images\Loading.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\PairTile.png" />
     <Resource Include="Resources\Images\PButton11.png" />
     <Resource Include="Resources\Images\PButton12.png" />
     <Resource Include="Resources\Images\PButton13.png" />
@@ -337,6 +346,9 @@
     <Resource Include="Resources\Images\PN7522WTop.png" />
     <Resource Include="Resources\Images\PN9315A.png" />
     <Resource Include="Resources\Images\PN9315ATop.png" />
+    <Resource Include="Resources\Images\R1.png" />
+    <Resource Include="Resources\Images\R2.png" />
+    <Resource Include="Resources\Images\R3.png" />
     <Resource Include="Resources\Images\SP3022.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

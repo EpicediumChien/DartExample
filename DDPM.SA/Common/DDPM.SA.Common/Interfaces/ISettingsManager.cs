@@ -74,5 +74,8 @@ namespace DDPM.SA.Common
         public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
 
         public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
+
+        //ImpExpSettings
+        Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);
     }
 }

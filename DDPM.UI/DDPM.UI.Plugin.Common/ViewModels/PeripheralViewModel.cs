@@ -122,53 +122,44 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             CurrentDeviceID = new Guid(deviceID);
 
-            if (DeviceInfos.ContainsKey(CurrentDeviceID))
-            {
-                var di = DeviceInfos[CurrentDeviceID];
-                CurrentInstanceID = di.InstanceId;
-                if (di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalDongle)
-                {
-                    foreach (var info in DeviceInfos.Values)
-                    {
-                        if (info.InstanceId == CurrentInstanceID && info.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalBluetooth)
-                            CurrentDeviceID = info.ID;
-                    }
-                }
-                CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-            }
-            else
-            {
-                OnGoBackClicked();
-                IsIDInvalid = true;
-                return false;
-            }
-            //0614 Bruce 目前IL的dock回來的名稱有帶VID，先新增另個方法濾掉
-            if (CurrentDeviceInfo.ModelNumber.ToUpper().Contains("DOCK"))
-            {
-                Name = CurrentDeviceInfo.ModelNumber.Substring(0, CurrentDeviceInfo.ModelNumber.IndexOf("Device"));
-                Model = CurrentDeviceInfo.ModelNumber;
-            }
-            else
-            {
-                var arr = CurrentDeviceInfo.Name.Split(' ');
-                if (arr.Length > 0)
-                {
-                    Model = arr[arr.Length - 1];
-                }
-                else
-                {
-                    Model = CurrentDeviceInfo.ModelNumber;
-                }
-                Name = CurrentDeviceInfo.Name.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
-            }
-            if (instenceNo == "")
-            {
-                Model2 = Model;
-            }
-            else
-            {
-                Model2 = $"{Model} ({instenceNo})";
-            }
+      if(DeviceInfos.ContainsKey(CurrentDeviceID)) {
+        var di = DeviceInfos[CurrentDeviceID];
+        CurrentInstanceID = di.InstanceId;
+        if(di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalDongle) {
+          foreach(var info in DeviceInfos.Values) {
+            if(info.InstanceId == CurrentInstanceID && info.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalBluetooth)
+              CurrentDeviceID = info.ID;
+          }
+        }
+        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+      }
+      else {
+        OnGoBackClicked();
+        IsIDInvalid = true;
+        return false;
+      }
+      //0614 Bruce 目前IL的dock回來的名稱有帶VID，先新增另個方法濾掉
+      if(CurrentDeviceInfo.ModelNumber.ToUpper().Contains("DOCK")) {
+        Name = CurrentDeviceInfo.ModelNumber.Substring(0, CurrentDeviceInfo.ModelNumber.IndexOf("Device"));
+        Model = CurrentDeviceInfo.ModelNumber;
+      }
+      else {
+        var arr = CurrentDeviceInfo.Name.Split(' ');
+        if(arr.Length > 0) {
+          Model = arr[arr.Length - 1];
+        }
+        else {
+          Model = CurrentDeviceInfo.ModelNumber;
+        }
+        //Name = CurrentDeviceInfo.Name.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
+        Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
+      }
+      if(instenceNo == "") {
+        Model2 = Model;
+      }
+      else {
+        Model2 = $"{Model} ({instenceNo})";
+      }
 
             //0613 Bruce 目前IL的dock還沒有回型號回來，先固定使用同張產品圖，待更改。 0614新增註解紀錄
             if (Model.ToUpper().Contains("DOCK"))

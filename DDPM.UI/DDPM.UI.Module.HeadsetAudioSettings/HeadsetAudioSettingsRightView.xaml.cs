@@ -35,6 +35,33 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             _vm = vm;
             converter.ViewModel = _vm;
 
+            if (_vm.CurrentDeviceInfo!.IsPresetsSupported)
+            {
+                if(_vm.CurrentDeviceInfo!.Band1Gain > 4 || _vm.CurrentDeviceInfo!.Band1Gain < -6)
+                    SetNodeValue(Node1, 0);
+                else
+                    SetNodeValue(Node1, _vm.CurrentDeviceInfo!.Band1Gain);
+
+                if (_vm.CurrentDeviceInfo!.Band2Gain > 4 || _vm.CurrentDeviceInfo!.Band2Gain < -6)
+                    SetNodeValue(Node2, 0);
+                else
+                    SetNodeValue(Node2, _vm.CurrentDeviceInfo!.Band2Gain);
+
+                if (_vm.CurrentDeviceInfo!.Band3Gain > 4 || _vm.CurrentDeviceInfo!.Band3Gain < -6)
+                    SetNodeValue(Node3, 0);
+                else
+                    SetNodeValue(Node3, _vm.CurrentDeviceInfo!.Band3Gain);
+
+                if (_vm.CurrentDeviceInfo!.Band4Gain > 4 || _vm.CurrentDeviceInfo!.Band4Gain < -6)
+                    SetNodeValue(Node4, 0);
+                else
+                    SetNodeValue(Node4, _vm.CurrentDeviceInfo!.Band4Gain);
+
+                if (_vm.CurrentDeviceInfo!.Band5Gain > 4 || _vm.CurrentDeviceInfo!.Band5Gain < -6)
+                    SetNodeValue(Node5, 0);
+                else
+                    SetNodeValue(Node5, _vm.CurrentDeviceInfo!.Band5Gain);
+            }
             _vm.Invoke_PleaseWait(_vm.Model);
             //_vm.DetectPageShow(_vm.Model);
             //_vm.DetectPageShow("WL7024");
@@ -42,15 +69,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             //vm.DetectPageShow("WH5024");
             //_vm.DetectPageShow("WL3024");
             //_vm.DetectPageShow("WH3024");
-
-            if (_vm.CurrentDeviceInfo!.IsPresetsSupported)
-            {
-                SetNodeValue(Node1, _vm.CurrentDeviceInfo!.Band1Gain);
-                SetNodeValue(Node2, _vm.CurrentDeviceInfo!.Band2Gain);
-                SetNodeValue(Node3, _vm.CurrentDeviceInfo!.Band3Gain);
-                SetNodeValue(Node4, _vm.CurrentDeviceInfo!.Band4Gain);
-                SetNodeValue(Node5, _vm.CurrentDeviceInfo!.Band5Gain);
-            }
         }
 
         private void Slider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -248,9 +266,12 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                 double minValue = 0;
                 double maxValue = 150;
                 double minOutput = -6;
-                double maxOutput = 4;
+                double maxOutput = 5;
 
-                int normalizedValue = (int)(maxOutput - ((Canvas.GetTop(node) - minValue) / (maxValue - minValue) * (maxOutput - minOutput)));
+                double normalizedValue = maxOutput - ((Canvas.GetTop(node) - minValue) / (maxValue - minValue) * (maxOutput - minOutput));
+                normalizedValue = Convert.ToInt16(Math.Floor(normalizedValue));
+                if (normalizedValue >= 5)
+                    normalizedValue = 4;
                 textBlock.Text = normalizedValue.ToString("0");
             }
         }

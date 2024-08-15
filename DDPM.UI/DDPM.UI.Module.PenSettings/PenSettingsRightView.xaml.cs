@@ -1,6 +1,10 @@
 ﻿using DDPM.UI.Plugin.ViewModels;
 using System.Windows;
 using UserControl = System.Windows.Controls.UserControl;
+using DDPM.UI.Common;
+using DDPM.UI.Plugin.Common;
+using static Dell.Client.Framework.UX.WPF.WinApi;
+using System.Reflection.Metadata;
 
 namespace DDPM.UI.Module.PenSettings
 {
@@ -11,29 +15,21 @@ namespace DDPM.UI.Module.PenSettings
     {
         private readonly PenViewModel _vm;
 
-        private readonly string Caption = "Pen Settings";
-        private readonly string TipSensitivity = "Tip Sensitivity";
-        private readonly string TipTooltip = "Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and\nyou need to apply firmer pen pressure.";
-        private readonly string TiltSensitivity = "Tilt Sensitivity";
-        private readonly string TiltTooltip = "Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle.";
-        private readonly string PairWithTile = "Pair with Tile";
-        private readonly string PairTooltip = "Pair your pen to your mobile device using\nthe Tile app.";
-        private readonly string GetStarted = "Get started";
 
         public PenSettingsRightView(PenViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            txtCaption.Text = Caption;
-            txtTipSensitivity.Text = TipSensitivity;
-            txtTipTooltip.Text = TipTooltip;
-            txtTiltSensitivity.Text = TiltSensitivity;
-            txtTiltTooltip.Text = TiltTooltip;
-            txtPairWithTile.Text = PairWithTile;
-            txtPairTooltip.Text = PairTooltip;
-            btnPair.Content = GetStarted;
-        }
+      txtCaption.Text = Strings.PenSettings;
+      txtTipSensitivity.Text = Strings.TipSensitivity;
+      txtTipTooltip.Text = Strings.TipTooltip;
+      txtTiltSensitivity.Text = Strings.TiltSensitivity;
+      txtTiltTooltip.Text = Strings.TiltTooltip;
+      txtPairWithTile.Text = Strings.PairWithTile;
+      txtPairTooltip.Text = Strings.PairTooltip;
+      btnGetStart.Content = Strings.GetStarted2;
+    }
 
         private void Slider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
@@ -52,8 +48,20 @@ namespace DDPM.UI.Module.PenSettings
             //_vm.SetTouchScrollSensitivityLevel();
         }
 
-        private void btnPair_Click(object sender, RoutedEventArgs e)
-        {
-        }
+    private void btnGetStart_Click(object sender, RoutedEventArgs e) {
+      Window parentWindow = Window.GetWindow(this);
+      double windowLeft = 0;
+      double windowTop = 0;
+      PairTileModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
+      if(parentWindow != null) {
+        modalDialog.Owner = parentWindow;
+        windowLeft = parentWindow.Left;
+        windowTop = parentWindow.Top;
+      }
+      modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+      modalDialog.Left = windowLeft;
+      modalDialog.Top = windowTop;
+      modalDialog.ShowDialog();
     }
+  }
 }

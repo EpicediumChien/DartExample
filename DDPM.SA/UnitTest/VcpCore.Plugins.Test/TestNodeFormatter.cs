@@ -188,7 +188,7 @@ namespace VcpCore.Plugins.Test
         [Test]
         public void TestFormatVCP_DC()
         {
-            string vcpControlName1 = "Standard";
+            string vcpControlName1 = "Standard/Native";
             var expectvcpControlName1 = NodeFormatter.FormatVCP_DC("00");
             string vcpControlName2 = "Multimedia";
             var expectvcpControlName2 = NodeFormatter.FormatVCP_DC("02");
@@ -241,7 +241,7 @@ namespace VcpCore.Plugins.Test
         {
             string vcpControlName1 = "Multimedia";
             var expectvcpControlName1 = NodeFormatter.FormatVCP_E2("01");
-            string vcpControlName2 = "Game";
+            string vcpControlName2 = "Game/Game1";
             var expectvcpControlName2 = NodeFormatter.FormatVCP_E2("04");
             string vcpControlName3 = "DICOM";
             var expectvcpControlName3 = NodeFormatter.FormatVCP_E2("09");

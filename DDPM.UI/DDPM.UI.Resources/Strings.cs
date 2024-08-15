@@ -1,17 +1,19 @@
 ﻿using System.Globalization;
-using ResourceManager = System.Resources.ResourceManager;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Navigation;
+using Windows.ApplicationModel.Resources.Core;
+using Windows.Devices.HumanInterfaceDevice;
+using ResourceManager=System.Resources.ResourceManager;
 
-namespace DDPM.UI.Common
-{
-    [Obsolete("please use DDPM.UI.Resources.Helper.LangHelper", false)]//gavin 2024/08/02
-    public static class Strings
-    {
-        private static ResourceManager resManager = Resources.Resources.ResourceManager;
-
-        private static string GetString(string key)
-        {
-            return resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-        }
+namespace DDPM.UI.Common {
+    [Obsolete("please use DDPM.UI.Resources.Helper.LangHelper if static text",false)]//gavin 2024/08/02
+    public static class Strings {
+    private static ResourceManager resManager = Resources.Resources.ResourceManager;
+    private static string GetString(string key) {
+      string str= resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+      return System.Text.RegularExpressions.Regex.Unescape(str);
+    }
 
         public static readonly string AdaptiveLight = GetString("AdaptiveLight");
         public static readonly string Manual = GetString("Manual");
@@ -326,10 +328,41 @@ namespace DDPM.UI.Common
         public static readonly string Clear = "Clear";
         public static readonly string Cancel = "Cancel";
 
-        //Dialog
-        public static readonly string OpenRunDesc = "Choose the app from a list of apps";
+    //Dialog
+    public static readonly string OpenRunDesc = "Choose the app from a list of apps";
+    public static readonly string SelectAFile = "Select a file";
+    public static readonly string SelectedFile = "Selected file";
 
-        public static readonly string SelectAFile = "Select a file";
-        public static readonly string SelectedFile = "Selected file";
-    }
+    //Pen settings
+    public static readonly string PenSettings = "Pen Settings";
+    public static readonly string TipSensitivity = "Tip Sensitivity";
+    public static readonly string TipTooltip = "Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure";
+    public static readonly string TiltSensitivity = "Tilt Sensitivity";
+    public static readonly string TiltTooltip = "Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle";
+    public static readonly string PairWithTile = "Pair with Tile";
+    public static readonly string PairTooltip = "Pair your pen to your mobile device using\nthe Tile app";
+    public static readonly string GetStarted2 = "Get started";
+    public static readonly string PairTile1 = "Enable Bluetooth on your device.";
+    public static readonly string PairTile2 = "Scan the QR Code to download Tile on to your mobile device.";
+    public static readonly string PairTile3 = "Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.";
+    public static readonly string DownloadTile = "Download tile";
+
+    // add device
+    public static readonly string AddDevice = GetString("AddDevice");
+    public static readonly string AddDevice_Display = GetString("AddDevice.Display");
+    public static readonly string AddDevice_Webcam = GetString("AddDevice.Webcam");
+    public static readonly string AddDevice_KnM = GetString("AddDevice.KnM");
+    public static readonly string AddDevice_Pen = GetString("AddDevice.Pen");
+    public static readonly string AddDevice_Headset = GetString("AddDevice.Headset");
+    public static readonly string AddDevice_Speaker = GetString("AddDevice.Speaker");
+    public static readonly string AddDevice_Dock = GetString("AddDevice.Dock");
+    public static readonly string AddDeviceTypeBluetooth = GetString("AddDevice.Type.Bluetooth");
+    public static readonly string AddDeviceTypeWireless = GetString("AddDevice.Type.Wireless");
+    public static readonly string AddDeviceTypeWired = GetString("AddDevice.Type.Wired");
+    public static readonly string AddDeviceTypeOther = GetString("AddDevice.Type.Other");
+    public static readonly string AddDeviceMsgCancelBtn = GetString("AddDevice.Msg.CancelBtn");
+    public static readonly string AddDeviceMsgWaitingCap = GetString("AddDevice.Msg.WaitingCap");
+    public static readonly string AddDeviceMsgWaitingMsg = GetString("AddDevice.Msg.WaitingMsg");
+    public static readonly string AddDeviceMsgWaitingAlert = GetString("AddDevice.Msg.WaitingAlert");
+  }
 }
