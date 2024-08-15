@@ -34,6 +34,9 @@ using Newtonsoft.Json;
 using System.Linq;
 using PInvoke;
 using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Security.Interfaces;
+using Dell.Client.Framework.Security;
+using System.Security;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -500,6 +503,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             savePath = installPath;
                         }
+                        if (!Directory.Exists(savePath))
+                        {
+                            Directory.CreateDirectory(savePath);
+                        }
+                        string FolderInfo;
+                        if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
+                            continue;
+                        }
                         _downloadTimer = new Timer();
                         _downloadTimer.Interval = 1000;
                         _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
@@ -513,10 +527,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         client.Timeout = TimeSpan.FromMinutes(1);
                         // 發送 HTTP GET 請求到指定的 URL
                         HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        if (!Directory.Exists(savePath))
-                        {
-                            Directory.CreateDirectory(savePath);
-                        }
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                         // 從 URL 中取得回應標頭
@@ -533,7 +543,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _downloadTimer.Stop();
                         _fileStream.Close();
                         string exeFilePath;
-                        Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath);
+                        if (!Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath))
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile:" + exeFilePath);
+                            continue;
+                        }
 
                         //測試用，OTATestClient(模擬正常安裝包流程)
                         //exeFilePath = "C:\\FW_SW_ICC_Update\\OTATestSampleCode From_IndiLogic\\src\\OTATestClient\\bin\\Debug\\OTATestClient.exe";
@@ -605,10 +620,40 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     Directory.CreateDirectory(extractPath);
                 }
-                // 解壓縮zip檔案，並覆蓋現有檔案
-                ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
-                _logs.DebugMsg_1(nameof(Unzip) + " done");
-                exeFilePath = GetExeFilePath(extractPath);
+                string FolderInfo;
+                if (!DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo))//0815 Bruce Add Security
+                {
+                    exeFilePath = FolderInfo;
+                    return false;
+                }
+                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                var constraints = new LeafCertConstraints(hashes)
+                {
+                    RequireAllCerts = false
+                };
+                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                {
+                    Constraints = constraints
+                };
+                using (FileLock fileLock = new FileLock(zipFilePath, PathCheckOption.None, lockNow: true))
+                {
+                    AclChecker aclChecker = new AclChecker();
+                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
+                    {
+                        throw new SecurityException($"File ACLs for {zipFilePath} contained unprivileged write access for one or more identity");
+                    }
+                    /*暫時註解 因還沒有簽章
+                    var result = verifier.Verify(fileLock);
+                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
+                    {
+                        throw new SecurityException($"Signature validation failed for {zipFilePath}! Received the following return code {result}");
+                    }*/
+                    // 解壓縮zip檔案，並覆蓋現有檔案
+                    ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
+                    _logs.DebugMsg_1(nameof(Unzip) + " done");
+                    exeFilePath = GetExeFilePath(extractPath);
+                }
                 return true;
             }
             catch (Exception ex)
@@ -912,11 +957,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             //0614 Bruce 新增Dock韌體安裝功能
             try
             {
+                _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " start");
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(fwUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
+                {
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " FileIsNoSafe:" + FileInfo);
+                    return FWUErrorCode.FileIsNoSafe;
+                }
                 _timeOutCount = _fwTimeOutCount;
                 _timerTimeOut = new Timer();
                 _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
                 _timerTimeOut.Elapsed += new ElapsedEventHandler(_timerTimeOut_Tick);
-                _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " start");
                 //foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
                 string _namedPipeName = Guid.NewGuid().ToString("D"); // 生成唯一的管道名稱
                 _namedPipeServer = new NamedPipeStreamServer(_namedPipeName); // 創建命名管道伺服器
@@ -924,12 +975,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
                 _namedPipeServer.ClientDisconnectedEvent += _namedPipeServer_ClientDisconnectedEvent;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(_namedPipeServer) + " ready");
-                // 要運行的安裝程式路徑和命令行參數
-                string arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + _namedPipeName;
-
-                var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
-                if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
-                IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
                 if (fwUpdateInfo.IsUOD)
                 {
                     NotificationFWupdate("Dock FW info", "Dock FW is being loaded. Do not disconnect the dock.");
@@ -938,20 +983,51 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     NotificationFWupdate("FW info", fwUpdateInfo.DeviceName + " FW is being Installing. Do not disconnect the device.");
                 }
-                _timerTimeOut.Enabled = true;
-                UserImpersonator.RunAsUser(token, () =>
+                // 要運行的安裝程式路徑和命令行參數
+                string arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + _namedPipeName;
+                var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
+                if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
+                IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
+
+                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                var constraints = new LeafCertConstraints(hashes)
                 {
-                    using (Process clientProcess = new Process())
+                    RequireAllCerts = false
+                };
+                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                {
+                    Constraints = constraints
+                };
+                using (FileLock fileLock = new FileLock(fwUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
+                {
+                    AclChecker aclChecker = new AclChecker();
+                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
-                        _clientProcess = new Process();
-                        _clientProcess.StartInfo.UseShellExecute = false;
-                        _clientProcess.StartInfo.FileName = fwUpdateInfo.InstallPaths;
-                        _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                        _clientProcess.StartInfo.Arguments = arguments;
-                        _clientProcess.Start();
-                        _clientProcess.WaitForExit();
+                        throw new SecurityException($"File ACLs for {fwUpdateInfo.InstallPaths} contained unprivileged write access for one or more identity");
                     }
-                });
+                    /*暫時註解 因還沒有簽章
+                    var result = verifier.Verify(fileLock);
+                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
+                    {
+                        throw new SecurityException($"Signature validation failed for {fwUpdateInfo.InstallPaths}! Received the following return code {result}");
+                    }*/
+                    _timerTimeOut.Enabled = true;
+                    UserImpersonator.RunAsUser(token, () =>
+                    {
+                        using (Process clientProcess = new Process())
+                        {
+                            _clientProcess = new Process();
+                            _clientProcess.StartInfo.UseShellExecute = false;
+                            _clientProcess.StartInfo.FileName = fwUpdateInfo.InstallPaths;
+                            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                            _clientProcess.StartInfo.Arguments = arguments;
+                            _clientProcess.Start();
+                            _clientProcess.WaitForExit();
+                        }
+                    });
+                }
+
                 if (fwUpdateInfo.IsUOD)
                 {
                     string ret = "";

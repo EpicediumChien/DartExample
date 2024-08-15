@@ -68,13 +68,17 @@ namespace DDPM.SA.Common
     public enum SWUErrorCode
     {
         NoError = 0,
-        SoftwareUpdateFailed = 1,
-        SoftwareUpdatNotSupportedForThisOS = 2,
-        SoftwareUpdateTimeout = 3,
+        DeviceDisconnected = 1,
+        FirmwareUpdateFailed = 2,
+        FirmwareUpdatNotSupportedForThisDevice = 3,
+        FirmwareUpdateTimeout = 4,
         PCBatteryTooLow = 5,
+        ConnectMultipleDocks = 6,
         NetworkDisconnection = 7,
-        UserAbortedFail = 8,
-        UserAborted = 9,
+        UserAborted = 8,
+        UserAbortedFail = 9,
+        FolderIsNotSafe = 10,
+        FileIsNoSafe = 11,
         Unknow = 99
     }
     /// <summary>

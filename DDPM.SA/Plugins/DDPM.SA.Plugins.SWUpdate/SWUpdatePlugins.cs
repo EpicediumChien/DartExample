@@ -32,6 +32,9 @@ using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using DDPM.SA.Common.Settings;
 using PInvoke;
+using Dell.Client.Framework.Security.Interfaces;
+using Dell.Client.Framework.Security;
+using System.Security;
 
 namespace DDPM.SA.Plugins.SWUpdate
 {
@@ -374,6 +377,17 @@ namespace DDPM.SA.Plugins.SWUpdate
                         {
                             savePath = installPath;
                         }
+                        if (!Directory.Exists(savePath))
+                        {
+                            Directory.CreateDirectory(savePath);
+                        }
+                        string FolderInfo;
+                        if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
+                        {
+                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
+                            _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo);
+                            continue;
+                        }
                         _downloadTimer = new Timer();
                         _downloadTimer.Interval = 1000;
                         _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
@@ -387,10 +401,6 @@ namespace DDPM.SA.Plugins.SWUpdate
                         client.Timeout = TimeSpan.FromMinutes(1);
                         // 發送 HTTP GET 請求到指定的 URL
                         HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        if (!Directory.Exists(savePath))
-                        {
-                            Directory.CreateDirectory(savePath);
-                        }
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                         // 從 URL 中取得回應標頭
@@ -407,7 +417,12 @@ namespace DDPM.SA.Plugins.SWUpdate
                         _downloadTimer.Stop();
                         _fileStream.Close();
                         string exeFilePath;
-                        Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath);
+                        if (!Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath))
+                        {
+                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
+                            _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Unzip Faile:" + exeFilePath);
+                            continue;
+                        }
 
                         _fileStream = null;
                         //暫時註解 等待check sha512和CA
@@ -468,10 +483,40 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     Directory.CreateDirectory(extractPath);
                 }
-                // 解壓縮zip檔案，並覆蓋現有檔案
-                ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
-                _logs.DebugMsg_1(nameof(Unzip) + " done");
-                exeFilePath = GetExeFilePath(extractPath);
+                string FolderInfo;
+                if (!DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo))//0815 Bruce Add Security
+                {
+                    exeFilePath = FolderInfo;
+                    return false;
+                }
+                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                var constraints = new LeafCertConstraints(hashes)
+                {
+                    RequireAllCerts = false
+                };
+                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                {
+                    Constraints = constraints
+                };
+                using (FileLock fileLock = new FileLock(zipFilePath, PathCheckOption.None, lockNow: true))
+                {
+                    AclChecker aclChecker = new AclChecker();
+                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
+                    {
+                        throw new SecurityException($"File ACLs for {zipFilePath} contained unprivileged write access for one or more identity");
+                    }
+                    /*暫時註解 因還沒有簽章
+                    var result = verifier.Verify(fileLock);
+                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
+                    {
+                        throw new SecurityException($"Signature validation failed for {zipFilePath}! Received the following return code {result}");
+                    }*/
+                    // 解壓縮zip檔案，並覆蓋現有檔案
+                    ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
+                    _logs.DebugMsg_1(nameof(Unzip) + " done");
+                    exeFilePath = GetExeFilePath(extractPath);
+                }
                 return true;
             }
             catch (Exception ex)
@@ -620,26 +665,57 @@ namespace DDPM.SA.Plugins.SWUpdate
             try
             {
                 _logs.DebugMsg_1(swUpdateInfo.SoftwareName + nameof(Install) + " start");
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(swUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
+                {
+                    _logs.DebugMsg_1(swUpdateInfo.SoftwareName + " FileIsNoSafe:" + FileInfo);
+                    return SWUErrorCode.FileIsNoSafe;
+                }
                 // 要運行的安裝程式路徑和命令行參數
                 string arguments = "";//"/silent" + " /pipename:" + _namedPipeName;
-
                 Process _clientProcess = new Process();
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
-                UserImpersonator.RunAsUser(token, () =>
+
+                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                var constraints = new LeafCertConstraints(hashes)
                 {
-                    using (Process clientProcess = new Process())
+                    RequireAllCerts = false
+                };
+                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                {
+                    Constraints = constraints
+                };
+                using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
+                {
+                    AclChecker aclChecker = new AclChecker();
+                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
-                        _clientProcess = new Process();
-                        _clientProcess.StartInfo.UseShellExecute = false;
-                        _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                        _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                        _clientProcess.StartInfo.Arguments = arguments;
-                        _clientProcess.Start();
-                        //_clientProcess.WaitForExit();
+                        throw new SecurityException($"File ACLs for {swUpdateInfo.InstallPaths} contained unprivileged write access for one or more identity");
                     }
-                });
+                    /*暫時註解 因還沒有簽章
+                    var result = verifier.Verify(fileLock);
+                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
+                    {
+                        throw new SecurityException($"Signature validation failed for {fwUpdateInfo.InstallPaths}! Received the following return code {result}");
+                    }*/
+                    UserImpersonator.RunAsUser(token, () =>
+                    {
+                        using (Process clientProcess = new Process())
+                        {
+                            _clientProcess = new Process();
+                            _clientProcess.StartInfo.UseShellExecute = false;
+                            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
+                            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                            _clientProcess.StartInfo.Arguments = arguments;
+                            _clientProcess.Start();
+                            //_clientProcess.WaitForExit();
+                        }
+                    });
+                }
+                
                 _updateErrorCode = SWUErrorCode.NoError;
                 return _updateErrorCode;
             }

@@ -110,6 +110,8 @@ namespace DDPM.SA.Common
         NetworkDisconnection = 7,
         UserAborted = 8,
         UserAbortedFail = 9,
+        FolderIsNotSafe = 10,
+        FileIsNoSafe = 11,
         Unknow = 99
     }
 }
