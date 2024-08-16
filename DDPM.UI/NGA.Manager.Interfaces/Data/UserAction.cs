@@ -1,13 +1,13 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
-using System.Collections.Generic;
 using Microsoft;
 using Newtonsoft.Json;
 
@@ -32,7 +32,6 @@ public class UserAction : IUserAction
     [JsonProperty]
     public Dictionary<string, string> ActivationData { get; protected set; }
 
-    
     /// <inheritdoc/>
     [JsonProperty]
     public Dictionary<string, string> UserData { get; protected set; }
@@ -69,7 +68,7 @@ public class UserAction : IUserAction
     /// <param name="userData">User selection data</param>
     /// <param name="createDateTime">Create time for the object</param>
     /// <param name="guid">Guid for the object</param>
-    public UserAction(Guid pluginId, Guid notificationId, string sid, Dictionary<string, string> activationData, Dictionary<string,string> userData = null,
+    public UserAction(Guid pluginId, Guid notificationId, string sid, Dictionary<string, string> activationData, Dictionary<string, string> userData = null,
         DateTime? createDateTime = null, Guid? guid = null)
     {
         Requires.NotEmpty(pluginId, nameof(pluginId));

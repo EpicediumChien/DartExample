@@ -1,16 +1,15 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using Dell.Client.Framework.Common;
+using System.Globalization;
 
 namespace NGA.Manager.Interfaces;
 
@@ -67,6 +66,6 @@ public interface INotificationSystray : IFrameworkPlugin
     /// <param name="cancellationToken">cancellation token</param>
     /// <exception cref="NotificationPluginException"></exception>
     /// <exception cref="OperationCanceledException"></exception>
-    Task NotificationOperationAcknowledgedAsync(OperationResult operationResult, 
+    Task NotificationOperationAcknowledgedAsync(OperationResult operationResult,
         CancellationToken cancellationToken);
 }

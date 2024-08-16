@@ -1,15 +1,8 @@
-﻿using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
-using System;
-using System.Collections.Generic;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Common.Models;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Controls;
-using VcpCore.Common;
-using DDPM.UI.Plugin.DdpmHomePlugin.Model;
+using System.Windows.Input;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Interfaces
 {
@@ -18,6 +11,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Interfaces
         public void Reset();
 
         #region Vbar - Unused
+
         public int VbarSelectedIndex { get; set; }
         public List<VbarItem> VbarItems { get; }
         public ICommand? VbarItemClickCommand { get; set; }
@@ -25,26 +19,29 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Interfaces
         public int GroupSelIdx { get; set; }
         public int GroupCount { get; }
 
-        #endregion
+        #endregion Vbar - Unused
 
         #region LeftView - Unused
+
         public UserControl DefaultLeftView { get; }
         public UserControl? LeftView { get; set; }
-        #endregion
+
+        #endregion LeftView - Unused
 
         #region RightView - Unused
+
         public UserControl? RightView { get; set; }
         public int RightViewHeaderSelectedIndex { get; set; }
 
         public ObservableCollection<RightViewHeader> RightViewHeaders { get; set; }
-        #endregion
+
+        #endregion RightView - Unused
 
         //Unused
         public List<ModuleGroup> ModuleGroups { get; set; }
 
         //Unused
         public ModuleGroup? SelectedGroup { get; }
-
 
         public List<HomeDevice> HomeDevices { get; set; }
         public HomeDevice? SelectedHomeDevice { get; set; }

@@ -1,19 +1,18 @@
-﻿using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Interfaces;
-using Dell.Client.Framework.Common.PluginConditions;
-using DDPM.SA.Common;
-using Microsoft;
-using DDPM.SA.Common.Settings;
-using Newtonsoft.Json;
-using System;
-using System.Threading.Tasks;
+﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.Interfaces;
+using Microsoft;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
-using System.Text.Json.Nodes;
+using System.Threading.Tasks;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -27,6 +26,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public const string PluginLogId = "User.SettingsManager";
 
         #region Private Members
+
         private const string pluginName = "User.SettingsManager.Plugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements User.SettingsManager.Plugin.";
@@ -54,14 +54,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
          * SpecialFolder.System:                C:\Windows\system32
          * ...
          */
+
         //Basic
         //private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         private static string folder_product = "Dell Display and Peripheral Manager";
+
         //Global
         //private static string folder_programdata_Applist = path_programdata + "\\" + folder_product + "\\DDPM\\AppLibrary";
         private static string folder_localappdata_Applist = "AppLibrary";
+
         private static string folder_localappdata_Appicon = "Icons";
         private static string folder_localappdata_Display = "Display";
+
         //private static string folder_programdata_DownloadInstaller = path_programdata + "\\" + folder_product + "\\Downloaded Installations";
         //private static string folder_programdata_DownloadInstallerLog = path_programdata + "\\" + folder_product + "\\InstallationLogs";
         //private static string folder_programdata_AppIcons = folder_programdata_Applist + "\\Icons";
@@ -69,16 +73,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         //private static string filepath_programdata_ColorSetting = folder_programdata_Applist + "\\ColorSetting.json";
         //private static string filepath_programdata_Common_AppSettings = path_programdata + "\\" + folder_product + "\\Common\\AppSettings.json";
         //private static string filepath_programdata_Common_AdminSettings = path_programdata + "\\" + folder_product + "\\Common\\AdminSettings.json";
-        //Per user        
+        //Per user
         //private static string folder_usersettings = "ApplicationSettingImport";
         //private static string folder_colormanagement = "color";
         //private static string folder_fwupdatetool = "ISP";
         private static string filename_appsettings_peruser = "DDPM.Configs.json";
+
         private static string filename_colorpreset_peruser = "ColorSetting.json";
         private static string filename_hotkey_peruser = "HotkeySetting.json";
         private static string filename_powernap_peruser = "PowerNapSetting.json";
+
         //---
         private ISettingsManagerSA? _SysSettingsPlugin;
+
         private readonly object _PluginConditionLock_SysSettings = new object();
         private bool relay_registered = false;
 
@@ -86,7 +93,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private DDPMSettings _settings { get; set; }
         private string _settings_path { get; set; } = string.Empty;
-        List<ColorPresetSettings> _colorPresetSettings { get; set; }
+        private List<ColorPresetSettings> _colorPresetSettings { get; set; }
         private string _colorsettings_path { get; set; }
         private string _appiconfolder_path { get; set; }
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
@@ -94,25 +101,27 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _display_path { get; set; }
         private List<ColorPresetSettings> _preset_settings = new List<ColorPresetSettings>();//Dean 0626 fix SAST issue
 
-        List<HotkeySettings> _hotkeySettings { get; set; }
+        private List<HotkeySettings> _hotkeySettings { get; set; }
         private string _hotkeysettings_path { get; set; }
         private static List<HotkeySettings> _present_hotkey_settings = new List<HotkeySettings>();
 
-        List<PowerNapSetting> _powerNapSettings { get; set; }
+        private List<PowerNapSetting> _powerNapSettings { get; set; }
         private string _powerNapsettings_path { get; set; }
         private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
 
-        #endregion
+        #endregion Private Members
 
         #region Constructor
+
         public SettingsManagerSA(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
         }
 
-        #endregion
+        #endregion Constructor
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
@@ -128,9 +137,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitPowerNapConfigFile();
             EAMakeSureDirExist();
         }
-        #endregion
+
+        #endregion Overriding methods
 
         #region IDisposableObservable Support
+
         public bool IsDisposed { get; private set; }
 
         /// <summary>
@@ -158,9 +169,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             base.Dispose(disposing);
         }
-        #endregion
+
+        #endregion IDisposableObservable Support
 
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -178,9 +191,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (e.ChangedPlugins.OfType<ISettingsManagerSA>().Any())
                 InitializeSysSettingsPlugin();
         }
-        #endregion
+
+        #endregion Event Handler
 
         #region Private methods
+
         /// <summary>
         /// //
         /// </summary>
@@ -239,7 +254,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             });
         }
 
-        void DoRelayRegister()
+        private void DoRelayRegister()
         {
             if (_SysSettingsPlugin == null)
             {
@@ -273,9 +288,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             });
         }
 
-        #endregion
+        #endregion Private methods
 
         #region ISettingManagerDev implementation
+
         public Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname)
         {
             string folder = GetActiveUserLocalAppDataPath();
@@ -336,6 +352,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             return Task.FromResult(monitorSettingList);
         }
+
         public Task<DDPMSettings> ReloadAppConfigData(bool force_reload = false)
         {
             lock (_Setting_Locker)
@@ -393,6 +410,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         }
 
         #region Monitor Settings
+
         public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname)
         {
             List<DDPMMonitorSettings> monitorSettings = new List<DDPMMonitorSettings>();
@@ -430,6 +448,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             return Task.FromResult(monitorSettings);
         }
+
         public Task<bool> WriteMonitorSettings(string modelname, List<DDPMMonitorSettings> monitorSettings)
         {
             if (monitorSettings == null)
@@ -454,9 +473,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return Task.FromResult(true);
         }
-        #endregion
+
+        #endregion Monitor Settings
 
         #region color preset settings
+
         public Task<string> GetAppIconFolderPath()
         {
             return Task.FromResult(_appiconfolder_path);
@@ -470,7 +491,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             if (File.Exists(strFilePath))
             {
-
                 string strReadJson = string.Empty;
                 using (var reader = new StreamReader(strFilePath))
                 {
@@ -488,7 +508,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     return Task.FromResult(_preset_settings);
                 }
-
             }
             else
             {
@@ -509,9 +528,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return Task.FromResult(false);
         }
-        #endregion
+
+        #endregion color preset settings
 
         #region hotkey settings
+
         public Task<List<HotkeySettings>> ReadHotkeySettings()
         {
             _hotkeySettings?.Clear();
@@ -520,7 +541,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             if (File.Exists(strFilePath))
             {
-
                 string strReadJson = string.Empty;
                 using (var reader = new StreamReader(strFilePath))
                 {
@@ -538,7 +558,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     return Task.FromResult(_present_hotkey_settings);
                 }
-
             }
             else
             {
@@ -560,9 +579,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult(false);
         }
 
-        #endregion
+        #endregion hotkey settings
 
         #region powerNap settings
+
         public Task<List<PowerNapSetting>> ReadPowerNapSettings()
         {
             _powerNapSettings?.Clear();
@@ -571,7 +591,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             if (File.Exists(strFilePath))
             {
-
                 string strReadJson = string.Empty;
                 using (var reader = new StreamReader(strFilePath))
                 {
@@ -589,7 +608,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     return Task.FromResult(_present_powerNap_settings);
                 }
-
             }
             else
             {
@@ -610,7 +628,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return Task.FromResult(false);
         }
-
 
         public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
         {
@@ -644,9 +661,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return Task.FromResult(false);
         }
-        #endregion
+
+        #endregion powerNap settings
 
         #region EasyArrange Settings
+
         public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
         {
             //Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
@@ -782,6 +801,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         }
 
         #region EasyArrange Settings
+
         private string _dir_ddpmUserSettings = String.Empty;
         private string _dir_eaMonitorSettings = String.Empty;
         private const string _dirName_EA = "EA";
@@ -832,7 +852,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return true;
         }
 
-        #endregion
+        #endregion EasyArrange Settings
 
         #region powerNap settings
 
@@ -847,6 +867,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return jsonString;
         }
+
         private string RunSerializeObject(List<PowerNapSetting> powerNapSettings)
         {
             string jsonString = string.Empty;
@@ -873,12 +894,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return retList;
             }
 
-
             return retList;
         }
-        #endregion
+
+        #endregion powerNap settings
 
         #region hotkey settings
+
         private string RunSerializeObject(List<HotkeySettings> hotkeySettings)
         {
             string jsonString = string.Empty;
@@ -905,16 +927,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return retList;
             }
 
-
             return retList;
         }
-        #endregion
+
+        #endregion hotkey settings
 
         #region ColorPreset settings
+
         private string RunSerializeObject(List<ColorPresetSettings> colorPresetSettings)//MonitorInfo mi, List<ColorPresetSettings> colorPresetSettings)
         {
             string jsonString = string.Empty;
-            //ColorPresetSettings cp = new ColorPresetSettings();            
+            //ColorPresetSettings cp = new ColorPresetSettings();
             //cp.DeviceInfo = mi.edid;
             //cp.RunType = 1;
             //cp.AppInfo = AppPresetSettings;
@@ -946,18 +969,20 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return retList;
             }
 
-
             return retList;
         }
-        #endregion
+
+        #endregion ColorPreset settings
 
         #region Monitor Settings
+
         private Dictionary<string, List<DDPMMonitorSettings>> ReadAllMonitorSettings()
         {
             string[] files = Directory.GetFiles(_display_path, "*.json");
 
             return _AllMonitorSettings;
         }
+
         private string RunSerializeObject(string modelname, List<DDPMMonitorSettings> monitorSettings)
         {
             string jsonString = string.Empty;
@@ -970,6 +995,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return jsonString;
         }
+
         private List<DDPMMonitorSettings> RunMonitorDeserializeObject(string value)
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -985,7 +1011,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return monitorSettingsList;
         }
-        #endregion
+
+        #endregion Monitor Settings
 
         #region ImpExpSettings
         private string RunSerializeObject(string path, DDPMImpExpSettings impExpSettings)
@@ -1071,8 +1098,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                 {
                     WriteLog("[InitDDPMUserConfigFile] GetSerializedJsonString: " + info);
-                    _settings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings());                    
-                    if(_settings != null)
+                    _settings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings());
+                    if (_settings != null)
                     {
                         WriteLog("[InitDDPMUserConfigFile] *** Init cache from file fail, re-create default settings to file");
                         if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))

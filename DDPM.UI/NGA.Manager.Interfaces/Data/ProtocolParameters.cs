@@ -1,13 +1,12 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2023, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
-#endregion
 
-using System;
-using Microsoft;
+#endregion
 
 namespace NGA.Manager.Interfaces;
 
@@ -27,7 +26,8 @@ public class ProtocolParameters
     /// <summary>
     /// Starting plugin Guid for protocol URI
     /// </summary>
-    public Guid StartingPlugin { get { return _startingPlugin; } }
+    public Guid StartingPlugin
+    { get { return _startingPlugin; } }
 
     /// <summary>
     /// Plugin parameter if any

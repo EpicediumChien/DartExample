@@ -1,5 +1,5 @@
-﻿using System;
-using Dell.Client.Framework.Common;
+﻿using Dell.Client.Framework.Common;
+using System;
 
 namespace VcpCore.Common
 {
@@ -11,8 +11,11 @@ namespace VcpCore.Common
 
         private string _PluginLogId = string.Empty;
 
-        public Logs(ILog Logx) { Logg = Logx; }
-        public Logs(ILog Logx, string PluginLogId) { Logg = Logx; _PluginLogId = PluginLogId; }
+        public Logs(ILog Logx)
+        { Logg = Logx; }
+
+        public Logs(ILog Logx, string PluginLogId)
+        { Logg = Logx; _PluginLogId = PluginLogId; }
 
         public void DebugMsg(string DebugMsg, bool IsDebugEnable = _IsDebugEnable)
         {
@@ -24,6 +27,7 @@ namespace VcpCore.Common
                 Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + DebugMsg);
             }
         }
+
         public void DebugMsg_1(string DebugMsg, bool IsDebugEnable = _IsDebugEnable)
         {
             if (IsDebugEnable)

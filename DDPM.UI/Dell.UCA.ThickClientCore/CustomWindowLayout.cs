@@ -1,19 +1,18 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
 using NGA.ThickClient.Interfaces;
-using System.Collections.Specialized;
-using System.Windows;
 using System.Windows.Automation;
-using System.Windows.Media;
 using SystemWindows = System.Windows;
 
 namespace NGA.ThickClientCore
@@ -68,7 +67,7 @@ namespace NGA.ThickClientCore
                 if (windowLayout.Frame != null)
                 {
                     windowLayout.Frame.NarrateBackButton = Resources.Resources.NarratePageBackButton;
-                        
+
                     windowLayout.Frame.NarrateForwardButton = Resources.Resources.NarratePageForwardButton;
                 }
 
@@ -77,7 +76,7 @@ namespace NGA.ThickClientCore
 
                 //Add gear menu items to IconComboBox
                 //Robert_Lin, 2024-6-26, to remove gear menu
-                //IconComboBox.ItemsSource = gearMenu.GearMenuItems;               
+                //IconComboBox.ItemsSource = gearMenu.GearMenuItems;
             }
         }
 
@@ -95,8 +94,7 @@ namespace NGA.ThickClientCore
         public UXBell NotificationIcon { get; } = new() { Height = 32, Width = 32, IsEnabled = false };
 
         /// <inheritdoc/>
-        public UXIconComboBox IconComboBox { get; } = new();       
-        
+        public UXIconComboBox IconComboBox { get; } = new();
 
         private void Dispose(bool disposing)
         {

@@ -5,8 +5,6 @@ using DDPM.UI.Common.Models;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System.Collections.ObjectModel;
-using System.Windows;
 using VcpCore.Common;
 
 namespace DDPM.UI.Module.DisplayProperties.Tests
@@ -37,14 +35,12 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             privateObject = new PrivateObject(displayPropertiesViewModel);
         }
 
-
         [Test]
         public void TestModuleOwner()
         {
             displayPropertiesViewModel.ModuleOwner = moduleOwner;
             Assert.That(displayPropertiesViewModel.ModuleOwner, Is.EqualTo(moduleOwner));
         }
-
 
         [Test]
         public void TestMyModule()
@@ -54,7 +50,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(displayPropertiesViewModel.MyModule, Is.EqualTo(myDisplayModule));
         }
 
-
         [Test]
         public void TestResolution_ItemsCollection()
         {
@@ -63,13 +58,11 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(displayPropertiesViewModel.Resolution_ItemsCollection, Is.EqualTo(myResolution_ItemsCollection));
         }
 
-
         [Test]
         public void TestHDRStatus_String()
         {
-            var result = displayPropertiesViewModel!.HDRStatus_String;                       
+            var result = displayPropertiesViewModel!.HDRStatus_String;
             Assert.That(result, Is.EqualTo("OFF"));
-
 
             deviceManagerMock.Setup(x => x.GetDisplayPropertiesInfo(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new DisplayPropertiesInfo()));
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
@@ -85,7 +78,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             result = displayPropertiesViewModel!.HDRStatus_String;
             Assert.That(result, Is.EqualTo("ON"));
         }
-
 
         [Test]
         public void TestSupportedHDR()
@@ -108,7 +100,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             result = displayPropertiesViewModel!.SupportedUSBCPrioeitization.ToString();
             Assert.That(result, Is.EqualTo("Visible"));
         }
-       
 
         [Test]
         public void TestSelectedResolution()
@@ -117,7 +108,7 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
 
             privateObject.SetFieldOrProperty("_selectedResolution", new UI_Properties());
 
-            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());                      
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             displayPropertiesViewModel.MyModule = new DisplayPropertiesModule();
             displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
 
@@ -128,11 +119,10 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             var mySelectedOrientation = new UI_Orientation();
 
             displayPropertiesViewModel.SelectedOrientation = mySelectedOrientation;
-            displayPropertiesViewModel.SelectedResolution= mySelectedResolution;
-    
+            displayPropertiesViewModel.SelectedResolution = mySelectedResolution;
+
             Assert.That(displayPropertiesViewModel.SelectedResolution, Is.EqualTo(mySelectedResolution));
         }
-
 
         [Test]
         public void TestOrientation_ItemsCollection()
@@ -142,7 +132,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             orientation_ItemsCollection.Orientation_ItemsCollection = myOrientation_ItemsCollection;
             Assert.That(orientation_ItemsCollection.Orientation_ItemsCollection, Is.EqualTo(myOrientation_ItemsCollection));
         }
-
 
         [Test]
         public void TestSelectedOrientation()
@@ -166,7 +155,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(displayPropertiesViewModel.SelectedOrientation, Is.EqualTo(mySelectedOrientation));
         }
 
-
         [Test]
         public void TestHDRStatus()
         {
@@ -176,7 +164,7 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             displayPropertiesViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
             var MyConsoleMock = new Mock<IConsole>();
             var myConsole = MyConsoleMock.Object;
-            DdpmCommonHelper.MyConsole= myConsole;
+            DdpmCommonHelper.MyConsole = myConsole;
             var monitorInfo = new MonitorInfo();
             displayPropertiesViewModel.MyModule.SelectedHomeDevice.MonitorInfo = monitorInfo;
             bool myHDRStatus = true;
@@ -184,7 +172,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
 
             Assert.That(displayPropertiesViewModel.HDRStatus, Is.EqualTo(myHDRStatus));
         }
-
 
         [Test]
         public void TestIsHighDataSpeed()
@@ -202,7 +189,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
 
             Assert.That(displayPropertiesViewModel.IsHighDataSpeed, Is.EqualTo(myIsHighDataSpeed));
         }
-        
 
         [Test]
         public void TestIsHighResolution()
@@ -224,13 +210,11 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         [Test]
         public void TestIsBusy()
         {
-            bool myIsBusy=true;
-            displayPropertiesViewModel.IsBusy=myIsBusy;
+            bool myIsBusy = true;
+            displayPropertiesViewModel.IsBusy = myIsBusy;
 
             Assert.That(displayPropertiesViewModel.IsBusy, Is.EqualTo(myIsBusy));
         }
-
-
 
         [Test]
         public void TestRefreshUI()
@@ -265,11 +249,11 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             displayPropertiesViewModel.Resolution_ItemsCollection = myresolution_ItemsCollection;
             var myOrientation_ItemsCollection = new List<UI_Orientation>();
             displayPropertiesViewModel.Orientation_ItemsCollection = myOrientation_ItemsCollection;
-            var myHDRStatus=true;
+            var myHDRStatus = true;
             displayPropertiesViewModel.HDRStatus = myHDRStatus;
-            var myisHighDataSpeed=true;
+            var myisHighDataSpeed = true;
             displayPropertiesViewModel.IsHighDataSpeed = myisHighDataSpeed;
-            var myIsHighResolution=true;
+            var myIsHighResolution = true;
             displayPropertiesViewModel.IsHighResolution = myIsHighResolution;
             privateObject.SetFieldOrProperty("_SupportedHDR", true);
             privateObject.SetFieldOrProperty("_SupportedUSBCPrioeitization", true);
@@ -301,7 +285,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(isHighResolutionAft, Is.Not.SameAs(isHighResolutionBef));
         }
 
-
         [Test]
         public void TestConstructor_InitializesComponent()
         {
@@ -314,7 +297,7 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         public void TestProperties()
         {
             UI_Properties uI_Properties = new UI_Properties();
-            var myuI_Properties=new Properties();
+            var myuI_Properties = new Properties();
             uI_Properties.Properties = myuI_Properties;
             // Assert
             Assert.That(uI_Properties.Properties, Is.EqualTo(myuI_Properties));
@@ -325,7 +308,7 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         {
             UI_Properties uI_Properties = new UI_Properties();
             var properties = new Properties();
-            uI_Properties.Properties= properties;
+            uI_Properties.Properties = properties;
             var result = uI_Properties.DisplayText;
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -344,11 +327,10 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         [Test]
         public void TestUI_ODisplayText()
         {
-            UI_Orientation uI_Orientation = new UI_Orientation(); 
+            UI_Orientation uI_Orientation = new UI_Orientation();
             var result = uI_Orientation.DisplayText;
             // Assert
             Assert.That(result, Is.Not.Null);
         }
-
     }
 }

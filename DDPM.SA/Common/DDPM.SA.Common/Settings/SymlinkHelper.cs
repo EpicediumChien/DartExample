@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -16,11 +13,11 @@ namespace DDPM.SA.Common.Settings
         private const uint FILE_FLAG_BACKUP_SEMANTICS = 0x2000000;
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern uint GetFinalPathNameByHandle(IntPtr hFile, StringBuilder lpszFilePath, uint cchFilePath, uint dwFlags);
+        private static extern uint GetFinalPathNameByHandle(IntPtr hFile, StringBuilder lpszFilePath, uint cchFilePath, uint dwFlags);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool CloseHandle(IntPtr hObject);
+        private static extern bool CloseHandle(IntPtr hObject);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr CreateFile(
@@ -47,8 +44,8 @@ namespace DDPM.SA.Common.Settings
 
                 return sb.ToString();
             }
-            catch 
-            { 
+            catch
+            {
             }
             finally
             {
@@ -68,8 +65,8 @@ namespace DDPM.SA.Common.Settings
                         break;
                     Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
                     System.IO.File.Delete(targetPath);
-                } 
-                catch(Exception ex) 
+                }
+                catch (Exception ex)
                 {
                     info = ex.Message;
                     return false;

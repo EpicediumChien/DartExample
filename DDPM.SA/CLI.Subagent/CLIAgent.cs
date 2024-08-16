@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,34 +7,28 @@
 //
 // StoreManagementAgent.cs created on 10/4/2022T3:37 PM
 //
+
 #endregion
 
+using DDPM.SA.Common;
+using Dell.Client.Framework.Agent;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.UnifiedAgent.Common;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
-using Dell.Client.Framework.Agent;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.PluginConditions;
-using Dell.UnifiedAgent.Common;
-using VcpCore.Interfaces;
-using VcpCore.Common;
-using Newtonsoft.Json.Linq;
-using DDPM.SA.Common;
-using IDs = DDPM.SA.Common.IDs;
 using static DDPM.SA.Common.ICLICommandTable;
-using DDPM.SA.Common.Settings;
-using Newtonsoft.Json;
 
 namespace CLI.Subagent
 {
     public class CLIAgent
     {
         #region Fields
+
         private Guid _UniqueAgentGuid;
         private Guid _UserProcessMutexGuid;
         private string _ProductName = "CLI";
@@ -45,20 +40,29 @@ namespace CLI.Subagent
 
         //DDPM.Subagent
         private ICliManagerIT _CliManagerPlugin;
+
         private readonly AutoResetEvent _PluginAvailabilityTrigger_CliManager = new(true);
         private readonly object _pluginConditionLock_CliManager = new object();
         private PluginCondition _CliManagerPluginCondition;
 
         private const int TIMEOUT_IN_SECONDS = 30;
         private int _exitcode = (int)CLI_ExitCode.unknow_command;
+
+#if RELEASE
+        private byte[][] certificateHash = { IDs.WST_Hash };
+
+#endif
+
         #endregion
 
         #region Constructor
+
         public CLIAgent(Guid agentGuid, Guid mutexGuid)
         {
             _UniqueAgentGuid = agentGuid;
             _UserProcessMutexGuid = mutexGuid;
         }
+
         #endregion
 
         #region Method
@@ -69,7 +73,7 @@ namespace CLI.Subagent
         }
 
         public async Task StartAsync(string[] args)
-        {        
+        {
             _PluginAvailabilityTrigger_CliManager.Reset();
 
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -83,10 +87,14 @@ namespace CLI.Subagent
                 //PluginWildcards = new[] { "CLI.Plugins.*.dll" },
                 //PluginsToPublish = new List<Guid>
                 //{
-                    //new Guid(IDs.CLI_Plugin_Display), new Guid(IDs.CLI_Plugin_Peripherals), 
+                //new Guid(IDs.CLI_Plugin_Display), new Guid(IDs.CLI_Plugin_Peripherals),
                 //},
                 AllowUnelevatedExecution = true,
                 MultiSessionAgent = true
+#if RELEASE
+                ,
+                ValidCertificateHashes = certificateHash
+#endif
             };
 
             _Agent = new Agent(agentConfig);
@@ -105,7 +113,7 @@ namespace CLI.Subagent
 
         //If runMode = true, means run as elevated mode
         private void RunManagement(string[] args, bool runMode)
-        {           
+        {
             InitializeCliManagerPlugin();
 
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
@@ -124,7 +132,7 @@ namespace CLI.Subagent
             }
 
             commandLineInput.isCliRunAdmin = runMode;
-            if(!runMode)//0724 only allow elevated privilege to perform action
+            if (!runMode)//0724 only allow elevated privilege to perform action
             {
                 _exitcode = ICLICommandTable.Response_UnelevatedError(commandLineInput);
                 return;
@@ -155,7 +163,7 @@ namespace CLI.Subagent
                 return;
             }
         }
-        
+
         private void InitializeCliManagerPlugin()
         {
             if (_CliManagerPlugin != null)
@@ -193,9 +201,11 @@ namespace CLI.Subagent
                 }
             });
         }
+
         #endregion
 
         #region Event Handlers
+
         private void PluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e?.ChangedPlugins == null)
@@ -213,6 +223,7 @@ namespace CLI.Subagent
         {
             InitializeCliManagerPlugin();
         }
+
         #endregion
     }
 }

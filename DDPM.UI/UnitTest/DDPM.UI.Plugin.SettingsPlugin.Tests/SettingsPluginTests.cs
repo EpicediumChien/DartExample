@@ -1,11 +1,6 @@
 ﻿using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.UI.Plugin.SettingsPlugin.Tests
 {
@@ -33,13 +28,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             settingsPlugin = new SettingsPlugin(console, gearMenu);
         }
 
-
         [Test]
         public void TestHeaderText()
         {
             Assert.That(settingsPlugin.HeaderText, Is.EqualTo("DDPM Settingspage"));
         }
-
 
         [Test]
         public void TestPageType()
@@ -48,13 +41,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(settingsPlugin.PageType, Is.EqualTo(res));
         }
 
-
         [Test]
         public void TestConstructor_SettingsPlugin()
         {
             Assert.That(settingsPlugin, Is.Not.Null);
         }
-
 
         [Test]
         public void TestOnActivated()
@@ -83,7 +74,5 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
                 Assert.Fail("not invoked");
             }
         }
-
-
     }
 }

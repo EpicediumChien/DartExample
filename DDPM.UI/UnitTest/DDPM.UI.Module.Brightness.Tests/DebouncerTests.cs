@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using DDPM.UI.Module.Brightness;
 using Moq;
-using DDPM.UI.Module.Brightness;
+using NUnit.Framework;
 
 namespace DebouncerTests
 {
@@ -10,7 +10,7 @@ namespace DebouncerTests
         public void TestDebouncerAfterDelay()
         {
             var delayMilliseconds = 100;
-            var mockAction = new Mock<Action<double>>();
+            var mockAction = new Mock<Action<object>>();
             var debouncer = new Debouncer(delayMilliseconds, mockAction.Object);
 
             debouncer.Debounce(1.0);
@@ -24,7 +24,7 @@ namespace DebouncerTests
         public void TestDebouncerMultiple()
         {
             var delayMilliseconds = 100;
-            var mockAction = new Mock<Action<double>>();
+            var mockAction = new Mock<Action<object>>();
             var debouncer = new Debouncer(delayMilliseconds, mockAction.Object);
 
             debouncer.Debounce(1.0);
@@ -41,7 +41,7 @@ namespace DebouncerTests
         public void TestDebouncerDelay()
         {
             var delayMilliseconds = 100;
-            var mockAction = new Mock<Action<double>>();
+            var mockAction = new Mock<Action<object>>();
             var debouncer = new Debouncer(delayMilliseconds, mockAction.Object);
 
             debouncer.Debounce(1.0);//第一次

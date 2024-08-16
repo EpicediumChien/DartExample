@@ -14,16 +14,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
     public class AnalyticsPageTests
     {
         private AnalyticsPage? analyticsPage;
-        private Mock<IDeviceManagerSA>?DeviceManagerSAMock;
+        private Mock<IDeviceManagerSA>? DeviceManagerSAMock;
         private IDeviceManagerSA? iDeviceManagerSA;
 
         [SetUp]
         public void Setup()
         {
-            DeviceManagerSAMock=new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA= DeviceManagerSAMock.Object;
-
-
+            DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
         }
 
         [Test]

@@ -1,13 +1,8 @@
-﻿using DDPM.UI.Common.Interfaces;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.DisplayProperties.Tests
@@ -19,7 +14,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
 
-
         [SetUp]
         public void Setup()
         {
@@ -29,7 +23,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             displayPropertiesModule = new DisplayPropertiesModule();
             privateObject = new PrivateObject(displayPropertiesModule);
         }
-
 
         [Test]
         public void TestModuleName()
@@ -41,7 +34,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(result, Is.EqualTo("DisplayPropertiesModule"));
         }
 
-
         [Test]
         public void TestGetLeftView()
         {
@@ -51,7 +43,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             // Assert
             Assert.That(result, Is.Null);
         }
-
 
         [Test]
         public void TestGetRightView()
@@ -63,7 +54,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<UserControl>());
         }
-
 
         [Test]
         public void TestSelectedHomeDevice()
@@ -79,16 +69,14 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             Assert.That(result, Is.EqualTo(homeDevice));
         }
 
-
         [Test]
         public void TestModuleOwner()
         {
             // Arrange
             var moduleOwner = moduleOwnerMock!.Object;
-            displayPropertiesModule.ModuleOwner=moduleOwner;
+            displayPropertiesModule.ModuleOwner = moduleOwner;
             Assert.That(displayPropertiesModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
-
 
         [Test]
         public void TestViewModelInitialization()
@@ -112,7 +100,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
 
         [Test]
@@ -127,7 +114,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
 
         [Test]
@@ -143,9 +129,6 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
-
-
     }
 }

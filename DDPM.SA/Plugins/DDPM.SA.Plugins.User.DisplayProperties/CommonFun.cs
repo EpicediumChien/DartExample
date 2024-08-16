@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties
@@ -60,9 +57,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     {
                         //Console.WriteLine("ERROR2:" + ex2.Message.ToString());
                     }
-
                 }
-
             }
             catch (Exception)// ex)
             {
@@ -71,12 +66,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             return result;
         }
 
-
         public static string ConvertManufacturerID(string hexManufacturerID)
         {
             if (string.IsNullOrEmpty(hexManufacturerID) || hexManufacturerID.Length < 4)
                 return "";
-
 
             int num = int.Parse(hexManufacturerID.Substring(0, 2), NumberStyles.HexNumber);
             int num2 = int.Parse(hexManufacturerID.Substring(2, 2), NumberStyles.HexNumber);

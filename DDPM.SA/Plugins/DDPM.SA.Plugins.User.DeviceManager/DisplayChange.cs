@@ -1,24 +1,20 @@
 ﻿using Dell.Client.Framework.Common;
-using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.COMNative.PortableDevices.PropertySystem;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VcpCore.Common;
-using static System.Net.Mime.MediaTypeNames;
 using Application = System.Windows.Forms.Application;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
     internal class DisplayChange
     {
-        static Logs _logs;
+        private static Logs _logs;
+
         public event EventHandler DisplayChange_Event;
+
         private const int WM_DISPLAYCHANGE = 0x001A;
         private const int WM_SETTINGCHANGE = 0x007E;
         private const int WM_DEVICECHANGE = 0x0219;
@@ -39,26 +35,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             public Guid dbcc_classguid;
             public ushort dbcc_name;
         }
+
         public DisplayChange(ILog log)
         {
             _logs ??= new Logs(log, "DisplayChange");
         }
+
         public void Initialize_DisplayChangeEvent()
         {
             NotificationForm notificationForm = new NotificationForm();
             notificationForm.DisplayChange_Event += DisplayChangeEvent;
             Application.Run(notificationForm);
         }
-        void DisplayChangeEvent(object o, EventArgs e)
+
+        private void DisplayChangeEvent(object o, EventArgs e)
         {
             DisplayChange_Event?.Invoke(o, e);
         }
+
         private class NotificationForm : Form
         {
             public event EventHandler DisplayChange_Event;
+
             private IntPtr _notificationHandle;
             private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-            bool displayInOut = false;
+            private bool displayInOut = false;
+
             public NotificationForm()
             {
                 // Register for device notifications
@@ -89,6 +91,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     this.WindowState = FormWindowState.Minimized;
                 };
             }
+
             protected override void WndProc(ref Message m)
             {
                 base.WndProc(ref m);
@@ -138,12 +141,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     case WM_SETTINGCHANGE:
                         _logs.DebugMsg_1($"WM_SETTINGHANGE");
                         break;
+
                     case WM_DEVICECHANGE:
                         _logs.DebugMsg_1($"WM_DEVICECHANGE");
                         displayInOut = true;
                         break;
                 }
             }
+
             protected override void OnFormClosed(FormClosedEventArgs e)
             {
                 // Unregister device notifications

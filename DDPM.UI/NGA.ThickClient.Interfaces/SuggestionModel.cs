@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NGA.ThickClient.Interfaces;
+
 /// <summary>
 /// This class is model for (WPF UXSuggestion control).
 /// </summary>
@@ -23,7 +26,7 @@ public sealed class SuggestionModel : ObservableObject
     private string? _description;
     private ICommand? _clickCommand;
     private ICommand? _closeCommand;
-    private Geometry? _buttonIcon; 
+    private Geometry? _buttonIcon;
     private Geometry? _geometryIcon;
     private string _automationId = string.Empty;
 
@@ -50,7 +53,7 @@ public sealed class SuggestionModel : ObservableObject
     }
 
     /// <summary>
-    /// Suggestion icon for the Suggestion control. In SVG format.        
+    /// Suggestion icon for the Suggestion control. In SVG format.
     /// </summary>
     public Geometry? Icon
     {
@@ -59,14 +62,14 @@ public sealed class SuggestionModel : ObservableObject
     }
 
     /// <summary>
-    /// Button icon for the Suggestion control. In SVG format.        
+    /// Button icon for the Suggestion control. In SVG format.
     /// </summary>
     public Geometry? ButtonIcon
     {
         get => _buttonIcon;
         set => SetProperty(ref _buttonIcon, value);
     }
- 
+
     /// <summary>
     /// Gets or sets Command
     /// </summary>
@@ -117,7 +120,7 @@ public sealed class SuggestionModel : ObservableObject
     {
         Requires.NotNull(buttonTitle, nameof(buttonTitle));
         Requires.NotNull(description, nameof(description));
-        Requires.NotNull(icon, nameof(icon));        
+        Requires.NotNull(icon, nameof(icon));
         Requires.NotNull(clickCommand, nameof(clickCommand));
 
         ButtonTitle = buttonTitle;
@@ -139,7 +142,7 @@ public sealed class SuggestionModel : ObservableObject
         Requires.NotNull(buttonTitle, nameof(buttonTitle));
         Requires.NotNull(description, nameof(description));
         Requires.NotNull(icon, nameof(icon));
-        Requires.NotNull(clickCommand, nameof(clickCommand));       
+        Requires.NotNull(clickCommand, nameof(clickCommand));
         Requires.NotNull(closeCommand, nameof(closeCommand));
 
         ButtonTitle = buttonTitle;
@@ -148,5 +151,6 @@ public sealed class SuggestionModel : ObservableObject
         ClickCommand = clickCommand;
         CloseCommand = closeCommand;
     }
+
     #endregion
 }

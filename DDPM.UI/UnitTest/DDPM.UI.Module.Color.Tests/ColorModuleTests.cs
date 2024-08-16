@@ -1,14 +1,9 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Interfaces;
-using Microsoft;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.DataCollection;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using NUnit.Framework;
 using System.Windows.Controls;
-
 
 namespace DDPM.UI.Module.Color.Tests
 {
@@ -30,7 +25,6 @@ namespace DDPM.UI.Module.Color.Tests
             privateObject = new PrivateObject(colorModule);
         }
 
-
         [Test]
         public void TestModuleName()
         {
@@ -40,7 +34,6 @@ namespace DDPM.UI.Module.Color.Tests
             // Assert
             Assert.That(result, Is.EqualTo("ColorModule"));
         }
-
 
         [Test]
         public void TestGetLeftView()
@@ -52,7 +45,6 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(result, Is.Null);
         }
 
-
         [Test]
         public void TestGetRightView()
         {
@@ -63,7 +55,6 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<UserControl>());
         }
-
 
         [Test]
         public void TestSelectedHomeDevice()
@@ -79,15 +70,13 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(result, Is.EqualTo(homeDevice));
         }
 
-
         [Test]
         public void TestModuleOwner()
         {
             // Arrange
-            colorModule.ModuleOwner = moduleOwner;          
+            colorModule.ModuleOwner = moduleOwner;
             Assert.That(colorModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
-
 
         [Test]
         public void TestViewModelInitialization()
@@ -99,7 +88,7 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(viewModel, Is.Not.Null);
         }
 
-        [Test]        
+        [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
             try
@@ -140,6 +129,5 @@ namespace DDPM.UI.Module.Color.Tests
                 Assert.Fail("not invoked");
             }
         }
-
     }
 }

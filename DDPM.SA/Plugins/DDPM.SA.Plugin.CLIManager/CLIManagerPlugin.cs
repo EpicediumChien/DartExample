@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,21 +7,19 @@
 //
 // CLIManagerPlugin.cs created on 24/07/2024T04:24 PM
 //
-#endregion 
+#endregion
 
+
+
+using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.Common.PluginConditions;
-using DDPM.SA.Common;
+using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using static DDPM.SA.Common.ICLICommandTable;
-using System.Windows.Controls.Primitives;
-using Windows.Security.Authentication.OnlineId;
-using Dell.Client.Framework.Agent;
-using Microsoft.VisualBasic.Logging;
-using DDPM.SA.Common.Settings;
 using Newtonsoft.Json;
+using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.CLIManager
 {
@@ -29,12 +28,12 @@ namespace DDPM.SA.Plugin.CLIManager
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ICliManagerSA) })] //for DeviceManager of user subagent
     [PublishedInterface(new[] { typeof(ICliManagerIT) })] //for CLI subagent
-
     public class CLIManagerPlugin : BaseAgentPlugin, IDisposableObservable, ICliManagerSA, ICliManagerIT
     {
         public const string PluginLogId = "CLIManager";
 
         #region Private Members
+
         private const string pluginName = "CLIManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CLI Manager Plugin.";
@@ -56,9 +55,11 @@ namespace DDPM.SA.Plugin.CLIManager
             info = 0,
             error
         }
+
         #endregion
 
         #region Constructor
+
         public CLIManagerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
@@ -68,6 +69,7 @@ namespace DDPM.SA.Plugin.CLIManager
         #endregion
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
@@ -77,9 +79,11 @@ namespace DDPM.SA.Plugin.CLIManager
 
             InitializeSettingsITPlugin();
         }
+
         #endregion
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -104,9 +108,11 @@ namespace DDPM.SA.Plugin.CLIManager
             }
             base.Dispose(disposing);
         }
+
         #endregion
 
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -131,9 +137,11 @@ namespace DDPM.SA.Plugin.CLIManager
                 WriteLog("[Info] ICliManager plugin with ICliManagerIT started.");
             }
         }
+
         #endregion
 
         #region Private methods
+
         /// <summary>
         /// //
         /// </summary>
@@ -148,13 +156,14 @@ namespace DDPM.SA.Plugin.CLIManager
             else
                 Log.Error(text);
         }
+
         #endregion
 
         #region ICliManagerIT implementation
 
         public Task<CLIEventResult> PerformCommandLineRelay(CommandLineInput commandLineInput)
-        {            
-            if(commandLineInput == null)
+        {
+            if (commandLineInput == null)
             {
                 WriteLog("Empty command input from CLI subagent");
                 return Task.FromResult(Response_EmptyCommandInput());
@@ -181,7 +190,7 @@ namespace DDPM.SA.Plugin.CLIManager
                         if (rst == null)
                             break;
                         else
-                        {                            
+                        {
                             //return to IT for the result
                             return Task.FromResult(rst);
                         }
@@ -197,7 +206,7 @@ namespace DDPM.SA.Plugin.CLIManager
             while (true)
             {
                 Sleep(1000);
-                lock(_resultLock)
+                lock (_resultLock)
                 {
                     int idx = _result_list.FindIndex(x => x.command_guid_string.Trim().ToLower().Equals(arg.command_guid_string.ToLower().Trim()));
                     if (idx >= 0)//result found
@@ -227,10 +236,10 @@ namespace DDPM.SA.Plugin.CLIManager
             return Task.FromResult(result);//temp return: it should has timer to check write back result list
         }
 
-        
         #endregion
 
         #region ICliManagerSA implementation
+
         public event EventHandler<CLIEventArgs> CLIActionEvent;
 
         //Target to notify CLIProxy
@@ -249,7 +258,7 @@ namespace DDPM.SA.Plugin.CLIManager
 
         public Task WriteCommandResult(CLIEventResult result)
         {
-            if(result == null)
+            if (result == null)
             {
                 WriteLog("Got null command result from Proxy");
                 return Task.FromResult(false);
@@ -258,10 +267,8 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 if (_result_list.Find(x => x.command_guid_string.Trim().ToLower().Equals(result.command_guid_string.ToLower().Trim())) == null)
                 {
-
                     _result_list.Add(result);
                 }
-
                 else
                 {
                     WriteLog($"Duplicated result from Proxy: ID:{result.command_guid_string}");
@@ -269,9 +276,11 @@ namespace DDPM.SA.Plugin.CLIManager
                 return Task.FromResult(true);
             }
         }
+
         #endregion
 
         #region require setting manager IT
+
         private void InitializeSettingsITPlugin()
         {
             if (_SettingsPluginIT != null)
@@ -311,12 +320,14 @@ namespace DDPM.SA.Plugin.CLIManager
         {
             InitializeSettingsITPlugin();
         }
+
         #endregion
 
         #region CLI operation for IT
+
         private (int code, string msg) RetrieveITSettings(out DDPMITConfig data)
         {
-            if(_SettingsPluginIT == null)
+            if (_SettingsPluginIT == null)
             {
                 data = null;
                 string reason = "Fail to read IT settings caused by null settings plugin";
@@ -325,7 +336,7 @@ namespace DDPM.SA.Plugin.CLIManager
             data = _SettingsPluginIT.ReadITConfigData().Result;
             if (data == null)
             {
-                string reason = "Fail to read IT settings";              
+                string reason = "Fail to read IT settings";
                 return ((int)CLI_ExitCode.fail_read_settings, reason);
             }
 
@@ -342,7 +353,7 @@ namespace DDPM.SA.Plugin.CLIManager
             CLI_RESPONSE response = new CLI_RESPONSE();
             response.Command = commandLineInput.Command;
             response.TargetFeature = commandLineInput.TargetFeature;
-                        
+
             if (commandLineInput.Options == null || commandLineInput.Options.Count == 0)
             {
                 response.Message = "Option is missing";
@@ -371,7 +382,7 @@ namespace DDPM.SA.Plugin.CLIManager
                                 response.Message = tmp.msg;
                                 result.ExitCode = tmp.code;
                                 ever = true;
-                            }                            
+                            }
                         }
                         else
                         {
@@ -393,7 +404,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 }
                 if (ever)
                 {
-                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);                    
+                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                     return result;
                 }
             }
@@ -416,7 +427,7 @@ namespace DDPM.SA.Plugin.CLIManager
                         bool status = true;
                         if (op.Option_Value.ToUpper().Equals("YES"))
                         {
-                            if(data.isTelemetryConsentAllow != true)
+                            if (data.isTelemetryConsentAllow != true)
                             {
                                 data.isTelemetryConsentAllow = true;
                                 status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "isTelemetryConsentAllow" }).Result;
@@ -431,7 +442,7 @@ namespace DDPM.SA.Plugin.CLIManager
                             if (data.isTelemetryConsentAllow != false)
                             {
                                 data.isTelemetryConsentAllow = false;
-                                status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "isTelemetryConsentAllow" }).Result;  
+                                status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "isTelemetryConsentAllow" }).Result;
                             }
                             else
                             {
@@ -451,7 +462,7 @@ namespace DDPM.SA.Plugin.CLIManager
                         //response.Message = $"Set Allow of consent to be {op.Option_Value}";
 
                         if (status)
-                        {                            
+                        {
                             response.Result = "Completed";
                             result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                             result.ExitCode = (int)CLI_ExitCode.success;
@@ -479,6 +490,7 @@ namespace DDPM.SA.Plugin.CLIManager
 
             return null;
         }
+
         #endregion
     }
 }

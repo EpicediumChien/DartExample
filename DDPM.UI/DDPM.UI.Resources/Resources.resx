@@ -216,4 +216,52 @@
   <data name="Analytics.3" xml:space="preserve">
     <value>Help Dell improve its products and services automatically</value>
   </data>
+  <data name="AddDevice" xml:space="preserve">
+    <value>Add Device</value>
+  </data>
+  <data name="AddDevice.Display" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="AddDevice.Webcam" xml:space="preserve">
+    <value>Webcam</value>
+  </data>
+  <data name="AddDevice.KnM" xml:space="preserve">
+    <value>Keyboard\nand Mouse</value>
+  </data>
+  <data name="AddDevice.Pen" xml:space="preserve">
+    <value>Pen</value>
+  </data>
+  <data name="AddDevice.Headset" xml:space="preserve">
+    <value>Headset</value>
+  </data>
+  <data name="AddDevice.Speaker" xml:space="preserve">
+    <value>Speakerphone\nand Soundbar</value>
+  </data>
+  <data name="AddDevice.Dock" xml:space="preserve">
+    <value>Dock</value>
+  </data>
+  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+    <value>Wireless receiver</value>
+  </data>
+  <data name="AddDevice.Type.Wired" xml:space="preserve">
+    <value>Wired</value>
+  </data>
+  <data name="AddDevice.Type.Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+    <value>Adding device, please wait...</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+    <value>Pairing</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+    <value>Pairing may take some time. Do not disconnect your device</value>
+  </data>
 </root>

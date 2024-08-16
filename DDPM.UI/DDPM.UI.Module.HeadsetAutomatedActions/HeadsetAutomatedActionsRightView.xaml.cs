@@ -1,12 +1,7 @@
-﻿using System.Windows.Media;
+﻿using DDPM.UI.Plugin.ViewModels;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Input;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows.Media;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.HeadsetAutomatedActions
@@ -24,6 +19,7 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
             _vm = vm;
         }
     }
+
     public class BooleanToForegroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

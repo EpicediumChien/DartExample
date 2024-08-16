@@ -1,13 +1,12 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
-#endregion
 
-using System;
-using System.Threading.Tasks;
+#endregion
 
 namespace NGA.Manager.Interfaces;
 
@@ -15,8 +14,8 @@ namespace NGA.Manager.Interfaces;
 /// IPreference interface
 /// </summary>
 /// <remarks>
-/// At the moment IPreference would be part of NGA.Manager.Interfaces package. Otherwise we need to produce a separate nuget package 
-/// for IPreference interfaces, we'll do it later if required. Teams would still consume 
+/// At the moment IPreference would be part of NGA.Manager.Interfaces package. Otherwise we need to produce a separate nuget package
+/// for IPreference interfaces, we'll do it later if required. Teams would still consume
 /// NGA.Manager.Interfaces nuget package to access IPreference features
 /// </remarks>
 public interface IPreference : IPreferenceUnelevated

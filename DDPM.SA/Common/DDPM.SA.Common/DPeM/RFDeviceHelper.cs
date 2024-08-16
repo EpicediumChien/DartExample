@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
 {
@@ -10,6 +8,7 @@ namespace DDPM.SA.Common
     public class RFDeviceHelper
     {
         public List<DongleInfo> dongleInfo { get; set; }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -57,9 +56,7 @@ namespace DDPM.SA.Common
                         sb.AppendLine($"StartPairing:ID");
                         sb.AppendLine($"StopPairing:ID");
                     }
-
                 }
-
             }
 
             return sb.ToString();

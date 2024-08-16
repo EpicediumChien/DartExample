@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.UI.Common.UserControls
 {
@@ -26,8 +14,6 @@ namespace DDPM.UI.Common.UserControls
             InitializeComponent();
         }
 
-
-
         public string PathData
         {
             get { return (string)GetValue(PathDataProperty); }
@@ -37,10 +23,6 @@ namespace DDPM.UI.Common.UserControls
         // Using a DependencyProperty as the backing store for PathData.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PathDataProperty =
             DependencyProperty.Register("PathData", typeof(string), typeof(PathIcon), new PropertyMetadata(String.Empty));
-
-
-
-
 
         public System.Windows.Media.Brush PathFill
         {
@@ -52,9 +34,6 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty PathFillProperty =
             DependencyProperty.Register("PathFill", typeof(System.Windows.Media.Brush), typeof(PathIcon), new PropertyMetadata(System.Windows.Media.Brushes.White));
 
-
-
-
         public ICommand? ClickCommand
         {
             get { return (ICommand)GetValue(ClickCommandProperty); }
@@ -64,9 +43,6 @@ namespace DDPM.UI.Common.UserControls
         // Using a DependencyProperty as the backing store for ClickCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ClickCommandProperty =
             DependencyProperty.Register("ClickCommand", typeof(ICommand), typeof(PathIcon));
-
-
-
 
         public string TooltipText
         {
@@ -78,8 +54,6 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty TooltipTextProperty =
             DependencyProperty.Register("TooltipText", typeof(string), typeof(PathIcon), new PropertyMetadata(String.Empty));
 
-
-
         private void Path_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (ClickCommand != null)
@@ -89,7 +63,9 @@ namespace DDPM.UI.Common.UserControls
         }
 
         #region Glow and Breathe effect
-        Storyboard? _storyboardGlow = null;
+
+        private Storyboard? _storyboardGlow = null;
+
         public void GlowEffect_Start()
         {
             //To make it running on UI thread
@@ -110,6 +86,7 @@ namespace DDPM.UI.Common.UserControls
                 }
             });
         }
+
         public void GlowEffect_Stop()
         {
             //To make it running on UI thread
@@ -122,6 +99,7 @@ namespace DDPM.UI.Common.UserControls
                 }
             });
         }
-        #endregion
+
+        #endregion Glow and Breathe effect
     }
 }

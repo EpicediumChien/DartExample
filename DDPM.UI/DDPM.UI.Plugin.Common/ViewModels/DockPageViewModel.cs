@@ -1,30 +1,29 @@
-﻿using System.ComponentModel;
+﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using DDPM.SA.Common;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
-using System.Windows;
-using Newtonsoft.Json.Linq;
-using DDPM.UI.Common;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
     public class DockPageViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
+
         private readonly ILog _log;
         private readonly IDeviceManagerSA _deviceManager;
         private bool _isEnableUpdate = false;
-        #endregion
+
+        #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand TabOffClickedCommand { get; }
         public ICommand TabAdaptiveLightClickedCommand { get; }
         public ICommand TabManualClickedCommand { get; }
+
         //0614 Bruce 判斷是否需要顯示更新按鈕
         public bool IsEnableUpdate { get => _isEnableUpdate; }
 
@@ -35,7 +34,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
             _log = log;
             _deviceManager = deviceManager;
-
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -94,10 +92,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         GenerateInfo();
                     }
                     break;
+
                 default:
                     break;
             }
-
         }
     }
 }

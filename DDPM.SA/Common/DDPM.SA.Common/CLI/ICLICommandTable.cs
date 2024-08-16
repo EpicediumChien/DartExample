@@ -1,45 +1,45 @@
 ﻿using Dell.Client.Framework.Common;
-using Microsoft.VisualBasic.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ObjectiveC;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace DDPM.SA.Common
 {
-    //Client fromat->/commands -Type -option1=value1 -option2=value2 -option3=value3 ... 
-    //get -name=Display.BrightnessLevel 
+    //Client fromat->/commands -Type -option1=value1 -option2=value2 -option3=value3 ...
+    //get -name=Display.BrightnessLevel
     //set -name=Display.BrightnessLevel [Level]
     public class ICLICommandTable
     {
-        readonly List<string> commands = new List<string>() { "GET", "SET", "CONFIGURE" };
-        readonly List<string> types = new List<string>() { "NAME", "APPLYCONFIG" };
-        readonly List<string> pluginType = new List<string>() { "DISPLAY", "COLOR", "MOUSE", "KEYBOARD", "APP", "DOCK", "HEADSET" };//a part of input Type, ex: -name=Display.Brightness
+        private readonly List<string> commands = new List<string>() { "GET", "SET", "CONFIGURE" };
+        private readonly List<string> types = new List<string>() { "NAME", "APPLYCONFIG" };
+        private readonly List<string> pluginType = new List<string>() { "DISPLAY", "COLOR", "MOUSE", "KEYBOARD", "APP", "DOCK", "HEADSET" };//a part of input Type, ex: -name=Display.Brightness
         private ILog _Log;
+
         public ICLICommandTable(ILog Log)
         {
             _Log = Log;
         }
+
         public class CommandType_Option
         {
             /// <summary>
             /// 呼叫的方法
             /// </summary>
             public string Option_Name { get; set; }
+
             /// <summary>
             /// 設定的數值，如果不是設定(set)，為空值
             /// </summary>
             public string Option_Value { get; set; }
+
             public CommandType_Option(string Model, string Value = "")
             {
                 this.Option_Name = Model;
                 this.Option_Value = Value;
             }
         }
+
         public class CommandType_Name
         {
             public string target { get; set; }
@@ -51,6 +51,7 @@ namespace DDPM.SA.Common
                 this.feature = Value;
             }
         }
+
         public class CommandLineInput
         {
             //Used to judge target command support or not (please everyone refer to your own JIRA story)
@@ -63,18 +64,22 @@ namespace DDPM.SA.Common
 
             public string TargetType { get; set; }//name, log, applyconfig; ex: -name=Display.Brighness, -log=Display.Clear
             public string TargetFeature { get; set; }
+
             /// <summary>
             /// 要呼叫的插件
             /// </summary>
             public string PluginsType { get; set; }
+
             /// <summary>
             /// 呼叫的方法
             /// </summary>
             public List<CommandType_Option> Options { get; set; }//use to store options to get/set device features
+
             public List<string> ServiceTag { get; set; }//for display with servicetag
             public List<string> DeviceIndex { get; set; }//for display with index
             public List<string> GuidString { get; set; }//for peripherals
             public string LogPath { get; set; }
+
             public CommandLineInput()
             {
                 Options = new List<CommandType_Option>(); //others optional input
@@ -84,6 +89,7 @@ namespace DDPM.SA.Common
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
             }
         }
+
         public CommandLineInput StringProcessing(string[] args)
         {
             if (args.Length < 2)

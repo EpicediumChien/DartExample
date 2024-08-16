@@ -6,17 +6,17 @@
         xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
         mc:Ignorable="d"
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" AllowsTransparency="True"
-        Title="LoadingScreenModalDialog" ResizeMode="NoResize" ShowInTaskbar="False" 
+        Title="LoadingScreenModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
         InputMethod.IsInputMethodEnabled="False" Height="264" Width="587"
         WindowStartupLocation="Manual" WindowStyle="None" Background="#0D121A">
     <Grid>
         <TextBlock Width="523" Height="40" VerticalAlignment="Top"
                    Text="Please wait..." FontFamily="Roboto" FontSize="32"
                    FontWeight="Light" TextAlignment="Center"
-                   Background="#0D121A" Foreground="White" 
-                   Margin="32,20,32,0"/>
-        <Image Name="LoadingImage" Width="64" Height="64" 
+                   Background="#0D121A" Foreground="White"
+                   Margin="32,20,32,0" />
+        <Image Name="LoadingImage" Width="64" Height="64"
                HorizontalAlignment="Center" VerticalAlignment="Center"
-               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Loading.png"/>
+               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Loading.png" />
     </Grid>
 </Window>

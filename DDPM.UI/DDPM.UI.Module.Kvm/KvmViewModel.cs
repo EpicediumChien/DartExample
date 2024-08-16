@@ -1,27 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common;
-using DDPM.SA;
 using DDPM.SA.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows;
-using System.ComponentModel;
-using System.Windows.Media;
-using DDPM.UI.Common.EAEM;
-using DDPM.UI.Common.UserControls;
-using DDPM.UI.Common.Models;
-using VcpCore.Common;
 using DDPM.SA.Common.Display;
-using System.Security.RightsManagement;
+using DDPM.UI.Common;
+using DDPM.UI.Common.EAEM;
+using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
+using DDPM.UI.Common.UserControls;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
-using System.Reflection.Emit;
+using System.Windows.Media;
+using VcpCore.Common;
 using Windows.System;
 
 namespace DDPM.UI.Module.Kvm
@@ -30,6 +22,7 @@ namespace DDPM.UI.Module.Kvm
     {
         public string inputSource = String.Empty;
         public KvmModule kvmModule { get; set; }
+
         public string inputDisplayText
         {
             get
@@ -38,10 +31,12 @@ namespace DDPM.UI.Module.Kvm
             }
         }
     }
+
     public class USBList
     {
         public string usb = String.Empty;
         public KvmModule kvmModule { get; set; }
+
         public string inputDisplayText
         {
             get
@@ -50,10 +45,12 @@ namespace DDPM.UI.Module.Kvm
             }
         }
     }
+
     public class PCInput
     {
         public string inputSource = string.Empty;
         public KvmModule kvmModule { get; set; }
+
         public string inputDisplayText
         {
             get
@@ -62,9 +59,11 @@ namespace DDPM.UI.Module.Kvm
             }
         }
     }
+
     public class KvmViewModel : ObservableObject
     {
         #region private
+
         private InputSourceList _PC1selectInput = new InputSourceList();
         private InputSourceList _PC2selectInput = new InputSourceList();
         private InputSourceList _PC3selectInput = new InputSourceList();
@@ -79,6 +78,7 @@ namespace DDPM.UI.Module.Kvm
         private bool _isNoKVM = false;
         private bool _isUSBKVM = false;
         private bool _isNKVM = false;
+
         //private Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
         private ImageSource? _PCImage;
         #region For SetWindowPos
@@ -92,6 +92,8 @@ namespace DDPM.UI.Module.Kvm
         const uint SWP_NOREDRAW = 0x0008;
         #endregion
         #endregion
+
+        #endregion private
 
         [DllImport("user32.dll", EntryPoint = "SetParent")]
         public static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -109,13 +111,13 @@ namespace DDPM.UI.Module.Kvm
         public Visibility Border2Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Border3Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Border4Visibility { get; set; } = Visibility.Collapsed;
-        public Visibility SupportUSBKVM {  get; set; } = Visibility.Visible;
-        public Visibility SupportNKVM {  get; set; } = Visibility.Visible;
+        public Visibility SupportUSBKVM { get; set; } = Visibility.Visible;
+        public Visibility SupportNKVM { get; set; } = Visibility.Visible;
         public Visibility SetInput { get; set; } = Visibility.Visible;
         public Visibility SetPXP { get; set; } = Visibility.Visible;
         public Visibility EditInput { get; set; } = Visibility.Collapsed;
         public Visibility EditPXP { get; set; } = Visibility.Collapsed;
-        public string PC1_Input {  get; set; }
+        public string PC1_Input { get; set; }
         public string PC2_Input { get; set; }
         public string PC3_Input { get; set; }
         public string PC4_Input { get; set; }
@@ -145,6 +147,7 @@ namespace DDPM.UI.Module.Kvm
             [0x41] = new PBPSplitCtrl4A(),
             [0x42] = new PBPSplitCtrl4D()
         };
+
         public string InputName1 { get; set; }
         public string InputName2 { get; set; }
         public string InputName3 { get; set; }
@@ -152,10 +155,12 @@ namespace DDPM.UI.Module.Kvm
         public bool isPipSmall { get; set; } = false;
         public bool isPipLarge { get; set; } = false;
         public bool isPBP { get; set; } = false;
+
         //public bool isNoKVM { get; set; } = false;
         //public bool isNKVM { get; set; } = false;
         //public ImageSource? Image_PC { get; set; }
         public Dictionary<string, InputInfo> inputList { get; set; }
+
         public List<string> usbupstreamList { get; set; }
         public List<InputSourceObj> subInputs { get; set; }
         public Dictionary<string, PCsInfo> pcsList { get; set; }
@@ -163,6 +168,7 @@ namespace DDPM.UI.Module.Kvm
         public Dictionary<string, PCsInfo> original_pcsList { get; set; }
         public bool USBKVMisON = false;
         public bool NKVMisON = false;
+
         public bool isNoKVM
         {
             get => _isNoKVM;
@@ -183,10 +189,11 @@ namespace DDPM.UI.Module.Kvm
                 }
             }
         }
+
         public bool isUSBKVM
         {
             get => _isUSBKVM;
-            set 
+            set
             {
                 SetProperty(ref _isUSBKVM, value);
                 if (value)
@@ -197,10 +204,10 @@ namespace DDPM.UI.Module.Kvm
                         isOnNKVM(false);
                     }
                     _isNoKVM = false;
-
                 }
             }
         }
+
         public bool isNKVM
         {
             get => _isNKVM;
@@ -216,20 +223,22 @@ namespace DDPM.UI.Module.Kvm
                     _isNoKVM = false;
                     _isNKVM = true;
                     isOnNKVM(true);
-
                 }
             }
         }
+
         public List<InputSourceList> PCInputsList
         {
             get => _inputsList;
             set => SetProperty(ref _inputsList, value);
         }
+
         public List<USBList> USBsList
         {
             get => _usbsList;
             set => SetProperty(ref _usbsList, value);
         }
+
         public InputSourceList PC1Inputs_Selected
         {
             get => _PC1selectInput;
@@ -239,6 +248,7 @@ namespace DDPM.UI.Module.Kvm
                 SelectInputSource(_PC1selectInput.inputSource, "PC1");
             }
         }
+
         public InputSourceList PC2Inputs_Selected
         {
             get => _PC2selectInput;
@@ -248,6 +258,7 @@ namespace DDPM.UI.Module.Kvm
                 SelectInputSource(_PC2selectInput.inputSource, "PC2");
             }
         }
+
         public InputSourceList PC3Inputs_Selected
         {
             get => _PC3selectInput;
@@ -257,6 +268,7 @@ namespace DDPM.UI.Module.Kvm
                 SelectInputSource(_PC3selectInput.inputSource, "PC3");
             }
         }
+
         public InputSourceList PC4Inputs_Selected
         {
             get => _PC4selectInput;
@@ -266,6 +278,7 @@ namespace DDPM.UI.Module.Kvm
                 SelectInputSource(_PC4selectInput.inputSource, "PC4");
             }
         }
+
         public USBList PC1USB_Selected
         {
             get => _PC1selectUSB;
@@ -275,6 +288,7 @@ namespace DDPM.UI.Module.Kvm
                 SelectUSB(_PC1selectUSB.usb, "PC1");
             }
         }
+
         public USBList PC2USB_Selected
         {
             get => _PC2selectUSB;
@@ -284,6 +298,7 @@ namespace DDPM.UI.Module.Kvm
                 SelectUSB(_PC2selectUSB.usb, "PC2");
             }
         }
+
         public USBList PC3USB_Selected
         {
             get => _PC3selectUSB;
@@ -293,6 +308,7 @@ namespace DDPM.UI.Module.Kvm
                 SelectUSB(_PC3selectUSB.usb, "PC3");
             }
         }
+
         public USBList PC4USB_Selected
         {
             get => _PC4selectUSB;
@@ -302,18 +318,23 @@ namespace DDPM.UI.Module.Kvm
                 SelectUSB(_PC4selectUSB.usb, "PC4");
             }
         }
+
         public ImageSource? PCImage
         {
             get => _PCImage;
             set => SetProperty(ref _PCImage, value);
         }
+
         public string? ConnectionType { get; set; }
         public double? BatteryLevel { get; set; }
         public string? BatteryStatus { get; set; }
         public bool? NoBattery { get; set; }
-        public string? Text1 {  get; set; } 
+        public string? Text1 { get; set; }
+
         #region Hotkey
+
         private string _switchPCsKey = "None";
+
         public string SwitchPCsKey
         {
             get => _switchPCsKey;
@@ -323,7 +344,9 @@ namespace DDPM.UI.Module.Kvm
                 OnPropertyChanged("SwitchPCsKey");
             }
         }
+
         private string _changePipKey = "None";
+
         public string ChangePipKey
         {
             get => _changePipKey;
@@ -333,7 +356,9 @@ namespace DDPM.UI.Module.Kvm
                 OnPropertyChanged("ChangePipKey");
             }
         }
+
         private string _switchKbMsKey = "None";
+
         public string SwitchKbMsKey
         {
             get => _switchKbMsKey;
@@ -345,6 +370,7 @@ namespace DDPM.UI.Module.Kvm
         }
 
         private bool _autoSwitchChecked;
+
         public bool AutoSwitchChecked
         {
             get => _autoSwitchChecked;
@@ -355,12 +381,13 @@ namespace DDPM.UI.Module.Kvm
                 saveKvmHotkeyOption();
             }
         }
+
         private void saveKvmHotkeyOption()
         {
-            HotkeySettings hotkeySettings = new HotkeySettings 
-            { 
-                DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid, 
-                HotkeyOptions = new List<HotkeyOption> { _autoSwitchChecked ? HotkeyOption.KvmAutoApply:HotkeyOption.None } 
+            HotkeySettings hotkeySettings = new HotkeySettings
+            {
+                DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
+                HotkeyOptions = new List<HotkeyOption> { _autoSwitchChecked ? HotkeyOption.KvmAutoApply : HotkeyOption.None }
             };
             DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(hotkeySettings);
         }
@@ -376,6 +403,7 @@ namespace DDPM.UI.Module.Kvm
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
             bw.RunWorkerAsync(); //myArg is the optional argument
         }
+
         private void DoWork_RefreshHotkeyData(object sender, DoWorkEventArgs e)
         {
             try
@@ -398,40 +426,48 @@ namespace DDPM.UI.Module.Kvm
                                 hotkeys.Clear();
                                 SwitchPCsKey = swHortcutText;
                                 break;
+
                             case HotkeyType.KvmSwitchKbMsKey:
                                 KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                                 hotkeys.Clear();
                                 SwitchKbMsKey = swHortcutText;
                                 break;
+
                             case HotkeyType.KvmChangePIPPosition:
                                 KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                                 hotkeys.Clear();
                                 ChangePipKey = swHortcutText;
-                                break;                           
+                                break;
                         }
                     }
                 }
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 Debug.WriteLine(ex.Message);
             }
         }
+
         private void RunWorkerCompleted_RefreshHotkeyData(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.WriteLine("load kvm hotkey setting done");
             //Handling the result and final process
         }
 
-        #endregion
+        #endregion Hotkey
+
         #region UI Enable Flags
+
         private bool _isBusy = false;
+
         public bool IsBusy
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        #endregion
+
+        #endregion UI Enable Flags
+
         public void Invoke_RefreshData()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -444,6 +480,7 @@ namespace DDPM.UI.Module.Kvm
             bw.RunWorkerAsync(); //myArg is the optional argument
             IsBusy = true;
         }
+
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try // 2024-06-19 Fix exception when close Main UI or device remove.
@@ -553,6 +590,7 @@ namespace DDPM.UI.Module.Kvm
                     OnPropertyChanged("PCImage");
 
                     #region PIP/PIP
+
                     //Get the Pxp Capabilities
                     _pipPbpCaps = DdpmCommonHelper.DeviceManagerSA.GetPipPbpCapabilitiesWords(mi).Result;
                     OnPipPbpCapsChanged();
@@ -575,11 +613,13 @@ namespace DDPM.UI.Module.Kvm
                                     isPipLarge = false;
                                     isPBP = false;
                                     break;
+
                                 case 0x12:
                                     isPipSmall = true;
                                     isPipLarge = false;
                                     isPBP = false;
                                     break;
+
                                 case 0x24:
                                 case 0x2F:
                                 case 0x26:
@@ -603,6 +643,7 @@ namespace DDPM.UI.Module.Kvm
                                     isPipLarge = false;
                                     isPBP = true;
                                     break;
+
                                 default:
                                     isPipSmall = false;
                                     isPipLarge = false;
@@ -628,7 +669,8 @@ namespace DDPM.UI.Module.Kvm
                     {
                         //Not support SubInput or fail to query
                     }
-                    #endregion
+
+                    #endregion PIP/PIP
 
                     //ConnectionType = KvmModule.SelectedHomeDevice.ConnectionType;
                     //BatteryLevel = KvmModule.SelectedHomeDevice.BatteryLevel;
@@ -651,11 +693,13 @@ namespace DDPM.UI.Module.Kvm
                 ;
             }
         }
+
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;
             //Handling the result and final process
         }
+
         private void SelectInputSource(string inputSource, string pcnum)
         {
             PCsInfo pcInfo = new PCsInfo();
@@ -676,6 +720,7 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("PC3Inputs_Selected");
             OnPropertyChanged("PC4Inputs_Selected");
         }
+
         private void SelectUSB(string usb, string pcnum)
         {
             pcsList[pcnum].USBUpstream = usb;
@@ -685,9 +730,10 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("PC3USB_Selected");
             OnPropertyChanged("PC4USB_Selected");
         }
+
         public void CurrentInputChange()
         {
-            if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource) 
+            if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
             {
                 bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
                 if (b)
@@ -698,15 +744,18 @@ namespace DDPM.UI.Module.Kvm
         }
 
         #region Pxp VCP Code
+
         public const UInt16 PipMode_Off = 0;
         public const UInt16 PipMode_Small = 0x21;
         public const UInt16 PipMode_Large = 0x22;
 
         public const UInt16 PipMode_SizeToggle = 0x01;
         public const UInt16 PipMode_PositionToggle = 0x02;
-        #endregion
+
+        #endregion Pxp VCP Code
 
         #region PIP/PBP Capabilities
+
         private UInt16[] _pipPbpCaps = new UInt16[0];
         //public UInt16[] PipPbpCaps { get => _pipPbpCaps; }
 
@@ -733,17 +782,19 @@ namespace DDPM.UI.Module.Kvm
         public bool HasCap_PipLarge => (_pipPbpCaps.Length > 0) ? HasPxpCap(PipMode_Large) : false;
         public bool HasCap_PipTogglePosition => (_pipPbpCaps.Length > 0) ? HasPxpCap(PipMode_PositionToggle) : false;
 
-        #endregion
+        #endregion PIP/PBP Capabilities
 
         #region Current PxpMode
+
         private UInt16 _curPxpMode = 0;
         public UInt16 CurPxpMode => _curPxpMode;
 
-
-        #endregion
+        #endregion Current PxpMode
 
         #region Selected SplitItems
+
         private SplitItem? _selectedSplitItem;
+
         public SplitItem? SelectedSplitItem
         {
             get => _selectedSplitItem;
@@ -774,19 +825,25 @@ namespace DDPM.UI.Module.Kvm
                 }
             }
         }
-        #endregion
+
+        #endregion Selected SplitItems
 
         #region Main Input Source
+
         private InputSourceObj _mainInputSource;
+
         public InputSourceObj MainInputSource
         {
             get => _mainInputSource;
             set => SetProperty(ref _mainInputSource, value);
         }
-        #endregion
+
+        #endregion Main Input Source
 
         #region Sub Input Sources
+
         private List<InputSourceObj> _subInputs = new List<InputSourceObj>();
+
         public List<InputSourceObj> SubInputs
         {
             get => _subInputs;
@@ -806,6 +863,7 @@ namespace DDPM.UI.Module.Kvm
         }
 
         private InputSourceObj? _sub1InputSource;
+
         public InputSourceObj? Sub1InputSource
         {
             get => _sub1InputSource;
@@ -813,6 +871,7 @@ namespace DDPM.UI.Module.Kvm
         }
 
         private InputSourceObj? _sub2InputSource;
+
         public InputSourceObj? Sub2InputSource
         {
             get => _sub2InputSource;
@@ -820,6 +879,7 @@ namespace DDPM.UI.Module.Kvm
         }
 
         private InputSourceObj? _sub3InputSource;
+
         public InputSourceObj? Sub3InputSource
         {
             get => _sub3InputSource;
@@ -829,10 +889,11 @@ namespace DDPM.UI.Module.Kvm
         public bool HasSub1Input => SubInputs.Count > 0;
         public bool HasSub2Input => SubInputs.Count > 1;
         public bool HasSub3Input => SubInputs.Count > 2;
-        #endregion
 
+        #endregion Sub Input Sources
 
         #region Determine if Toggle between positons button enabled/disabled
+
         public bool IsPipListItemSelected
         {
             get
@@ -845,6 +906,7 @@ namespace DDPM.UI.Module.Kvm
                 return false;
             }
         }
+
         public bool IsTogglePositionEnabled
         {
             get
@@ -852,10 +914,13 @@ namespace DDPM.UI.Module.Kvm
                 return IsPipListItemSelected && HasCap_PipTogglePosition;
             }
         }
-        #endregion
+
+        #endregion Determine if Toggle between positons button enabled/disabled
 
         #region VideoSwap control and content
+
         private ContentControl? _videoSwapContent;
+
         public ContentControl? VideoSwapContent
         {
             get => _videoSwapContent;
@@ -884,7 +949,8 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged(PC3_Input);
             OnPropertyChanged(PC4_Input);
         }
-        #endregion
+
+        #endregion VideoSwap control and content
 
         public void PC1Click()
         {
@@ -897,6 +963,7 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged(PC3_Input);
             OnPropertyChanged(PC4_Input);
         }
+
         public void PC2Click()
         {
             Border1Visibility = Visibility.Collapsed;
@@ -908,6 +975,7 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged(PC3_Input);
             OnPropertyChanged(PC4_Input);
         }
+
         public void PC3Click()
         {
             Border1Visibility = Visibility.Collapsed;
@@ -919,6 +987,7 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged(PC3_Input);
             OnPropertyChanged(PC4_Input);
         }
+
         public void PC4Click()
         {
             Border1Visibility = Visibility.Collapsed;
@@ -930,6 +999,7 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged(PC3_Input);
             OnPropertyChanged(PC4_Input);
         }
+
         public void OpenNKVMUI(int index, int x, int y)
         {
             var directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -963,7 +1033,6 @@ namespace DDPM.UI.Module.Kvm
                     }
                 }
 
-
                 Process proc = new Process();
                 proc.StartInfo.FileName = strFullPath;
                 proc.StartInfo.Arguments = $"/ShowNKVM {index} {x} {y}";
@@ -982,7 +1051,6 @@ namespace DDPM.UI.Module.Kvm
                     // Get the handle of the NKVM main window
                     NkvmdHandle = proc.MainWindowHandle;
                 }
-             
 
                 Window mainWindow = Application.Current.MainWindow;
                 IntPtr mainWindowHandle = new WindowInteropHelper(mainWindow).Handle;
@@ -994,10 +1062,8 @@ namespace DDPM.UI.Module.Kvm
                     EnableWindow(mainWindowHandle, false);
                 }
 
-
                 //WindowInteropHelper helper = new WindowInteropHelper(mainWindow);
                 //helper.Owner = NkvmdHandle;
-
             }
             catch (System.Exception ex)
             {
@@ -1005,11 +1071,13 @@ namespace DDPM.UI.Module.Kvm
                 Thread.Sleep(1000);
             }
         }
+
         public void isOnUSBKVM(bool ison)
         {
             DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
             KvmModule.isUSBKVM = ison;
         }
+
         public void isOnNKVM(bool ison)
         {
             if (ison)

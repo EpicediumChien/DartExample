@@ -1,7 +1,6 @@
-﻿using DDPM.UI.Common.Interfaces;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Interfaces;
-using DDPM.UI.Common;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
@@ -19,11 +18,11 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         [SetUp]
         public void SetUp()
         {
-            var moduleOwerMock=new Mock<IModuleOwner>();
-            var moduleOwer=moduleOwerMock.Object;
-            DdpmCommonHelper.ModuleOwner=moduleOwer;
-            var selectedHomeDevice=new HomeDevice();
-            moduleOwerMock.Setup(x=>x.SelectedHomeDevice).Returns(new HomeDevice());            
+            var moduleOwerMock = new Mock<IModuleOwner>();
+            var moduleOwer = moduleOwerMock.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwer;
+            var selectedHomeDevice = new HomeDevice();
+            moduleOwerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             displayOthersModule = new DisplayOthersModule();
             privateObject = new PrivateObject(displayOthersModule);
             moduleOwnerMock = new Mock<IModuleOwner>();
@@ -104,7 +103,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             Assert.That(viewModel, Is.Not.Null);
         }
 
-
         [Test]
         [Apartment(ApartmentState.STA)]
         public void TestOnSelectedHomeDeviceChanged()
@@ -114,7 +112,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             Assert.Pass();
         }
 
-
         [Test]
         [Apartment(ApartmentState.STA)]
         public void TestOnActivated()
@@ -122,7 +119,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             var displayOthersModule = new DisplayOthersModule();
             displayOthersModule.OnActivated();
             Assert.Pass();
-          
         }
 
         [Test]
@@ -133,6 +129,5 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             displayOthersModule.OnDeactivated();
             Assert.Pass("The method executed without exceptions");
         }
-
     }
 }

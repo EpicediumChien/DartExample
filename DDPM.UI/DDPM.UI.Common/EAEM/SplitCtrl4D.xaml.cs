@@ -1,18 +1,6 @@
 ﻿using DDPM.UI.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.EAEM
@@ -23,24 +11,30 @@ namespace DDPM.UI.Common.EAEM
     public partial class SplitCtrl4D : UserControl, ISplit
     {
         #region Basic
+
         public Type CtrlType => typeof(SplitCtrl4D);
         ContentControl? ISplit.Content => this;
-        #endregion
+
+        #endregion Basic
 
         #region Creation
+
         public SplitCtrl4D(List<double>? settings = null)
         {
             InitializeComponent();
             if (settings != null)
                 SetSettings(settings);
         }
+
         public ISplit New(List<double>? settings = null)
         {
             return new SplitCtrl4A(settings);
         }
-        #endregion
+
+        #endregion Creation
 
         #region Settings
+
         private List<double> _defaultSettings = new List<double>() { 1, 1, 1, 1 };
         public int SettingsCount => _defaultSettings.Count;
 
@@ -78,15 +72,18 @@ namespace DDPM.UI.Common.EAEM
             g0.ColumnDefinitions[6].Width = new GridLength(settings[3], GridUnitType.Star);
             return true;
         }
-        #endregion
+
+        #endregion Settings
 
         #region For Pxp Usage
+
         /// <summary>
         /// The capability Code of PIP, the defult code is used for default settings
         /// </summary>
         public UInt16 PbpCapabilityCode { get; set; } = 0x0042;
 
         private PxpInfo _pxpInfo = new PxpInfo();
+
         public string Description
         {
             get
@@ -100,6 +97,7 @@ namespace DDPM.UI.Common.EAEM
                 _pxpInfo.Description = value;
             }
         }
-        #endregion
+
+        #endregion For Pxp Usage
     }
 }

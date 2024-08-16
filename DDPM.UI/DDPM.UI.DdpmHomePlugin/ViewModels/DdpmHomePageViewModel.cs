@@ -1,23 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
-using DDPM.UI.Plugin.DdpmHomePlugin.Model;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using System.Collections.ObjectModel;
-using System.Windows.Data;
-using System.Windows.Documents;
-using VcpCore.Common;
-using CommunityToolkit.Mvvm.Input;
-using System.Windows.Input;
 using System.ComponentModel;
-using System.Windows.Forms;
-using Windows.Gaming.Input;
 using System.Diagnostics;
+using System.Windows.Data;
+using System.Windows.Input;
+using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 {
@@ -57,7 +53,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                 if (HomeDevicesChanged != null)
                 {
-                     HomeDevicesChanged.Invoke(this, EventArgs.Empty);
+                    HomeDevicesChanged.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -93,7 +89,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                 foreach (MonitorInfo mi in monitorInfos)
                 {
-
                     //Workaround to get InputSource of Dell Monitor
                     //
                     //byte b_vcpcode = Convert.ToByte("60", 16);
@@ -122,7 +117,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         dev.InstanceNo = instanceNo;
                     }
 
-
                     //_homeDevices.Add(dev);
                     tempList.Add(dev);
 
@@ -131,13 +125,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 }
 
                 //Robert_Lin, 2024-7-10, Sort by DisplayName
-                tempList.Sort((x,y) => x.DisplayName.CompareTo(y.DisplayName));
+                tempList.Sort((x, y) => x.DisplayName.CompareTo(y.DisplayName));
 
                 //Assign SortOrder
                 int orderBase = (int)eDeviceCategory.Display;
                 int orderIndex = 0;
                 const int orderMul = 10;
-                foreach(HomeDevice dev in tempList)
+                foreach (HomeDevice dev in tempList)
                 {
                     dev.SortOrder = orderBase + orderMul * orderIndex;
                     orderIndex++;
@@ -149,23 +143,20 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
                 //RefreshCollectionView();
             }
-           
         }
 
         public void PrepareDeviceInfos(List<DeviceInfo> deviceInfos)
         {
-
             lock (_LockPeripheralList)
-            {            
+            {
                 //Robert_Lin 2024-7-10 modify for HomePage Sort and Grouping
                 //Sort the deviceInfos with DeviceInfo.Name (HomeDevice.TooltipModelName)
-                deviceInfos.Sort((x,y) => x.Name.CompareTo(y.Name));
+                deviceInfos.Sort((x, y) => x.Name.CompareTo(y.Name));
 
                 //Determine the SortOrder in the foreach loop.
                 //Each Category have their index, would be in order of ModelNumber
                 int idxWebcam = 0, idxKB = 0, idxMouse = 0,
                     idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0;
-
 
                 //Robert_Lin 2024-5-16 This method should be called once, provide all
                 //monitor in this call. So it will clear original list at first
@@ -192,7 +183,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     if (!di.IsConnected)
                         continue;
 
-
                     HomeDevice dev = new HomeDevice()
                     {
                         DeviceName = di.DeviceName,
@@ -218,14 +208,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         idxMouse++;
                         //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Mouse.png");
                     }
-          // 240722 Added by Hess to support Pen
-          else if(devType.ToString().Contains("Pen")) {
-            dev.DeviceCategory = eDeviceCategory.Pen;
-            dev.SortOrder = (int)dev.DeviceCategory + idxPen;
-            idxPen++;
-          }
-          //0710 Jim 修改WebCamera
-          else if (devType.ToString().Contains("Webcam"))
+                    // 240722 Added by Hess to support Pen
+                    else if (devType.ToString().Contains("Pen"))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.Pen;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxPen;
+                        idxPen++;
+                    }
+                    //0710 Jim 修改WebCamera
+                    else if (devType.ToString().Contains("Webcam"))
                     {
                         string imagepath = "";
                         switch (di.ModelNumber)
@@ -233,21 +224,27 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "WB7022":   // external webcamera
                                 imagepath = "Resources/WebCamModel_WB7022_Small.png";
                                 break;
+
                             case "WB5023":   // external webcamera
                                 imagepath = "Resources/WebCamModel_WB5023_Small.png";
                                 break;
+
                             case "WB3023":    // external webcamera
                                 imagepath = "Resources/WebCamModel_WB3023_Small.png";
                                 break;
+
                             case "U3224KB": // internal webcamera
                                 imagepath = "Resources/WebCamModel_U3224KB_Small.png";
                                 break;
+
                             case "P2424HEB": //internal webcamera
                                 imagepath = "Resources/WebCamModel_P2424HEB_Small.png";
                                 break;
+
                             case "U3223QZ": //internal webcamera
                                 imagepath = "Resources/WebCamModel_U3223QZ_Small.png";
                                 break;
+
                             default:
                                 imagepath = "Resources/WebCamera.png";
                                 break;
@@ -280,11 +277,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             dev.SortOrder = (int)dev.DeviceCategory + idxWebcam;
                             idxWebcam++;
                         }
-
                     }
                     //0614 Bruce 新增Dock UI
                     else if (devType.ToString().ToUpper().Contains("DOCK") ||
-                        (devType.ToString().ToUpper().Contains("23")) )
+                        (devType.ToString().ToUpper().Contains("23")))
                     {
                         dev.DeviceCategory = eDeviceCategory.Dock;
                         //dev.DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/WD22TB4.png");
@@ -300,18 +296,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "WL7024":
                                 imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
                                 break;
+
                             case "WL5024":
                                 imagepath = "Resources/HeadsetModel_WL5024-Pegasus.png";
                                 break;
+
                             case "WH5024":
                                 imagepath = "Resources/HeadsetModel_WH5024-Vinflo.png";
                                 break;
+
                             case "WL3024":
                                 imagepath = "Resources/HeadsetModel_WL3024-Vaporfly.png";
                                 break;
+
                             case "WH3024":
                                 imagepath = "Resources/HeadsetModel_WH3024-Airmax.png";
                                 break;
+
                             default:
                                 imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
                                 break;
@@ -331,9 +332,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "SP3022":
                                 imagepath = "Resources/Speaker_SP3022.png";
                                 break;
+
                             case "u2723qe":
                                 imagepath = "Resources/Speaker_u2723qe.png";
                                 break;
+
                             default:
                                 imagepath = "Resources/Speaker_SP3022.png";
                                 break;
@@ -361,12 +364,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                     //_homeDevices.Add(dev);
                     tempList.Add(dev);
-
                 }
                 //OnPropertyChanged("HomeDevices");
 
                 //Sort the list with SortOrder
-                tempList.Sort((x,y) =>  x.SortOrder.CompareTo(y.SortOrder));
+                tempList.Sort((x, y) => x.SortOrder.CompareTo(y.SortOrder));
 
                 HomeDevices = new ObservableCollection<HomeDevice>(tempList);
 
@@ -374,7 +376,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
                 //RefreshCollectionView();
             }
-            
         }
 
         public void ResetDevices()
@@ -382,8 +383,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             HomeDevices = new ObservableCollection<HomeDevice>();
         }
 
-
         #region Refresh CollectionView
+
         /// <summary>
         /// Refresh the collection view, it should be called when the ListView content is changed.
         /// Robert_Lin, 2024-6-22, to fix the issue the WebCam not been sorted (expect arranged after monitors)
@@ -407,11 +408,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
             List<HomeDevice> listSorted = colView.Cast<HomeDevice>().ToList();
             //listSorted would be sorted by SortOredr
-            // 
+            //
 
             HomeDevices = new ObservableCollection<HomeDevice>(listSorted);
         }
-        #endregion
+
+        #endregion Refresh CollectionView
 
         #region HomeDevices Changed event
 
@@ -423,15 +425,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         /// </summary>
         /// <param name="device"></param>
         public event EventHandler HomeDevicesChanged;
-        #endregion
+
+        #endregion HomeDevices Changed event
 
         #region Add your first device
+
         private ICommand? _connectButtonClickCommand;
+
         public ICommand? ConnectButtonClickCommand
         {
             get => _connectButtonClickCommand;
             set => SetProperty(ref _connectButtonClickCommand, value);
         }
+
         private void HandleConnectButtonClickCommand()
         {
             if (_console != null)
@@ -440,6 +446,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 _console.RaiseEvent("ShowAddDevicePlugin", this, args);
             }
         }
+
         public void RaiseShowAddDevicePlugin()
         {
             if (_console != null)
@@ -448,24 +455,30 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 _console.RaiseEvent("ShowAddDevicePlugin", this, args);
             }
         }
-        #endregion
+
+        #endregion Add your first device
 
         #region For Developer's debug
+
         public void AddDemoHomeDevice(HomeDevice device)
         {
             HomeDevices.Add(device);
         }
 
         private double _cxItem;
+
         public double cxItem
         {
             get => _cxItem;
             set => SetProperty(ref _cxItem, value);
         }
-        #endregion
+
+        #endregion For Developer's debug
 
         #region Please Wait
+
         private bool _isPleaseWaitVisible = true;
+
         public bool IsPleaseWaitVisible
         {
             get => _isPleaseWaitVisible;
@@ -485,6 +498,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             IsPleaseWaitVisible = true;
             bw.RunWorkerAsync();
         }
+
         private void DoWork_PleaseWait(object? sender, DoWorkEventArgs e)
         {
             Thread.Sleep(1500);
@@ -500,10 +514,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             }
             sw.Stop();
         }
+
         private void RunWorkerCompleted_PleaseWait(object sender, RunWorkerCompletedEventArgs e)
         {
             IsPleaseWaitVisible = false;
         }
-        #endregion
+
+        #endregion Please Wait
     }
 }

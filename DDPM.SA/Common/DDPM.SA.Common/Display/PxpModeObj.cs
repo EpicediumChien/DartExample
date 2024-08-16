@@ -1,29 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.Display
 {
     public class PxpModeObj
     {
         #region Native data
+
         private string _arg;
         private UInt16 _modeCode;
         private string _description;
 
         public string Arg { get => _arg; }
         public UInt16 ModeCode { get => _modeCode; }
-        #endregion
+
+        #endregion Native data
 
         #region ctor
+
         public PxpModeObj(string arg, UInt16 modeMode, string desc)
         {
             _arg = arg;
             _modeCode = modeMode;
             _description = desc;
         }
+
         public PxpModeObj(UInt16 modeCode)
         {
             _modeCode = modeCode;
@@ -39,9 +40,11 @@ namespace DDPM.SA.Common.Display
                 _description = "(Invalid modeCode)";
             }
         }
-        #endregion
+
+        #endregion ctor
 
         #region Table
+
         public static PxpModeObj[] Table =
         {
             new PxpModeObj("off", 0x00, "PIP/PBP off, full screen"),
@@ -87,6 +90,7 @@ namespace DDPM.SA.Common.Display
             }
             return argList.ToArray();
         }
+
         public static string GetArgFromModeCode(UInt16 modeCode)
         {
             PxpModeObj? obj = Array.Find(Table, x => x._modeCode == modeCode);
@@ -96,6 +100,8 @@ namespace DDPM.SA.Common.Display
             }
             return "";
         }
-        #endregion   
+
+        #endregion Table
+
     }
 }

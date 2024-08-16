@@ -1,12 +1,13 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Console;
@@ -33,7 +34,7 @@ namespace NGA.Systray
         /// <param name="formBuilder"></param>
         /// <param name="args"></param>
         public MainWindow(IFormBuilderBase formBuilder, string[]? args = null) : base(formBuilder, args)
-        {            
+        {
             var logCreator = formBuilder.GetSubsystem<ILogFactory>();
             if (logCreator != null)
                 _log = logCreator.CreateLogger("SYSTRAY", typeof(MainWindow));
@@ -77,6 +78,7 @@ namespace NGA.Systray
             {
                 case WM_QUERYENDSESSION: // Temporary fix: base class sets handled to true
                     break;
+
                 default:
                     base.WndProc(hwnd, msg, wParam, lParam, ref handled);
                     break;

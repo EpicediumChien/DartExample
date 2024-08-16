@@ -1,5 +1,4 @@
-﻿using DPeMPublic.Common.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
@@ -39,7 +38,6 @@ namespace DDPM.SA.Common
                         drr["NewVersion"] = Regex.Replace(Convert.ToInt32(item.NewVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(item.NewVersion).ToString("D4").Length * 2) - 1);
                     }
                     dt.Rows.Add(drr);
-
                 }
                 List<string> columns = new List<string>();
                 foreach (DataColumn Dc in dt.Columns)
@@ -101,8 +99,6 @@ namespace DDPM.SA.Common
 
             return sb.ToString();
         }
-
-
 
         public DataTable ToDataTable<T>(List<T> items)
         {

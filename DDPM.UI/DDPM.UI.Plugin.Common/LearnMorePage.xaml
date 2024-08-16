@@ -6,13 +6,13 @@
         xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
         mc:Ignorable="d"
         xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" AllowsTransparency="True"
-        Title="ActionParameterModalDialog" ResizeMode="NoResize" ShowInTaskbar="False" 
+        Title="ActionParameterModalDialog" ResizeMode="NoResize" ShowInTaskbar="False"
         InputMethod.IsInputMethodEnabled="False"
         WindowStartupLocation="Manual" WindowStyle="None" Background="#0D121A">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml"/>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="CaptionTextStyle" TargetType="UXControls:UXTextBlock">
                 <Setter Property="FontFamily" Value="Roboto" />
@@ -28,7 +28,6 @@
                 <Setter Property="LineHeight" Value="20" />
                 <Setter Property="Foreground" Value="#A4B8CD" />
             </Style>
-
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -36,43 +35,41 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,65">
                     <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Uniform"
-                 VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="CancelClick">
+                           VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="CancelClick">
                     </Image>
                     <UXControls:UXTextBlock Name="txtTitleBar" Margin="14,19,0,0" HorizontalAlignment="Left"
-                            Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+                                            Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
                 </StackPanel>
             </StackPanel>
         </Grid>
         <Grid VerticalAlignment="Center" Width="404" Height="363">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,0" VerticalAlignment="Center">
-                <UXControls:UXTextBlock Name="txtCaption" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Left"/>
-                <UXControls:UXTextBlock Name="txtDescription" Style="{StaticResource DescriptionTextStyle}"  Margin="0,0,0,0"/>
+                <UXControls:UXTextBlock Name="txtCaption" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Left" />
+                <UXControls:UXTextBlock Name="txtDescription" Style="{StaticResource DescriptionTextStyle}"  Margin="0,0,0,0" />
                 <!--<StackPanel Name="spKeystroke" Visibility="Collapsed">
-                    <UXControls:UXTextBox Name="txtKeystroke" Width="404" Height="64" Padding="8,11" FontWeight="Medium" FontFamily="Roboto"
-                                HorizontalAlignment="Left" Background="#141D28" BorderThickness="1" Foreground="#F5F6F7" BorderBrush="#7E7E7E" IsEnabled="False" 
-                                TextChanged="KeystrokeTextChanged" />
+                <UXControls:UXTextBox Name="txtKeystroke" Width="404" Height="64" Padding="8,11" FontWeight="Medium" FontFamily="Roboto"
+                HorizontalAlignment="Left" Background="#141D28" BorderThickness="1" Foreground="#F5F6F7" BorderBrush="#7E7E7E" IsEnabled="False"
+                TextChanged="KeystrokeTextChanged" />
                 </StackPanel>-->
                 <Grid Grid.Column="1" Height="363.18" Width="404" Margin="0,0,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Margin="0,0,0,5" Orientation="Horizontal" HorizontalAlignment="left">
-                        <UXControls:UXTextBlock FontSize="24" Text="Scan to download the Dell Audio app to customize your headset" Height="64" Width="404" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                        <UXControls:UXTextBlock FontSize="24" Text="Scan to download the Dell Audio app to customize your headset" Height="64" Width="404" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
                     </StackPanel>
                     <StackPanel Grid.Row="1" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
-                        <Image Width="178" Height="178" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_AppleStoreQR.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,20,10,8"/>
-                        <Image Width="178" Height="178" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_GooglePlayStoreQR.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,20,8,0"/>
+                        <Image Width="178" Height="178" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_AppleStoreQR.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,20,10,8" />
+                        <Image Width="178" Height="178" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_GooglePlayStoreQR.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,20,8,0" />
                     </StackPanel>
                     <StackPanel Grid.Row="2" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
-                        <Image Width="178" Height="57.18" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_AppleStore.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,8,8,0"/>
-                        <Image Width="178" Height="57.18" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_GooglePlayStore.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,8,8,0"/>
+                        <Image Width="178" Height="57.18" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_AppleStore.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,8,8,0" />
+                        <Image Width="178" Height="57.18" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_GooglePlayStore.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,8,8,0" />
                     </StackPanel>
                 </Grid>
-                
             </StackPanel>
         </Grid>
     </Grid>
 </Window>
-

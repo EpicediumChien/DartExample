@@ -1,20 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace DDPM.UI.Common.ViewModels
 {
-
     public class SplitItemViewModel : ObservableObject
     {
         #region ISplit
+
         private ISplit? _split;
+
         public ISplit? Split
         {
             get => _split;
@@ -24,16 +19,20 @@ namespace DDPM.UI.Common.ViewModels
                 OnPropertyChanged("TooltipText");
             }
         }
-        #endregion
+
+        #endregion ISplit
 
         #region SplitOwner
+
         private eSplitOwner _splitOwner = eSplitOwner.None;
-        public eSplitOwner SplitOwner 
+
+        public eSplitOwner SplitOwner
         {
             get => _splitOwner;
             set => SetProperty(ref _splitOwner, value);
         }
-        #endregion
+
+        #endregion SplitOwner
 
         /*
         private ICommand? _clickCommand;
@@ -50,12 +49,13 @@ namespace DDPM.UI.Common.ViewModels
             {
                 if (_split != null)
                     return _split.Description;
-                else 
+                else
                     return "";
             }
         }
 
         #region Edit and Delete Icon
+
         //private bool _isEditEnabled = false;
 
         //public bool IsEditEnabled
@@ -64,7 +64,6 @@ namespace DDPM.UI.Common.ViewModels
         //    set => SetProperty(ref _isEditEnabled, value);
         //}
 
-        #endregion
-
+        #endregion Edit and Delete Icon
     }
 }

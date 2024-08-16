@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DDPM.SA.Common.Popup
 {
@@ -20,14 +10,18 @@ namespace DDPM.SA.Common.Popup
     public partial class PopupBase : Window
     {
         public event EventHandler<object> LeftButtonClick;
+
         public event EventHandler<object> RightButtonClick;
+
         /// <summary>
         /// Event triggered if the user directly presses X or waits for the window to close automatically
         /// </summary>
         public event EventHandler<object> Default_Event;
-        object _object;
+
+        private object _object;
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="HeaderText"></param>
         /// <param name="SubHeaderText"></param>
@@ -59,12 +53,14 @@ namespace DDPM.SA.Common.Popup
                 Task.Delay(autoCloseTimeInSeconds * 1000).ContinueWith(t => this.Dispatcher.Invoke(Close));
             }
         }
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             LeftButtonClick = null;
             RightButtonClick = null;
             this.Close();
         }
+
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
             Default_Event = null;
@@ -73,6 +69,7 @@ namespace DDPM.SA.Common.Popup
             LeftButtonClick?.Invoke(this, _object);
             LeftButtonClick = null;
         }
+
         private void RightButton_Click(object sender, RoutedEventArgs e)
         {
             Default_Event = null;
@@ -81,6 +78,7 @@ namespace DDPM.SA.Common.Popup
             RightButtonClick?.Invoke(this, _object);
             RightButtonClick = null;
         }
+
         private void Window_Closed(object sender, EventArgs e)
         {
             Default_Event?.Invoke(this, _object);

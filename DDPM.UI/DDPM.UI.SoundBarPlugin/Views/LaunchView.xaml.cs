@@ -1,17 +1,17 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
+using DDPM.UI.Module.SpeakerAudioPreset;
+using DDPM.UI.Module.SpeakerAudioSettings;
+using DDPM.UI.Module.SpeakerInteractions;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
-using DDPM.UI.Plugin.Common;
 using System.Net;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using DDPM.UI.Module.SpeakerInteractions;
-using DDPM.UI.Module.SpeakerAudioSettings;
-using DDPM.UI.Module.SpeakerAudioPreset;
 
 namespace DDPM.UI.Plugin.SoundBarPlugin
 {
@@ -22,13 +22,13 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
     {
         private readonly SoundBarViewModel? _vm;
 
-        readonly int[] _rightFrameWidth = new int[] { 0, 483, 483, 483 };
+        private readonly int[] _rightFrameWidth = new int[] { 0, 483, 483, 483 };
         private readonly string Restore = "Restore to default";
         private readonly string Unpair = "Unpair";
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
-        readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
-        readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
+        private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
+        private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
         //private readonly string PenSettings = "Pen Settings";
         //private readonly string PenButton = "Button\nCustomization";
@@ -59,6 +59,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         }
 
         #region Init for Modules
+
         /// <summary>
         /// Base on specified monitor's capabiliies to build the Vbar items, and headers/modules
         /// </summary>
@@ -74,7 +75,6 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             };
             moduleGroup.AddHeader("Audio Preset", new SpeakerAudioPresetModule(_vm!));
             groups.Add(moduleGroup);
-
 
             moduleGroup = new ModuleGroup()
             {
@@ -94,9 +94,11 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
             _vm!.ModuleGroups = groups;
         }
-        #endregion
+
+        #endregion Init for Modules
 
         #region Vbar
+
         /// <summary>
         /// Contron Menu slider position
         /// </summary>
@@ -131,18 +133,21 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
         }
-        #endregion
+
+        #endregion Vbar
 
         #region RightViewHeader
+
         private void RightViewHeaderCtrl_SelectionChanged(object sender, RoutedEventArgs e)
         {
             if (sender == null)
                 return;
         }
 
-        #endregion
+        #endregion RightViewHeader
 
         #region Mode Change
+
         private void InvokeGotoTwoViewModeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -152,13 +157,13 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
+
         private void InvokeShrinkAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -168,13 +173,13 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
+
         private void InvokeEnlargeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -184,14 +189,14 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
-        #endregion
+
+        #endregion Mode Change
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -299,6 +304,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                 BLConnection.Visibility = Visibility.Visible;
             }
         }
+
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             DongleConnection.Visibility = Visibility.Collapsed;
@@ -307,7 +313,6 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
         }
     }
 }

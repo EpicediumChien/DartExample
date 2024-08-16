@@ -1,26 +1,15 @@
 using DDPM.SA.Common;
 using DDPM.SA.Plugins.User.DisplayManager;
+using DDPM.SA.Plugins.User.DisplayProperties;
 using DDPM.SA.Plugins.User.PipPbpManger;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
 using Moq;
-using System.Data;
-using System.Threading;
+
+//using static DDPM.SA.Plugins.User.DisplayProperties.user32;
+using System.ComponentModel;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using VcpCore.Plugins;
-using WinCopies;
-using Windows.Media.AppBroadcasting;
-using Windows.UI.ViewManagement;
-using static VcpCore.Common.User32;
-using DDPM.SA.Plugins.User.DisplayProperties;
-//using static DDPM.SA.Plugins.User.DisplayProperties.user32;
-using static VcpCore.Common.dxva2;
-using WinCopies.Util;
-using System.ComponentModel;
-using System.Diagnostics.Eventing.Reader;
 
 namespace VcpCore.Plugins.Test
 {
@@ -30,9 +19,9 @@ namespace VcpCore.Plugins.Test
         private Mock<IAgent> VcpCoreAgent { get; } = new();
         private Mock<IAgent> PipPbpAgent = new();
         private Mock<IAgent> DisplayPropertiesAgent { get; } = new();
-        MonitorInfo monitorInfo = new MonitorInfo();
+        private MonitorInfo monitorInfo = new MonitorInfo();
 
-        BackgroundWorker _taskQueueExecutor = new BackgroundWorker();
+        private BackgroundWorker _taskQueueExecutor = new BackgroundWorker();
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
         {
@@ -62,14 +51,14 @@ namespace VcpCore.Plugins.Test
             return new DisplayPropertiesPlugins(DisplayPropertiesAgent.Object);
         }
 
-        DisplayMangerPlugin displayPlugin;
-        VcpCorePlugin vcpCorePlugin;
-        PipPbpMangerPlugin pipPbpMangerPlugin;
-        Dictionary<string, Dictionary<string, string>> getstr;
-        DisplayPropertiesPlugins displayPropertiesPlugin;
-        List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+        private DisplayMangerPlugin displayPlugin;
+        private VcpCorePlugin vcpCorePlugin;
+        private PipPbpMangerPlugin pipPbpMangerPlugin;
+        private Dictionary<string, Dictionary<string, string>> getstr;
+        private DisplayPropertiesPlugins displayPropertiesPlugin;
+        private List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
-        MonitorInfo_complex monitorInfoComplex1 = new MonitorInfo_complex()
+        private MonitorInfo_complex monitorInfoComplex1 = new MonitorInfo_complex()
         {
             //UnDefinedColorPreset,
             //ColorPresentDescription,
@@ -98,7 +87,7 @@ namespace VcpCore.Plugins.Test
             series = "Dell UltraSharp (U) Series Monitors",
         };
 
-        MonitorInfo monitorInfo1 = new MonitorInfo()
+        private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
             IsDellMonitor = true,
@@ -114,14 +103,10 @@ namespace VcpCore.Plugins.Test
             //CapabilityDic = capabilityDic;
         };
 
-
-
-
         [OneTimeSetUp]
         public void Setup()
         {
             displayPlugin = CreateInitializeDisplayMangerPlugin();
-
 
             vcpCorePlugin = CreateInitializeVcpCorePlugin();
             pipPbpMangerPlugin = CreateInitializePipPbpPlugin();
@@ -139,9 +124,7 @@ namespace VcpCore.Plugins.Test
             privateObject.SetField("_DisplayPropertiesPlugin", displayPropertiesPlugin as IDisplayProperties);
             //privatedisplayProperties.SetField("_displayPropertiesInfo", displayPropertiesPlugin as IDisplayProperties);
             getstr = (Dictionary<string, Dictionary<string, string>>)privatevcp.GetField("_ColorPresets");
-
         }
-
 
         private void TaskQueueExecutor_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -163,6 +146,7 @@ namespace VcpCore.Plugins.Test
                             _TaskQueueResult.Add(parameter.guid, rt);
                         }
                         break;
+
                     case Queue_CommandType.GetVCPCapabilities:
                         {
                             Type_GetVCPCapabilities parameter = (Type_GetVCPCapabilities)p.Parameter;
@@ -170,6 +154,7 @@ namespace VcpCore.Plugins.Test
                             _TaskQueueResult.Add(parameter.guid, rt);
                         }
                         break;
+
                     case Queue_CommandType.GetVCPCapability_I:
                         {
                             Type_GetVCPCapability_I parameter = (Type_GetVCPCapability_I)p.Parameter;
@@ -177,6 +162,7 @@ namespace VcpCore.Plugins.Test
                             _TaskQueueResult.Add(parameter.guid, rt);
                         }
                         break;
+
                     case Queue_CommandType.GetVCPCapability_II:
                         {
                             Type_GetVCPCapability_II parameter = (Type_GetVCPCapability_II)p.Parameter;
@@ -192,6 +178,7 @@ namespace VcpCore.Plugins.Test
                             _TaskQueueResult.Add(parameter.guid, rt);
                         }
                         break;
+
                     case Queue_CommandType.SetVCPCapability_II:
                         {
                             Type_SetVCPCapability_II parameter = (Type_SetVCPCapability_II)p.Parameter;
@@ -199,12 +186,11 @@ namespace VcpCore.Plugins.Test
                             _TaskQueueResult.Add(parameter.guid, rt);
                         }
                         break;
+
                     default:
                         break;
                 }
-
             }
-
         }
 
         [Test]
@@ -229,8 +215,6 @@ namespace VcpCore.Plugins.Test
             Assert.True(CacheTimer.Enabled);
         }
 
-
-
         [Test]
         public void TestGetMonitors()
         {
@@ -254,7 +238,6 @@ namespace VcpCore.Plugins.Test
             privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
             var getMonitors = vcpCorePlugin.Re_GetMonitors().Result;
             Assert.That(_allDisplays, Is.EqualTo(getMonitors));
-
         }
 
         [Test]
@@ -287,7 +270,6 @@ namespace VcpCore.Plugins.Test
             }
         }
 
-
         [Test]
         public void TestGetVCPCapabilities()
         {
@@ -305,7 +287,6 @@ namespace VcpCore.Plugins.Test
 
             var getVCPCapabilities2 = vcpCorePlugin.GetVCPCapabilities(monitorInfo1).Result;
             Assert.That(VCPCapabilities2, Is.EqualTo(getVCPCapabilities2));
-
         }
 
         [Test]
@@ -331,7 +312,6 @@ namespace VcpCore.Plugins.Test
             var GetVCPCapabilityresult2 = vcpCorePlugin.GetVCPCapability(monitorInfo1, code).Result;// ColorSpace14 = 20, get value=12
             Assert.That(getvcpresult, Is.EqualTo(GetVCPCapabilityresult2.result));
             Assert.That(value, Is.EqualTo(GetVCPCapabilityresult2.value));
-
         }
 
         [Test]
@@ -358,9 +338,7 @@ namespace VcpCore.Plugins.Test
             var GetVCPCapabilityresult2 = vcpCorePlugin.GetVCPCapability(monitorInfo1, funcName).Result;
             Assert.That(getVCPCapabilityResult, Is.EqualTo(GetVCPCapabilityresult2.result));
             Assert.That(value, Is.EqualTo(GetVCPCapabilityresult2.value));
-
         }
-
 
         [Test]
         public void TestSetVCPCapability()
@@ -385,9 +363,7 @@ namespace VcpCore.Plugins.Test
             bool SetVCPCapabilityResult2 = vcpCorePlugin.SetVCPCapability(monitorInfo1, 18, newContrast).Result;
             Assert.IsTrue(SetVCPCapabilityResult2);
             Assert.That(setVCPCapabilityResult, Is.EqualTo(SetVCPCapabilityResult2));
-
         }
-
 
         [Test]
         public void TestSetVCPCapability_()
@@ -414,8 +390,6 @@ namespace VcpCore.Plugins.Test
             Assert.IsTrue(setColor);
             Assert.That(SetVCPCapabilityResult_, Is.EqualTo(setColor));
         }
-
-
 
         [Test]
         public void TestSetColorPreset()

@@ -1,19 +1,4 @@
-using DDPM.SA.Common.Settings;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using VcpCore.Common;
-
-
 
 namespace DDPM.SA.Common
 {
@@ -33,5 +18,4 @@ namespace DDPM.SA.Common
         public string ColorPreset { get; set; } = string.Empty;
         public string SHA256 { get; set; } = string.Empty;
     }
-
 }

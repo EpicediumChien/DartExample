@@ -2,17 +2,12 @@
 using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
+
 namespace DDPM.UI.Module.Gaming
 {
     internal class GamingViewModel : ObservableObject
@@ -23,6 +18,7 @@ namespace DDPM.UI.Module.Gaming
         public IModuleOwner? ModuleOwner { get; set; }
         public GamingModule MyModule { get; set; }
         public List<UI_Properties> Resolution_ItemsCollection { get; set; }
+
         public UI_Properties SelectedResolution
         {
             get => _selectedResolution;
@@ -35,7 +31,9 @@ namespace DDPM.UI.Module.Gaming
                 //    ).Wait();
             }
         }
+
         public List<UI_Orientation> Orientation_ItemsCollection { get; set; }
+
         public UI_Orientation SelectedOrientation
         {
             get => _selectedOrientation;
@@ -48,6 +46,7 @@ namespace DDPM.UI.Module.Gaming
                 //    ).Wait();
             }
         }
+
         public bool HDRStatus
         {
             get => _HDRStatus;
@@ -58,6 +57,7 @@ namespace DDPM.UI.Module.Gaming
                 RefreshUI();
             }
         }
+
         public string HDRStatus_String
         {
             get
@@ -65,6 +65,7 @@ namespace DDPM.UI.Module.Gaming
                 return HDRStatus ? "ON" : "OFF";
             }
         }
+
         public bool IsHighDataSpeed
         {
             get => _IsHighDataSpeed;
@@ -78,6 +79,7 @@ namespace DDPM.UI.Module.Gaming
                 }
             }
         }
+
         public bool IsHighResolution
         {
             get => _IsHighResolution;
@@ -91,22 +93,29 @@ namespace DDPM.UI.Module.Gaming
                 }
             }
         }
+
         public Visibility SupportedHDR
         {
             get => _SupportedHDR ? Visibility.Visible : Visibility.Collapsed;
         }
+
         public Visibility SupportedUSBCPrioeitization
         {
             get => _SupportedUSBCPrioeitization ? Visibility.Visible : Visibility.Collapsed;
         }
+
         #region UI Enable Flags
+
         private bool _isBusy = false;
+
         public bool IsBusy
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        #endregion
+
+        #endregion UI Enable Flags
+
         public void Invoke_RefreshData()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -119,6 +128,7 @@ namespace DDPM.UI.Module.Gaming
             bw.RunWorkerAsync(); //myArg is the optional argument
             IsBusy = true;
         }
+
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try //2024-06-19 Elie, add try catch to get exception.
@@ -126,14 +136,13 @@ namespace DDPM.UI.Module.Gaming
                 Resolution_ItemsCollection = new List<UI_Properties>();
                 Orientation_ItemsCollection = new List<UI_Orientation>();
 
-              
                 RefreshUI();
             }
             catch (Exception)
             {
-
             }
         }
+
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;
@@ -154,9 +163,11 @@ namespace DDPM.UI.Module.Gaming
             OnPropertyChanged("IsHighResolution");
         }
     }
+
     internal class UI_Properties
     {
         public Properties Properties { get; set; }
+
         public string DisplayText
         {
             get
@@ -165,10 +176,12 @@ namespace DDPM.UI.Module.Gaming
             }
         }
     }
+
     internal class UI_Orientation
     {
-        string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
+        private string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
         public DisplayOrientation Orientation { get; set; }
+
         public string DisplayText
         {
             get

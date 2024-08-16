@@ -10,11 +10,14 @@ namespace DDPM.UI.Plugin.ViewModels
     public class SoundBarViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
+
         private readonly ILog _log;
         public IDeviceManagerSA _deviceManager;
-        #endregion
+
+        #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
+
         public string modelTest;
 
         public SoundBarViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
@@ -35,18 +38,20 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlGoogleMeetButtonShow = false;
                     _controlSkypeforBusinessButtonShow = false;
                     break;
+
                 default:
                     break;
             }
             CheckAudioSettingsUI();
         }
+
         private void CheckAudioSettingsUI()
         {
             _isIntelligentMicNoiseCancellationStatus = CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
             _isMuteSoundNotificationStatus = CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable;
             _isVolumeAdjustmentToneMode = CurrentDeviceInfo!.WiredAudioVolumeAdjustmentTone;
 
-            if(_isVolumeAdjustmentToneMode == 3)
+            if (_isVolumeAdjustmentToneMode == 3)
             {
                 _volumeAdjustmentToneStatus = false;
                 _isEveryLevelChecked = false;
@@ -71,6 +76,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged("IsEveryLevelChecked");
             OnPropertyChanged("IsMinMaxOnlyChecked");
         }
+
         public void ChangeImage(string model, string btnName)
         {
             if (model == "SP3022")
@@ -80,15 +86,19 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "MicrosoftTeams":
                         ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022_AllLight.png";
                         break;
+
                     case "Zoom":
                         ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022_FourLight.png";
                         break;
+
                     case "GoogleMeet":
                         ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022_TwoLight.png";
                         break;
+
                     case "SkypeforBusiness":
                         ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022_RedLight.png";
                         break;
+
                     default:
                         ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022.png";
                         break;
@@ -101,15 +111,18 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "MicrosoftTeams":
                         ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SB522A_AllLight.png";
                         break;
+
                     case "Zoom":
                         ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SB522A_TwoLight.png";
                         break;
+
                     default:
                         ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_u2723qe.png";
                         break;
                 }
             }
         }
+
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -133,6 +146,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
             return true;
         }
+
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
             base.HandleNotification(changeType, di, property);
@@ -159,10 +173,12 @@ namespace DDPM.UI.Plugin.ViewModels
                         GenerateInfo();
                     }
                     break;
+
                 default:
                     break;
             }
         }
+
         /// <summary>
         /// Set Bit Value
         /// </summary>
@@ -220,6 +236,7 @@ namespace DDPM.UI.Plugin.ViewModels
         #region SpeakerAudioPreset
 
         private bool _isDefaultChecked;
+
         public bool IsDefaultChecked
         {
             get { return _isDefaultChecked; }
@@ -240,6 +257,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _isSpeechChecked;
+
         public bool IsSpeechChecked
         {
             get { return _isSpeechChecked; }
@@ -260,6 +278,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _isBassBoostChecked;
+
         public bool IsBassBoostChecked
         {
             get { return _isBassBoostChecked; }
@@ -280,6 +299,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _isTrebleBoostChecked;
+
         public bool IsTrebleBoostChecked
         {
             get { return _isTrebleBoostChecked; }
@@ -299,12 +319,12 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-
-        #endregion
+        #endregion SpeakerAudioPreset
 
         #region SpeakerAudioSettings
 
         private bool _isIntelligentMicNoiseCancellationStatus = false;
+
         public bool IntelligentMicNoiseCancellationStatus
         {
             get
@@ -324,13 +344,14 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private string _isIntelligentMicNoiseCancellation_String = "ON";
+
         public string IntelligentMicNoiseCancellation_String
         {
             get => _isIntelligentMicNoiseCancellationStatus ? "ON" : "OFF";
-
         }
 
         private bool _isMuteSoundNotificationStatus = false;
+
         public bool MuteSoundNotificationStatus
         {
             get
@@ -350,6 +371,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private string _isMuteSoundNotification_String = "ON";
+
         public string MuteSoundNotification_String
         {
             get => _isMuteSoundNotificationStatus ? "ON" : "OFF";
@@ -357,6 +379,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private int _isVolumeAdjustmentToneMode;
         private bool _volumeAdjustmentToneStatus;
+
         public bool VolumeAdjustmentToneStatus
         {
             get
@@ -377,7 +400,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged("IsEveryLevelChecked");
                     OnPropertyChanged("IsMinMaxOnlyChecked");
                 }
-                if(!value)
+                if (!value)
                 {
                     _isVolumeAdjustmentToneMode = 3;
                     _deviceManager.SetWiredAudioVolumeAdjustmentTone(3, CurrentDeviceInfo!.ID).Wait();
@@ -393,15 +416,17 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private string _volumeAdjustmentToneString = "ON";
+
         public string VolumeAdjustmentTone_String
         {
-            get 
-            { 
-                return _volumeAdjustmentToneStatus ? "ON" : "OFF"; 
+            get
+            {
+                return _volumeAdjustmentToneStatus ? "ON" : "OFF";
             }
         }
 
         private bool _isEveryLevelChecked;
+
         public bool IsEveryLevelChecked
         {
             get
@@ -427,6 +452,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _isMinMaxOnlyChecked;
+
         public bool IsMinMaxOnlyChecked
         {
             get
@@ -451,7 +477,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        #endregion
+        #endregion SpeakerAudioSettings
 
         #region SpeakerAudioSettings ToolTip
 
@@ -475,11 +501,13 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => _volumeAdjustmentToneToolTip;
         }
-        #endregion
+
+        #endregion SpeakerAudioSettings ToolTip
 
         #region SpeakerInteractions
 
         private bool _isMicrosoftTeamsChecked;
+
         public bool IsMicrosoftTeamsChecked
         {
             get { return _isMicrosoftTeamsChecked; }
@@ -494,6 +522,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _isZoomChecked;
+
         public bool IsZoomChecked
         {
             get { return _isZoomChecked; }
@@ -508,6 +537,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _isGoogleMeetChecked;
+
         public bool IsGoogleMeetChecked
         {
             get { return _isGoogleMeetChecked; }
@@ -522,6 +552,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _isSkypeForBusinessChecked;
+
         public bool IsSkypeForBusinessChecked
         {
             get { return _isSkypeForBusinessChecked; }
@@ -536,6 +567,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _controlGoogleMeetButtonShow = true;
+
         public bool ControlGoogleMeetButtonShow
         {
             get => _controlGoogleMeetButtonShow;
@@ -547,6 +579,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         private bool _controlSkypeforBusinessButtonShow = true;
+
         public bool ControlSkypeforBusinessButtonShow
         {
             get => _controlSkypeforBusinessButtonShow;
@@ -556,6 +589,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(ControlSkypeforBusinessButtonShow));
             }
         }
-        #endregion
+
+        #endregion SpeakerInteractions
     }
 }

@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Plugins;
-
-namespace VcpCore.Plugins.Test
+﻿namespace VcpCore.Plugins.Test
 {
     public class TestRecursiveSelect
     {
-
         [Test]
         public void TestRecursiveSelect1()
         {
@@ -28,7 +20,6 @@ namespace VcpCore.Plugins.Test
             CollectionAssert.Contains(result.Select(n => n.Value), 2);
             CollectionAssert.Contains(result.Select(n => n.Value), 3);
             CollectionAssert.Contains(result.Select(n => n.Value), 4);
-
         }
 
         [Test]
@@ -55,7 +46,6 @@ namespace VcpCore.Plugins.Test
 
             // 验证结果是否符合预期
             CollectionAssert.AreEqual(new[] { 2, 4, 6, 8 }, result);
-
         }
 
         [Test]
@@ -79,7 +69,6 @@ namespace VcpCore.Plugins.Test
 
             // 验证结果是否符合预期
             CollectionAssert.AreEqual(new[] { 1, 3, 5 }, result);
-
         }
 
         [Test]
@@ -106,7 +95,6 @@ namespace VcpCore.Plugins.Test
 
             // 验证结果是否符合预期
             CollectionAssert.AreEqual(new[] { 1, 3, 4, 6 }, result);
-
         }
 
         [Test]
@@ -138,15 +126,12 @@ namespace VcpCore.Plugins.Test
             var expected = new List<int> { 1, 3, 4, 6, 7 };
 
             CollectionAssert.AreEqual(expected, result);
-
         }
 
-
-        class Node
+        private class Node
         {
             public int Value { get; set; }
-            public List<Node> ? Children { get; set; }
+            public List<Node>? Children { get; set; }
         }
-
     }
 }
