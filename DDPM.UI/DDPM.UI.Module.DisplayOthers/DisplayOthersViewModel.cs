@@ -158,5 +158,16 @@ namespace DDPM.UI.Module.DisplayOthers
             }
             return false;
         }
+        public bool ImportSettings()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.Filter = "jason files (*.json)|*.json";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filename = openFileDialog.FileName;
+            }
+            return false;
+        }
     }
 }

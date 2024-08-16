@@ -81,10 +81,24 @@ namespace DDPM.UI.Module.Kvm
         private bool _isNKVM = false;
         //private Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
         private ImageSource? _PCImage;
+        #region For SetWindowPos
+        static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+        static readonly IntPtr HWND_TOP = new IntPtr(0);
+        const uint SWP_NOSIZE = 0x0001;
+        const uint SWP_NOMOVE = 0x0002;
+        const uint SWP_NOACTIVATE = 0x0010;
+        const uint SWP_SHOWWINDOW = 0x0040;
+        const uint SWP_NOOWNERZORDER = 0x0200;
+        const uint SWP_NOREDRAW = 0x0008;
+        #endregion
         #endregion
 
         [DllImport("user32.dll", EntryPoint = "SetParent")]
         public static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public IModuleOwner? ModuleOwner { get; set; }
         public KvmModule KvmModule { get; set; }
         public UInt16 PxPCode { get; set; } = 0;
@@ -976,6 +990,8 @@ namespace DDPM.UI.Module.Kvm
                 if (NkvmdHandle != IntPtr.Zero && mainWindowHandle != IntPtr.Zero)
                 {
                     SetParent(NkvmdHandle, mainWindowHandle);
+                    SetWindowPos(mainWindowHandle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOREDRAW);
+                    EnableWindow(mainWindowHandle, false);
                 }
 
 
