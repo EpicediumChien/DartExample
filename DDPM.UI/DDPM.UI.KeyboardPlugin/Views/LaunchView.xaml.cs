@@ -39,7 +39,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 {
                     Battery.Visibility = Visibility.Collapsed;
                     btnRestore.Visibility = Visibility.Collapsed;
-                    txtEOL.Text = Strings.EOLMessage;
+                    //txtEOL.Text = Strings.EOLMessage;
                     txtEOL.Visibility = Visibility.Visible;
                     SectionA.Visibility = Visibility.Collapsed;
                     SectionF.Visibility = Visibility.Collapsed;
@@ -51,12 +51,12 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 }
             }
 
-            txtUnpair.Text = Strings.Unpair;
-            txtRestore.Text = Strings.RestoreToDefault;
+            //txtUnpair.Text = Strings.Unpair;
+            //txtRestore.Text = Strings.RestoreToDefault;
 
             ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
             ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-            txtDongleHost.Text = Strings.USBWirelessReceiver;
+            //txtDongleHost.Text = Strings.USBWirelessReceiver;
 
             InitializeKeyImage();
             if (_vm!.IsRestoreEnable)

@@ -357,4 +357,58 @@
   <data name="AddDevice.Dock.0" xml:space="preserve">
     <value>Connect your Dock via USB port on your system</value>
   </data>
+  <data name="HomePage.0" xml:space="preserve">
+    <value>Please wait...</value>
+  </data>
+  <data name="UpdateFirmware" xml:space="preserve">
+    <value>Update Firmware</value>
+  </data>
+  <data name="Dock.0" xml:space="preserve">
+    <value>{0} of {1} slots available</value>
+  </data>
+  <data name="Dock.1" xml:space="preserve">
+    <value>Dongle {0}</value>
+  </data>
+  <data name="Headset.0" xml:space="preserve">
+    <value>Audio Settings</value>
+  </data>
+  <data name="Headset.1" xml:space="preserve">
+    <value>Automated Actions</value>
+  </data>
+  <data name="Headset.2" xml:space="preserve">
+    <value>Device Settings</value>
+  </data>
+  <data name="Keyboard.0" xml:space="preserve">
+    <value>There are no advanced features on this device</value>
+  </data>
+  <data name="Keyboard.1" xml:space="preserve">
+    <value>USB Wireless Receiver</value>
+  </data>
+  <data name="Keyboard.2" xml:space="preserve">
+    <value>Key Customization</value>
+  </data>
+  <data name="Keyboard.3" xml:space="preserve">
+    <value>Collaboration</value>
+  </data>
+  <data name="Keyboard.4" xml:space="preserve">
+    <value>Illumination</value>
+  </data>
+  <data name="Mouse.0" xml:space="preserve">
+    <value>Assign actions for</value>
+  </data>
+  <data name="Mouse.1" xml:space="preserve">
+    <value>All Applications</value>
+  </data>
+  <data name="Mouse.2" xml:space="preserve">
+    <value>Microsoft Word</value>
+  </data>
+  <data name="Mouse.3" xml:space="preserve">
+    <value>Microsoft Excel</value>
+  </data>
+  <data name="Mouse.4" xml:space="preserve">
+    <value>Microsoft PowerPoint</value>
+  </data>
+  <data name="Mouse.5" xml:space="preserve">
+    <value>Microsoft Outlook</value>
+  </data>
 </root>
