@@ -552,6 +552,14 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
+                case "POWERSETTING":
+                    {
+                        var ret = SetPowerSetting(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+
                 default:
                     CLI_RESPONSE rsp = new CLI_RESPONSE()
                     {
@@ -8799,6 +8807,215 @@ namespace DDPM.CLI.Plugins.Display
                 case "USB Comm from USB-C3 (Type-C, port 3)": return "0x84";
                 case "USB Comm from USB-C4 (Type-C, port 4)": return "0x85";
                 default: return "0x11";
+            }
+        }
+
+        private (int code, string result) SetPowerSetting(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "GET" || commandLineInput.Options.Count == 0)
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax.";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+            else
+            {
+                if (commandLineInput.Options == null || commandLineInput.Options[0].Option_Value == string.Empty || commandLineInput.Options.Count > 1)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                    return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                }
+                else
+                {
+                    return PowerSetting(devMgr, commandLineInput).Result;
+                }
+            }
+        }
+
+        private async Task<(int code, string result)> PowerSetting(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+            {
+                foreach (MonitorInfo monitor in _AllInfoMonitors)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    string capability = monitor.CapabilityString;
+                    if (capability.Contains("E0("))
+                    {
+                        string[] ss = capability.Split("E0(");
+                        ss = ss[1].Split(")");
+                        ss = ss[0].Split(" ");
+                        if (ss[0] == "03")
+                        {
+                            retcode = SetVCPCode(devMgr, monitor, "0xE0", get_PowerSetting_code(commandLineInput.Options[0].Option_Value.ToUpper())).Result;
+                        }
+                    }
+                    else if (capability.Contains("E0"))
+                    {
+                        switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                        {
+                            case "OFF":
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                break;
+                            case "ON":
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                break;
+                            case "STANDBY":
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
+                                break;
+                        }
+                    }
+                    if (retcode)
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    else
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            else
+            {
+                foreach (string idx in commandLineInput.DeviceIndex)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base(idx);
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    string capability = monitor.CapabilityString;
+                    if (capability.Contains("E0("))
+                    {
+                        string[] ss = capability.Split("E0(");
+                        ss = ss[1].Split(")");
+                        ss = ss[0].Split(" ");
+                        if (ss[0] == "03")
+                        {
+                            retcode = SetVCPCode(devMgr, monitor, "0xE0", get_PowerSetting_code(commandLineInput.Options[0].Option_Value.ToUpper())).Result;
+                        }
+                    }
+                    else if (capability.Contains("E0"))
+                    {
+                        switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                        {
+                            case "OFF":
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                break;
+                            case "ON":
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                break;
+                            case "STANDBY":
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
+                                break;
+                        }
+                    }
+                    if (retcode)
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    else
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+                foreach (string tag in commandLineInput.ServiceTag)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    foreach (MonitorInfo monitor in tmp)
+                    {
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.AliasDeviceName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                        string capability = monitor.CapabilityString;
+                        if (capability.Contains("E0("))
+                        {
+                            string[] ss = capability.Split("E0(");
+                            ss = ss[1].Split(")");
+                            ss = ss[0].Split(" ");
+                            if (ss[0] == "03")
+                            {
+                                retcode = SetVCPCode(devMgr, monitor, "0xE0", get_PowerSetting_code(commandLineInput.Options[0].Option_Value.ToUpper())).Result;
+                            }
+                        }
+                        else if (capability.Contains("E0"))
+                        {
+                            switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                            {
+                                case "OFF":
+                                    retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                    break;
+                                case "ON":
+                                    retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                    break;
+                                case "STANDBY":
+                                    retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
+                                    break;
+                            }
+                        }
+                        if (retcode)
+                        {
+                            cli_Response.Result = "PASS";
+                            cli_Response.Message = "N/A";
+                        }
+                        else
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                        }
+                        System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
+            }
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private static string get_PowerSetting_code(string code)
+        {
+            switch (code.ToUpper())
+            {
+                case "OFF": return "0x00";
+                case "ON": return "0x01";
+                case "STANDBY": return "0x02";
+                default: return "0x00";
             }
         }
 
