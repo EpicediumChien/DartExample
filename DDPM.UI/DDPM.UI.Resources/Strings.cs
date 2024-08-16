@@ -62,10 +62,10 @@ namespace DDPM.UI.Common {
         public static readonly string DongleSlotFull = "The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the \"Unpair\" button in the device settings page.";
         public static readonly string PenSettingsCaption = "Pen Settings";
         public static readonly string MouseSettingsCaption = "Mouse Settings";
-        public static readonly string KeyCustomizationCaption = "Key Customization";
+        public static readonly string KeyCustomizationCaption = GetString("Keyboard.2");
         public static readonly string ButtonCustomizationCaption = "Button\nCustomization";
-        public static readonly string CollaborationCaption = "Collaboration";
-        public static readonly string IlluminationCaption = "Illumination";
+        public static readonly string CollaborationCaption = GetString("Keyboard.3");
+        public static readonly string IlluminationCaption = GetString("Keyboard.4");
         public static readonly string TouchScrollCaption = "Touch Scroll Sensitivity";
         public static readonly string TouchScrollInfoTip = "Adjust the Scroll Speed";
         public static readonly string PrimaryButtonCaption = "Primary Mouse Button";
@@ -369,6 +369,14 @@ namespace DDPM.UI.Common {
     public static readonly string AddDeviceKnMmultiDongleAlert = GetString("AddDevice.KnM.10");
     public static readonly string AddDeviceKnMnoDongleAlertKnM = GetString("AddDevice.KnM.11");
     public static readonly string AddDeviceKnMnoDongleAlertHeadset = GetString("AddDevice.KnM.12");
+    public static readonly string DockDongle0 = GetString("Dock.0");
+    public static readonly string DockDongle1 = GetString("Dock.1");
+    public static readonly string Headset0 = GetString("Headset.0");
+    public static readonly string Headset1 = GetString("Headset.1");
+    public static readonly string Headset2 = GetString("Headset.2");
+    public static readonly string Headset3 = GetString("Headset.3");
+
+
     #endregion
     }
 }

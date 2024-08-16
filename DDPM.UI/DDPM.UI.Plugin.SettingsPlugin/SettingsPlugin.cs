@@ -84,8 +84,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             ConfigureServices();
             PrepareHomeDevices();
-        }
-        private void ConfigureServices()
+      Mouse.OverrideCursor = null;
+    }
+    private void ConfigureServices()
         {
             if (_isConfigured)
                 return;

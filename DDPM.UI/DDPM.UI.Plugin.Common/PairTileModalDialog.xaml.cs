@@ -1,31 +1,8 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-
-//using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Ink;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Shapes;
 using DDPM.UI.Common;
-using Dell.Client.Framework.UX.WPF.Controls;
-using static System.Collections.Specialized.BitVector32;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DDPM.UI.Plugin.Common {
   /// <summary>
@@ -47,6 +24,16 @@ namespace DDPM.UI.Plugin.Common {
     private void BacklClick(object sender, MouseButtonEventArgs e) {
       DialogResult = false;
       Close();
+    }
+
+    private void DownloadTile(object sender, MouseButtonEventArgs e) {
+      if(sender is Image img) {
+        var url = img.Tag.ToString() == "G" ? "https://play.google.com/store/apps/details?id=com.thetileapp.tile&pli=1" : "https://apps.apple.com/us/app/tile-find-lost-keys-phone/id664939913";
+        Process.Start(new ProcessStartInfo {
+          FileName = url,
+          UseShellExecute = true
+        });
+      }
     }
   }
 }

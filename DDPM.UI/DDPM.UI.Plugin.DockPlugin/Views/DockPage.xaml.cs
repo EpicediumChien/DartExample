@@ -19,7 +19,7 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
     public partial class DockPage : UserControl
     {
         public static readonly Ioc PluginIoc = new();
-        private readonly string FWU = "Update Firmware";
+        //private readonly string FWU = "Update Firmware";
         private DockPageViewModel? _vm;
         private ILog? _log;
 
@@ -47,13 +47,13 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
                 btnFWU.Visibility = Visibility.Collapsed;
             }
 
-            txtFWUpdate.Text = FWU;
+            //txtFWUpdate.Text = FWU;
 
             txtSystemName1.Text = _vm!.VisiblePairedHostName1;
             txtSystemName2.Text = _vm.VisiblePairedHostName1;
             txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-            txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+            txtFirmware.Text = string.Format(Strings.DockDongle1,_vm.PhysicalDeviceFWVersion);
+            txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);            
         }
 
         #region RightViewHeader

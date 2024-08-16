@@ -73,7 +73,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //Model = "PN5122W";
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
-            PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, Model);
+      PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
 
             RefreshButtonImageFile(PenButtonName.TopButton.ToString());
             RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString());
@@ -447,150 +447,114 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (SelectedBehavior == ButtonBehavior.PressAndHold.ToString())
                     return $"{Strings.PenButtonPressHold}: {tooltip3}";
 
-                return $"{Strings.PenButtonClickOnce}: {tooltip1}\n{Strings.PenButtonDoubleClick}: {tooltip2}\n{Strings.PenButtonPressHold}: {tooltip3}";
+        return $"{Strings.PenButtonClickOnce}: {tooltip1}\n{Strings.PenButtonDoubleClick}: {tooltip2}\n{Strings.PenButtonPressHold}: {tooltip3}";
+      }
+    }
+    public string TopBarrelButtonTooltip {
+      get {
+        string tooltip = Actions.AllActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
+        string parameter = PenAction.TopBarrelButtonClickAction.AssignedAction.Parameter;
+        if(parameter != "") {
+          var arr = parameter.Split('|');
+          if(int.TryParse(arr[0], out int id)) {
+            if(id == 1) {
+              return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
             }
-        }
-
-        public string TopBarrelButtonTooltip
-        {
-            get
-            {
-                string tooltip = Actions.AllActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
-                string parameter = PenAction.TopBarrelButtonClickAction.AssignedAction.Parameter;
-                if (parameter != "")
-                {
-                    var arr = parameter.Split('|');
-                    if (int.TryParse(arr[0], out int id))
-                    {
-                        if (id == 1)
-                        {
-                            return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
-                        }
-                        else
-                        {
-                            return $"{tooltip} : {Actions.OpenRunActions[id]}";
-                        }
-                    }
-                    else
-                    {
-                        return $"{tooltip} : {parameter}";
-                    }
-                }
-                return tooltip;
+            else {
+              return $"{tooltip} : {Actions.OpenRunActions[id]}";
             }
+          }
+          else {
+            return $"{tooltip} : {parameter}";
+          }
         }
-
-        public string BottomBarrelButtonTooltip
-        {
-            get
-            {
-                string tooltip = Actions.AllActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
-                string parameter = PenAction.BottomBarrelButtonClickAction.AssignedAction.Parameter;
-                if (parameter != "")
-                {
-                    var arr = parameter.Split('|');
-                    if (int.TryParse(arr[0], out int id))
-                    {
-                        if (id == 1)
-                        {
-                            return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
-                        }
-                        else
-                        {
-                            return $"{tooltip} : {Actions.OpenRunActions[id]}";
-                        }
-                    }
-                    else
-                    {
-                        return $"{tooltip} : {parameter}";
-                    }
-                }
-                return tooltip;
+        return tooltip;
+      }
+    }
+    public string BottomBarrelButtonTooltip {
+      get {
+        string tooltip = Actions.AllActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
+        string parameter = PenAction.BottomBarrelButtonClickAction.AssignedAction.Parameter;
+        if(parameter != "") {
+          var arr = parameter.Split('|');
+          if(int.TryParse(arr[0], out int id)) {
+            if(id == 1) {
+              return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
             }
-        }
-
-        public void ClearSelectedButton()
-        {
-            if (SelectedButton != "")
-            {
-                RefreshButtonImageFile(SelectedButton);
-                SelectedButton = "";
+            else {
+              return $"{tooltip} : {Actions.OpenRunActions[id]}";
             }
+          }
+          else {
+            return $"{tooltip} : {parameter}";
+          }
         }
-
-        public void RestoreToDefault()
-        {
-            PenAction = new PenActions(Model);
-            ActionList.ExportActionList(PenAction, Model);
-            RefreshButtonInfo();
-            IsRestoreEnable = false;
-            OnPropertyChanged(nameof(IsRestoreEnable));
+        return tooltip;
+      }
+    }
+    public void ClearSelectedButton() {
+      if(SelectedButton != "") {
+        RefreshButtonImageFile(SelectedButton);
+        SelectedButton = "";
+      }
+    }
+    public void RestoreToDefault() {
+      PenAction = new PenActions(Model);
+      ActionList.ExportActionList(PenAction, "PEN");
+      RefreshButtonInfo();
+      IsRestoreEnable = false;
+      OnPropertyChanged(nameof(IsRestoreEnable));
+    }
+    public void RefreshButtonInfo() {
+      if(PenAction.Buttons.Contains(PenButtonName.TopButton)) {
+        RefreshButtonImageFile(PenButtonName.TopButton.ToString(), false, PenButtonName.TopButton.ToString() == SelectedButton);
+        OnPropertyChanged(nameof(TopButtonTooltip));
+        OnPropertyChanged(nameof(TopButtonImageFile));
+      }
+      RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString(), false, PenButtonName.TopBarrelButton.ToString() == SelectedButton);
+      OnPropertyChanged(nameof(TopBarrelButtonTooltip));
+      OnPropertyChanged(nameof(TopBarrelButtonImageFile));
+      RefreshButtonImageFile(PenButtonName.BottomBarrelButton.ToString(), false, PenButtonName.BottomBarrelButton.ToString() == SelectedButton);
+      OnPropertyChanged(nameof(BottomBarrelButtonTooltip));
+      OnPropertyChanged(nameof(BottomBarrelButtonImageFile));
+    }
+    public void UpdateAction(int actionID, string parameter = "") {
+      if(SelectedButton != "") {
+        SelectedAction!.AssignedAction.ID = actionID;
+        SelectedAction.AssignedAction.Parameter = parameter;
+        RefreshButtonInfo();
+        CheckRestoreStatus();
+        ActionList.ExportActionList(PenAction, "PEN");
+      }
+    }
+    public ObservableCollection<int> SuggestedActionsTopButton { get => new(Actions.SuggestedActionsPenTopButton); }
+    public ObservableCollection<int> SuggestedActionsBarrelButton { get => new(Actions.SuggestedActionsPenBarrelButton); }
+    public ObservableCollection<int> ProductivityActionsTopButton { get; set; } = new(Actions.ProductivityActionsPenTopButton);
+    public ObservableCollection<int> ProductivityActionsBarrelButton { get; set; } = new(Actions.ProductivityActionsPenBarrelButton);
+    public ObservableCollection<int> WindowsActionsTopButton { get; set; } = new(Actions.WindowsActionsPenTopButton);
+    public ObservableCollection<int> WindowsActionsBarrelButton { get; set; } = new(Actions.WindowsActionsPenBarrelButton);
+    public ObservableCollection<int> MultimediaActionsTopButton { get; set; } = new(Actions.MultimediaActionsPenTopButton);
+    public ObservableCollection<int> MultimediaActionsBarrelButton { get; set; } = new(Actions.MultimediaActionsPenBarrelButton);
+    public bool IsHoverClickOn {
+      get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn);
+      set {
+        if(SelectedButton == PenButtonName.TopBarrelButton.ToString()) {
+          PenAction.IsTopBarrelHoverClickOn = value;
+          ActionList.ExportActionList(PenAction, "PEN");
         }
-
-        public void RefreshButtonInfo()
-        {
-            if (PenAction.Buttons.Contains(PenButtonName.TopButton))
-            {
-                RefreshButtonImageFile(PenButtonName.TopButton.ToString(), false, PenButtonName.TopButton.ToString() == SelectedButton);
-                OnPropertyChanged(nameof(TopButtonTooltip));
-                OnPropertyChanged(nameof(TopButtonImageFile));
-            }
-            RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString(), false, PenButtonName.TopBarrelButton.ToString() == SelectedButton);
-            OnPropertyChanged(nameof(TopBarrelButtonTooltip));
-            OnPropertyChanged(nameof(TopBarrelButtonImageFile));
-            RefreshButtonImageFile(PenButtonName.BottomBarrelButton.ToString(), false, PenButtonName.BottomBarrelButton.ToString() == SelectedButton);
-            OnPropertyChanged(nameof(BottomBarrelButtonTooltip));
-            OnPropertyChanged(nameof(BottomBarrelButtonImageFile));
+        if(SelectedButton == PenButtonName.BottomBarrelButton.ToString()) {
+          PenAction.IsBottomBarrelHoverClickOn = value;
+          ActionList.ExportActionList(PenAction, "PEN");
         }
-
-        public void UpdateAction(int actionID, string parameter = "")
-        {
-            if (SelectedButton != "")
-            {
-                SelectedAction!.AssignedAction.ID = actionID;
-                SelectedAction.AssignedAction.Parameter = parameter;
-                RefreshButtonInfo();
-                CheckRestoreStatus();
-                ActionList.ExportActionList(PenAction, Model);
-            }
-        }
-
-        public ObservableCollection<int> SuggestedActionsTopButton { get => new(Actions.SuggestedActionsPenTopButton); }
-        public ObservableCollection<int> SuggestedActionsBarrelButton { get => new(Actions.SuggestedActionsPenBarrelButton); }
-        public ObservableCollection<int> ProductivityActionsTopButton { get; set; } = new(Actions.ProductivityActionsPenTopButton);
-        public ObservableCollection<int> ProductivityActionsBarrelButton { get; set; } = new(Actions.ProductivityActionsPenBarrelButton);
-        public ObservableCollection<int> WindowsActionsTopButton { get; set; } = new(Actions.WindowsActionsPenTopButton);
-        public ObservableCollection<int> WindowsActionsBarrelButton { get; set; } = new(Actions.WindowsActionsPenBarrelButton);
-        public ObservableCollection<int> MultimediaActionsTopButton { get; set; } = new(Actions.MultimediaActionsPenTopButton);
-        public ObservableCollection<int> MultimediaActionsBarrelButton { get; set; } = new(Actions.MultimediaActionsPenBarrelButton);
-
-        public bool IsHoverClickOn
-        {
-            get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn);
-            set
-            {
-                if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
-                {
-                    PenAction.IsTopBarrelHoverClickOn = value;
-                    ActionList.ExportActionList(PenAction, Model);
-                }
-                if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
-                {
-                    PenAction.IsBottomBarrelHoverClickOn = value;
-                    ActionList.ExportActionList(PenAction, Model);
-                }
-                OnPropertyChanged();
-                //IsHoverClickToggleText = value ? Strings.On : Strings.Off;
-                OnPropertyChanged(nameof(IsHoverClickToggleText));
-            }
-        }
-
-        public string IsHoverClickToggleText
-        {
-            get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn) ? Strings.On : Strings.Off;
-        }
-
-        public Visibility IsHoverClickVisibility { get; set; } = Visibility.Collapsed;
+        OnPropertyChanged();
+        //IsHoverClickToggleText = value ? Strings.On : Strings.Off;
+        OnPropertyChanged(nameof(IsHoverClickToggleText));
+      }
+    }
+    public string IsHoverClickToggleText {
+      get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn) ? Strings.On : Strings.Off;
+    } 
+    public Visibility IsHoverClickVisibility { get; set; } = Visibility.Collapsed;
 
         private double _windowsPanelParameter = 401;
 

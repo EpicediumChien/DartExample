@@ -49,6 +49,12 @@
                  VerticalAlignment="Top" Width="40" Height="40" />
           <UXControls:UXTextBlock Name="txtDownloadTile" Margin="5,42,0,0" HorizontalAlignment="Left"
                                   Style="{StaticResource TextStyle1}" Cursor="" VerticalAlignment="Top" />
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/DDPM.UI.Resources;component/Resources/Images/DownloadTileA.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="100" Margin="5,6,0,0" Cursor="Hand" MouseLeftButtonDown="DownloadTile" Tag="A" />
+            <Image Source="/DDPM.UI.Resources;component/Resources/Images/DownloadTileG.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="114" Margin="5,6,0,0" Cursor="Hand" MouseLeftButtonDown="DownloadTile" Tag="G" />
+          </StackPanel>
           <Image Source="/DDPM.UI.Resources;component/Resources/Images/DownloadTile.png" Stretch="Uniform" HorizontalAlignment="Left"
                  VerticalAlignment="Top" Width="238" Margin="5,6,0,0" />
           <UXControls:UXTextBlock Name="txtPairTile2" Margin="5,79,0,0" HorizontalAlignment="Left" Width="250" TextWrapping="Wrap"
