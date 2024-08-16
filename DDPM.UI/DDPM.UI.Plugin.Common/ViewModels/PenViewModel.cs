@@ -64,7 +64,7 @@ namespace DDPM.UI.Plugin.ViewModels {
       //Model = "PN5122W";
       //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
-      PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, Model);
+      PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
 
       RefreshButtonImageFile(PenButtonName.TopButton.ToString());
       RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString());
@@ -411,7 +411,7 @@ namespace DDPM.UI.Plugin.ViewModels {
     }
     public void RestoreToDefault() {
       PenAction = new PenActions(Model);
-      ActionList.ExportActionList(PenAction, Model);
+      ActionList.ExportActionList(PenAction, "PEN");
       RefreshButtonInfo();
       IsRestoreEnable = false;
       OnPropertyChanged(nameof(IsRestoreEnable));
@@ -435,7 +435,7 @@ namespace DDPM.UI.Plugin.ViewModels {
         SelectedAction.AssignedAction.Parameter = parameter;
         RefreshButtonInfo();
         CheckRestoreStatus();
-        ActionList.ExportActionList(PenAction, Model);
+        ActionList.ExportActionList(PenAction, "PEN");
       }
     }
     public ObservableCollection<int> SuggestedActionsTopButton { get => new(Actions.SuggestedActionsPenTopButton); }
@@ -451,11 +451,11 @@ namespace DDPM.UI.Plugin.ViewModels {
       set {
         if(SelectedButton == PenButtonName.TopBarrelButton.ToString()) {
           PenAction.IsTopBarrelHoverClickOn = value;
-          ActionList.ExportActionList(PenAction, Model);
+          ActionList.ExportActionList(PenAction, "PEN");
         }
         if(SelectedButton == PenButtonName.BottomBarrelButton.ToString()) {
           PenAction.IsBottomBarrelHoverClickOn = value;
-          ActionList.ExportActionList(PenAction, Model);
+          ActionList.ExportActionList(PenAction, "PEN");
         }
         OnPropertyChanged();
         //IsHoverClickToggleText = value ? Strings.On : Strings.Off;
