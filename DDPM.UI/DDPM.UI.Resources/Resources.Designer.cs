@@ -97,11 +97,38 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wired Connection.
+        /// </summary>
+        internal static string AddDevice_Display_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Display.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your display via HDMI/USB-C port on your system.
+        /// </summary>
+        internal static string AddDevice_Display_1 {
+            get {
+                return ResourceManager.GetString("AddDevice.Display.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dock.
         /// </summary>
         internal static string AddDevice_Dock {
             get {
                 return ResourceManager.GetString("AddDevice.Dock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your Dock via USB port on your system.
+        /// </summary>
+        internal static string AddDevice_Dock_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Dock.0", resourceCulture);
             }
         }
         
@@ -115,11 +142,200 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to For USB wireless receiver free and on-the-go connectivity.
+        /// </summary>
+        internal static string AddDevice_Headset_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power ON headset.
+        /// </summary>
+        internal static string AddDevice_Headset_1 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth.
+        /// </summary>
+        internal static string AddDevice_Headset_2 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered..
+        /// </summary>
+        internal static string AddDevice_Headset_3 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power OFF headset. Hold mic mute button and power ON again..
+        /// </summary>
+        internal static string AddDevice_Headset_4 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pairing will automatically begin after a few seconds.
+        /// </summary>
+        internal static string AddDevice_Headset_5 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your headset via USB port on your system..
+        /// </summary>
+        internal static string AddDevice_Headset_6 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Keyboard\nand Mouse.
         /// </summary>
         internal static string AddDevice_KnM {
             get {
                 return ResourceManager.GetString("AddDevice.KnM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bluetooth Connection.
+        /// </summary>
+        internal static string AddDevice_KnM_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Bluetooth device by pairing it through Windows settings.
+        /// </summary>
+        internal static string AddDevice_KnM_1 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple wireless receivers detected. Unplug all Dell wireless receivers for Keyboard and Mouse. Plug in the one you want to pair..
+        /// </summary>
+        internal static string AddDevice_KnM_10 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No USB wireless receiver connected. Connect your USB wireless receiver, and pair up to six compatible devices..
+        /// </summary>
+        internal static string AddDevice_KnM_11 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No USB wireless receiver connected. Connect a USB wireless receiver for better UC compatibility, lower latency, and more stable connection..
+        /// </summary>
+        internal static string AddDevice_KnM_12 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your keyboard and mouse via USB port on your system.
+        /// </summary>
+        internal static string AddDevice_KnM_13 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slide power switch slider to ON.
+        /// </summary>
+        internal static string AddDevice_KnM_2 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable.
+        /// </summary>
+        internal static string AddDevice_KnM_3 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.
+        /// </summary>
+        internal static string AddDevice_KnM_4 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Settings.
+        /// </summary>
+        internal static string AddDevice_KnM_5 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your USB wireless receiver to your system.
+        /// </summary>
+        internal static string AddDevice_KnM_6 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slide the power switch to OFF..
+        /// </summary>
+        internal static string AddDevice_KnM_7 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold any key/button and slide power to ON.
+        /// </summary>
+        internal static string AddDevice_KnM_8 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep this window open. Pairing will begin after a few seconds. If not, repeat steps 2 &amp; 3 to try again..
+        /// </summary>
+        internal static string AddDevice_KnM_9 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.9", resourceCulture);
             }
         }
         
@@ -169,11 +385,65 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connecting your Pen.
+        /// </summary>
+        internal static string AddDevice_Pen_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Touch your pen tip to the screen.
+        /// </summary>
+        internal static string AddDevice_Pen_1 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows..
+        /// </summary>
+        internal static string AddDevice_Pen_2 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered..
+        /// </summary>
+        internal static string AddDevice_Pen_3 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select &apos;Yes&apos; to confirm pairing on the prompt box to pair your pen.
+        /// </summary>
+        internal static string AddDevice_Pen_4 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Speakerphone\nand Soundbar.
         /// </summary>
         internal static string AddDevice_Speaker {
             get {
                 return ResourceManager.GetString("AddDevice.Speaker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your Speaker or soundbar via USB port on your system..
+        /// </summary>
+        internal static string AddDevice_Speaker_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Speaker.0", resourceCulture);
             }
         }
         
@@ -219,6 +489,15 @@ namespace DDPM.UI.Resources {
         internal static string AddDevice_Webcam {
             get {
                 return ResourceManager.GetString("AddDevice.Webcam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your webcam via USB port on your system.
+        /// </summary>
+        internal static string AddDevice_Webcam_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Webcam.0", resourceCulture);
             }
         }
         

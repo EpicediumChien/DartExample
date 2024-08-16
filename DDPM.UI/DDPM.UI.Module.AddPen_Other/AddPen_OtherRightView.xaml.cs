@@ -10,18 +10,18 @@ namespace DDPM.UI.Module.AddPen_Other
     {
         private readonly AddDeviceViewModel _vm;
 
-        private readonly string Caption = "Connecting your Pen";
-        private readonly string Step1 = "Touch your pen tip to the screen";
-        private readonly string Step2 = "Select 'Yes' to confirm pairing on the prompt box to pair your pen";
+        //private readonly string Caption = "Connecting your Pen";
+        //private readonly string Step1 = "Touch your pen tip to the screen";
+        //private readonly string Step2 = "Select 'Yes' to confirm pairing on the prompt box to pair your pen";
 
         public AddPen_OtherRightView(AddDeviceViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            txtCaption.Text = Caption;
-            txtStep1.Text = Step1;
-            txtStep2.Text = Step2;
+            //txtCaption.Text = Caption;
+            //txtStep1.Text = Step1;
+            //txtStep2.Text = Step2;
         }
     }
 }
