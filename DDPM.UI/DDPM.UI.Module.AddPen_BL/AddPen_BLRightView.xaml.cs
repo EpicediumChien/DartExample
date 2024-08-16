@@ -11,22 +11,22 @@ namespace DDPM.UI.Module.AddPen_BL
     {
         private readonly AddDeviceViewModel _vm;
 
-        private readonly string Caption = "Connecting your Pen";
-        private readonly string Step1 = "Touch your pen tip to the screen";
-        private readonly string Step2 = "Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows.";
-        private readonly string Step3 = "Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.";
-        private readonly string Step3_1 = "Windows Settings";
+        //private readonly string Caption = "Connecting your Pen";
+        //private readonly string Step1 = "Touch your pen tip to the screen";
+        //private readonly string Step2 = "Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows.";
+        //private readonly string Step3 = "Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.";
+        //private readonly string Step3_1 = "Windows Settings";
 
         public AddPen_BLRightView(AddDeviceViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            txtCaption.Text = Caption;
-            txtStep1.Text = Step1;
-            txtStep2.Text = Step2;
-            txtStep3.Text = Step3;
-            txtStep3_1.Text = Step3_1;
+            //txtCaption.Text = Caption;
+            //txtStep1.Text = Step1;
+            //txtStep2.Text = Step2;
+            //txtStep3.Text = Step3;
+            //txtStep3_1.Text = Step3_1;
         }
 
         private void OpenWindowsSettings(object sender, System.Windows.Input.MouseButtonEventArgs e)
