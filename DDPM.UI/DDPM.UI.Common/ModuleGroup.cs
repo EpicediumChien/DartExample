@@ -1,11 +1,6 @@
 ﻿using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -14,31 +9,38 @@ namespace DDPM.UI.Common
     public class ModuleGroup
     {
         #region Module Group Data
+
         public string GroupName { get; set; } = "";
         public ImageSource? GroupIcon { get; set; }
-        #endregion
+
+        #endregion Module Group Data
 
         #region Headers
+
         //Unused
         //private ObservableCollection<RightViewHeader> _groupHeaders = new ObservableCollection<RightViewHeader>();
 
-        #endregion
+        #endregion Headers
 
         #region VbarItem
+
         public string VbarText { get; set; } = "";
         public ImageSource? VbarIcon { get; set; }
         public ControlTemplate? IconTemplate { get; set; }
-        #endregion
+
+        #endregion VbarItem
 
         #region ReightViewHeader
 
         private ObservableCollection<RightViewHeader> _headers = new ObservableCollection<RightViewHeader>();
 
         public int HeaderCount { get => _headers.Count; }
+
         public void AddHeader(string headerText, IDdpmModule module)
         {
             _headers.Add(new RightViewHeader(0, headerText, module));
         }
+
         public void AddHeader(string headerText, Type moduleType)
         {
             _headers.Add(new RightViewHeader(0, headerText, null)
@@ -47,7 +49,6 @@ namespace DDPM.UI.Common
 
         public ObservableCollection<RightViewHeader> Headers { get => _headers; }
         public int HeaderSelectedIndex { get; set; } = 0;
-
 
         //Robert_Lin, 2204-7-26
         /// <summary>
@@ -59,7 +60,7 @@ namespace DDPM.UI.Common
         {
             if (HeaderCount <= 0) return null;
 
-           for (int idx=0; idx<HeaderCount; idx++)
+            for (int idx = 0; idx < HeaderCount; idx++)
             {
                 if (Headers[idx].DdpmModule != null)
                 {
@@ -69,14 +70,13 @@ namespace DDPM.UI.Common
                 else
                 {
                     string moduleType = Headers[idx].ModuleType.ToString();
-                    if (moduleType.Contains(moduleName,StringComparison.OrdinalIgnoreCase))
+                    if (moduleType.Contains(moduleName, StringComparison.OrdinalIgnoreCase))
                         return Headers[idx];
                 }
             }
             return null;
         }
-        #endregion
 
-
+        #endregion ReightViewHeader
     }
 }

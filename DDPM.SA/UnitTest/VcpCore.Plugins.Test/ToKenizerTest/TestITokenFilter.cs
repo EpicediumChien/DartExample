@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VcpCore.Plugins.Test.ToKenizerTest
+﻿namespace VcpCore.Plugins.Test.ToKenizerTest
 {
     public class TestITokenFilter
     {
         [Test]
         public void ITokenFilterTest()
         {
-            
             TokenFilter filter = new TokenFilter();
 
             filter.Name = "MyFilter";
@@ -25,7 +18,7 @@ namespace VcpCore.Plugins.Test.ToKenizerTest
         }
 
         // 创建一个实现 ITokenFilter<Token> 接口的模拟类
-        class TokenFilter : ITokenFilter<Token>
+        private class TokenFilter : ITokenFilter<Token>
         {
             public string Name { get; set; }
             public string Pattern { get; set; }
@@ -35,6 +28,5 @@ namespace VcpCore.Plugins.Test.ToKenizerTest
                 return new Token { Type = "TestType", Value = value };
             }
         }
-
     }
 }

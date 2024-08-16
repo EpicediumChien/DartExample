@@ -1,4 +1,3 @@
-
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
@@ -40,7 +39,6 @@ namespace DDPM.UI.Module.DisplayHotkeys
             get => DdpmCommonHelper.ModuleOwner;
             set { }
         }
-        
 
         public HomeDevice SelectedHomeDevice
         {
@@ -52,20 +50,22 @@ namespace DDPM.UI.Module.DisplayHotkeys
         }
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("DisplayHotkeys.OnSelectedHomeDeviceChanged");
         }
+
         public void OnActivated()
         {
             Trace.WriteLine("DisplayHotkeys.OnActivated");
         }
+
         public void OnDeactivated()
         {
             Trace.WriteLine("DisplayHotkeys.OnDeactivated");
         }
-        #endregion
 
+        #endregion Event Handlers
     }
-
 }

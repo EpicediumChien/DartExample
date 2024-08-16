@@ -16,7 +16,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
         private IDeviceManagerSA? deviceManagerSA;
 
-
         [SetUp]
         public void Setup()
         {

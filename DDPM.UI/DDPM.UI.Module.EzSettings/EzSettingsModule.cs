@@ -1,4 +1,3 @@
-
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
@@ -15,8 +14,8 @@ namespace DDPM.UI.Module.EzSettings
         public EzSettingsModule(IModuleOwner moduleOwner = null)
         {
             _rightView.DataContext = vm;
-
         }
+
         public string ModuleName { get => "EzSettingsModule"; }
 
         public UserControl? GetLeftView()
@@ -28,29 +27,33 @@ namespace DDPM.UI.Module.EzSettings
         {
             return _rightView;
         }
+
         public HomeDevice? SelectedHomeDevice { get; set; }
+
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
             set => vm.ModuleOwner = value;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
-
         }
+
         public void OnActivated()
         {
-
         }
+
         public void OnDeactivated()
         {
-
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

@@ -1,22 +1,20 @@
 ﻿using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Json;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography.Xml;
 using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
-using System.Threading.Tasks;
-using Security = Dell.Client.Framework.Security;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -26,6 +24,7 @@ namespace DDPM.SA.Common.Settings
         public string ColorPreset { get; set; } = string.Empty;
         public string SHA256 { get; set; } = string.Empty;
     }
+
     public class IIC_Metadata
     {
         public string Signature { get; set; } = string.Empty;
@@ -86,7 +85,7 @@ namespace DDPM.SA.Common.Settings
         public static bool SetJsonContentFromSerializedString(string serialized_string, string target_file, out string info, bool isEncrypt = false)
         {
             info = "Success";
-            if(string.IsNullOrEmpty(serialized_string))
+            if (string.IsNullOrEmpty(serialized_string))
             {
                 info = "Null json content as input";
                 return false;
@@ -104,7 +103,7 @@ namespace DDPM.SA.Common.Settings
                 info = "Calculate signature failed." + e.Message;
                 return false;
             }
-            if(string.IsNullOrEmpty(signature))
+            if (string.IsNullOrEmpty(signature))
             {
                 info = "Got null signature";
                 return false;
@@ -134,7 +133,7 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
-            if(string.IsNullOrEmpty(write_string))
+            if (string.IsNullOrEmpty(write_string))
             {
                 info = "Convert protect content to base64 string got null result";
                 return false;
@@ -163,7 +162,7 @@ namespace DDPM.SA.Common.Settings
             }
             //1. Read json content
             string json_content = File.ReadAllText(filePath);
-            if(string.IsNullOrEmpty(json_content))
+            if (string.IsNullOrEmpty(json_content))
             {
                 info = "Null content of json file";
                 Console.WriteLine(info);
@@ -172,7 +171,7 @@ namespace DDPM.SA.Common.Settings
             string serialized;
             try
             {
-                //From base64 string to byte array                
+                //From base64 string to byte array
                 if (isEncrypt)
                 {
                     byte[] read_data = Convert.FromBase64String(json_content);
@@ -190,13 +189,13 @@ namespace DDPM.SA.Common.Settings
                 info = e.Message;
                 return string.Empty;
             }
-            if(string.IsNullOrEmpty(serialized))
+            if (string.IsNullOrEmpty(serialized))
             {
                 info = "Retrieve content of json file failed";
                 Console.WriteLine(info);
                 return string.Empty;
             }
-            // Parse the JSON string into a JObject            
+            // Parse the JSON string into a JObject
             string modifiedJson;
             string signature;
             JObject jObject;
@@ -204,7 +203,7 @@ namespace DDPM.SA.Common.Settings
             {
                 jObject = JObject.Parse(serialized);
                 //3. retrieve signature for comparison
-                signature = (string)jObject["Signature"];                
+                signature = (string)jObject["Signature"];
                 if (!string.IsNullOrEmpty(signature))
                 {
                     // Remove the "signature" property for hash generating
@@ -228,7 +227,7 @@ namespace DDPM.SA.Common.Settings
                 Console.WriteLine(info);
                 return string.Empty;
             }
-            if(jObject == null || jObject.Count == 0)
+            if (jObject == null || jObject.Count == 0)
             {
                 info = "Convert from json content got no object";
                 Console.WriteLine(info);
@@ -242,7 +241,7 @@ namespace DDPM.SA.Common.Settings
                 byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
                 byte[] sign = GetSHA512(body_array, 0, body_array.Length);
                 cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
-                if(string.IsNullOrEmpty(cal_sign))
+                if (string.IsNullOrEmpty(cal_sign))
                 {
                     info = "Null signature from hash calculation";
                     return string.Empty;
@@ -254,7 +253,7 @@ namespace DDPM.SA.Common.Settings
                 return string.Empty;
             }
             //4. Check if signature valid
-            if(cal_sign.ToLower().Equals(signature.ToLower()))
+            if (cal_sign.ToLower().Equals(signature.ToLower()))
                 //5. return serialized string
                 return modifiedJson;
             else
@@ -280,7 +279,6 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Close();
                 }
                 return true;
-
             }
             catch (Exception ex)
             {
@@ -547,7 +545,6 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception)// ex)
             {
-
             }
             return null;
         }
@@ -561,7 +558,7 @@ namespace DDPM.SA.Common.Settings
         /// <returns></returns>
         public static byte[] RsaDecryptByteArrayOverRsa(byte[] dataToDecrypt, string outputFilePath, string privateKey)
         {
-            //byte[] dataToDecrypt = File.ReadAllBytes(inputFilePath);        
+            //byte[] dataToDecrypt = File.ReadAllBytes(inputFilePath);
             try
             {
                 using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096))
@@ -576,7 +573,6 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception)// ex)
             {
-
             }
             return null;
         }
@@ -584,8 +580,8 @@ namespace DDPM.SA.Common.Settings
         public static bool IsFilePathValid(string filePath, out string info)
         {
             info = "Valid";
-            //check return code with Enum PathCheckErrorCodes            
-            PathCheckErrorCodes result = Security.PathHelper.ValidateFilePath(filePath);
+            //check return code with Enum PathCheckErrorCodes
+            PathCheckErrorCodes result = PathHelper.ValidateFilePath(filePath);
             if (result != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"IsFilePathValid: {nameof(result)}";
@@ -597,8 +593,8 @@ namespace DDPM.SA.Common.Settings
         public static bool IsFolderPathValid(string folderPath, out string info)
         {
             info = "Valid";
-            //check return code with Enum PathCheckErrorCodes            
-            PathCheckErrorCodes result = Security.PathHelper.ValidateDirectoryPath(folderPath);
+            //check return code with Enum PathCheckErrorCodes
+            PathCheckErrorCodes result = PathHelper.ValidateDirectoryPath(folderPath);
             if (result != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"IsFolderPathValid: {nameof(result)}";
@@ -616,8 +612,8 @@ namespace DDPM.SA.Common.Settings
         public static bool IsPathSymbolicLinked(string Path, out string info)
         {
             info = "Valid";
-            //check return code with Enum PathCheckErrorCodes            
-            PathRedirectionReturn result = Security.PathHelper.CheckPathRedirection(Path);
+            //check return code with Enum PathCheckErrorCodes
+            PathRedirectionReturn result = PathHelper.CheckPathRedirection(Path);
             if (result != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"IsPathSymboliced: {nameof(result)}";
@@ -679,7 +675,7 @@ namespace DDPM.SA.Common.Settings
                 // In dotnet core, FileSystemAclExtensions.SetAccessControl method is the major function used to update file access right
                 fileInfo.SetAccessControl(fileSecurity);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 info = ex.Message;
                 return false;
@@ -772,7 +768,7 @@ namespace DDPM.SA.Common.Settings
         /// <returns></returns>
         public static bool CheckFileACL(string filePath, out string info, bool isApplyACL = false)
         {
-            if(!File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
                 info = $"CheckFileACL: {filePath} isn't exist.";
                 return false;
@@ -879,7 +875,7 @@ namespace DDPM.SA.Common.Settings
 
         public static bool CheckIfFileCanBeExecuted_Secure(string executablePath, bool NeedElevated = false)
         {
-            if(string.IsNullOrEmpty(executablePath))
+            if (string.IsNullOrEmpty(executablePath))
             {
                 throw new ArgumentException("Empty file path.");
             }
@@ -894,7 +890,7 @@ namespace DDPM.SA.Common.Settings
                 }
 
                 // Check if file exist
-                if(!File.Exists(filePath))
+                if (!File.Exists(filePath))
                 {
                     throw new ArgumentException("File isn't exist. ");
                 }
@@ -905,7 +901,7 @@ namespace DDPM.SA.Common.Settings
                     throw new ArgumentException($"Invalid file path string - {filePath}");
                 }
 
-                // Prevent Path Traversal: check redirection                
+                // Prevent Path Traversal: check redirection
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
                 {
                     throw new PathCheckRedirectionException($"Redirection detected along file path - {filePath}");
@@ -936,6 +932,7 @@ namespace DDPM.SA.Common.Settings
             }
             return true;
         }
+
         private static X509Certificate2 GetCertificate(string filePath)
         {
             X509Certificate2? cert = null;
@@ -977,7 +974,7 @@ namespace DDPM.SA.Common.Settings
 
                 /*
                 *   STEP 1: Create our Authenticode signature verifier
-                *   
+                *
                 *   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
                 */
                 VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;     // fails validation on all errors or if the signing certificate was self signed
@@ -996,10 +993,9 @@ namespace DDPM.SA.Common.Settings
                     Constraints = constraints     // pass in our LeafCertConstraints that contains our pre-computed sha256 subject public key info hash
                 };
 
-
                 /*
                 *   STEP 2: Check our path string for invalid characters, null value, empty value, etc.
-                *   
+                *
                 *   SDL Checklist: Perform Input Validation
                 */
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
@@ -1009,7 +1005,7 @@ namespace DDPM.SA.Common.Settings
 
                 /*
                 *   STEP 3: Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
-                *   
+                *
                 *   SDL Checklist: Prevent Path Traversal
                 */
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
@@ -1019,14 +1015,14 @@ namespace DDPM.SA.Common.Settings
 
                 /*
                 *   STEP 4: Lock the file using Security Library FileLock class
-                *   
+                *
                 *   SDL Checklist: Ensure Authorization and Access Controls (takes care of TOCTOU), Protect Against Brute Force Attacks
                 */
                 using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))     // file lock protects us from TOCTOU attacks
                 {
                     /*
                     *   STEP 5: Verify file ACLs
-                    *   
+                    *
                     *   SDL Checklist: Ensure Authorization and Access Controls
                     */
                     AclChecker aclChecker = new AclChecker();
@@ -1037,7 +1033,7 @@ namespace DDPM.SA.Common.Settings
 
                     /*
                     *   STEP 6: Verify signature of signing certificate
-                    *   
+                    *
                     *   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
                     */
                     var result = verifier.Verify(fileLock);
@@ -1072,12 +1068,12 @@ namespace DDPM.SA.Common.Settings
                 return null;
             }
             byte[] data = File.ReadAllBytes(filePath);
-            if(data == null)
+            if (data == null)
             {
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = Security.CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
             info = "Complete";
             return result;
         }
@@ -1103,7 +1099,7 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = Security.CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
             info = "Complete";
             return result;
         }
@@ -1259,6 +1255,7 @@ namespace DDPM.SA.Common.Settings
                 return true;
             }
         }
+
         //for test purpose to generate public and private key pair, method 2
         private static bool GenerateNewRSAKeyPair(string publicName, string privateName)
         {
@@ -1381,5 +1378,120 @@ namespace DDPM.SA.Common.Settings
             }
             return null;
         }*/
+
+        #region Bruce 0814 Move this method to DDPM.SA.Common
+
+        private enum WTS_INFO_CLASS
+        {
+            WTSUserName = 5,
+            WTSDomainName = 7,
+        }
+
+        [DllImport("Kernel32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] private static extern int WTSGetActiveConsoleSessionId();
+
+        private int WTSGetActiveConsoleSessionId_Public()
+        {
+            return WTSGetActiveConsoleSessionId();
+        }
+
+        [DllImport("Wtsapi32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+
+        private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
+        {
+            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+        }
+
+        [DllImport("Wtsapi32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] private static extern void WTSFreeMemory(IntPtr pointer);
+
+        private void WTSFreeMemory_Public(IntPtr pointer)
+        {
+            WTSFreeMemory(pointer);
+        }
+
+        public string GetActiveUserLocalAppDataPath()
+        {
+            IntPtr buffer;
+            int bytesReturned = 0;
+            int sessionId = WTSGetActiveConsoleSessionId_Public(); // This gets the session ID of the user logged into the console
+            Console.WriteLine($"WTSGetActiveConsoleSessionId: {sessionId}");
+
+            if (WTSQuerySessionInformation_Public(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
+            {
+                string userName = Marshal.PtrToStringAnsi(buffer);
+                WTSFreeMemory_Public(buffer);
+                Console.WriteLine($"WTSQuerySessionInformation: user name ({userName})");
+
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    string userSid = GetUserSid(userName);
+                    if (!string.IsNullOrEmpty(userSid))
+                    {
+                        string regKey = $@"HKEY_USERS\{userSid}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders";
+                        string localAppDataPath = (string)Registry.GetValue(regKey, "Local AppData", null);
+                        Console.WriteLine($"Local app data from registry: {localAppDataPath}");
+                        return localAppDataPath;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Got null user name");
+                }
+            }
+            else
+            {
+                Console.WriteLine("WTSQuerySessionInformation: return false");
+            }
+            return null;
+        }
+
+        private string GetUserSid(string userName)
+        {
+            NTAccount f_normal, f_domain = null;
+            string accountName = $"{Environment.MachineName}\\{userName}";
+            f_normal = new NTAccount(accountName);
+            Console.WriteLine($"GetUserSid: Machine name: {Environment.MachineName}, User name:{userName}");
+            if (!string.IsNullOrEmpty(Environment.UserDomainName))
+            {
+                accountName = $"{Environment.UserDomainName}\\{userName}";
+                Console.WriteLine($"GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
+                f_domain = new NTAccount(Environment.UserDomainName, userName);
+            }
+            //NTAccount f = new NTAccount(accountName);
+            //writelog($"GetUserSid: final using: {accountName}");
+            String sidString;
+            try
+            {
+                SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
+                sidString = s.ToString();
+                Console.WriteLine($"GetUserSid(normal user): SID: {sidString}");
+            }
+            catch (Exception ex)
+            {
+                sidString = null;
+                Console.WriteLine($"GetUserSid(normal user): try translate fail: {ex.Message}");
+
+                //0724 add code that translate normal user and do translate domain user if fail.
+                if (f_domain != null)
+                {
+                    try
+                    {
+                        SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
+                        sidString = s.ToString();
+                        Console.WriteLine($"GetUserSid(domain user): SID: {sidString}");
+                    }
+                    catch (Exception e)
+                    {
+                        sidString = null;
+                        Console.WriteLine($"GetUserSid(domain user): try translate fail: {e.Message}");
+                    }
+                }
+            }
+            return sidString;
+        }
+
+        #endregion Bruce 0814 Move this method to DDPM.SA.Common
     }
 }

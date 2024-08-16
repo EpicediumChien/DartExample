@@ -1,20 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common;
-using Moq;
-using NGA.UnitTest.PrivateObject;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using RegistryUtils;
-using Microsoft.Win32;
-using System.Reflection;
+﻿using NGA.UnitTest.PrivateObject;
 using NUnit.Framework.Internal;
-using DDPM.UI.Interfaces;
-using System.Drawing.Imaging;
+using RegistryUtils;
 
 namespace DDPM.UI.Module.Color.Tests
 {
@@ -28,10 +14,8 @@ namespace DDPM.UI.Module.Color.Tests
         public void Setup()
         {
             registryMonitor_NightLight = new RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
-            privateObject=new PrivateObject(registryMonitor_NightLight);
+            privateObject = new PrivateObject(registryMonitor_NightLight);
         }
-
-
 
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -47,7 +31,7 @@ namespace DDPM.UI.Module.Color.Tests
             {
                 registryMonitor_NightLight.Dispose();
                 Assert.True(true);
-                Assert.That(privateObject.GetFieldOrProperty("_disposed"),Is.EqualTo(true));
+                Assert.That(privateObject.GetFieldOrProperty("_disposed"), Is.EqualTo(true));
             }
             catch (Exception ex)
             {
@@ -58,8 +42,8 @@ namespace DDPM.UI.Module.Color.Tests
         [Test]
         public void TestRegChangeNotifyFilter()
         {
-            var regChangeNotifyFilter=new RegChangeNotifyFilter();
-            registryMonitor_NightLight.RegChangeNotifyFilter=regChangeNotifyFilter;
+            var regChangeNotifyFilter = new RegChangeNotifyFilter();
+            registryMonitor_NightLight.RegChangeNotifyFilter = regChangeNotifyFilter;
             Assert.That(registryMonitor_NightLight.RegChangeNotifyFilter, Is.EqualTo(regChangeNotifyFilter));
 
             privateObject.SetFieldOrProperty("_thread", new Thread(Test));
@@ -69,7 +53,7 @@ namespace DDPM.UI.Module.Color.Tests
             }
             catch (Exception ex)
             {
-                Assert.That(ex.Message,Is.EqualTo( "Monitoring thread is already running"));
+                Assert.That(ex.Message, Is.EqualTo("Monitoring thread is already running"));
             }
         }
 
@@ -80,12 +64,11 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(privateObject.GetFieldOrProperty("_thread"), Is.EqualTo(null));
             Assert.That(result, Is.EqualTo(false));
 
-            privateObject.SetFieldOrProperty("_thread", new Thread(Test));           
+            privateObject.SetFieldOrProperty("_thread", new Thread(Test));
             result = registryMonitor_NightLight.IsMonitoring;
             Assert.That(privateObject.GetFieldOrProperty("_thread"), Is.Not.Null);
             Assert.That(result, Is.EqualTo(true));
         }
-
 
         [Test]
         public void TestStart()
@@ -123,22 +106,21 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-
         [Test]
         public void TestStop()
         {
             //_thread==null
             registryMonitor_NightLight.Stop();
             var getthread = (Thread)privateObject.GetFieldOrProperty("_thread");
-            Assert.That(getthread,Is.EqualTo(null));
+            Assert.That(getthread, Is.EqualTo(null));
 
             //thread!=null
-            Thread thread=new Thread(Test);
+            Thread thread = new Thread(Test);
             thread.Start();
             privateObject.SetFieldOrProperty("_thread", thread);
             registryMonitor_NightLight.Stop();
             getthread = (Thread)privateObject.GetFieldOrProperty("_thread");
-            Assert.IsTrue(getthread.ThreadState== ThreadState.Stopped);
+            Assert.IsTrue(getthread.ThreadState == ThreadState.Stopped);
 
             //if (_disposed)
             privateObject.SetFieldOrProperty("_disposed", true);
@@ -152,19 +134,11 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-
-
-
-
-
-
-
         public void Test()
         {
             Thread.Sleep(5000);
             int x = 112;
         }
-
 
         //[Test]
         //[Apartment(ApartmentState.STA)]
@@ -217,8 +191,6 @@ namespace DDPM.UI.Module.Color.Tests
         //    Assert.IsFalse(isstart);
         //}
 
-
-
         [Test]
         [Apartment(ApartmentState.STA)]
         public void TestRegistryMonitor_ICC()
@@ -226,7 +198,6 @@ namespace DDPM.UI.Module.Color.Tests
             var registryMonitor_ICC = new RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
             Assert.That(registryMonitor_ICC, Is.Not.Null);
         }
-
 
         [Test]
         public void TestDispose_ICC()
@@ -237,7 +208,7 @@ namespace DDPM.UI.Module.Color.Tests
             {
                 registryMonitor_ICC.Dispose();
                 Assert.True(true);
-                var result= privateObject_ICC.GetFieldOrProperty("_disposed");
+                var result = privateObject_ICC.GetFieldOrProperty("_disposed");
                 Assert.That(result, Is.EqualTo(true));
             }
             catch (Exception ex)
@@ -245,7 +216,6 @@ namespace DDPM.UI.Module.Color.Tests
                 Assert.Fail("not invoked");
             }
         }
-
 
         [Test]
         public void TestRegChangeNotifyFilter_ICC()
@@ -266,7 +236,6 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-
         [Test]
         public void TestIsMonitoring_ICC()
         {
@@ -281,8 +250,6 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(privateObject_ICC.GetFieldOrProperty("_thread"), Is.Not.Null);
             Assert.That(result, Is.EqualTo(true));
         }
-
-
 
         [Test]
         public void TestStart_ICC()
@@ -322,7 +289,6 @@ namespace DDPM.UI.Module.Color.Tests
             }
         }
 
-
         [Test]
         public void TestStop_ICC()
         {
@@ -352,7 +318,5 @@ namespace DDPM.UI.Module.Color.Tests
                 Assert.That(ex.Message, Is.EqualTo("This instance is already disposed"));
             }
         }
-
     }
 }
-

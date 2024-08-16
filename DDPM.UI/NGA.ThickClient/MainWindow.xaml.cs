@@ -1,13 +1,13 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using CommunityToolkit.Mvvm.Input;
-using DDPM;
 using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -15,15 +15,10 @@ using Dell.Client.Framework.UX.WPF.Console;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
 using Microsoft.Win32;
-using System;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Screen = System.Windows.Forms.Screen;
 
 namespace NGA.ThickClient
@@ -158,7 +153,7 @@ namespace NGA.ThickClient
         }
 
         /// <summary>
-        ///  When multiple monitors available identifies in which monitor 
+        ///  When multiple monitors available identifies in which monitor
         ///  window is there and calculates height and width of window
         /// </summary>
         /// <param name="isCenterOfScreen">boolean value to make window appear center of screen</param>
@@ -200,10 +195,10 @@ namespace NGA.ThickClient
         }
 
         /// <summary>
-        ///  Shrinks the app window down so that it's height is 
+        ///  Shrinks the app window down so that it's height is
         ///  never more than 75% of the height and width of the usable area.
-        ///  Even in cases where when the app window height would fit, 
-        ///  if the fit is greater than 75%, it shrinks the app window down.       
+        ///  Even in cases where when the app window height would fit,
+        ///  if the fit is greater than 75%, it shrinks the app window down.
         /// </summary>
         /// <param name="screenHeight">Usable screenHeight</param>
         /// <param name="screenWidth">Usable screenWidth</param>
@@ -299,8 +294,10 @@ namespace NGA.ThickClient
                     if (Screen.AllScreens.Length > 1)
                         AdjustWindowSizeBasedOnMonitor();
                     break;
+
                 case WM_QUERYENDSESSION: // Temporary fix: base class sets handled to true
                     break;
+
                 default:
                     base.WndProc(hwnd, msg, wParam, lParam, ref handled);
                     break;
@@ -312,6 +309,7 @@ namespace NGA.ThickClient
         #endregion
 
         #region MainWindow State Event Handlers
+
         private void RegisterEvents(IConsole console)
         {
             console.RegisterForEvent("MainWindow.SetToBottomWindow", SetToBottomWindow);
@@ -327,6 +325,7 @@ namespace NGA.ThickClient
             IntPtr hWnd = new WindowInteropHelper(this).Handle;
             SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
         }
+
         private void MainWindowActivate(object sender, EventManagerArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
@@ -342,6 +341,7 @@ namespace NGA.ThickClient
                 this.Hide();
             }));
         }
+
         private void MainWindowShow(object sender, EventManagerArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
@@ -349,6 +349,7 @@ namespace NGA.ThickClient
                 this.Show();
             }));
         }
+
         private void MainWindowMinimize(object sender, EventManagerArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
@@ -356,6 +357,7 @@ namespace NGA.ThickClient
                 this.WindowState = WindowState.Minimized;
             }));
         }
+
         private void MainWindowNormal(object sender, EventManagerArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
@@ -366,12 +368,13 @@ namespace NGA.ThickClient
         }
 
         [DllImport("user32.dll")]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-        static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
-        const UInt32 SWP_NOSIZE = 0x0001;
-        const UInt32 SWP_NOMOVE = 0x0002;
-        const UInt32 SWP_NOACTIVATE = 0x0010;
-         #endregion
+        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+        private const UInt32 SWP_NOSIZE = 0x0001;
+        private const UInt32 SWP_NOMOVE = 0x0002;
+        private const UInt32 SWP_NOACTIVATE = 0x0010;
+
+        #endregion
     }
 }

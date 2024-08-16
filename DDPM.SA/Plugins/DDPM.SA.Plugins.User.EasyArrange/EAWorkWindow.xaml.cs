@@ -1,18 +1,8 @@
 ﻿using DDPM.Easy.Common;
 using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -24,24 +14,29 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private ArrangeVM VM;
 
         #region ctor
+
         public EAWorkWindow(ArrangeVM vm)
         {
             InitializeComponent();
             VM = vm;
             DataContext = vm;
         }
-        #endregion
+
+        #endregion ctor
 
         #region Init
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //Hide window from Alt+tab
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
         }
-        #endregion
+
+        #endregion Init
 
         #region Working SplitCtrl
+
         private ISplitCtrl? _workingSplit = null;
         private bool _isSplitCtrl0A = false;
 
@@ -49,7 +44,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             this.Dispatcher.Invoke(() =>
             {
-
                 if ((cellCount == 0) && (splitKey == 'A'))
                 {
                     _workingSplit = null;
@@ -71,13 +65,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             });
 
             return true;
-
         }
-        #endregion
+
+        #endregion Working SplitCtrl
 
         #region ILog for EAPlugin
+
         public ILog Log { get; set; }
-        #endregion
+
+        #endregion ILog for EAPlugin
 
         public void RefreshCellRects()
         {
@@ -86,7 +82,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
             double scale = dpiScale.PixelsPerDip;
-
 
             foreach (CellObj objCell in _workingSplit.CellList)
             {

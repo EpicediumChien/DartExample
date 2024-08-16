@@ -1,9 +1,9 @@
-using System.Diagnostics;
-using System.Windows.Controls;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
+using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace DDPM.UI.Module.HeadsetAutomatedActions
 {
@@ -29,22 +29,27 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
         {
             return _rightView;
         }
+
         public HomeDevice SelectedHomeDevice { get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("HeadsetAutomatedActionsModule.OnSelectedHomeDeviceChanged");
         }
+
         public void OnActivated()
         {
             Trace.WriteLine("HeadsetAutomatedActionsModule.OnActivated");
         }
+
         public void OnDeactivated()
         {
             Trace.WriteLine("HeadsetAutomatedActionsModule.OnDeactivated");
         }
-        #endregion
+
+        #endregion Event Handlers
     }
 }

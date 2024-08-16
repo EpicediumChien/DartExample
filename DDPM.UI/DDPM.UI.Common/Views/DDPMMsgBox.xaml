@@ -1,34 +1,92 @@
-﻿<Window x:Class="DDPM.UI.Common.Views.DDPMMsgBox"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DDPM.UI.Common.Views" Background="Transparent"
-        xmlns:controls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
-        mc:Ignorable="d" WindowStyle="None" ResizeMode="NoResize" MouseDown="Window_MouseDown"
-        AllowsTransparency="True" Title="DDPMMsgBox" Height="240" Width="420">
+﻿<Window
+    x:Class="DDPM.UI.Common.Views.DDPMMsgBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DDPM.UI.Common.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="DDPMMsgBox"
+    Width="420"
+    Height="240"
+    AllowsTransparency="True"
+    Background="Transparent"
+    MouseDown="Window_MouseDown"
+    ResizeMode="NoResize"
+    WindowStartupLocation="Manual"
+    WindowStyle="None"
+    mc:Ignorable="d">
     <Grid>
-        <Border Background="#0B172D" CornerRadius="10" BorderThickness="2" BorderBrush="#0D121A">
+        <Border
+            Background="#0B172D"
+            BorderBrush="#0D121A"
+            BorderThickness="2"
+            CornerRadius="10">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <!--  <controls:UXButton Name="close" ButtonType="Tertiary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Foreground="White" Background="Transparent"
-                       Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,15,0" Height="30" Width="30" Click="close_Click"/> -->
-                <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" 
-                       HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,15,0" Height="20" Width="20"  MouseLeftButtonDown="close_Click"/>
-                <controls:UXTextBlock Name="HeaderText" Text="{Binding strTitle}" FontFamily="Roboto" FontSize="20" Margin="24,10,45,24" Foreground="White"/>
-                <controls:UXTextBlock Name="SubHeaderText" MaxWidth="372" MaxHeight="54" Grid.Row="1" FontFamily="Roboto" FontSize="15" Margin="24,0,24,8" Foreground="White"
-                      Text="{Binding strContent}" TextWrapping="WrapWithOverflow" />
-                <StackPanel Name="ButtonPanel" Orientation="Horizontal" Grid.Row="2" Margin="0,20,0,10" >
-                    <controls:UXButton Name="lefe_btn" MinHeight="40" MinWidth="80" Content="Yes" ButtonType="Secondary" HorizontalAlignment="Left" 
-                                       Margin="24,0,8,24" Foreground="White" Click="lefe_btn_Click"/>
-                    <controls:UXButton Name="right_btn" MinHeight="40" MinWidth="80" Content="No" Margin="8,0,24,24" ButtonType="Primary" Foreground="White"
-                       HorizontalAlignment="Right" IconPosition="IconRight" Click="right_btn_Click"/>
-                </StackPanel>            
+                Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,15,15,0" Height="30" Width="30" Click="close_Click" />-->
+                <Image
+                    x:Name="CloseIcon"
+                    Width="20"
+                    Height="20"
+                    Margin="0,15,15,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    MouseLeftButtonDown="close_Click"
+                    Source="/DDPM.UI.Common;component/Resources/Close.png"
+                    Stretch="Fill" />
+                <controls:UXTextBlock
+                    Name="HeaderText"
+                    Margin="24,10,45,24"
+                    FontFamily="Roboto"
+                    FontSize="20"
+                    Foreground="White"
+                    Text="{Binding strTitle}" />
+                <controls:UXTextBlock
+                    Name="SubHeaderText"
+                    Grid.Row="1"
+                    MaxWidth="372"
+                    MaxHeight="54"
+                    Margin="24,0,24,8"
+                    FontFamily="Roboto"
+                    FontSize="15"
+                    Foreground="White"
+                    Text="{Binding strContent}"
+                    TextWrapping="WrapWithOverflow" />
+                <StackPanel
+                    Name="ButtonPanel"
+                    Grid.Row="2"
+                    Margin="0,20,0,10"
+                    Orientation="Horizontal"
+                    Visibility="{Binding isButtonsShown}">
+                    <controls:UXButton
+                        Name="lefe_btn"
+                        MinWidth="80"
+                        MinHeight="40"
+                        Margin="24,0,8,24"
+                        HorizontalAlignment="Left"
+                        ButtonType="Secondary"
+                        Click="lefe_btn_Click"
+                        Content="Yes"
+                        Foreground="White" />
+                    <controls:UXButton
+                        Name="right_btn"
+                        MinWidth="80"
+                        MinHeight="40"
+                        Margin="8,0,24,24"
+                        HorizontalAlignment="Right"
+                        ButtonType="Primary"
+                        Click="right_btn_Click"
+                        Content="No"
+                        Foreground="White"
+                        IconPosition="IconRight" />
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>

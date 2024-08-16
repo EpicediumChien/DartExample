@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.UX.WPF;
@@ -14,7 +16,7 @@ namespace NGA.ThickClient.Interfaces
     /// <summary>
     /// IThickClientHomePagePlugin extends interface of IConsoleHomePagePlugin
     /// </summary>
-    public interface IThickClientHomePagePlugin: IConsoleHomePagePlugin
+    public interface IThickClientHomePagePlugin : IConsoleHomePagePlugin
     {
         /// <summary>
         /// HadTiles
@@ -36,7 +38,7 @@ namespace NGA.ThickClient.Interfaces
         /// </summary>
         /// <param name="titleText">Tile TitleText</param>
         /// <param name="region">region the tile to be placed</param>
-        /// <returns>TileModel</returns>        
+        /// <returns>TileModel</returns>
         [Obsolete("This class is deprecated and will be removed in a future release. Please use IBasicTilePlugin")]
         TileModel? FindTileOnHomePage(string titleText, Guid? region = null);
 
@@ -45,7 +47,7 @@ namespace NGA.ThickClient.Interfaces
         /// </summary>
         /// <param name="position">position of tile</param>
         /// <param name="region">region the tile to be placed</param>
-        /// <returns>TileModel</returns>  
+        /// <returns>TileModel</returns>
         [Obsolete("This class is deprecated and will be removed in a future release. Please use IBasicTilePlugin")]
         TileModel? FindTileOnHomePageAtPosition(int position, Guid? region = null);
 
@@ -64,6 +66,5 @@ namespace NGA.ThickClient.Interfaces
         /// <returns>Returns true if the content is added</returns>
         /// <exception cref = "ArgumentNullException"> Thrown when content is null</exception>
         public Task<bool> AddContentAsync(FrameworkElement content);
-
     }
 }

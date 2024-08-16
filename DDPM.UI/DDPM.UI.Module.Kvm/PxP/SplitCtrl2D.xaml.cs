@@ -1,18 +1,4 @@
-﻿using DDPM.UI.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.Kvm
@@ -31,30 +17,37 @@ namespace DDPM.UI.Module.Kvm
         }
 
         #region Basic
+
         public Type CtrlType => typeof(PBPSplitCtrl2D);
         //ContentControl? ISplit.Content => this;
-        #endregion
+
+        #endregion Basic
 
         #region Creation
+
         public PBPSplitCtrl2D(List<double>? settings = null)
         {
             InitializeComponent();
             //if (settings != null)
             //    SetSettings(settings);
         }
+
         //public ISplit New(List<double>? settings = null)
         //{
         //    return new SplitCtrl2A(settings);
         //}
-        #endregion
+
+        #endregion Creation
 
         #region For Pxp Usage
+
         /// <summary>
         /// The capability Code of PIP, the defult code is used for default settings
         /// </summary>
         public UInt16 PbpCapabilityCode { get; set; } = 0x0025;
 
         private PxpInfo _pxpInfo = new PxpInfo();
+
         public string Description
         {
             get
@@ -68,7 +61,8 @@ namespace DDPM.UI.Module.Kvm
                 _pxpInfo.Description = value;
             }
         }
-        #endregion
+
+        #endregion For Pxp Usage
 
         private void PBP_MouseLeftDown1(object sender, MouseButtonEventArgs e)
         {
@@ -86,6 +80,5 @@ namespace DDPM.UI.Module.Kvm
         {
             vm.PCSwap("PC1", "PC2");
         }
-
     }
 }

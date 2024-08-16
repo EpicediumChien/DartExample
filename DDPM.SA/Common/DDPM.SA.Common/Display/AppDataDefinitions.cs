@@ -1,22 +1,16 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-
 
 namespace DDPM.SA.Common
 {
     public class AppData : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged Members
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string strPropName)
@@ -25,8 +19,8 @@ namespace DDPM.SA.Common
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(strPropName));
         }
-        #endregion
 
+        #endregion INotifyPropertyChanged Members
 
         private string appicon;
 
@@ -37,7 +31,6 @@ namespace DDPM.SA.Common
             {
                 appicon = value;
                 OnPropertyChanged("AppIcon");
-
             }
         }
 
@@ -50,7 +43,6 @@ namespace DDPM.SA.Common
             {
                 appname = value;
                 OnPropertyChanged("AppName");
-
             }
         }
 
@@ -94,7 +86,6 @@ namespace DDPM.SA.Common
 
     public class Test_AddAppCollectionData
     {
-
         public ObservableCollection<AppData> AppsList { get; set; }
         public List<ColorPresetSettings> _monitorConfigs { get; set; }
 
@@ -109,11 +100,9 @@ namespace DDPM.SA.Common
                 INSTANCE._monitorConfigs = new List<ColorPresetSettings>();
             }
 
-
             return INSTANCE;
         }
     }
-
 
     public class Bind_AddFullPage_AppCollectionData
     {
@@ -210,9 +199,7 @@ namespace DDPM.SA.Common
         Auto = 1
     }
 
-
     internal class AppDataDefinitions
     {
     }
-
 }

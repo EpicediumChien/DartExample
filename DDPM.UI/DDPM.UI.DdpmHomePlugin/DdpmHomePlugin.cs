@@ -1,31 +1,26 @@
-
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.UX.WPF;
-using NGA.ThickClient.Interfaces;
-using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
-using DDPMConstants = DDPM.UI.Common.Constants;
-using System.Windows;
-using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
-using DDPM.UI.Plugin.DdpmHomePlugin.Model;
-using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.SA.Common;
-using Dell.Client.Framework.Common.PluginConditions;
-using VcpCore.Common;
-//using VcpCore.Interfaces;
-using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
-using System.Collections.ObjectModel;
-using System.Windows.Threading;
-using System.Windows.Input;
-using Dell.Client.Framework.UX.WPF.Controls;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
-using System;
+using Microsoft.Extensions.DependencyInjection;
+using NGA.ThickClient.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+using System.Windows.Input;
+using VcpCore.Common;
+using DDPMConstants = DDPM.UI.Common.Constants;
+
+//using VcpCore.Interfaces;
+using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -71,6 +66,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         //Device manager related object
         private static IDeviceManagerSA? _deviceManager;
+
         private readonly IPluginManager _pluginManager;
         private IFrameworkPluginConditionNotification? _IDeviceManagerPluginCondition;
         private CancellationTokenSource StartupCancellationTokenSource { get; } = new();
@@ -176,7 +172,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //So uncommented below code
                             //Task.Run(async () => await GetDdpmDevicesAsync(_deviceManager));
 
-                            //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52 
+                            //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
                             _deviceManager.Reset0x52TimerTick(2000);
                             await GetDdpmDevicesAsync(_deviceManager);
 
@@ -189,7 +185,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                     _iconGear.GlowEffect_Start();
                             }
                         }
-                     
                     }
                 }
             }
@@ -221,9 +216,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
                 //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
                 if (e.changedProperty.ToLower().Contains("remove") ||
-                    (e.changedProperty.ToLower().Contains("add")) || 
-                    (e.changedProperty.ToLower().Contains("batterystatuschanged")) || 
-                    (e.changedProperty.ToLower().Contains("batterylevelchanged")) || 
+                    (e.changedProperty.ToLower().Contains("add")) ||
+                    (e.changedProperty.ToLower().Contains("batterystatuschanged")) ||
+                    (e.changedProperty.ToLower().Contains("batterylevelchanged")) ||
                     ((string.Compare(e.changedProperty, "DisplayChanged", true) == 0)))
                 {
                     //Force return to HomePage
@@ -233,7 +228,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //_ = Task.Run(GetDdpmDevicesAsync(_deviceManager));
                     if (_deviceManager != null)
                         _ = GetDdpmDevicesAsync(_deviceManager);
-
 
                     if (e.type == DeviceChangedType.NotifyOnly)
                     {
@@ -248,7 +242,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             ShowDdpmHome();
                         }
                     }
-
                 }
                 else
                 {
@@ -268,12 +261,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     else
                         _log.Info($"DdpmHomePlugin._deviceManager_notifyDeviceDisConnecte() skip : e.changedProperty : {e.changedProperty}");
                 }
-            
             }
-
-
-      
-
         }
 
         private void _deviceManager_notifyDeviceDisConnected(object? sender, EventArgs e)
@@ -399,12 +387,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         {
                             viewModel.IsPleaseWaitVisible = false;
                         }
-
                     }
                 });
             }
         }
-
 
         //Unused
         /// <summary>
@@ -415,7 +401,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"{nameof(DdpmHomePage)} - shown");
             _console.ShowPluginById(PluginId);
         }
-
 
         /// <summary>
         /// Initialize or register services
@@ -436,9 +421,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 .BuildServiceProvider());
 
             _viewModel = (DdpmHomePageViewModel?)PluginIoc.GetService<IDdpmHomePageViewModel>();
-            if (_viewModel != null )
+            if (_viewModel != null)
             {
-                
             }
             _isConfigured = true;
         }
@@ -448,7 +432,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            //_deviceManager.DeviceChanged += _deviceManager_DeviceChanged;         
+            //_deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
             Mouse.OverrideCursor = null;
             _isActived = true;
         }
@@ -474,7 +458,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _iconAddDevice.Visibility = Visibility.Visible;
             if (_iconGear != null)
                 _iconGear.Visibility = Visibility.Visible;
-         }
+        }
 
         [Obsolete]
         public void AddTileToHomePage(TileModel tileModel, int position, Guid? region = null)
@@ -508,7 +492,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return Task.FromResult(false);
         }
 
-        #endregion
+        #endregion Interface IConsolePluginSupportsActivations
 
         public static List<HomeDevice> GetHomeDevices()
         {
@@ -519,6 +503,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
             return new List<HomeDevice>();
         }
+
         public static HomeDevice? GetSelectedHomeDevice()
         {
             IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
@@ -537,7 +522,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //  and show back when exiting from AddDevice plugin.
         //  It should have the same behavior for 'Gear' icon.
         private PathIcon? _iconGear = null;
+
         private PathIcon? _iconAddDevice = null;
+
         private void AddIconsToMasthead(UXMasthead masthead)
         {
             //Add Grear icon, click it will call to OnGreaeIconClicked()
@@ -563,10 +550,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _iconAddDevice.ClickCommand = new RelayCommand(OnAddIconClicked);
                 _iconAddDevice.TooltipText = "Add device";
                 masthead.InsertCustomContent(_iconAddDevice);
-
             }
-
-
 
             if (_console != null)
             {
@@ -600,6 +584,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _iconAddDevice.Visibility = Visibility.Collapsed;
             _console.ShowPluginById(UI.Common.Constants.AddDevicePluginId);
         }
+
         private void ShowSettingsPlugin(object sender, EventManagerArgs e)
         {
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
@@ -616,6 +601,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_iconGear != null)
                 _iconGear.GlowEffect_Start();
         }
+
         //To trigger this event:
         //  IConsole.RaiseEvent("StopGlowEffectOnGearIcon", this, new EventManagerArgs());
         private void StopGlowEffectOnGearIcon(object sender, EventManagerArgs e)
@@ -623,10 +609,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_iconGear != null)
                 _iconGear.GlowEffect_Stop();
         }
-        #endregion
 
+        #endregion Icons on Masthead
 
         #region IDispose
+
         //Robert_Lin, 2024-6-21, when HomePlugin exit, tell VCPCore restore to low polling rate
         public void Dispose()
         {
@@ -645,7 +632,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             if (disposing && _deviceManager != null)
             {
-
                 if (_IDeviceManagerPluginCondition != null)
                 {
                     var pluginCondition = ((IFrameworkPluginConditionNotification)_IDeviceManagerPluginCondition).CurrentConditionAsync();
@@ -659,9 +645,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             _disposed = true;
         }
-        #endregion
+
+        #endregion IDispose
 
         #region SW/FW Update
+
         /// <summary>
         /// Check if any Software/Firmware update available by calling Subangent/DeviceManagerSA.
         /// </summary>
@@ -681,8 +669,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             return false;
         }
-        #endregion
 
+        #endregion SW/FW Update
     }
-
 }

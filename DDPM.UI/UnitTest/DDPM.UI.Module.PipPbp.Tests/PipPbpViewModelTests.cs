@@ -8,11 +8,6 @@ using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using VcpCore.Common;
 
@@ -21,7 +16,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
     [Apartment(ApartmentState.STA)]
     public class PipPbpViewModelTests
     {
-
         private PipPbpViewModel? pipPbpViewModel;
         private PrivateObject? privateObject;
         private Mock<ILog>? logMock;
@@ -38,14 +32,14 @@ namespace DDPM.UI.Module.PipPbp.Tests
         {
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            moduleOwnerMock=new Mock<IModuleOwner>();
+            moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock.Object;
             commandMock = new Mock<ICommand>();
             command = commandMock.Object;
             deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerSAMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
-            DdpmCommonHelper.ModuleOwner=moduleOwner;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice);
             pipPbpViewModel = new PipPbpViewModel();
             privateObject = new PrivateObject(pipPbpViewModel);
@@ -97,7 +91,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.SplitItem_PipLarge, Is.EqualTo(splitItem_PipLarge));
         }
 
-
         [Test]
         public void TestSplitListView_Pbp()
         {
@@ -135,11 +128,10 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.Test2Value, Is.EqualTo("ccc"));
         }
 
-        
         [Test]
         public void TestCloseFullViewCommand()
         {
-            var closeFullViewCommand = command;               
+            var closeFullViewCommand = command;
             pipPbpViewModel.CloseFullViewCommand = closeFullViewCommand;
 
             // Assert
@@ -149,18 +141,17 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestGotoNextCommand()
         {
-            var gotoNextCommand = command;      
+            var gotoNextCommand = command;
             pipPbpViewModel.GotoNextCommand = gotoNextCommand;
 
             // Assert
             Assert.That(pipPbpViewModel.GotoNextCommand, Is.EqualTo(gotoNextCommand));
         }
 
-
         [Test]
         public void TestGotoPrevCommand()
         {
-            var gotoPrevCommand = command;    
+            var gotoPrevCommand = command;
             pipPbpViewModel.GotoPrevCommand = gotoPrevCommand;
 
             // Assert
@@ -180,7 +171,7 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestPipSmallClickCommand()
         {
-            var pipSmallClickCommand = command;    
+            var pipSmallClickCommand = command;
             pipPbpViewModel.PipSmallClickCommand = pipSmallClickCommand;
 
             // Assert
@@ -190,7 +181,7 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestPipLargeClickCommand()
         {
-            var pipLargeClickCommand = command;           
+            var pipLargeClickCommand = command;
             pipPbpViewModel.PipLargeClickCommand = pipLargeClickCommand;
 
             // Assert
@@ -200,7 +191,7 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestPbpItemClickCommand()
         {
-            var pbpItemClickCommand = command;            
+            var pbpItemClickCommand = command;
             pipPbpViewModel.PbpItemClickCommand = pbpItemClickCommand;
 
             // Assert
@@ -209,14 +200,14 @@ namespace DDPM.UI.Module.PipPbp.Tests
 
         [Test]
         public void TestOnFullScreenClicked()
-        {            
+        {
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             var monitorInfo = new MonitorInfo();
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo=monitorInfo;
+            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = monitorInfo;
 
             var spititem = new SplitItem();
             try
@@ -231,16 +222,14 @@ namespace DDPM.UI.Module.PipPbp.Tests
             }
         }
 
-
         [Test]
         public void TestHasPxpCap()
         {
-            bool result= pipPbpViewModel.HasPxpCap(0x11);
+            bool result = pipPbpViewModel.HasPxpCap(0x11);
             Assert.That(result, Is.False);
-            privateObject.SetFieldOrProperty("_pipPbpCaps",new UInt16[2] { 0x11,0x22});
+            privateObject.SetFieldOrProperty("_pipPbpCaps", new UInt16[2] { 0x11, 0x22 });
             result = pipPbpViewModel.HasPxpCap(0x11);
             Assert.That(result, Is.True);
-
         }
 
         [Test]
@@ -250,17 +239,14 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(result, Is.EqualTo(0));
         }
 
-
         [Test]
         public void TestIsFullscreenItemSelected()
         {
             bool result = pipPbpViewModel.IsFullscreenItemSelected;
             Assert.That(result, Is.EqualTo(true));
         }
-        
 
-
-         [Test]
+        [Test]
         public void TestSelectedSplitItem()
         {
             //_selectedSplitItem != null&&_selectedSplitItem == value
@@ -270,8 +256,8 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.SelectedSplitItem, Is.EqualTo(selectedSplitItem));
 
             //_selectedSplitItem != null&&_selectedSplitItem != value
-            privateObject.SetFieldOrProperty("_selectedSplitItem", new SplitItem() { IsSelected=true});
-            pipPbpViewModel.SelectedSplitItem=selectedSplitItem;
+            privateObject.SetFieldOrProperty("_selectedSplitItem", new SplitItem() { IsSelected = true });
+            pipPbpViewModel.SelectedSplitItem = selectedSplitItem;
             // Assert
             Assert.That(pipPbpViewModel.SelectedSplitItem, Is.EqualTo(selectedSplitItem));
             Assert.That(pipPbpViewModel.SelectedSplitItem.IsSelected, Is.EqualTo(true));
@@ -293,7 +279,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.SelectedSplitItem, Is.EqualTo(null));
         }
 
-
         [Test]
         public void TestPipTogglePositionClickCommand()
         {
@@ -307,7 +292,7 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestIsPipItemSelectedy()
         {
-           // Assert
+            // Assert
             Assert.That(pipPbpViewModel.IsPipItemSelected, Is.EqualTo(false));
 
             pipPbpViewModel.SelectedSplitItem = new SplitItem();
@@ -318,7 +303,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.IsPipItemSelected, Is.EqualTo(false));
         }
 
-
         [Test]
         public void TestInputSourceList()
         {
@@ -326,7 +310,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             pipPbpViewModel.InputSourceList = selectedSplitItem;
             Assert.That(pipPbpViewModel.InputSourceList, Is.EqualTo(selectedSplitItem));
         }
-
 
         [Test]
         public void TestMainInputSource()
@@ -336,7 +319,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.MainInputSource, Is.EqualTo(mainInputSource));
         }
 
-
         [Test]
         public void TestSubInputs()
         {
@@ -345,11 +327,10 @@ namespace DDPM.UI.Module.PipPbp.Tests
             Assert.That(pipPbpViewModel.SubInputs, Is.EqualTo(subInputs));
         }
 
-
         [Test]
         public void TestIsBusy()
         {
-            var isBusy=true;
+            var isBusy = true;
             pipPbpViewModel.IsBusy = isBusy;
 
             // Assert
@@ -361,11 +342,10 @@ namespace DDPM.UI.Module.PipPbp.Tests
         {
             Assert.That(pipPbpViewModel.IsVideoSwapComboBoxesVisible, Is.EqualTo(false));
 
-            var _inputSourceList=new List<InputSourceObj>() { new InputSourceObj(),new InputSourceObj(),new InputSourceObj() };
+            var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj(), new InputSourceObj() };
             pipPbpViewModel.InputSourceList = _inputSourceList;
             Assert.That(pipPbpViewModel.IsVideoSwapComboBoxesVisible, Is.EqualTo(true));
         }
-
 
         [Test]
         public void TestIsVideoSwapButtonVisible()
@@ -392,16 +372,16 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestExecuteVideoSwpa()
         {
-            bool result=pipPbpViewModel.ExecuteVideoSwpa();
+            bool result = pipPbpViewModel.ExecuteVideoSwpa();
             Assert.That(result, Is.EqualTo(false));
 
-            pipPbpViewModel.SelectedHomeDevice=new HomeDevice();
+            pipPbpViewModel.SelectedHomeDevice = new HomeDevice();
             result = pipPbpViewModel.ExecuteVideoSwpa();
             Assert.That(result, Is.EqualTo(false));
 
             pipPbpViewModel.SelectedHomeDevice = new HomeDevice() { };
             pipPbpViewModel.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
-            deviceManagerSAMock.Setup(x => x.VideoSwap(It.IsAny<MonitorInfo>(),It.IsAny<UInt16>(), It.IsAny<UInt16>())).Returns(Task.FromResult(true));
+            deviceManagerSAMock.Setup(x => x.VideoSwap(It.IsAny<MonitorInfo>(), It.IsAny<UInt16>(), It.IsAny<UInt16>())).Returns(Task.FromResult(true));
             result = pipPbpViewModel.ExecuteVideoSwpa();
             Assert.That(result, Is.EqualTo(true));
         }
@@ -418,13 +398,13 @@ namespace DDPM.UI.Module.PipPbp.Tests
             PrivateObject privateObjecta = new PrivateObject(device);
             privateObjecta.SetFieldOrProperty("_hasCapability_NetworkKvm", true);
             pipPbpViewModel.SelectedHomeDevice = device;
-            privateObject.SetFieldOrProperty("_isNetworkKvmOn",true);
+            privateObject.SetFieldOrProperty("_isNetworkKvmOn", true);
             result = pipPbpViewModel.IsUsbSwitchButtonVisible;
             Assert.That(result, Is.EqualTo(true));
 
             //SelectedHomeDevice.HasCapability_UsbKvm==true
             pipPbpViewModel.SelectedHomeDevice = new HomeDevice();
-            var monitorinfo=new MonitorInfo();
+            var monitorinfo = new MonitorInfo();
             Dictionary<string, List<string>> CapabilityDic = new Dictionary<string, List<string>>();
             CapabilityDic.Add("EE", new List<string>());
             monitorinfo.CapabilityDic = CapabilityDic;
@@ -458,7 +438,6 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestExecuteUsbSwitch()
         {
-
             pipPbpViewModel.SelectedHomeDevice = new HomeDevice();
             deviceManagerSAMock.Setup(x => x.UsbSwitch1(It.IsAny<MonitorInfo>(), It.IsAny<UInt16>())).Returns(Task.FromResult(true));
             var result = pipPbpViewModel.ExecuteUsbSwitch();
@@ -468,12 +447,12 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestOnActivated()
         {
-            DdpmCommonHelper.ModuleOwner=moduleOwner;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
             deviceManagerSAMock.Setup(x => x.GetOnNKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
-            pipPbpViewModel=new PipPbpViewModel();
+            pipPbpViewModel = new PipPbpViewModel();
 
             try
             {
@@ -485,7 +464,5 @@ namespace DDPM.UI.Module.PipPbp.Tests
                 Assert.Fail("not invoked");
             }
         }
-
-
     }
 }

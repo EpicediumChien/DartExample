@@ -1,15 +1,17 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2023, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft;
 using System.Windows.Input;
 using System.Windows.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NGA.ThickClient.Interfaces;
 
@@ -26,7 +28,7 @@ public class BasicTileModel : ObservableObject
     private string _automationId = string.Empty;
 
     /// <summary>
-    /// Gets or sets Icon        
+    /// Gets or sets Icon
     /// </summary>
     public Geometry? Icon
     {

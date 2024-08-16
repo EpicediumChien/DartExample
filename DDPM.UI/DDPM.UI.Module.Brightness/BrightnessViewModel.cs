@@ -1,29 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
-using DDPM.SA.Common.Settings;
+using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using Dell.Client.Framework.Common;
 using Newtonsoft.Json;
-using DDPM.UI.Common.Views;
-using Dell.Client.Framework.UX.WPF.Dialogs.WPF;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
 using VcpCore.Common;
-using static DDPM.UI.Common.Views.DDPMMsgBox;
-using System.Diagnostics;
-using DDPM.SA.Common.Display;
 using Windows.System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using Dell.Client.Framework.Common;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Brightness.Tests")]
 
@@ -51,6 +40,51 @@ namespace DDPM.UI.Module.Brightness
         private double Contrast_Value = -1;
         private double LuminanceMax_Value = -1;
 
+        //-----------------------------------------//
+
+        private double PR1Brightness_Value = -1;
+        private double PR1Contrast_Value = -1;
+        private double PR2Brightness_Value = -1;
+        private double PR2Contrast_Value = -1;
+
+        private int dUration_1 = -1;
+        private int mIns_1 = -1;
+        private int hOurs_1 = -1;
+        private int dUration_2 = -1;
+        private int mIns_2 = -1;
+        private int hOurs_2 = -1;
+
+        public Debouncer PR1Brightness_Debouncer;
+        public Debouncer PR1Contrast_Debouncer;
+        public Debouncer PR2Brightness_Debouncer;
+        public Debouncer PR2Contrast_Debouncer;
+
+        private string PR1_Name = string.Empty;
+        private string PR2_Name = string.Empty;
+
+        public bool IsPR1Preview_ = false;
+        public bool IsPR2Preview_ = false;
+
+        public string PR1ButtonContent { get; set; } = "Preview Changes";
+        public string PR2ButtonContent { get; set; } = "Preview Changes";
+
+        public CancellationTokenSource PreviewToken = new CancellationTokenSource();
+
+        public List<scheduleInfo> ScheduleMaps = new List<scheduleInfo>();
+
+        public bool IsMouseEnterSchedule_1 { get; set; }
+        public bool IsMouseEnterSchedule_2 { get; set; }
+        public void UpdataScheduleBoaderUI()
+        {
+            NotifyPropertyChanged(nameof(IsMouseEnterSchedule_1));
+            NotifyPropertyChanged(nameof(IsMouseEnterSchedule_2));
+        }
+        public List<int> hOurs { get; } = Enumerable.Range(1, 12).ToList();
+        public List<int> mIns { get; } = Enumerable.Range(0, 60).ToList();
+        public List<int> dUration { get; } = new List<int>() { 0, 15, 30, 45, 60 };
+
+        //-----------------------------------------//
+
         private bool IsSynchronizeMonitor = false;
         private bool IsGetSynchronizeMonitor = false;
         private bool IsBrightnessEnable = false;
@@ -71,6 +105,7 @@ namespace DDPM.UI.Module.Brightness
             get => _BrightnessImage;
             set => SetProperty(ref _BrightnessImage, value);
         }
+
         public ImageSource? ContrastImage
         {
             get => _ContrastImage;
@@ -100,6 +135,7 @@ namespace DDPM.UI.Module.Brightness
                 return IsBrightnessEnable;
             }
         }
+
         public string BrightnessOpacity
         {
             get
@@ -111,6 +147,7 @@ namespace DDPM.UI.Module.Brightness
                 return "0.5";
             }
         }
+
         public Visibility GreayoutAlart
         {
             get
@@ -126,6 +163,7 @@ namespace DDPM.UI.Module.Brightness
         #region hotkey property
 
         private string _brightnessMinsKey = "None";
+
         public string BrightnessMinsKey
         {
             get => _brightnessMinsKey;
@@ -136,7 +174,9 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("BrightnessMinsKey");
             }
         }
+
         private string _brightnessAddKey = "None";
+
         public string BrightnessAddKey
         {
             get => _brightnessAddKey;
@@ -147,7 +187,9 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("BrightnessAddKey");
             }
         }
+
         private string _contrastMinsKey = "None";
+
         public string ContrastMinsKey
         {
             get => _contrastMinsKey;
@@ -158,7 +200,9 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("ContrastMinsKey");
             }
         }
+
         private string _contrastAddKey = "None";
+
         public string ContrastAddKey
         {
             get => _contrastAddKey;
@@ -170,8 +214,8 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-
         private string _luminanceMinsKey = "None";
+
         public string LuminanceMinsKey
         {
             get => _luminanceMinsKey;
@@ -184,6 +228,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private string _luminanceAddKey = "None";
+
         public string LuminanceAddKey
         {
             get => _luminanceAddKey;
@@ -194,7 +239,8 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("LuminanceAddKey");
             }
         }
-        #endregion
+
+        #endregion hotkey property
 
         public void Invoke_RefreshHotkeySettings()
         {
@@ -207,6 +253,7 @@ namespace DDPM.UI.Module.Brightness
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(ApartmentState.STA);
         }
+
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.SelectedHomeDevice.MonitorInfo.edid).Result;
@@ -214,7 +261,6 @@ namespace DDPM.UI.Module.Brightness
 
             if (curHotkey.HotkeyInfo.Count > 0)
             {
-
                 foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
                 {
                     List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
@@ -225,26 +271,31 @@ namespace DDPM.UI.Module.Brightness
                             hotkeys.Clear();
                             BrightnessMinsKey = swHortcutText;
                             break;
+
                         case HotkeyType.BrightnessIncrease:
                             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                             hotkeys.Clear();
                             BrightnessAddKey = swHortcutText;
                             break;
+
                         case HotkeyType.ContrastReduce:
                             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                             hotkeys.Clear();
                             ContrastMinsKey = swHortcutText;
                             break;
+
                         case HotkeyType.ContrastIncrease:
                             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                             hotkeys.Clear();
                             ContrastAddKey = swHortcutText;
                             break;
+
                         case HotkeyType.LuminanceReduce:
                             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                             hotkeys.Clear();
                             LuminanceMinsKey = swHortcutText;
                             break;
+
                         case HotkeyType.LuminanceIncrease:
                             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                             hotkeys.Clear();
@@ -254,6 +305,7 @@ namespace DDPM.UI.Module.Brightness
                 }
             }
         }
+
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process
@@ -265,6 +317,7 @@ namespace DDPM.UI.Module.Brightness
             IsBrightnessEnable = !(bool)e.Tag;
             NotifyPropertyChanged(nameof(BrightnessEnable));
         }
+
         public void UpdateHDRStatus()
         {
             bool HDRStatus = DdpmCommonHelper.DeviceManagerSA.GetHDRStatus(MyModule.SelectedHomeDevice.MonitorInfo).Result;
@@ -309,7 +362,7 @@ namespace DDPM.UI.Module.Brightness
             else if (e.vcpcode.Equals("10"))
             {
                 MonitorInfo? mo = DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo;
-                if (mo == null)
+                if (mo == null || (!(e.monitor.Equals(mo))))
                     return;
                 //check if the same as active monitor and same vcp changed monitor
                 if (SelectedHomeDevice == null || SelectedHomeDevice.MonitorInfo == null)
@@ -318,7 +371,7 @@ namespace DDPM.UI.Module.Brightness
                     return;
                 if (!SelectedHomeDevice.MonitorInfo.DisplayName.ToUpper().Equals(e.monitor.DisplayName.ToUpper()))
                     return;
-                
+
                 Luminance_Value = Convert.ToDouble(e.value);
                 Brightness_Value = Convert.ToDouble(e.value);
 
@@ -328,7 +381,7 @@ namespace DDPM.UI.Module.Brightness
             else if (e.vcpcode.Equals("12"))
             {
                 MonitorInfo? mo = DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo;
-                if (mo == null)
+                if (mo == null || (!(e.monitor.Equals(mo))))
                     return;
                 //check if the same as active monitor and same vcp changed monitor
                 if (SelectedHomeDevice == null || SelectedHomeDevice.MonitorInfo == null)
@@ -357,7 +410,7 @@ namespace DDPM.UI.Module.Brightness
             isLuminanceSupport = Visibility.Collapsed;
             isScheduleSupport = Visibility.Collapsed;
 
-            //Task.Run(() => { 
+            //Task.Run(() => {
             //IsBusy = true;
             BrightnessImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Brightness.png");
             ContrastImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Contrast.png");
@@ -368,8 +421,14 @@ namespace DDPM.UI.Module.Brightness
             Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
             Luminance_Debouncer = new Debouncer(1000, Set_Luminance_Value);
 
+            PR1Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
+            PR1Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
+            PR2Contrast_Debouncer = new Debouncer(1000, Set_Contrast_Value);
+            PR2Brightness_Debouncer = new Debouncer(1000, Set_Brightness_Value);
+
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
         }
+
         private void RefreshUI()
         {
             NotifyPropertyChanged("isNormalBrightness");
@@ -395,10 +454,12 @@ namespace DDPM.UI.Module.Brightness
                 Update_AutoColorTempStatus(Start_ALSConfig.isAutoColorTemp);
                 Update_PrimaryMonitorSyncStatus(Start_ALSConfig.isPrimaryMonitorSync);
                 Update_AutoBrightnessRangeLevelStatus(Start_ALSConfig.AutoBrightnessRangeLevel);
-				Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
+                Update_SupportedPrimaryMonitorSync(Start_ALSConfig.isAutoBrightness, Start_ALSConfig.isAutoColorTemp);
             }
         }
+
         private bool _isSynchronizeDisabled;
+
         public bool IsSynchronizeDisabled
         {
             get { return _isSynchronizeDisabled; }
@@ -408,6 +469,7 @@ namespace DDPM.UI.Module.Brightness
                 OnPropertyChanged(nameof(IsSynchronizeDisabled));
             }
         }
+
         private void InitComponentData()
         {
             Trace.WriteLine($"1. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
@@ -447,8 +509,6 @@ namespace DDPM.UI.Module.Brightness
                     //    }
                     //}
                 }
-
-
 
                 Trace.WriteLine($"5. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                 //Check synchronize setting
@@ -511,7 +571,6 @@ namespace DDPM.UI.Module.Brightness
                 {
                     IsSynchronizeDisabled = true;
                     isShowSynchronize = Visibility.Collapsed;
-
                 }
                 else if (Start_ALSConfig.isAutoBrightness == true || Start_ALSConfig.isAutoColorTemp == true)//Only check if there are more than one ALS monitors.
                 {
@@ -545,6 +604,7 @@ namespace DDPM.UI.Module.Brightness
         {
             InitComponentData();
         }
+
         private void RunWorkerCompleted_RefreshBrightnessPage(object sender, RunWorkerCompletedEventArgs e)
         {
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
@@ -577,6 +637,7 @@ namespace DDPM.UI.Module.Brightness
             else
                 UpdateBrightnessContrast();
         }
+
         private void RunWorkerCompleted_RefreshManualValue(object sender, RunWorkerCompletedEventArgs e)
         {
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
@@ -590,6 +651,57 @@ namespace DDPM.UI.Module.Brightness
                 {
                     NotifyPropertyChanged("BrightnessValue");
                     NotifyPropertyChanged("ContrastValue");
+                }
+            }));
+
+            Invoke_RefreshScheduleValue();
+        }
+
+        public void Invoke_RefreshScheduleValue()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += DoWork_RefreshScheduleValue;
+            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshScheduleValue;
+            bw.RunWorkerAsync();
+        }
+
+        private void DoWork_RefreshScheduleValue(object sender, DoWorkEventArgs e)
+        {
+            if (isLuminanceSupport == Visibility.Visible)
+            {
+                //UpdateLuminance();
+            }
+            else
+                UpdateScheduleInfo();
+        }
+
+        private void RunWorkerCompleted_RefreshScheduleValue(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+            {
+                if (isLuminanceSupport == Visibility.Visible)
+                {
+                    //NotifyPropertyChanged("LuminanceValue");
+                    //NotifyPropertyChanged("LuminanceMaxValue");
+                }
+                else
+                {
+                    NotifyPropertyChanged("PR1Name");
+                    NotifyPropertyChanged("PR2Name");
+                    NotifyPropertyChanged("hOurs1");
+                    NotifyPropertyChanged("mIns1");
+                    NotifyPropertyChanged("dUration1");
+                    NotifyPropertyChanged("hOurs2");
+                    NotifyPropertyChanged("mIns2");
+                    NotifyPropertyChanged("dUration2");
+                    NotifyPropertyChanged("PR1BrightnessValue");
+                    NotifyPropertyChanged("PR1ContrastValue");
+                    NotifyPropertyChanged("PR2BrightnessValue");
+                    NotifyPropertyChanged("PR2ContrastValue");
                 }
             }));
         }
@@ -618,6 +730,682 @@ namespace DDPM.UI.Module.Brightness
                 }
             }
         }
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+        public bool IsPR1Preview
+        {
+            get
+            {
+                return IsPR1Preview_;
+            }
+            set
+            {
+                IsPR1Preview_ = value;
+                PR1ButtonContent = (value) ? "Stop Preview" : "Preview Changes";
+                NotifyPropertyChanged("IsPR1Preview");
+                NotifyPropertyChanged("IsPRPreview");
+                NotifyPropertyChanged("PR1ButtonContent");
+            }
+        }
+
+        public bool IsPR2Preview
+        {
+            get
+            {
+                return IsPR2Preview_;
+            }
+            set
+            {
+                IsPR2Preview_ = value;
+                PR2ButtonContent = (value) ? "Stop Preview" : "Preview Changes";
+                NotifyPropertyChanged("IsPR2Preview");
+                NotifyPropertyChanged("IsPRPreview");
+                NotifyPropertyChanged("PR2ButtonContent");
+            }
+        }
+
+        public bool IsPRPreview
+        {
+            get
+            {
+                return (IsPR1Preview || IsPR2Preview);
+            }
+        }
+
+        public string PR1Name
+        {
+            get
+            {
+                return PR1_Name;
+            }
+            set
+            {
+                PR1_Name = value;
+                NotifyPropertyChanged("PR1Name");
+            }
+        }
+
+        public string PR2Name
+        {
+            get
+            {
+                return PR2_Name;
+            }
+            set
+            {
+                PR2_Name = value;
+                NotifyPropertyChanged("PR2Name");
+            }
+        }
+
+        public int hOurs1
+        {
+            get
+            {
+                return hOurs_1;
+            }
+            set
+            {
+                hOurs_1 = value;
+                NotifyPropertyChanged("hOurs1");
+            }
+        }
+
+        public int mIns1
+        {
+            get
+            {
+                return mIns_1;
+            }
+            set
+            {
+                mIns_1 = value;
+                NotifyPropertyChanged("mIns1");
+            }
+        }
+
+        public int dUration1
+        {
+            get
+            {
+                return dUration_1;
+            }
+            set
+            {
+                dUration_1 = value;
+                NotifyPropertyChanged("dUration1");
+            }
+        }
+
+        public int hOurs2
+        {
+            get
+            {
+                return hOurs_2;
+            }
+            set
+            {
+                hOurs_2 = value;
+                NotifyPropertyChanged("hOurs2");
+            }
+        }
+
+        public int mIns2
+        {
+            get
+            {
+                return mIns_2;
+            }
+            set
+            {
+                mIns_2 = value;
+                NotifyPropertyChanged("mIns2");
+            }
+        }
+
+        public int dUration2
+        {
+            get
+            {
+                return dUration_2;
+            }
+            set
+            {
+                dUration_2 = value;
+                NotifyPropertyChanged("dUration2");
+            }
+        }
+
+        public double PR1BrightnessValue
+        {
+            get
+            {
+                if (PR1Brightness_Value < 0)
+                {
+                    if (isLuminanceSupport.Equals(Visibility.Visible))
+                    {
+                        PR1Brightness_Value = 75;
+                        //NotifyPropertyChanged("BrightnessValue");
+
+                        return PR1Brightness_Value;
+                    }
+                    else
+                    {
+                        //if (isNormalBrightness.Equals(Visibility.Visible))
+                        //    return Get_Brightness_Value();
+                        //else
+                        return 0;
+                    }
+                }
+                else
+                    return PR1Brightness_Value;
+            }
+
+            set
+            {
+                PR1Brightness_Value = value;
+                PR1Brightness_Debouncer.Debounce(value);
+                NotifyPropertyChanged("PR1BrightnessValue");
+            }
+        }
+
+        public double PR2BrightnessValue
+        {
+            get
+            {
+                if (PR2Brightness_Value < 0)
+                {
+                    if (isLuminanceSupport.Equals(Visibility.Visible))
+                    {
+                        PR2Brightness_Value = 75;
+                        //NotifyPropertyChanged("BrightnessValue");
+
+                        return PR2Brightness_Value;
+                    }
+                    else
+                    {
+                        //if (isNormalBrightness.Equals(Visibility.Visible))
+                        //    return Get_Brightness_Value();
+                        //else
+                        return 0;
+                    }
+                }
+                else
+                    return PR2Brightness_Value;
+            }
+
+            set
+            {
+                PR2Brightness_Value = value;
+                PR2Brightness_Debouncer.Debounce(value);
+                NotifyPropertyChanged("PR2BrightnessValue");
+            }
+        }
+
+        public double PR1ContrastValue
+        {
+            get
+            {
+                if (PR1Contrast_Value < 0)
+                {
+                    if (isLuminanceSupport.Equals(Visibility.Visible))
+                    {
+                        PR1Contrast_Value = 75;
+                        //NotifyPropertyChanged("ContrastValue");
+
+                        return PR1Contrast_Value;
+                    }
+                    else
+                    {
+                        //if (isNormalBrightness.Equals(Visibility.Visible))
+                        //    return Get_Contrast_Value();
+                        //else
+                        return 0;
+                    }
+                }
+                else
+                    return PR1Contrast_Value;
+            }
+
+            set
+            {
+                PR1Contrast_Value = value;
+                PR1Contrast_Debouncer.Debounce(value);
+                NotifyPropertyChanged("PR1ContrastValue");
+            }
+        }
+
+        public double PR2ContrastValue
+        {
+            get
+            {
+                if (PR2Contrast_Value < 0)
+                {
+                    if (isLuminanceSupport.Equals(Visibility.Visible))
+                    {
+                        PR2Contrast_Value = 75;
+                        //NotifyPropertyChanged("ContrastValue");
+
+                        return PR2Contrast_Value;
+                    }
+                    else
+                    {
+                        //if (isNormalBrightness.Equals(Visibility.Visible))
+                        //    return Get_Contrast_Value();
+                        //else
+                        return 0;
+                    }
+                }
+                else
+                    return PR2Contrast_Value;
+            }
+
+            set
+            {
+                PR2Contrast_Value = value;
+                PR2Contrast_Debouncer.Debounce(value);
+                NotifyPropertyChanged("PR2ContrastValue");
+            }
+        }
+
+        public void GetScheduleInfo()
+        {
+            var ScheduleMaps_string = string.Empty;
+
+            if (SelectedHomeDevice == null)
+                return;
+
+            if (DdpmCommonHelper.Settings_Cache == null)
+                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if (ScheduleMaps == null)
+                ScheduleMaps = new List<scheduleInfo>();
+
+            if (ScheduleMaps.Count < 1)
+            {
+                ScheduleMaps_string = DdpmCommonHelper.Settings_Cache.UserSettings.Schedule;
+                if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
+                    ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
+            }
+
+            if (ScheduleMaps != null && ScheduleMaps.Count > 0)
+            {
+                bool find = false;
+
+                foreach (scheduleInfo TMP in ScheduleMaps)
+                {
+                    if (TMP.Monitor.Equals(SelectedHomeDevice.MonitorInfo.edid))
+                    {
+                        find = true;
+
+                        PR1Name = TMP.Pre1Name;
+                        PR2Name = TMP.Pre2Name;
+                        hOurs1 = TMP.Hours1;
+                        mIns1 = TMP.Mins1;
+                        dUration1 = TMP.Duration1;
+                        hOurs2 = TMP.Hours2;
+                        mIns2 = TMP.Mins2;
+                        dUration2 = TMP.Duration2;
+                        PR1Brightness_Value = TMP.Brightness1;
+                        PR1Contrast_Value = TMP.Contrast1;
+                        PR2Brightness_Value = TMP.Brightness2;
+                        PR2Contrast_Value = TMP.Contrast2;
+
+                        break;
+                    }
+                }
+
+                if (!find)
+                {
+                    PR1Name = string.Empty;
+                    PR2Name = string.Empty;
+                    hOurs1 = 8;
+                    mIns1 = 0;
+                    dUration1 = 60;
+                    hOurs2 = 5;
+                    mIns2 = 0;
+                    dUration2 = 60;
+                    PR1Brightness_Value = 75;
+                    PR1Contrast_Value = 75;
+                    PR2Brightness_Value = 50;
+                    PR2Contrast_Value = 50;
+                }
+            }
+            else
+            {
+                PR1Name = string.Empty;
+                PR2Name = string.Empty;
+                hOurs1 = 8;
+                mIns1 = 0;
+                dUration1 = 60;
+                hOurs2 = 5;
+                mIns2 = 0;
+                dUration2 = 60;
+                PR1Brightness_Value = 75;
+                PR1Contrast_Value = 75;
+                PR2Brightness_Value = 50;
+                PR2Contrast_Value = 50;
+            }
+
+            NotifyPropertyChanged("PR1Name");
+            NotifyPropertyChanged("PR2Name");
+            NotifyPropertyChanged("hOurs1");
+            NotifyPropertyChanged("mIns1");
+            NotifyPropertyChanged("dUration1");
+            NotifyPropertyChanged("hOurs2");
+            NotifyPropertyChanged("mIns2");
+            NotifyPropertyChanged("dUration2");
+            NotifyPropertyChanged("PR1BrightnessValue");
+            NotifyPropertyChanged("PR1ContrastValue");
+            NotifyPropertyChanged("PR2BrightnessValue");
+            NotifyPropertyChanged("PR2ContrastValue");
+        }
+
+        public void CloseSchedule()
+        {
+            var ScheduleMaps_string = string.Empty;
+
+            if (DdpmCommonHelper.Settings_Cache == null)
+                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if (ScheduleMaps == null)
+                ScheduleMaps = new List<scheduleInfo>();
+
+            if (ScheduleMaps.Count < 1)
+            {
+                ScheduleMaps_string = DdpmCommonHelper.Settings_Cache.UserSettings.Schedule;
+                if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
+                    ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
+            }
+
+            if (ScheduleMaps != null && ScheduleMaps.Count > 0)
+            {
+                foreach (scheduleInfo TMP in ScheduleMaps)
+                {
+                    if (TMP.Monitor.Equals(SelectedHomeDevice.MonitorInfo.edid))
+                    {
+                        TMP.IsEnable = false;
+                        break;
+                    }
+                }
+
+                ScheduleMaps_string = JsonConvert.SerializeObject(ScheduleMaps, Formatting.Indented);
+            }
+
+            DdpmCommonHelper.Settings_Cache.UserSettings.Schedule = ScheduleMaps_string;
+            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
+        }
+
+        public bool CheckIsTimeOverlap()
+        {
+            bool rc = false;
+            if (hOurs1 > -1 && hOurs2 > -1 && mIns1 > -1 && mIns2 > -1 && dUration1 > -1 && dUration2 > -1)
+            {
+                var CurDateTime = DateTime.Now;
+                var Hour_PR1 = (hOurs1 < 12) ? hOurs1 : (hOurs1 - 12);
+                var Hour_PR2 = (hOurs2 < 12) ? (hOurs2 + 12) : hOurs2;
+                var Min_PR1 = mIns1;
+                var Min_PR2 = mIns2;
+                var Duration_PR1 = dUration1;
+                var Duration_PR2 = dUration2;
+                var PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0);
+                var Pre_PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1);
+                var PR1Time_ADD1D = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddDays(1);
+                var Pre_PR1Timee_ADD1D = (new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1)).AddDays(1);
+                var PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0);
+                var Pre_PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0).AddMinutes(Duration_PR2 * -1);
+
+                bool IsPR1NotCorrectSet = (DateTime.Compare(Pre_PR2Time, PR1Time) < 0);
+                bool IsPR2NotCorrectSet = (DateTime.Compare(Pre_PR1Timee_ADD1D, PR2Time) < 0);
+
+                if (IsPR1NotCorrectSet || IsPR2NotCorrectSet)
+                    rc = true;
+                else rc = false;
+            }
+            return rc;
+        }
+
+        public void CalculateNowValue()
+        {
+            if (hOurs1 > -1 && hOurs2 > -1 && mIns1 > -1 && mIns2 > -1 && dUration1 > -1 && dUration2 > -1)
+            {
+                var CurDateTime = DateTime.Now;
+                var Brightness_PR1 = PR1BrightnessValue;
+                var Brightness_PR2 = PR2BrightnessValue;
+                var Brightness_difference = Brightness_PR1 - Brightness_PR2;
+                var Contrast_PR1 = PR1ContrastValue;
+                var Contrast_PR2 = PR2ContrastValue;
+                var Contrast_difference = Contrast_PR1 - Contrast_PR2;
+                bool IsBrightnessPR1Plus = Brightness_difference > 0 ? true : false;
+                bool IsBrightnessPR2Plus = Brightness_difference > 0 ? false : true;
+                bool IsContrastPR1Plus = Contrast_difference > 0 ? true : false;
+                bool IsContrastPR2Plus = Contrast_difference > 0 ? false : true;
+                var Hour_PR1 = (hOurs1 < 12) ? hOurs1 : (hOurs1 - 12);
+                var Hour_PR2 = (hOurs2 < 12) ? (hOurs2 + 12) : hOurs2;
+                var Min_PR1 = mIns1;
+                var Min_PR2 = mIns2;
+                var Duration_PR1 = dUration1;
+                var Duration_PR2 = dUration2;
+                var PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0);
+                var Pre_PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1);
+                var PR1Time_ADD1D = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddDays(1);
+                var Pre_PR1Timee_ADD1D = (new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1)).AddDays(1);
+                var PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0);
+                var Pre_PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0).AddMinutes(Duration_PR2 * -1);
+                if (Brightness_difference < 0) Brightness_difference = Brightness_difference * -1;
+                if (Contrast_difference < 0) Contrast_difference = Contrast_difference * -1;
+                var PerStepValue = 5;
+                if (CurDateTime.Hour < 12)  // AM
+                {
+                    if (DateTime.Compare(CurDateTime, PR1Time) > 0) //CurDateTime is later than PR1Time.
+                    {
+                        if (DateTime.Compare(CurDateTime, Pre_PR2Time) > 0)  //CurDateTime is later than Pre_PR2Time.
+                        {
+                            var BrightnessSteps = Brightness_difference / PerStepValue;
+                            var BrightnessSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / BrightnessSteps;
+                            var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / BrightnessSteps_min);
+
+                            var ContrastSteps = Contrast_difference / PerStepValue;
+                            var ContrastSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / ContrastSteps;
+                            var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / ContrastSteps_min);
+
+                            if (IsBrightnessPR2Plus)
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    BrightnessValue = Brightness_PR1 + (PerStepValue * Brightness_steps);
+                            }
+                            else
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    BrightnessValue = Brightness_PR1 - (PerStepValue * Brightness_steps);
+                            }
+
+                            if (IsContrastPR2Plus)
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    ContrastValue = Contrast_PR1 + (PerStepValue * Contrast_steps);
+                            }
+                            else
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    ContrastValue = Contrast_PR1 - (PerStepValue * Contrast_steps);
+                            }
+                        }
+                        else  //CurDateTime is same as or earlier than Pre_PR2Time
+                        {
+                            if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                            {
+                                BrightnessValue = Brightness_PR1;
+                                ContrastValue = Contrast_PR1;
+                            }
+                        }
+                    }
+                    else if (DateTime.Compare(CurDateTime, PR1Time) == 0) //The same as PR1Time
+                    {
+                        if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                        {
+                            BrightnessValue = Brightness_PR1;
+                            ContrastValue = Contrast_PR1;
+                        }
+                    }
+                    else //CurDateTime is earlier than PR1Time
+                    {
+                        if (DateTime.Compare(CurDateTime, Pre_PR1Time) > 0)  //CurDateTime is later than Pre_PR1Time.
+                        {
+                            var BrightnessSteps = Brightness_difference / PerStepValue;
+                            var BrightnessSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / BrightnessSteps;
+                            var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / BrightnessSteps_min);
+
+                            var ContrastSteps = Contrast_difference / PerStepValue;
+                            var ContrastSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / ContrastSteps;
+                            var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / ContrastSteps_min);
+
+                            if (IsBrightnessPR1Plus)
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    BrightnessValue = Brightness_PR2 + (PerStepValue * Brightness_steps);
+                            }
+                            else
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    BrightnessValue = Brightness_PR2 - (PerStepValue * Brightness_steps);
+                            }
+
+                            if (IsContrastPR1Plus)
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    ContrastValue = Contrast_PR2 + (PerStepValue * Contrast_steps);
+                            }
+                            else
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    ContrastValue = Contrast_PR2 - (PerStepValue * Contrast_steps);
+                            }
+                        }
+                        else  //CurDateTime is same as  or  earlier than Pre_PR1Time
+                        {
+                            if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                            {
+                                BrightnessValue = Brightness_PR2;
+                                ContrastValue = Contrast_PR2;
+                            }
+                        }
+                    }
+                }
+                else //PM
+                {
+                    if (DateTime.Compare(CurDateTime, PR2Time) > 0) //CurDateTime is later than PR2Time.
+                    {
+                        if (DateTime.Compare(CurDateTime, Pre_PR1Timee_ADD1D) > 0)  //CurDateTime is later than Pre_PR1Timee_ADD1D.
+                        {
+                            var BrightnessSteps = Brightness_difference / PerStepValue;
+                            var BrightnessSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / BrightnessSteps;
+                            var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / BrightnessSteps_min);
+
+                            var ContrastSteps = Contrast_difference / PerStepValue;
+                            var ContrastSteps_min = (PR1Time - Pre_PR1Time).TotalMinutes / ContrastSteps;
+                            var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR1Time).TotalMinutes / ContrastSteps_min);
+
+                            if (IsBrightnessPR1Plus)
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    BrightnessValue = Brightness_PR2 + (PerStepValue * Brightness_steps);
+                            }
+                            else
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    BrightnessValue = Brightness_PR2 - (PerStepValue * Brightness_steps);
+                            }
+
+                            if (IsContrastPR1Plus)
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    ContrastValue = Contrast_PR2 + (PerStepValue * Contrast_steps);
+                            }
+                            else
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    ContrastValue = Contrast_PR2 - (PerStepValue * Contrast_steps);
+                            }
+                        }
+                        else  //CurDateTime is same as or earlier than Pre_PR1Timee_ADD1D
+                        {
+                            if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                            {
+                                BrightnessValue = Brightness_PR2;
+                                ContrastValue = Contrast_PR2;
+                            }
+                        }
+                    }
+                    else if (DateTime.Compare(CurDateTime, PR2Time) == 0) //The same as PR2Time.
+                    {
+                        if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                        {
+                            BrightnessValue = Brightness_PR2;
+                            ContrastValue = Contrast_PR2;
+                        }
+                    }
+                    else //CurDateTime is earlier than PR2Time.
+                    {
+                        if (DateTime.Compare(CurDateTime, Pre_PR2Time) > 0)  //CurDateTime is later than Pre_PR2Time.
+                        {
+                            var BrightnessSteps = Brightness_difference / PerStepValue;
+                            var BrightnessSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / BrightnessSteps;
+                            var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / BrightnessSteps_min);
+
+                            var ContrastSteps = Contrast_difference / PerStepValue;
+                            var ContrastSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / ContrastSteps;
+                            var Contrast_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / ContrastSteps_min);
+
+                            if (IsBrightnessPR2Plus)
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    BrightnessValue = Brightness_PR1 + (PerStepValue * Brightness_steps);
+                            }
+                            else
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    BrightnessValue = Brightness_PR1 - (PerStepValue * Brightness_steps);
+                            }
+
+                            if (IsContrastPR2Plus)
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    ContrastValue = Contrast_PR1 + (PerStepValue * Contrast_steps);
+                            }
+                            else
+                            {
+                                if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                                    ContrastValue = Contrast_PR1 - (PerStepValue * Contrast_steps);
+                            }
+                        }
+                        else  //CurDateTime is same as  or  earlier than Pre_PR2Time
+                        {
+                            if ((!IsMouseEnterSchedule_1 && !IsMouseEnterSchedule_2) && (!IsPR1Preview && !IsPR2Preview))
+                            {
+                                BrightnessValue = Brightness_PR1;
+                                ContrastValue = Contrast_PR1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void StopScheduleManger()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.StopSchedulerManger();
+        }
+
+        public void StartScheduleManger(int millisecond)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.StartSchedulerManger(millisecond);
+        }
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
         public bool IsSynchronize
         {
@@ -654,7 +1442,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         //if (isNormalBrightness.Equals(Visibility.Visible))
                         //    return Get_Brightness_Value();
-                        //else 
+                        //else
                         return 0;
                     }
                 }
@@ -683,6 +1471,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("BrightnessValue");
             }
         }
+
         /// <summary>
         /// Detect the status of the PrimaryMonitorSync and obtain the current number of monitors that support the ALS function.
         /// </summary>
@@ -753,7 +1542,7 @@ namespace DDPM.UI.Module.Brightness
                     //NotifyPropertyChanged("LuminanceValue");
 
                     return Luminance_Value;
-                    //}                        
+                    //}
                 }
                 else
                     return Luminance_Value;
@@ -781,7 +1570,7 @@ namespace DDPM.UI.Module.Brightness
                         //NotifyPropertyChanged("LuminanceMaxValue");
 
                         return LuminanceMax_Value;
-                    //}                    
+                    //}
                 }
                 else*/ //0703 update to fix luminance issue since get property is earlier than here
                 return LuminanceMax_Value;
@@ -796,7 +1585,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 IsSynchronizeMonitor = DdpmCommonHelper.Settings_Cache.UserSettings.IsSynchronizemonitor;
                 IsGetSynchronizeMonitor = true;
-            }       
+            }
             return IsSynchronizeMonitor;
         }
 
@@ -810,13 +1599,19 @@ namespace DDPM.UI.Module.Brightness
             {
                 //if (Brightness_Value < 0)
                 //{
-                //    Brightness_Value = Convert.ToDouble((uint)(long)obj.value);                    
+                //    Brightness_Value = Convert.ToDouble((uint)(long)obj.value);
                 //}
                 //else
                 Brightness_Value = Convert.ToDouble((uint)(long)obj.value);
             }
             NotifyPropertyChanged("BrightnessValue");
             return Brightness_Value;
+        }
+
+        public void UpdateScheduleInfo()
+        {
+            if (PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
+                GetScheduleInfo();
         }
 
         public void UpdateBrightnessContrast()
@@ -831,7 +1626,6 @@ namespace DDPM.UI.Module.Brightness
             Trace.WriteLine($"2.3. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
             //NotifyPropertyChanged("ContrastValue");
             //Trace.WriteLine($"2.4. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
-
         }
 
         public void UpdateLuminance()
@@ -854,7 +1648,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 //if (Luminance_Value < 0)
                 //{
-                //    Luminance_Value = Convert.ToDouble((uint)(long)obj.value);                    
+                //    Luminance_Value = Convert.ToDouble((uint)(long)obj.value);
                 //}
                 //else
                 Luminance_Value = Convert.ToDouble((uint)(long)obj.value);
@@ -876,9 +1670,9 @@ namespace DDPM.UI.Module.Brightness
             return LuminanceMax_Value;
         }
 
-
-        private void Set_Luminance_Value(double value)
+        private void Set_Luminance_Value(object value_)
         {
+            var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
 
             DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x10, nNewValue);
@@ -886,8 +1680,9 @@ namespace DDPM.UI.Module.Brightness
             //NotifyPropertyChanged("LuminanceValue");
         }
 
-        private void Set_Brightness_Value(double value)
+        private void Set_Brightness_Value(object value_)
         {
+            var value = Convert.ToDouble(value_);
             uint nNewValue = Convert.ToUInt32(value);
 
             if (IsSynchronize)
@@ -914,7 +1709,7 @@ namespace DDPM.UI.Module.Brightness
             {
                 //if (Contrast_Value < 0)
                 //{
-                //    Contrast_Value = Convert.ToDouble((uint)(long)obj.value);                    
+                //    Contrast_Value = Convert.ToDouble((uint)(long)obj.value);
                 //}
                 //else
                 Contrast_Value = Convert.ToDouble((uint)(long)obj.value);
@@ -924,8 +1719,9 @@ namespace DDPM.UI.Module.Brightness
             return Contrast_Value;
         }
 
-        private void Set_Contrast_Value(double value)
+        private void Set_Contrast_Value(object value_)
         {
+            var value = Convert.ToDouble(value_);
 
             uint nNewValue = Convert.ToUInt32(value);
 
@@ -937,7 +1733,6 @@ namespace DDPM.UI.Module.Brightness
                         DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x12, nNewValue);
                 }
             }
-
             else
                 DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(ModuleOwner.SelectedHomeDevice.MonitorInfo, 0x12, nNewValue);
 
@@ -958,13 +1753,16 @@ namespace DDPM.UI.Module.Brightness
         //
 
         #region Expander Groups - toggle Expander (Group)
+
         private int _expanderGroup = 0;
+
         public int ExpanderGroup
         {
             get => _expanderGroup;
             set => SetProperty(ref _expanderGroup, value);
         }
-        #endregion
+
+        #endregion Expander Groups - toggle Expander (Group)
 
         public Visibility isScheduleSupport { get; set; } = Visibility.Collapsed;
         public Visibility isNormalBrightness { get; set; } = Visibility.Visible;
@@ -1003,6 +1801,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #region ALS functions
+
         public Visibility isAlsSupported { get; set; } = Visibility.Collapsed;
 
         /// <summary>
@@ -1016,9 +1815,11 @@ namespace DDPM.UI.Module.Brightness
         {
             return DdpmCommonHelper.DeviceManagerSA.SetALSFeatureValue(SelectedHomeDevice.MonitorInfo, Start_ALSConfig, ALSFeatureQueryType.All, "").Result;
         }
+
         public bool SupportedAutoBrightness { get; set; } = true;
 
         private bool _autoBrightnessStatus = false;
+
         /// <summary>
         /// Binding Auto Brightness element
         /// </summary>
@@ -1058,6 +1859,7 @@ namespace DDPM.UI.Module.Brightness
                 }
             }
         }
+
         /// <summary>
         /// Auto Brightness Binding data
         /// </summary>
@@ -1069,8 +1871,9 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("AutoBrightnessRangeLevelVisible");
             NotifyPropertyChanged("AutoBrightnessRangeLevelVisible_invert");
         }
+
         /// <summary>
-        /// Binding Auto Brightness String 
+        /// Binding Auto Brightness String
         /// </summary>
         public string AutoBrightness_String
         {
@@ -1101,6 +1904,7 @@ namespace DDPM.UI.Module.Brightness
                 //Update_SupportedPrimaryMonitorSync(_autoBrightnessStatus, value);
             }
         }
+
         /// <summary>
         /// Auto Color Temp Binding data
         /// </summary>
@@ -1110,6 +1914,7 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("AutoColorTempStatus");
             NotifyPropertyChanged("AutoColorTemp_String");
         }
+
         /// <summary>
         /// Binding AutoColorTemp String element
         /// </summary>
@@ -1119,6 +1924,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private bool _supportedPrimaryMonitorSync = true;
+
         /// <summary>
         /// Comtrol PrimaryMonitorSyncStatus element
         /// </summary>
@@ -1157,6 +1963,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("PrimaryMonitorSync_String");
             }
         }
+
         /// <summary>
         /// Update PrimaryMonitorSyncStatus element
         /// </summary>
@@ -1167,6 +1974,7 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged("PrimaryMonitorSyncStatus");
             NotifyPropertyChanged("PrimaryMonitorSync_String");
         }
+
         /// <summary>
         /// PrimaryMonitorSync String Binding data
         /// </summary>
@@ -1174,6 +1982,7 @@ namespace DDPM.UI.Module.Brightness
         {
             get => Start_ALSConfig.isPrimaryMonitorSync ? "ON" : "OFF";
         }
+
         /// <summary>
         /// Control AutoBrightnessRangeLevel component
         /// </summary>
@@ -1187,6 +1996,7 @@ namespace DDPM.UI.Module.Brightness
                     return Visibility.Collapsed;
             }
         }
+
         /// <summary>
         /// Control AutoBrightnessRangeLevel component
         /// </summary>
@@ -1200,7 +2010,9 @@ namespace DDPM.UI.Module.Brightness
                     return Visibility.Visible;
             }
         }
+
         private List<AutoBrightnessRangeLevel> _autoBrightnessRangeLevel { get; set; }
+
         public void Update_AutoBrightnessRangeLevelStatus(List<AutoBrightnessRangeLevel> value)
         {
             if (_autoBrightnessRangeLevel == null || _autoBrightnessRangeLevel[0].level_value != value[0].level_value)
@@ -1217,8 +2029,10 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
             }
         }
+
         public int AutoBrightnessSelectedIndex { get; set; } = 0;
         public List<string> AutoBrightnessRangeLevel { get; set; } = new List<string>() { "Low", "Mid", "High" }; //mapping to 40%, 60%, 100%
+
         /// <summary>
         /// AutoBrightnessRangeLevel String Binding data
         /// </summary>
@@ -1236,6 +2050,7 @@ namespace DDPM.UI.Module.Brightness
                     return "Brightness level: 100%";
             }
         }
+
         /// <summary>
         /// AutoBrightnessRangeLevel SelectedIndex Binding source
         /// </summary>
@@ -1263,6 +2078,7 @@ namespace DDPM.UI.Module.Brightness
                 }
             }
         }
+
         /// <summary>
         /// Control PrimaryMonitorSync component
         /// </summary>
@@ -1276,6 +2092,7 @@ namespace DDPM.UI.Module.Brightness
                     return Visibility.Collapsed;
             }
         }
+
         /// <summary>
         /// Control PrimaryMonitorSync component
         /// </summary>
@@ -1289,6 +2106,7 @@ namespace DDPM.UI.Module.Brightness
                     return Visibility.Visible;
             }
         }
+
         public void Update_SupportedPrimaryMonitorSync(bool isAutoBrightness, bool isAutoColorTemp)
         {
             if (isAutoBrightness == false && isAutoColorTemp == false)
@@ -1339,17 +2157,20 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        #endregion
+        #endregion ALS functions
 
         public Visibility isShowSynchronize { get; set; } = Visibility.Visible;
 
         #region UI Enable Flags
+
         private bool _isBusy = true;
+
         public bool IsBusy
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        #endregion
+
+        #endregion UI Enable Flags
     }
 }

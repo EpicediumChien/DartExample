@@ -1,15 +1,17 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2023, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 namespace NGA.ThickClient.Interfaces;
 
 /// <summary>
-/// 
+///
 /// </summary>
 public interface ISuggestionPlugin
 {
@@ -38,4 +40,3 @@ public interface ISuggestionPlugin
     /// <exception cref="InvalidOperationException">This exception is thrown if the suggestion plugin is not in running condition</exception>
     Task<bool> SuggestionExistsAsync(SuggestionModel suggestionModel);
 }
-

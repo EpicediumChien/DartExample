@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 using VcpCore.Common;
 using static VcpCore.Plugins.EDIDReader;
 
@@ -58,23 +55,19 @@ namespace VcpCore.Plugins
                         {
                             result = true;
                         }
-
                     }
                     catch (Exception) { }
                 }
-
             }
             catch (Exception) { result = false; }
 
             return result;
         }
 
-
         public static string ConvertManufacturerID(string hexManufacturerID)
         {
             if (string.IsNullOrEmpty(hexManufacturerID) || hexManufacturerID.Length < 4)
                 return "";
-
 
             int num = int.Parse(hexManufacturerID.Substring(0, 2), NumberStyles.HexNumber);
             int num2 = int.Parse(hexManufacturerID.Substring(2, 2), NumberStyles.HexNumber);

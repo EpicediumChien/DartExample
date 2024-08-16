@@ -1,23 +1,13 @@
 using DDPM.UI.Common;
-using DDPM.UI.Interfaces;
+using DDPM.UI.Common.Models;
 using DDPM.UI.Module.AddDisplay;
-using DDPM.UI.Plugin.AddDevicePlugin;
-using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
+using DDPM.UI.Module.AddWebcam;
 using DDPM.UI.Plugin.DisplayPlugin.ViewModels;
 using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF;
-using System.Windows.Media;
-using DDPM.UI.Plugin.Common;
-using DDPM.UI.Module.AddWebcam;
-using System.Windows.Input;
 using Moq;
-using System.Windows.Controls;
-using Dell.Client.Framework.Common;
-using System;
-using DDPM.SA.Common;
-using DDPM.UI.Common.Models;
 using System.Collections.ObjectModel;
-using DDPM.UI.Module.Color;
+using System.Windows.Controls;
+using System.Windows.Input;
 using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Tests
@@ -25,9 +15,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
     [Apartment(ApartmentState.STA)]
     public class DisplayPageViewModelTests
     {
-        DisplayPageViewModel? displayPageViewModel;
+        private DisplayPageViewModel? displayPageViewModel;
         private readonly AddDeviceViewModel? _vm;
-
 
         [SetUp]
         public void Setup()
@@ -36,15 +25,15 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             {
                 new System.Windows.Application();
             }
-            displayPageViewModel =new DisplayPageViewModel();
+            displayPageViewModel = new DisplayPageViewModel();
         }
 
         [Test]
         public void TestModuleGroups()
         {
             var moduleGroups = new List<ModuleGroup>();
-            displayPageViewModel.ModuleGroups=moduleGroups;
-            Assert.That(displayPageViewModel.ModuleGroups,Is.EqualTo(moduleGroups));
+            displayPageViewModel.ModuleGroups = moduleGroups;
+            Assert.That(displayPageViewModel.ModuleGroups, Is.EqualTo(moduleGroups));
         }
 
         [Test]
@@ -83,9 +72,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             groupSelIdx = 1;
             displayPageViewModel.GroupSelIdx = groupSelIdx;
             Assert.That(displayPageViewModel.GroupSelIdx, Is.EqualTo(groupSelIdx));
-            Assert.That(displayPageViewModel.RightViewHeaders.Count,Is.EqualTo(1));
+            Assert.That(displayPageViewModel.RightViewHeaders.Count, Is.EqualTo(1));
         }
-
 
         [Test]
         public void TestGroupCount()
@@ -99,7 +87,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Monitor.png", "DDPM.UI.Resources")}};
             displayPageViewModel.ModuleGroups = moduleGroups;
             Assert.That(displayPageViewModel.ModuleGroups, Is.EqualTo(moduleGroups));
-            var result= displayPageViewModel.GroupCount;
+            var result = displayPageViewModel.GroupCount;
             Assert.Greater(result, 0);
         }
 
@@ -109,7 +97,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             //ModuleGroups.Count==0;
             Assert.That(displayPageViewModel.VbarItems, Is.Not.Null);
         }
-
 
         [Test]
         public void TestVbarSelectedIndex()
@@ -150,7 +137,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             Assert.That(displayPageViewModel.RightViewHeaders.Count, Is.EqualTo(1));
         }
 
-
         [Test]
         public void TestVbarItemClickCommand()
         {
@@ -171,7 +157,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
         {
             //selGroup == null
             var leftView = new UserControl();
-            displayPageViewModel.LeftView= leftView;
+            displayPageViewModel.LeftView = leftView;
             var result = displayPageViewModel.LeftView;
             Assert.That(result, Is.EqualTo(leftView));
 
@@ -194,12 +180,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             };
             moduleGroup.AddHeader("Webcam", new AddWebcamModule(_vm!));
             groups.Add(moduleGroup);
-            displayPageViewModel.ModuleGroups = groups;            
+            displayPageViewModel.ModuleGroups = groups;
             displayPageViewModel.LeftView = leftView;
-            result= displayPageViewModel.LeftView;
+            result = displayPageViewModel.LeftView;
             Assert.That(result, Is.EqualTo(null));
         }
-
 
         [Test]
         public void TestRightView()
@@ -231,7 +216,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             groups.Add(moduleGroup);
             displayPageViewModel.ModuleGroups = groups;
             displayPageViewModel.RightView = rightView;
-            result= displayPageViewModel.RightView;
+            result = displayPageViewModel.RightView;
             Assert.That(result, Is.Not.Null);
         }
 
@@ -264,13 +249,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             Assert.That(displayPageViewModel.RightViewModuleName, Is.EqualTo("AddWebcamModule"));
         }
 
-
         [Test]
         public void TestRightViewHeaderSelectedIndex()
         {
             //SelectedGroup==null
             int rightViewHeaderSelectedIndex = 1;
-            displayPageViewModel.RightViewHeaderSelectedIndex=rightViewHeaderSelectedIndex;
+            displayPageViewModel.RightViewHeaderSelectedIndex = rightViewHeaderSelectedIndex;
             Assert.That(displayPageViewModel.RightViewHeaderSelectedIndex, Is.EqualTo(0));
 
             //SelectedGroup!=null
@@ -331,7 +315,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
         public void TestRightViewHeaders()
         {
             //SelectedGroup==null&&ModuleGroups.Count==0
-            var rightViewHeaders =new ObservableCollection<RightViewHeader>();
+            var rightViewHeaders = new ObservableCollection<RightViewHeader>();
             displayPageViewModel.RightViewHeaders = rightViewHeaders;
             Assert.That(displayPageViewModel.RightViewHeaders, Is.EqualTo(rightViewHeaders));
 
@@ -355,10 +339,9 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             groups.Add(moduleGroup);
             displayPageViewModel.ModuleGroups = groups;
             displayPageViewModel.RightViewHeaders = rightViewHeaders;
-            displayPageViewModel.VbarSelectedIndex = 0;    
+            displayPageViewModel.VbarSelectedIndex = 0;
             Assert.That(displayPageViewModel.RightViewHeaders, Is.Not.Null);
         }
-
 
         [Test]
         public void TestSelectedGroup()
@@ -405,12 +388,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             }
         }
 
-
         [Test]
         public void TestHomeDevices()
         {
             var homeDevices = new List<HomeDevice>();
-            displayPageViewModel.HomeDevices=homeDevices;
+            displayPageViewModel.HomeDevices = homeDevices;
             Assert.That(displayPageViewModel.HomeDevices, Is.EqualTo(homeDevices));
         }
 
@@ -422,7 +404,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             Assert.That(displayPageViewModel.HomeDeviceCount, Is.EqualTo(homeDevices.Count));
         }
 
-
         [Test]
         public void TestSelectedHomeDevice()
         {
@@ -431,7 +412,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             Assert.That(displayPageViewModel.SelectedHomeDevice, Is.EqualTo(selectedHomeDevice));
         }
 
-
         [Test]
         public void TestSelectedMonitorInfo()
         {
@@ -439,7 +419,5 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
             displayPageViewModel.SelectedMonitorInfo = selectedMonitorInfo;
             Assert.That(displayPageViewModel.SelectedMonitorInfo, Is.EqualTo(selectedMonitorInfo));
         }
-
-
     }
 }

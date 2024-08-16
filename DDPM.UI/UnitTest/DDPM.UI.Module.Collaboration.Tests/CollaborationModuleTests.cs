@@ -1,14 +1,13 @@
-﻿using NUnit.Framework;
-using Moq;
-using System.Windows.Controls;
+﻿using DDPM.SA.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Module.Collaboration;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
-using NGA.UnitTest.PrivateObject;
 using Dell.Client.Framework.UX.WPF;
-using DDPM.SA.Common;
+using Moq;
+using NGA.UnitTest.PrivateObject;
+using NUnit.Framework;
+using System.Windows.Controls;
 
 namespace DDPM.UI.Module.Collaboration.Test
 {

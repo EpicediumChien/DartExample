@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDPM.SA.Common
+﻿namespace DDPM.SA.Common
 {
     /// <summary>
     /// Popup內容包
@@ -18,10 +11,12 @@ namespace DDPM.SA.Common
         public bool IsOnlyUpdate { get; set; }
         public bool StayOpen { get; set; }
         public int Timeout { get; set; }
+
         /// <summary>
         /// Popup事件回傳的物件
         /// </summary>
         public object Object { get; set; }
+
         public PopupContentPackage()
         {
             IsInfo = true;

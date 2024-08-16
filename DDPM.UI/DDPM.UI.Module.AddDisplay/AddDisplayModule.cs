@@ -1,41 +1,54 @@
-using System.Diagnostics;
-using System.Windows.Controls;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
+using System.Diagnostics;
+using System.Windows.Controls;
 
-namespace DDPM.UI.Module.AddDisplay {
-  public class AddDisplayModule : IDdpmModule {
-    readonly UserControl? _leftView = null;
-    readonly UserControl? _rightView;
+namespace DDPM.UI.Module.AddDisplay
+{
+    public class AddDisplayModule : IDdpmModule
+    {
+        private readonly UserControl? _leftView = null;
+        private readonly UserControl? _rightView;
 
-    public AddDisplayModule(AddDeviceViewModel vm) {
-      _rightView = new AddDisplayRightView(vm);
+        public AddDisplayModule(AddDeviceViewModel vm)
+        {
+            _rightView = new AddDisplayRightView(vm);
+        }
 
-    }
-    public string ModuleName { get => "AddDisplayModule"; }
+        public string ModuleName { get => "AddDisplayModule"; }
 
-    public UserControl? GetLeftView() {
-      return _leftView;
-    }
+        public UserControl? GetLeftView()
+        {
+            return _leftView;
+        }
 
-    public UserControl GetRightView() {
-      return _rightView!;
-    }
-    public HomeDevice SelectedHomeDevice { get; set; } = new HomeDevice();
-    public IModuleOwner ModuleOwner { get; set; }
+        public UserControl GetRightView()
+        {
+            return _rightView!;
+        }
 
-    #region Event Handlers
-    public void OnSelectedHomeDeviceChanged() {
-      Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+        public HomeDevice SelectedHomeDevice { get; set; } = new HomeDevice();
+        public IModuleOwner ModuleOwner { get; set; }
+
+        #region Event Handlers
+
+        public void OnSelectedHomeDeviceChanged()
+        {
+            Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+        }
+
+        public void OnActivated()
+        {
+            Trace.WriteLine("BrightnessModule.OnActivated");
+        }
+
+        public void OnDeactivated()
+        {
+            Trace.WriteLine("BrightnessModule.OnDeactivated");
+        }
+
+        #endregion Event Handlers
     }
-    public void OnActivated() {
-      Trace.WriteLine("BrightnessModule.OnActivated");
-    }
-    public void OnDeactivated() {
-      Trace.WriteLine("BrightnessModule.OnDeactivated");
-    }
-    #endregion
-  }
 }

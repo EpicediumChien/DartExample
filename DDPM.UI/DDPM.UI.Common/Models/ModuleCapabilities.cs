@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDPM.UI.Common.Models
+﻿namespace DDPM.UI.Common.Models
 {
     public class ModuleCapabilities
     {
@@ -21,7 +15,5 @@ namespace DDPM.UI.Common.Models
         public bool VisionEngine { get; set; } = false;
         public bool Kvm { get; set; } = false;
         public bool DisplayOthers { get; set; } = false;
-
-
     }
 }

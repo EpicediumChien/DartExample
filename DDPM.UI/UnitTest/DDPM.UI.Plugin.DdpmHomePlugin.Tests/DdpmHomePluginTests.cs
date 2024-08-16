@@ -1,21 +1,8 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using DDPM.UI.Interfaces;
-using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
-using DDPM.UI.Plugin.DdpmHomePlugin.Model;
-using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
-using Dell.Client.Framework.Common;
+﻿using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NGA.ThickClient.Interfaces;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
 {
@@ -35,29 +22,27 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         private IGearMenu? gearMenu;
         private Mock<ILog>? _logMock;
         private ILog? _log;
-        private PrivateObject?privateObject;
+        private PrivateObject? privateObject;
 
         [SetUp]
         public void Setup()
         {
-            windowLayoutMock=new Mock<IWindowLayout>();
-            windowLayout=windowLayoutMock.Object;
-            showPluginManagerMock =new Mock<IShowPluginManager>();
-            showPluginManager=showPluginManagerMock.Object;
-            pluginManagerMock =new Mock<IPluginManager>();
-            pluginManager=pluginManagerMock.Object;
-            consoleMock=new Mock<IConsole>();
+            windowLayoutMock = new Mock<IWindowLayout>();
+            windowLayout = windowLayoutMock.Object;
+            showPluginManagerMock = new Mock<IShowPluginManager>();
+            showPluginManager = showPluginManagerMock.Object;
+            pluginManagerMock = new Mock<IPluginManager>();
+            pluginManager = pluginManagerMock.Object;
+            consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
-            gearMenuMock =new Mock<IGearMenu>();
-            gearMenu=gearMenuMock.Object;
+            gearMenuMock = new Mock<IGearMenu>();
+            gearMenu = gearMenuMock.Object;
             _logMock = new Mock<ILog>();
             _log = _logMock.Object;
             consoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             ddpmHomePlugin = new DdpmHomePlugin(windowLayout, showPluginManager, pluginManager, console, gearMenu);
-            privateObject=new PrivateObject(ddpmHomePlugin);
-
+            privateObject = new PrivateObject(ddpmHomePlugin);
         }
-
 
         [Test]
         public void TestConstructor_DdpmHomePlugin()
@@ -65,13 +50,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             Assert.IsNotNull(ddpmHomePlugin);
         }
 
-        
         [Test]
         public void TestHeaderText()
         {
-            Assert.That(ddpmHomePlugin.HeaderText,Is.EqualTo("DDPM Homepage"));
+            Assert.That(ddpmHomePlugin.HeaderText, Is.EqualTo("DDPM Homepage"));
         }
-
 
         [Test]
         public void TestPageType()
@@ -86,7 +69,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             {
                 ddpmHomePlugin.OnActivated();
                 Assert.True(true);
-                Assert.That(privateObject.GetFieldOrProperty("_isActived") ,Is.EqualTo(true));
+                Assert.That(privateObject.GetFieldOrProperty("_isActived"), Is.EqualTo(true));
             }
             catch (Exception ex)
             {
@@ -116,7 +99,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             {
                 ddpmHomePlugin.OnShown();
                 Assert.True(true);
-
             }
             catch (Exception ex)
             {
@@ -132,7 +114,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             {
                 ddpmHomePlugin.AddTileToHomePage(tileModel, 2, null);
                 Assert.True(true);
-
             }
             catch (Exception ex)
             {
@@ -143,10 +124,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestFindTileOnHomePage()
         {
-            var result= ddpmHomePlugin.FindTileOnHomePage(null,null);
-            Assert.That(result,Is.EqualTo(null));
+            var result = ddpmHomePlugin.FindTileOnHomePage(null, null);
+            Assert.That(result, Is.EqualTo(null));
         }
-
 
         [Test]
         public void TestFindTileOnHomePageAtPosition()
@@ -163,7 +143,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             {
                 ddpmHomePlugin.RemoveTileFromHomePage(tileModel, null);
                 Assert.True(true);
-
             }
             catch (Exception ex)
             {
@@ -171,14 +150,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             }
         }
 
-
         [Test]
         public void TestAddContentAsync()
         {
             var result = ddpmHomePlugin.AddContentAsync(null);
             Assert.That(result, Is.EqualTo(Task.FromResult(false)));
         }
-
 
         //[Test]
         //public void TestGetHomeDevices()
@@ -192,7 +169,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         //   Assert.That(result, Is.Not.Null);
         //}
 
-
         //[Test]
         //public void TestGetSelectedHomeDevice()
         //{
@@ -205,7 +181,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         //   Assert.That(result, Is.Not.Null);
         //}
 
-
         [Test]
         public void TestDispose()
         {
@@ -214,15 +189,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             {
                 ddpmHomePlugin.Dispose();
                 Assert.True(true);
-
             }
             catch (Exception ex)
             {
                 Assert.Fail("not invoked");
             }
         }
-        
-
-
     }
 }

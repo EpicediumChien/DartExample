@@ -1,16 +1,8 @@
-﻿using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RegistryUtils;
-using DDPM.SA.Common;
 using MonitorProfile = DDPM.SA.Common.MonitorProfile;
-
 
 namespace DDPM.UI.Module.Color.Tests
 {
@@ -20,17 +12,15 @@ namespace DDPM.UI.Module.Color.Tests
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
 
-
         [SetUp]
         public void Setup()
         {
-             moduleOwnerMock = new Mock<IModuleOwner>();
-             var moduleOwner = moduleOwnerMock!.Object;
-             DdpmCommonHelper.ModuleOwner = moduleOwner;
-             monitorProfile = new MonitorProfile();
-             privateObject = new PrivateObject(monitorProfile);
+            moduleOwnerMock = new Mock<IModuleOwner>();
+            var moduleOwner = moduleOwnerMock!.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            monitorProfile = new MonitorProfile();
+            privateObject = new PrivateObject(monitorProfile);
         }
-
 
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -56,20 +46,15 @@ namespace DDPM.UI.Module.Color.Tests
             //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_DisplayP3_v2.icm");
             //Assert.IsFalse(bRes);
 
-
             //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_DCIP3_v2.icm");
             //Assert.IsFalse(bRes);
-
 
             //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_sRGB_v2.icm");
             //Assert.IsFalse(bRes);
 
-
             //bRes = MonitorProfile.SetMonitorProfile("Dell_U3224KB_Rec709_v2.icm");
-            //Assert.IsFalse(bRes);                            
-
+            //Assert.IsFalse(bRes);
         }
-
 
         [Test]
         [Apartment(ApartmentState.STA)]
@@ -81,7 +66,5 @@ namespace DDPM.UI.Module.Color.Tests
             // Assert
             Assert.That(result, Is.Not.Null);
         }
-
-
     }
 }

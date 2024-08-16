@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace VcpCore.Plugins
 {
@@ -85,9 +82,11 @@ namespace VcpCore.Plugins
 
         public class Vendor_Product_Identification
         {
-            public static string Monitor_Name(byte[] EDID) { return ""; }
+            public static string Monitor_Name(byte[] EDID)
+            { return ""; }
 
-            public static string Monitor_Serial_Number(byte[] EDID) { return ""; } //
+            public static string Monitor_Serial_Number(byte[] EDID)
+            { return ""; } //
 
             /// <summary>
             /// 大端
@@ -173,7 +172,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        #endregion
+        #endregion Vendor/Product Identification:
 
         #region Display parameters:
 
@@ -397,7 +396,8 @@ namespace VcpCore.Plugins
                 return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0") + "(寸)";
             }
         }
-        #endregion
+
+        #endregion Display parameters:
 
         #region Power Management and Features：
 
@@ -492,7 +492,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        #endregion
+        #endregion Power Management and Features：
 
         #region Gamma/Color and Etablished Timings：
 
@@ -679,12 +679,12 @@ namespace VcpCore.Plugins
             }
         }
 
-        #endregion
+        #endregion Gamma/Color and Etablished Timings：
 
-        #region Standard Timing:
-        #endregion
+
 
         #region Preferred Detailed Timing：
+
         public class Preferred_Detailed_Timing
         {
             public static string Active_Ratio(byte[] EDID)
@@ -835,48 +835,66 @@ namespace VcpCore.Plugins
                 }
             }// 	True
         }
-        #endregion
+
+        #endregion Preferred Detailed Timing：
 
         #region Detailed Timing #2：
 
         public class Detailed_Timing_Sharp2
         {
-            public static string Pixel_Clock(byte[] EDID) { return ""; }// 	114.46 Mhz
+            public static string Pixel_Clock(byte[] EDID)
+            { return ""; }// 	114.46 Mhz
 
-            public static string Horizontal_Active(byte[] EDID) { return ""; }// 	1920 pixels
+            public static string Horizontal_Active(byte[] EDID)
+            { return ""; }// 	1920 pixels
 
-            public static string Horizontal_Blanking(byte[] EDID) { return ""; }// 	244 pixels
+            public static string Horizontal_Blanking(byte[] EDID)
+            { return ""; }// 	244 pixels
 
-            public static string Horizontal_Sync_Offset(byte[] EDID) { return ""; }// 	48 pixels
+            public static string Horizontal_Sync_Offset(byte[] EDID)
+            { return ""; }// 	48 pixels
 
-            public static string Horizontal_Sync_Pulse_Width(byte[] EDID) { return ""; }// 	32 pixels
+            public static string Horizontal_Sync_Pulse_Width(byte[] EDID)
+            { return ""; }// 	32 pixels
 
-            public static string Horizontal_Border(byte[] EDID) { return ""; }// 	0 pixels
+            public static string Horizontal_Border(byte[] EDID)
+            { return ""; }// 	0 pixels
 
-            public static string Horizontal_Size(byte[] EDID) { return ""; }// 	344 mm
+            public static string Horizontal_Size(byte[] EDID)
+            { return ""; }// 	344 mm
 
-            public static string Vertical_Active(byte[] EDID) { return ""; }// 	1080 lines
+            public static string Vertical_Active(byte[] EDID)
+            { return ""; }// 	1080 lines
 
-            public static string Vertical_Blanking(byte[] EDID) { return ""; }// 	22 lines
+            public static string Vertical_Blanking(byte[] EDID)
+            { return ""; }// 	22 lines
 
-            public static string Vertical_Sync_Offset(byte[] EDID) { return ""; }// 	3 lines
+            public static string Vertical_Sync_Offset(byte[] EDID)
+            { return ""; }// 	3 lines
 
-            public static string Vertical_Sync_Pulse_Width(byte[] EDID) { return ""; }// 	5 lines
+            public static string Vertical_Sync_Pulse_Width(byte[] EDID)
+            { return ""; }// 	5 lines
 
-            public static string Vertical_Border(byte[] EDID) { return ""; }// 	0 lines
+            public static string Vertical_Border(byte[] EDID)
+            { return ""; }// 	0 lines
 
-            public static string Vertical_Size(byte[] EDID) { return ""; }// 	194 mm
+            public static string Vertical_Size(byte[] EDID)
+            { return ""; }// 	194 mm
 
-            public static string Input_Type(byte[] EDID) { return ""; }// 	Digital Separate
+            public static string Input_Type(byte[] EDID)
+            { return ""; }// 	Digital Separate
 
-            public static string Interlaced(byte[] EDID) { return ""; }// 	False
+            public static string Interlaced(byte[] EDID)
+            { return ""; }// 	False
 
-            public static string VerticalPolarity(byte[] EDID) { return ""; }// 	False
+            public static string VerticalPolarity(byte[] EDID)
+            { return ""; }// 	False
 
-            public static string HorizontalPolarity(byte[] EDID) { return ""; }// 	True
+            public static string HorizontalPolarity(byte[] EDID)
+            { return ""; }// 	True
         }
 
-        #endregion
+        #endregion Detailed Timing #2：
 
         #region Monitor Range Limit: //
 
@@ -929,6 +947,7 @@ namespace VcpCore.Plugins
                         EDID[106].ToString("X2") + " " +
                         EDID[107].ToString("X2") + " " +
                         ".";
+
                     default:
                         return "Unknow information, padded with " +
                         EDID[100].ToString("X2") + " " +
@@ -986,7 +1005,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        #endregion
+        #endregion Monitor Range Limit: //
 
         #region Stereo Display{        return "";    }//
 
@@ -1021,6 +1040,6 @@ namespace VcpCore.Plugins
             }
         }
 
-        #endregion
+        #endregion Stereo Display{        return "";    }//
     }
 }
