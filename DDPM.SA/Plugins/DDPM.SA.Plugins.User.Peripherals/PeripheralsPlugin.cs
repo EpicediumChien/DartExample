@@ -10,18 +10,18 @@
 
 #endregion
 
+using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using System.Reflection;
-using System.Threading.Tasks;
+using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
-using DDPM.SA.Common;
 using System.Linq;
-using IndiLogic.DPeM.Broker;
-using DPeMPublic.Common.Enums;
-using Dell.Client.Framework.Common.Annotations;
+using System.Reflection;
+using System.Threading.Tasks;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 
 namespace DDPM.SA.Plugins.PeripheralsPlugin
@@ -35,6 +35,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private object _PeripheralLock = new object();
 
         #region Properties and fields
+
         private const string pluginName = "PeripheralsPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements DDPM Peripherals Plugin.";
@@ -65,12 +66,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private UpdateItemInfo _updateItems = new();
 
-        static List<Guid> PhysicalDevices1 = new();
-        static List<Guid> PhysicalDevices2 = new();
-        static List<Guid> LogicalDevices1 = new();
-        static List<Guid> LogicalDevices2 = new();
-        static List<Guid> LogicalDevices3 = new();
-        static List<Guid> LogicalDevices4 = new();
+        private static List<Guid> PhysicalDevices1 = new();
+        private static List<Guid> PhysicalDevices2 = new();
+        private static List<Guid> LogicalDevices1 = new();
+        private static List<Guid> LogicalDevices2 = new();
+        private static List<Guid> LogicalDevices3 = new();
+        private static List<Guid> LogicalDevices4 = new();
+
         #endregion
 
         public IUpdateManager IUpdateManager => _iUpdateManager;
@@ -96,11 +98,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public event EventHandler<bool> UpdateNotify;
 
-        public event EventHandler<Tuple<string,string>> OverlayNotify;
+        public event EventHandler<Tuple<string, string>> OverlayNotify;
+
         public event EventHandler<CollaborationMsg> CollaborationMsgNotify;
 
         public event EventHandler<bool> IsZoomCallbacksRegisteredChanged;
+
         public event EventHandler<bool> IsZoomMultipleCallsDetectedChanged;
+
         public event EventHandler<bool> CollabMultipleCallsDetectedChanged;
 
         public void NotifyNow()
@@ -389,8 +394,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _physicalAudioDeviceDongle.StartPairing();
                 }
             }
-
         }
+
         public void StopPairing(Guid physicalDeviceId)
         {
             if (_iDeviceManager != null && _iDeviceManager.Devices.Count > 0)
@@ -405,7 +410,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _physicalAudioDeviceDongle.StopPairing();
                 }
             }
-
         }
 
         public void UnPair(Guid logicalDeviceId)
@@ -518,6 +522,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
             }
         }
+
         public void SetAncGain(int newValue, Guid deviceId)
         {
             foreach (var device in _iDeviceManager.Devices)
@@ -561,7 +566,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
                 {
-
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -570,15 +574,19 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             case "band1gain":
                                 _deviceInfo.Band1Gain = newValue;
                                 break;
+
                             case "band2gain":
                                 _deviceInfo.Band2Gain = newValue;
                                 break;
+
                             case "band3gain":
                                 _deviceInfo.Band3Gain = newValue;
                                 break;
+
                             case "band4gain":
                                 _deviceInfo.Band4Gain = newValue;
                                 break;
+
                             case "band5gain":
                                 _deviceInfo.Band5Gain = newValue;
                                 break;
@@ -699,10 +707,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-
         #endregion
 
         #region Webcam methods
+
         public void SetIsMicEnumerationOn(bool newValue, Guid deviceId)
         {
             foreach (var device in _iDeviceManager.Devices)
@@ -719,8 +727,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     }
                 }
             }
-
         }
+
         #endregion
 
         #region Overriding methods
@@ -759,7 +767,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             //_deviceHelper.DPeMSDKVersion = IndiLogic.DPeM.Broker.Assembly.GetName();
             foreach (var device in _iDeviceManager.Devices)
             {
-
                 FillRFDeviceInfo(device);
                 // << 240712 fix empty dongle no event issue by Hess
                 if (device.Type == DeviceType.PhysicalDongle && device is IPhysicalDeviceDongle physicalDeviceDongle && !PhysicalDevices2.Contains(device.Id))
@@ -796,7 +803,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         ModelNumber = item.ModelNumber,
                         IsBatteryLevelSupported = item.IsBatteryLevelSupported,
                         ThumbnailImageRawData = item.ThumbnailImageRawData,
-
                     };
 
                     if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalDongle)
@@ -821,15 +827,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                     }
 
-          if(item.ParentPhysicalDevice.Type == DeviceType.PhysicalPen) {
-            if(item.ParentPhysicalDevice is IPhysicalPenDevice physicalDevicePen) {
-              info.IsdDriverVersion = physicalDevicePen.IsdDriverVersion;
-              info.IsdServiceVersion = physicalDevicePen.IsdServiceVersion;
-              physicalDevicePen.IsdVersionChanged += IPhysicalDevicePen_IsdVersionChanged;
-            }
-          }
+                    if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalPen)
+                    {
+                        if (item.ParentPhysicalDevice is IPhysicalPenDevice physicalDevicePen)
+                        {
+                            info.IsdDriverVersion = physicalDevicePen.IsdDriverVersion;
+                            info.IsdServiceVersion = physicalDevicePen.IsdServiceVersion;
+                            physicalDevicePen.IsdVersionChanged += IPhysicalDevicePen_IsdVersionChanged;
+                        }
+                    }
 
-          if(item is ILogicalDevice2 _logicalDevice2)
+                    if (item is ILogicalDevice2 _logicalDevice2)
                     {
                         info.IsCollabsKeysSupported = _logicalDevice2.IsCollabsKeysSupported;
                         info.CollabsKeysSupported = _logicalDevice2.IsCollabsKeysSupported ? "Supported" : "Not Supported";
@@ -995,10 +1003,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             Console.WriteLine(_deviceHelper.ToString());
         }
 
-
         /*private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue)
         {
-
         }*/
 
         private void FillRFDeviceInfo(IPhysicalDevice device)
@@ -1006,12 +1012,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (device is IPhysicalAudioDeviceDongle _iPhysicalAudioDeviceDongle)
             {
                 DongleInfo rfInfo = new DongleInfo();
-        var rfdongle = _rfDeviceHelper.dongleInfo.Where(x => x.DeviceType == _iPhysicalAudioDeviceDongle.Type).FirstOrDefault();
-        if(rfdongle != null) {
-          rfdongle.IsMultipleDongleFound = true;
-        }
-        else {
-          rfInfo = new DongleInfo()
+                var rfdongle = _rfDeviceHelper.dongleInfo.Where(x => x.DeviceType == _iPhysicalAudioDeviceDongle.Type).FirstOrDefault();
+                if (rfdongle != null)
+                {
+                    rfdongle.IsMultipleDongleFound = true;
+                }
+                else
+                {
+                    rfInfo = new DongleInfo()
                     {
                         ID = _iPhysicalAudioDeviceDongle.Id,
                         DeviceType = _iPhysicalAudioDeviceDongle.Type,
@@ -1026,12 +1034,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             else if (device is IPhysicalDeviceDongle _iPhysicalDeviceDongle)
             {
                 DongleInfo rfInfo = new DongleInfo();
-        var rfdongle = _rfDeviceHelper.dongleInfo.Where(x => x.DeviceType == _iPhysicalDeviceDongle.Type).FirstOrDefault();
-        if(rfdongle != null) {
-          rfdongle.IsMultipleDongleFound = true;
-        }
-        else {
-          rfInfo = new DongleInfo()
+                var rfdongle = _rfDeviceHelper.dongleInfo.Where(x => x.DeviceType == _iPhysicalDeviceDongle.Type).FirstOrDefault();
+                if (rfdongle != null)
+                {
+                    rfdongle.IsMultipleDongleFound = true;
+                }
+                else
+                {
+                    rfInfo = new DongleInfo()
                     {
                         ID = _iPhysicalDeviceDongle.Id,
                         DeviceType = _iPhysicalDeviceDongle.Type,
@@ -1044,6 +1054,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
             }
         }
+
         // >>
 
         private string UpdateParingStausText(DonglePairingStatus donglePairingStatus)
@@ -1052,31 +1063,41 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 case DonglePairingStatus.DonglePairingStatusStopped:
                     return "Stopped";
+
                 case DonglePairingStatus.DonglePairingStatusStarted:
                     return "Started";
+
                 case DonglePairingStatus.DonglePairingStatusRequest:
                     return "Request";
+
                 case DonglePairingStatus.DonglePairingStatusTimeOut:
                     return "TimeOut";
+
                 case DonglePairingStatus.DonglePairingStatusAlreadyPaired:
                     return "Already Paired";
+
                 case DonglePairingStatus.DonglePairingStatusOldDevice:
                     return "Old Device";
             }
             return "";
         }
+
         private string UpdateParingStausText(AudioDonglePairingStatus donglePairingStatus)
         {
             switch (donglePairingStatus)
             {
                 case AudioDonglePairingStatus.AudioDonglePairingStatusStopped:
                     return "Stopped";
+
                 case AudioDonglePairingStatus.AudioDonglePairingStatusStarted:
                     return "Started";
+
                 case AudioDonglePairingStatus.AudioDonglePairingStatusRequest:
                     return "Request";
+
                 case AudioDonglePairingStatus.AudioDonglePairingStatusTimeOut:
                     return "TimeOut";
+
                 case AudioDonglePairingStatus.AudioDonglePairingStatusAlreadyPaired:
                     return "Already Paired";
             }
@@ -1147,6 +1168,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             int i = BitConverter.ToInt32(bandgain, 0);
             return i;
         }
+
         #endregion
 
         #region EventHandlers
@@ -1164,7 +1186,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void OnOverlayNotify(bool arg1, string arg2, string arg3)
         {
-            OverlayNotify?.Invoke(_iOverlayManager,new Tuple<string, string>(arg2,arg3));
+            OverlayNotify?.Invoke(_iOverlayManager, new Tuple<string, string>(arg2, arg3));
         }
 
         private void OnCollaborationMsgNotify(CollaborationMsg collaborationMsg)
@@ -1249,7 +1271,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)
         {
-            CollaborationMsgNotify?.Invoke(EventArgs.Empty,collaborationMsg);
+            CollaborationMsgNotify?.Invoke(EventArgs.Empty, collaborationMsg);
         }
 
         private void _iOverlayManager_VolatileSettingsChanged(bool arg1, string arg2, string arg3)
@@ -1270,7 +1292,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             lock (_PeripheralLock)
             {
                 iPhysicalDevice.DeviceRemovedEvent -= IPhysicalDevice_DeviceRemovedEvent;
-            _iDeviceManager = _iClient?.DeviceManager;
+                _iDeviceManager = _iClient?.DeviceManager;
                 System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Removed, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
                 if (PhysicalDevices1.Contains(iPhysicalDevice.Id))
                 {
@@ -1786,7 +1808,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _updateItems.ServerPath = updateItem.ServerPath;
                 _updateItems.SupplierID = updateItem.SupplierID;
 
-
                 _updateHelper.UpdateItems.Add(_updateItems);
             }
 
@@ -1837,6 +1858,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
             }
         }
+
         private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
         {
             throw new NotImplementedException();
@@ -1922,6 +1944,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)
         {
         }
+
         public void CheckForUpdate()
         {
             if (_iUpdateManager != null)

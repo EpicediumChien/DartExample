@@ -1,41 +1,36 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.Views;
 using DDPM.UI.Interfaces;
-using DDPM.SA.Common;
-using UserControl = System.Windows.Controls.UserControl;
-using System.Windows.Threading;
-using DPeMPublic.Common.Enums;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using CommunityToolkit.Mvvm.Input;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using DPeMPublic.Common.Enums;
 using Microsoft;
-using DDPM.UI.Plugin.Common;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
     public class AddDeviceViewModel : ObservableObject, INotifyPropertyChanged, IAddDeviceViewModel
     {
         private readonly IConsole _console;
-    readonly IShowPluginManager _showPluginManager;
-    readonly IDeviceManagerSA _peripheralPlugin;
-        readonly ILog _log;
+        private readonly IShowPluginManager _showPluginManager;
+        private readonly IDeviceManagerSA _peripheralPlugin;
+        private readonly ILog _log;
 
         private int _groupSelIdx = -1;
-        readonly List<DeviceBarItem> _deviceBarItems = new();
+        private readonly List<DeviceBarItem> _deviceBarItems = new();
         private int _deviceBarSelectedIndex = 0;
         private ICommand? _deviceBarItemClickCommand;
 
-        readonly string multiDongleAlert = "Multiple wireless receivers detected. Unplug all Dell wireless receivers for Keyboard and Mouse. Plug in the one you want to pair.";
-        readonly string noDongleAlertKnM = "No USB wireless receiver connected. Connect your USB wireless receiver, and pair up to six compatible devices.";
-        readonly string noDongleAlertHeadset = "No USB wireless receiver connected. Connect a USB wireless receiver for better UC compatibility, lower latency, and more stable connection.";
-
+        private readonly string multiDongleAlert = Strings.AddDeviceKnMmultiDongleAlert;
+        private readonly string noDongleAlertKnM = Strings.AddDeviceKnMnoDongleAlertKnM;
+        private readonly string noDongleAlertHeadset = Strings.AddDeviceKnMnoDongleAlertHeadset;
 
         //public AddDeviceViewModel(IConsole console, ILog log, IDPeMPlugin peripheralPlugin) {
         public AddDeviceViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log, IDeviceManagerSA peripheralPlugin)
@@ -44,8 +39,8 @@ namespace DDPM.UI.Plugin.ViewModels
             Requires.NotNull(log, nameof(log));
             Requires.NotNull(peripheralPlugin, nameof(peripheralPlugin));
 
-      _showPluginManager = showPluginManager;
-      _console = console;
+            _showPluginManager = showPluginManager;
+            _console = console;
             _log = log;
             _peripheralPlugin = peripheralPlugin;
         }
@@ -66,16 +61,19 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string PairingStatus { get; set; } = "";
 
-    string _isModuleLoaded = "";
-    public string IsModuleLoaded {
-      get => _isModuleLoaded;
-      set {
-        _isModuleLoaded = value;
-        OnPropertyChanged(nameof(IsModuleLoaded));
-      }
-    }
+        private string _isModuleLoaded = "";
 
-    public int GroupSelIdx
+        public string IsModuleLoaded
+        {
+            get => _isModuleLoaded;
+            set
+            {
+                _isModuleLoaded = value;
+                OnPropertyChanged(nameof(IsModuleLoaded));
+            }
+        }
+
+        public int GroupSelIdx
         {
             get => _groupSelIdx;
             set
@@ -122,6 +120,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             OnPropertyChanged("DeviceBarItem");
         }
+
         public List<DeviceBarItem> DeviceBarItems
         {
             get => _deviceBarItems;
@@ -142,7 +141,9 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         #region LeftView
+
         private UserControl? _defaultLeftView;
+
         public UserControl DefaultLeftView
         {
             get
@@ -152,9 +153,10 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        #endregion
+        #endregion LeftView
 
         #region RightView
+
         public UserControl? RightView
         {
             get
@@ -169,7 +171,6 @@ namespace DDPM.UI.Plugin.ViewModels
                         if (mod != null)
                             return mod?.GetRightView();
                     }
-
                 }
                 return null;
             }
@@ -177,6 +178,7 @@ namespace DDPM.UI.Plugin.ViewModels
             //  SetProperty(ref _leftView, value);
             //}
         }
+
         private ObservableCollection<RightViewHeader> _rightViewHeaders = new();
 
         public ObservableCollection<RightViewHeader> RightViewHeaders
@@ -226,7 +228,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(RightView));
             }
         }
-        #endregion
+
+        #endregion RightView
 
         public ModuleGroup? SelectedGroup
         {
@@ -243,11 +246,12 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-    //public volatile Dictionary<DeviceType, Dictionary<Guid, DongleInfo>> DongleInfos = new();
-    public volatile Dictionary<Guid, DongleInfo> DongleInfos = new();
-    public volatile Dictionary<Guid, DongleInfo> AudioDongleInfos = new();
-    public volatile Dictionary<Guid, List<Guid>> DongleDevices = new();
-    public DongleInfo? CurrentDongle = null;
+        //public volatile Dictionary<DeviceType, Dictionary<Guid, DongleInfo>> DongleInfos = new();
+        public volatile Dictionary<Guid, DongleInfo> DongleInfos = new();
+
+        public volatile Dictionary<Guid, DongleInfo> AudioDongleInfos = new();
+        public volatile Dictionary<Guid, List<Guid>> DongleDevices = new();
+        public DongleInfo? CurrentDongle = null;
         public string DongleAlertKnM { get; set; } = "";
         public Visibility DongleAlertKnMVisibility { get; set; } = Visibility.Visible;
         public string DongleAlertHeadset { get; set; } = "";
@@ -255,120 +259,142 @@ namespace DDPM.UI.Plugin.ViewModels
         public string AlertText { get; set; } = "";
         public Visibility AlertVisibility { get; set; } = Visibility.Collapsed;
 
+        public void PrepareDongleInfo(List<DongleInfo> dongleInfos)
+        {
+            DongleInfos.Clear();
+            AudioDongleInfos.Clear();
 
-    public void PrepareDongleInfo(List<DongleInfo> dongleInfos) {
-      DongleInfos.Clear();
-      AudioDongleInfos.Clear();
-
-      foreach(var info in dongleInfos) {
-        if(info.DeviceType == DeviceType.PhysicalDongle && !DongleInfos.ContainsKey(info.ID)) {
-          DongleInfos.Add(info.ID, info);
+            foreach (var info in dongleInfos)
+            {
+                if (info.DeviceType == DeviceType.PhysicalDongle && !DongleInfos.ContainsKey(info.ID))
+                {
+                    DongleInfos.Add(info.ID, info);
+                }
+                if (info.DeviceType == DeviceType.PhysicalAudioDongle && !AudioDongleInfos.ContainsKey(info.ID))
+                {
+                    AudioDongleInfos.Add(info.ID, info);
+                }
+            }
+            //if(DongleInfos.Count == 1) {
+            //  CurrentDongle = DongleInfos[DongleInfos.Keys.FirstOrDefault()];
+            //}
+            //else {
+            //  CurrentDongle = null;
+            //}
+            PrepareDongleInfo();
         }
-        if(info.DeviceType == DeviceType.PhysicalAudioDongle && !AudioDongleInfos.ContainsKey(info.ID)) {
-          AudioDongleInfos.Add(info.ID, info);
+
+        //public void PrepareDongleInfo(List<DeviceInfo> deviceInfos) {
+        //  DongleInfos.Clear();
+        //  AudioDongleInfos.Clear();
+        //  foreach(var info in deviceInfos) {
+        //    if(info.PhysicalDeviceType == DeviceType.PhysicalDongle) {
+        //      if(!DongleInfos.ContainsKey(info.PhyscialDeviceID))
+        //        DongleInfos.Add(info.PhyscialDeviceID, info.PairedDeviceCount == info.MaxPairingSlots);
+        //    }
+        //    else if(info.PhysicalDeviceType == DeviceType.PhysicalAudioDongle) {
+        //      AudioDongleInfos.Add(info.PhyscialDeviceID, info.PairedDeviceCount == info.MaxPairingSlots);
+        //    }
+        //    if(!DongleDevices.ContainsKey(info.PhyscialDeviceID))
+        //      DongleDevices.Add(info.PhyscialDeviceID, new List<Guid>());
+        //    DongleDevices[info.PhyscialDeviceID].Add(info.ID);
+        //  }
+        //  PrepareDongleInfo();
+        //}
+
+        private void PrepareDongleInfo()
+        {
+            DongleAlertKnMVisibility = Visibility.Collapsed;
+            DongleAlertHeadsetVisibility = Visibility.Collapsed;
+
+            if (DongleInfos.Count == 0)
+            {
+                DongleAlertKnM = noDongleAlertKnM;
+                DongleAlertKnMVisibility = Visibility.Visible;
+            }
+            if (DongleInfos.Count > 1)
+            {
+                DongleAlertKnM = multiDongleAlert;
+                DongleAlertKnMVisibility = Visibility.Visible;
+            }
+            if (AudioDongleInfos.Count == 0)
+            {
+                DongleAlertHeadset = noDongleAlertHeadset;
+                DongleAlertHeadsetVisibility = Visibility.Visible;
+            }
+            if (AudioDongleInfos.Count > 1)
+            {
+                DongleAlertHeadset = multiDongleAlert;
+                DongleAlertHeadsetVisibility = Visibility.Visible;
+            }
+            OnPropertyChanged(nameof(DongleAlertKnM));
+            OnPropertyChanged(nameof(DongleAlertHeadset));
+            OnPropertyChanged(nameof(DongleAlertKnMVisibility));
+            OnPropertyChanged(nameof(DongleAlertHeadsetVisibility));
         }
-      }
-      //if(DongleInfos.Count == 1) {
-      //  CurrentDongle = DongleInfos[DongleInfos.Keys.FirstOrDefault()];
-      //}
-      //else {
-      //  CurrentDongle = null;
-      //}
-      PrepareDongleInfo();
-    }
 
-    //public void PrepareDongleInfo(List<DeviceInfo> deviceInfos) {
-    //  DongleInfos.Clear();
-    //  AudioDongleInfos.Clear();
-    //  foreach(var info in deviceInfos) {
-    //    if(info.PhysicalDeviceType == DeviceType.PhysicalDongle) {
-    //      if(!DongleInfos.ContainsKey(info.PhyscialDeviceID))
-    //        DongleInfos.Add(info.PhyscialDeviceID, info.PairedDeviceCount == info.MaxPairingSlots);
-    //    }
-    //    else if(info.PhysicalDeviceType == DeviceType.PhysicalAudioDongle) {
-    //      AudioDongleInfos.Add(info.PhyscialDeviceID, info.PairedDeviceCount == info.MaxPairingSlots);
-    //    }
-    //    if(!DongleDevices.ContainsKey(info.PhyscialDeviceID))
-    //      DongleDevices.Add(info.PhyscialDeviceID, new List<Guid>());
-    //    DongleDevices[info.PhyscialDeviceID].Add(info.ID);
-    //  }
-    //  PrepareDongleInfo();
-    //}
+        public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
+        {
+            switch (changeType)
+            {
+                case DeviceChangedType.Peripherals_PlugIn:
 
-    private void PrepareDongleInfo() {
-      DongleAlertKnMVisibility = Visibility.Collapsed;
-      DongleAlertHeadsetVisibility = Visibility.Collapsed;
+                    break;
 
-      if(DongleInfos.Count == 0) {
-        DongleAlertKnM = noDongleAlertKnM;
-        DongleAlertKnMVisibility = Visibility.Visible;
-      }
-      if(DongleInfos.Count > 1) {
-        DongleAlertKnM = multiDongleAlert;
-        DongleAlertKnMVisibility = Visibility.Visible;
-      }
-      if(AudioDongleInfos.Count == 0) {
-        DongleAlertHeadset = noDongleAlertHeadset;
-        DongleAlertHeadsetVisibility = Visibility.Visible;
-      }
-      if(AudioDongleInfos.Count > 1) {
-        DongleAlertHeadset = multiDongleAlert;
-        DongleAlertHeadsetVisibility = Visibility.Visible;
-      }
-      OnPropertyChanged(nameof(DongleAlertKnM));
-      OnPropertyChanged(nameof(DongleAlertHeadset));
-      OnPropertyChanged(nameof(DongleAlertKnMVisibility));
-      OnPropertyChanged(nameof(DongleAlertHeadsetVisibility));
-    }
+                case DeviceChangedType.Peripherals_UnPlug:
 
-    public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "") {
-      switch(changeType) {
-        case DeviceChangedType.Peripherals_PlugIn:
+                    break;
 
-          break;
-        case DeviceChangedType.Peripherals_UnPlug:
+                case DeviceChangedType.Peripherals_SettingsChange:
+                    var properties = property.Split('|');
+                    switch (properties[0])
+                    {
+                        case "DonglePairedDeviceCountChanged":
+                            if (di.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
+                            {
+                                //GotoNewDevice();
+                                PairingStatus = "Request";
+                                IsPairing = true;
+                                OnPropertyChanged(nameof(PairingStatus));
+                                return;
+                            }
+                            break;
 
-          break;
-        case DeviceChangedType.Peripherals_SettingsChange:
-          var properties = property.Split('|');
-          switch(properties[0]) {
-            case "DonglePairedDeviceCountChanged":
-              if(di.PhysicalDeviceType == DeviceType.PhysicalAudioDongle) {
-                //GotoNewDevice();
-                PairingStatus = "Request";
-                IsPairing = true;
-                OnPropertyChanged(nameof(PairingStatus));
-                return;
-              }
-              break;
-            case "DonglePairingStatusChanged":
-              RequestDeviceName = properties[1];
-              switch(di.PairingStatusName) {
-                case "Request":
-                  break;
-                case "Already Paired":
-                  break;
-                case "Stopped":
-                  break;
+                        case "DonglePairingStatusChanged":
+                            RequestDeviceName = properties[1];
+                            switch (di.PairingStatusName)
+                            {
+                                case "Request":
+                                    break;
+
+                                case "Already Paired":
+                                    break;
+
+                                case "Stopped":
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                            PairingStatus = di.PairingStatusName;
+                            OnPropertyChanged(nameof(PairingStatus));
+                            break;
+
+                        default:
+
+                            break;
+                    }
+                    break;
+
                 default:
-                  break;
-              }
-              PairingStatus = di.PairingStatusName;
-              OnPropertyChanged(nameof(PairingStatus));
-              break;
-            default:
+                    break;
+            }
+        }
 
-              break;
-          }
-          break;
-        default:
-          break;
-      }
-    }
-
-    public string RequestDeviceName = "";
+        public string RequestDeviceName = "";
 
         public bool IsPairing = false;
+
         public void StartPairing(Guid guid)
         {
             _peripheralPlugin.StartPairing(guid);
@@ -383,26 +409,33 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             IsPairing = false;
         }
-    public DeviceInfo? NewDevice = null;
-    public void GotoNewDevice() {
-      switch(NewDevice!.LogicalDeviceType.ToUpper()) {
-        case "LOGICALKEYBOARD":
-          _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId, NewDevice.ID.ToString());
-          break;
-        case "LOGICALMOUSE":
-          _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId, NewDevice.ID.ToString());
-          break;
-        case "LOGICALHEADSET":
-          _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, NewDevice.ID.ToString());
-          break;
-        case "LOGICALWIREDAUDIO":
-          _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, NewDevice.ID.ToString());
-          break;
+
+        public DeviceInfo? NewDevice = null;
+
+        public void GotoNewDevice()
+        {
+            switch (NewDevice!.LogicalDeviceType.ToUpper())
+            {
+                case "LOGICALKEYBOARD":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.KeyboardPluginId, NewDevice.ID.ToString());
+                    break;
+
+                case "LOGICALMOUSE":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.MousePluginId, NewDevice.ID.ToString());
+                    break;
+
+                case "LOGICALHEADSET":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, NewDevice.ID.ToString());
+                    break;
+
+                case "LOGICALWIREDAUDIO":
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, NewDevice.ID.ToString());
+                    break;
+            }
+            NewDevice = null;
+            IsPairing = false;
+            PairingStatus = "Stopped";
+            OnPropertyChanged(nameof(PairingStatus));
         }
-      NewDevice = null;
-      IsPairing = false;
-      PairingStatus = "Stopped";
-      OnPropertyChanged(nameof(PairingStatus));
     }
-  }
 }

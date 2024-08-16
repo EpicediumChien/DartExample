@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,33 +7,28 @@
 //
 // DisplayMangerPlugin.cs created on 24/04/2024T11:20 AM
 //
+
 #endregion
 
-using Microsoft;
-using System.Threading.Tasks;
-using VcpCore.Common;
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using VcpCore.Interfaces;
+using Microsoft;
 using Newtonsoft.Json.Linq;
-using DDPM.SA.Common;
-using IDs = DDPM.SA.Common.IDs;
-using DDPM.SA.Common.Display;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection.Metadata;
-using System.Diagnostics.Metrics;
-using DDPM.SA.Common.Interfaces;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using System.Windows.Forms;
-using Dell.Client.Framework.Common.Extensions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using System.Linq;
+using System.Threading.Tasks;
+using VcpCore.Common;
+using VcpCore.Interfaces;
+using IDs = DDPM.SA.Common.IDs;
+
 //using WinCopies;
 
 namespace DDPM.SA.Plugins.User.DisplayManager
@@ -43,11 +39,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
     [PublishedUnelevatedInterface(new[] { typeof(IDisplayService) })]
     [DependencyKnownTypes(new[] { typeof(IVcpCoreService) })]
     [PluginRequires(Id = IDs.VCP_CORE_PLUGIN_ID, Version = "1.0.0", AllowDynamicResolving = true)]
-
-
     public class DisplayMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDisplayService
     {
         #region Private Members
+
         private const string pluginName = "DisplayManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Display Manager Plugin.";
@@ -69,13 +64,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         //Input
         private Dictionary<string, InputInfo> inputSourcelist = new Dictionary<string, InputInfo>();
+
         private List<string> usbUpstreamList = new List<string>();
         private string _getVCPCapabilities = string.Empty;
         //private string currentInput;
 
         private readonly object _PluginConditionLock = new object();
+
         //0607 Bruce 是否鎖定畫面自動旋轉
         private bool isLockOrientation;
+
         private bool isSWSetOrientation;
 
         private readonly object _ALSVCPChangeLock = new object();
@@ -93,6 +91,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ["1100"] = "Thunderbolt-1",
             ["1101"] = "Thunderbolt-2"
         };
+
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscapeflipped", "Portraitflipped" };//OSD orientation
@@ -100,17 +99,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region Public Members
+
         public event EventHandler<VCPchangedEventArgs> VCPchanged;
+
         public event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
+
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
+
         public static List<ALSConfig> AllALSConfig = new List<ALSConfig>();
+
         /// <summary>
         /// HDR status change event，return HDR status
         /// </summary>
         public event EventHandler<bool> HDRChangeEvent;
+
         #endregion
 
         #region Constructor
+
         public DisplayMangerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
@@ -120,9 +126,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] Does DisplayMangerPlugin have Administrator: " + _IsAdministrator.ToString());
         }
+
         #endregion
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             PluginCondition = new PluginStartedCondition();
@@ -130,14 +138,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
             InitializeVcpCorePlugin();
+
             #region Bruce display properties
+
             InitializeDisplayPropertiesPlugin();
+
             #endregion
+
             //Robert_Lin, 2024-5-23
             InitializePipPbpManagerPlugin();
             //Robert_Lin, 2024-7-4
             InitializeEAPlugin();
         }
+
         #endregion
 
         #region IDisplayService implementation
@@ -262,9 +275,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             return Task.FromResult(r);
         }
+
         #endregion
 
         #region IInputSource implementation
+
         /// <summary>
         /// get monitor all input source from VCPCode
         /// </summary>
@@ -340,6 +355,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(inputSourcelist);
         }
+
         public Task<bool> SetInputSourcelist(Dictionary<string, InputInfo> inputlist)
         {
             //set list
@@ -608,6 +624,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         }
 
         #region ALS Function
+
         /// <summary>
         /// Initialize All ALS monitor Info data on start up
         /// </summary>
@@ -643,6 +660,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             });
         }
+
         /// <summary>
         /// Use VCP command to Get ALS Feature Value
         /// </summary>
@@ -678,6 +696,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 return Task.FromResult(cfg);
             }
         }
+
         /// <summary>
         /// Use VCP command to Set ALS Feature Value
         /// </summary>
@@ -693,21 +712,27 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 case ALSFeatureQueryType.MMS:
                     SetALSMMS(monitorInfos, ref param, value);
                     break;
+
                 case ALSFeatureQueryType.PrimaryMonitorSync:
                     SetALSPrimaryMS(monitorInfos, ref param, value);
                     break;
+
                 case ALSFeatureQueryType.AutoColorTemperature:
                     SetALSAutoColorTemp(monitorInfos, ref param, value);
                     break;
+
                 case ALSFeatureQueryType.AutoBrightness:
                     SetALSAutoBrightness(monitorInfos, ref param, value);
                     break;
+
                 case ALSFeatureQueryType.AutoBrightnessRangeLevel: //CLI: Mark 0723
                     SetALSAutoBrightnessRangeLevel(monitorInfos, ref param, value);
                     break;
+
                 case ALSFeatureQueryType.All:
                     SetALSAll(monitorInfos, ref param, value);
                     break;
+
                 default:
                     return Task.FromResult(false);
             }
@@ -737,7 +762,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             lock (_ALSVCPChangeLock)
             {
-                if (GetBitsValue(value.AllValue, 5) == 1)//check isPrimaryMonitorSync whether to change 
+                if (GetBitsValue(value.AllValue, 5) == 1)//check isPrimaryMonitorSync whether to change
                 {
                     List<ALSConfig> als_connected = new List<ALSConfig>();
                     List<ALSConfig> als_connected2 = new List<ALSConfig>();
@@ -752,7 +777,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         als_connected.Add(als_nowtemp);
                     }
 
-                    foreach (ALSConfig aLs1 in als_connected)//from new MonitorInfo and check already exists info 
+                    foreach (ALSConfig aLs1 in als_connected)//from new MonitorInfo and check already exists info
                     {
                         foreach (ALSConfig aLs2 in AllALSConfig)
                         {
@@ -815,6 +840,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 return Task.FromResult(true);
             }
         }
+
         /// <summary>
         /// Get Connected ALS Config
         /// </summary>
@@ -832,6 +858,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(als_connecte);
         }
+
         /// <summary>
         /// Delete duplicate data, return All Exist Als Config
         /// </summary>
@@ -872,6 +899,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             AllALSConfig = als_connecte;
             return Task.FromResult(als_connecte);
         }
+
         /// <summary>
         /// Synchronize ALSF eature Value
         /// </summary>
@@ -927,6 +955,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(true);
         }
+
         /// <summary>
         /// Update ALS Feature Value
         /// </summary>
@@ -958,9 +987,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
         }
+
         /// <summary>
         /// Get ALS Support Status
-        /// Capabilities string: 
+        /// Capabilities string:
         /// ALS full function: 66(00F2)
         /// AlS without ALS_Primary: 66(00D2)
         /// ALS without sensor: 66(0012)
@@ -996,6 +1026,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             param.result = true;
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave GetALSupport ");
         }
+
         /// <summary>
         /// Get ALS Multi Monitor Sync status
         /// </summary>
@@ -1018,6 +1049,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave GetALSMMS ");
         }
+
         /// <summary>
         /// Set ALS Multi Monitor Sync status
         /// </summary>
@@ -1039,6 +1071,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSMMS ");
         }
+
         /// <summary>
         /// Get ALS Primary Monitor Sync
         /// </summary>
@@ -1061,6 +1094,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave GetSetALSFeatureMMS ");
         }
+
         /// <summary>
         /// Set ALS Primary Monitor Sync
         /// </summary>
@@ -1090,6 +1124,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALPrimaryMS ");
         }
+
         /// <summary>
         /// Get ALS Auto Color Temp
         /// </summary>
@@ -1112,6 +1147,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave GetALSAutoColorTemp ");
         }
+
         /// <summary>
         /// Set ALS Auto Color Temp
         /// </summary>
@@ -1141,6 +1177,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSAutoColorTemp ");
         }
+
         /// <summary>
         /// Get ALS Auto Brightness
         /// </summary>
@@ -1164,6 +1201,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave GetALSAutoBrightness ");
         }
+
         /// <summary>
         /// Set ALS Auto Brightness
         /// </summary>
@@ -1198,6 +1236,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSAutoBrightness ");
         }
+
         /// <summary>
         /// Get ALS Auto Brightness Level
         /// </summary>
@@ -1220,9 +1259,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     case 0:
                         brightnessrangelevel.level_name = "Low";
                         break;
+
                     case 1:
                         brightnessrangelevel.level_name = "Mid";
                         break;
+
                     case 2:
                         brightnessrangelevel.level_name = "High";
                         break;
@@ -1235,6 +1276,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave GetALSAutoBrightness ");
         }
+
         /// <summary>
         /// Set ALS Auto Brightness Level
         /// </summary>
@@ -1260,9 +1302,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         case "0":
                             brightnessrangelevel.level_name = "Low";
                             break;
+
                         case "1":
                             brightnessrangelevel.level_name = "Mid";
                             break;
+
                         case "2":
                             brightnessrangelevel.level_name = "High";
                             break;
@@ -1303,6 +1347,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave GetALSAll ");
         }
+
         /// <summary>
         /// Parse Bit Define To Als Object, analysis Byte
         /// </summary>
@@ -1328,15 +1373,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 case 0:
                     brightnessLevel.level_name = "Low";
                     break;
+
                 case 1:
                     brightnessLevel.level_name = "Mid";
                     break;
+
                 case 2:
                     brightnessLevel.level_name = "High";
                     break;
             }
             param.AutoBrightnessRangeLevel.Add(brightnessLevel);
         }
+
         /// <summary>
         /// Set ALS All status
         /// </summary>
@@ -1360,6 +1408,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             _logs.DebugMsg("[DisplayMangerPlugin] ALSFeature leave SetALSAll ");
         }
+
         /// <summary>
         /// Update All ALS Value
         /// </summary>
@@ -1419,6 +1468,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return value;
         }
+
         /// <summary>
         /// Set Bits Value
         /// </summary>
@@ -1433,6 +1483,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             number |= (uint)(value << startBitPosition);// Set the new value
             return number;
         }
+
         /// <summary>
         /// Get Bits Value
         /// </summary>
@@ -1444,6 +1495,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             uint bitValue = ((number >> startBitPosition) & 0b11u);// Get startBitPosition和startBitPosition+1 value
             return bitValue;
         }
+
         /// <summary>
         /// On , Off String Convert
         /// </summary>
@@ -1458,6 +1510,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             else
                 return false;
         }
+
         /// <summary>
         /// On , Off Uint Convert
         /// </summary>
@@ -1519,6 +1572,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
             //This is discussed in GitHub issue dotnet/corefx #5940.
         }
+
         /// <summary>
         /// Initialize Monitors ALS Info
         /// </summary>
@@ -1574,6 +1628,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             });
         }
+
         /// <summary>
         /// Catch OSD event
         /// </summary>
@@ -1595,7 +1650,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result))
                 {
-                    //update target als config via target monitorinfo with e.value                    
+                    //update target als config via target monitorinfo with e.value
                     ALSConfig alsConfig = UpdateALSFeatureByValue(e.monitor, result);
                     if (alsConfig != null)
                         Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig));//JIRA DDPMW-770
@@ -1640,7 +1695,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     //    SetVCPCapability(mo, 0x10, Convert.ToUInt32(e.value));
                                     //else if (e.vcpcode.Equals("12"))
                                     //    SetVCPCapability(mo, 0x12, Convert.ToUInt32(e.value));
-                                    //else 
+                                    //else
                                     //if (e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
                                     //{
                                     //    r = int.TryParse(e.vcpcode, System.Globalization.NumberStyles.HexNumber, CultureInfo.CurrentCulture, out int number);
@@ -1689,6 +1744,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -1712,6 +1768,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             base.Dispose(disposing);
         }
+
         #endregion
 
         #region Event Handler
@@ -1733,13 +1790,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             InitializeVcpCorePlugin();
         }
+
         //Bruce, 2024-08-09 add new event
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
             HDRChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
-        #endregion
 
+        #endregion
 
         #region Bruce display properties
 
@@ -1763,7 +1821,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     ObjGetVCP = GetVCPCapability(monitorInfos, 0xE2).Result;
                     count++;
-
                 } while (ObjGetVCP.result != true && count < 3);
                 if (ObjGetVCP.result == true)
                 {
@@ -1786,7 +1843,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     ObjGetVCP = GetVCPCapability(monitorInfos, setParam).Result;
                     count++;
-
                 } while (ObjGetVCP.result != true && count < 3);
                 if (ObjGetVCP.result == true)
                 {
@@ -1795,6 +1851,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(_DisplayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfos, capabilityString, supportedHDR, isHDREnable, supportedUSBC, PrioritizationType).Result);
         }
+
         //Bruce, 2024-08-09 Modify the incoming value.
         public Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation)
         {
@@ -1805,10 +1862,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             isSWSetOrientation = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> CallWindowsDisplaySetting()
         {
             return Task.FromResult(_DisplayPropertiesPlugin.CallWindowsDisplaySetting().Result);
         }
+
         public Task<bool> GetHDRStatus(MonitorInfo monitorInfos)
         {
             string capabilityString = monitorInfos.CapabilityString;
@@ -1819,6 +1878,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
+
         public Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff)
         {
             if (onoff)
@@ -1848,6 +1908,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(_DisplayPropertiesPlugin.SetHDRStatus(monitorInfos.edid, onoff).Result);
         }
+
         public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type)
         {
             try
@@ -1878,6 +1939,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             isLockOrientation = isLock;
         }
+
         public Task<List<bool>> SetDisplayOrientation(List<MonitorInfo> monitorInfos)
         {
             bool[] bools = new bool[monitorInfos.Count];
@@ -1891,7 +1953,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     {
                         ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
                         count++;
-
                     } while (ObjGetVCP.result != true && count < 3);
                     if (ObjGetVCP.result == true)
                     {
@@ -1914,6 +1975,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(bools.ToList());
         }
+
         public Task<string> GetOSDOrientation(MonitorInfo monitorInfo)
         {
             int count = 0;
@@ -1922,7 +1984,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 ObjGetVCP = GetVCPCapability(monitorInfo, 0xAA).Result;
                 count++;
-
             } while (ObjGetVCP.result != true && count < 3);
             if (ObjGetVCP.result == true)
             {
@@ -1934,6 +1995,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult("");
         }
+
         public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
         {
             if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
@@ -1949,6 +2011,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult<bool?>(null);
         }
+
         private Task<bool> SetDisplayOrientation(VCPchangedEventArgs vcpchangedEventArgs)
         {
             if (!isLockOrientation && !isSWSetOrientation)
@@ -1966,7 +2029,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(true);
         }
-        bool IsSupportHDR(string s)
+
+        private bool IsSupportHDR(string s)
         {
             try
             {
@@ -1996,7 +2060,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 return (false);
             }
         }
-        bool IsSupportUSBCPrioritization(string s)
+
+        private bool IsSupportUSBCPrioritization(string s)
         {
             try
             {
@@ -2026,7 +2091,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 return (false);
             }
         }
-        bool IsSupportWriteOSDOrientation(string s)
+
+        private bool IsSupportWriteOSDOrientation(string s)
         {
             try
             {
@@ -2052,6 +2118,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 return (false);
             }
         }
+
         #endregion
 
         private void InitializeDisplayPropertiesPlugin()
@@ -2067,6 +2134,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 GetCurrentDisplayPropertiesCondition();
             }
         }
+
         private void GetCurrentDisplayPropertiesCondition()
         {
             _ = Task.Run(async () =>
@@ -2097,13 +2165,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             });
         }
+
         private void OnDisplayPropertiesPluginConditionChangeHandler(object sender, EventArgs e)
         {
             GetCurrentDisplayPropertiesCondition();
         }
+
         #endregion
 
         #region PipPbpManagerPlugin
+
         private IPipPbpService _pipPbpService;
         private PluginCondition _pipPbpPluginCondition;
 
@@ -2169,6 +2240,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
+
         public Task<bool> SetPipModeSmall(MonitorInfo monitorInfo)
         {
             if (_pipPbpService != null)
@@ -2230,7 +2302,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 return _pipPbpService.GetPxpMode(monitorInfo);
             }
             return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = 0xff });
-
         }
 
         public Task<List<UInt16>> GetSubInputList(MonitorInfo monitorInfo)
@@ -2259,6 +2330,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult<bool>(false);
         }
+
         public Task<bool> UsbSwitch(MonitorInfo monitorInfo, UInt16 target = 0)
         {
             if (_pipPbpService != null)
@@ -2267,9 +2339,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
+
         #endregion
 
         #region USBKVMService implementation
+
         public Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList)
         {
             _PCsList = new Dictionary<string, PCsInfo>();
@@ -2321,14 +2395,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
             return Task.FromResult(_PCsList);
         }
+
         #endregion
 
         #region EasyArrange implementation
+
         private bool _isEaPluginConfigured = false;
         private IEasyArrangeService _eaService;
         private PluginCondition _eaPluginCondition;
+
         public event EventHandler<string> EAEditCompleted;
+
         public event EventHandler<string> EAEditStarted;
+
         public event EventHandler<EAArgs> EAEditReturn;
 
         private void InitializeEAPlugin()
@@ -2343,6 +2422,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 GetCurrentEaCondition();
             }
         }
+
         private void GetCurrentEaCondition()
         {
             _ = Task.Run(async () =>
@@ -2417,6 +2497,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
+
         public Task<ObjGetVCP> GetEAFunctionEnabled()
         {
             if (_eaService != null)
@@ -2435,6 +2516,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(false);
         }
+
         public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
         {
             if (_eaService != null)

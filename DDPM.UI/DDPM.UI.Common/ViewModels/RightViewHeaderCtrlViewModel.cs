@@ -1,15 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace DDPM.UI.Common
 {
-    internal class RightViewHeaderCtrlViewModel: ObservableObject
+    internal class RightViewHeaderCtrlViewModel : ObservableObject
     {
         private string _text1 = "";
         private string _text2 = "";
@@ -27,11 +22,13 @@ namespace DDPM.UI.Common
             get => _text1;
             set => SetProperty(ref _text1, value);
         }
+
         public string Text2
         {
             get => _text2;
             set => SetProperty(ref _text2, value);
         }
+
         public string Text3
         {
             get => _text3;
@@ -45,9 +42,9 @@ namespace DDPM.UI.Common
         }
 
         #region Init
+
         public RightViewHeaderCtrlViewModel()
         {
-
         }
 
         public void SetHeaders(RightViewHeader[] headers)
@@ -57,7 +54,7 @@ namespace DDPM.UI.Common
             if (_itemCount <= 1) _itemCount = 0;
 
             _shownCount = 0;
-            for (int i= 0; i < _itemCount; i++)
+            for (int i = 0; i < _itemCount; i++)
             {
                 if (headers[i].IsShown)
                     _shownCount++;
@@ -137,32 +134,40 @@ namespace DDPM.UI.Common
             _itemCount = 0;
             CtrlVisibility = Visibility.Collapsed;
         }
-        #endregion
+
+        #endregion Init
 
         #region Columnn1 Width
+
         /// <summary>
         /// The ColumnDefinition.Width of column 1, default is "1*"
         /// </summary>
         private GridLength _col1Width = new GridLength(1, GridUnitType.Star);
+
         public GridLength Col1Width
         {
             get => _col1Width;
             set => SetProperty(ref _col1Width, value);
         }
-        #endregion
+
+        #endregion Columnn1 Width
 
         #region CtrlVisibility
+
         private Visibility _ctrlVisibility = Visibility.Visible;
+
         public Visibility CtrlVisibility
         {
             get => _ctrlVisibility;
             set => SetProperty(ref _ctrlVisibility, value);
         }
-        #endregion
 
+        #endregion CtrlVisibility
 
         #region Selection
+
         private int _internalSelectedIndex = 0;
+
         public int InternalSelectedIndex
         {
             get => (int)_internalSelectedIndex;
@@ -197,6 +202,7 @@ namespace DDPM.UI.Common
                 InternalSelectedIndex = value;
             }
         }
-        #endregion
+
+        #endregion Selection
     }
 }

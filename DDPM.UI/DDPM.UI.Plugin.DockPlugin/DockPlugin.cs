@@ -1,19 +1,16 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System;
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.UX.WPF;
-using NGA.ThickClient.Interfaces;
-using Dell.Client.Framework.Common;
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
-using Dell.Client.Framework.Common.PluginConditions;
 using DDPM.UI.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using DDPM.UI.Plugin.DockPlugin.Views;
-using DDPM.UI.Common.Models;
-using DDPM.UI.Plugin.DockPlugin.Interfaces;
-using System.Windows.Input;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.UX.WPF;
+using Microsoft.Extensions.DependencyInjection;
+using NGA.ThickClient.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Windows.Input;
 
 namespace DDPM.UI.Plugin.DockPlugin
 {
@@ -213,7 +210,8 @@ namespace DDPM.UI.Plugin.DockPlugin
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
         }
-        #endregion
+
+        #endregion Interface IConsolePluginSupportsActivations
 
         ~DockPlugin()
         {

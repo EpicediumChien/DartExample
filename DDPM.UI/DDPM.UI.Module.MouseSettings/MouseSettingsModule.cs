@@ -1,9 +1,8 @@
-using System.Windows.Controls;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
-using DDPM.UI.Module.MouseSettings;
 using DDPM.UI.Plugin.ViewModels;
+using System.Windows.Controls;
 
 namespace DDPM.UI.Module.MouseSettings
 {
@@ -15,8 +14,8 @@ namespace DDPM.UI.Module.MouseSettings
         public MouseSettingsModule(MouseViewModel vm)
         {
             _rightView = new MouseSettingsRightView(vm);
-
         }
+
         public string ModuleName { get => "MouseSettingsModule"; }
 
         public UserControl? GetLeftView()
@@ -28,8 +27,11 @@ namespace DDPM.UI.Module.MouseSettings
         {
             return _rightView;
         }
+
         public HomeDevice SelectedHomeDevice { get; set; }
+
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             //get => vm.ModuleOwner;
@@ -37,22 +39,23 @@ namespace DDPM.UI.Module.MouseSettings
             get;
             set;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
-
         }
+
         public void OnActivated()
         {
-
         }
+
         public void OnDeactivated()
         {
-
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

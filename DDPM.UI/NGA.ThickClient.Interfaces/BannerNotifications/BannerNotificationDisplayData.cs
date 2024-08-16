@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Microsoft;
@@ -57,13 +59,13 @@ namespace NGA.ThickClient.Interfaces.BannerNotifications
         public string? HyperlinkText { get; set; }
 
         /// <summary>
-        /// Gets and Sets Display Duration. 
+        /// Gets and Sets Display Duration.
         /// </summary>
         public TimeSpan? DisplayDuration { get; set; }
 
         /// <summary>
         /// Constructs the BannerNotificationDisplayData Object with BannerId, BannerGroupId, PluginOwnerId, BannerItemType.
-        /// Display Priority is set to Minor by default. 
+        /// Display Priority is set to Minor by default.
         /// </summary>
         /// <exception cref="ArgumentException">Thrown if <paramref name="bannerId"/> is <see cref="Guid.Empty"/></exception>
         /// <exception cref="ArgumentException">Thrown if <paramref name="bannerGroupId"/> is Empty or Null</exception>

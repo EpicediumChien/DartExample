@@ -1,362 +1,451 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Input;
-using DDPM.SA.Common;
+﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
-using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
-namespace DDPM.UI.Plugin.ViewModels {
-  public class PenViewModel : PeripheralViewModel, INotifyPropertyChanged {
-    #region Variables
-    private readonly ILog _log;
-    private readonly IDeviceManagerSA _deviceManager;
+namespace DDPM.UI.Plugin.ViewModels
+{
+    public class PenViewModel : PeripheralViewModel, INotifyPropertyChanged
+    {
+        #region Variables
 
-    private int _tipSensitivity = 75;
-    private int _tiltSensitivity = 20;
+        private readonly ILog _log;
+        private readonly IDeviceManagerSA _deviceManager;
 
-    private string _selectedButton = "";
+        private int _tipSensitivity = 75;
+        private int _tiltSensitivity = 20;
 
-    #endregion
+        private string _selectedButton = "";
 
+        #endregion Variables
 
-    public int AppSelectedIndex { get; set; } = 0;
-    public string TopButtonBackground { get; set; } = "";
+        public int AppSelectedIndex { get; set; } = 0;
+        public string TopButtonBackground { get; set; } = "";
 
-    public new event PropertyChangedEventHandler? PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
-    public PenViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager) {
-      Requires.NotNull(console, nameof(console));
-      Requires.NotNull(log, nameof(log));
+        public PenViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        {
+            Requires.NotNull(console, nameof(console));
+            Requires.NotNull(log, nameof(log));
 
-      _log = log;
-      _deviceManager = deviceManager;
-    }
-
-    public override void OnPropertyChanged([CallerMemberName] string propertyName = "") {
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-    public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos) {
-      DeviceInfos.Clear();
-      foreach(DeviceInfo deviceInfo in deviceInfos) {
-        if(deviceInfo.LogicalDeviceType.Contains("Pen")) {
-          DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+            _log = log;
+            _deviceManager = deviceManager;
         }
-      }
-    }
-    public override bool SetCurrentDevice(string deviceID) {
-      if(!base.SetCurrentDevice(deviceID))
-        return false;
 
-      InitializeButton();
-      return true;
-    }
-    public PenActions PenAction = new();
-    private void InitializeButton() {
-      //Model = "PN7522W";
-      //Model = "PN9315A";
-      //Model = "PN5122W";
-      //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
+        public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
+        {
+            DeviceInfos.Clear();
+            foreach (DeviceInfo deviceInfo in deviceInfos)
+            {
+                if (deviceInfo.LogicalDeviceType.Contains("Pen"))
+                {
+                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                }
+            }
+        }
+
+        public override bool SetCurrentDevice(string deviceID)
+        {
+            if (!base.SetCurrentDevice(deviceID))
+                return false;
+
+            InitializeButton();
+            return true;
+        }
+
+        public PenActions PenAction = new();
+
+        private void InitializeButton()
+        {
+            //Model = "PN7522W";
+            //Model = "PN9315A";
+            //Model = "PN5122W";
+            //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
       PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");
 
-      RefreshButtonImageFile(PenButtonName.TopButton.ToString());
-      RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString());
-      RefreshButtonImageFile(PenButtonName.BottomBarrelButton.ToString());
-      CheckRestoreStatus();
-      OnPropertyChanged(nameof(IsRestoreEnable));
+            RefreshButtonImageFile(PenButtonName.TopButton.ToString());
+            RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString());
+            RefreshButtonImageFile(PenButtonName.BottomBarrelButton.ToString());
+            CheckRestoreStatus();
+            OnPropertyChanged(nameof(IsRestoreEnable));
 
-      TopButtonBackground = $"/DDPM.UI.Resources;component/Resources/Images/{Model}Top.png";
-      OnPropertyChanged(nameof(TopButtonBackground));
-    }
-    public void RefreshButtonImageFile(string btnName, bool IsHover = false, bool IsSelected = false) {
-      PenButtonName _btnName = (PenButtonName)Enum.Parse(typeof(PenButtonName), btnName, true);
-      var property = typeof(PenViewModel).GetProperty($"{btnName}ImageFile");
-      int btnType = 1;
-      switch(_btnName) {
-        case PenButtonName.TopButton:
-          btnType = 1;
-          break;
-        default:
-          if(Model == "PN7522W")
-            btnType = 2;
-          else if(Model == "PN9315A")
-            btnType = 3;
-          else if(Model == "PN5122W")
-            btnType = 4;
-          break;
-      }
-
-      var IsDefault = false;
-      if(_btnName == PenButtonName.TopButton && PenAction.TopButtonClickAction.DefaultActionID == PenAction.TopButtonClickAction.AssignedAction.ID
-         && PenAction.TopButtonDoubleClickAction.DefaultActionID == PenAction.TopButtonDoubleClickAction.AssignedAction.ID
-         && PenAction.TopButtonPressHoldAction.DefaultActionID == PenAction.TopButtonPressHoldAction.AssignedAction.ID) {
-        IsDefault = true;
-      }
-      else if(_btnName == PenButtonName.TopBarrelButton && PenAction.TopBarrelButtonClickAction.DefaultActionID == PenAction.TopBarrelButtonClickAction.AssignedAction.ID) {
-        IsDefault = true;
-      }
-      else if(_btnName == PenButtonName.BottomBarrelButton && PenAction.BottomBarrelButtonClickAction.DefaultActionID == PenAction.BottomBarrelButtonClickAction.AssignedAction.ID) {
-        IsDefault = true;
-      }
-
-      if(IsDefault) {
-        if(IsSelected) {
-          property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}5.png");
+            TopButtonBackground = $"/DDPM.UI.Resources;component/Resources/Images/{Model}Top.png";
+            OnPropertyChanged(nameof(TopButtonBackground));
         }
-        else {
-          if(IsHover) {
-            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}2.png");
-          }
-          else {
-            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}1.png");
-          }
-        }
-      }
-      else {
-        if(IsSelected) {
-          property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}6.png");
-        }
-        else {
-          if(IsHover) {
-            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}4.png");
-          }
-          else {
-            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}3.png");
-          }
-        }
-      }
-      var a = property.GetValue(this);
-      OnPropertyChanged(property!.Name);
-    }
 
-    public bool IsRestoreEnable { get; set; } = true;
-    void CheckRestoreStatus(bool? status = null) {
-      IsRestoreEnable = false;
-      if(PenAction.TopButtonClickAction.DefaultActionID != PenAction.TopButtonClickAction.AssignedAction.ID) {
-        IsRestoreEnable = true;
-      }
-      else if(PenAction.TopButtonDoubleClickAction.DefaultActionID != PenAction.TopButtonDoubleClickAction.AssignedAction.ID) {
-        IsRestoreEnable = true;
-      }
-      else if(PenAction.TopButtonPressHoldAction.DefaultActionID != PenAction.TopButtonPressHoldAction.AssignedAction.ID) {
-        IsRestoreEnable = true;
-      }
-      else if(PenAction.TopBarrelButtonClickAction.DefaultActionID != PenAction.TopBarrelButtonClickAction.AssignedAction.ID) {
-        IsRestoreEnable = true;
-      }
-      else if(PenAction.BottomBarrelButtonClickAction.DefaultActionID != PenAction.BottomBarrelButtonClickAction.AssignedAction.ID) {
-        IsRestoreEnable = true;
-      }
-      OnPropertyChanged(nameof(IsRestoreEnable));
-    }
+        public void RefreshButtonImageFile(string btnName, bool IsHover = false, bool IsSelected = false)
+        {
+            PenButtonName _btnName = (PenButtonName)Enum.Parse(typeof(PenButtonName), btnName, true);
+            var property = typeof(PenViewModel).GetProperty($"{btnName}ImageFile");
+            int btnType = 1;
+            switch (_btnName)
+            {
+                case PenButtonName.TopButton:
+                    btnType = 1;
+                    break;
 
-    public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "") {
-      base.HandleNotification(changeType, di, property);
-
-      switch(changeType) {
-        case DeviceChangedType.Peripherals_SettingsChange:
-          if(DeviceInfos.ContainsKey(di.ID)) {
-            DeviceInfos.Remove(di.ID);
-            DeviceInfos.Add(di.ID, di);
-          }
-          else {
-            return;
-          }
-          if(di.ID == CurrentDeviceID) {
-            CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-            switch(property) {
-              //case "MousePrimaryButtonChanged":
-              //  PrimaryButtonIndex = (int)di.MousePrimaryButton;
-              //  break;
-              //case "TouchScrollSensitivityLevelChanged":
-              //  TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
-              //  break;
-              //case "DpiValueChanged":
-              //  DPIValue = int.Parse(di.DPIValue);
-              //  break;
-              default:
-                break;
+                default:
+                    if (Model == "PN7522W")
+                        btnType = 2;
+                    else if (Model == "PN9315A")
+                        btnType = 3;
+                    else if (Model == "PN5122W")
+                        btnType = 4;
+                    break;
             }
-            GenerateInfo();
-          }
-          break;
-        default:
-          break;
-      }
 
-    }
+            var IsDefault = false;
+            if (_btnName == PenButtonName.TopButton && PenAction.TopButtonClickAction.DefaultActionID == PenAction.TopButtonClickAction.AssignedAction.ID
+               && PenAction.TopButtonDoubleClickAction.DefaultActionID == PenAction.TopButtonDoubleClickAction.AssignedAction.ID
+               && PenAction.TopButtonPressHoldAction.DefaultActionID == PenAction.TopButtonPressHoldAction.AssignedAction.ID)
+            {
+                IsDefault = true;
+            }
+            else if (_btnName == PenButtonName.TopBarrelButton && PenAction.TopBarrelButtonClickAction.DefaultActionID == PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
+            {
+                IsDefault = true;
+            }
+            else if (_btnName == PenButtonName.BottomBarrelButton && PenAction.BottomBarrelButtonClickAction.DefaultActionID == PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
+            {
+                IsDefault = true;
+            }
 
-    public int TipSensitivity {
-      get => _tipSensitivity;
-      set {
-        if(_tipSensitivity != value) {
-          _tipSensitivity = value;
-          //DPITextMargin = new double[] { (_DPIValue - DPIMin) * 1.0 / (DPIMax - DPIMin) * 365 + 39, 0, 0, 1 };
-          //if(_DPIValue == DPIMax || _DPIValue == DPIMin) {
-          //  DPIValueText = "";
-          //}
-          //else {
-          //  DPIValueText = _DPIValue.ToString();
-          //}
-          //if(!IsSliderDragging)
-          //  SetDPIValue();
-          OnPropertyChanged();
-          //OnPropertyChanged(nameof(DPITextMargin));
-          //OnPropertyChanged(nameof(DPIValueText));
+            if (IsDefault)
+            {
+                if (IsSelected)
+                {
+                    property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}5.png");
+                }
+                else
+                {
+                    if (IsHover)
+                    {
+                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}2.png");
+                    }
+                    else
+                    {
+                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}1.png");
+                    }
+                }
+            }
+            else
+            {
+                if (IsSelected)
+                {
+                    property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}6.png");
+                }
+                else
+                {
+                    if (IsHover)
+                    {
+                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}4.png");
+                    }
+                    else
+                    {
+                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}3.png");
+                    }
+                }
+            }
+            var a = property.GetValue(this);
+            OnPropertyChanged(property!.Name);
         }
-      }
-    }
 
-    public int TiltSensitivity {
-      get => _tiltSensitivity;
-      set {
-        if(_tiltSensitivity != value) {
-          _tiltSensitivity = value;
-          OnPropertyChanged();
+        public bool IsRestoreEnable { get; set; } = true;
+
+        private void CheckRestoreStatus(bool? status = null)
+        {
+            IsRestoreEnable = false;
+            if (PenAction.TopButtonClickAction.DefaultActionID != PenAction.TopButtonClickAction.AssignedAction.ID)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (PenAction.TopButtonDoubleClickAction.DefaultActionID != PenAction.TopButtonDoubleClickAction.AssignedAction.ID)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (PenAction.TopButtonPressHoldAction.DefaultActionID != PenAction.TopButtonPressHoldAction.AssignedAction.ID)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (PenAction.TopBarrelButtonClickAction.DefaultActionID != PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
+            {
+                IsRestoreEnable = true;
+            }
+            else if (PenAction.BottomBarrelButtonClickAction.DefaultActionID != PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
+            {
+                IsRestoreEnable = true;
+            }
+            OnPropertyChanged(nameof(IsRestoreEnable));
         }
-      }
-    }
 
-    public string SelectedButton {
-      get => _selectedButton;
-      set {
-        _selectedButton = value;
-        OnPropertyChanged(nameof(IsHoverClickOn));
-        OnPropertyChanged(nameof(IsHoverClickToggleText));
-        IsHoverClickVisibility = value == PenButtonName.TopBarrelButton.ToString() || value == PenButtonName.BottomBarrelButton.ToString() ? Visibility.Visible : Visibility.Collapsed;
-        OnPropertyChanged(nameof(IsHoverClickVisibility));
-      }
-    }
-    private string _selectedBehavior = "";
-    public string SelectedBehavior { get => _selectedBehavior;
-      set {
-        _selectedBehavior = value;
-        OnPropertyChanged(nameof(TopButtonTooltip));
-        OnPropertyChanged(nameof(IsSearchEnabled));
-      }
-    }
-    public bool IsSearchEnabled {
-      get => SelectedButton != PenButtonName.TopButton.ToString() ? true : (SelectedBehavior != "" ? true : false);
-    }
-    public SelectedAction? SelectedAction => SelectedButton == "" ? null :
-                          (SelectedButton == PenButtonName.TopBarrelButton.ToString() ? PenAction.TopBarrelButtonClickAction :
-                          (SelectedButton == PenButtonName.BottomBarrelButton.ToString() ? PenAction.BottomBarrelButtonClickAction :
-                          (SelectedBehavior == ButtonBehavior.ClickOnce.ToString() ? PenAction.TopButtonClickAction :
-                          (SelectedBehavior == ButtonBehavior.DoubleClick.ToString() ? PenAction.TopButtonDoubleClickAction : PenAction.TopButtonPressHoldAction))));
-    public int SelectedActionID => SelectedButton == "" ? -1 : SelectedAction?.AssignedAction.ID ?? -1;
-    public string TopButtonImageFile { get; set; } = "";
-    public string TopBarrelButtonImageFile { get; set; } = "";
-    public string BottomBarrelButtonImageFile { get; set; } = "";
+        public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
+        {
+            base.HandleNotification(changeType, di, property);
 
-    private Visibility _isAllButtonsVisible = Visibility.Visible;
-    public Visibility IsAllButtonsVisible {
-      get => _isAllButtonsVisible;
-      set {
-        _isAllButtonsVisible = value;
-        OnPropertyChanged(nameof(IsTopButtonVisible));
-        OnPropertyChanged(nameof(IsTopBarrelButtonVisible));
-        OnPropertyChanged(nameof(IsBottomBarrelButtonVisible));
-      }
-    }
-    public bool IsTopButtonVisible {
-      get {
-        if(IsAllButtonsVisible == Visibility.Hidden)
-          return false;
-        else
-          return PenAction.Buttons.Contains(PenButtonName.TopButton);
-      }
-      set {
-        OnPropertyChanged();
-      }
-    }
-    public bool IsTopBarrelButtonVisible {
-      get {
-        if(IsAllButtonsVisible == Visibility.Hidden)
-          return false;
-        else
-          return PenAction.Buttons.Contains(PenButtonName.TopBarrelButton);
-      }
-      set {
-        OnPropertyChanged();
-      }
-    }
-    public bool IsBottomBarrelButtonVisible {
-      get {
-        if(IsAllButtonsVisible == Visibility.Hidden)
-          return false;
-        else
-          return PenAction.Buttons.Contains(PenButtonName.BottomBarrelButton);
-      }
-      set {
-        OnPropertyChanged();
-      }
-    }
-    public string TopButtonTooltip {
-      get {
-        //var tp1 = "";
-        string tooltip1 = Actions.PenTopButtonActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
-        string parameter1 = PenAction.TopButtonClickAction.AssignedAction.Parameter;
-        if(parameter1 != "") {
-          var arr = parameter1.Split('|');
-          if(int.TryParse(arr[0], out int id)) {
-            if(id == 1) {
-              tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+            switch (changeType)
+            {
+                case DeviceChangedType.Peripherals_SettingsChange:
+                    if (DeviceInfos.ContainsKey(di.ID))
+                    {
+                        DeviceInfos.Remove(di.ID);
+                        DeviceInfos.Add(di.ID, di);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                    if (di.ID == CurrentDeviceID)
+                    {
+                        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                        switch (property)
+                        {
+                            //case "MousePrimaryButtonChanged":
+                            //  PrimaryButtonIndex = (int)di.MousePrimaryButton;
+                            //  break;
+                            //case "TouchScrollSensitivityLevelChanged":
+                            //  TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
+                            //  break;
+                            //case "DpiValueChanged":
+                            //  DPIValue = int.Parse(di.DPIValue);
+                            //  break;
+                            default:
+                                break;
+                        }
+                        GenerateInfo();
+                    }
+                    break;
+
+                default:
+                    break;
             }
-            else {
-              tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]}";
-            }
-          }
-          else {
-            tooltip1 = $"{tooltip1} : {parameter1}";
-          }
         }
-        if(SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
-          return $"{Strings.PenButtonClickOnce}: {tooltip1}";
 
-        string tooltip2 = Actions.PenTopButtonActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
-        string parameter2 = PenAction.TopButtonDoubleClickAction.AssignedAction.Parameter;
-        if(parameter2 != "") {
-          var arr = parameter2.Split('|');
-          if(int.TryParse(arr[0], out int id)) {
-            if(id == 1) {
-              tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+        public int TipSensitivity
+        {
+            get => _tipSensitivity;
+            set
+            {
+                if (_tipSensitivity != value)
+                {
+                    _tipSensitivity = value;
+                    //DPITextMargin = new double[] { (_DPIValue - DPIMin) * 1.0 / (DPIMax - DPIMin) * 365 + 39, 0, 0, 1 };
+                    //if(_DPIValue == DPIMax || _DPIValue == DPIMin) {
+                    //  DPIValueText = "";
+                    //}
+                    //else {
+                    //  DPIValueText = _DPIValue.ToString();
+                    //}
+                    //if(!IsSliderDragging)
+                    //  SetDPIValue();
+                    OnPropertyChanged();
+                    //OnPropertyChanged(nameof(DPITextMargin));
+                    //OnPropertyChanged(nameof(DPIValueText));
+                }
             }
-            else {
-              tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]}";
-            }
-          }
-          else {
-            tooltip2 = $"{tooltip2} : {parameter2}";
-          }
         }
-        if(SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
-          return $"{Strings.PenButtonDoubleClick}: {tooltip2}";
 
-        string tooltip3 = Actions.PenTopButtonActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
-        string parameter3 = PenAction.TopButtonPressHoldAction.AssignedAction.Parameter;
-        if(parameter3 != "") {
-          var arr = parameter3.Split('|');
-          if(int.TryParse(arr[0], out int id)) {
-            if(id == 1) {
-              tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+        public int TiltSensitivity
+        {
+            get => _tiltSensitivity;
+            set
+            {
+                if (_tiltSensitivity != value)
+                {
+                    _tiltSensitivity = value;
+                    OnPropertyChanged();
+                }
             }
-            else {
-              tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]}";
-            }
-          }
-          else {
-            tooltip3 = $"{tooltip3} : {parameter3}";
-          }
         }
-        if(SelectedBehavior == ButtonBehavior.PressAndHold.ToString())
-          return $"{Strings.PenButtonPressHold}: {tooltip3}";
+
+        public string SelectedButton
+        {
+            get => _selectedButton;
+            set
+            {
+                _selectedButton = value;
+                OnPropertyChanged(nameof(IsHoverClickOn));
+                OnPropertyChanged(nameof(IsHoverClickToggleText));
+                IsHoverClickVisibility = value == PenButtonName.TopBarrelButton.ToString() || value == PenButtonName.BottomBarrelButton.ToString() ? Visibility.Visible : Visibility.Collapsed;
+                OnPropertyChanged(nameof(IsHoverClickVisibility));
+            }
+        }
+
+        private string _selectedBehavior = "";
+
+        public string SelectedBehavior
+        {
+            get => _selectedBehavior;
+            set
+            {
+                _selectedBehavior = value;
+                OnPropertyChanged(nameof(TopButtonTooltip));
+                OnPropertyChanged(nameof(IsSearchEnabled));
+            }
+        }
+
+        public bool IsSearchEnabled
+        {
+            get => SelectedButton != PenButtonName.TopButton.ToString() ? true : (SelectedBehavior != "" ? true : false);
+        }
+
+        public SelectedAction? SelectedAction => SelectedButton == "" ? null :
+                              (SelectedButton == PenButtonName.TopBarrelButton.ToString() ? PenAction.TopBarrelButtonClickAction :
+                              (SelectedButton == PenButtonName.BottomBarrelButton.ToString() ? PenAction.BottomBarrelButtonClickAction :
+                              (SelectedBehavior == ButtonBehavior.ClickOnce.ToString() ? PenAction.TopButtonClickAction :
+                              (SelectedBehavior == ButtonBehavior.DoubleClick.ToString() ? PenAction.TopButtonDoubleClickAction : PenAction.TopButtonPressHoldAction))));
+
+        public int SelectedActionID => SelectedButton == "" ? -1 : SelectedAction?.AssignedAction.ID ?? -1;
+        public string TopButtonImageFile { get; set; } = "";
+        public string TopBarrelButtonImageFile { get; set; } = "";
+        public string BottomBarrelButtonImageFile { get; set; } = "";
+
+        private Visibility _isAllButtonsVisible = Visibility.Visible;
+
+        public Visibility IsAllButtonsVisible
+        {
+            get => _isAllButtonsVisible;
+            set
+            {
+                _isAllButtonsVisible = value;
+                OnPropertyChanged(nameof(IsTopButtonVisible));
+                OnPropertyChanged(nameof(IsTopBarrelButtonVisible));
+                OnPropertyChanged(nameof(IsBottomBarrelButtonVisible));
+            }
+        }
+
+        public bool IsTopButtonVisible
+        {
+            get
+            {
+                if (IsAllButtonsVisible == Visibility.Hidden)
+                    return false;
+                else
+                    return PenAction.Buttons.Contains(PenButtonName.TopButton);
+            }
+            set
+            {
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsTopBarrelButtonVisible
+        {
+            get
+            {
+                if (IsAllButtonsVisible == Visibility.Hidden)
+                    return false;
+                else
+                    return PenAction.Buttons.Contains(PenButtonName.TopBarrelButton);
+            }
+            set
+            {
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsBottomBarrelButtonVisible
+        {
+            get
+            {
+                if (IsAllButtonsVisible == Visibility.Hidden)
+                    return false;
+                else
+                    return PenAction.Buttons.Contains(PenButtonName.BottomBarrelButton);
+            }
+            set
+            {
+                OnPropertyChanged();
+            }
+        }
+
+        public string TopButtonTooltip
+        {
+            get
+            {
+                //var tp1 = "";
+                string tooltip1 = Actions.PenTopButtonActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
+                string parameter1 = PenAction.TopButtonClickAction.AssignedAction.Parameter;
+                if (parameter1 != "")
+                {
+                    var arr = parameter1.Split('|');
+                    if (int.TryParse(arr[0], out int id))
+                    {
+                        if (id == 1)
+                        {
+                            tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                        }
+                        else
+                        {
+                            tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]}";
+                        }
+                    }
+                    else
+                    {
+                        tooltip1 = $"{tooltip1} : {parameter1}";
+                    }
+                }
+                if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
+                    return $"{Strings.PenButtonClickOnce}: {tooltip1}";
+
+                string tooltip2 = Actions.PenTopButtonActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
+                string parameter2 = PenAction.TopButtonDoubleClickAction.AssignedAction.Parameter;
+                if (parameter2 != "")
+                {
+                    var arr = parameter2.Split('|');
+                    if (int.TryParse(arr[0], out int id))
+                    {
+                        if (id == 1)
+                        {
+                            tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                        }
+                        else
+                        {
+                            tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]}";
+                        }
+                    }
+                    else
+                    {
+                        tooltip2 = $"{tooltip2} : {parameter2}";
+                    }
+                }
+                if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
+                    return $"{Strings.PenButtonDoubleClick}: {tooltip2}";
+
+                string tooltip3 = Actions.PenTopButtonActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
+                string parameter3 = PenAction.TopButtonPressHoldAction.AssignedAction.Parameter;
+                if (parameter3 != "")
+                {
+                    var arr = parameter3.Split('|');
+                    if (int.TryParse(arr[0], out int id))
+                    {
+                        if (id == 1)
+                        {
+                            tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
+                        }
+                        else
+                        {
+                            tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]}";
+                        }
+                    }
+                    else
+                    {
+                        tooltip3 = $"{tooltip3} : {parameter3}";
+                    }
+                }
+                if (SelectedBehavior == ButtonBehavior.PressAndHold.ToString())
+                    return $"{Strings.PenButtonPressHold}: {tooltip3}";
 
         return $"{Strings.PenButtonClickOnce}: {tooltip1}\n{Strings.PenButtonDoubleClick}: {tooltip2}\n{Strings.PenButtonPressHold}: {tooltip3}";
       }
@@ -467,13 +556,16 @@ namespace DDPM.UI.Plugin.ViewModels {
     } 
     public Visibility IsHoverClickVisibility { get; set; } = Visibility.Collapsed;
 
-    private double _windowsPanelParameter = 401;
-    public double WindowsPanelParameter {
-      get => _windowsPanelParameter; 
-      set {
-        _windowsPanelParameter = value;
-        OnPropertyChanged();
-      }
+        private double _windowsPanelParameter = 401;
+
+        public double WindowsPanelParameter
+        {
+            get => _windowsPanelParameter;
+            set
+            {
+                _windowsPanelParameter = value;
+                OnPropertyChanged();
+            }
+        }
     }
-  }
 }

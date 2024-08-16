@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.MonitorBorker"
-        mc:Ignorable="d"  WindowStartupLocation="Manual" Left="-100" Top="-100" Loaded="Window_Loaded" ContentRendered ="WindowRendered" 
+        mc:Ignorable="d"  WindowStartupLocation="Manual" Left="-100" Top="-100" Loaded="Window_Loaded" ContentRendered ="WindowRendered"
         Title="MainWindow" Height="0" Width="0">
     <Grid>
-        <Button x:Name="btnPipeSend" Visibility="Collapsed" Width="30" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+        <Button x:Name="btnPipeSend" Visibility="Collapsed" Width="30" Height="10" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" />
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,32 +7,31 @@
 //
 // CLIManagerPlugin.cs created on 24/07/2024T08:04 PM
 //
-#endregion 
+#endregion
 
+
+
+using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.Common.PluginConditions;
-using DDPM.SA.Common;
+using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using static DDPM.SA.Common.ICLICommandTable;
-using Microsoft.VisualBasic.Logging;
-using DDPM.SA.Common.Settings;
-using Dell.Client.Framework.Agent;
 using Newtonsoft.Json;
+using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.User.CLIManager
 {
     [Plugin(IDs.DDPM_CLI_Proxy_Plugin, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
-    //[PublishedUnelevatedInterface(new[] { typeof(ICliProxy) })] // nobody use this interface, no need to publish it
-
     public class CLIProxyPlugin : BaseAgentPlugin, IDisposableObservable, ICliProxy
     {
         public const string PluginLogId = "CLIProxy";
 
         #region Private Members
+
         private const string pluginName = "CLIProxyPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CLI Proxy Plugin.";
@@ -53,16 +53,18 @@ namespace DDPM.SA.Plugin.User.CLIManager
         private readonly object _pluginConditionLock_Peripherals = new object();
         private PluginCondition _CLIDisplayPluginCondition;
         private PluginCondition _CLIPeripheralsPluginCondition;
-        private const int TIMEOUT_IN_SECONDS = 60;        
+        private const int TIMEOUT_IN_SECONDS = 60;
 
         private ICliManagerSA _CliManagerPlugin;
         private IDeviceManagerSA _DevManagerPlugin;
         private readonly object _PluginConditionLock_CliManager = new object();
         private readonly object _PluginConditionLock_DevManager = new object();
         private bool relay_registered = false;
+
         #endregion
 
         #region Constructor
+
         public CLIProxyPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
@@ -71,6 +73,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
         #endregion
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
@@ -84,9 +87,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
             InitializeCliManagerPlugin();
         }
+
         #endregion
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -117,9 +122,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
             }
             base.Dispose(disposing);
         }
+
         #endregion
 
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -136,7 +143,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
             if (e.ChangedPlugins.OfType<ICliManagerSA>().Any())
                 InitializeCliManagerPlugin();
-            
+
             if (e.ChangedPlugins.OfType<IDeviceManagerSA>().Any())
                 InitializeDevManagerPlugin();
 
@@ -146,9 +153,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
             if (e.ChangedPlugins.OfType<ICLIPeripherals>().Any())
                 InitializeCLIPeripheralsPlugin();
         }
+
         #endregion
 
         #region Private methods
+
         /// <summary>
         /// //
         /// </summary>
@@ -257,7 +266,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
                         WriteLog($"{nameof(GetCurrentCliManagerPluginCondition)} - CliManager Plugin is in a running/started condition");
-                        if(!relay_registered && _DevManagerPlugin != null)
+                        if (!relay_registered && _DevManagerPlugin != null)
                         {
                             DoRelayRegister();
                         }
@@ -346,7 +355,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
             });
         }
 
-        void DoRelayRegister()
+        private void DoRelayRegister()
         {
             if (_DevManagerPlugin == null || _CliManagerPlugin == null)
             {
@@ -410,6 +419,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "TELEMETRYCONSENT":
                             cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             break;
+
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
                             return;
@@ -449,7 +459,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
             DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
             if (data == null)
-            {                
+            {
                 response.Message = "Fail to read application setting";
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.fail_read_settings;
@@ -485,7 +495,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             response.Result = $"isAllow = {data.UserSettings.isTelemetryConsentAllow}";
                             ever = true;
                         }
-                        else*/ 
+                        else*/
                         if (op.Option_Value.ToUpper().Equals("ISENABLE"))
                         {
                             Console.WriteLine($"Telemetry Consent: isEnable {data.UserSettings.isTelemetryConsentOn}");
@@ -566,10 +576,13 @@ namespace DDPM.SA.Plugin.User.CLIManager
             result.ExitCode = (int)CLI_ExitCode.unknow_command;
             return result;
         }
+
         #endregion
 
         #region ICLIProxy implementation
+
         //no action need in this plugin
+
         #endregion
     }
 }

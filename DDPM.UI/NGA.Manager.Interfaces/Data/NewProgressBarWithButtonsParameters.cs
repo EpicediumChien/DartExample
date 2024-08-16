@@ -1,13 +1,13 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
-using System.Collections.Generic;
 using Microsoft;
 using Newtonsoft.Json;
 
@@ -68,7 +68,7 @@ public class NewProgressBarWithButtonsParameters
     /// <param name="status">progress status text</param>
     /// <param name="buttonParameters">ButtonParameters</param>
     /// <param name="valueStringOverride">text progress value (to override progress value)</param>
-    public NewProgressBarWithButtonsParameters(BodyParameters bodyParameters, List<ButtonParameters> buttonParameters, 
+    public NewProgressBarWithButtonsParameters(BodyParameters bodyParameters, List<ButtonParameters> buttonParameters,
         double progress, string status, string valueStringOverride = null)
     {
         Requires.NotNull(bodyParameters, nameof(bodyParameters));

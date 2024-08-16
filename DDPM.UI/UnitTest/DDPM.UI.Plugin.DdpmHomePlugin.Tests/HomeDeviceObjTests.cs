@@ -2,11 +2,6 @@
 using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Plugin.DdpmHomePlugin.Model;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
@@ -50,10 +45,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             Assert.That(homeDeviceObj_Unused.DeviceCategory, Is.EqualTo(deviceCategory));
         }
 
-
         [Test]
         public void TestNormalWidth()
-        {            
+        {
             homeDeviceObj_Unused.NormalWidth = 2.00;
             Assert.That(homeDeviceObj_Unused.NormalWidth, Is.EqualTo(2.00));
         }
@@ -92,7 +86,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             Assert.That(homeDeviceObj_Unused.ServiceTag, Is.EqualTo("(null)"));
 
             //MonitorInfo != null
-            var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() {ServiceTag="11" } };
+            var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ServiceTag = "11" } };
             homeDeviceObj_Unused.MonitorInfo = monitorInfo;
             Assert.That(homeDeviceObj_Unused.ServiceTag, Is.EqualTo(monitorInfo.edid.ServiceTag));
         }
@@ -103,12 +97,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
             Assert.That(homeDeviceObj_Unused.MfgDate, Is.EqualTo("(N/A)"));
 
             //MonitorInfo != null
-            var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { Year = 2024,Month=7} };
+            var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { Year = 2024, Month = 7 } };
             homeDeviceObj_Unused.MonitorInfo = monitorInfo;
             Assert.That(homeDeviceObj_Unused.MfgDate, Is.Not.Null);
             Assert.That(homeDeviceObj_Unused.MfgDate, Is.EqualTo("Jul 2024"));
         }
-        
-
     }
 }

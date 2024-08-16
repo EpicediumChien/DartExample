@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,36 +7,31 @@
 //
 // VcpCorePlugin.cs created on 28/03/2024T09:50 AM
 //
+
 #endregion
 
-using Microsoft;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Management;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Globalization;
-using System.Text;
-using System.Threading;
-using System.Timers;
-using System.Drawing;
-using System.IO;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using VcpCore.Interfaces;
-using VcpCore.Common;
-using static VcpCore.Common.User32;
-using static VcpCore.Common.dxva2;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using System.Collections;
-using static Dell.Client.Framework.Common.Platform;
-using Dell.Client.Framework.Security.Interfaces;
-using System.Xml.Linq;
+using Microsoft;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using VcpCore.Common;
+using VcpCore.Interfaces;
+using static VcpCore.Common.dxva2;
+using static VcpCore.Common.User32;
 
 namespace VcpCore.Plugins
 {
@@ -43,11 +39,10 @@ namespace VcpCore.Plugins
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(IVcpCoreService) })]
-    //[PublishedInterface(new[] { typeof(IVcpCoreService) })]
-
     public class VcpCorePlugin : BaseAgentPlugin, IDisposableObservable, IVcpCoreService
     {
         #region Private Members
+
         private const string pluginName = "VcpCorePlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Vcp Core Plugin.";
@@ -61,18 +56,24 @@ namespace VcpCore.Plugins
         private const string PluginLogId = "VcpCore";
         private bool _IsOnlyGetDellMontor = IsOnlyDellMonitorForDebug(); //Robert_Lin 2024-6-2 for enginner debug
         private static Logs _logs;
+
         //private static int MonitoIndexCounter = 0;
         private static List<MonitorInfo_complex> _AllInfoMonitors;
+
         private static List<(MonitorInfo_complex, MonitorInfo)> _AllInfoMonitors_Mix;
         private static Dictionary<string, Dictionary<string, string>> _ColorPresets;
         private static TaskLockQueue<ParameterType> _TaskQueue;
         private static BackgroundWorker _TaskQueueExecutor;
+
         //private static BackgroundWorker _MonitorRetrier;
         private static ResultLockPool _TaskQueueResult;
+
         private static System.Timers.Timer _CacheTimer = new System.Timers.Timer(2000);
         private static readonly object TaskQueueExecutorLock = new object();
+
         //private  static readonly object MonitorRetrierLock = new object();
         private static readonly object ReNewMonitorLock = new object();
+
         private static CancellationTokenSource _cancellationTokenSource;
 
         private static string _supportClassification = string.Empty;
@@ -80,9 +81,11 @@ namespace VcpCore.Plugins
 
         private static string privateKey = @"<RSAKeyValue><Modulus>tNMQHhw9frzoI/qHNUdkzYyTRUVbLL3aouurIXPd0cd4MzfUus/OS3IHQTolb8zAec3iuIYEK7tMXTg5rzfRfnMAACGFHeWwC/HPdj32FE2eGNdi33cuWsxSrKlPd3GvlMww2Z7NRQsNJ+tpSMXZ9DrxQuwBwQaWgXLdUQMjKzk=</Modulus><Exponent>AQAB</Exponent><P>49VK8O6kRncB4wQoWmQEznt2L+G9JabusLPiWJmdV4NSI4h7UTdr0loPP2P1Hayq/8bp1LWNsZbBDUIvL4Dsrw==</P><Q>yy39CjdZPTXA1r0fCFOrboOtQD3gMkuL0ZWuJI9soWFRu/kWH0vpavS3+uSsFAR59nx2ULTIT6C7pEyBguVwlw==</Q><DP>SNLghWqCL9PSUpH9pAbcUnO8L0nkf6iAGxMkglV3qYVcN+dkI22nlTEcNpLowndyoRcfntH5XI5nXqmNE44OGQ==</DP><DQ>nl2oH7BohEdDmZ0rdQgSVT+ZaLtR5qHvx1qNs71/BIKgfI136sj2lQFN7ecTIT8j+TWl2t4uS7KSz0s6n1ZK3Q==</DQ><InverseQ>sohCLNyTq38pSF8908WBFNHQUwXwlOs9HSe9+dk7dHB3R6TV7LP/md8MiX4dLlItNtM4BzzcmeYOlZ4Szp6JDg==</InverseQ><D>Pc3mNGRyoF7w+Vsn244LZjYmIAcUorZBhG4Ij+aKaqlC7D6o9zEP0bmnwSOeqBfTsc4tL+SeiFP8ReBx1vG9KGfUeRykZu0ZMm12a42ERa9opXgmBPOoA4FKm9Z7S+99bdt4DbPEkbJA38uq3ZxGVpGi3WADYRD06SspNKJj5gE=</D></RSAKeyValue>";
         private static readonly string targetFile = "SupportEncrypted.txt";
+
         #endregion
 
         #region For engineer debug purpose
+
         //Robert_Lin 2024-6-2 for debug at home (no Dell monitor)
         //1  If file exist (C:\temp\DDPMDebug.txt)
         //2  Read Ini File [DDPMDebug] key="IsOnlyGetDellMontor" (Note that not Mon(i)tor.miss  'i')
@@ -100,6 +103,7 @@ namespace VcpCore.Plugins
             }
             return true;
         }
+
         #endregion
 
         #region Public Members
@@ -111,11 +115,15 @@ namespace VcpCore.Plugins
         }
 
         public event EventHandler<VCPchangedEventArgs> VCPchanged;
+
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
+
         public event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
+
         #endregion
 
         #region Constructor
+
         public VcpCorePlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
@@ -142,9 +150,11 @@ namespace VcpCore.Plugins
             InitialColorPresets();
             InitializeMonitorsList().Wait();
         }
+
         #endregion
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             PluginCondition = new PluginStartedCondition();
@@ -477,6 +487,7 @@ namespace VcpCore.Plugins
                 return Task.FromResult(false);
             }
         }
+
         #endregion
 
         #region Private Methods
@@ -561,7 +572,6 @@ namespace VcpCore.Plugins
                 }
                 catch (OperationCanceledException)
                 {
-
                     // Task was canceled while running.
                     // Cancelled due to timeout
                     _logs.DebugMsg("[VcpCorePlugin] " + guid.ToString() + " GetResultObjectAsync requested  Timeout ...");
@@ -638,7 +648,6 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] GetQueueResult CancellationRequested trigger exception ...");
                 return null;
             }
-
         }
 
         private void TaskQueueExecutor_DoWork(object sender, DoWorkEventArgs e)
@@ -672,6 +681,7 @@ namespace VcpCore.Plugins
                                     _TaskQueueResult.Add(parameter.guid, rt);
                                 }
                                 break;
+
                             case Queue_CommandType.GetVCPCapabilities:
                                 {
                                     Type_GetVCPCapabilities parameter = (Type_GetVCPCapabilities)p.Parameter;
@@ -680,6 +690,7 @@ namespace VcpCore.Plugins
                                     _TaskQueueResult.Add(parameter.guid, rt);
                                 }
                                 break;
+
                             case Queue_CommandType.GetVCPCapability_I:
                                 {
                                     Type_GetVCPCapability_I parameter = (Type_GetVCPCapability_I)p.Parameter;
@@ -688,6 +699,7 @@ namespace VcpCore.Plugins
                                     _TaskQueueResult.Add(parameter.guid, rt);
                                 }
                                 break;
+
                             case Queue_CommandType.GetVCPCapability_II:
                                 {
                                     Type_GetVCPCapability_II parameter = (Type_GetVCPCapability_II)p.Parameter;
@@ -696,6 +708,7 @@ namespace VcpCore.Plugins
                                     _TaskQueueResult.Add(parameter.guid, rt);
                                 }
                                 break;
+
                             case Queue_CommandType.SetVCPCapability_I:
                                 {
                                     Type_SetVCPCapability_I parameter = (Type_SetVCPCapability_I)p.Parameter;
@@ -704,6 +717,7 @@ namespace VcpCore.Plugins
                                     _TaskQueueResult.Add(parameter.guid, rt);
                                 }
                                 break;
+
                             case Queue_CommandType.SetVCPCapability_II:
                                 {
                                     Type_SetVCPCapability_II parameter = (Type_SetVCPCapability_II)p.Parameter;
@@ -712,6 +726,7 @@ namespace VcpCore.Plugins
                                     _TaskQueueResult.Add(parameter.guid, rt);
                                 }
                                 break;
+
                             case Queue_CommandType.Initialize0x52toEmpty:
                                 {
                                     Type_Initialize0x52toEmpty parameter = (Type_Initialize0x52toEmpty)p.Parameter;
@@ -720,6 +735,7 @@ namespace VcpCore.Plugins
                                     _TaskQueueResult.Add(parameter.guid, rt);
                                 }
                                 break;
+
                             case Queue_CommandType.Watcher0x52:
                                 {
                                     Type_Watcher0x52 parameter = (Type_Watcher0x52)p.Parameter;
@@ -728,6 +744,7 @@ namespace VcpCore.Plugins
                                     _TaskQueueResult.Add(parameter.guid, rt);
                                 }
                                 break;
+
                             default:
                                 break;
                         }
@@ -809,7 +826,7 @@ namespace VcpCore.Plugins
                     foreach (string colorPreset in monitorInfoX.ColorPresetSupportList)
                         rcString += "\t" + colorPreset + "\n";
 
-                    //---------------------------------------------  
+                    //---------------------------------------------
 
                     List<JProperty> CapsDataMapJProperty = new List<JProperty>();
                     string[] Split_rcString = rcString.Trim().Split('\n');
@@ -876,7 +893,7 @@ namespace VcpCore.Plugins
                     CapsDataMapJProperty.Clear();
                     Array.Clear(Split_rcString);
 
-                    //---------------------------------------------               
+                    //---------------------------------------------
                 }
 
                 return rcString;
@@ -932,11 +949,13 @@ namespace VcpCore.Plugins
                             ro = (ro == null) ? ro : NodeFormatter.FormatVCP_F8(((uint)ro).ToString("X"));
                         }
                         break;
+
                     case "colorpreset":
                         {
                             ro = GetCurrentColorPreset(monitorInfoX);
                         }
                         break;
+
                     default:
                         {
                             byte fucCode = TranslatorVCPctrCode(func);
@@ -997,6 +1016,7 @@ namespace VcpCore.Plugins
                             rc = SetColorPreset(monitorInfoX, val);
                         }
                         break;
+
                     case "input select":
                         {
                             byte fuc = TranslatorVCPctrCode(FunctionName);
@@ -1040,6 +1060,7 @@ namespace VcpCore.Plugins
                             }
                         }
                         break;
+
                     default:
                         {
                             byte fuc = TranslatorVCPctrCode(FunctionName);
@@ -1099,7 +1120,6 @@ namespace VcpCore.Plugins
 
             if (_AllInfoMonitors.Count > 0)
             {
-
                 bool rc = false;
                 object object_0x02 = null;
                 object object_0x52 = null;
@@ -1252,7 +1272,6 @@ namespace VcpCore.Plugins
                             else
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] 0x52 is null");
 
-
                             rc = Set_VCPCapability(monitorInfoX, 0x02, 0x01, true);
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin set VCP 0x02 to 1 : " + (rc ? "Sucess" : "Fail"));
 
@@ -1316,7 +1335,7 @@ namespace VcpCore.Plugins
             //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
             //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
             //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940. 
+            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
@@ -1488,7 +1507,6 @@ namespace VcpCore.Plugins
                     }
                     catch (OperationCanceledException)
                     {
-
                         // Task was canceled while running.
                         // Cancelled due to timeout
 
@@ -1557,7 +1575,6 @@ namespace VcpCore.Plugins
             }
             else
             {
-
                 _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo Let's go (forwardMode=false) ...");
 
                 if (_AllInfoMonitors_Mix.Count > 0)
@@ -1568,7 +1585,6 @@ namespace VcpCore.Plugins
                     foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
                         _AllInfoMonitors.Add(x);
                 }
-
             }
             _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo finishi : count => " + _AllInfoMonitors_Mix.Count);
         }
@@ -1592,7 +1608,6 @@ namespace VcpCore.Plugins
 
                 _logs.DebugMsg($"[VcpCorePlugin] GetVcp2Steps retry ({count})");
                 Thread.Sleep(1000);
-
             } while (count < 3);
 
             _logs.DebugMsg($"[VcpCorePlugin] GetVcp2Steps return null");
@@ -1710,7 +1725,7 @@ namespace VcpCore.Plugins
                                 });
 
                                 thread.Start();
-                                thread.Join(); //wait for the thread to finish  
+                                thread.Join(); //wait for the thread to finish
 
                                 if (blGetEdidPass)
                                     break;
@@ -2005,7 +2020,6 @@ namespace VcpCore.Plugins
             if (!CapDic.TryGetValue(strF4, out value))
                 return Newlist;
 
-
             foreach (var item in CapDic["F4"])
             {
                 string strHex = $"0x{item}";
@@ -2050,7 +2064,6 @@ namespace VcpCore.Plugins
                 count++;
                 _logs.DebugMsg($"[VcpCorePlugin] GetInputSource retry ({count})");
                 Thread.Sleep(1000);
-
             } while (count < 3);
 
             _logs.DebugMsg($"[VcpCorePlugin] GetInputSource return string.Empty");
@@ -2093,7 +2106,6 @@ namespace VcpCore.Plugins
                 count++;
                 _logs.DebugMsg($"[VcpCorePlugin] Set_VCPCapability retry ({count})");
                 Thread.Sleep(1000);
-
             } while (count < 3 && retry);
 
             _logs.DebugMsg($"[VcpCorePlugin] Set_VCPCapability return false");
@@ -2118,7 +2130,6 @@ namespace VcpCore.Plugins
                 count++;
                 _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability retry ({count})");
                 Thread.Sleep(1000);
-
             } while (count < 3 && retry);
 
             _logs.DebugMsg($"[VcpCorePlugin] Get_VCPCapability return null");
@@ -2139,7 +2150,7 @@ namespace VcpCore.Plugins
                 bool TF_Boolean = ColorPresetHash.TryGetValue(ResourceName, out myresources);
                 if (TF_Boolean)
                 {
-                    foreach (var item in myresources.Keys) 
+                    foreach (var item in myresources.Keys)
                     {
                         if (string.Equals(item, presetName, StringComparison.OrdinalIgnoreCase))
                         {
@@ -2229,7 +2240,6 @@ namespace VcpCore.Plugins
                 count++;
                 _logs.DebugMsg($"[VcpCorePlugin] GetCurrentColorPreset retry ({count})");
                 Thread.Sleep(1000);
-
             } while (count < 3);
 
             _logs.DebugMsg($"[VcpCorePlugin] GetCurrentColorPreset return string.Empty");
@@ -2303,12 +2313,10 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg($"[VcpCorePlugin] GetCapabilities_String Exception ({GetLastError()})");
                     return string.Empty;
                 }
-
             } while (count < 3);
 
             _logs.DebugMsg($"[VcpCorePlugin] GetCapabilities_String return string.Empty");
             return string.Empty;
-
         }
 
         private string StringWrite(INode node, ref string rcString, int i = 0)
@@ -2474,6 +2482,7 @@ namespace VcpCore.Plugins
         private static void InitialColorPresets()
         {
             #region HastTable DC, F0, 14
+
             Dictionary<string, string> VCPDC = new Dictionary<string, string>();
             VCPDC.Add("Standard/Native", "00");
             VCPDC.Add("Standard", "00");
@@ -2617,10 +2626,11 @@ namespace VcpCore.Plugins
             VCPE2.Add("Desktop", "27");
             VCPE2.Add("Reference", "28");
             VCPE2.Add("Multiscreen Match", "29");
-            VCPE2.Add("DisplayHDR", "3A");            
+            VCPE2.Add("DisplayHDR", "3A");
             VCPE2.Add("HDR10", "3B");
             VCPE2.Add("HLG", "3C");
             VCPE2.Add("Presets Disabled", "7F");
+
             #endregion
 
             _ColorPresets.Add("DC", VCPDC);
@@ -2658,16 +2668,19 @@ namespace VcpCore.Plugins
                                     getData = VcpCodeList.VCPDC.Where(kvp => kvp.Value == hex).Select(kvp => kvp.Key).ToList();
                                 }
                                 break;
+
                             case "14":
                                 {
                                     getData = VcpCodeList.VCP14.Where(kvp => kvp.Value == hex).Select(kvp => kvp.Key).ToList();
                                 }
                                 break;
+
                             case "F0":
                                 {
                                     getData = VcpCodeList.VCPF0.Where(kvp => kvp.Value == hex).Select(kvp => kvp.Key).ToList();
                                 }
                                 break;
+
                             default:
                                 break;
                         }
@@ -2818,7 +2831,6 @@ namespace VcpCore.Plugins
                 count++;
                 _logs.DebugMsg($"[VcpCorePlugin] FwVersion retry ({count})");
                 Thread.Sleep(1000);
-
             } while (count < 3);
 
             _logs.DebugMsg($"[VcpCorePlugin] FwVersion return string.empty");
@@ -2836,22 +2848,27 @@ namespace VcpCore.Plugins
             if (nLen > 0)
             {
                 switch (hexValue.ToLower())
-                {                    
+                {
                     case "05":
                         str_ScalarICID = "2";
                         break;
+
                     case "09":
                         str_ScalarICID = "3";
                         break;
+
                     case "0d":
                         str_ScalarICID = "1";
                         break;
+
                     case "12":
                         str_ScalarICID = "4";
                         break;
+
                     case "ff":
                         str_ScalarICID = "0";
                         break;
+
                     default:
                         str_ScalarICID = "3";
                         break;
@@ -2867,15 +2884,19 @@ namespace VcpCore.Plugins
                     case "62":
                         str_OEMID = "B";
                         break;
+
                     case "63":
                         str_OEMID = "C";
                         break;
+
                     case "66":
                         str_OEMID = "F";
                         break;
+
                     case "74":
                         str_OEMID = "T";
                         break;
+
                     default:
                         str_OEMID = "O";
                         break;
@@ -2895,9 +2916,11 @@ namespace VcpCore.Plugins
                     case "3":
                         strFirst = strFirst + str_ScalarICID + str_OEMID;
                         break;
+
                     case "4":
                         strFirst = "M" + str_ScalarICID + str_OEMID;
                         break;
+
                     default:
                         break;
                 }
@@ -2974,9 +2997,11 @@ namespace VcpCore.Plugins
         }
 
         //---------------------------------------------------
+
         #endregion
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -3000,9 +3025,11 @@ namespace VcpCore.Plugins
             }
             base.Dispose(disposing);
         }
+
         #endregion
 
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -3012,6 +3039,7 @@ namespace VcpCore.Plugins
             if (e.ChangedPlugins.Any() == false)
                 return;
         }
+
         #endregion
     }
 }

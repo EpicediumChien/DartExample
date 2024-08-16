@@ -1,20 +1,8 @@
 ﻿using DDPM.UI.Common.Models;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common
@@ -78,17 +66,18 @@ namespace DDPM.UI.Common
             {
                 newValueINotifyCollectionChanged.CollectionChanged += new NotifyCollectionChangedEventHandler(newValueINotifyCollectionChanged_CollectionChanged);
             }
-
         }
 
-        void newValueINotifyCollectionChanged_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        private void newValueINotifyCollectionChanged_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             //Do your stuff here.
             //SetHeaders();
         }
-        #endregion
+
+        #endregion Items
 
         #region Selection Changed
+
         public event RoutedEventHandler? SelectionChanged;
 
         public int SelectedIndex
@@ -96,7 +85,7 @@ namespace DDPM.UI.Common
             get
             {
                 return vm.SelectedIndex;
-                //return (int)GetValue(SelectedIndexProperty); 
+                //return (int)GetValue(SelectedIndexProperty);
             }
             set
             {
@@ -108,8 +97,6 @@ namespace DDPM.UI.Common
         // Using a DependencyProperty as the backing store for SelectedIndex.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedIndexProperty =
             DependencyProperty.Register("SelectedIndex", typeof(int), typeof(RightViewHeaderCtrl), new PropertyMetadata(0));
-
-
 
         private void header0_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -134,6 +121,7 @@ namespace DDPM.UI.Common
             if (isSelectionChanged && (SelectionChanged != null))
                 SelectionChanged(this, new RoutedEventArgs());
         }
-        #endregion
+
+        #endregion Selection Changed
     }
 }

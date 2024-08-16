@@ -1,9 +1,8 @@
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
-using NGA.UnitTest.PrivateObject;
-using DDPM.UI.Module.Gaming;
 using Moq;
+using NGA.UnitTest.PrivateObject;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.Gaming.Tests
@@ -16,7 +15,6 @@ namespace DDPM.UI.Module.Gaming.Tests
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
 
-
         [SetUp]
         public void Setup()
         {
@@ -26,7 +24,6 @@ namespace DDPM.UI.Module.Gaming.Tests
             gamingModule = new GamingModule();
             privateObject = new PrivateObject(gamingModule);
         }
-
 
         [Test]
         public void TestModuleName()
@@ -38,7 +35,6 @@ namespace DDPM.UI.Module.Gaming.Tests
             Assert.That(result, Is.EqualTo("GamingModule"));
         }
 
-
         [Test]
         public void TestGetLeftView()
         {
@@ -48,7 +44,6 @@ namespace DDPM.UI.Module.Gaming.Tests
             // Assert
             Assert.That(result, Is.Null);
         }
-
 
         [Test]
         public void TestGetRightView()
@@ -60,7 +55,6 @@ namespace DDPM.UI.Module.Gaming.Tests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<UserControl>());
         }
-
 
         [Test]
         public void TestSelectedHomeDevice()
@@ -76,7 +70,6 @@ namespace DDPM.UI.Module.Gaming.Tests
             Assert.That(result, Is.EqualTo(homeDevice));
         }
 
-
         [Test]
         public void TestModuleOwner()
         {
@@ -84,7 +77,6 @@ namespace DDPM.UI.Module.Gaming.Tests
             // Arrange
             Assert.That(gamingModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
-
 
         [Test]
         public void TestViewModelInitialization()
@@ -113,7 +105,6 @@ namespace DDPM.UI.Module.Gaming.Tests
         [Test]
         public void TestOnActivated()
         {
-
             try
             {
                 gamingModule.OnActivated();

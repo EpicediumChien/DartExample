@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="DDPM.UI.Common.UserControls.VbarItem1"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              HorizontalAlignment="Right"
              Focusable="True"
              d:DesignHeight="74" d:DesignWidth="212" PreviewKeyDown="UserControl_PreviewKeyDown">
@@ -20,101 +20,100 @@
             <Color x:Key="Vbar_BkColor_Default">#99132F54</Color>
             <Color x:Key="Vbar_BkColor_Disabled">#FF596067</Color>
             <!-- The Selected state is LinearGradientBrush see below in Brush section -->
-            
+
             <!-- Border Color
             Disabled: the same with Vbar_BkColor_Disabled; Default: the same with Vbar_BkColor_Default.
             LandingHover, (non-selected) Hover will be Vbar_BdColor_Hover
-            Selected and SelectedHover have the same BorderBrush:  
+            Selected and SelectedHover have the same BorderBrush:
             <Color x:Key="Vbar_BdColor_Hover">#991B385F</Color>
             -->
             <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
-            
+
             <!-- Foreground or Icon/Text Color -->
             <Color x:Key="Vbar_FgColor_Default">White</Color>
             <Color x:Key="Vbar_FgColor_Disabled">#FFF5F6F7</Color>
-            
+
             <!-- The Brushes -->
             <!-- Landing Default -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_LandingDefault" Color="{StaticResource Vbar_BkColor_Default}"/>
-            <SolidColorBrush x:Key="Vbar_BdBrush_LandingDefault" Color="{StaticResource Vbar_BkColor_Default}"/>
+            <SolidColorBrush x:Key="Vbar_BkBrush_LandingDefault" Color="{StaticResource Vbar_BkColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_LandingDefault" Color="{StaticResource Vbar_BkColor_Default}" />
             <!-- Landing Hover -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_LandingHover" Color="{StaticResource Vbar_BkColor_Default}"/>
-            <SolidColorBrush x:Key="Vbar_BdBrush_LandingHover" Color="{StaticResource Vbar_BdColor_Hover}"/>
+            <SolidColorBrush x:Key="Vbar_BkBrush_LandingHover" Color="{StaticResource Vbar_BkColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_LandingHover" Color="{StaticResource Vbar_BdColor_Hover}" />
             <!-- Default -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_Default" Color="{StaticResource Vbar_BkColor_Default}"/>
-            <SolidColorBrush x:Key="Vbar_BdBrush_Default" Color="{StaticResource Vbar_BkColor_Default}"/>
+            <SolidColorBrush x:Key="Vbar_BkBrush_Default" Color="{StaticResource Vbar_BkColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_Default" Color="{StaticResource Vbar_BkColor_Default}" />
             <!-- Hover -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_Hover" Color="{StaticResource Vbar_BkColor_Default}"/>
-            <SolidColorBrush x:Key="Vbar_BdBrush_Hover" Color="{StaticResource Vbar_BdColor_Hover}"/>
+            <SolidColorBrush x:Key="Vbar_BkBrush_Hover" Color="{StaticResource Vbar_BkColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_Hover" Color="{StaticResource Vbar_BdColor_Hover}" />
             <!-- Disabled -->
-            <SolidColorBrush x:Key="Vbar_BkBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}"/>
-            <SolidColorBrush x:Key="Vbar_BdBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}"/>
-            <!-- Selected 
+            <SolidColorBrush x:Key="Vbar_BkBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}" />
+            <SolidColorBrush x:Key="Vbar_BdBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}" />
+            <!-- Selected
             BkBrush: Brush_GradientButtonCyan
             BdBrush: Brush_GradientBorderCyan
             -->
             <!-- Foreground -->
-            <SolidColorBrush x:Key="Vbar_FgBrush_Default" Color="{StaticResource Vbar_FgColor_Default}"/>
-            <SolidColorBrush x:Key="Vbar_FgBrush_Disabled" Color="{StaticResource Vbar_FgColor_Disabled}"/>
-            
+            <SolidColorBrush x:Key="Vbar_FgBrush_Default" Color="{StaticResource Vbar_FgColor_Default}" />
+            <SolidColorBrush x:Key="Vbar_FgBrush_Disabled" Color="{StaticResource Vbar_FgColor_Disabled}" />
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <!-- Robert_Lin, 2024-7-25, a new UserControl to replace VbarItem.
     1 Use a ControlTemplate as the content of Icon
     2 The Icon color can be changed with the {TemplateBinding Foreground} in the ControlTemplate
     3 Support Disabled state by changing the Foreground of the UserControl.
     4 No internal ViewModel, so the owner can be easily bind to this usercontrol, for example, ClickCommand
     5 Based on Dell UI team's requirements, add below states
-      LandingHover and Hover (will show border), SelectedHover(will show linear gradient brush border)
-      and Disabled state.
+    LandingHover and Hover (will show border), SelectedHover(will show linear gradient brush border)
+    and Disabled state.
     -->
 
     <!-- Default: FgColor (Icon color and Text color) = White (Vbar_FgBrush_Default)
-        When the UserControl is Disabled, change to foreground to gray (Vbar_FgBrush_Disabled). 
+    When the UserControl is Disabled, change to foreground to gray (Vbar_FgBrush_Disabled).
     -->
     <UserControl.Style>
         <Style TargetType="UserControl">
-            <Setter Property="Foreground" Value="{StaticResource Vbar_FgBrush_Default}"/>
+            <Setter Property="Foreground" Value="{StaticResource Vbar_FgBrush_Default}" />
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource Vbar_FgBrush_Disabled}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Vbar_FgBrush_Disabled}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Style>
-    
+
     <!-- rootGrid is used to handle hover and click events, and change its Width when in Hover state -->
     <Grid Name="rootGrid" HorizontalAlignment="Right" Margin="0,5,0,5"
           MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave"
           MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
-        
-        <!-- Most of States are handled (with Triggers) in bdOuter or inside it. 
-            In this VisualStateManager, we just handle the rootGrid.Width change animation.
+
+        <!-- Most of States are handled (with Triggers) in bdOuter or inside it.
+        In this VisualStateManager, we just handle the rootGrid.Width change animation.
         -->
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="ItemStates">
-                <VisualState x:Name="Default"/>
-                <VisualState x:Name="LandingDefault"/>
+                <VisualState x:Name="Default" />
+                <VisualState x:Name="LandingDefault" />
 
                 <!-- In Landing mode, when hovering, show the Border color to (Vbar_BdColor_Hover) -->
                 <VisualState x:Name="LandingHover">
                     <Storyboard>
-                        <ColorAnimation Storyboard.TargetName="bdOuter" 
+                        <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}"/>
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}" />
                     </Storyboard>
                 </VisualState>
-                <!-- In non-Landing mode (default mode), when hovering will change rootGrid.Wdith and BdColor 
+                <!-- In non-Landing mode (default mode), when hovering will change rootGrid.Wdith and BdColor
                 -->
                 <VisualState x:Name="Hover">
                     <Storyboard>
                         <DoubleAnimation Storyboard.TargetName="bdOuter"
                                          Storyboard.TargetProperty="Width"
-                                         Duration="0:0:0.5" To="212" FillBehavior="HoldEnd"/>
-                        <ColorAnimation Storyboard.TargetName="bdOuter" 
+                                         Duration="0:0:0.5" To="212" FillBehavior="HoldEnd" />
+                        <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
-                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}"/>
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}" />
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>
@@ -123,53 +122,52 @@
         <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" Focusable="True">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="Background" Value="{StaticResource Vbar_BkBrush_Default}"/>
-                    <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Default}"/>
-                    <Setter Property="Width" Value="212"/>
+                    <Setter Property="Background" Value="{StaticResource Vbar_BkBrush_Default}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Default}" />
+                    <Setter Property="Width" Value="212" />
                     <Style.Triggers>
                         <!-- Selected state -->
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
-                            <Setter Property="Background"  Value="{StaticResource Brush_GradientButtonCyan}"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource  Brush_GradientBorderCyan}"/>
+                            <Setter Property="Background"  Value="{StaticResource Brush_GradientButtonCyan}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource  Brush_GradientBorderCyan}" />
                         </DataTrigger>
                         <!-- Disabled state -->
                         <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
-                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}"/>
-                            <!-- 
-                            <Setter Property="Width" Value="64"/>
+                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
+                            <!--
+                            <Setter Property="Width" Value="64" />
                             -->
                         </DataTrigger>
                         <!-- KeyboardFocus state -->
                         <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource FocusDotBrush}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource FocusDotBrush}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
-            
+
             <!-- Content Grid -->
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="64"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="64" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
+
                 <!-- Icon -->
                 <ContentControl Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
                                 Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                Template="{Binding VisualTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                />
+                                Template="{Binding VisualTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                 <Image Grid.Column="0" Width="24" Height="24" Visibility="Visible"
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        Source="{Binding IconImage, RelativeSource={RelativeSource AncestorType=UserControl}}">
                     <Image.Style>
                         <Style TargetType="Image">
-                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="Opacity" Value="1" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                              Value="False">
-                                    <Setter Property="Opacity" Value="0.5"/>
+                                    <Setter Property="Opacity" Value="0.5" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -180,7 +178,7 @@
                 <UXControls:UXTextBlock Grid.Column="1" FontSize="14"
                                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        VerticalAlignment="Center" HorizontalAlignment="Left" />
             </Grid>
         </Border>
     </Grid>

@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,27 +7,27 @@
 //
 // SettingsMangerPlugin.cs created on 06/05/2024T22:12 PM
 //
+
 #endregion
 
-using Dell.Client.Framework.Common.Annotations;
+using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using Dell.Client.Framework.Common.PluginConditions;
-using System.Linq;
-using System;
-using DDPM.SA.Common;
-using System.Security.Principal;
-using System.Runtime.InteropServices;
 using Microsoft.Win32;
-using DDPM.SA.Common.Settings;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System.IO;
-using Windows.Media.AppBroadcasting;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Principal;
+using System.Threading.Tasks;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -35,12 +36,12 @@ namespace DDPM.SA.Plugins.SettingsManager
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedInterface(new[] { typeof(ISettingsManagerIT) })]
     [PublishedUnelevatedInterface(new[] { typeof(ISettingsManagerSA) })]
-
     public class SettingsMangerPlugin : BaseAgentPlugin, IDisposableObservable, ISettingsManagerSA, ISettingsManagerIT
     {
         public const string PluginLogId = "SettingsManager";
 
         #region Private Members
+
         private const string pluginName = "SettingsManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Settings Manager Plugin.";
@@ -59,6 +60,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         //Basic
         private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+
         private static string folder_product = "Dell Display and Peripheral Manager";
         private static string filename_appsettings_IT = "DDPM.Configs.json";
 
@@ -68,14 +70,17 @@ namespace DDPM.SA.Plugins.SettingsManager
         #endregion
 
         #region Constructor
+
         public SettingsMangerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
             WriteLog($"SettingsManagerPlugin constructor ...(Admin:{_IsAdministrator})");
         }
+
         #endregion
 
         #region ISettingsManagerSA implementation
+
         public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
 
         //Target to notify User setting
@@ -91,13 +96,15 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"ITSettingsActionEvent Invoked");
             }
         }
+
         #endregion
 
         #region ISettingsManagerIT implementation
+
         public Task<DDPMITConfig> ReadITConfigData(bool force_reload = false)
         {
             string info = "Success";
-            if(force_reload)
+            if (force_reload)
             {
                 WriteLog($"ReadITConfigData: Force reload");
                 if (_settings != null)
@@ -118,7 +125,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         /// <returns></returns>
         public Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list)
         {
-            if(data == null)
+            if (data == null)
             {
                 WriteLog($"WriteITConfigData: null data, failed");
                 return Task.FromResult(false);
@@ -147,6 +154,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 e.target_value = $"{value}";
                                 OnITSettingsActionEventNotify(e);
                                 break;
+
                             default:
                                 WriteLog($"Property {IT_Feature_list[i]} not found from definitions.");
                                 break;
@@ -156,13 +164,15 @@ namespace DDPM.SA.Plugins.SettingsManager
                     {
                         WriteLog($"Property {IT_Feature_list[i]} not found from config.");
                     }
-                }                
+                }
             }
             return Task.FromResult(true);
         }
+
         #endregion
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
@@ -172,9 +182,11 @@ namespace DDPM.SA.Plugins.SettingsManager
 
             InitDDPMITConfigFile();
         }
+
         #endregion
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -199,6 +211,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             base.Dispose(disposing);
         }
+
         #endregion
 
         #region Event Handler
@@ -221,9 +234,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog("ISettingsManager SA plugin started.");
             }
         }
+
         #endregion
 
         #region Private methods
+
         /// <summary>
         /// //
         /// </summary>
@@ -275,13 +290,13 @@ namespace DDPM.SA.Plugins.SettingsManager
                 sidString = s.ToString();
                 WriteLog($"GetUserSid(normal user): SID: {sidString}");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 sidString = null;
                 WriteLog($"GetUserSid(normal user): try translate fail: {ex.Message}");
 
                 //0724 add code that translate normal user and do translate domain user if fail.
-                if(f_domain != null)
+                if (f_domain != null)
                 {
                     try
                     {
@@ -289,7 +304,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                         sidString = s.ToString();
                         WriteLog($"GetUserSid(domain user): SID: {sidString}");
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         sidString = null;
                         WriteLog($"GetUserSid(domain user): try translate fail: {e.Message}");
@@ -398,7 +413,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
             return _settings;
         }
-        #endregion
 
+        #endregion
     }
 }

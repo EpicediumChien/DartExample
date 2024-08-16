@@ -1,21 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DDPM.UI.Common.Models;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
 using DDPM.UI.Plugin.DisplayPlugin.Views;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
-using System.Windows.Controls;
-using VcpCore.Common;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
+using System.Windows.Input;
+using VcpCore.Common;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Plugin.DisplayPlugin.Tests")]
+
 namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
 {
     internal class DisplayPageViewModel : ObservableObject, IDisplayPageViewModel
     {
         #region ModuleManager
+
         private List<ModuleGroup> _moduleGroups = new List<ModuleGroup>();
         private int _groupSelIdx = -1; //-1 = no selection, the DisplayPage is in Landing Mode
 
@@ -62,11 +64,14 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
                 return _moduleGroups.Count;
             }
         }
-        #endregion
+
+        #endregion ModuleManager
 
         #region Vbar
+
         private int _vbarSelectedIndex = -1;
         private ICommand? _vbarItemClickCommand;
+
         /// <summary>
         /// Used by varList ListControl.ItemsSource only
         /// </summary>
@@ -74,7 +79,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
 
         /// <summary>
         /// Called when the ModuleGroups reset, will return to Landing Mode
-        /// 
+        ///
         /// </summary>
         private void RebuildVbarItems()
         {
@@ -98,6 +103,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
         {
             get => _vbarItems;
         }
+
         public int VbarSelectedIndex
         {
             get => _vbarSelectedIndex;
@@ -111,7 +117,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
                 //OnPropertyChanged("RightViewHeaders");
                 ModuleGroup mg = ModuleGroups[VbarSelectedIndex];
                 RightViewHeaders = mg.Headers;
-
             }
         }
 
@@ -120,10 +125,13 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
             get => _vbarItemClickCommand;
             set => SetProperty(ref _vbarItemClickCommand, value);
         }
-        #endregion
+
+        #endregion Vbar
 
         #region LeftView
+
         private UserControl? _defaultLeftView;
+
         public UserControl DefaultLeftView
         {
             get
@@ -135,13 +143,13 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
         }
 
         private UserControl? _leftView;
+
         public UserControl? LeftView
         {
             get
             {
                 if (_leftView == null)
                     return DefaultLeftView;
-
 
                 ModuleGroup? selGroup = SelectedGroup;
                 if (selGroup != null)
@@ -153,7 +161,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
                         if (mod != null)
                             return mod?.GetLeftView();
                     }
-
                 }
                 return _leftView;
             }
@@ -162,7 +169,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
                 SetProperty(ref _leftView, value);
             }
         }
-        #endregion
+
+        #endregion LeftView
 
         #region RightView
 
@@ -181,7 +189,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
                         if (mod != null)
                             return mod?.GetRightView();
                     }
-
                 }
                 return null;
             }
@@ -204,10 +211,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
                 return "(ERROR)";
             }
         }
-        #endregion
 
+        #endregion RightView
 
         #region RightViewHeader
+
         public int RightViewHeaderSelectedIndex
         {
             get
@@ -243,14 +251,13 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
                 return null;
             }
         }
-        #endregion
 
+        #endregion RightViewHeader
 
         // After ModuleGroups is build,
 
-
-
         private ObservableCollection<RightViewHeader> _rightViewHeaders = new ObservableCollection<RightViewHeader>();
+
         public ObservableCollection<RightViewHeader> RightViewHeaders
         {
             get
@@ -308,6 +315,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
         }
 
         private List<HomeDevice> _homeDevices = new List<HomeDevice>();
+
         public List<HomeDevice> HomeDevices
         {
             get => _homeDevices;
@@ -321,6 +329,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
         public int HomeDeviceCount { get => HomeDevices.Count; }
 
         private HomeDevice? _selectedHomeDevice;
+
         public HomeDevice? SelectedHomeDevice
         {
             get => _selectedHomeDevice;
@@ -328,11 +337,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.ViewModels
         }
 
         private MonitorInfo? _selectedMonitorInfo;
+
         public MonitorInfo? SelectedMonitorInfo
         {
             get => _selectedMonitorInfo;
             set => SetProperty(ref _selectedMonitorInfo, value);
         }
-
     }
 }

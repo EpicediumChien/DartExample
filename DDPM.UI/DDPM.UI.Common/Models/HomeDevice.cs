@@ -1,19 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
-using DDPM.UI.Common.UserControls;
 using DDPM.UI.Common.ViewModels;
 using DPeMPublic.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using VcpCore.Common;
-using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.Models
 {
@@ -28,11 +19,9 @@ namespace DDPM.UI.Common.Models
         private MonitorInfo? _monitorInfo;
         private DeviceInfo? _deviceInfo;
 
-
-
         /// <summary>
         /// MonitorModelName, will be used to display on HomePage (Tooltip) and Display Landing Page ComboBox
-        /// The value will be extracted from MonitorInfo's capability string, see 
+        /// The value will be extracted from MonitorInfo's capability string, see
         /// </summary>
 
         public HomeDevice()
@@ -70,7 +59,7 @@ namespace DDPM.UI.Common.Models
                 //    {
                 //        InputSource = "HDMI"
                 //    };
-                //    StatusIndicator = indicator; 
+                //    StatusIndicator = indicator;
                 UpdateBatteryIndicator();
 
                 //2024-6-20 Get the model from capability string
@@ -91,7 +80,7 @@ namespace DDPM.UI.Common.Models
         public DeviceInfo? DeviceInfo
         {
             get => _deviceInfo;
-            set 
+            set
             {
                 SetProperty(ref _deviceInfo, value);
                 //BatteryIndicator indicator = new BatteryIndicator();
@@ -107,8 +96,7 @@ namespace DDPM.UI.Common.Models
 
                 //StatusIndicator = indicator;
                 UpdateBatteryIndicator();
-
-            } 
+            }
         }
 
         public bool IsSamePeripheralDevice(DeviceInfo di)
@@ -120,7 +108,6 @@ namespace DDPM.UI.Common.Models
             //    && (di.Name.Equals(DeviceInfo.Name)));
             return (di.ID.Equals(DeviceInfo.ID)); // 2024-07-12, Provided by Hess.
         }
-        
 
         /*
         private UserControl? _statusIndicator;
@@ -133,7 +120,7 @@ namespace DDPM.UI.Common.Models
             }
         }
         */
-        #region RWD 
+        #region RWD
         public double NormalWidth
         {
             get => _normalWidth;
@@ -157,10 +144,8 @@ namespace DDPM.UI.Common.Models
             {
                 return NormalWidth * 1.16;
             }
-
         }
-        #endregion
-
+        #endregion RWD
 
         #region Tooltip info
         public string FwVer
@@ -227,7 +212,7 @@ namespace DDPM.UI.Common.Models
                 return DeviceCategory.ToString();
             }
         }
-        #endregion
+        #endregion Tooltip info
 
         #region BatteryIndicator
 
@@ -239,7 +224,6 @@ namespace DDPM.UI.Common.Models
             OnPropertyChanged("NoBattery");
             OnPropertyChanged("Text1");
         }
-
 
         public double BatteryLevel
         {
@@ -257,7 +241,7 @@ namespace DDPM.UI.Common.Models
 
         public string BatteryStatus
         {
-            get 
+            get
             {
                 if (DeviceInfo != null)
                 {
@@ -287,8 +271,10 @@ namespace DDPM.UI.Common.Models
                         case DPeMPublic.Common.Enums.DeviceType.PhysicalAudioDongle:
                         case DPeMPublic.Common.Enums.DeviceType.PhysicalDongle:
                             return "Dongle";
+
                         case DPeMPublic.Common.Enums.DeviceType.PhysicalWiredDock:
                             return "Port";
+
                         default:
                             //Robert_Lin, 2024-7-10 help Hess to modify
                             //return "Bluetooth";
@@ -310,7 +296,7 @@ namespace DDPM.UI.Common.Models
             {
                 if (DeviceInfo != null)
                 {
-                    return ! DeviceInfo.IsBatteryLevelSupported;
+                    return !DeviceInfo.IsBatteryLevelSupported;
                 }
                 else if (MonitorInfo != null)
                 {
@@ -319,7 +305,6 @@ namespace DDPM.UI.Common.Models
                 return false;
             }
         }
-
 
         //Workaround for InputSource put in here
         //private string _text1 = "";
@@ -344,19 +329,18 @@ namespace DDPM.UI.Common.Models
                     strOut = strOut.TrimEnd(digits);
                     strOut = strOut.TrimEnd(digits);
                     strOut = strOut.TrimEnd(digits);
-                    return strOut; 
+                    return strOut;
                 }
                 return "";
             }
             //set => _text1 = value;
-
         }
-        #endregion
+        #endregion BatteryIndicator
 
         #region DisplayName
         /// <summary>
-        /// The display name on 
-        /// 1. HomePage HomeDevice's tooltip, 
+        /// The display name on
+        /// 1. HomePage HomeDevice's tooltip,
         /// 2. Landing Page: ComboBox item name or display name if only one monitor.
         /// For monitor, it will append " ({InstanceNo})" if InstanceNo is not zero.
         /// </summary>
@@ -377,7 +361,7 @@ namespace DDPM.UI.Common.Models
                 else
                 {
                     //For peripherals, it will display ModelNumber
-                    if (DeviceInfo!= null)
+                    if (DeviceInfo != null)
                     {
                         return DeviceInfo.ModelNumber;
                     }
@@ -390,7 +374,7 @@ namespace DDPM.UI.Common.Models
         /// For Monitor only. the model value from capability string.
         /// </summary>
         private string _monitorModelName = string.Empty;
- 
+
         public bool IsSameModel(HomeDevice other)
         {
             return _monitorModelName.Equals(other._monitorModelName, StringComparison.OrdinalIgnoreCase);
@@ -468,7 +452,7 @@ namespace DDPM.UI.Common.Models
 
             return false;
         }
-        #endregion
+        #endregion DisplayName
 
         #region DetermineDeviceImage - Robert_Lin 2024-6-20 added
         private void DeterminePeripheralDeviceImage()
@@ -491,16 +475,15 @@ namespace DDPM.UI.Common.Models
 
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
             DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{model}.png", assemblyName);
-
         }
 
-        #endregion
+        #endregion DetermineDeviceImage - Robert_Lin 2024-6-20 added
 
         #region Module Data - Robert_Lin, 2024-6-23 added
         private Dictionary<string, ObservableObject> _moduleData = new Dictionary<string, ObservableObject>();
 
         public EzArrangeViewModel vmEzArrange { get; set; }
-        #endregion
+        #endregion Module Data - Robert_Lin, 2024-6-23 added
 
         #region Sort and Grouping
 
@@ -514,7 +497,7 @@ namespace DDPM.UI.Common.Models
         public int CompareTo(HomeDevice? other)
         {
             int ret = 0;
-            if (other != null) 
+            if (other != null)
             {
                 //If both are the same Category
                 if (DeviceCategory == other.DeviceCategory)
@@ -549,13 +532,13 @@ namespace DDPM.UI.Common.Models
         /// -1 means that no integrated monitor.
         /// </summary>
         public int MonitorIndexOfIntegratedPeripheral = -1;
-        #endregion
+        #endregion Sort and Grouping
 
         #region For HomeDevice selection changed, update to modules, Robert_Lin, 2024-7-4 added
         //Add DDPM.SA.Common interfaces, will be set by DisplayP
         public static IDeviceManagerSA DeviceManagerSA { get; set; }
 
-        #endregion
+        #endregion For HomeDevice selection changed, update to modules, Robert_Lin, 2024-7-4 added
 
         #region Connection Hover View
         private bool _isConnectionHoverViewShow = false;
@@ -579,7 +562,7 @@ namespace DDPM.UI.Common.Models
                             if (DeviceCategory == eDeviceCategory.KB)
                                 SetBLConnectionStatus_Keyboard();
                             else if (DeviceCategory == eDeviceCategory.Mouse)
-                                SetBLConnectionStatus_Mouse(); 
+                                SetBLConnectionStatus_Mouse();
                             else if (DeviceCategory == eDeviceCategory.Headset)
                             {
                                 ConnectionHoverMode = "Audio_BLE";
@@ -587,7 +570,7 @@ namespace DDPM.UI.Common.Models
                             }
                             else
                                 SetBLConnectionStatus_IO();
-                        } 
+                        }
                     }
                 }
                 SetProperty(ref _isConnectionHoverViewShow, value);
@@ -625,7 +608,6 @@ namespace DDPM.UI.Common.Models
 
             //DongleSlot = "4 of 6 slots available"
             DongleSlot = $"{DeviceInfo.MaxPairingSlots - DeviceInfo.PairedDeviceCount} of {DeviceInfo.MaxPairingSlots} slots available";
-
         }
         /// <summary>
         /// "USB Wireless Receiver"
@@ -656,7 +638,7 @@ namespace DDPM.UI.Common.Models
 
         // BLE
         //
-        // {txt} PimgBL} {txtBLHost}          {IsBleHostVisible} 
+        // {txt} PimgBL} {txtBLHost}          {IsBleHostVisible}
         // 1     {icon}  Window Machine 1      True/False     Color: ConnectionStyle=1|2|3
 
         private void SetBLConnectionStatus_Mouse()
@@ -716,6 +698,7 @@ namespace DDPM.UI.Common.Models
                         //txtBLHost3.Style = ConnectionStyle1;
                     }
                     break;
+
                 case "MS5320W":
                 case "MS7421W":
                     BleHost1Style = "0";
@@ -736,6 +719,7 @@ namespace DDPM.UI.Common.Models
                         //txtBLHost3.Style = ConnectionStyle1;
                     }
                     break;
+
                 case "MS900":
                     BleHost3Style = "0";
                     //Host3.Visibility = Visibility.Collapsed;
@@ -755,6 +739,7 @@ namespace DDPM.UI.Common.Models
                         //txtBLHost2.Style = ConnectionStyle1;
                     }
                     break;
+
                 default:
                     BleHost1Style = "0";
                     BleHost3Style = "0";
@@ -809,6 +794,7 @@ namespace DDPM.UI.Common.Models
                         //txtBLHost2.Style = ConnectionStyle1;
                     }
                     break;
+
                 case "KB900":
                     BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
                     BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
@@ -829,6 +815,7 @@ namespace DDPM.UI.Common.Models
                         //txtBLHost2.Style = ConnectionStyle1;
                     }
                     break;
+
                 default:
                     BleHost1Text = DeviceInfo.PairedHostName2;
                     //txtBLHost1.Text = _vm.PairedHostName2;
@@ -852,7 +839,6 @@ namespace DDPM.UI.Common.Models
 
             string hostName = Dns.GetHostName();
 
-
             if (DeviceInfo.PairedHostName1 == hostName)
             //if (_vm.VisiblePairedHostName1 == hostName)
             {
@@ -867,7 +853,6 @@ namespace DDPM.UI.Common.Models
 
                 //Workaround, if Hostname is empty, then show {hostName}
                 BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? hostName : DeviceInfo.PairedHostName1;
-
             }
             else
             {
@@ -885,7 +870,7 @@ namespace DDPM.UI.Common.Models
             }
             string AudioBleConnectionTotalPairCountText = "This device can be paired with {0} hosts simultaneously";
             int totalPairedHostCount = DeviceInfo.TotalNumberOfPairedHostName;
-            AudioBleText =  String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
+            AudioBleText = String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
             //BLConnection.Visibility = Visibility.Visible;
         }
 
@@ -969,7 +954,7 @@ namespace DDPM.UI.Common.Models
             get => _audioBleText;
             set => SetProperty(ref _audioBleText, value);
         }
-        #endregion
+        #endregion Connection Hover View
 
         #region Peripherals Helper
         //Copy from PeripheralViewModel
@@ -991,6 +976,7 @@ namespace DDPM.UI.Common.Models
                 case DeviceType.PhysicalBluetoothAudio:
                     ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "").Replace("Audio", "");
                     break;
+
                 case DeviceType.PhysicalBluetooth:
                 case DeviceType.PhysicalDongle:
                 case DeviceType.PhysicalPen:
@@ -1000,6 +986,7 @@ namespace DDPM.UI.Common.Models
                 case DeviceType.PhysicalWiredDock:
                     ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "").Replace("Dock", "");
                     break;
+
                 default:
                     ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "");
                     break;
@@ -1009,7 +996,7 @@ namespace DDPM.UI.Common.Models
             {
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:
-                    return  deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "").Replace("Audio", "");
+                    return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "").Replace("Audio", "");
 
                 case DeviceType.PhysicalBluetooth:
                 case DeviceType.PhysicalDongle:
@@ -1022,9 +1009,7 @@ namespace DDPM.UI.Common.Models
 
                 default:
                     return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "");
-
             }
-
         }
 
         public static eDeviceCategory GetDeviceCategoryFromDeviceInfo(DeviceInfo deviceInfo)
@@ -1046,14 +1031,14 @@ namespace DDPM.UI.Common.Models
             return eDeviceCategory.Unknown;
         }
 
-        public static  HomeDevice CreateFromDeviceInfo(DeviceInfo deviceInfo)
+        public static HomeDevice CreateFromDeviceInfo(DeviceInfo deviceInfo)
         {
             HomeDevice homeDev = new HomeDevice();
             homeDev.DeviceInfo = deviceInfo;
             homeDev.DeviceCategory = GetDeviceCategoryFromDeviceInfo(deviceInfo);
             return homeDev;
         }
-        #endregion
+        #endregion Peripherals Helper
 
         #region HasCapability_XXXX Properties
         //Capabilities will be get once and then store for used later
@@ -1107,7 +1092,7 @@ namespace DDPM.UI.Common.Models
             if (DeviceManagerSA != null)
             {
                 bool isSupportNKvm = DeviceManagerSA.isNKVMSupportMonitor(MonitorInfo).Result;
-                if (isSupportNKvm) 
+                if (isSupportNKvm)
                     return true;
             }
             return false;
@@ -1198,13 +1183,12 @@ namespace DDPM.UI.Common.Models
                         return MonitorInfo.CapabilityDic.ContainsKey("12");
                 }
                 return false;
-
             }
         }
-        #endregion
+        #endregion HasCapability_XXXX Properties
 
         #region Monitor Equals
-        public static bool IsSameMonitor(MonitorInfo mi1, MonitorInfo mi2, string mask="")
+        public static bool IsSameMonitor(MonitorInfo mi1, MonitorInfo mi2, string mask = "")
         {
             //Part I. Must be compared and must be the same
             if ((mi1.AliasDeviceName != mi2.AliasDeviceName) ||
@@ -1234,6 +1218,6 @@ namespace DDPM.UI.Common.Models
 
             return true;
         }
-        #endregion
+        #endregion Monitor Equals
     }
 }

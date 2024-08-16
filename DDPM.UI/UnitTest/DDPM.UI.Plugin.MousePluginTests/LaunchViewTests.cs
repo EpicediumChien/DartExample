@@ -69,6 +69,5 @@ namespace DDPM.UI.Plugin.MousePlugin.Tests
         //    Assert.That(launchView, Is.Not.Null);
 
         //}
-
     }
 }

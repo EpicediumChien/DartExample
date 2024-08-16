@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Dell.Client.Framework.Common;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dell.Client.Framework.Common;
 using VcpCore.Common;
 
 namespace VcpCore.Interfaces
@@ -31,6 +31,5 @@ namespace VcpCore.Interfaces
         event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
 
         event EventHandler<DisplaychangedEventArgs> Displaychanged;
-
     }
 }

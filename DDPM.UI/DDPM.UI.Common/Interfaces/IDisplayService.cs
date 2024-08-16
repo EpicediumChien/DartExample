@@ -1,9 +1,10 @@
-﻿using DDPM.UI.Common;
-using Dell.Client.Framework.Common;
+﻿using Dell.Client.Framework.Common;
 
-namespace DDPM.UI.Interfaces {
-  public interface IDisplayService_Unused : IFrameworkPlugin {
-    //IEnumerable<MonitorInfo> GetMonitors();
+namespace DDPM.UI.Interfaces
+{
+    public interface IDisplayService_Unused : IFrameworkPlugin
+    {
+        //IEnumerable<MonitorInfo> GetMonitors();
 
         /*
     Task<List<MonitorInfo>> GetMonitors();
@@ -18,5 +19,5 @@ namespace DDPM.UI.Interfaces {
 
     Task SetVCPCapability(MonitorInfo monitorInfo, char code, int val);
         */
-  }
+    }
 }

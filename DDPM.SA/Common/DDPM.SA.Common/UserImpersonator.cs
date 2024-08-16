@@ -1,12 +1,10 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using PInvoke;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -22,7 +20,6 @@ namespace DDPM.SA.Common
         public static async Task RunAsLoggedOnUserAsync(Func<Task> func) => await RunAsUserAsync(GetTokenForLoggedOnUser().Token, func);
 
         public static async Task<T> RunAsLoggedOnUserAsync<T>(Func<Task<T>> func) => await RunAsUserAsync(GetTokenForLoggedOnUser().Token, func);
-
 
         // Impersonate a user given the user's token to run a specific action
         // Note: If we are already running in that user's context, we will not further impersonate the user

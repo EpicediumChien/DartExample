@@ -1,14 +1,15 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using NGA.NET.Common.Helpers;
 using NGA.NET.Common.Interfaces;
-using System;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
@@ -18,6 +19,7 @@ namespace NGA.NET.Common
     /// ProtocolStringBuilder builds string version the Protocol URI
     /// </summary>
 #pragma warning disable 0612, 0618
+
     public sealed class ProtocolStringBuilder : IProtocolStringBuilder
 #pragma warning disable 0612, 0618
     {

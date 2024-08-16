@@ -1,16 +1,10 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using VcpCore.Common;
-using WinCopies;
-using WinCopies.Util.Commands.Primitives;
 using static DDPM.SA.Common.ICLICommandTable;
 using Convert = System.Convert;
 
@@ -19,22 +13,29 @@ namespace CLI.Plugins.Display
     internal class CLIPxp
     {
         #region Input
+
         private static IDeviceManagerSA _devMgr;
         private static CommandLineInput _cmdLineInput;
-        #endregion
+
+        #endregion Input
 
         #region Output
+
         private static List<CLI_RESPONSE> _responses = new List<CLI_RESPONSE>();
+
         public static List<CLI_RESPONSE> Responses
         {
             get => _responses;
         }
-        #endregion
+
+        #endregion Output
 
         #region Working data
+
         private static List<MonitorInfo> _AllInfoMonitors;
         private static List<int> _monitorIndeies = new List<int>();
-        #endregion
+
+        #endregion Working data
 
         /// <summary>
         /// Main entry of CLIPxp
@@ -101,7 +102,6 @@ namespace CLI.Plugins.Display
                 {
                     return SetSwapUSB();
                 }
-
             }
 
             response.Result = "ERROR";
@@ -265,7 +265,6 @@ namespace CLI.Plugins.Display
                 response.TargetFeature = _cmdLineInput.TargetFeature;
                 response.Index = idx.ToString();
 
-
                 //1 Get supported modes
                 UInt16[] caps = _devMgr.GetPipPbpCapabilitiesWords(_AllInfoMonitors[idx]).Result;
                 if (caps == null)
@@ -276,7 +275,6 @@ namespace CLI.Plugins.Display
                 }
                 else
                 {
-
                     string[] capsStr = PxpModeObj.GetModeArgListFromModes(caps);
                     response.SupportedModes = capsStr;
                 }
@@ -496,7 +494,6 @@ namespace CLI.Plugins.Display
                     response.Message = "";
                 }
                 _responses.Add(response);
-
             } //foreach (idx)
 
             if (errCount == 0)
@@ -550,7 +547,7 @@ namespace CLI.Plugins.Display
                 sub1 = InputSourceObj.FindFirstByName(sub1Name);
             }
 
-            //Phase 2. -sub2=inputSource            
+            //Phase 2. -sub2=inputSource
             valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("sub2", StringComparison.OrdinalIgnoreCase));
             if (valueOption != null)
             {
@@ -558,7 +555,7 @@ namespace CLI.Plugins.Display
                 sub2 = InputSourceObj.FindFirstByName(valueOption.Option_Value);
             }
 
-            //Phase 3. -sub3=inputSource            
+            //Phase 3. -sub3=inputSource
             valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("sub3", StringComparison.OrdinalIgnoreCase));
             if (valueOption != null)
             {
@@ -615,7 +612,6 @@ namespace CLI.Plugins.Display
                 return (int)CLI_ExitCode.success;
             else
                 return (int)CLI_ExitCode.functional_error;
-
         }
 
         //CmdLine: -set -name=Display.PxPZoom
@@ -683,7 +679,7 @@ namespace CLI.Plugins.Display
             //Not Case_1
             if (valueOption != null)
             {
-                //Try to parse target 
+                //Try to parse target
                 // Not empty
                 if (!String.IsNullOrWhiteSpace(rawValue))
                 {
@@ -707,7 +703,6 @@ namespace CLI.Plugins.Display
                     } //if (!targetOK
                 } //if (Not empty)
             } //if has -value
-
 
             //Prepase for the VCP Code Word
             // VCP 0xE7 writeValue=FF0x where is x=target
@@ -747,6 +742,7 @@ namespace CLI.Plugins.Display
         }
 
         #region Helpers
+
         /// <summary>
         /// Get the list of monitorInfos index from commandLineInput
         /// </summary>
@@ -778,7 +774,7 @@ namespace CLI.Plugins.Display
                         if (match != null) //If found, add index value to listOut
                             listOut.Add(mi.Index);
                     }
-                    //Empty ServiceTage will not be added 
+                    //Empty ServiceTage will not be added
                 }
             }
             //If -Index=[{idx0}],[{idx1}],[{idx2}],... is specified
@@ -813,8 +809,6 @@ namespace CLI.Plugins.Display
             return listOut;
         }
 
-
-
         /// <summary>
         /// Parsing string to ePxpInpus
         /// </summary>
@@ -837,6 +831,6 @@ namespace CLI.Plugins.Display
             return ePxpInputs.invalid;
         }
 
-        #endregion
+        #endregion Helpers
     }
 }

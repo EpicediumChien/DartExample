@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -14,9 +11,10 @@ namespace DDPM.ShowOSD
     public partial class ShowOSDWin : Window
     {
         private DispatcherTimer? animationTimer = null;
-        TimeSpan time;
+        private TimeSpan time;
         private string showString = string.Empty;
         private double ShowTextFontSize = 80;
+
         public ShowOSDWin(string str, double dbFontSize = 80, VcpCore.Common.EDID? devEdid = null)
         {
             InitializeComponent();
@@ -27,7 +25,6 @@ namespace DDPM.ShowOSD
             SetOstTextFontSize(ShowTextFontSize);
 
             //devEdidDEMO = devEdid;
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -61,7 +58,6 @@ namespace DDPM.ShowOSD
 
         private void RunTimerTick(object sender, EventArgs e)
         {
-
             if (time == TimeSpan.Zero)
             {
                 animationTimer?.Stop();

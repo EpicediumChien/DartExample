@@ -7,17 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Json;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography.Xml;
 using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -27,6 +24,7 @@ namespace DDPM.SA.Common.Settings
         public string ColorPreset { get; set; } = string.Empty;
         public string SHA256 { get; set; } = string.Empty;
     }
+
     public class IIC_Metadata
     {
         public string Signature { get; set; } = string.Empty;
@@ -173,7 +171,7 @@ namespace DDPM.SA.Common.Settings
             string serialized;
             try
             {
-                //From base64 string to byte array                
+                //From base64 string to byte array
                 if (isEncrypt)
                 {
                     byte[] read_data = Convert.FromBase64String(json_content);
@@ -197,7 +195,7 @@ namespace DDPM.SA.Common.Settings
                 Console.WriteLine(info);
                 return string.Empty;
             }
-            // Parse the JSON string into a JObject            
+            // Parse the JSON string into a JObject
             string modifiedJson;
             string signature;
             JObject jObject;
@@ -281,7 +279,6 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Close();
                 }
                 return true;
-
             }
             catch (Exception ex)
             {
@@ -548,7 +545,6 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception)// ex)
             {
-
             }
             return null;
         }
@@ -562,7 +558,7 @@ namespace DDPM.SA.Common.Settings
         /// <returns></returns>
         public static byte[] RsaDecryptByteArrayOverRsa(byte[] dataToDecrypt, string outputFilePath, string privateKey)
         {
-            //byte[] dataToDecrypt = File.ReadAllBytes(inputFilePath);        
+            //byte[] dataToDecrypt = File.ReadAllBytes(inputFilePath);
             try
             {
                 using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096))
@@ -577,7 +573,6 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception)// ex)
             {
-
             }
             return null;
         }
@@ -585,7 +580,7 @@ namespace DDPM.SA.Common.Settings
         public static bool IsFilePathValid(string filePath, out string info)
         {
             info = "Valid";
-            //check return code with Enum PathCheckErrorCodes            
+            //check return code with Enum PathCheckErrorCodes
             PathCheckErrorCodes result = PathHelper.ValidateFilePath(filePath);
             if (result != PathCheckErrorCodes.SUCCESS)
             {
@@ -598,7 +593,7 @@ namespace DDPM.SA.Common.Settings
         public static bool IsFolderPathValid(string folderPath, out string info)
         {
             info = "Valid";
-            //check return code with Enum PathCheckErrorCodes            
+            //check return code with Enum PathCheckErrorCodes
             PathCheckErrorCodes result = PathHelper.ValidateDirectoryPath(folderPath);
             if (result != PathCheckErrorCodes.SUCCESS)
             {
@@ -617,7 +612,7 @@ namespace DDPM.SA.Common.Settings
         public static bool IsPathSymbolicLinked(string Path, out string info)
         {
             info = "Valid";
-            //check return code with Enum PathCheckErrorCodes            
+            //check return code with Enum PathCheckErrorCodes
             PathRedirectionReturn result = PathHelper.CheckPathRedirection(Path);
             if (result != PathRedirectionReturn.PathIsNormal)
             {
@@ -906,7 +901,7 @@ namespace DDPM.SA.Common.Settings
                     throw new ArgumentException($"Invalid file path string - {filePath}");
                 }
 
-                // Prevent Path Traversal: check redirection                
+                // Prevent Path Traversal: check redirection
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
                 {
                     throw new PathCheckRedirectionException($"Redirection detected along file path - {filePath}");
@@ -937,6 +932,7 @@ namespace DDPM.SA.Common.Settings
             }
             return true;
         }
+
         private static X509Certificate2 GetCertificate(string filePath)
         {
             X509Certificate2? cert = null;
@@ -978,7 +974,7 @@ namespace DDPM.SA.Common.Settings
 
                 /*
                 *   STEP 1: Create our Authenticode signature verifier
-                *   
+                *
                 *   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
                 */
                 VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;     // fails validation on all errors or if the signing certificate was self signed
@@ -997,10 +993,9 @@ namespace DDPM.SA.Common.Settings
                     Constraints = constraints     // pass in our LeafCertConstraints that contains our pre-computed sha256 subject public key info hash
                 };
 
-
                 /*
                 *   STEP 2: Check our path string for invalid characters, null value, empty value, etc.
-                *   
+                *
                 *   SDL Checklist: Perform Input Validation
                 */
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
@@ -1010,7 +1005,7 @@ namespace DDPM.SA.Common.Settings
 
                 /*
                 *   STEP 3: Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
-                *   
+                *
                 *   SDL Checklist: Prevent Path Traversal
                 */
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
@@ -1020,14 +1015,14 @@ namespace DDPM.SA.Common.Settings
 
                 /*
                 *   STEP 4: Lock the file using Security Library FileLock class
-                *   
+                *
                 *   SDL Checklist: Ensure Authorization and Access Controls (takes care of TOCTOU), Protect Against Brute Force Attacks
                 */
                 using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))     // file lock protects us from TOCTOU attacks
                 {
                     /*
                     *   STEP 5: Verify file ACLs
-                    *   
+                    *
                     *   SDL Checklist: Ensure Authorization and Access Controls
                     */
                     AclChecker aclChecker = new AclChecker();
@@ -1038,7 +1033,7 @@ namespace DDPM.SA.Common.Settings
 
                     /*
                     *   STEP 6: Verify signature of signing certificate
-                    *   
+                    *
                     *   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
                     */
                     var result = verifier.Verify(fileLock);
@@ -1260,6 +1255,7 @@ namespace DDPM.SA.Common.Settings
                 return true;
             }
         }
+
         //for test purpose to generate public and private key pair, method 2
         private static bool GenerateNewRSAKeyPair(string publicName, string privateName)
         {
@@ -1382,32 +1378,39 @@ namespace DDPM.SA.Common.Settings
             }
             return null;
         }*/
+
         #region Bruce 0814 Move this method to DDPM.SA.Common
+
         private enum WTS_INFO_CLASS
         {
             WTSUserName = 5,
             WTSDomainName = 7,
         }
+
         [DllImport("Kernel32.dll")]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] private static extern int WTSGetActiveConsoleSessionId();
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)] private static extern int WTSGetActiveConsoleSessionId();
+
         private int WTSGetActiveConsoleSessionId_Public()
         {
             return WTSGetActiveConsoleSessionId();
         }
 
         [DllImport("Wtsapi32.dll")]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)] private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+
         private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
         {
             return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
         }
 
         [DllImport("Wtsapi32.dll")]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] private static extern void WTSFreeMemory(IntPtr pointer);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)] private static extern void WTSFreeMemory(IntPtr pointer);
+
         private void WTSFreeMemory_Public(IntPtr pointer)
         {
             WTSFreeMemory(pointer);
         }
+
         public string GetActiveUserLocalAppDataPath()
         {
             IntPtr buffer;
@@ -1443,6 +1446,7 @@ namespace DDPM.SA.Common.Settings
             }
             return null;
         }
+
         private string GetUserSid(string userName)
         {
             NTAccount f_normal, f_domain = null;
@@ -1487,6 +1491,7 @@ namespace DDPM.SA.Common.Settings
             }
             return sidString;
         }
-        #endregion
+
+        #endregion Bruce 0814 Move this method to DDPM.SA.Common
     }
 }

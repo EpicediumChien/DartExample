@@ -1,12 +1,12 @@
 ﻿#region LicenseHeader
+
 //
 // ©Copyright 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
-#endregion
 
-using System;
+#endregion
 
 namespace NGA.Common.Helpers
 {
@@ -44,6 +44,6 @@ namespace NGA.Common.Helpers
         /// <summary>
         /// IsInternetConnected property
         /// </summary>
-        public bool IsInternetConnected  { get; }
+        public bool IsInternetConnected { get; }
     }
 }

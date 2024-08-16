@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,6 +7,7 @@
 //
 // IDs.cs created on 10/4/2022T3:37 PM
 //
+
 #endregion
 
 using System;
@@ -25,8 +27,8 @@ namespace VcpCore.Common
         public int count { get; set; }
         public List<MonitorInfo> monitors { get; set; }
     }
-	
-	public class DDCCIchangedEventArgs : EventArgs
+
+    public class DDCCIchangedEventArgs : EventArgs
     {
         public bool DDCisON { get; set; }
         public MonitorInfo monitors { get; set; }

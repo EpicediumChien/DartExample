@@ -1,18 +1,4 @@
-﻿using DDPM.UI.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.Kvm
@@ -31,23 +17,29 @@ namespace DDPM.UI.Module.Kvm
         }
 
         #region Basic
+
         public Type CtrlType => typeof(PBPSplitCtrl4A);
-        #endregion
+
+        #endregion Basic
 
         #region Creation
+
         public PBPSplitCtrl4A(List<double>? settings = null)
         {
             InitializeComponent();
         }
-        #endregion
+
+        #endregion Creation
 
         #region For Pxp Usage
+
         /// <summary>
         /// The capability Code of PIP, the defult code is used for default settings
         /// </summary>
         public UInt16 PbpCapabilityCode { get; set; } = 0x0041;
 
         private PxpInfo _pxpInfo = new PxpInfo();
+
         public string Description
         {
             get
@@ -61,7 +53,8 @@ namespace DDPM.UI.Module.Kvm
                 _pxpInfo.Description = value;
             }
         }
-        #endregion
+
+        #endregion For Pxp Usage
 
         private void PBP_MouseLeftDown1(object sender, MouseButtonEventArgs e)
         {
@@ -74,11 +67,13 @@ namespace DDPM.UI.Module.Kvm
             vm.PC2Click();
             vm.VideoSwapContent = vm.PxPcodeDictionary[PbpCapabilityCode];
         }
+
         private void PBP_MouseLeftDown3(object sender, MouseButtonEventArgs e)
         {
             vm.PC3Click();
             vm.VideoSwapContent = vm.PxPcodeDictionary[PbpCapabilityCode];
         }
+
         private void PBP_MouseLeftDown4(object sender, MouseButtonEventArgs e)
         {
             vm.PC4Click();
@@ -89,22 +84,27 @@ namespace DDPM.UI.Module.Kvm
         {
             vm.PCSwap("PC1", "PC2");
         }
+
         private void PBP_SwapClick2(object sender, MouseButtonEventArgs e)
         {
             vm.PCSwap("PC2", "PC3");
         }
+
         private void PBP_SwapClick3(object sender, MouseButtonEventArgs e)
         {
             vm.PCSwap("PC1", "PC3");
         }
+
         private void PBP_SwapClick4(object sender, MouseButtonEventArgs e)
         {
             vm.PCSwap("PC1", "PC4");
         }
+
         private void PBP_SwapClick5(object sender, MouseButtonEventArgs e)
         {
             vm.PCSwap("PC2", "PC4");
         }
+
         private void PBP_SwapClick6(object sender, MouseButtonEventArgs e)
         {
             vm.PCSwap("PC3", "PC4");

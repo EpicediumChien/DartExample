@@ -1,14 +1,15 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using Dell.Client.Framework.UX.WPF.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System;
+using Dell.Client.Framework.UX.WPF.Controls;
 
 namespace NGA.ThickClient.BannerNotificationPlugin.ViewModels
 {
@@ -29,7 +30,7 @@ namespace NGA.ThickClient.BannerNotificationPlugin.ViewModels
 
         #endregion
 
-        #region Properties   
+        #region Properties
 
         /// <summary>
         /// BannerId of Plugin.
@@ -66,7 +67,6 @@ namespace NGA.ThickClient.BannerNotificationPlugin.ViewModels
             get => _label;
             set => SetProperty(ref _label, value);
         }
-
 
         /// <summary>
         /// Message for Plugin.

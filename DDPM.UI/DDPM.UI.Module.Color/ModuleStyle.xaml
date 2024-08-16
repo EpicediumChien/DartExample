@@ -1,24 +1,24 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF">
-    <!-- RightView.Content Container Background Color 
-    
-    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#9C193457"/>
+    <!-- RightView.Content Container Background Color
+
+    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#9C193457" />
     -->
-    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#9C193457"/>
-    <SolidColorBrush x:Key="GroupExpanderHeaderBottomLineColor" Color="#FF1E3F6C"/>
-    <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B"/>
-    <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D"/>
-    <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7"/>
-    <!-- Expander template for Group header 
-             Reference: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/expander-styles-and-templates?view=netframeworkdesktop-4.8&viewFallbackFrom=netdesktop-8.0
-        -->
+    <SolidColorBrush x:Key="RightViewContainerBkColor" Color="#9C193457" />
+    <SolidColorBrush x:Key="GroupExpanderHeaderBottomLineColor" Color="#FF1E3F6C" />
+    <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+    <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
+    <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+    <!-- Expander template for Group header
+    Reference: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/controls/expander-styles-and-templates?view=netframeworkdesktop-4.8&viewFallbackFrom=netdesktop-8.0
+    -->
     <Style x:Key="ExpanderHeaderFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
                     <Border>
-                        <Rectangle Margin="0" StrokeDashArray="1 2" Stroke="Black" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                        <Rectangle Margin="0" StrokeDashArray="1 2" Stroke="Black" SnapsToDevicePixels="true" StrokeThickness="1" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -30,77 +30,70 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Border Padding="{TemplateBinding Padding}"
-                                BorderBrush="{StaticResource GroupExpanderHeaderBottomLineColor}"
-                                BorderThickness="0,0,0,1">
+                            BorderBrush="{StaticResource GroupExpanderHeaderBottomLineColor}"
+                            BorderThickness="0,0,0,1">
                         <Grid Background="Transparent" SnapsToDevicePixels="False">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <UXControls:UXRadioButton Grid.Column="0" Name="SwManual" 
-                                                           VerticalAlignment="Center" HorizontalAlignment="Left"
-                                                           IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                                           />
+                            <UXControls:UXRadioButton Grid.Column="0" Name="SwManual"
+                                                      VerticalAlignment="Center" HorizontalAlignment="Left"
+                                                      IsChecked="{Binding IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
 
                             <ContentPresenter Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                  RecognizesAccessKey="True" SnapsToDevicePixels="True"/>
-
+                                              RecognizesAccessKey="True" SnapsToDevicePixels="True" />
                         </Grid>
                     </Border>
                 </ControlTemplate>
-                
-                
-                
             </Setter.Value>
         </Setter>
     </Style>
 
     <ControlTemplate x:Key="GroupExpanderTemp" TargetType="Expander">
-        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
-                    BorderThickness="{TemplateBinding BorderThickness}" 
-                    SnapsToDevicePixels="true">
+        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                SnapsToDevicePixels="true">
             <DockPanel>
-                <ToggleButton x:Name="HeaderSite" 
-                                  ContentTemplate="{TemplateBinding HeaderTemplate}" 
-                                  Content="{TemplateBinding Header}" 
-                                  ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" 
-                                  DockPanel.Dock="Top" 
-                                  FontStretch="{TemplateBinding FontStretch}" 
-                                  Foreground="{TemplateBinding Foreground}" 
-                                  FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}" 
-                                  FontStyle="{TemplateBinding FontStyle}" 
-                                  FontFamily="{TemplateBinding FontFamily}" 
-                                  FontWeight="{TemplateBinding FontWeight}" 
-                                  FontSize="{TemplateBinding FontSize}" 
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                  IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
-                                  Margin="1" MinWidth="0" MinHeight="0" 
-                                  Padding="{TemplateBinding Padding}" 
-                                  Style="{StaticResource GroupExpanderToggleButtonStyle}" 
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  />
+                <ToggleButton x:Name="HeaderSite"
+                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                              Content="{TemplateBinding Header}"
+                              ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                              DockPanel.Dock="Top"
+                              FontStretch="{TemplateBinding FontStretch}"
+                              Foreground="{TemplateBinding Foreground}"
+                              FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}"
+                              FontStyle="{TemplateBinding FontStyle}"
+                              FontFamily="{TemplateBinding FontFamily}"
+                              FontWeight="{TemplateBinding FontWeight}"
+                              FontSize="{TemplateBinding FontSize}"
+                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                              Margin="1" MinWidth="0" MinHeight="0"
+                              Padding="{TemplateBinding Padding}"
+                              Style="{StaticResource GroupExpanderToggleButtonStyle}"
+                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
 
-                <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false" 
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                      Margin="{TemplateBinding Padding}" 
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
-                                      Visibility="Collapsed"/>
+                <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  Margin="{TemplateBinding Padding}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Visibility="Collapsed" />
             </DockPanel>
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsExpanded" Value="true">
-                <Setter Property="Visibility" TargetName="ExpandSite" Value="Visible"/>
+                <Setter Property="Visibility" TargetName="ExpandSite" Value="Visible" />
             </Trigger>
-
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
     <Style x:Key="GroupExpanderStyle" TargetType="Expander">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="Template" Value="{StaticResource GroupExpanderTemp}"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Template" Value="{StaticResource GroupExpanderTemp}" />
     </Style>
 </ResourceDictionary>

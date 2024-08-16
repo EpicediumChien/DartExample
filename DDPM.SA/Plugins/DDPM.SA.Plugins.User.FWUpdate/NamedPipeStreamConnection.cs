@@ -8,6 +8,7 @@
     {
         private readonly object _InstanceLock;
         private PipeStream _Stream;
+
         public event EventHandler? DisconnectedEvent;
 
         public NamedPipeStreamConnection(PipeStream stream, string pipeName) : base(pipeName)
@@ -55,7 +56,6 @@
                     }
                 }
             }
-
         }
 
         private void EndSendMessage(IAsyncResult result)

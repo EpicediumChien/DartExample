@@ -1,20 +1,13 @@
-﻿using NUnit.Framework;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using Moq;
+using NGA.UnitTest.PrivateObject;
+using NUnit.Framework;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Input;
-using DDPM.UI.Plugin.ViewModels;
-using NGA.UnitTest.PrivateObject;
-using Dell.Client.Framework.UX.WPF;
-using Dell.Client.Framework.Common;
-using DDPM.SA.Common;
-using Dell.Client.Framework.UX.WPF.Controls;
-using System.Collections.Generic;
-using NUnit.Framework.Interfaces;
-using DDPM.UI.Common;
-using static System.Net.Mime.MediaTypeNames;
-using System.Windows.Markup;
 
 namespace DDPM.UI.Module.ButtonSettings.Test
 {
@@ -31,7 +24,6 @@ namespace DDPM.UI.Module.ButtonSettings.Test
         [SetUp]
         public void SetUp()
         {
-
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
@@ -44,7 +36,7 @@ namespace DDPM.UI.Module.ButtonSettings.Test
         public void TestConstructor()
         {
             // Act
-            Dictionary<string, string> buttonCaptions = (Dictionary<string, string>) privateObject.GetFieldOrProperty("ButtonCaptions");
+            Dictionary<string, string> buttonCaptions = (Dictionary<string, string>)privateObject.GetFieldOrProperty("ButtonCaptions");
             var txtMessageText = Strings.ButtonCustomizeMessage;
             var txtRestoreText = Strings.ButtonCustomizeRestoreCaption;
             var txtSuggestedActionsText = Strings.SuggestedActionsCaption;
@@ -62,15 +54,14 @@ namespace DDPM.UI.Module.ButtonSettings.Test
             Assert.That(txtMultimediaActionsText, Is.EqualTo("Multimedia Actions"));
         }
 
-
         [Test]
         public void TestInitialize()
         {
             buttonSettingsRightView.Initialize();
 
-            var txtCaptionText =  Strings.ButtonCustomizeCaption;
+            var txtCaptionText = Strings.ButtonCustomizeCaption;
             var imgBack = (UIElement)privateObject.GetFieldOrProperty("imgBack");
-            var section1= (StackPanel)privateObject.GetFieldOrProperty("Section1");
+            var section1 = (StackPanel)privateObject.GetFieldOrProperty("Section1");
             //var selectedActionID = privateObject.GetFieldOrProperty("SelectedActionID");
 
             Assert.That(txtCaptionText, Is.EqualTo("Button Customization"));
@@ -86,9 +77,6 @@ namespace DDPM.UI.Module.ButtonSettings.Test
             //selectedActionID = privateObject.GetFieldOrProperty("SelectedActionID");
             Assert.That(section1.Visibility, Is.EqualTo(Visibility.Collapsed));
             //Assert.That(selectedActionID, Is.EqualTo(0));
-
         }
-
-
     }
 }

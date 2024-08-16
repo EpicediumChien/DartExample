@@ -1,18 +1,12 @@
-﻿using System.ComponentModel;
+﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using DDPM.SA.Common;
 using System.Windows;
-using System.Collections.ObjectModel;
-using MouseButton = DPeMPublic.Common.Enums.MouseButton;
-using System.Windows.Media;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
-using Newtonsoft.Json.Linq;
-using Windows.Media.Capture.Frames;
 using Windows.Media.Capture;
+using Windows.Media.Capture.Frames;
 using Windows.Storage;
 
 namespace DDPM.UI.Plugin.ViewModels
@@ -26,8 +20,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _tipSensitivity = 75;
         private int _tiltSensitivity = 20;
 
-        #endregion
-
+        #endregion Variables
 
         public string TouchScrollCaption { get; set; } = "";
         public string TouchScrollInfoTip { get; set; } = "";
@@ -56,7 +49,6 @@ namespace DDPM.UI.Plugin.ViewModels
             //Hz2501ClickedCommand = new RelayCommand(OnHz2501Clicked);
             //Hz2502ClickedCommand = new RelayCommand(OnHz2502Clicked);
             //Hz333ClickedCommand = new RelayCommand(OnHz333Clicked);
-
         }
 
         private void SwitchPollingRate(int index, int hz = 0, bool NeedSetting = false)
@@ -71,6 +63,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(Hz250Focused));
                     OnPropertyChanged(nameof(Hz333Focused));
                     break;
+
                 case 1:
                     Hz125Focused = false;
                     Hz250Focused = true;
@@ -79,6 +72,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(Hz250Focused));
                     OnPropertyChanged(nameof(Hz333Focused));
                     break;
+
                 case 2:
                     Hz125Focused = false;
                     Hz250Focused = false;
@@ -87,6 +81,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(Hz250Focused));
                     OnPropertyChanged(nameof(Hz333Focused));
                     break;
+
                 case 3:
                     Hz133Focused = true;
                     Hz250Focused = false;
@@ -94,6 +89,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(Hz250Focused));
                     OnPropertyChanged(nameof(Hz333Focused));
                     break;
+
                 case 4:
                     Hz133Focused = false;
                     Hz250Focused = true;
@@ -105,7 +101,6 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 //_deviceManager.SetBackLightingControls(hz, CurrentDeviceInfo.ID);
             }
-
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -125,7 +120,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     //deviceInfo.ModelNumber = "WB7022";
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }
-              
             }
         }
         public override bool SetCurrentDevice(string deviceID)
@@ -141,7 +135,6 @@ namespace DDPM.UI.Plugin.ViewModels
             //  TouchScrollSensitivityLevel = CurrentDeviceInfo.TouchScrollSensitivityLevel;
             //}
             //OnPropertyChanged(nameof(IsTouchScrollSensitivitySupported));
-
 
             IsReportRateSupported = CurrentDeviceInfo!.IsReportRateSupported;
             IsReportRateSupported = true;
@@ -196,10 +189,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         GenerateInfo();
                     }
                     break;
+
                 default:
                     break;
             }
-
         }
 
         public int TipSensitivity
@@ -276,7 +269,6 @@ namespace DDPM.UI.Plugin.ViewModels
         // 20240628 jim add
         // Folder in which the captures will be stored (initialized in SetupUiAsync)
         public StorageFolder _captureFolder;
-
 
         //20240702
         private bool isChecked_Autofocus;
@@ -361,9 +353,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 framingGrid_isChecked = value;
                 OnPropertyChanged("FramingGrid_IsChecked");
             }
-        }      
-
-
-
+        }
     }
 }

@@ -1,7 +1,5 @@
-
-using System.Windows.Controls;
 using System.Windows;
-using System.Xml.Linq;
+using System.Windows.Controls;
 
 namespace DDPM.Easy.Common
 {
@@ -13,20 +11,22 @@ namespace DDPM.Easy.Common
     public class CellObj
     {
         #region Native data members
+
         public string Name { get; set; } = ""; //Cell Name
         public Rect rc { get; set; } //Rect of the Cell
         public Border bd { get; set; } //Attached to the UI Element (Border)
-        #endregion
+
+        #endregion Native data members
 
         #region Ctor
+
         public CellObj(string name, Border border)
         {
             Name = name;
             bd = border;
             rc = new Rect();
         }
-        #endregion
 
+        #endregion Ctor
     }
-
 }

@@ -2,12 +2,10 @@ using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Interfaces;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
-using System.Reflection;
 using System.Windows.Controls;
 using VcpCore.Common;
 
@@ -16,7 +14,6 @@ namespace DDPM.UI.Module.Brightness.Tests
     [TestFixture, Apartment(ApartmentState.STA)]//Uni Test Class
     public class BrightnessModuleTests
     {
-
         private BrightnessModule? brightnessModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
@@ -31,9 +28,9 @@ namespace DDPM.UI.Module.Brightness.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-            myConsoleMock=new Mock<IConsole>();
-            myConsole=myConsoleMock.Object;
-            DdpmCommonHelper.MyConsole=myConsole;
+            myConsoleMock = new Mock<IConsole>();
+            myConsole = myConsoleMock.Object;
+            DdpmCommonHelper.MyConsole = myConsole;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
@@ -49,7 +46,6 @@ namespace DDPM.UI.Module.Brightness.Tests
             Assert.That(vm, Is.Not.Null);
             Assert.That(vm, Is.Not.SameAs(brightnessModule));
             Assert.That(brightnessModule.ModuleOwner, Is.Not.Null);
-
         }
 
         [Test]
@@ -63,7 +59,6 @@ namespace DDPM.UI.Module.Brightness.Tests
             Assert.That(viewModel, Is.Not.Null);
         }
 
-
         [Test]
         public void TestModuleName()
         {
@@ -74,11 +69,9 @@ namespace DDPM.UI.Module.Brightness.Tests
             Assert.That(result, Is.EqualTo("BrightnessModule"));
         }
 
-
         [Test]//Test method
         public void TestSelectedHomeDevice()
         {
-
             //Arrange:Initialize object and define var info
             var homeDevice = new HomeDevice();
 
@@ -88,7 +81,6 @@ namespace DDPM.UI.Module.Brightness.Tests
 
             //Assert:Verify
             Assert.That(result, Is.EqualTo(homeDevice));
-
         }
 
         [Test]
@@ -124,7 +116,6 @@ namespace DDPM.UI.Module.Brightness.Tests
             Assert.That(brightnessModule.ModuleOwner, Is.EqualTo(mockModuleOwner.Object));
         }
 
-
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
@@ -144,7 +135,6 @@ namespace DDPM.UI.Module.Brightness.Tests
             brightnessModule.OnActivated();
             Assert.Pass();
         }
-
 
         [Test]
         public void TestOnDeactivated()

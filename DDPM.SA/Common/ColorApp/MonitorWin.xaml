@@ -13,36 +13,36 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="4*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="4*" />
+            <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
         <ListView x:Name="lstApps" Grid.Column="0" Grid.Row="0">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding AppName}"/>
-                    <GridViewColumn Header="Type" Width="Auto" DisplayMemberBinding="{Binding AppType}"/>
-                    <GridViewColumn Header="ID" Width="Auto" DisplayMemberBinding="{Binding AppUserModelID}"/>
-                    <GridViewColumn Header="Path" Width="Auto" DisplayMemberBinding="{Binding AppPath}"/>
-                    <GridViewColumn Header="Install Date" Width="Auto" DisplayMemberBinding="{Binding InstalledDate}"/>
+                    <GridViewColumn Header="Name" Width="Auto" DisplayMemberBinding="{Binding AppName}" />
+                    <GridViewColumn Header="Type" Width="Auto" DisplayMemberBinding="{Binding AppType}" />
+                    <GridViewColumn Header="ID" Width="Auto" DisplayMemberBinding="{Binding AppUserModelID}" />
+                    <GridViewColumn Header="Path" Width="Auto" DisplayMemberBinding="{Binding AppPath}" />
+                    <GridViewColumn Header="Install Date" Width="Auto" DisplayMemberBinding="{Binding InstalledDate}" />
                 </GridView>
             </ListView.View>
         </ListView>
         <StackPanel Grid.Column="0" Grid.Row="1" Background="LightGray">
-            <Label Content="Active Window Name"/>
-            <TextBlock x:Name="tbWndName" Text="NA" Margin="20,0,0,0"/>
-            <Label Content="Process ID"/>
-            <TextBlock x:Name="tbWndPID" Text="NA" Margin="20,0,0,0"/>
-            <Label Content="Module Name"/>
-            <TextBlock x:Name="tbWndModule" Text="NA" Margin="20,0,0,0"/>
-            <Label Content="Mapped Color preset"/>
-            <TextBlock x:Name="tbColorPreset" Text="NA" Margin="20,0,0,0"/>
+            <Label Content="Active Window Name" />
+            <TextBlock x:Name="tbWndName" Text="NA" Margin="20,0,0,0" />
+            <Label Content="Process ID" />
+            <TextBlock x:Name="tbWndPID" Text="NA" Margin="20,0,0,0" />
+            <Label Content="Module Name" />
+            <TextBlock x:Name="tbWndModule" Text="NA" Margin="20,0,0,0" />
+            <Label Content="Mapped Color preset" />
+            <TextBlock x:Name="tbColorPreset" Text="NA" Margin="20,0,0,0" />
         </StackPanel>
         <StackPanel Grid.Column="1" Background="LightBlue" Grid.Row="0" Grid.RowSpan="2">
-            <Button x:Name="btnRefresh" Click="btnRefresh_Click" Content="Refresh" Height="100" Margin="5"/>
+            <Button x:Name="btnRefresh" Click="btnRefresh_Click" Content="Refresh" Height="100" Margin="5" />
         </StackPanel>
     </Grid>
 </Window>

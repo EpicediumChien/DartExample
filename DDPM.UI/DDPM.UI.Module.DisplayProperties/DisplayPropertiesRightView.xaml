@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="DDPM.UI.Module.DisplayProperties.DisplayPropertiesRightView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.DisplayProperties"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -18,7 +18,7 @@
     <Grid>
         <UXControls:UXScrollViewer>
             <!-- Container -->
-            <!-- 
+            <!--
             <Border CornerRadius="13" Background="{StaticResource RightViewContainerBkColor}">
             -->
             <!-- RightGroupBorder -->
@@ -29,74 +29,73 @@
 
                             <Grid Height="40" Margin="0,8">
                                 <UXControls:UXTextBlock Text="Resolution and Refresh Rate" FontSize="16" Foreground="White"
-                        TextBlockSemanticColorType="Light" TextBlockType="Caption" 
-                        VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                        TextBlockSemanticColorType="Light" TextBlockType="Caption"
+                                                        VerticalAlignment="Center" HorizontalAlignment="Left" />
                                 <!--
-                                <UXControls:UXComboBox HorizontalAlignment="Right" VerticalAlignment="Center" 
-                       Background="{StaticResource UXComboBox_Background}" 
-                        BorderBrush="{StaticResource UXComboBox_BorderBrush}"
-                        BorderThickness="{StaticResource Tooltip_BdThick}"
-                        Foreground="{StaticResource UXComboBox_Foreground}"
-                       ItemsSource="{Binding Resolution_ItemsCollection}" 
-                       SelectedItem="{Binding SelectedResolution, Mode=TwoWay}" 
-                       TabIndex="1" DisplayMemberPath="DisplayText" Width="200" 
-                       ShowSelectedCheck="False" SelectionChanged="UXComboBox_SelectionChanged"/>
+                                <UXControls:UXComboBox HorizontalAlignment="Right" VerticalAlignment="Center"
+                                Background="{StaticResource UXComboBox_Background}"
+                                BorderBrush="{StaticResource UXComboBox_BorderBrush}"
+                                BorderThickness="{StaticResource Tooltip_BdThick}"
+                                Foreground="{StaticResource UXComboBox_Foreground}"
+                                ItemsSource="{Binding Resolution_ItemsCollection}"
+                                SelectedItem="{Binding SelectedResolution, Mode=TwoWay}"
+                                TabIndex="1" DisplayMemberPath="DisplayText" Width="200"
+                                ShowSelectedCheck="False" SelectionChanged="UXComboBox_SelectionChanged" />
 
--->
+                                -->
                                 <ComboBox Style="{StaticResource DdpmComboBoxStyle}"
-                HorizontalAlignment="Right" VerticalAlignment="Center" 
-                       ItemsSource="{Binding Resolution_ItemsCollection}" 
-                       SelectedItem="{Binding SelectedResolution, Mode=TwoWay}" 
-                       TabIndex="1" DisplayMemberPath="DisplayText" Width="200" 
-                       />
+                                          HorizontalAlignment="Right" VerticalAlignment="Center"
+                                          ItemsSource="{Binding Resolution_ItemsCollection}"
+                                          SelectedItem="{Binding SelectedResolution, Mode=TwoWay}"
+                                          TabIndex="1" DisplayMemberPath="DisplayText" Width="200" />
                             </Grid>
                             <Grid Height="40" Margin="0,8">
-                                <UXControls:UXTextBlock Text="Orientation" FontSize="16" Foreground="White" TextBlockSemanticColorType="Light" TextBlockType="Caption" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" ItemsSource="{Binding Orientation_ItemsCollection}" SelectedItem="{Binding SelectedOrientation, Mode=TwoWay}" DisplayMemberPath="DisplayText" Width="200"/>
+                                <UXControls:UXTextBlock Text="Orientation" FontSize="16" Foreground="White" TextBlockSemanticColorType="Light" TextBlockType="Caption" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" ItemsSource="{Binding Orientation_ItemsCollection}" SelectedItem="{Binding SelectedOrientation, Mode=TwoWay}" DisplayMemberPath="DisplayText" Width="200" />
                             </Grid>
 
                             <Grid Height="40" Margin="0,8" Visibility="{Binding SupportedHDR}" IsEnabled="{Binding HDREnable}" Opacity="{Binding HDROpacity}">
                                 <UXControls:UXTextBlock Text="Smart HDR" FontSize="16" Foreground="White"
-                        TextBlockSemanticColorType="Light" TextBlockType="Caption" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= HDRStatus}" ContentTextVisibility="True" Content="{Binding Path=HDRStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White"/>
+                                                        TextBlockSemanticColorType="Light" TextBlockType="Caption" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= HDRStatus}" ContentTextVisibility="True" Content="{Binding Path=HDRStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
                             </Grid>
 
                             <Grid Height="40" Margin="0,8">
-                                <UXControls:UXTextBlock Text="Change the size of text, apps, and other items" FontSize="16" Foreground="White" 
-                        TextBlockSemanticColorType="Light" TextBlockType="Caption" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                <UXControls:UXLink Content="Windows Settings" Click="CallWindowsSettings_Click" 
-                   IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
-                   LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" 
-                   HorizontalAlignment="Right" VerticalAlignment="Center" Height="40"/>
+                                <UXControls:UXTextBlock Text="Change the size of text, apps, and other items" FontSize="16" Foreground="White"
+                                                        TextBlockSemanticColorType="Light" TextBlockType="Caption" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                <UXControls:UXLink Content="Windows Settings" Click="CallWindowsSettings_Click"
+                                                   IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
+                                                   LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
+                                                   HorizontalAlignment="Right" VerticalAlignment="Center" Height="40" />
                             </Grid>
 
                             <!-- RightPartBorder -->
                             <Border Style="{StaticResource RightPartBorderStyle}" Margin="0,24,0,0" Visibility="{Binding Path=SupportedUSBCPrioeitization}">
-                                <UXControls:UXExpander ExpanderType="Secondary" HorizontalAlignment="Stretch" 
-                       Margin="8,8,8,8" IsExpanded="True" 
-                       Background="{StaticResource RightViewContainerBkColor}"
-                       Foreground="White">
+                                <UXControls:UXExpander ExpanderType="Secondary" HorizontalAlignment="Stretch"
+                                                       Margin="8,8,8,8" IsExpanded="True"
+                                                       Background="{StaticResource RightViewContainerBkColor}"
+                                                       Foreground="White">
                                     <UXControls:UXExpander.Header>
-                                        <UXControls:UXTextBlock Text="Advanced Settings" FontSize="16" Foreground="White"/>
+                                        <UXControls:UXTextBlock Text="Advanced Settings" FontSize="16" Foreground="White" />
                                     </UXControls:UXExpander.Header>
                                     <StackPanel>
                                         <UXControls:UXAlert Margin="0,20">
                                             <UXControls:UXAlertItem AlertItemType="Info" Margin="8,8,8,8" Label=""
-                                    Message="Disconnect all USB storage devices from monitor." />
+                                                                    Message="Disconnect all USB storage devices from monitor." />
                                         </UXControls:UXAlert>
 
                                         <StackPanel Orientation="Horizontal">
                                             <!--Bruce 0607 fix typo-->
                                             <UXControls:UXTextBlock Grid.Column="0" Text="USB-C Prioritization " FontSize="16" Foreground="White"
-                               TextBlockSemanticColorType="Light" TextBlockType="Caption" 
-                               VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                                    TextBlockSemanticColorType="Light" TextBlockType="Caption"
+                                                                    VerticalAlignment="Center" HorizontalAlignment="Left" />
 
                                             <Image Grid.Column="1" Stretch="None" Margin="0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                 <Image.ToolTip>
                                                     <ToolTip>
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                             <Border.Resources>
-                                                                <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}"/>
+                                                                <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
                                                             </Border.Resources>
                                                             <StackPanel>
                                                                 <TextBlock Text="Priority on data and network speeds over screen performance." />
@@ -109,13 +108,13 @@
 
                                         <StackPanel Margin="16">
                                             <StackPanel Orientation="Horizontal">
-                                                <UXControls:UXRadioButton Margin="5" IsChecked="{Binding Path=IsHighDataSpeed}" Content="High Data Speed" Foreground="WhiteSmoke"/>
+                                                <UXControls:UXRadioButton Margin="5" IsChecked="{Binding Path=IsHighDataSpeed}" Content="High Data Speed" Foreground="WhiteSmoke" />
                                                 <Image Stretch="None" Margin="0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                     <Image.ToolTip>
                                                         <ToolTip>
                                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                 <Border.Resources>
-                                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}"/>
+                                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
                                                                 </Border.Resources>
                                                                 <StackPanel>
                                                                     <TextBlock Text="Priority on data and network speeds over screen performance." />
@@ -126,16 +125,16 @@
                                                 </Image>
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal">
-                                                <UXControls:UXRadioButton Margin="5" IsEnabled="{Binding Path=SupportedUSBCPrioeitization}" IsChecked="{Binding Path=IsHighResolution}" Content="High Resolution" Foreground="WhiteSmoke"/>
+                                                <UXControls:UXRadioButton Margin="5" IsEnabled="{Binding Path=SupportedUSBCPrioeitization}" IsChecked="{Binding Path=IsHighResolution}" Content="High Resolution" Foreground="WhiteSmoke" />
                                                 <Image Stretch="None" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                     <Image.ToolTip>
-                                                        <ToolTip >
+                                                        <ToolTip>
                                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                 <Border.Resources>
-                                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}"/>
+                                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
                                                                 </Border.Resources>
                                                                 <StackPanel>
-                                                                    <TextBlock Text="Priority on screen performance over data and network speed."/>
+                                                                    <TextBlock Text="Priority on screen performance over data and network speed." />
                                                                 </StackPanel>
                                                             </Border>
                                                         </ToolTip>
@@ -143,12 +142,9 @@
                                                 </Image>
                                             </StackPanel>
                                         </StackPanel>
-
                                     </StackPanel>
                                 </UXControls:UXExpander>
-
                             </Border>
-
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -156,18 +152,18 @@
                 <Border Name="DisableAll" Background="#4C24273C">
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsBusy}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
                     <!-- Add a UXBusyIndicator from Robert -->
                     <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                    IsActive="{Binding IsBusy}"/>
+                                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                IsActive="{Binding IsBusy}" />
                 </Border>
             </Grid>
         </UXControls:UXScrollViewer>

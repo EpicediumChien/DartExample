@@ -1,18 +1,9 @@
-﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
-using static VcpCore.Plugins.VcpCodeList;
+﻿using static VcpCore.Plugins.VcpCodeList;
 
 namespace VcpCore.Plugins.Test
 {
     public class TestVcpCodeList
     {
-
         [Test]
         public void TestVcpValueTostring()
         {
@@ -26,7 +17,7 @@ namespace VcpCore.Plugins.Test
         public void TestgetVcpAndValue()
         {
             string presetName = "Standard";
-            VcpValue retValue = new VcpValue() {Vcp=0xDC,Value=0};
+            VcpValue retValue = new VcpValue() { Vcp = 0xDC, Value = 0 };
             var result = VcpCodeList.getVcpAndValue(presetName);
             Assert.That(retValue, Is.EqualTo(result));
 
@@ -43,7 +34,6 @@ namespace VcpCore.Plugins.Test
             string presetName4 = "Noset";
             var result4 = VcpCodeList.getVcpAndValue(presetName4);
             Assert.IsNull(result4);
-
         }
     }
 }

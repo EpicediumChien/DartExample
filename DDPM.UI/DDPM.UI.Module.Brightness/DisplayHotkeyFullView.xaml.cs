@@ -1,25 +1,11 @@
-﻿using DDPM.SA.Common;
-using DDPM.SA.Common.Display;
+﻿using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Windows.System;
 
 namespace DDPM.UI.Module.Brightness
@@ -74,14 +60,13 @@ namespace DDPM.UI.Module.Brightness
         }
 
         private void tbBrightnessMins_PreviewKeyUp(object sender, KeyEventArgs e)
-        {              
+        {
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref BrightnessMinsNewKeys);
             vm.BrightnessMinsKey = swHortcutText;*/
             e.Handled = true;
         }
 
-        
         private void tbBrightnessMins_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             e.Handled = true;
@@ -95,10 +80,9 @@ namespace DDPM.UI.Module.Brightness
             Keyboard.ClearFocus();
         }
 
-
         private void tbBrightnessAdd_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e); 
+            setUXTextBoxPreviewKey(sender, e);
         }
 
         private void tbBrightnessAdd_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -130,7 +114,7 @@ namespace DDPM.UI.Module.Brightness
         {
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
-            { 
+            {
                 updateKeys = false;
                 newKeys.Clear();
                 _strTbBrightnessAddPreviousKey = vm.BrightnessAddKey;
@@ -187,7 +171,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void tbContrastMins_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);          
+            setUXTextBoxPreviewKey(sender, e);
         }
 
         private void tbContrastMins_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -241,7 +225,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void tbLuminanceAdd_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);  
+            setUXTextBoxPreviewKey(sender, e);
         }
 
         private void tbLuminanceAdd_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -257,7 +241,6 @@ namespace DDPM.UI.Module.Brightness
             e.Handled = true;
         }
 
-
         private void setUXTextBoxPreviewKey(object sender, KeyEventArgs e)
         {
             e.Handled = true;
@@ -272,11 +255,11 @@ namespace DDPM.UI.Module.Brightness
             VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.SystemKey);
             if (thisVirtualKey_system != VirtualKey.None)
             {
-                thisVirtualKey= thisVirtualKey_system;
+                thisVirtualKey = thisVirtualKey_system;
             }
             else
             {
-               thisVirtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.Key);
+                thisVirtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.Key);
             }
             //if the key will be processed by an Input Method Editor (IME), then return ?
             //Object v;
@@ -284,12 +267,12 @@ namespace DDPM.UI.Module.Brightness
             bool r = Enum.IsDefined(typeof(VirtualKey), thisVirtualKey);
             if (!r) return;
             if (BlockKeys.isBlocked(thisVirtualKey)) return;
-            if(newKeys.Count >0 && !newKeys.Any(x=> (x== VirtualKey.Control)|| (x == VirtualKey.Shift) || (x == VirtualKey.Menu)))
+            if (newKeys.Count > 0 && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift) || (x == VirtualKey.Menu)))
             {
                 //second single key
                 return;
             }
-            if (newKeys.Count == 2 && newKeys.Any(x =>(x == VirtualKey.Menu)) && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift)))
+            if (newKeys.Count == 2 && newKeys.Any(x => (x == VirtualKey.Menu)) && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift)))
             {
                 //second Alt+ (key)
                 return;
@@ -316,7 +299,7 @@ namespace DDPM.UI.Module.Brightness
             Debug.WriteLine($"{texBoxName}_PreviewKeyDown-NewKeys-----{string.Join(",", newKeys)}");
             if (!newKeys.Contains(thisVirtualKey))
             {
-               newKeys.Add(thisVirtualKey);
+                newKeys.Add(thisVirtualKey);
                 /*if ((thisVirtualKey == VirtualKey.Menu) ||
                     (thisVirtualKey == VirtualKey.Control) ||
                     (thisVirtualKey == VirtualKey.Shift) ||
@@ -332,7 +315,6 @@ namespace DDPM.UI.Module.Brightness
                 {
                     newKeys.Add(thisVirtualKey);
                 }*/
-
             }
             string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref newKeys);
@@ -344,31 +326,36 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessMinsNewKeys.AddRange(newKeys);
                     BrightnessMinsNewKeys = BrightnessMinsNewKeys.Distinct().ToList();
                     break;
+
                 case "tbBrightnessAdd":
                     BrightnessAddNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbContrastMins":
                     ContrastMinsNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbContrastAdd":
                     ContrastAddNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbLuminanceMins":
                     LuminanceMinsNewKeys.AddRange(newKeys);
                     break;
+
                 case "tbLuminanceAdd":
                     LuminanceAddNewKeys.AddRange(newKeys);
                     break;
             }
         }
 
-        private void doLostFocus(HotkeyInfo hotkeyInfo,string prStr,string crStr,ref List<VirtualKey>keys)
+        private void doLostFocus(HotkeyInfo hotkeyInfo, string prStr, string crStr, ref List<VirtualKey> keys)
         {
             if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
             {
                 //save hotkey
                 // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo.edid,hotkeyInfo).Result;
+                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.SelectedHomeDevice.MonitorInfo.edid, hotkeyInfo).Result;
                 vm.Invoke_RefreshHotkeySettings();
             }
             else
@@ -378,18 +365,23 @@ namespace DDPM.UI.Module.Brightness
                     case HotkeyType.BrightnessReduce:
                         vm.BrightnessMinsKey = prStr;
                         break;
+
                     case HotkeyType.BrightnessIncrease:
                         vm.BrightnessAddKey = prStr;
                         break;
+
                     case HotkeyType.ContrastReduce:
                         vm.ContrastMinsKey = prStr;
                         break;
+
                     case HotkeyType.ContrastIncrease:
                         vm.ContrastAddKey = prStr;
                         break;
+
                     case HotkeyType.LuminanceReduce:
                         vm.LuminanceMinsKey = prStr;
                         break;
+
                     case HotkeyType.LuminanceIncrease:
                         vm.LuminanceAddKey = prStr;
                         break;
@@ -399,24 +391,23 @@ namespace DDPM.UI.Module.Brightness
         }
         private void tbBrightnessMins_LostFocus(object sender, RoutedEventArgs e)
         {
-            if(BrightnessMinsNewKeys.Count == 0)
+            if (BrightnessMinsNewKeys.Count == 0)
             {
                 vm.BrightnessMinsKey = _strTbBrightnessMinsPreviousKey;
             }
             else
             {
-
                 //for single key
                 updateKeys = false;
                 newKeys.Clear();
 
-                HotkeyInfo hotkeyInfo=new HotkeyInfo();
-                hotkeyInfo.Job=HotkeyType.BrightnessReduce;
-                hotkeyInfo.Hotkey= BrightnessMinsNewKeys.Distinct().ToList();
+                HotkeyInfo hotkeyInfo = new HotkeyInfo();
+                hotkeyInfo.Job = HotkeyType.BrightnessReduce;
+                hotkeyInfo.Hotkey = BrightnessMinsNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "Brightness-";
-                doLostFocus(hotkeyInfo,_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, ref BrightnessMinsNewKeys);
+                doLostFocus(hotkeyInfo, _strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, ref BrightnessMinsNewKeys);
                 BrightnessMinsNewKeys.Clear();
-                /*if (hotKeyConflictsCheck(hotkeyInfo)) 
+                /*if (hotKeyConflictsCheck(hotkeyInfo))
                 {
                     //save hotkey
                    // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
@@ -453,7 +444,7 @@ namespace DDPM.UI.Module.Brightness
                 hotkeyInfo.Job = HotkeyType.BrightnessIncrease;
                 hotkeyInfo.Hotkey = BrightnessAddNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "BrightnessReduce+";
-                doLostFocus(hotkeyInfo,_strTbBrightnessAddPreviousKey, vm.BrightnessAddKey, ref BrightnessAddNewKeys);
+                doLostFocus(hotkeyInfo, _strTbBrightnessAddPreviousKey, vm.BrightnessAddKey, ref BrightnessAddNewKeys);
                 BrightnessAddNewKeys.Clear();
             }
             //hook
@@ -464,7 +455,7 @@ namespace DDPM.UI.Module.Brightness
         {
             if (ContrastMinsNewKeys.Count == 0)
             {
-                vm.ContrastMinsKey =_strTbContrastMinsPreviousKey;
+                vm.ContrastMinsKey = _strTbContrastMinsPreviousKey;
             }
             else
             {

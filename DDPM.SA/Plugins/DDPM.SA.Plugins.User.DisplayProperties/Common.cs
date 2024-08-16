@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties
@@ -12,6 +8,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
     public class NoSroHashTable : Hashtable
     {
         private ArrayList list = new ArrayList();
+
         public override void Add(object key, object? value)
         {
             base.Add(key, value);
@@ -23,11 +20,13 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             base.Clear();
             list.Clear();
         }
+
         public override void Remove(object key)
         {
             base.Remove(key);
             list.Remove(key);
         }
+
         public override ICollection Keys
         {
             get
@@ -36,6 +35,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
         }
     }
+
     public enum VcpCode : byte
     {
         None = 0,
@@ -108,8 +108,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         Rotate = 170,
         HorizontalFrequency = 172,
         VerticalFrequency = 174,
+
         //WindowPos = 232,
         DisplayUsageTime = 192,
+
         PowerMode = 214,
         OSDButtonControl = 202,
         ScratchPad = 222,
@@ -140,15 +142,17 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         SpeakerVolume = 98,
         Zoom = 229,
         AccessoryModuleCommand = 235,
+
         //VisionEngineControls = 236,
         //VisionEngineProfilesControls= 237,
         MultiMonitorSync = 239,
+
         GamingFeatures = 244,
         ModeSwitch = 245
     }
+
     public static class CommonApi
     {
-
         [DllImport("Shcore.dll", SetLastError = true)]
         internal static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
 
@@ -159,11 +163,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             MDT_Raw_DPI = 2,
             MDT_Default = MDT_Effective_DPI
         }
-
-
-
     }
-
 
     public class DDMiMessagingMsg
     {

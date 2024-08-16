@@ -1,13 +1,15 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System.Diagnostics;
 using NGA.NET.Common.Interfaces;
+using System.Diagnostics;
 
 namespace NGA.NET.Common
 {
@@ -17,6 +19,7 @@ namespace NGA.NET.Common
     public sealed class ProtocolLaunchBuilder : IProtocolLaunchBuilder
     {
 #pragma warning disable 0612, 0618
+
         /// <summary>
         /// Launch thick client application async with specified plugin
         /// </summary>
@@ -26,6 +29,7 @@ namespace NGA.NET.Common
         {
             Process.Start(new ProcessStartInfo(builder.BuildLaunchString()) { UseShellExecute = true });
         }
+
 #pragma warning restore 0612, 0618
 
         /// <inheritdoc/>

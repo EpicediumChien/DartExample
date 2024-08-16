@@ -1,18 +1,4 @@
-﻿using DDPM.SA.Common;
-using DDPM.SA.Plugins.User.PipPbpManger;
-using Dell.Client.Framework.UnitTestShared.Tests;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Common;
-using VcpCore.Plugins;
-using WinCopies;
-using WinCopies.Util;
-using static WinCopies.Util.Extensions;
+﻿using Dell.Client.Framework.UnitTestShared.Tests;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 {
@@ -41,7 +27,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 
         private readonly int ModelName_Len = 13;
 
-        string hexString = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED";
+        private string hexString = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED";
 
         [Test]
         public void TestPush()
@@ -91,7 +77,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             Assert.That(expectedManufacturerID, Is.EqualTo(actualManufacturerID));
         }
 
-
         [Test]
         public void TestGetVendorID()
         {
@@ -107,7 +92,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             }
             Assert.That(expectedVendorID, Is.EqualTo(actualVendorID));
         }
-
 
         [Test]
         public void TestGetSerialNum()
@@ -132,7 +116,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             Assert.That(expectedSerialNum, Is.EqualTo(actualSerialNum));
         }
 
-
         [Test]
         public void TestGetServiceTag()
         {
@@ -155,7 +138,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             }
             Assert.That(expectedServiceTag, Is.EqualTo(actualServiceTag));
         }
-
 
         [Test]
         public void TestGetManufactureYearAndMonth()
@@ -187,7 +169,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             Assert.That(expectedManufactureMonth, Is.EqualTo(Month_));
         }
 
-
         [Test]
         public void TestGetModelName()
         {
@@ -207,9 +188,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             {
                 Assert.That(result2, Is.EqualTo(actualModelName));
             }
-
         }
-
 
         [Test]
         public void TestGetProductCode()
@@ -228,10 +207,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             {
                 Assert.That(result2, Is.EqualTo(actualProductCode));
             }
-
         }
-
-
 
         [Test]
         public void TestGetScreenSize()
@@ -251,7 +227,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             {
                 Assert.That(expectedScreenSize, Is.EqualTo(actualScreenSize));
             }
-
         }
 
         [Test]
@@ -273,9 +248,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             {
                 Assert.That(result2, Is.EqualTo(actualExtensionFlag));
             }
-
         }
-
 
         [Test]
         public void Testint2charByASCII()
@@ -287,6 +260,5 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             string expected = "A";
             Assert.That(expected, Is.EqualTo(result));
         }
-
     }
 }

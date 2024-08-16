@@ -1,23 +1,10 @@
-﻿using Microsoft;
-using System.Threading.Tasks;
-using VcpCore.Common;
-using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using VcpCore.Interfaces;
-using Newtonsoft.Json.Linq;
-using DDPM.SA.Common;
+using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
-using Dell.Client.Framework.Agent;
-using System.IO.Pipes;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
 
 namespace DDPM.SA.Plugins.User.USBKVM
 {
@@ -28,6 +15,7 @@ namespace DDPM.SA.Plugins.User.USBKVM
     public class USBKVMPlugin : BaseAgentPlugin, IUSBKVMService
     {
         #region Private Members
+
         private const string pluginName = "USBKVMPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements USBKVM Plugin.";
@@ -45,25 +33,31 @@ namespace DDPM.SA.Plugins.User.USBKVM
         private Dictionary<string, PCsInfo> _PCsList = new Dictionary<string, PCsInfo>();
         private List<UInt16> _SubInputList = new List<UInt16>();
         //private Dictionary<string, InputInfo> _inputSourcelist = new Dictionary<string, InputInfo>();
-        #endregion
+
+        #endregion Private Members
 
         #region Constructor
+
         public USBKVMPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             PluginCondition = new PluginStartedCondition();
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             InitializeDeviceManagerPlugin();
         }
-        #endregion
+
+        #endregion Overriding methods
 
         #region IUSBKVM implementation
+
         public Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList)
         {
             _PCsList = new Dictionary<string, PCsInfo>();
@@ -97,6 +91,7 @@ namespace DDPM.SA.Plugins.User.USBKVM
 
             return Task.FromResult(_PCsList);
         }
+
         public Task<Dictionary<string, PCsInfo>> PCInfoSwap(Dictionary<string, PCsInfo> pcsList, string swapinput1, string swapinput2)
         {
             PCsInfo pcSwap1 = new PCsInfo();
@@ -110,9 +105,11 @@ namespace DDPM.SA.Plugins.User.USBKVM
 
             return Task.FromResult(pcsList);
         }
-        #endregion
+
+        #endregion IUSBKVM implementation
 
         #region Private Methods
+
         private void InitializeDeviceManagerPlugin()
         {
             if (_DeviceManagerPlugin != null)
@@ -125,10 +122,12 @@ namespace DDPM.SA.Plugins.User.USBKVM
                 GetCurrentDeviceManagerPluginCondition();
             }
         }
+
         private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
         {
             InitializeDeviceManagerPlugin();
         }
+
         private void GetCurrentDeviceManagerPluginCondition()
         {
             _ = Task.Run(async () =>
@@ -141,9 +140,11 @@ namespace DDPM.SA.Plugins.User.USBKVM
                 }
             });
         }
-        #endregion
+
+        #endregion Private Methods
 
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -154,6 +155,7 @@ namespace DDPM.SA.Plugins.User.USBKVM
                 return;
             return;
         }
+
         private void PluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e?.ChangedPlugins == null)
@@ -166,6 +168,7 @@ namespace DDPM.SA.Plugins.User.USBKVM
                 InitializeDeviceManagerPlugin();
             }
         }
-        #endregion
+
+        #endregion Event Handler
     }
 }

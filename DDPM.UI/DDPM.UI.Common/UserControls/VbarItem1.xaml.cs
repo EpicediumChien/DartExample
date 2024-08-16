@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Common.UserControls
@@ -22,15 +12,16 @@ namespace DDPM.UI.Common.UserControls
     public partial class VbarItem1 : UserControl
     {
         #region Ctor
+
         public VbarItem1()
         {
             InitializeComponent();
             //DataContext = this;
         }
-        #endregion
+
+        #endregion Ctor
 
         #region UserControl Content - Text and IconTemplate
-
 
         public int Index
         {
@@ -41,8 +32,6 @@ namespace DDPM.UI.Common.UserControls
         // Using a DependencyProperty as the backing store for Index.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IndexProperty =
             DependencyProperty.Register("Index", typeof(int), typeof(VbarItem1), new PropertyMetadata(0));
-
-
 
         public string Text
         {
@@ -74,7 +63,7 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty IconImageProperty =
             DependencyProperty.Register("IconImage", typeof(ImageSource), typeof(VbarItem1), new PropertyMetadata(null));
 
-        #endregion
+        #endregion UserControl Content - Text and IconTemplate
 
         #region Flags and States
 
@@ -118,7 +107,8 @@ namespace DDPM.UI.Common.UserControls
         // Using a DependencyProperty as the backing store for IsSelected.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(VbarItem1), new PropertyMetadata(false));
-        #endregion
+
+        #endregion Flags and States
 
         #region Events / Commands
 
@@ -135,7 +125,7 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty ClickCommandProperty =
             DependencyProperty.Register("ClickCommand", typeof(ICommand), typeof(VbarItem1));
 
-        #endregion
+        #endregion Events / Commands
 
         #region Internal UI event handlers
 
@@ -202,9 +192,11 @@ namespace DDPM.UI.Common.UserControls
                 ClickCommand.Execute(this);
             }
         }
-        #endregion
+
+        #endregion Internal UI event handlers
 
         #region Test
+
         //Workarround method to fix issue
         // When cursor is hovering on a VBbarItem, the bdOuter.Width=212
         // At this moment, the DDC/CI Off event is received, and DispayPage will
@@ -216,7 +208,8 @@ namespace DDPM.UI.Common.UserControls
         {
             VisualStateManager.GoToState(this, "Default", false);
         }
-        #endregion
+
+        #endregion Test
 
         private void UserControl_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {

@@ -1,14 +1,13 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Dell.Client.Framework.Common;
 
 namespace NGA.Manager.Interfaces;
@@ -27,7 +26,7 @@ public interface INotificationRequest : IFrameworkPlugin
     /// <param name="cancellationToken">cancellation token</param>
     /// <returns>notificationId Task</returns>
     /// <exception cref="NotificationPluginException"></exception>
-    /// <exception cref="OperationCanceledException"></exception> 
+    /// <exception cref="OperationCanceledException"></exception>
     Task<Guid> NewNotificationForAllSidsAsync(Guid pluginId, LocaleBodyParameters localeBodyParameters,
         NotificationDuration notificationDuration, CancellationToken cancellationToken);
 
@@ -41,7 +40,7 @@ public interface INotificationRequest : IFrameworkPlugin
     /// <param name="cancellationToken">cancellation token</param>
     /// <returns>notificationId Task</returns>
     /// <exception cref="NotificationPluginException"></exception>
-    /// <exception cref="OperationCanceledException"></exception> 
+    /// <exception cref="OperationCanceledException"></exception>
     Task<Guid> NewNotificationAsync(Guid pluginId, LocaleBodyParameters localeBodyParameters,
         NotificationDuration notificationDuration, string sid, CancellationToken cancellationToken);
 
@@ -211,7 +210,7 @@ public interface INotificationRequest : IFrameworkPlugin
     /// <exception cref="OperationCanceledException"></exception>
     /// <exception cref="NotificationPluginException"></exception>
     /// <exception cref="OperationCanceledException"></exception>
-    Task UpdateNotificationFromMetaDataForAllSidsAsync(Guid pluginId, Guid notificationId, LocaleUpdateNotificationFromMetaData localeUpdateNotificationFromMetaData, 
+    Task UpdateNotificationFromMetaDataForAllSidsAsync(Guid pluginId, Guid notificationId, LocaleUpdateNotificationFromMetaData localeUpdateNotificationFromMetaData,
         CancellationToken cancellationToken);
 
     /// <summary>

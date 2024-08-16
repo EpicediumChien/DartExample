@@ -1,49 +1,48 @@
 ﻿<UserControl x:Class="DDPM.UI.Module.Kvm.PxpItem"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="68" d:DesignWidth="88"
              Name="root">
     <UserControl.Resources>
-        <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54"/>
-        <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="#02000000"/>
-        <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE"/>
+        <SolidColorBrush x:Key="SplitItem_BkColor" Color="#FF132F54" />
+        <SolidColorBrush x:Key="SplitItem_NormalBdColor" Color="#02000000" />
+        <SolidColorBrush x:Key="SplitItem_SelectedColor" Color="#FF5CC1EE" />
 
         <LinearGradientBrush x:Key="SplitItem_HoverBdColor" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Offset="0" Color="#FF0672CB"/>
-            <GradientStop Offset="0.5" Color="#FF0078D4"/>
-            <GradientStop Offset="1" Color="#FF6E69CF"/>
+            <GradientStop Offset="0" Color="#FF0672CB" />
+            <GradientStop Offset="0.5" Color="#FF0078D4" />
+            <GradientStop Offset="1" Color="#FF6E69CF" />
         </LinearGradientBrush>
 
         <!-- Border Style of Normal State -->
         <Style x:Key="SplitItemBorder_Normal" TargetType="Border">
-            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}"/>
-            <Setter Property="BorderThickness" Value="4"/>
-            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}" />
+            <Setter Property="BorderThickness" Value="4" />
+            <Setter Property="Padding" Value="0" />
         </Style>
 
         <!-- Border Style of Hover State -->
         <Style x:Key="SplitItemBorder_Hover" TargetType="Border">
-            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}"/>
-            <Setter Property="BorderThickness" Value="4"/>
-            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+            <Setter Property="BorderThickness" Value="4" />
+            <Setter Property="Padding" Value="0" />
         </Style>
 
         <!-- Border Style of Selected State -->
         <Style x:Key="SplitItemBorder_Selected" TargetType="Border">
-            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedColor}"/>
-            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedColor}" />
+            <Setter Property="BorderThickness" Value="1.5" />
         </Style>
-
     </UserControl.Resources>
-    
+
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal"/>
+                <VisualState x:Name="Normal" />
                 <VisualState x:Name="Hover">
                 </VisualState>
             </VisualStateGroup>
@@ -53,34 +52,33 @@
             <Border Name="bdSplitItem" CornerRadius="6">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}"/>
-                        <Setter Property="BorderThickness" Value="4"/>
-                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource SplitItem_NormalBdColor}" />
+                        <Setter Property="BorderThickness" Value="4" />
+                        <Setter Property="Padding" Value="0" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ElementName=root, Path=IsSelected}" Value="True">
-                                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedColor}"/>
-                                <Setter Property="BorderThickness" Value="1.5"/>
-                                <Setter Property="Padding" Value="2.5"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedColor}" />
+                                <Setter Property="BorderThickness" Value="1.5" />
+                                <Setter Property="Padding" Value="2.5" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
 
                 <ContentControl Content="{Binding InnerContent, ElementName=root}" />
-
             </Border>
         </Border>
-        
+
         <Border Name="bdHover" Width="88" Height="68" CornerRadius="6">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}"/>
-                    <Setter Property="BorderThickness" Value="4"/>
-                    <Setter Property="Padding" Value="0"/>
-                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+                    <Setter Property="BorderThickness" Value="4" />
+                    <Setter Property="Padding" Value="0" />
+                    <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding ElementName=root, Path=IsMouseOver}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
