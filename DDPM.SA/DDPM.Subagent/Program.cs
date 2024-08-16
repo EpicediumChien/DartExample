@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Agent;
 using Dell.UnifiedAgent.Common;
+using DDPM.Common;
 
 namespace DDPM.Subagent
 {
@@ -60,10 +61,14 @@ namespace DDPM.Subagent
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_MUTEX_ID);
 
 #if RELEASE
-        private static byte[][] certificateHash = { IDs.WST_Hash };
+        private static byte[][] certificateHash = {
+            ThumbprintHash.DELL_Hash,
+            ThumbprintHash.DELL_Hash1,
+            ThumbprintHash.DELL_Hash2,
+            ThumbprintHash.WST_Hash,
+            ThumbprintHash.WST2_Hash
+        };
 #endif
-
-
         private static void Main(string[] args)
         {
             //#if DEBUG
