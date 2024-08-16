@@ -199,3 +199,6 @@ testcoverage/
 *.coveragexml
 /CLI.Subagent/CLI - Backup.Subagent.csproj
 /_BIN
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
+/DDPM.UI/CommonDll/DDPM.ShowOsd.deps.json
+/DDPM.UI/CommonDll/VcpCore.Interfaces.deps.json
