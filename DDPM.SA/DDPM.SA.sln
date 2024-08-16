@@ -502,7 +502,7 @@ Global
 		{04E4BA4C-4778-427E-93B7-9E5EB61897A0}.Release|ARM64.ActiveCfg = Release|Any CPU
 		{04E4BA4C-4778-427E-93B7-9E5EB61897A0}.Release|ARM64.Build.0 = Release|Any CPU
 		{04E4BA4C-4778-427E-93B7-9E5EB61897A0}.Release|x64.ActiveCfg = Release|Any CPU
-		{04E4BA4C-4778-427E-93B7-9E5EB61897A0}.Release|x64.Build.0 = Release|Any CPU		
+		{04E4BA4C-4778-427E-93B7-9E5EB61897A0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
