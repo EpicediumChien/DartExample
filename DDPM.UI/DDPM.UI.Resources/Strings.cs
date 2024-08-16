@@ -347,7 +347,9 @@ namespace DDPM.UI.Common {
     public static readonly string PairTile3 = "Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.";
     public static readonly string DownloadTile = "Download tile";
 
-    // add device
+    #region [2]
+    //please do not insert any code to region [2]
+    // add device 
     public static readonly string AddDevice = GetString("AddDevice");
     public static readonly string AddDevice_Display = GetString("AddDevice.Display");
     public static readonly string AddDevice_Webcam = GetString("AddDevice.Webcam");
@@ -364,5 +366,9 @@ namespace DDPM.UI.Common {
     public static readonly string AddDeviceMsgWaitingCap = GetString("AddDevice.Msg.WaitingCap");
     public static readonly string AddDeviceMsgWaitingMsg = GetString("AddDevice.Msg.WaitingMsg");
     public static readonly string AddDeviceMsgWaitingAlert = GetString("AddDevice.Msg.WaitingAlert");
-  }
+    public static readonly string AddDeviceKnMmultiDongleAlert = GetString("AddDevice.KnM.10");
+    public static readonly string AddDeviceKnMnoDongleAlertKnM = GetString("AddDevice.KnM.11");
+    public static readonly string AddDeviceKnMnoDongleAlertHeadset = GetString("AddDevice.KnM.12");
+    #endregion
+    }
 }

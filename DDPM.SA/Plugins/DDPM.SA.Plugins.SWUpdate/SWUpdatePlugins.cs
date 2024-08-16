@@ -128,10 +128,14 @@ namespace DDPM.SA.Plugins.SWUpdate
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
                 if (registryKey != null)
                 {
-                    string obj = registryKey?.GetValue("TestServerURL").ToString();
-                    if (!string.IsNullOrEmpty(obj))
+                    var obj = registryKey?.GetValue("TestServerURL");
+                    if (obj != null)
                     {
-                        URL = obj + TestURL_Folder;
+                        string s = obj.ToString();
+                        if (!string.IsNullOrEmpty(s))
+                        {
+                            URL = obj + TestURL_Folder;
+                        }
                     }
                 }
             }

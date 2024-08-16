@@ -7,6 +7,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              mc:Ignorable="d"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:AddDeviceViewModel}"
              d:DesignHeight="527" d:DesignWidth="958" VerticalAlignment="Top" HorizontalAlignment="Left">
     <UserControl.Resources>
@@ -62,7 +63,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                         <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                             <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                            <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" />
+                            <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" Text="{Binding [AddDevice.KnM.6], Source={x:Static lang:LangHelper.Instance}}"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -71,8 +72,8 @@
                         <Image Margin="14,14" Source="/DDPM.UI.Resources;component/Resources/Images/PowerOn.png" Stretch="Uniform"
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                         <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                            <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                            <UXControls:UXTextBlock Name="txtStep2" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" />
+                            <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}"/>
+                            <UXControls:UXTextBlock Name="txtStep2" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" Text="{Binding [AddDevice.KnM.7], Source={x:Static lang:LangHelper.Instance}}"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -82,7 +83,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                         <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                             <UXControls:UXTextBlock Text="3." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                            <UXControls:UXTextBlock Name="txtStep3" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" />
+                            <UXControls:UXTextBlock Name="txtStep3" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" Text="{Binding [AddDevice.KnM.8], Source={x:Static lang:LangHelper.Instance}}"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -92,7 +93,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                         <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                             <UXControls:UXTextBlock Text="4." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                            <UXControls:UXTextBlock Name="txtStep4" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" />
+                            <UXControls:UXTextBlock Name="txtStep4" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="168" Text="{Binding [AddDevice.KnM.9], Source={x:Static lang:LangHelper.Instance}}"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>

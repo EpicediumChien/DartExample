@@ -205,7 +205,10 @@
       },
       "DDPM.Win32Lib/2.0.0.5": {
         "runtime": {
-          "DDPM.Win32Lib.dll": {}
+          "DDPM.Win32Lib.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "VcpCore.Common/2.0.0.5": {
@@ -213,7 +216,10 @@
           "DellClientFramework": "6.4.5.1"
         },
         "runtime": {
-          "VcpCore.Common.dll": {}
+          "VcpCore.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       }
     }

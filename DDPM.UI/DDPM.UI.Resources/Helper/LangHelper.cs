@@ -34,7 +34,7 @@ namespace DDPM.UI.Resources.Helper
                 }
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
                 string str = _resourceManager.GetString(name, CultureInfo.InstalledUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
-                return str;
+                return System.Text.RegularExpressions.Regex.Unescape(str);
             }
         }
 
