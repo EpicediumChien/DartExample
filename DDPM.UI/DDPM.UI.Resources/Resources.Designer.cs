@@ -565,6 +565,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} slots available.
+        /// </summary>
+        internal static string Dock_0 {
+            get {
+                return ResourceManager.GetString("Dock.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dongle {0}.
+        /// </summary>
+        internal static string Dock_1 {
+            get {
+                return ResourceManager.GetString("Dock.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Easy Arrange.
         /// </summary>
         internal static string EasyArrange {
@@ -601,11 +619,92 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio Settings.
+        /// </summary>
+        internal static string Headset_0 {
+            get {
+                return ResourceManager.GetString("Headset.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automated Actions.
+        /// </summary>
+        internal static string Headset_1 {
+            get {
+                return ResourceManager.GetString("Headset.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Settings.
+        /// </summary>
+        internal static string Headset_2 {
+            get {
+                return ResourceManager.GetString("Headset.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait....
+        /// </summary>
+        internal static string HomePage_0 {
+            get {
+                return ResourceManager.GetString("HomePage.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input Source.
         /// </summary>
         internal static string InputSource {
             get {
                 return ResourceManager.GetString("InputSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no advanced features on this device.
+        /// </summary>
+        internal static string Keyboard_0 {
+            get {
+                return ResourceManager.GetString("Keyboard.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USB Wireless Receiver.
+        /// </summary>
+        internal static string Keyboard_1 {
+            get {
+                return ResourceManager.GetString("Keyboard.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Customization.
+        /// </summary>
+        internal static string Keyboard_2 {
+            get {
+                return ResourceManager.GetString("Keyboard.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collaboration.
+        /// </summary>
+        internal static string Keyboard_3 {
+            get {
+                return ResourceManager.GetString("Keyboard.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illumination.
+        /// </summary>
+        internal static string Keyboard_4 {
+            get {
+                return ResourceManager.GetString("Keyboard.4", resourceCulture);
             }
         }
         
@@ -633,6 +732,60 @@ namespace DDPM.UI.Resources {
         internal static string ManufactureMonth {
             get {
                 return ResourceManager.GetString("ManufactureMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign actions for.
+        /// </summary>
+        internal static string Mouse_0 {
+            get {
+                return ResourceManager.GetString("Mouse.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Applications.
+        /// </summary>
+        internal static string Mouse_1 {
+            get {
+                return ResourceManager.GetString("Mouse.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft Word.
+        /// </summary>
+        internal static string Mouse_2 {
+            get {
+                return ResourceManager.GetString("Mouse.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft Excel.
+        /// </summary>
+        internal static string Mouse_3 {
+            get {
+                return ResourceManager.GetString("Mouse.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft PowerPoint.
+        /// </summary>
+        internal static string Mouse_4 {
+            get {
+                return ResourceManager.GetString("Mouse.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft Outlook.
+        /// </summary>
+        internal static string Mouse_5 {
+            get {
+                return ResourceManager.GetString("Mouse.5", resourceCulture);
             }
         }
         
@@ -696,6 +849,15 @@ namespace DDPM.UI.Resources {
         internal static string Unpair {
             get {
                 return ResourceManager.GetString("Unpair", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Firmware.
+        /// </summary>
+        internal static string UpdateFirmware {
+            get {
+                return ResourceManager.GetString("UpdateFirmware", resourceCulture);
             }
         }
         
