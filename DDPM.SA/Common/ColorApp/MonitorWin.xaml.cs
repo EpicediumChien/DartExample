@@ -1,26 +1,11 @@
-﻿using Microsoft.WindowsAPICodePack.PortableDevices.ResourceSystem;
+﻿using DDPM.SA.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using WinCopies.Util;
-using Windows.Security.ExchangeActiveSyncProvisioning;
-using DDPM.SA.Common;
 using VcpCore.Common;
 
 namespace DDPM.ColorApp
@@ -41,11 +26,12 @@ namespace DDPM.ColorApp
         private bool b_AUTO_ColorPresetConfig = true;//Dean 0626 fix SAST issue, remove static as recommend and set as private
 
         #region data region
+
         private List<AppCollectionData> _apps = new List<AppCollectionData>();
         private AppStatusQuery? appStatus = null;//Dean 0626 fix SAST issue, remove static as recommend
-        private List<ColorPresetSettings>? appconfigs = null; 
+        private List<ColorPresetSettings>? appconfigs = null;
 
-        #endregion
+        #endregion data region
 
         public MonitorWin(IDeviceManagerSA _ddmLib, MonitorInfo m)
         {
@@ -57,7 +43,7 @@ namespace DDPM.ColorApp
             Mi = m;
             this.WindowStyle = WindowStyle.None;
             AllowsTransparency = true;
-            Opacity = 0.0f;            
+            Opacity = 0.0f;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -113,13 +99,11 @@ namespace DDPM.ColorApp
             if (data.Count <= 0)
                 return apps;
 
-
             foreach (var item in data)
             {
                 InstalledAppInfo app = item.Value;
                 if (app != null)
                 {
-
                     //InstalledAppInfo app = item.Value;
                     apps.Add(new AppCollectionData()
                     {
@@ -184,7 +168,6 @@ namespace DDPM.ColorApp
             Console.WriteLine(text);
         }
 
-
         private void EventAppStatus_SendValue(object? sender, EventArgs e)
         {
             if (b_AUTO_ColorPresetConfig)
@@ -206,7 +189,6 @@ namespace DDPM.ColorApp
                         return;
                 }
 
-
                 if (sender != null)
                 {
                     //Get window data from active window's event
@@ -221,8 +203,7 @@ namespace DDPM.ColorApp
                     writelog("EventAppStatus_SendValue ActiveWindowProcessModuleName = " + data.ActiveWindowProcessModuleName);
                     writelog("EventAppStatus_SendValue ActiveWindowFilePath = " + data.ActiveWindowFilePath);
 
-
-                    //Get actived Monitor from actived window            
+                    //Get actived Monitor from actived window
                     screen = Screen.FromHandle(data.ActiveWindowHandle);
 
                     MonitorInfo actived_mi = Mi;
@@ -283,7 +264,7 @@ namespace DDPM.ColorApp
                     appconfigs = ddmLib.ReadColorPresetSettings().Result;
 
                     //Trace.WriteLine("appconfigs.Count = " + appconfigs.Count.ToString());
-            
+
                     foreach (var config in appconfigs)
                     {
                         if (config.AppInfo == null || config.AppInfo.Count <= 0)
@@ -311,7 +292,6 @@ namespace DDPM.ColorApp
 
                                 if (!reqAppName.Contains(item_appname,StringComparison.OrdinalIgnoreCase))
                                 {
-
                                     if (isDesktop)
                                     {
                                         if (config.AppInfo.ContainsKey("Desktop Application"))
@@ -336,7 +316,6 @@ namespace DDPM.ColorApp
                                             continue;
                                         }
                                     }
-
                                 }
                                 else
                                 {
@@ -345,12 +324,10 @@ namespace DDPM.ColorApp
                                     //Trace.WriteLine("reqKey (ColorPresetName) = " + reqKey);
                                     break;
                                 }
-
                             }*/
-                      
+
                             if (!config.AppInfo.ContainsKey(reqAppName))
                             {
-
                                 if (isDesktop)
                                 {
                                     if (config.AppInfo.ContainsKey("Desktop Application"))
@@ -379,7 +356,6 @@ namespace DDPM.ColorApp
                                 reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
                                 writelog("reqKey = " + reqKey);
                             }
-                            
 
                             if (string.IsNullOrEmpty(reqKey))
                             {
@@ -387,7 +363,6 @@ namespace DDPM.ColorApp
                                 //Trace.WriteLine("reqKey is string.IsNullOrEmpty");
                                 return;
                             }
-
 
                             if (!Pre_reqKey.Equals(reqKey))
                             {
@@ -406,7 +381,7 @@ namespace DDPM.ColorApp
                             }
                         }
                     }
-                    
+
                     //if (string.IsNullOrEmpty(tmp))
                     //{
                     //    tbColorPreset.Text = "NA";
@@ -434,6 +409,5 @@ namespace DDPM.ColorApp
 
             return true;
         }
-
     }
 }

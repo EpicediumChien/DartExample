@@ -1,13 +1,9 @@
 ﻿namespace DDPM.SA.Plugins.User.FWUpdate
 {
     using DDPM.SA.Common.Security;
-    using Dell.Client.Framework.Security;
-    using Dell.RPC.Transport;
     using System;
     using System.Collections.Generic;
     using System.IO.Pipes;
-    using System.Security.AccessControl;
-    using System.Security.Principal;
     using System.Text;
 
     public class NamedPipeStreamServer : NamedPipeStreamBase
@@ -15,6 +11,7 @@
         private List<NamedPipeStreamConnection> _Connections;
 
         public event EventHandler? ClientConnectedEvent;
+
         public event EventHandler? ClientDisconnectedEvent;
 
         public NamedPipeStreamServer(string pipeName) : base(pipeName)
@@ -47,6 +44,7 @@
                 state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
             }
         }
+
         private void Connection_DisconnectedEvent(object? sender, EventArgs e)
         {
             ClientDisconnectedEvent?.Invoke(this, e);
@@ -84,6 +82,7 @@
         {
             SendMessage(Encoding.UTF8.GetBytes(message));
         }
+
         public override void SendMessage(byte[] message)
         {
             List<NamedPipeStreamConnection>? list = null;

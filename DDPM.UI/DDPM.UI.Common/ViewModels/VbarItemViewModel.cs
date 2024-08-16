@@ -1,9 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -12,6 +7,7 @@ namespace DDPM.UI.Common
     public class VbarItemViewModel : ObservableObject
     {
         private int _id;
+
         public int Id
         {
             get => _id;
@@ -22,6 +18,7 @@ namespace DDPM.UI.Common
         }
 
         private ImageSource? _icon;
+
         public ImageSource? Icon
         {
             get => _icon;
@@ -33,6 +30,7 @@ namespace DDPM.UI.Common
         }
 
         private string _text = "";
+
         public string Text
         {
             get => _text;
@@ -44,6 +42,7 @@ namespace DDPM.UI.Common
         }
 
         #region Commands
+
         private ICommand? _itemClickCommand;
 
         /// <summary>
@@ -54,24 +53,31 @@ namespace DDPM.UI.Common
             get => _itemClickCommand;
             set => SetProperty(ref _itemClickCommand, value);
         }
-        #endregion
+
+        #endregion Commands
 
         #region IsLandingMode
+
         private bool _isLandingMode = true;
+
         public bool IsLandingMode
         {
             get => _isLandingMode;
             set => SetProperty(ref _isLandingMode, value);
         }
-        #endregion
+
+        #endregion IsLandingMode
 
         #region State
+
         private bool _isSelected = false;
+
         public bool IsSelected
         {
             get => _isSelected;
             set => SetProperty(ref _isSelected, value);
         }
-        #endregion
+
+        #endregion State
     }
 }

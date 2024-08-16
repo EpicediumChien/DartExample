@@ -1,20 +1,8 @@
 ﻿using DDPM.UI.Common;
-using DDPM.SA.Common;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.UI.Module.InputSource
 {
@@ -26,8 +14,9 @@ namespace DDPM.UI.Module.InputSource
         public InputSourceRightView(InputSourceViewModel vm)
         {
             InitializeComponent();
-            DataContext=vm;
+            DataContext = vm;
         }
+
         private void UXComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cb = sender as ComboBox;
@@ -46,6 +35,7 @@ namespace DDPM.UI.Module.InputSource
             bool b = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(vm.InputSourceModule.SelectedHomeDevice.MonitorInfo, vm.inputList).Result;
         }
     }
+
     public class Item
     {
         public int Index { get; set; }

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Windows;
+﻿using DDPM.UI.Plugin.ViewModels;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using DDPM.UI.Common;
-using DDPM.UI.Plugin.Common;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
-using DDPM.UI.Common.Interfaces;
 
 namespace DDPM.UI.Module.SpeakerInteractions
 {

@@ -1,36 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDPM.SA.Common;
-using DDPM.SA.Plugins.User.DisplayManager;
-using DDPM.SA.Plugins.User.PipPbpManger;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Interfaces;
-using Dell.Client.Framework.UnitTestShared.Tests;
-using Moq;
-using System.Data;
-using System.Threading;
+﻿using System.Collections;
 using VcpCore.Common;
-using VcpCore.Interfaces;
-using VcpCore.Plugins;
-using WinCopies;
-using Windows.Media.AppBroadcasting;
-using Windows.UI.ViewManagement;
-using static VcpCore.Common.User32;
-using DDPM.SA.Plugins.User.DisplayProperties;
-using MS.WindowsAPICodePack.Internal;
-using System;
-using System.Windows.Documents;
-using System.Collections;
-using NUnit.Framework;
-using Dell.Client.Framework.Agent;
-using System.Windows.Input;
-using System.Windows.Forms;
-using ABI.System;
-using System.Security.Cryptography.Xml;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 {
@@ -40,8 +9,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 
         public class TestNoSroHashTable
         {
-
-           //NoSroHashTable HashTable = new NoSroHashTable();
+            //NoSroHashTable HashTable = new NoSroHashTable();
 
             [Test]
             public void TestAddKeys()
@@ -53,6 +21,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 Assert.That(value1, Is.EqualTo(HashTable[key1]));
                 Assert.Contains(key1, (ICollection)HashTable.Keys);
             }
+
             [Test]
             public void TestClearKey()
             {
@@ -64,7 +33,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 Assert.That(0, Is.EqualTo(((ICollection)HashTable.Keys).Count));
             }
 
-
             [Test]
             public void TestRemovekey()
             {
@@ -74,23 +42,21 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 HashTable.Remove(key1);
                 Assert.That(0, Is.EqualTo(HashTable.Count));
                 Assert.IsFalse(HashTable.ContainsKey(key1));
-
             }
         }
+
         public class DDMiMessagingMsgTest
         {
             [Test]
             public void TestDDMiMessagingMsg()
             {
-                var OpType= "Type1";
-                var message= "This is a message1";
+                var OpType = "Type1";
+                var message = "This is a message1";
                 DDMiMessagingMsg dDMiMessagingMsg = new DDMiMessagingMsg(OpType, message);
                 Assert.That(OpType, Is.EqualTo(dDMiMessagingMsg.OpType));
                 Assert.That(message, Is.EqualTo(dDMiMessagingMsg.message));
-
             }
         }
-
 
         public class SendNameMsgTest
         {
@@ -104,7 +70,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 Assert.That(sender, Is.EqualTo(sedmsg.sender));
                 Assert.That(op, Is.EqualTo(sedmsg.OpType));
                 Assert.That(message, Is.EqualTo(sedmsg.message));
-
             }
         }
 
@@ -117,15 +82,13 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 string op = "Type3";
                 string message = "Message3";
                 EDID monitoredid = new EDID() { Edid = "A123456" };
-                PipeNameMsg pipeNameMsg=new PipeNameMsg(sender, op, message, monitoredid);
+                PipeNameMsg pipeNameMsg = new PipeNameMsg(sender, op, message, monitoredid);
                 Assert.That(monitoredid, Is.EqualTo(pipeNameMsg.MonitorEDID));
                 Assert.That(sender, Is.EqualTo(pipeNameMsg.sender));
                 Assert.That(op, Is.EqualTo(pipeNameMsg.OpType));
                 Assert.That(message, Is.EqualTo(pipeNameMsg.message));
-
             }
         }
-
 
         public class DDMBorkerMsgTest
         {
@@ -141,7 +104,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 Assert.That(sender, Is.EqualTo(dDMBorkerMsg.sender));
                 Assert.That(op, Is.EqualTo(dDMBorkerMsg.OpType));
                 Assert.That(message, Is.EqualTo(dDMBorkerMsg.message));
-
             }
 
             [Test]

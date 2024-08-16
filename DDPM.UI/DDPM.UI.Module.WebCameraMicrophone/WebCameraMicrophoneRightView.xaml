@@ -1,20 +1,20 @@
 ﻿<UserControl x:Class="DDPM.UI.Module.WebCameraMicrophone.WebCameraMicrophoneRightView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Module.WebCameraMicrophone"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
-             d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}" 
+             d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="675" d:DesignWidth="554" VerticalAlignment="Top" HorizontalAlignment="Left">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml"/>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--<PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />-->
             <PluginCommon:ThicknessConverter x:Key="MarginConverter" />
@@ -54,7 +54,7 @@
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
-                                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Microphone}" ContentTextVisibility="True" Content="{Binding Path=MicrophoneStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White"/>
+                                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Microphone}" ContentTextVisibility="True" Content="{Binding Path=MicrophoneStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
                                 </StackPanel>
                             </Grid>
                         </Border>

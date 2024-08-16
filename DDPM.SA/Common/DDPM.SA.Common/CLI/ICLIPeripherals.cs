@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using DDPM.SA.Common;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Interfaces;
-using WinCopies.Util.Commands.Primitives;
-using WinCopies;
 
 namespace DDPM.SA.Common
 {
@@ -25,6 +18,7 @@ namespace DDPM.SA.Common
         public string Value { get; set; } = "";
         public string Result { get; set; } = "";
         public string Message { get; set; } = "";
+
         public CLI_PeripheralRESPONSE(string id, string command, string targetFeature, string result = "", string message = "", string name = "", string model = "")
         {
             Guid = id;
@@ -58,7 +52,6 @@ namespace DDPM.SA.Common
                         Value = prop.GetValue(di)?.ToString() ?? "";
                     }
                 }
-
             }
             else
             {
@@ -103,8 +96,10 @@ namespace DDPM.SA.Common
                 }
             }
         }
+
         //internal static List<string> KeyboardProperties;//Dean 0626 SAST issue
     }
+
     internal static class Property
     {
         internal static readonly List<string> Keyboard = new()//Dean 0626 SAST issue

@@ -1,12 +1,9 @@
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
-using Windows.Media.Capture;
-using Windows.Media.Devices;
+using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace DDPM.UI.Module.WebCameraSettings
 {
@@ -22,11 +19,9 @@ namespace DDPM.UI.Module.WebCameraSettings
         {
             _rightView = new WebCameraSettingsRightView(vm);
 
-
             // 20240628 jim add
-            _vm = vm;          
-
-        }        
+            _vm = vm;
+        }
 
         public string ModuleName { get => "WebCameraSettingsModule"; }
 
@@ -38,25 +33,28 @@ namespace DDPM.UI.Module.WebCameraSettings
         public UserControl GetRightView()
         {
             return _rightView;
-        }        
-
+        }
 
         public HomeDevice SelectedHomeDevice { get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
         }
+
         public void OnActivated()
         {
             Trace.WriteLine("BrightnessModule.OnActivated");
         }
+
         public void OnDeactivated()
         {
             Trace.WriteLine("BrightnessModule.OnDeactivated");
         }
-        #endregion
+
+        #endregion Event Handlers
     }
 }

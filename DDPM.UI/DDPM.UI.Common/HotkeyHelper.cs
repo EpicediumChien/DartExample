@@ -1,20 +1,16 @@
 ﻿using DDPM.SA.Common.Display;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Windows.System;
 
 namespace DDPM.UI.Common
 {
     public static class BlockKeys
     {
-        static  List<VirtualKey> blockKeysList ;
+        private static List<VirtualKey> blockKeysList;
 
         static BlockKeys()
         {
-            blockKeysList = new List<VirtualKey>() ;
+            blockKeysList = new List<VirtualKey>();
             blockKeysList.Add(VirtualKey.Escape);
             blockKeysList.Add(VirtualKey.Tab);
             blockKeysList.Add(VirtualKey.CapitalLock);
@@ -32,18 +28,16 @@ namespace DDPM.UI.Common
 
         public static bool isBlocked(VirtualKey key)
         {
-          return  blockKeysList.Contains(key) ;
+            return blockKeysList.Contains(key);
         }
-
     }
 
     public static class KeysHelper
     {
         public static bool ContainsKeyIgnoreLeftRight(List<VirtualKey> list, VirtualKey key)
         {
-
-            if(key == VirtualKey.LeftShift || key == VirtualKey.RightShift) { 
-            
+            if (key == VirtualKey.LeftShift || key == VirtualKey.RightShift)
+            {
             }
             return true;
         }
@@ -54,24 +48,34 @@ namespace DDPM.UI.Common
             {
                 case HotkeyType.BrightnessReduce:
                     return "Brightness-";
+
                 case HotkeyType.BrightnessIncrease:
                     return "Brightness+";
+
                 case HotkeyType.ContrastReduce:
                     return "Contrast-";
+
                 case HotkeyType.ContrastIncrease:
                     return "Contrast+";
+
                 case HotkeyType.LuminanceReduce:
                     return "Luminance-";
+
                 case HotkeyType.LuminanceIncrease:
                     return "Luminance+";
+
                 case HotkeyType.ToggleInputSource:
                     return "ToggleInputSource";
+
                 case HotkeyType.FavoriteInputSource:
                     return "FavoriteInputSource";
+
                 case HotkeyType.SwitchInputSource:
                     return "SwitchInputSource";
+
                 case HotkeyType.SwapIputPIPPBP:
                     return "SwapIputPIPPBP";
+
                 case HotkeyType.ChangePIPPosition:
                     return "ChangePIPPosition";
             }
@@ -84,13 +88,14 @@ namespace DDPM.UI.Common
             bool result = false;
             switch (hotkeyWarning)
             {
-
                 case HotkeyWarning.None:
                     result = true;
                     break;
+
                 case HotkeyWarning.SingleKey:
                     result = DdpmCommonHelper.DDPMMesssageBox("Hotkey Warning", "The hotkey you configured is a single key.It may interfere with how you intend that key to work in other applications.Are you sure you want to proceed?");
                     break;
+
                 case HotkeyWarning.ConflictInbox:
                     result = DdpmCommonHelper.DDPMMesssageBox("Hotkey Warning", "The hotkey conflicts with a hotkey configured in another application.Use a different hotkey combination.");
                     break;
@@ -104,7 +109,7 @@ namespace DDPM.UI.Common
 
             //tbGlobalShortCut.Text
             strShortCutText = strTmpKey;
-            if (newHotKeys.Count == 0) 
+            if (newHotKeys.Count == 0)
             {
                 strShortCutText = "None";
                 return;
@@ -119,8 +124,6 @@ namespace DDPM.UI.Common
             int ShiftIndex = newHotKeys.IndexOf(VirtualKey.Shift);
             int ShiftIndexLeft = newHotKeys.IndexOf(VirtualKey.LeftShift);
 
-
-
             if ((ControlIndex >= 0) || (ControlIndexLeft >= 0))
                 strTmpKey += "Ctrl +";
 
@@ -129,7 +132,6 @@ namespace DDPM.UI.Common
 
             if ((ShiftIndex >= 0) || (ShiftIndexLeft >= 0))
                 strTmpKey += "Shift +";
-
 
             //tbGlobalShortCut.Text
             strShortCutText = strTmpKey;
@@ -151,6 +153,7 @@ namespace DDPM.UI.Common
 
             strShortCutText = strTmpKey;
         }
+
         private static string VirtualKeyToString(VirtualKey vk)
         {
             string strRetKey = string.Empty;
@@ -162,30 +165,39 @@ namespace DDPM.UI.Common
                     case VirtualKey.Number0:
                         strRetKey = "0";
                         break;
+
                     case VirtualKey.Number1:
                         strRetKey = "1";
                         break;
+
                     case VirtualKey.Number2:
                         strRetKey = "2";
                         break;
+
                     case VirtualKey.Number3:
                         strRetKey = "3";
                         break;
+
                     case VirtualKey.Number4:
                         strRetKey = "4";
                         break;
+
                     case VirtualKey.Number5:
                         strRetKey = "5";
                         break;
+
                     case VirtualKey.Number6:
                         strRetKey = "6";
                         break;
+
                     case VirtualKey.Number7:
                         strRetKey = "7";
                         break;
+
                     case VirtualKey.Number8:
                         strRetKey = "8";
                         break;
+
                     case VirtualKey.Number9:
                         strRetKey = "9";
                         break;
@@ -193,7 +205,6 @@ namespace DDPM.UI.Common
             }
             else
             {
-
                 strRetKey = vk.ToString();
                 if (FullWidthCharactersHandler.isHalfWidthString(strRetKey))
                 {
@@ -201,14 +212,14 @@ namespace DDPM.UI.Common
                 }
             }
 
-
             return strRetKey;
         }
     }
 
     public static class FullWidthCharactersHandler
     {
-        static Dictionary<char, char> fullWidth2halfWidthDic;
+        private static Dictionary<char, char> fullWidth2halfWidthDic;
+
         static FullWidthCharactersHandler()
         {
             fullWidth2halfWidthDic = new Dictionary<char, char>();
@@ -246,7 +257,5 @@ namespace DDPM.UI.Common
             }
             return sbResult.ToString();
         }
-
-
     }
 }

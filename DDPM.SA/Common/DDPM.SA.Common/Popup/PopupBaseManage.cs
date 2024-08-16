@@ -1,25 +1,24 @@
-﻿using Dell.Client.Framework.UX.WPF.Dialogs.WPF;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace DDPM.SA.Common.Popup
 {
     public class PopupBaseManage
     {
-        static private List<PopupBase>? _notificationWindows;
+        private static List<PopupBase>? _notificationWindows;
         private const double NotificationHeight = 252;
         private const double NotificationWidth = 417;
         private const double NotificationSpacing = 10;
+
         public event EventHandler<object> LeftButtonClick;
+
         public event EventHandler<object> RightButtonClick;
+
         public event EventHandler<object> Default_Event;
+
         public PopupBaseManage()
         {
             if (_notificationWindows == null)
@@ -27,8 +26,9 @@ namespace DDPM.SA.Common.Popup
                 _notificationWindows = new List<PopupBase>();
             }
         }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="title"></param>
         /// <param name="info"></param>

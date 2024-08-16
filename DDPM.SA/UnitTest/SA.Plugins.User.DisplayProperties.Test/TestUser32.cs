@@ -1,24 +1,11 @@
-﻿using DDPM.SA.Common;
-using DDPM.SA.Plugins.User.DisplayManager;
-using DDPM.SA.Plugins.User.PipPbpManger;
-using Dell.Client.Framework.Interfaces;
-using Dell.Client.Framework.UnitTestShared.Tests;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Common;
-using VcpCore.Interfaces;
-using VcpCore.Plugins;
+﻿using VcpCore.Common;
 using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 {
     public class TestUser32
     {
-        MonitorInfo monitorInfo1 = new MonitorInfo()
+        private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
             IsDellMonitor = true,
@@ -54,7 +41,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             int result = ChangeDisplaySettingsEx(monitorInfoname, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
             Assert.IsNotNull(result);
             // Assert.That(expectresult, Is.EqualTo(result)); 需要用真实get的monitor才可以跑pass
-
         }
 
         [Test]
@@ -66,8 +52,5 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             Assert.IsNotNull(result);
             Assert.That(expectedMessage.Trim(new char[] { '\r', '\n' }), Is.EqualTo(result));
         }
-
-
-
     }
 }

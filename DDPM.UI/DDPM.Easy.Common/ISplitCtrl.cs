@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
@@ -15,6 +10,7 @@ namespace DDPM.Easy.Common
     public interface ISplitCtrl
     {
         #region Collection of support SplitCtrl classes
+
         //All support class of EasyArrange
         public static List<ISplitCtrl> Splits_EA = new List<ISplitCtrl>()
         {
@@ -32,9 +28,11 @@ namespace DDPM.Easy.Common
 
             new SplitCtrl0A()
         };
-        #endregion
+
+        #endregion Collection of support SplitCtrl classes
 
         #region Native members - value not be changed once created
+
         /// <summary>
         /// It's used to identify the instance is implement in what class
         /// For example, in SplitCtrl2B this propery will be =nameof(SplitCtrl2B)
@@ -59,19 +57,23 @@ namespace DDPM.Easy.Common
         public UserControl UC { get; }
 
         public string FriendlyName { get; set; }
-        #endregion
+
+        #endregion Native members - value not be changed once created
 
         #region ViewModel
-        public SplitCtrlVM VM { get; }
-        #endregion
 
+        public SplitCtrlVM VM { get; }
+
+        #endregion ViewModel
 
         #region Create a new instance
+
         /// <summary>
         /// It's used to create an instance.
         /// </summary>
         /// <returns></returns>
         public abstract ISplitCtrl New();
+
         public static ISplitCtrl? Create(int cellCount, char splitKey)
         {
             ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
@@ -79,9 +81,11 @@ namespace DDPM.Easy.Common
                 return null;
             return iSplit.New();
         }
-        #endregion
+
+        #endregion Create a new instance
 
         #region Working mode
+
         public eSplitModes SplitMode
         {
             get => VM.SplitMode;
@@ -90,34 +94,42 @@ namespace DDPM.Easy.Common
                 VM.SplitMode = value;
             }
         }
-        #endregion
+
+        #endregion Working mode
 
         #region IsEditable
+
         public bool IsEditable
         {
             get => VM.IsEditable;
             set { VM.IsEditable = value; }
         }
-        #endregion
+
+        #endregion IsEditable
 
         #region HoveringCell
-        public string HoveringCell 
-        { 
-            get => VM.HoveringCell; 
+
+        public string HoveringCell
+        {
+            get => VM.HoveringCell;
             set => VM.HoveringCell = value;
         }
-        #endregion
+
+        #endregion HoveringCell
 
         #region Cell list
+
         /// <summary>
         /// SplitCtrl will get the cells from UI, and store in CellList.
-        /// EAWindow need them to update te coordinates (Rect) of cells to check if current inside a cell, 
+        /// EAWindow need them to update te coordinates (Rect) of cells to check if current inside a cell,
         /// and use the Rect to arrange target window.
         /// </summary>
         public List<CellObj> CellList { get; set; }
-        #endregion
+
+        #endregion Cell list
 
         #region Settings
+
         //1 Settings are not stored in a SplitCtrl class member, instead, it apply to UI directly.
         //2 Each SplitCtrl has it's individual DefaultSettings.
         //3 When user (from UI) change the Default settings (apply to UI directly), the SpltCtrl will be
@@ -125,7 +137,8 @@ namespace DDPM.Easy.Common
         //4 The settings of custom layout should be stored in per-user per-monitor settings file.
         //
         public List<double> DefaultSettings { get; }
-        public List<double> Settings 
+
+        public List<double> Settings
         {
             get
             {
@@ -156,9 +169,11 @@ namespace DDPM.Easy.Common
                 //If the input value is invalid, the Settings will not be changed
             }
         }
-        #endregion
+
+        #endregion Settings
 
         #region Bitmap - Currently is not used in DDPM
+
         /// <summary>
         /// To create a BitmatSouce from current SplitCtrl. The return BitmapSource can be used to
         /// 1) Display an Image on GUI, 2) Save as a .PNG file
@@ -181,6 +196,7 @@ namespace DDPM.Easy.Common
             rtb.Render(UC);
             return rtb;
         }
-        #endregion
+
+        #endregion Bitmap - Currently is not used in DDPM
     }
 }

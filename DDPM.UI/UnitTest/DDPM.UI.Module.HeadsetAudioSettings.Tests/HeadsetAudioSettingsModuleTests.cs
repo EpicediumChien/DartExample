@@ -1,17 +1,12 @@
-﻿using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common.Models;
+﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
-using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
-using DDPM.SA.Common;
+using NGA.UnitTest.PrivateObject;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
@@ -31,7 +26,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
 
-
         [SetUp]
         public void Setup()
         {
@@ -42,7 +36,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
-            vm = new HeadsetViewModel(console, log,deviceManagerSA);
+            vm = new HeadsetViewModel(console, log, deviceManagerSA);
             moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
@@ -56,10 +50,10 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
         public void TestConstructor_HeadsetAudioSettingsModule()
         {
             // Act
-            var result =privateObject.GetFieldOrProperty("_rightView");
+            var result = privateObject.GetFieldOrProperty("_rightView");
 
             // Assert
-            Assert.That(headsetAudioSettingsModule,Is.Not.Null);
+            Assert.That(headsetAudioSettingsModule, Is.Not.Null);
             Assert.That(result, Is.Not.Null);
         }
 
@@ -73,7 +67,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             Assert.That(result, Is.EqualTo("HeadsetAudioSettingsModule"));
         }
 
-
         [Test]
         public void TestGetLeftView()
         {
@@ -83,7 +76,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             // Assert
             Assert.That(result, Is.Null);
         }
-
 
         [Test]
         public void TestGetRightView()
@@ -95,7 +87,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<UserControl>());
         }
-
 
         [Test]
         public void TestSelectedHomeDevice()
@@ -111,7 +102,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             Assert.That(result, Is.EqualTo(homeDevice));
         }
 
-
         [Test]
         public void TestModuleOwner()
         {
@@ -119,7 +109,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
             // Arrange
             Assert.That(headsetAudioSettingsModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
-
 
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
@@ -138,7 +127,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
         [Test]
         public void TestOnActivated()
         {
-
             try
             {
                 headsetAudioSettingsModule.OnActivated();
@@ -163,7 +151,5 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
                 Assert.Fail("not invoked");
             }
         }
-
-
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DPeMPublic.Common.Enums;
+using System;
 using System.ComponentModel;
-using DPeMPublic.Common.Enums;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -27,6 +27,7 @@ namespace DDPM.SA.Common
         public int Priority;
         public string ServerPath;
         public string SupplierID;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string NewVersion

@@ -1,37 +1,34 @@
 ﻿<UserControl x:Class="DDPM.UI.Common.EAEM.SplitCtrl2D"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Common.EAEM"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:Background="Black"
              d:DesignHeight="60" d:DesignWidth="80">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="SplitStyles.xaml"/>
+                <ResourceDictionary Source="SplitStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-
     </UserControl.Resources>
 
     <Border Style="{StaticResource SplitCtrl_OutterBorder}">
 
         <Grid Name="g0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="7*" />
             </Grid.ColumnDefinitions>
 
-            <Border Name="cell_2d1" Grid.Column="0" BorderBrush="{StaticResource BorderColor_SplitNormal}" BorderThickness="0,0,0,0"/>
-            <Border Name="cell_2d2" Grid.Column="2" BorderBrush="{StaticResource BorderColor_SplitNormal}" BorderThickness="0,0,0,0"/>
+            <Border Name="cell_2d1" Grid.Column="0" BorderBrush="{StaticResource BorderColor_SplitNormal}" BorderThickness="0,0,0,0" />
+            <Border Name="cell_2d2" Grid.Column="2" BorderBrush="{StaticResource BorderColor_SplitNormal}" BorderThickness="0,0,0,0" />
 
             <Rectangle Name="v1" Grid.Column="1" Width="1"
-                   Style="{StaticResource RectangleStyle_Splitter}"/>
-
+                       Style="{StaticResource RectangleStyle_Splitter}" />
         </Grid>
-
     </Border>
 </UserControl>

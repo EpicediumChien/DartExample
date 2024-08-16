@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static DDPM.ColorApp.WindowFocusWatcher;
 
@@ -28,6 +23,7 @@ namespace DDPM.ColorApp
     public class AppStatusQuery
     {
         #region Native Win32 APIs
+
         [DllImport("USER32.DLL", CharSet = CharSet.Auto)]
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
 
@@ -40,13 +36,15 @@ namespace DDPM.ColorApp
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc callback, IntPtr lParam);
+
         public delegate bool WindowEnumProc(IntPtr hwnd, IntPtr lparam);
-        #endregion
+
+        #endregion Native Win32 APIs
 
         private static AppStatusQuery? INSTANCE = null;
 
-        WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS | Native.WINEVENT_SKIPOWNPROCESS | Native.EVENT_OBJECT_LOCATIONCHANGE | Native.EVENT_OBJECT_SELECTION );
-        WindowFocusWatcher moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
+        private WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS | Native.WINEVENT_SKIPOWNPROCESS | Native.EVENT_OBJECT_LOCATIONCHANGE | Native.EVENT_OBJECT_SELECTION);
+        private WindowFocusWatcher moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
 
         private static string _LastforgroundTitle = string.Empty;
         private static string _LastLocatedScreen = string.Empty;
@@ -88,7 +86,9 @@ namespace DDPM.ColorApp
         }
 
         #region get real process id for uwp kind app
+
         private static Process? _realProcess = null;
+
         private static Process? GetRealProcess(Process foregroundProcess)
         {
             EnumChildWindows(foregroundProcess.MainWindowHandle, ChildWindowCallback, IntPtr.Zero);
@@ -108,7 +108,8 @@ namespace DDPM.ColorApp
             }
             return true;
         }
-        #endregion
+
+        #endregion get real process id for uwp kind app
 
         private static void pass_process_info_to_callback(uint pid, IntPtr hWnd, string forgroundTitle)
         {
@@ -152,7 +153,6 @@ namespace DDPM.ColorApp
             }
             catch (System.Exception)
             {
-
             }
         }
 
@@ -230,7 +230,5 @@ namespace DDPM.ColorApp
             _LastforgroundTitle = string.Empty;
             //logger.WriteLog($"[{requestor}]  Clear app record by requestor");
         }
-
-
     }
 }

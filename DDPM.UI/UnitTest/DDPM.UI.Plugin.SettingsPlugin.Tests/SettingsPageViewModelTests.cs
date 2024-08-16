@@ -12,13 +12,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
     [Apartment(ApartmentState.STA)]
     public class SettingsPageViewModelTests
     {
-        SettingsPageViewModel? settingsPageViewModel;
+        private SettingsPageViewModel? settingsPageViewModel;
 
         [SetUp]
         public void Setup()
         {
             settingsPageViewModel = new SettingsPageViewModel();
-
         }
 
         [Test]
@@ -66,7 +65,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(result, Is.EqualTo(fullView));
         }
 
-
         [Test]
         public void TestSetSelected()
         {
@@ -82,7 +80,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
                 Assert.Fail("not invoked");
             }
         }
-
 
         [Test]
         public void TestOpenFullView()
@@ -101,7 +98,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
                 Assert.Fail("not invoked");
             }
         }
-
 
         [Test]
         public void TestCloseFullView()
@@ -126,7 +122,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.FWUpdateInfoPackage;
             Assert.That(result, Is.EqualTo(fWUpdateInfoPackage));
         }
-
 
         [Test]
         public void TestSWUpdateInfoPackage()
@@ -164,7 +159,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(result, Is.EqualTo(optional_UpdateList_UI));
         }
 
-
         [Test]
         public void TestLastCheckDate()
         {
@@ -190,7 +184,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.UpdateTitle;
             Assert.That(result, Is.EqualTo("A"));
         }
-
 
         [Test]
         public void TestUpdateVersion()
@@ -258,7 +251,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(UpdatesPageUI_EnableBef, Is.EqualTo(true));
 
             settingsPageViewModel.Critical_UpdateList_UI = new List<UIUpdateInfo>();
-            settingsPageViewModel.Recommended_UpdateList_UI=new List<UIUpdateInfo>();
+            settingsPageViewModel.Recommended_UpdateList_UI = new List<UIUpdateInfo>();
             settingsPageViewModel.Optional_UpdateList_UI = new List<UIUpdateInfo>();
             settingsPageViewModel.LastCheckDate = "AA";
             deviceManagerSAMock.Setup(x => x.GetUILockStatus()).Returns(Task.FromResult(true));
@@ -299,13 +292,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(settingsPageViewModel.ProgressStr, Is.Not.EqualTo(ProgressStrBef));
         }
 
-
-
         [Test]
         public void TestSetUpdateInfoUI()
         {
             FWUpdateInfoPackage fwUpdateInfoPackage = new FWUpdateInfoPackage();
-            SWUpdateInfoPackage swUpdateInfoPackage=new SWUpdateInfoPackage();
+            SWUpdateInfoPackage swUpdateInfoPackage = new SWUpdateInfoPackage();
             try
             {
                 settingsPageViewModel.SetUpdateInfoUI(fwUpdateInfoPackage, swUpdateInfoPackage);
@@ -316,7 +307,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
                 Assert.Fail("not invoked");
             }
         }
-
 
         [Test]
         public void TestRecommended_UpdateList()
@@ -357,11 +347,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         [Test]
         public void TestIsCanUpdate()
         {
-            bool result=settingsPageViewModel.IsCanUpdate();
-            Assert.That(result,Is.EqualTo(false));
+            bool result = settingsPageViewModel.IsCanUpdate();
+            Assert.That(result, Is.EqualTo(false));
 
             List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true } };
-            settingsPageViewModel.Critical_UpdateList_UI=Critical_UpdateList_UI;
+            settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
             result = settingsPageViewModel.IsCanUpdate();
             Assert.That(result, Is.EqualTo(true));
         }
@@ -371,15 +361,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
             UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
-            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true ,SWUpdateInfo=new SWUpdateInfo()} };
+            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
 
             List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Recommended_UpdateList_UI = Recommended_UpdateList_UI;
             List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
-            FWUpdateInfoPackage FWUpdateInfoPackage=new FWUpdateInfoPackage();
-            settingsPageViewModel.FWUpdateInfoPackage= FWUpdateInfoPackage;
+            FWUpdateInfoPackage FWUpdateInfoPackage = new FWUpdateInfoPackage();
+            settingsPageViewModel.FWUpdateInfoPackage = FWUpdateInfoPackage;
             SWUpdateInfoPackage SWUpdateInfoPackage = new SWUpdateInfoPackage();
             settingsPageViewModel.SWUpdateInfoPackage = SWUpdateInfoPackage;
             try
@@ -393,7 +383,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             }
         }
 
-
         //class UIUpdateInfo
         [Test]
         public void TestIsCheckUpdate()
@@ -405,7 +394,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(result, Is.EqualTo(true));
         }
 
-
         [Test]
         public void TestIsEnableCheckBox()
         {
@@ -416,7 +404,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             Assert.That(result, Is.EqualTo(true));
         }
 
-
         [Test]
         public void TestUpdateInfo()
         {
@@ -426,7 +413,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = uIFWUpdateInfo.UpdateInfo;
             Assert.That(result, Is.EqualTo("AA"));
         }
-
 
         [Test]
         public void TestFWUpdateInfo()
@@ -468,7 +454,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             fwUpdateInfo.DeviceName = "ST";
             fwUpdateInfo.DeviceType = deviceType;
             UIUpdateInfo uIUpdateInfo = new UIUpdateInfo(fwUpdateInfo);
-            Assert.That(uIUpdateInfo, Is.Not.Null);           
+            Assert.That(uIUpdateInfo, Is.Not.Null);
             Assert.That(uIUpdateInfo.UXAlertItemVisibility, Is.EqualTo(Visibility.Visible));
             Assert.That(uIUpdateInfo.UXAlertItemMessage, Is.EqualTo("Press a button or a key on the device to enable this update"));
             Assert.That(uIUpdateInfo.UpdateInfo, Is.EqualTo("Firmware update 1A - ST"));

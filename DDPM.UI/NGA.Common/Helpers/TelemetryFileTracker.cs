@@ -6,15 +6,12 @@
 //
 #endregion
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Xml.Linq;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Exceptions;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Microsoft;
+using System.Xml.Linq;
 
 namespace NGA.Common.Helpers
 {
@@ -33,7 +30,7 @@ namespace NGA.Common.Helpers
         private static readonly DateTime ReferenceDate = new(2021, 11, 24);
 
         /// <summary>
-        /// Parse system files to identify user consent for telemetry preferences. 
+        /// Parse system files to identify user consent for telemetry preferences.
         /// </summary>
         /// <returns> return TelemetryParseResponse Enum</returns>
         /// Returns TelemetryParseResponse.Consent when all 3 condition satisfied
@@ -84,7 +81,6 @@ namespace NGA.Common.Helpers
                 var customerValue = bool.Parse(result);
 
                 var csupResponse = ParseCsupFile(log, fileSystem);
-
 
                 if (!csupResponse)
                 {

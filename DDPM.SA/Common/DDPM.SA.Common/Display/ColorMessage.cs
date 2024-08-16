@@ -1,22 +1,9 @@
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using VcpCore.Common;
-
-
 
 namespace DDPM.SA.Common
 {
-
     public interface IPlugin
     {
         public enum UserInterfaceType
@@ -24,6 +11,7 @@ namespace DDPM.SA.Common
             LauncherUI = 1,
             MainUI = 2
         }
+
         public enum ThumbType
         {
             LauncherIcon = 0x1,
@@ -50,23 +38,24 @@ namespace DDPM.SA.Common
             SwKvm = 7
         }
 
-
         object GetView<T>(object monitorInfo);//(int instance);
 
 #if true
+
         object LoadUserContrlMainView<T>(object monitorInfo);
+
 #else
         public object LoadUserContrlMainView(DDMCommonInterface.Common.MonitorInfo monitorInfo);
 #endif
-        object GetFullViewPage<T>(object monitorInfo);//(int instance);
 
+        object GetFullViewPage<T>(object monitorInfo);//(int instance);
 
         //New string for Tooltips message
         string TooltipsMessage(UserInterfaceType type);
+
         IMessaging LoadMessaging(object instance);
 
         void DisplayRefeshMessage<T>(object monitorInfo);
-
     }
 
     //public delegate void OnSendMessage(object sender, DDMiMessagingMsg message);
@@ -81,11 +70,11 @@ namespace DDPM.SA.Common
         void MessageRecived(DDMiMessagingMsg message);
     }
 
-
     public class Plugin_Messaging : IMessaging
     {
-        IPlugin _plugin;
+        private IPlugin _plugin;
         private object _Instance;
+
         public object Instance
         {
             get { return _Instance; }
@@ -101,6 +90,7 @@ namespace DDPM.SA.Common
         }
 
         public event EventHandler ReceiveMessage;
+
         public event EventHandler<DDMiMessagingMsg> SendMessage;
 
         public void MessageRecived(DDMiMessagingMsg message)

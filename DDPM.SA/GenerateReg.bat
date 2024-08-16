@@ -76,6 +76,7 @@ echo "{149EF7F9-BF22-4E00-86B1-44CAC25CCA7E}"="%BaseDir%\\bin\\DDPM.Subagent.Use
 echo "{C01C5C25-B7F8-4F08-8CD8-4E16928CC254}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.Hotkey.dll">>%OutFile%
 echo "{998CE5F9-19FE-4EDF-841A-2497F39623BF}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.EasyArrange.dll">>%OutFile%
 echo "{99DB213B-220B-41C7-8B3A-0131CA7A4DD1}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.SettingsManager.dll">>%OutFile%
+echo "{EEE0AA91-11EE-46BD-B1FD-88D590C3052C}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.SchedulerManager.dll">>%OutFile%
 echo "{E993A925-BAF0-42DF-B878-7EC075D5B941}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Display.dll">>%OutFile%
 echo "{FE361209-1BEB-4B52-AC1A-D0227B7641CB}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Peripherals.dll">>%OutFile%
 echo.>>%OutFile%

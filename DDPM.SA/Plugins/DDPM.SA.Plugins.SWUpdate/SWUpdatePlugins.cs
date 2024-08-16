@@ -1,37 +1,32 @@
-﻿using Dell.Client.Framework.Common.Annotations;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Security;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Interfaces;
-using Microsoft;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.Interfaces;
+using Dell.Client.Framework.Security;
+using Dell.Client.Framework.Security.Interfaces;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using PInvoke;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
+using System.Security;
 using System.Text.RegularExpressions;
-using System.Text;
+using System.Threading.Tasks;
 using System.Timers;
-using System.Xml;
-using DDPM.SA.Common;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using DDPM.SA.Common.Popup;
-using System;
-using Dell.Client.Framework.Common.Extensions;
-using Microsoft.Toolkit.Uwp.Notifications;
-using Microsoft.Win32;
-using System.Management;
-using System.Net.Http;
-using System.Threading;
-using Timer = System.Timers.Timer;
-using Newtonsoft.Json;
-using System.Linq;
-using System.Text.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using DDPM.SA.Common.Settings;
-using PInvoke;
+using Timer = System.Timers.Timer;
 
 namespace DDPM.SA.Plugins.SWUpdate
 {
@@ -49,7 +44,9 @@ namespace DDPM.SA.Plugins.SWUpdate
 
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         #region Private Members
+
         private const string pluginName = "SWUpdatePlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements SW Update Plugin.";
@@ -58,50 +55,62 @@ namespace DDPM.SA.Plugins.SWUpdate
         private const string publisherSupport = "This plugin implements SW Update Plugin.";
 
         private IAgent _agent;
-        #endregion
+
+        #endregion Private Members
 
         public const string PluginLogId = "SWUpdate";
 
         private Logs _logs;
+
         /// <summary>
         /// 現在正在進行下載或安裝流程的裝置資訊
         /// </summary>
         private SWUpdateInfo _SWUpdateInfo = new SWUpdateInfo();
+
         /// <summary>
         /// 給UI或是CLI的全部軟體更新包
         /// </summary>
         private SWUpdateInfoPackage _SWUpdateInfoPackage;
+
         /// <summary>
         /// 從SettingsManager取得的延遲更新包，用於比對是否延遲次數為0
         /// </summary>
         private SWUpdateInfoPackage _DelaySWUpdateInfoPackage;
-        long? _size = null;
-        FileStream? _fileStream = null;
+
+        private long? _size = null;
+        private FileStream? _fileStream = null;
+
         //安裝更新檔使用的命名管道伺服器
-        Timer _downloadTimer = new Timer();
-        Timer _checkUpdateScheduleTimer;
-        string _notificationStr = "";
-        SWUErrorCode _updateErrorCode;
-        bool _IsShowNotify = true;
-        bool _isDefer = false;
-        bool _isForce = false;
-        string URL = $"https://clientperipherals.dell.com/DDPM/";
-        string URL_Folder = $"/Windows/Application/";
-        string TestURL_Folder = $"/ddpm/Application/";
-        #region Events 
+        private Timer _downloadTimer = new Timer();
+
+        private Timer _checkUpdateScheduleTimer;
+        private string _notificationStr = "";
+        private SWUErrorCode _updateErrorCode;
+        private bool _IsShowNotify = true;
+        private bool _isDefer = false;
+        private bool _isForce = false;
+        private string URL = $"https://clientperipherals.dell.com/DDPM/";
+        private string URL_Folder = $"/Windows/Application/";
+        private string TestURL_Folder = $"/ddpm/Application/";
+
+        #region Events
+
         /// <summary>
         /// 呼叫DeviceManager呼叫我的檢查更新方法，用於排成定期檢查
         /// </summary>
         public event EventHandler? CollCheckUpdate;
+
         /// <summary>
         /// 將延遲更新包傳給DeviceManager進行儲存
         /// </summary>
         public event EventHandler<SWUpdateInfoPackage>? CallSaveUpdateInfoPackage;
+
         /// <summary>
         /// 呼叫Popup通知
         /// </summary>
         public event EventHandler<PopupContentPackage> CallPopup;
-        #endregion
+
+        #endregion Events
 
         public SWUpdatePlugins(IAgent agent) : base(agent, PluginLogId)
         {
@@ -127,8 +136,11 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
             }
         }
+
         #region Overriding methods
+
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -153,8 +165,11 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             base.Dispose(disposing);
         }
-        #endregion
+
+        #endregion IDisposableObservable Support
+
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -169,14 +184,18 @@ namespace DDPM.SA.Plugins.SWUpdate
                 Console.WriteLine("ISWUpdateService plugin started.");
             }
         }
-        #endregion
+
+        #endregion Event Handler
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             PluginCondition = new PluginStartedCondition();
             Console.WriteLine("SWUpdate plugin report started");
         }
-        #endregion
+
+        #endregion Overriding methods
+
         /// <summary>
         /// 啟動檢查更新排程
         /// </summary>
@@ -184,6 +203,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         {
             _checkUpdateScheduleTimer.Start();
         }
+
         /// <summary>
         /// 設定檔儲存的延遲更新資訊包
         /// </summary>
@@ -199,6 +219,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _DelaySWUpdateInfoPackage = new SWUpdateInfoPackage();
             }
         }
+
         /// <summary>
         /// 取得更新的資訊包
         /// </summary>
@@ -212,6 +233,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             _ = CheckUpdate(isShowNotify).Result;
             return Task.FromResult(_SWUpdateInfoPackage);
         }
+
         /// <summary>
         /// 檢查更新資訊
         /// </summary>
@@ -251,6 +273,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             return Task.FromResult(new List<SWUpdateInfo>());
         }
+
         private SWUpdateHelper DownloadMetadata()
         {
             //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
@@ -283,7 +306,8 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             return new SWUpdateHelper();
         }
-        void HandleUpdateInfo()
+
+        private void HandleUpdateInfo()
         {
             _logs.DebugMsg_1("HandleUpdateInfo");
             if (_SWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage != null)
@@ -341,6 +365,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _logs.DebugMsg_1("HandleUpdateInfo done");
             }
         }
+
         /// <summary>
         /// 從伺服端下載更新檔，下載後會接續執行安裝方法
         /// </summary>
@@ -352,7 +377,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             int dockCount = 0;
             try
             {
-                CACertificateCheck caCheck = new CACertificateCheck(_logs);
+                CertificateCheck caCheck = new CertificateCheck();
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 for (int i = 0; i < swUpdateInfos.Count; i++)
                 {
@@ -361,69 +386,84 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + nameof(DownloadAndInstall) + " start");
                     _updateErrorCode = SWUErrorCode.Unknow;
                     swUpdateInfos[i].SWUErrorCode = _updateErrorCode;
-                    //暫時註解 因現在使用測試伺服器故先將檢查CA註解
-                    //if (caCheck.CheckCA(_sWUpdateInfo.ServerPath))
+                    string url = swUpdateInfos[i].ServerPath;
+                    /*暫時註解 因現在使用測試伺服器故先將檢查CA註解
+                    if (!caCheck.CheckURLCACertificate(url))//0815 Bruce Add Security
                     {
-                        string url = swUpdateInfos[i].ServerPath;
-                        string savePath;
-                        if (string.IsNullOrEmpty(installPath))
-                        {
-                            savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + swUpdateInfos[i].FileSavepath + "\\";
-                        }
-                        else
-                        {
-                            savePath = installPath;
-                        }
-                        _downloadTimer = new Timer();
-                        _downloadTimer.Interval = 1000;
-                        _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " CA Fail");
+                        continue;
+                    }*/
+                    string savePath;
+                    if (string.IsNullOrEmpty(installPath))
+                    {
+                        savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + swUpdateInfos[i].FileSavepath + "\\";
+                    }
+                    else
+                    {
+                        savePath = installPath;
+                    }
+                    if (!Directory.Exists(savePath))
+                    {
+                        Directory.CreateDirectory(savePath);
+                    }
+                    string FolderInfo;
+                    if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
+                    {
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo);
+                        continue;
+                    }
+                    _downloadTimer = new Timer();
+                    _downloadTimer.Interval = 1000;
+                    _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
 
-                        //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
-                        HttpClientHandler handler = new HttpClientHandler();
-                        handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
-                                                                                                                            //Should enable server certificate validation on this SSL/TLS connection before formal release
+                    //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
+                    HttpClientHandler handler = new HttpClientHandler();
+                    handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
+                                                                                                                        //Should enable server certificate validation on this SSL/TLS connection before formal release
 
-                        HttpClient client = new HttpClient(handler);
-                        client.Timeout = TimeSpan.FromMinutes(1);
-                        // 發送 HTTP GET 請求到指定的 URL
-                        HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        if (!Directory.Exists(savePath))
-                        {
-                            Directory.CreateDirectory(savePath);
-                        }
-                        // 將儲存路徑與從 URL 中提取的檔案名稱組合
-                        string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                        // 從 URL 中取得回應標頭
-                        var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        // 從回應標頭中提取檔案大小
-                        _size = header.Content.Headers.ContentLength;
-                        // 取得包含 URL 內容的串流
-                        var stream = client.GetStreamAsync(url).Result;
-                        // 建立檔案串流以將下載的內容寫入
-                        _fileStream = File.Create(_installationFileStoragePath);
-                        _downloadTimer.Start();
-                        // 將串流的內容複製到檔案中
-                        stream.CopyToAsync(_fileStream).Wait();
-                        _downloadTimer.Stop();
-                        _fileStream.Close();
-                        string exeFilePath;
-                        Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath);
+                    HttpClient client = new HttpClient(handler);
+                    client.Timeout = TimeSpan.FromMinutes(1);
+                    // 發送 HTTP GET 請求到指定的 URL
+                    HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                    string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                    // 從 URL 中取得回應標頭
+                    var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    // 從回應標頭中提取檔案大小
+                    _size = header.Content.Headers.ContentLength;
+                    // 取得包含 URL 內容的串流
+                    var stream = client.GetStreamAsync(url).Result;
+                    // 建立檔案串流以將下載的內容寫入
+                    _fileStream = File.Create(_installationFileStoragePath);
+                    _downloadTimer.Start();
+                    // 將串流的內容複製到檔案中
+                    stream.CopyToAsync(_fileStream).Wait();
+                    _downloadTimer.Stop();
+                    _fileStream.Close();
+                    string exeFilePath;
+                    if (!Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath))
+                    {
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Unzip Faile:" + exeFilePath);
+                        continue;
+                    }
 
-                        _fileStream = null;
-                        //暫時註解 等待check sha512和CA
-                        //if (caCheck.CheckFileCA(exeFilePath))
-                        {
-                            swUpdateInfos[i].InstallPaths = exeFilePath;
-                            swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
-                        }
-                        if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
-                        {
-                            NotificationFWupdate("SW info", _notificationStr);
-                        }
-                        else
-                        {
-                            NotificationFWupdate("Error", _notificationStr);
-                        }
+                    _fileStream = null;
+                    //暫時註解 等待check sha512和CA
+                    //if (caCheck.CheckFileCA(exeFilePath))
+                    {
+                        swUpdateInfos[i].InstallPaths = exeFilePath;
+                        swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
+                    }
+                    if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
+                    {
+                        NotificationFWupdate("SW info", _notificationStr);
+                    }
+                    else
+                    {
+                        NotificationFWupdate("Error", _notificationStr);
                     }
                 }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " done");
@@ -458,7 +498,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
         }
 
-        bool Unzip(string zipFilePath, string extractPath, out string exeFilePath)
+        private bool Unzip(string zipFilePath, string extractPath, out string exeFilePath)
         {
             try
             {
@@ -468,10 +508,40 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     Directory.CreateDirectory(extractPath);
                 }
-                // 解壓縮zip檔案，並覆蓋現有檔案
-                ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
-                _logs.DebugMsg_1(nameof(Unzip) + " done");
-                exeFilePath = GetExeFilePath(extractPath);
+                string FolderInfo;
+                if (!DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo))//0815 Bruce Add Security
+                {
+                    exeFilePath = FolderInfo;
+                    return false;
+                }
+                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                var constraints = new LeafCertConstraints(hashes)
+                {
+                    RequireAllCerts = false
+                };
+                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                {
+                    Constraints = constraints
+                };
+                using (FileLock fileLock = new FileLock(zipFilePath, PathCheckOption.None, lockNow: true))
+                {
+                    AclChecker aclChecker = new AclChecker();
+                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
+                    {
+                        throw new SecurityException($"File ACLs for {zipFilePath} contained unprivileged write access for one or more identity");
+                    }
+                    /*暫時註解 因還沒有簽章
+                    var result = verifier.Verify(fileLock);
+                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
+                    {
+                        throw new SecurityException($"Signature validation failed for {zipFilePath}! Received the following return code {result}");
+                    }*/
+                    // 解壓縮zip檔案，並覆蓋現有檔案
+                    ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
+                    _logs.DebugMsg_1(nameof(Unzip) + " done");
+                    exeFilePath = GetExeFilePath(extractPath);
+                }
                 return true;
             }
             catch (Exception ex)
@@ -481,7 +551,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                 return false;
             }
         }
-        string GetExeFilePath(string directory)
+
+        private string GetExeFilePath(string directory)
         {
             // 列舉資料夾中的所有 .exe 檔案
             string[] exeFiles = Directory.GetFiles(directory, "*.exe");
@@ -495,12 +566,13 @@ namespace DDPM.SA.Plugins.SWUpdate
                 return "";
             }
         }
+
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void DownloadTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        private void DownloadTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             if (_fileStream != null)
             {
@@ -511,12 +583,13 @@ namespace DDPM.SA.Plugins.SWUpdate
                 double d = Math.Round(((double)_fileStream.Length / (double)_size) * 100.0, 2);
             }
         }
+
         /// <summary>
         /// 定期檢查更新排程
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
             TimeSpan difference = DateTime.Now - _SWUpdateInfoPackage.TheLastCheckTime;
             int checkTime = 5;
@@ -525,10 +598,11 @@ namespace DDPM.SA.Plugins.SWUpdate
                 CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
             }
         }
+
         /// <summary>
         /// 跳出通知
         /// </summary>
-        void NotificationFWupdate(string title, string info, bool isInfo = true, bool isOnlyUpdate = false, bool stayOpen = false, int timeout = 5)
+        private void NotificationFWupdate(string title, string info, bool isInfo = true, bool isOnlyUpdate = false, bool stayOpen = false, int timeout = 5)
         {
             if (!string.IsNullOrEmpty(info) && _IsShowNotify)
             {
@@ -545,6 +619,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 CallPopup?.AsyncFireAndForget(this, popupContentPackage, System.Threading.CancellationToken.None);
             }
         }
+
         /// <summary>
         /// NotificationFWupdate 延遲更新事件
         /// </summary>
@@ -580,6 +655,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
             }
         }
+
         /// <summary>
         /// NotificationFWupdate 立即更新事件
         /// </summary>
@@ -595,7 +671,8 @@ namespace DDPM.SA.Plugins.SWUpdate
             List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
             DownloadAndInstall(sWUpdateInfo, "").Wait();
         }
-        void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+
+        private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
             {
@@ -603,43 +680,77 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _checkUpdateScheduleTimer.Stop();
                     _logs.DebugMsg_1("PC is sleep");
                     break;
+
                 case PowerModes.Resume:
                     _checkUpdateScheduleTimer.Start();
                     _logs.DebugMsg_1("PC is wakeup");
                     break;
+
                 case PowerModes.StatusChange:
                     _logs.DebugMsg_1("PC is status change");
                     break;
             }
         }
+
         /// <summary>
         /// 安裝下載好的更新檔
         /// </summary>
-        SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
+        private SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
         {
             try
             {
                 _logs.DebugMsg_1(swUpdateInfo.SoftwareName + nameof(Install) + " start");
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(swUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
+                {
+                    _logs.DebugMsg_1(swUpdateInfo.SoftwareName + " FileIsNoSafe:" + FileInfo);
+                    return SWUErrorCode.FileIsNoSafe;
+                }
                 // 要運行的安裝程式路徑和命令行參數
                 string arguments = "";//"/silent" + " /pipename:" + _namedPipeName;
-
                 Process _clientProcess = new Process();
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
-                UserImpersonator.RunAsUser(token, () =>
+
+                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                var constraints = new LeafCertConstraints(hashes)
                 {
-                    using (Process clientProcess = new Process())
+                    RequireAllCerts = false
+                };
+                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                {
+                    Constraints = constraints
+                };
+                using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
+                {
+                    AclChecker aclChecker = new AclChecker();
+                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
-                        _clientProcess = new Process();
-                        _clientProcess.StartInfo.UseShellExecute = false;
-                        _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                        _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                        _clientProcess.StartInfo.Arguments = arguments;
-                        _clientProcess.Start();
-                        //_clientProcess.WaitForExit();
+                        throw new SecurityException($"File ACLs for {swUpdateInfo.InstallPaths} contained unprivileged write access for one or more identity");
                     }
-                });
+                    /*暫時註解 因還沒有簽章
+                    var result = verifier.Verify(fileLock);
+                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
+                    {
+                        throw new SecurityException($"Signature validation failed for {fwUpdateInfo.InstallPaths}! Received the following return code {result}");
+                    }*/
+                    UserImpersonator.RunAsUser(token, () =>
+                    {
+                        using (Process clientProcess = new Process())
+                        {
+                            _clientProcess = new Process();
+                            _clientProcess.StartInfo.UseShellExecute = false;
+                            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
+                            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                            _clientProcess.StartInfo.Arguments = arguments;
+                            _clientProcess.Start();
+                            //_clientProcess.WaitForExit();
+                        }
+                    });
+                }
+
                 _updateErrorCode = SWUErrorCode.NoError;
                 return _updateErrorCode;
             }

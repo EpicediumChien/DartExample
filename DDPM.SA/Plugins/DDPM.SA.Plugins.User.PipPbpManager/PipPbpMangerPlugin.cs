@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,24 +7,23 @@
 //
 // DisplayMangerPlugin.cs created on 24/04/2024T11:20 AM
 //
+
 #endregion
 
-using Microsoft;
-using System.Threading.Tasks;
-using VcpCore.Common;
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using VcpCore.Interfaces;
-using Newtonsoft.Json.Linq;
-using DDPM.SA.Common;
-using IDs = DDPM.SA.Common.IDs;
+using Microsoft;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-using DDPM.SA.Common.Display;
+using System.Linq;
+using System.Threading.Tasks;
+using VcpCore.Common;
+using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.PipPbpManger
 {
@@ -34,10 +34,10 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
     //[PublishedInterface(new[] { typeof(IPipPbpService) })]
     [DependencyKnownTypes(new[] { typeof(IDisplayService) })]
     [PluginRequires(Id = IDs.Display_Manager_PLUGIN_ID, Version = "1.0.0", AllowDynamicResolving = true)]
-
     public class PipPbpMangerPlugin : BaseAgentPlugin, IDisposableObservable, IPipPbpService
     {
         #region Private Members
+
         private const string pluginName = "PipPbpMangerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements PIP PBP Manager Plugin.";
@@ -59,13 +59,17 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
 
         //The error string when the public method return error
         private string _lastError = "";
+
         #endregion
 
         #region Public Members
+
         public event EventHandler<VCPchangedEventArgs> VCPchanged;
+
         #endregion
 
         #region Constructor
+
         public PipPbpMangerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
@@ -73,27 +77,33 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
             _logs = new Logs(Log);
             //_logs.DebugMsg("[PipPbpMangerPlugin] Does PipPbpMangerPlugin have Administrator: " + _IsAdministrator.ToString());
         }
+
         #endregion
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             PluginCondition = new PluginStartedCondition();
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             InitializeDisplayManagerPlugin();
         }
+
         #endregion
 
         #region PIP Mode Code for VCP code 0xE9
-        const UInt16 PipMode_Off = 0;
-        const UInt16 PipMode_Small = 0x21;
-        const UInt16 PipMode_Large = 0x22;
 
-        const UInt16 PipMode_SizeToggle = 0x01;
-        const UInt16 PipMode_PositionToggle = 0x02;
+        private const UInt16 PipMode_Off = 0;
+        private const UInt16 PipMode_Small = 0x21;
+        private const UInt16 PipMode_Large = 0x22;
+
+        private const UInt16 PipMode_SizeToggle = 0x01;
+        private const UInt16 PipMode_PositionToggle = 0x02;
+
         #endregion
 
         #region IPipPbpService implementation
+
         public string LastError { get => _lastError; }
 
         /// <summary>
@@ -102,7 +112,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         /// <param name="monitorInfo"></param>
         /// <returns>
         /// For example, original capability string: "(prot(monitor)type(LCD)...E9(00 01 02 21 22 24 ) EA..."
-        /// then the return string will be "00 01 02 21 22 24 "    all characters between '(' and ')' 
+        /// then the return string will be "00 01 02 21 22 24 "    all characters between '(' and ')'
         /// </returns>
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
         {
@@ -114,7 +124,6 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                     _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): monitor capabilities string is empty.";
                     _logs.DebugMsg($"[{pluginName}] {_lastError}");
                     return Task.FromResult(String.Empty);
-
                 }
                 //Find the start index of "E9("
                 string signature = "E9(";
@@ -170,10 +179,10 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         /// <summary>
         ///Parsing hex value blank separated string to a WORD array
         ///Support format:
-        ///1 All Bytes: "02 04 05 08 10 12" 
+        ///1 All Bytes: "02 04 05 08 10 12"
         ///2 All Words: "0002 0004 0105 0208 1006 AE12"
         ///3 Mix: "02 0208 04 05 AE12"
-        ///4 Multiple space chars: "  02 04  05     08 10 1006    12" 
+        ///4 Multiple space chars: "  02 04  05     08 10 1006    12"
         /// </summary>
         /// <param name="inStr"></param>
         /// <returns>
@@ -405,7 +414,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         /// 0 (defualt) switch to Next USB port; 1~4 the USB port# to be swicthed.
         /// </param>
         /// <returns></returns>
-        public Task<bool> UsbSwitch(MonitorInfo monitorInfo, UInt16 target=0)
+        public Task<bool> UsbSwitch(MonitorInfo monitorInfo, UInt16 target = 0)
         {
             if (target > 4)
                 return Task.FromResult<bool>(false);
@@ -420,6 +429,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
             _logs.DebugMsg($"[{pluginName}] {_lastError}");
             return Task.FromResult(false);
         }
+
         #endregion
 
         #region Private Methods
@@ -467,6 +477,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         #endregion
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -490,9 +501,11 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
             }
             base.Dispose(disposing);
         }
+
         #endregion
 
         #region Event Handler
+
         private void OnDisplayManagerPluginConditionChangeHandler(object sender, EventArgs e)
         {
             GetCurrentDisplayManagerPluginCondition();
@@ -510,6 +523,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
 
             InitializeDisplayManagerPlugin();
         }
+
         #endregion
     }
 }

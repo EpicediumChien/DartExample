@@ -6,7 +6,6 @@ using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
-using System.Windows.Media;
 using VcpCore.Common;
 
 namespace DDPM.UI.Module.DisplayOthers.Tests
@@ -55,7 +54,6 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             Assert.That(result, Is.EqualTo(displayOthersModule));
         }
 
-
         [Test]
         public void TestPowerNap_text()
         {
@@ -69,7 +67,7 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         [Test]
         public void TestPowerNap_Enable()
         {
-            DdpmCommonHelper.ModuleOwner=moduleOwnerMock!.Object;
+            DdpmCommonHelper.ModuleOwner = moduleOwnerMock!.Object;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
 
             var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
@@ -81,7 +79,7 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             displayOthersModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
             displayOthersModule.SelectedHomeDevice.MonitorInfo.edid = new VcpCore.Common.EDID();
             viewModel.DisplayOthersModule = displayOthersModule;
-            DdpmCommonHelper.DeviceManagerSA=deviceManagerSA;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
 
             viewModel.PowerNap_Enable = true;
             var result = viewModel.PowerNap_Enable;
@@ -98,11 +96,11 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
             var DeviceManagerSA = DeviceManagerSAMock.Object;
             DdpmCommonHelper.DeviceManagerSA = DeviceManagerSA;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-            moduleOwnerMock.Setup(x=>x.SelectedHomeDevice).Returns(new HomeDevice());
-            var DisplayOthersModule=new DisplayOthersModule();
-            viewModel.DisplayOthersModule=DisplayOthersModule;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            var DisplayOthersModule = new DisplayOthersModule();
+            viewModel.DisplayOthersModule = DisplayOthersModule;
             viewModel.DisplayOthersModule.SelectedHomeDevice = new HomeDevice();
-            viewModel.DisplayOthersModule.SelectedHomeDevice.MonitorInfo=new MonitorInfo();
+            viewModel.DisplayOthersModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
             viewModel.DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid = new VcpCore.Common.EDID() { SerialNumber = "aaa" };
             DeviceManagerSAMock.Setup(x => x.ReadPowerNapSettings()).Returns(Task.FromResult(new List<PowerNapSetting>()));
             viewModel.Reducebrt_Checked = true;
@@ -157,7 +155,5 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         //    // Assert
         //    Assert.That(result, Is.EqualTo(true));
         //}
-
-
     }
 }

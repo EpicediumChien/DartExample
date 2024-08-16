@@ -6,19 +6,12 @@ using Microsoft;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using WinCopies;
-using WinCopies.Util;
-using static DDPM.SA.Common.ICLICommandTable;
-using static System.Windows.Forms.Design.AxImporter;
-using Console = System.Console;
 using System.IO;
+using System.Linq;
 using System.Threading;
-using Windows.ApplicationModel.Background;
+using System.Threading.Tasks;
+using static DDPM.SA.Common.ICLICommandTable;
+using Console = System.Console;
 
 namespace DDPM.CLI.Plugins.Peripherals
 {
@@ -27,10 +20,10 @@ namespace DDPM.CLI.Plugins.Peripherals
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedInterface(new[] { typeof(ICLIPeripherals) })]
     [DependencyKnownTypes(new[] { typeof(ICLIPeripherals) })]
-
     public class CLIPeripheralsPlugins : BaseAgentPlugin, IDisposableObservable, ICLIPeripherals
     {
         #region Private Members
+
         private const string pluginName = "CLIPeripheralsPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements CLI Peripherals Plugin.";
@@ -52,24 +45,28 @@ namespace DDPM.CLI.Plugins.Peripherals
         private IDeviceManagerSA _devMgr;
         private List<DeviceInfo> _deviceinfo = null;
         private CommandLineInput _commandLineInput = null;
-        readonly List<CLI_PeripheralRESPONSE> GetResults = new();
-        readonly List<CLI_PeripheralRESPONSE> SetResults = new();
-        string value = "";
-        List<Guid> Guids = new();
-        Func<int, Guid, Task> taskA;
-        Func<bool, Guid, Task> taskB;
-        Func<int, Guid, String, Task> taskC;
-        #endregion
+        private readonly List<CLI_PeripheralRESPONSE> GetResults = new();
+        private readonly List<CLI_PeripheralRESPONSE> SetResults = new();
+        private string value = "";
+        private List<Guid> Guids = new();
+        private Func<int, Guid, Task> taskA;
+        private Func<bool, Guid, Task> taskB;
+        private Func<int, Guid, String, Task> taskC;
+
+        #endregion Private Members
 
         #region Constructor
+
         public CLIPeripheralsPlugins(IAgent agent) : base(agent, PluginLogId)
         {
             //_agent = agent;
             writelog("CLIPeripheralsPlugins constructor ...");
         }
-        #endregion
+
+        #endregion Constructor
 
         #region interface implementation
+
         public CLIEventResult SetCommandArgs(CLIEventArgs input, IDeviceManagerSA devMgr)
         {
             _devMgr = devMgr;
@@ -136,7 +133,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return result;
             }
         }
-        #endregion
+
+        #endregion interface implementation
 
         #region Private methods
 
@@ -162,7 +160,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
         private int GetPeripheralProperty()
         {
-      GetResults.Clear();
+            GetResults.Clear();
             if (_devMgr == null)
             {
                 writelog("GetPeripheralProperty: input null IDeviceManagerSA");
@@ -171,10 +169,10 @@ namespace DDPM.CLI.Plugins.Peripherals
 
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
             if (_deviceinfo == null || _deviceinfo.Count == 0)
-			{
-                GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", "N/A", "N/A"));				
-				return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
-			}
+            {
+                GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", "N/A", "N/A"));
+                return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
+            }
 
             if (_commandLineInput.GuidString.Count == 0)
             {
@@ -213,7 +211,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
         private int SetPeripheralProperty()
         {
-      SetResults.Clear();
+            SetResults.Clear();
             if (_devMgr == null)
             {
                 writelog("SetPeripheralProperty: input null IDeviceManagerSA");
@@ -223,10 +221,10 @@ namespace DDPM.CLI.Plugins.Peripherals
             if (_commandLineInput.GuidString.Count == 0)
             {
                 if (_deviceinfo == null || _deviceinfo.Count == 0)
-				{
-                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", "SET", _commandLineInput.TargetFeature, "FAIL", "Device not found", "N/A", "N/A"));					
-					return (int)CLI_ExitCode.fail_SetPeripheralProperty;
-				}
+                {
+                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", "SET", _commandLineInput.TargetFeature, "FAIL", "Device not found", "N/A", "N/A"));
+                    return (int)CLI_ExitCode.fail_SetPeripheralProperty;
+                }
                 _deviceinfo.ForEach(x =>
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
@@ -269,12 +267,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                     break;
                 }
             }
-      if(_commandLineInput.TargetFeature != "UNPAIR" && value == "") {
-        SetResults.ForEach(x =>
-                {
-                    x.Result = "FAIL";
-                    x.Message += (x.Message == "" ? "" : ", ") + "Missing setting value";
-                });
+            if (_commandLineInput.TargetFeature != "UNPAIR" && value == "")
+            {
+                SetResults.ForEach(x =>
+                        {
+                            x.Result = "FAIL";
+                            x.Message += (x.Message == "" ? "" : ", ") + "Missing setting value";
+                        });
                 return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
             }
 
@@ -419,9 +418,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         case "L":
                             button = MouseButton.Left;
                             break;
+
                         case "R":
                             button = MouseButton.Right;
                             break;
+
                         default:
                             SetFailResults("Invalid setting value");
                             return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
@@ -450,6 +451,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     });
                     return (int)CLI_ExitCode.success;
+
                 case "TOUCHSCROLLSENSITIVITYLEVEL":
                     if (int.TryParse(value, out val))
                     {
@@ -687,7 +689,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
         }
 
-        void RunTaskA(int val)
+        private void RunTaskA(int val)
         {
             SetResults.ForEach(x =>
             {
@@ -714,7 +716,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             });
         }
 
-        void RunTaskB(bool val)
+        private void RunTaskB(bool val)
         {
             SetResults.ForEach(x =>
             {
@@ -741,7 +743,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             });
         }
 
-        void RunTaskC(int val, string str)
+        private void RunTaskC(int val, string str)
         {
             SetResults.ForEach(x =>
             {
@@ -767,7 +769,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
             });
         }
-        void SetFailResults(string message)
+
+        private void SetFailResults(string message)
         {
             SetResults.ForEach(x =>
             {
@@ -775,8 +778,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 x.Result = "FAIL";
                 x.Message += (x.Message == "" ? "" : ", ") + message;
             });
-
         }
+
         private async Task<string> RunAsyncTimeout(Task task)
         {
             try
@@ -814,9 +817,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                 Log.Error(text);
         }
 
-        #endregion
+        #endregion Private methods
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -840,8 +844,11 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
             base.Dispose(disposing);
         }
-        #endregion
+
+        #endregion IDisposableObservable Support
+
         #region FW Update
+
         private (int code, string json) FWUpdate(CommandLineInput commandLineInput)
         {
             string output = string.Empty;
@@ -945,6 +952,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
                     cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "UODFWUPDATE":
                     cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
                     if (commandLineInput.Options.Count > 2)
@@ -985,6 +993,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     ret = Auto_FWUpdate(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
                     cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     break;
+
                 case "LOCKUIUPDATE":
                     if (commandLineInput.Options.Count > 0)
                     {
@@ -999,6 +1008,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     _devMgr.SetUILockStatus(true);
                     ret = true;
                     break;
+
                 case "UNLOCKUIUPDATE":
                     if (commandLineInput.Options.Count > 0)
                     {
@@ -1013,6 +1023,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     _devMgr.SetUILockStatus(false);
                     ret = true;
                     break;
+
                 default:
                     cLI_FWU_RESPONSE.Message = "Input FAIL";
                     ret = false;
@@ -1036,6 +1047,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return ((int)CLI_ExitCode.fail_FWUpdate, output);
             }
         }
+
         private bool? GetFWUpdateList(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isShowInfo = true, bool isDefer = false)
         {
             List<DeviceType> deviceType = new List<DeviceType>();
@@ -1045,10 +1057,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                     deviceType.Add(DeviceType.LogicalKeyboard);
                     deviceType.Add(DeviceType.PhysicalDongle);
                     break;
+
                 case "MOUSE":
                     deviceType.Add(DeviceType.LogicalMouse);
                     deviceType.Add(DeviceType.PhysicalDongle);
                     break;
+
                 case "DOCK":
                     deviceType.Add(DeviceType.LogicalDock);
                     deviceType.Add(DeviceType.PhysicalWiredDock);
@@ -1073,6 +1087,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return null;
             }
         }
+
         //0531 Bruce 因應IL的現有安裝包修改判斷，CLIPeripheralsPlugins.cs中FWUpdate方法修改回傳值型態和新增判斷
         private bool FWUpdate(string s)
         {
@@ -1117,8 +1132,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return false;
             }
         }
+
         //0531 Bruce 因應IL的現有安裝包修改判斷，CLIPeripheralsPlugins.cs中Auto_FWUpdate方法修改回傳值型態和新增判斷
-        List<FWUpdateInfo> retFWUpdateInfos;
+        private List<FWUpdateInfo> retFWUpdateInfos;
+
         private bool? Auto_FWUpdate(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isUODMode, string installPath, bool isShowInfo = true, bool isForce = false)
         {
             try
@@ -1132,16 +1149,19 @@ namespace DDPM.CLI.Plugins.Peripherals
                         deviceTypes.Add(DeviceType.PhysicalDongle);
                         deviceType = DeviceType.LogicalKeyboard;
                         break;
+
                     case "MOUSE":
                         deviceTypes.Add(DeviceType.LogicalMouse);
                         deviceTypes.Add(DeviceType.PhysicalDongle);
                         deviceType = DeviceType.LogicalMouse;
                         break;
+
                     case "DOCK":
                         deviceTypes.Add(DeviceType.LogicalDock);
                         deviceTypes.Add(DeviceType.PhysicalWiredDock);
                         deviceType = DeviceType.LogicalDock;
                         break;
+
                     default:
                         deviceType = DeviceType.Unknown;
                         break;
@@ -1203,14 +1223,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return false;
             }
         }
-        void Download_Event(object o, List<FWUpdateInfo> e)
+
+        private void Download_Event(object o, List<FWUpdateInfo> e)
         {
             retFWUpdateInfos = e;
         }
-        bool isDownload, isInstalling;
+
+        private bool isDownload, isInstalling;
+
         private void _FWUpdatePlugin_ProgressUpdate(object sender, FWUpdateInfo e)
         {
-
             if (e.ProcessName.Equals("Installing"))
             {
                 if (!isInstalling)
@@ -1231,8 +1253,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 Console.WriteLine($"DeviceName:{e.DeviceName} to Version:{e.TheLatestVersion}, {e.ProcessName}");
             }
-
         }
-        #endregion
+
+        #endregion FW Update
     }
 }

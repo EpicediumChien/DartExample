@@ -1,18 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DDPM.UI.Common.Views
 {
@@ -23,7 +12,7 @@ namespace DDPM.UI.Common.Views
     {
         public enum DDPMMsgBox_btn_result
         {
-            close, 
+            close,
             left,  //generally means yes
             right  //generally means no
         }
@@ -58,6 +47,7 @@ namespace DDPM.UI.Common.Views
             }
 
             private Visibility _isButtonsShown = Visibility.Visible;
+
             public Visibility isButtonsShown
             {
                 get { return _isButtonsShown; }
@@ -79,6 +69,14 @@ namespace DDPM.UI.Common.Views
                 this.strContent = strContent;
             }
 
+            public DDPMMsgBoxViewModel(string strTitle, string strContent, bool IsCloseButton)
+            {
+                this.strTitle = strTitle;
+                this.strContent = strContent;
+                if (IsCloseButton)
+                    DisableBottomButtons();
+            }
+
             private void NotifyPropertyChanged(string info)
             {
                 if (PropertyChanged != null)
@@ -88,15 +86,48 @@ namespace DDPM.UI.Common.Views
             }
         }
 
-
         public DDPMMsgBox_btn_result result { get; set; } = DDPMMsgBox_btn_result.close;
 
-        public DDPMMsgBox(string strTitle, string strContent)
+        public DDPMMsgBox(string strTitle, string strContent, Window owner)
         {
             InitializeComponent();
+            this.Owner = owner;
+            SetStartPosition(owner);
 
             DDPMMsgBoxViewModel vm = new DDPMMsgBoxViewModel(strTitle, strContent);
             this.DataContext = vm;
+        }
+
+        public DDPMMsgBox(string strTitle, string strContent, bool IsCloseButton, Window owner)
+        {
+            InitializeComponent();
+            this.Owner = owner;
+            SetStartPosition(owner);
+
+            DDPMMsgBoxViewModel vm = new DDPMMsgBoxViewModel(strTitle, strContent, IsCloseButton);
+            this.DataContext = vm;
+        }
+
+        private void SetStartPosition(Window owner)
+        {
+            if (owner != null)
+            {
+                var screenWidth = SystemParameters.PrimaryScreenWidth;
+                var screenHeight = SystemParameters.PrimaryScreenHeight;
+
+                var windowWidth = this.Width;
+                var windowHeight = this.Height;
+
+                // Center on the owner window
+                this.Left = owner.Left + (owner.Width - windowWidth) / 2;
+                this.Top = owner.Top + (owner.Height - windowHeight) / 2;
+            }
+            else
+            {
+                // Center on screen if no owner
+                this.Left = (SystemParameters.PrimaryScreenWidth - this.Width) / 2;
+                this.Top = (SystemParameters.PrimaryScreenHeight - this.Height) / 2;
+            }
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

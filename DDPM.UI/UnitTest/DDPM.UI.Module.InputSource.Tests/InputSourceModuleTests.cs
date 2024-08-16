@@ -1,13 +1,8 @@
-﻿using DDPM.UI.Common.Interfaces;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.InputSource.Tests
@@ -18,7 +13,6 @@ namespace DDPM.UI.Module.InputSource.Tests
         private InputSourceModule? inputSourceModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
-
 
         [SetUp]
         public void Setup()
@@ -31,7 +25,6 @@ namespace DDPM.UI.Module.InputSource.Tests
             privateObject = new PrivateObject(inputSourceModule);
         }
 
-
         [Test]
         public void TestModuleName()
         {
@@ -41,7 +34,6 @@ namespace DDPM.UI.Module.InputSource.Tests
             // Assert
             Assert.That(result, Is.EqualTo("InputSourceModule"));
         }
-
 
         [Test]
         public void TestGetLeftView()
@@ -53,7 +45,6 @@ namespace DDPM.UI.Module.InputSource.Tests
             Assert.That(result, Is.Null);
         }
 
-
         [Test]
         public void TestGetRightView()
         {
@@ -64,7 +55,6 @@ namespace DDPM.UI.Module.InputSource.Tests
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<UserControl>());
         }
-
 
         [Test]
         public void TestSelectedHomeDevice()
@@ -80,7 +70,6 @@ namespace DDPM.UI.Module.InputSource.Tests
             Assert.That(result, Is.EqualTo(homeDevice));
         }
 
-
         [Test]
         public void TestModuleOwner()
         {
@@ -90,7 +79,6 @@ namespace DDPM.UI.Module.InputSource.Tests
 
             Assert.That(inputSourceModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
-
 
         [Test]
         public void TestViewModelInitialization()
@@ -143,8 +131,5 @@ namespace DDPM.UI.Module.InputSource.Tests
                 Assert.Fail("not invoked");
             }
         }
-
-
     }
 }
-

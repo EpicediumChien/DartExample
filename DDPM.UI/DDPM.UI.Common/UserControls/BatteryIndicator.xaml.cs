@@ -1,121 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
+﻿using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using Color = System.Windows.Media.Color;
 using UserControl = System.Windows.Controls.UserControl;
 
-namespace DDPM.UI.Common {
-  /// <summary>
-  /// BatteryIndicator.xaml 的互動邏輯
-  /// </summary>
-  public partial class BatteryIndicator : UserControl {
-    public static readonly DependencyProperty BatteryLevelProperty =
-        DependencyProperty.Register("BatteryLevel", typeof(double), typeof(BatteryIndicator), new PropertyMetadata(50.0, OnBatteryChanged));
-    public static readonly DependencyProperty BatteryStatusProperty =
-        DependencyProperty.Register("BatteryStatus", typeof(string), typeof(BatteryIndicator), new PropertyMetadata("Full", OnBatteryChanged));
-    public static readonly DependencyProperty ConnectionTypeProperty =
-        DependencyProperty.Register("ConnectionType", typeof(string), typeof(BatteryIndicator), new PropertyMetadata("Bluetooth", OnConnectionTypeChanged));
-    //public static readonly DependencyProperty ImageSourceProperty =
-    //    DependencyProperty.Register("ImageSource", typeof(string), typeof(BatteryIndicator), new PropertyMetadata("/DDPM.UI.Common;component/Resources/Bluetooth.png"));
+namespace DDPM.UI.Common
+{
+    /// <summary>
+    /// BatteryIndicator.xaml 的互動邏輯
+    /// </summary>
+    public partial class BatteryIndicator : UserControl
+    {
+        public static readonly DependencyProperty BatteryLevelProperty =
+            DependencyProperty.Register("BatteryLevel", typeof(double), typeof(BatteryIndicator), new PropertyMetadata(50.0, OnBatteryChanged));
 
-    public double BatteryLevel {
-      get { return (double)GetValue(BatteryLevelProperty); }
-      set { SetValue(BatteryLevelProperty, value); }
-    }
+        public static readonly DependencyProperty BatteryStatusProperty =
+            DependencyProperty.Register("BatteryStatus", typeof(string), typeof(BatteryIndicator), new PropertyMetadata("Full", OnBatteryChanged));
 
-    public string BatteryStatus {
-      get { return (string)GetValue(BatteryStatusProperty); }
-      set { SetValue(BatteryStatusProperty, value); }
-    }
+        public static readonly DependencyProperty ConnectionTypeProperty =
+            DependencyProperty.Register("ConnectionType", typeof(string), typeof(BatteryIndicator), new PropertyMetadata("Bluetooth", OnConnectionTypeChanged));
 
-    public string ConnectionType {
-      get { return (string)GetValue(ConnectionTypeProperty); }
-      set { SetValue(ConnectionTypeProperty, value); }
-    }
+        //public static readonly DependencyProperty ImageSourceProperty =
+        //    DependencyProperty.Register("ImageSource", typeof(string), typeof(BatteryIndicator), new PropertyMetadata("/DDPM.UI.Common;component/Resources/Bluetooth.png"));
 
-    //public double BatteryWidth {
-    //  get { return (double)GetValue(BatteryLevelProperty); }
-    //  set { SetValue(BatteryLevelProperty, value); }
-    //}
+        public double BatteryLevel
+        {
+            get { return (double)GetValue(BatteryLevelProperty); }
+            set { SetValue(BatteryLevelProperty, value); }
+        }
 
-    //public string BatteryLevelText {
-    //  get { return (string)GetValue(BatteryLevelTextProperty); }
-    //  set { SetValue(BatteryLevelTextProperty, value); }
-    //}
+        public string BatteryStatus
+        {
+            get { return (string)GetValue(BatteryStatusProperty); }
+            set { SetValue(BatteryStatusProperty, value); }
+        }
 
-    //public string ImageSource {
-    //  get { return (string)GetValue(ImageSourceProperty); }
-    //  set { SetValue(BatteryLevelProperty, value); }
-    //}
+        public string ConnectionType
+        {
+            get { return (string)GetValue(ConnectionTypeProperty); }
+            set { SetValue(ConnectionTypeProperty, value); }
+        }
 
-    public BatteryIndicator() {
-      InitializeComponent();
-      UpdateConnectionType();
-    }
+        //public double BatteryWidth {
+        //  get { return (double)GetValue(BatteryLevelProperty); }
+        //  set { SetValue(BatteryLevelProperty, value); }
+        //}
 
-    private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-      var control = (BatteryIndicator)d;
-      control.UpdateBatteryLevelIndicator();
-    }
+        //public string BatteryLevelText {
+        //  get { return (string)GetValue(BatteryLevelTextProperty); }
+        //  set { SetValue(BatteryLevelTextProperty, value); }
+        //}
 
-    private void UpdateBatteryLevelIndicator() {
-      var charging = BatteryStatus == "Charging" ? "1" : "0";
-      var level = "";
-      if (BatteryLevel >= 70) {
-        level = "4";
-      }
-      else if (BatteryLevel >= 40) {
-        level = "3";
-      }
-      else if (BatteryLevel >= 10) {
-        level = "2";
-      }
-      else if(BatteryLevel >= 0) {
-        level = "1";
-      }
-      else {
-        level = "0";
-      }
-      BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Battery{charging}{level}.png", UriKind.Relative));
-      BatteryLevelText.Text = level == "0" ? "" : BatteryLevel.ToString("#0") + "%";
-      BatteryImage.Source = bitmapImage;
-    }
-    private static void OnConnectionTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-      var control = (BatteryIndicator)d;
-      control.UpdateConnectionType();
-    }
+        //public string ImageSource {
+        //  get { return (string)GetValue(ImageSourceProperty); }
+        //  set { SetValue(BatteryLevelProperty, value); }
+        //}
 
-    private void UpdateConnectionType() {
-      //0617 Bruce 新增如判斷為有線也跟使用Port的圖片
-      if(ConnectionType == "Port" || ConnectionType== "Wired" || ConnectionType == "WiredAudio") {
-        ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Port.png");
-        stackPanel.Visibility = Visibility.Collapsed;
-        if(ConnectionType == "Wired" || ConnectionType == "WiredAudio")
-          txt1.Text = Strings.Wired;
-        return;
-      }
-      BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
-      ConnectionTypeImage.Source = bitmapImage;
-      UpdateBatteryLevelIndicator();
-    }
+        public BatteryIndicator()
+        {
+            InitializeComponent();
+            UpdateConnectionType();
+        }
 
-    //2024-5-15 Robert_Lin added
-    //
-    public string Text1
+        private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (BatteryIndicator)d;
+            control.UpdateBatteryLevelIndicator();
+        }
+
+        private void UpdateBatteryLevelIndicator()
+        {
+            var charging = BatteryStatus == "Charging" ? "1" : "0";
+            var level = "";
+            if (BatteryLevel >= 70)
+            {
+                level = "4";
+            }
+            else if (BatteryLevel >= 40)
+            {
+                level = "3";
+            }
+            else if (BatteryLevel >= 10)
+            {
+                level = "2";
+            }
+            else if (BatteryLevel >= 0)
+            {
+                level = "1";
+            }
+            else
+            {
+                level = "0";
+            }
+            BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Battery{charging}{level}.png", UriKind.Relative));
+            BatteryLevelText.Text = level == "0" ? "" : BatteryLevel.ToString("#0") + "%";
+            BatteryImage.Source = bitmapImage;
+        }
+
+        private static void OnConnectionTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (BatteryIndicator)d;
+            control.UpdateConnectionType();
+        }
+
+        private void UpdateConnectionType()
+        {
+            //0617 Bruce 新增如判斷為有線也跟使用Port的圖片
+            if (ConnectionType == "Port" || ConnectionType == "Wired" || ConnectionType == "WiredAudio")
+            {
+                ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Port.png");
+                stackPanel.Visibility = Visibility.Collapsed;
+                if (ConnectionType == "Wired" || ConnectionType == "WiredAudio")
+                    txt1.Text = Strings.Wired;
+                return;
+            }
+            BitmapImage bitmapImage = new BitmapImage(new Uri($"/DDPM.UI.Resources;component/Resources/Images/{ConnectionType}.png", UriKind.Relative));
+            ConnectionTypeImage.Source = bitmapImage;
+            UpdateBatteryLevelIndicator();
+        }
+
+        //2024-5-15 Robert_Lin added
+        //
+        public string Text1
         {
             get { return (string)GetValue(Text1Property); }
             set { SetValue(Text1Property, value); }
@@ -130,12 +134,11 @@ namespace DDPM.UI.Common {
             var control = (BatteryIndicator)d;
             control.UpdateText1();
         }
+
         private void UpdateText1()
         {
             txt1.Text = Text1;
         }
-
-
 
         public bool NoBattery
         {
@@ -160,6 +163,5 @@ namespace DDPM.UI.Common {
             else
                 stackPanel.Visibility = Visibility.Visible;
         }
-
     }
 }

@@ -1,23 +1,20 @@
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.UX.WPF;
-using Microsoft.Extensions.DependencyInjection;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using NGA.ThickClient.Interfaces;
-using System.Diagnostics.CodeAnalysis;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.PluginConditions;
 using DDPM.SA.Common;
 using DDPM.UI.Interfaces;
-using System.Windows.Input;
 using DDPM.UI.Plugin.ViewModels;
-using CommunityToolkit.Mvvm.Input;
-using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Plugin.Common.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.UX.WPF;
+using Microsoft.Extensions.DependencyInjection;
+using NGA.ThickClient.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Windows.Input;
 
 namespace DDPM.UI.Plugin.HeadsetPlugin
 {
     /// <summary>
-    /// Interaction logic for PenPlugin 
+    /// Interaction logic for PenPlugin
     /// </summary>
     [Plugin(PluginId, PluginName, Version = PluginVersion, Category = Category.Utility)]
     [Descriptor(Description = Description)]
@@ -63,7 +60,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         //private void ShowAddDeviceView() {
         //  _console.ShowPluginById(PluginId);
         //}
-
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
         {
@@ -216,12 +212,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             GetPeripheralsAsync();
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
         }
-        #endregion
+        #endregion Interface IConsolePluginSupportsActivations
 
         ~HeadsetPlugin()
         {
             _deviceManagerPlugin.DeviceChanged -= DeviceManager_DeviceChanged;
         }
     }
-
 }

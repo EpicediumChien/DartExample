@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DDPM.SA.Common
 {
@@ -11,6 +7,7 @@ namespace DDPM.SA.Common
     {
         //"EditCommand","EditError", "EditCancel","
         public string Command { get; set; }
+
         public int CellCount { get; set; }
         public char SplitKey { get; set; }
         public int CustomId { get; set; }
@@ -21,10 +18,10 @@ namespace DDPM.SA.Common
         public string Message { get; set; }
 
         #region ctor
+
         //Default ctor
         public EAArgs()
         {
-
         }
 
         //Copy ctor
@@ -40,6 +37,7 @@ namespace DDPM.SA.Common
             this.Message = other.Message;
             this.Settings = new List<double>(other.Settings);
         }
-        #endregion
+
+        #endregion ctor
     }
 }

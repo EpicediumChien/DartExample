@@ -1,10 +1,6 @@
 ﻿using Dell.Client.Framework.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Common
@@ -36,19 +32,24 @@ namespace DDPM.SA.Common
         fail_FormantError = 102,
         fail_NotSupport = 103,
         fail_Value = 104, //Jason add
+
         //Robert_Lin, 2024-6-5 added
         functional_error,
+
         invalide_cmdline_syntax,
         no_matched_monitor_found,
         no_this_capability,
         nothing_to_do,
+
         //End of Robert_Lin, 2024-6-5 added
         no_monitor_connected,
+
         //Analytics, Dean
         fail_read_settings,
+
         fail_write_settings,
         fail_no_analytics_options,
-        fail_analytics_option_notsupport,        
+        fail_analytics_option_notsupport,
         null_settings_plugin_IT,
         fail_SetSettings_ITSettingsValue,
         fail_notAdmin = 9999, //CLI is an IT/Admin tool, not allow normal privilege
@@ -68,8 +69,8 @@ namespace DDPM.SA.Common
 
     public class CLIEventArgs : EventArgs //definition for ICliManagerIT
     {
-        public string command_guid_string {  get; set; }
-        public CommandLineInput commandLineInput { get; set; }        
+        public string command_guid_string { get; set; }
+        public CommandLineInput commandLineInput { get; set; }
     }
 
     public class CLIEventResult //definition for ICliManagerSA
@@ -86,6 +87,7 @@ namespace DDPM.SA.Common
     public interface ICliManagerSA : IFrameworkPlugin
     {
         Task WriteCommandResult(CLIEventResult result);
+
         event EventHandler<CLIEventArgs> CLIActionEvent;
     }
 
@@ -95,7 +97,7 @@ namespace DDPM.SA.Common
     public interface ICliManagerIT : IFrameworkPlugin
     {
         //Input is command line parsing object, and the return integer is ExitCode
-        Task<CLIEventResult> PerformCommandLineRelay(CommandLineInput commandLineInput);        
+        Task<CLIEventResult> PerformCommandLineRelay(CommandLineInput commandLineInput);
     }
 
     public interface ICliProxy : IFrameworkPlugin

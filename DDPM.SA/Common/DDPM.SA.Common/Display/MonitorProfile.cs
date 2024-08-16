@@ -1,10 +1,5 @@
 using System;
-using System.ComponentModel;
-using System.IO;
-using System.Threading;
 using System.Runtime.InteropServices;
-using Microsoft.Win32;
-using System.Windows.Threading;
 using System.Text;
 
 namespace DDPM.SA.Common
@@ -12,7 +7,7 @@ namespace DDPM.SA.Common
     public class MonitorProfile
     {
         [Flags()]
-        enum DisplayDeviceStateFlags : UInt32
+        private enum DisplayDeviceStateFlags : UInt32
         {
             ///* Child device state */
             //#if (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
@@ -21,31 +16,39 @@ namespace DDPM.SA.Common
             //#endif // (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
             /// <summary>The device is part of the desktop.</summary>
             AttachedToDesktop = 0x1,
+
             MultiDriver = 0x2,
+
             /// <summary>The device is part of the desktop.</summary>
             PrimaryDevice = 0x4,
+
             /// <summary>Represents a pseudo device used to mirror application drawing for remoting or other purposes.</summary>
             MirroringDriver = 0x8,
+
             /// <summary>The device is VGA compatible.</summary>
             VGACompatible = 0x10,
+
             /// <summary>The device is removable; it cannot be the primary display.</summary>
             Removable = 0x20,
+
             /// <summary>The device has more display modes than its output devices support.</summary>
             ModesPruned = 0x8000000,
+
             Remote = 0x4000000,
             Disconnect = 0x2000000,
 
             /// <summary>Child device state: DISPLAY_DEVICE_ACTIVE</summary>
             Active = 0x1,
+
             /// <summary>Child device state: DISPLAY_DEVICE_ATTACHED</summary>
             Attached = 0x2
         }
 
-        enum DeviceClassFlags : UInt32
+        private enum DeviceClassFlags : UInt32
         {
             // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
             /// <summary>
-            ///#define CLASS_MONITOR           'mntr' 
+            ///#define CLASS_MONITOR           'mntr'
             /// </summary>
             CLASS_MONITOR = 0x6d6e7472,
 
@@ -60,33 +63,37 @@ namespace DDPM.SA.Common
             CLASS_SCANNER = 0x73636e72
         }
 
-        enum WCS_PROFILE_MANAGEMENT_SCOPE : UInt32
+        private enum WCS_PROFILE_MANAGEMENT_SCOPE : UInt32
         {
             // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
             WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE,
+
             WCS_PROFILE_MANAGEMENT_SCOPE_CURRENT_USER
         }
 
-        enum COLORPROFILETYPE : UInt32
+        private enum COLORPROFILETYPE : UInt32
         {
             // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
             CPT_ICC,
+
             CPT_DMP,
             CPT_CAMP,
             CPT_GMMP
         }
 
-        enum COLORPROFILESUBTYPE : UInt32
+        private enum COLORPROFILESUBTYPE : UInt32
         {
             // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
             // intent
             CPST_PERCEPTUAL = 0,
+
             CPST_RELATIVE_COLORIMETRIC = 1,
             CPST_SATURATION = 2,
             CPST_ABSOLUTE_COLORIMETRIC = 3,
 
             // working space
             CPST_NONE,
+
             CPST_RGB_WORKING_SPACE,
             CPST_CUSTOM_WORKING_SPACE,
         };
@@ -97,19 +104,24 @@ namespace DDPM.SA.Common
             // from: http://www.pinvoke.net/default.aspx/Structures/DISPLAY_DEVICE.html
             [MarshalAs(UnmanagedType.U4)]
             public int cb;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
             public string DeviceName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
             public string DeviceString;
+
             [MarshalAs(UnmanagedType.U4)]
             public DisplayDeviceStateFlags StateFlags;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
             public string DeviceID;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
             public string DeviceKey;
         }
 
-        const UInt32 EDD_GET_DEVICE_INTERFACE_NAME = 0x1;
+        private const UInt32 EDD_GET_DEVICE_INTERFACE_NAME = 0x1;
 
         //BOOL EnumDisplayDevices(
         //  _In_ LPCTSTR         lpDevice,
@@ -128,7 +140,6 @@ namespace DDPM.SA.Common
 
         [DllImport("mscms.dll", SetLastError = true)]
         private static extern bool InstallColorProfile(IntPtr pMachineName, string pProfileName);
-
 
         // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
         //BOOL WINAPI WcsGetUsePerUserProfiles(
@@ -311,8 +322,6 @@ namespace DDPM.SA.Common
                 }
             }
 
-
-
             // Third, find out whether to use the global or user profile
             UInt32 usePerUserProfiles = 0;
             UInt32 res = WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
@@ -343,7 +352,6 @@ namespace DDPM.SA.Common
         {
             bool blRes = false;
             blRes = InstallColorProfile(IntPtr.Zero, pProfileName);
-
 
             // c++ recommendation: http://stackoverflow.com/questions/13533754/code-example-for-wcsgetdefaultcolorprofile
 
@@ -389,7 +397,6 @@ namespace DDPM.SA.Common
                 WCS_PROFILE_MANAGEMENT_SCOPE.WCS_PROFILE_MANAGEMENT_SCOPE_CURRENT_USER :
                 WCS_PROFILE_MANAGEMENT_SCOPE.WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE;
 
-
             blRes = AssociateColorProfileWithDevice(IntPtr.Zero, pProfileName, deviceName);
 
             return blRes;
@@ -401,7 +408,7 @@ namespace DDPM.SA.Common
         public static string GetColorDirectory()
         {
             // s. http://stackoverflow.com/questions/14792764/is-there-an-equivalent-to-winapi-getcolordirectory-in-net
-            uint pdwSize = 260;  // MAX_PATH 
+            uint pdwSize = 260;  // MAX_PATH
             StringBuilder sb = new StringBuilder((int)pdwSize);
             if (GetColorDirectory(IntPtr.Zero, sb, ref pdwSize))
             {
@@ -412,7 +419,5 @@ namespace DDPM.SA.Common
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
             }
         }
-
     }
-
 }

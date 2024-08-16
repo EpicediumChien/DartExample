@@ -1,27 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using DDPM.SA.Common.Display;
-using DDPM.UI.Common;
 using DDPM.UI.Common.EAEM;
-using DDPM.UI.Common.Interfaces;
-using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.DdpmHomePlugin;
 using Dell.Client.Framework.UX.WPF;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.UI.Module.PipPbp
 {
@@ -31,6 +16,7 @@ namespace DDPM.UI.Module.PipPbp
     public partial class PipPbpRightView : UserControl
     {
         #region Init
+
         public PipPbpRightView(PipPbpViewModel _vm)
         {
             InitializeComponent();
@@ -53,9 +39,9 @@ namespace DDPM.UI.Module.PipPbp
             //_vm.On
             _vm.RefreshData();
         }
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-
             //Workaround, until I can fix issue: pipOff.ClickCommand always null using data binding
             //
             pipOff.ClickCommand = new RelayCommand<SplitItem>(vm.OnFullScreenClicked);
@@ -93,23 +79,20 @@ namespace DDPM.UI.Module.PipPbp
             sp5A.InnerContent = new SplitCtrl5A();
             spliListView_Pip.AddSplitToList(sp5A);
             */
-
-            
         }
-        #endregion
+
+        #endregion Init
+
         private PipPbpViewModel vm
         {
             get => (PipPbpViewModel)this.DataContext;
         }
-
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
             console?.ShowPluginById(Common.Constants.WholeWindowPluginId);
         }
-
- 
 
         #region ClickCommand for SplitItems
 
@@ -118,15 +101,18 @@ namespace DDPM.UI.Module.PipPbp
             //spItem.IsSelected = !spItem.IsSelected;
             vm.OnFullScreenClicked(spItem);
         }
+
         private void OnPipSmallClicked(SplitItem spItem)
         {
             vm.OnPipSmallClicked((SplitItem)spItem);
         }
+
         private void OnPipLargeClicked(SplitItem spItem)
         {
             vm.OnPipLargeClicked((SplitItem)spItem);
         }
-        #endregion
+
+        #endregion ClickCommand for SplitItems
 
         private void HandleSplitItemClickCommand(SplitItem spItem)
         {
@@ -155,11 +141,11 @@ namespace DDPM.UI.Module.PipPbp
             Trace.WriteLine("PipPbpRightView.Unloaded");
         }
 
-        #region Capabilities event handler 
+        #region Capabilities event handler
+
         public event RoutedEventHandler OnCapabilitiesChanged;
 
-
-        #endregion
+        #endregion Capabilities event handler
 
         private void usbSwitchButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

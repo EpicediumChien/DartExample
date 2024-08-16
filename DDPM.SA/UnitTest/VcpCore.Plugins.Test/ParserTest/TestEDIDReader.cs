@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using VcpCore.Common;
 using static VcpCore.Plugins.EDIDReader;
 
@@ -24,7 +25,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             int expected = 5;
             int actual = EDIDReader.MaximumCommonDivisor(num4, num5);
             Assert.That(expected, Is.EqualTo(actual));
-
         }
 
         [Test]
@@ -46,7 +46,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             char result = EDIDReader.ToCharByASCIIShort(a); //66 B
             Assert.That(ch1, Is.EqualTo(result));
         }
-
 
         [Test]
         public void TestContains()
@@ -121,14 +120,12 @@ namespace VcpCore.Plugins.Test.ParserTest
         [Test]
         public void TestManufacturer_Name_()
         {
-
             byte byte8 = 0x10;
             byte byte9 = 0xAC;
             string Manufacturer_Name2 = "DEL";
 
             var result = Vendor_Product_Identification.Manufacturer_Name(byte8, byte9);
             Assert.That(Manufacturer_Name2, Is.EqualTo(result));
-
         }
 
         [Test]
@@ -377,7 +374,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 {
                     var result = Display_Parameters.Video_White_and_Sync_Levels(validEdid);
                     Assert.That(Video_White_and_Sync_Levels2, Is.EqualTo(result));
-
                 }
                 else if ((validEdid[20] & 0x60) == 0x60)//11
                 {
@@ -574,7 +570,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestVSync_Pulse_Must_Be_Serrated()
         {
@@ -697,7 +692,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestMax_Display_Size()
         {
@@ -747,4 +741,914 @@ namespace VcpCore.Plugins.Test.ParserTest
         }
 
     }
+
+    public class TestPower_Management_and_Features
+    {
+        [Test]
+        public void TestStandby()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x81;//128
+
+            byte[] InvalidEdid = new byte[128];
+            InvalidEdid[24] = 0x41; //65
+
+            string Standbysupport = "Supported";
+            string StandbyNosupport = "Not Supported";
+            Power_Management_and_Features power_Management_and_Features = new Power_Management_and_Features();
+
+            if ((validEdid[24] & 0x80) == 0x80)
+            {
+                var result = Power_Management_and_Features.Standby(validEdid);
+                Assert.That(Standbysupport, Is.EqualTo(result));
+            }
+            if ((InvalidEdid[24] & 0x80) != 0x80)
+            {
+                var result = Power_Management_and_Features.Standby(InvalidEdid);
+                Assert.That(StandbyNosupport, Is.EqualTo(result));
+            }
+
+        }
+
+        [Test]
+        public void TestSuspend()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x41;//65
+
+            byte[] InvalidEdid = new byte[128];
+            InvalidEdid[24] = 0x81; //129
+
+            string Suspendsupport = "Supported";
+            string SuspendNosupport = "Not Supported";
+            Power_Management_and_Features power_Management_and_Features = new Power_Management_and_Features();
+
+            if ((validEdid[24] & 0x40) == 0x40)
+            {
+                var result = Power_Management_and_Features.Suspend(validEdid);
+                Assert.That(Suspendsupport, Is.EqualTo(result));
+            }
+            if ((InvalidEdid[24] & 0x40) != 0x40)
+            {
+                var result = Power_Management_and_Features.Suspend(InvalidEdid);
+                Assert.That(SuspendNosupport, Is.EqualTo(result));
+            }
+
+        }
+
+        [Test]
+        public void TestActiveOff()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x21;//33
+
+            byte[] InvalidEdid = new byte[128];
+            InvalidEdid[24] = 0x81; //129
+
+            string ActiveOffsupport = "Supported";
+            string ActiveOffNosupport = "Not Supported";
+            Power_Management_and_Features power_Management_and_Features = new Power_Management_and_Features();
+
+            if ((validEdid[24] & 0x20) == 0x20)
+            {
+                var result = Power_Management_and_Features.ActiveOff(validEdid);
+                Assert.That(ActiveOffsupport, Is.EqualTo(result));
+            }
+            if ((InvalidEdid[24] & 0x20) != 0x20)
+            {
+                var result = Power_Management_and_Features.ActiveOff(InvalidEdid);
+                Assert.That(ActiveOffNosupport, Is.EqualTo(result));
+            }
+
+        }
+
+        [Test]
+        public void TestVideo_Input_Display_Type()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x18;//24
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Video_Input_Display_Type1 = "";
+            string Video_Input_Display_Type2 = "3";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Power_Management_and_Features.Video_Input_Display_Type(InvalidEdid);
+                Assert.That(Video_Input_Display_Type1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Power_Management_and_Features.Video_Input_Display_Type(validEdid);
+                Assert.That(Video_Input_Display_Type2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestVideo_Input()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x80;//128
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Video_Input1 = "";
+            string Video_Input2 = "1";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Power_Management_and_Features.Video_Input(InvalidEdid);
+                Assert.That(Video_Input1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Power_Management_and_Features.Video_Input(validEdid);
+                Assert.That(Video_Input2, Is.EqualTo(result));
+            }
+        }
+
+
+        [Test]
+        public void TestsRGB_Default_ColorSpace()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x05;//5
+
+            byte[] InvalidEdid = new byte[128];
+            InvalidEdid[24] = 0x09; //129
+
+            string sRGB_Default_ColorSpace1 = "True";
+            string sRGB_Default_ColorSpace2 = "False";
+            Power_Management_and_Features power_Management_and_Features = new Power_Management_and_Features();
+
+            if ((validEdid[24] & 0x04) == 0x04)
+            {
+                var result = Power_Management_and_Features.sRGB_Default_ColorSpace(validEdid);
+                Assert.That(sRGB_Default_ColorSpace1, Is.EqualTo(result));
+            }
+            if ((InvalidEdid[24] & 0x40) != 0x40)
+            {
+                var result = Power_Management_and_Features.sRGB_Default_ColorSpace(InvalidEdid);
+                Assert.That(sRGB_Default_ColorSpace2, Is.EqualTo(result));
+            }
+
+        }
+
+        [Test]
+        public void TestDefault_GTF()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x02;//5
+
+            byte[] InvalidEdid = new byte[128];
+            InvalidEdid[24] = 0x04; //129
+
+            string Default_GTF1 = "Supported";
+            string Default_GTF2 = "Not Supported";
+
+            if ((validEdid[24] & 0x02) == 0x02)
+            {
+                var result = Power_Management_and_Features.Default_GTF(validEdid);
+                Assert.That(Default_GTF2, Is.EqualTo(result));
+            }
+            if ((InvalidEdid[24] & 0x02) != 0x02)
+            {
+                var result = Power_Management_and_Features.Default_GTF(InvalidEdid);
+                Assert.That(Default_GTF1, Is.EqualTo(result));
+            }
+
+        }
+
+
+        [Test]
+        public void TestPrefered_Timing_Mode()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x02;//5
+
+            byte[] InvalidEdid = new byte[128];
+            InvalidEdid[24] = 0x04; //129
+
+            string Prefered_Timing_Mode1 = "True";
+            string Prefered_Timing_Mode2 = "False";
+
+            if ((validEdid[24] & 0x02) == 0x02)
+            {
+                var result = Power_Management_and_Features.Prefered_Timing_Mode(validEdid);
+                Assert.That(Prefered_Timing_Mode1, Is.EqualTo(result));
+            }
+            if ((InvalidEdid[24] & 0x02) != 0x02)
+            {
+                var result = Power_Management_and_Features.Prefered_Timing_Mode(InvalidEdid);
+                Assert.That(Prefered_Timing_Mode2, Is.EqualTo(result));
+            }
+
+        }
+
+    }
+
+    public class TestGamma_Color_and_Etablished_Timings
+    {
+        [Test]
+        public void TestDisplay_Gamma()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[23] = 0x64;//100
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Display_Gamma1 = "";
+            string Display_Gamma2 = "2.00";
+
+            Gamma_Color_and_Etablished_Timings gamma_Color_And_Etablished_Timings = new Gamma_Color_and_Etablished_Timings();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Display_Gamma(InvalidEdid);
+                Assert.That(Display_Gamma1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Display_Gamma(validEdid);
+                Assert.That(Display_Gamma2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestRed()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[25] = 0x3F;
+            validEdid[27] = 0xFF;
+            validEdid[28] = 0xFF;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Red1 = "";
+            string Red2 = "(x,y)(0.9961,0.9990)";
+
+            Gamma_Color_and_Etablished_Timings gamma_Color_And_Etablished_Timings = new Gamma_Color_and_Etablished_Timings();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Red(InvalidEdid);
+                Assert.That(Red1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Red(validEdid);
+                Assert.That(Red2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestGreen()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[25] = 0x4F;
+            validEdid[29] = 0xEF;
+            validEdid[30] = 0xEF;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Green1 = "";
+            string Green2 = "(x,y)(0.9365,0.9365)";
+
+            Gamma_Color_and_Etablished_Timings gamma_Color_And_Etablished_Timings = new Gamma_Color_and_Etablished_Timings();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Green(InvalidEdid);
+                Assert.That(Green1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Green(validEdid);
+                Assert.That(Green2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestBlue()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[25] = 0x5F;
+            validEdid[26] = 0xDF;
+            validEdid[31] = 0xFF;
+            validEdid[32] = 0xFF;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Blue1 = "";
+            string Blue2 = "(x,y)(0.9971,0.9971)";
+
+            Gamma_Color_and_Etablished_Timings gamma_Color_And_Etablished_Timings = new Gamma_Color_and_Etablished_Timings();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Blue(InvalidEdid);
+                Assert.That(Blue1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Blue(validEdid);
+                Assert.That(Blue2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestWhite()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[25] = 0x6F;
+            validEdid[26] = 0xCF;
+            validEdid[33] = 0xEF;
+            validEdid[34] = 0xEF;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string White1 = "";
+            string White2 = "(x,y)(0.9365,0.9365)";
+
+            Gamma_Color_and_Etablished_Timings gamma_Color_And_Etablished_Timings = new Gamma_Color_and_Etablished_Timings();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.White(InvalidEdid);
+                Assert.That(White1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.White(validEdid);
+                Assert.That(White2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestEtablished_Timings()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[35] = 0x80;
+            validEdid[36] = 0x40;
+            validEdid[37] = 0x20;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Etablished_Timings1 = "";
+            string Etablished_Timings2 = "\r\n\t\t720×400 @ 70 Hz\r\n\t\t800×600 @ 75 Hz\r\n\t\tOther manufacturer-specific display modes 2 | 0010 0000\r\n";
+
+            Gamma_Color_and_Etablished_Timings gamma_Color_And_Etablished_Timings = new Gamma_Color_and_Etablished_Timings();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Etablished_Timings(InvalidEdid);
+                Assert.That(Etablished_Timings1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Etablished_Timings(validEdid);
+                Assert.That(Etablished_Timings2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestDisplay_Type()
+        {
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+
+            byte[] validEdid = new byte[128];
+            validEdid[20] = 0x80;
+            validEdid[24] = 0x18;
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[20] = 0x80;
+            validEdid2[24] = 0x10;
+
+            byte[] validEdid3 = new byte[128];
+            validEdid3[20] = 0x80;
+            validEdid3[24] = 0x08;
+
+            byte[] validEdid4 = new byte[128];
+            validEdid4[20] = 0x80;
+            validEdid4[24] = 0x00;
+
+            byte[] validEdid5 = new byte[128];
+            validEdid5[20] = 0x41;
+            validEdid5[24] = 0x18;
+
+            byte[] validEdid6 = new byte[128];
+            validEdid6[20] = 0x41;
+            validEdid6[24] = 0x10;
+
+            byte[] validEdid7 = new byte[128];
+            validEdid7[20] = 0x41;
+            validEdid7[24] = 0x08;
+
+            byte[] validEdid8 = new byte[128];
+            validEdid8[20] = 0x41;
+            validEdid8[24] = 0x00;
+
+            string Display_Type1 = "";
+            string Display_Type2 = "(Digital) RGB 4:4:4 + YCrCb 4:4:4 + YCrCb 4:2:2";
+            string Display_Type3 = "(Digital) RGB 4:4:4 + YCrCb 4:2:2";
+            string Display_Type4 = "(Digital) RGB 4:4:4 + YCrCb 4:4:4";
+            string Display_Type5 = "(Digital) RGB 4:4:4";
+            string Display_Type6 = "(Analog) Undefined";
+            string Display_Type7 = "(Analog) Non-RGB color";
+            string Display_Type8 = "(Analog) RGB color";
+            string Display_Type9 = "(Analog) Monochrome or Grayscale";
+            Gamma_Color_and_Etablished_Timings gamma_Color_And_Etablished_Timings = new Gamma_Color_and_Etablished_Timings();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Display_Type(InvalidEdid);
+                Assert.That(Display_Type1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if ((validEdid[20] & 0x80) == 0x80)
+                {
+                    if ((validEdid[24] & 0x18) == 0x18)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid);
+                        Assert.That(Display_Type2, Is.EqualTo(result));
+                    }
+                    if ((validEdid2[24] & 0x10) == 0x10)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid2);
+                        Assert.That(Display_Type3, Is.EqualTo(result));
+                    }
+
+                    if ((validEdid3[24] & 0x08) == 0x08)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid3);
+                        Assert.That(Display_Type4, Is.EqualTo(result));
+                    }
+
+                    if ((validEdid4[24] & 0x08) != 0x08)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid4);
+                        Assert.That(Display_Type5, Is.EqualTo(result));
+                    }
+                }
+
+                if ((validEdid5[20] & 0x80) != 0x80)
+                {
+                    if ((validEdid5[24] & 0x18) == 0x18)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid5);
+                        Assert.That(Display_Type6, Is.EqualTo(result));
+                    }
+
+                    if ((validEdid6[24] & 0x10) == 0x10)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid6);
+                        Assert.That(Display_Type7, Is.EqualTo(result));
+                    }
+                    if ((validEdid7[24] & 0x08) == 0x08)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid7);
+                        Assert.That(Display_Type8, Is.EqualTo(result));
+                    }
+                    if ((validEdid8[24] & 0x08) != 0x08)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid8);
+                        Assert.That(Display_Type9, Is.EqualTo(result));
+                    }
+                }
+            }
+        }
+
+
+
+        [Test]
+        public void TestDisplay_Type_()
+        {
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+
+            byte videoInputType = 0x80;
+            byte videoInputType2 = 0x41;
+
+            byte[] validEdid = new byte[128];
+            validEdid[24] = 0x18;
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[24] = 0x10;
+
+            byte[] validEdid3 = new byte[128];
+            validEdid3[24] = 0x08;
+
+            byte[] validEdid4 = new byte[128];
+            validEdid4[24] = 0x00;
+
+            byte[] validEdid5 = new byte[128];
+            validEdid5[24] = 0x18;
+
+            byte[] validEdid6 = new byte[128];
+            validEdid6[24] = 0x10;
+
+            byte[] validEdid7 = new byte[128];
+            validEdid7[24] = 0x08;
+
+            byte[] validEdid8 = new byte[128];
+            validEdid8[24] = 0x00;
+
+            string Display_Type1 = "";
+            string Display_Type2 = "(Digital) RGB 4:4:4 + YCrCb 4:4:4 + YCrCb 4:2:2";
+            string Display_Type3 = "(Digital) RGB 4:4:4 + YCrCb 4:2:2";
+            string Display_Type4 = "(Digital) RGB 4:4:4 + YCrCb 4:4:4";
+            string Display_Type5 = "(Digital) RGB 4:4:4";
+            string Display_Type6 = "(Analog) Undefined";
+            string Display_Type7 = "(Analog) Non-RGB color";
+            string Display_Type8 = "(Analog) RGB color";
+            string Display_Type9 = "(Analog) Monochrome or Grayscale";
+            Gamma_Color_and_Etablished_Timings gamma_Color_And_Etablished_Timings = new Gamma_Color_and_Etablished_Timings();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Gamma_Color_and_Etablished_Timings.Display_Type(InvalidEdid, videoInputType);
+                Assert.That(Display_Type1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if ((videoInputType & 0x80) == 0x80)
+                {
+                    if ((validEdid[24] & 0x18) == 0x18)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid, videoInputType);
+                        Assert.That(Display_Type2, Is.EqualTo(result));
+                    }
+                    if ((validEdid2[24] & 0x10) == 0x10)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid2, videoInputType);
+                        Assert.That(Display_Type3, Is.EqualTo(result));
+                    }
+
+                    if ((validEdid3[24] & 0x08) == 0x08)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid3, videoInputType);
+                        Assert.That(Display_Type4, Is.EqualTo(result));
+                    }
+
+                    if ((validEdid4[24] & 0x08) != 0x08)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid4, videoInputType);
+                        Assert.That(Display_Type5, Is.EqualTo(result));
+                    }
+                }
+
+                if ((videoInputType2 & 0x80) != 0x80)
+                {
+                    if ((validEdid5[24] & 0x18) == 0x18)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid5, videoInputType2);
+                        Assert.That(Display_Type6, Is.EqualTo(result));
+                    }
+
+                    if ((validEdid6[24] & 0x10) == 0x10)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid6, videoInputType2);
+                        Assert.That(Display_Type7, Is.EqualTo(result));
+                    }
+                    if ((validEdid7[24] & 0x08) == 0x08)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid7, videoInputType2);
+                        Assert.That(Display_Type8, Is.EqualTo(result));
+                    }
+                    if ((validEdid8[24] & 0x08) != 0x08)
+                    {
+                        var result = Gamma_Color_and_Etablished_Timings.Display_Type(validEdid8, videoInputType2);
+                        Assert.That(Display_Type9, Is.EqualTo(result));
+                    }
+                }
+            }
+        }
+
+    }
+
+    public class TestPreferred_Detailed_Timing
+    {
+        [Test]
+        public void TestActive_Ratio()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[56] = 10;
+            validEdid[58] = 20;
+            validEdid[59] = 30;
+            validEdid[61] = 40;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Active_Ratio1 = "";
+            string Active_Ratio2 = "133:271";
+
+            Preferred_Detailed_Timing preferred_Detailed_Timing = new Preferred_Detailed_Timing();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Active_Ratio(InvalidEdid);
+                Assert.That(Active_Ratio1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Active_Ratio(validEdid);
+                Assert.That(Active_Ratio2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestPixel_Clock()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[54] = 60;
+            validEdid[55] = 70;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Pixel_Clock1 = "";
+            string Pixel_Clock2 = "179.80MHz";
+
+            Preferred_Detailed_Timing preferred_Detailed_Timing = new Preferred_Detailed_Timing();
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Pixel_Clock(InvalidEdid);
+                Assert.That(Pixel_Clock1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Pixel_Clock(validEdid);
+                Assert.That(Pixel_Clock2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestHorizontal_Active()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[56] = 40;
+            validEdid[58] = 80;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Horizontal_Active1 = "";
+            string Horizontal_Active2 = "1320 pixels";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Active(InvalidEdid);
+                Assert.That(Horizontal_Active1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Active(validEdid);
+                Assert.That(Horizontal_Active2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestHorizontal_Blanking()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[57] = 30;
+            validEdid[58] = 70;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Horizontal_Blanking1 = "";
+            string Horizontal_Blanking2 = "1566 pixels";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Blanking(InvalidEdid);
+                Assert.That(Horizontal_Blanking1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Blanking(validEdid);
+                Assert.That(Horizontal_Blanking2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestHorizontal_Sync_Offset()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[62] = 60;
+            validEdid[65] = 40;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Horizontal_Sync_Offset1 = "";
+            string Horizontal_Sync_Offset2 = "60 pixels";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Sync_Offset(InvalidEdid);
+                Assert.That(Horizontal_Sync_Offset1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Sync_Offset(validEdid);
+                Assert.That(Horizontal_Sync_Offset2, Is.EqualTo(result));
+            }
+        }
+
+
+        [Test]
+        public void TestHorizontal_Sync_Pulse_Width()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[63] = 20;
+            validEdid[65] = 80;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Horizontal_Sync_Pulse_Width1 = "";
+            string Horizontal_Sync_Pulse_Width2 = "276 pixels";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Sync_Pulse_Width(InvalidEdid);
+                Assert.That(Horizontal_Sync_Pulse_Width1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Sync_Pulse_Width(validEdid);
+                Assert.That(Horizontal_Sync_Pulse_Width2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestHorizontal_Border()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[69] = 200;
+            string Horizontal_Border2 = "200 pixels";
+            var result = Preferred_Detailed_Timing.Horizontal_Border(validEdid);
+            Assert.That(Horizontal_Border2, Is.EqualTo(result));
+
+        }
+
+        [Test]
+        public void TestHorizontal_Size()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[66] = 40;
+            validEdid[68] = 80;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Horizontal_Size1 = "";
+            string Horizontal_Size2 = "1320 mm";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Size(InvalidEdid);
+                Assert.That(Horizontal_Size1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Horizontal_Size(validEdid);
+                Assert.That(Horizontal_Size2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestVertical_Active()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[59] = 30;
+            validEdid[61] = 60;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Vertical_Active1 = "";
+            string Vertical_Active2 = "798 lines";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Active(InvalidEdid);
+                Assert.That(Vertical_Active1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Active(validEdid);
+                Assert.That(Vertical_Active2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestVertical_Blanking()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[60] = 20;
+            validEdid[61] = 90;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Vertical_Blanking1 = "";
+            string Vertical_Blanking2 = "2580 lines";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Blanking(InvalidEdid);
+                Assert.That(Vertical_Blanking1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Blanking(validEdid);
+                Assert.That(Vertical_Blanking2, Is.EqualTo(result));
+            }
+        }
+
+
+        [Test]
+        public void TestVertical_Sync_Offset()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[64] = 30;
+            validEdid[65] = 80;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Vertical_Sync_Offset1 = "";
+            string Vertical_Sync_Offset2 = "1 lines";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Sync_Offset(InvalidEdid);
+                Assert.That(Vertical_Sync_Offset1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Sync_Offset(validEdid);
+                Assert.That(Vertical_Sync_Offset2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestVertical_Sync_Pulse_Width()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[64] = 25;
+            validEdid[65] = 90;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Vertical_Sync_Pulse_Width1 = "";
+            string Vertical_Sync_Pulse_Width2 = "41 lines";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Sync_Pulse_Width(InvalidEdid);
+                Assert.That(Vertical_Sync_Pulse_Width1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Sync_Pulse_Width(validEdid);
+                Assert.That(Vertical_Sync_Pulse_Width2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestVertical_Border()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[70] = 125;
+            string Vertical_Border1 = "125 lines";
+            var result = Preferred_Detailed_Timing.Vertical_Border(validEdid);
+            Assert.That(Vertical_Border1, Is.EqualTo(result));
+        }
+
+
+        [Test]
+        public void TestVertical_Size()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[67] = 30;
+            validEdid[68] = 95;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Vertical_Size1 = "";
+            string Vertical_Size2 = "3870 mm";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Size(InvalidEdid);
+                Assert.That(Vertical_Size1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Preferred_Detailed_Timing.Vertical_Size(validEdid);
+                Assert.That(Vertical_Size2, Is.EqualTo(result));
+            }
+        }
+
+    }
+
 }

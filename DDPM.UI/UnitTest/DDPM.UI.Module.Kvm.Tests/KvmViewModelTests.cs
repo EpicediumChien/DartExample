@@ -25,7 +25,6 @@ namespace DDPM.UI.Module.Kvm.Tests
         private Mock<IModuleOwner>? moduleOwnerMock;
         private KvmViewModel kvmViewModel;
 
-
         [SetUp]
         public void Setup()
         {
@@ -44,18 +43,16 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestkvmModule()
         {
-            var kvmModule=new KvmModule(moduleOwner);
-            inputSourceList.kvmModule=kvmModule;
+            var kvmModule = new KvmModule(moduleOwner);
+            inputSourceList.kvmModule = kvmModule;
             Assert.That(inputSourceList.kvmModule, Is.EqualTo(kvmModule));
         }
-
 
         [Test]
         public void TestinputDisplayText()
         {
             Assert.That(inputSourceList.inputDisplayText, Is.EqualTo(""));
         }
-
 
         [Test]
         public void TestUSBListkvmModule()
@@ -65,7 +62,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             uSBList.kvmModule = kvmModule;
             Assert.That(uSBList.kvmModule, Is.EqualTo(kvmModule));
         }
-
 
         [Test]
         public void TestUSBlistinputDisplayText()
@@ -83,14 +79,12 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(pCInput.kvmModule, Is.EqualTo(kvmModule));
         }
 
-
         [Test]
         public void TestPCInputinputDisplayText()
         {
             var pCInput = new PCInput();
             Assert.That(pCInput.inputDisplayText, Is.EqualTo(""));
         }
-
 
         [Test]
         public void TestModuleOwner()
@@ -116,11 +110,10 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(kvmViewModel.PxPCode, Is.EqualTo(pxPCode));
         }
 
-
         [Test]
         public void TestinputSourceFullView()
         {
-            var inputSourceFullView =new InputSourceFullView();
+            var inputSourceFullView = new InputSourceFullView();
             kvmViewModel.inputSourceFullView = inputSourceFullView;
             Assert.That(kvmViewModel.inputSourceFullView, Is.EqualTo(inputSourceFullView));
         }
@@ -133,7 +126,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(kvmViewModel.PC3_Visibility, Is.EqualTo(Visibility.Hidden));
         }
 
- 
         [Test]
         public void TestPC4_Visibility()
         {
@@ -189,7 +181,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             kvmViewModel.SupportNKVM = supportNKVM;
             Assert.That(kvmViewModel.SupportNKVM, Is.EqualTo(Visibility.Hidden));
         }
-
 
         [Test]
         public void TestPC1_Input()
@@ -288,7 +279,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             kvmViewModel.isNoKVM = isNoKVM;
             Assert.That(kvmViewModel.isNoKVM, Is.EqualTo(true));
         }
-
 
         [Test]
         public void TestisNKVM()
@@ -428,7 +418,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(kvmViewModel.pcsList["PC1"].USBUpstream, Is.EqualTo("A"));
         }
 
-
         [Test]
         public void TestPC2USB_Selected()
         {
@@ -468,9 +457,9 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestPCImage()
         {
-            var pCImage= DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_3PCs.png");
+            var pCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_3PCs.png");
             kvmViewModel.PCImage = pCImage;
-            Assert.That(kvmViewModel.PCImage, Is.EqualTo(pCImage));   
+            Assert.That(kvmViewModel.PCImage, Is.EqualTo(pCImage));
         }
 
         [Test]
@@ -487,7 +476,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         public void TestCurrentInputChange()
         {
             var pcsList = new Dictionary<string, PCsInfo>();
-            pcsList.Add("PC1", new PCsInfo() { InputType="A"});
+            pcsList.Add("PC1", new PCsInfo() { InputType = "A" });
             kvmViewModel.pcsList = pcsList;
             var kvmmodule = new KvmModule(moduleOwner);
             kvmViewModel.KvmModule = kvmmodule;
@@ -522,7 +511,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             bool result = kvmViewModel.HasCap_PipSmall;
             Assert.That(result, Is.False);
             privateObject = new PrivateObject(kvmViewModel);
-            privateObject.SetFieldOrProperty("_pipPbpCaps", new UInt16[3] { 0x11, 0x21,0x22 });
+            privateObject.SetFieldOrProperty("_pipPbpCaps", new UInt16[3] { 0x11, 0x21, 0x22 });
             result = kvmViewModel.HasCap_PipSmall;
             Assert.That(result, Is.True);
         }
@@ -549,14 +538,12 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(result, Is.True);
         }
 
-
         [Test]
         public void TestCurPxpMode()
         {
             var result = kvmViewModel.CurPxpMode;
-            Assert.That(result, Is.EqualTo (0));
+            Assert.That(result, Is.EqualTo(0));
         }
-
 
         [Test]
         public void TestSelectedSplitItem()
@@ -592,7 +579,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(kvmViewModel.SelectedSplitItem, Is.EqualTo(null));
         }
 
-
         [Test]
         public void TestMainInputSource()
         {
@@ -604,7 +590,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestSubInputs()
         {
-            var subinputs=new List<InputSourceObj>() { new InputSourceObj(1, "VGA-1"),new InputSourceObj(2, "VGA-2"), new InputSourceObj(3, "DVI-1"), }; 
+            var subinputs = new List<InputSourceObj>() { new InputSourceObj(1, "VGA-1"), new InputSourceObj(2, "VGA-2"), new InputSourceObj(3, "DVI-1"), };
             kvmViewModel.SubInputs = subinputs;
             Assert.That(kvmViewModel.SubInputs, Is.EqualTo(subinputs));
             Assert.That(kvmViewModel.Sub1InputSource, Is.EqualTo(subinputs[0]));
@@ -619,7 +605,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             kvmViewModel.Sub1InputSource = sub1InputSource;
             Assert.That(kvmViewModel.Sub1InputSource, Is.EqualTo(sub1InputSource));
         }
-
 
         [Test]
         public void TestSub2InputSource()
@@ -637,14 +622,13 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(kvmViewModel.Sub3InputSource, Is.EqualTo(sub3InputSource));
         }
 
-
         [Test]
         public void TestHasSub1Input()
         {
             var result = kvmViewModel.HasSub1Input;
             Assert.That(result, Is.False);
 
-            var subinputs = new List<InputSourceObj>() { new InputSourceObj(1, "VGA-1")};
+            var subinputs = new List<InputSourceObj>() { new InputSourceObj(1, "VGA-1") };
             kvmViewModel.SubInputs = subinputs;
             result = kvmViewModel.HasSub1Input;
             Assert.That(result, Is.True);
@@ -674,7 +658,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             Assert.That(result, Is.True);
         }
 
-
         [Test]
         public void TestIsPipListItemSelected()
         {
@@ -689,9 +672,8 @@ namespace DDPM.UI.Module.Kvm.Tests
 
             kvmViewModel.SelectedSplitItem.SplitOwner = eSplitOwner.PbpList;
             result = kvmViewModel.IsPipListItemSelected;
-            Assert.That(result, Is.False);         
+            Assert.That(result, Is.False);
         }
-        
 
         [Test]
         public void TestIsTogglePositionEnabled()
@@ -702,7 +684,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             privateObject = new PrivateObject(kvmViewModel);
             privateObject.SetFieldOrProperty("_pipPbpCaps", new UInt16[3] { 0x02, 0x21, 0x22 });
             var SelectedSplitItem = new SplitItem();
-            kvmViewModel.SelectedSplitItem= SelectedSplitItem;
+            kvmViewModel.SelectedSplitItem = SelectedSplitItem;
             SelectedSplitItem.SplitOwner = eSplitOwner.PipList;
             result = kvmViewModel.IsTogglePositionEnabled;
             Assert.That(result, Is.True);
@@ -712,11 +694,9 @@ namespace DDPM.UI.Module.Kvm.Tests
         public void TestVideoSwapContent()
         {
             ContentControl contentControl = new ContentControl();
-            kvmViewModel.VideoSwapContent= contentControl;
+            kvmViewModel.VideoSwapContent = contentControl;
             Assert.That(kvmViewModel.VideoSwapContent, Is.EqualTo(contentControl));
         }
-
-
 
         [Test]
         public void TestPCSwap()
@@ -743,13 +723,11 @@ namespace DDPM.UI.Module.Kvm.Tests
             }
         }
 
-
-
         [Test]
         public void TestPC1Click()
         {
             kvmViewModel.PC1Click();
-            Assert.That(kvmViewModel.Border1Visibility,Is.EqualTo(Visibility.Visible));
+            Assert.That(kvmViewModel.Border1Visibility, Is.EqualTo(Visibility.Visible));
             Assert.That(kvmViewModel.Border2Visibility, Is.EqualTo(Visibility.Collapsed));
             Assert.That(kvmViewModel.Border3Visibility, Is.EqualTo(Visibility.Collapsed));
             Assert.That(kvmViewModel.Border4Visibility, Is.EqualTo(Visibility.Collapsed));
@@ -787,16 +765,15 @@ namespace DDPM.UI.Module.Kvm.Tests
 
         [Test]
         public void TestOpenNKVMUI()
-        {          
+        {
             Application Current = new Application();
-            Application.Current.MainWindow=new Window();
+            Application.Current.MainWindow = new Window();
             try
             {
                 kvmViewModel.OpenNKVMUI(1, 3, 4);
                 var process = Process.GetProcessesByName("DDM");
                 Assert.True(true);
                 Assert.That(process.Count, Is.GreaterThan(0));
-  
             }
             catch (Exception ex)
             {
@@ -808,7 +785,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         public void TestisOnUSBKVM()
         {
             kvmViewModel.KvmModule = new KvmModule(moduleOwner);
-            deviceManagerMock.Setup(x => x.SetOnUSBKVM(It.IsAny<MonitorInfo>(),It.IsAny<bool>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.SetOnUSBKVM(It.IsAny<MonitorInfo>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
             try
             {
                 kvmViewModel.isOnUSBKVM(true);
@@ -818,7 +795,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             {
                 Assert.Fail("not invoked");
             }
-
         }
 
         [Test]
@@ -836,9 +812,5 @@ namespace DDPM.UI.Module.Kvm.Tests
                 Assert.Fail("not invoked");
             }
         }
-
-        
-
-
     }
 }

@@ -1,9 +1,11 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2023, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 using Dell.Client.Framework.UX.WPF;
@@ -16,7 +18,7 @@ using System.Windows;
 namespace NGA.BaseClientCore
 {
     /// <summary>
-    /// Abstract class for ClientCore Base 
+    /// Abstract class for ClientCore Base
     /// This class contains common functionality that exist between ThickClient and Systray
     /// </summary>
     public abstract class DucaBaseClientCore : Application, IDisposable
@@ -44,6 +46,7 @@ namespace NGA.BaseClientCore
         {
             Requires.NotEmpty(uniqueId, nameof(uniqueId));
         }
+
         #endregion
 
         #region public methods
@@ -67,7 +70,7 @@ namespace NGA.BaseClientCore
         ///     }
         /// </code>
         /// </example>
-        public abstract ResourceManager CreateResourceManager();        
+        public abstract ResourceManager CreateResourceManager();
 
         /// <summary>
         /// Loads the default core library theme resources into the application
@@ -81,7 +84,7 @@ namespace NGA.BaseClientCore
 
         /// <summary>
         /// Sets the appropriate based on the culture information (i.e., locale).
-        /// 
+        ///
         /// This application supports the following languages (in order of locale):
         ///
         ///     Locale  Language                     Font
@@ -96,10 +99,10 @@ namespace NGA.BaseClientCore
         ///     ko-KR   Korean                       System Default
         ///
         /// The chart above also shows the font we want to use for each language.
-        /// 
+        ///
         /// So in this method, if the current local is one of the above, we set the font
         /// according to the font assignment for the given language.
-        /// 
+        ///
         /// If the the locale does not match any of the above, we set the font as if the
         /// language were English.
         /// </summary>
@@ -117,11 +120,11 @@ namespace NGA.BaseClientCore
             var languagesWithSystemDefaultFont = new List<string>() { CultureCodeChinese, CultureCodeJapanese, CultureCodeKorean };
 
             // Check current culture is part of specific language group hierarchy
-            if(languagesWithSystemDefaultFont.Contains(cultureInfo.Name,StringComparer.OrdinalIgnoreCase)
+            if (languagesWithSystemDefaultFont.Contains(cultureInfo.Name, StringComparer.OrdinalIgnoreCase)
                 || languagesWithSystemDefaultFont.Contains(cultureInfo.Parent.Name, StringComparer.OrdinalIgnoreCase)
                 || languagesWithSystemDefaultFont.Contains(cultureInfo.Parent.Parent.Name, StringComparer.OrdinalIgnoreCase))
-            { 
-                useSystemDefaultFont = true; 
+            {
+                useSystemDefaultFont = true;
             }
 
             if (useSystemDefaultFont)

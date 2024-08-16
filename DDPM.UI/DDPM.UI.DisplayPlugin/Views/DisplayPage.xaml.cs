@@ -8,7 +8,6 @@ using DDPM.UI.Common.Interfaces.ViewModels;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Common.ViewModels;
-using DDPM.UI.Interfaces;
 using DDPM.UI.Module.Brightness;
 using DDPM.UI.Module.Color;
 using DDPM.UI.Module.DisplayHotkeys;
@@ -26,17 +25,12 @@ using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using System;
 using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using VcpCore.Common;
-using Windows.Graphics.Display;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Views
 {
@@ -47,11 +41,14 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
     {
         private IDisplayPageViewModel? _ivm;
         private ILog? _log;
+
         //private IDevicePageViewModel? _idevPageVm;
         private readonly DisplayViewModel _vmDisplay;
+
         private readonly IDeviceManagerSA? _deviceManagerSA;
 
         #region Init
+
         public DisplayPage()
         {
             InitializeComponent();
@@ -80,7 +77,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //Must be eailer  then UserControl_Loaded()
-           // basePage.SetModuleGroupList(BuildModuleGroups());
+            // basePage.SetModuleGroupList(BuildModuleGroups());
             basePage.SetLeftFrameWidth(660);
 
             UserControl defLeftView = new DisplayDefaultLeftView();
@@ -107,7 +104,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
         }
 
- 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (_log != null)
@@ -124,15 +120,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     HandleDdcCiOnOffEvent(homeDev.MonitorInfo, homeDev.MonitorInfo.DDCisON);
                 }
             }
-
         }
 
-
-
-
-        #endregion
+        #endregion Init
 
         #region Init for Modules
+
         /// <summary>
         /// Base on specified monitor's capabiliies to build the Vbar items, and headers/modules
         /// </summary>
@@ -163,7 +156,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //bool? SupportVision = _ivm?.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("EC");
             //NEW:
             bool? support_contrast = _ivm.SelectedHomeDevice.HasCapability_Contrast;
-            bool ? SupportGaming = _ivm.SelectedHomeDevice.HasCapability_Gaming;
+            bool? SupportGaming = _ivm.SelectedHomeDevice.HasCapability_Gaming;
             bool? SupportVision = _ivm.SelectedHomeDevice.HasCapability_VisionEngine;
 
             if (isDebugModule)
@@ -259,7 +252,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             if (moduleCapabilities.Color)
             {
                 sw.Restart();
-                //Robert_Lin, 2024-5-30 
+                //Robert_Lin, 2024-5-30
                 //moduleGroup.AddHeader("Color", new ColorModule(_ivm?.SelectedHomeDevice));
                 //moduleGroup.AddHeader("Color", typeof(ColorModule));
                 moduleGroup.AddHeader(Strings.RightViewHeader_Color, typeof(ColorModule));
@@ -291,7 +284,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 groups.Add(moduleGroup);
             }
-            
 
             //Group[1] Input Source
             //         Header[0] General,   InputSourceModule
@@ -344,7 +336,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 groups.Add(moduleGroup);
             }
 
-
             //Group[2] Easy Arrange
             //         Header[0] Layout,        EzArrangeModule
             //         Header[1] Easy Memopry,  EzMemoryModule
@@ -392,7 +383,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 groups.Add(moduleGroup);
             }
-
 
             //Group[3] Gaming
             //         Header[0] General,       GamingModule
@@ -455,8 +445,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 groups.Add(moduleGroup);
             }
 
-
-
             //Group[5] Others
             //         Header[0] Others,   DisplayOthersModule
             moduleGroup = new ModuleGroup()
@@ -486,15 +474,15 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         }
 
         //private bool SupportNKVM(string ModelName)
-        //{ 
-        //    if (string.IsNullOrEmpty(ModelName)) 
+        //{
+        //    if (string.IsNullOrEmpty(ModelName))
         //    {
         //        if (ModelName.IndexOf("P2425E") != -1 || ModelName.IndexOf("P2425HE") != -1 || ModelName.IndexOf("P2725HE") != -1)
         //        {
         //            return false;
         //        }
         //        string strSupport = ModelName.Substring(4,1);
-        //        switch (strSupport) 
+        //        switch (strSupport)
         //        {
         //            case "U":
         //            case "C":
@@ -503,9 +491,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         //    }
         //    return false;
         //}
-        #endregion
+
+        #endregion Init for Modules
 
         #region Vbar
+
         private const int VbarItemId_DisplaySettings = 0;
         private const int VbarItemId_InputSource = 1;
         private const int VbarItemId_EasyArrange = 2;
@@ -513,6 +503,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         private const int VbarItemId_Others = 4;
 
 #if USE_VBARITEM1
+
         /// <summary>
         /// Handler when a VbarItem is clicked (MouseLeftButtonDown event)
         /// The event handler is install in DisplayPage ctor:
@@ -528,7 +519,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //Transit to TwoView mode
                 InvokeGotoTwoViewModeAnimation();
 
-                
                 RightFrame.Visibility = Visibility.Visible;
                 */
             }
@@ -562,6 +552,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 }
             }
         }
+
 #else
         /// <summary>
         /// Handler when a VbarItem is clicked (MouseLeftButtonDown event)
@@ -578,7 +569,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //Transit to TwoView mode
                 InvokeGotoTwoViewModeAnimation();
 
-                
                 RightFrame.Visibility = Visibility.Visible;
                 */
             }
@@ -614,10 +604,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         }
 #endif
 
-
-
-
-
         //Robert_Lin 2024-4-25, unused.
         /*
         private RightViewHeader[] headerDisplaySettings = new RightViewHeader[]
@@ -651,7 +637,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
             if (sender is VbarItem)
             {
-
                 VbarItem item = (VbarItem)sender;
 
                 //Check if VbarItem selection is NOT changed
@@ -669,9 +654,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     //Restore header selectedIndex
                 }
 
-
-
-
                 SwitchModule();
 
                 switch (item.Id)
@@ -686,7 +668,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                         //RightFrame.Content = GetTempRightView();
                         break;
                 }
-
             }*/
         }
 
@@ -717,7 +698,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //    LeftFrame.Content = headerDisplaySettings[displaySettingsSelIdx].DdpmModule?.GetLeftView();
         }
 
-        #endregion
+        #endregion Vbar
 
         #region RightViewHeader
 
@@ -743,9 +724,10 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             */
         }
 
-        #endregion
+        #endregion RightViewHeader
 
         #region Mode Change
+
         private void InvokeGotoTwoViewModeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -755,23 +737,23 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
-        #endregion
 
+        #endregion Mode Change
 
         #region LeftView
+
         private UserControl? _defLeftView;
+
         private UserControl GetDefaultLeftView()
         {
             if (_defLeftView == null)
             {
-                
                 HomeDevice dev = new HomeDevice()
                 {
                     DeviceName = "Display 1",
@@ -780,14 +762,14 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 };
                 _defLeftView = new DisplayDefaultLeftView();
                 _defLeftView.DataContext = dev;
-                
             }
             return (UserControl)_defLeftView;
         }
 
-        #endregion
+        #endregion LeftView
 
         #region Nav
+
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
@@ -813,23 +795,19 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
         }
 
-
-
-        #endregion
-
+        #endregion Nav
 
         //private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         //{
-
         //}
 
         //Robert_Lin,2024-7-26, Unused, move to DdpmHomePlugin
         //private void OnAddDeviceClicked(object sender, EventManagerArgs e)
         //{
-
         //}
 
         #region Handle DDC/CI ON/OFF events
+
         //2024-8-1 Robert_Lin move to Display Plugin
         private void _deviceManagerSA_DDCCIStatuschanged(object? sender, VcpCore.Common.DDCCIchangedEventArgs e)
         {
@@ -860,7 +838,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
             if (homeDevices == null)
                 return;
-            
+
             foreach (HomeDevice homeDev in homeDevices)
             {
                 if (homeDev.DeviceCategory != eDeviceCategory.Display)
@@ -872,10 +850,10 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     //Update the DDCisON status
                     homeDev.MonitorInfo.DDCisON = isDdcCiOn;
 
-                    //If the homeDev is current SelectedHomeDevice (is displaying) 
+                    //If the homeDev is current SelectedHomeDevice (is displaying)
                     //then notify ModuleOwner to update UI
                     HomeDevice? selDev = GetSelectedHomeDevice();
-                    if (selDev != null) 
+                    if (selDev != null)
                     {
                         if (HomeDevice.IsSameMonitor(selDev.MonitorInfo, mi, "DDCisON"))
                         {
@@ -887,7 +865,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                             }));
                         }
                     }
-
                 }
                 else
                 {
@@ -898,12 +875,13 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
         }
 
-         #endregion
+        #endregion Handle DDC/CI ON/OFF events
 
         #region ModuleOwner
+
         public HomeDevice? GetSelectedHomeDevice()
         {
-            //Using DisplayPageViewModel 
+            //Using DisplayPageViewModel
             if (_ivm != null)
             {
                 return _ivm?.SelectedHomeDevice;
@@ -918,6 +896,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
             return null;
         }
-        #endregion
+
+        #endregion ModuleOwner
     }
 }

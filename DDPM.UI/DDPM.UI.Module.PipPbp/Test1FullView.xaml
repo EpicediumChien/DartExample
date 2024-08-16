@@ -1,25 +1,23 @@
 ﻿<UserControl x:Class="DDPM.UI.Module.PipPbp.Test1FullView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Module.PipPbp"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Background="Navy">
     <Grid>
         <StackPanel>
-            <TextBlock Text="This is Test1 FullView" FontSize="24" Foreground="Cyan"/>
+            <TextBlock Text="This is Test1 FullView" FontSize="24" Foreground="Cyan" />
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Test1Value="/>
-                <TextBox Text="{Binding Test1Value}" Width="100"/>
-                <TextBlock Text="Test2Value=" Margin="20,0,0,0"/>
-                <TextBox Text="{Binding Test2Value}" Width="100"/>
-
+                <TextBlock Text="Test1Value=" />
+                <TextBox Text="{Binding Test1Value}" Width="100" />
+                <TextBlock Text="Test2Value=" Margin="20,0,0,0" />
+                <TextBox Text="{Binding Test2Value}" Width="100" />
             </StackPanel>
-            <Button Content="Go to next page" Command="{Binding GotoNextCommand}"/>
-            <Button Content="Close FullView" Command="{Binding CloseFullViewCommand}"/>
+            <Button Content="Go to next page" Command="{Binding GotoNextCommand}" />
+            <Button Content="Close FullView" Command="{Binding CloseFullViewCommand}" />
         </StackPanel>
-            
     </Grid>
 </UserControl>

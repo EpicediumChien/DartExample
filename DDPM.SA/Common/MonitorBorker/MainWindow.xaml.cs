@@ -1,34 +1,7 @@
 ﻿using DDPM.ColorApp;
-using DDPM.ShowOSD;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO.Pipes;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Windows.UI.Notifications;
-using static System.Net.Mime.MediaTypeNames;
-using System.DirectoryServices.ActiveDirectory;
-using WinCopies.Util;
-using System.Windows.Forms;
 using DDPM.SA.Common;
+using System;
+using System.Windows;
 using VcpCore.Common;
 
 namespace DDPM.MonitorBorker
@@ -62,7 +35,6 @@ namespace DDPM.MonitorBorker
 
             this.Hide();
         }
-
 
         private void WindowRendered(object sender, EventArgs e)
         {

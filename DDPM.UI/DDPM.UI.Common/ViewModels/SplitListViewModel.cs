@@ -1,35 +1,31 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common.EAEM;
-using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.UserControls;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace DDPM.UI.Common.ViewModels
 {
     public class SplitListViewModel : ObservableObject
     {
         #region SplitOwner
+
         //The owner must set this value before adding Split items into the ItemsSource
         public eSplitOwner SplitOwner { get; set; } = eSplitOwner.None;
-        #endregion
+
+        #endregion SplitOwner
 
         #region ItemsSource
+
         private ObservableCollection<SplitItem> _splitList = new ObservableCollection<SplitItem>();
+
         public ObservableCollection<SplitItem> SplitList
         {
             get => _splitList;
             set => SetProperty(ref _splitList, value);
         }
 
-        public int ItemCount {  get => SplitList.Count; }
+        public int ItemCount { get => SplitList.Count; }
 
         public void AddSplitItemToList(SplitItem spItem)
         {
@@ -42,7 +38,8 @@ namespace DDPM.UI.Common.ViewModels
         {
             SplitList = new ObservableCollection<SplitItem>();
         }
-        #endregion
+
+        #endregion ItemsSource
 
         #region Index
 
@@ -65,9 +62,10 @@ namespace DDPM.UI.Common.ViewModels
             return true;
         }
 
-        #endregion
+        #endregion Index
 
         #region Split Items
+
         public ContentControl? SplitItem0
         {
             get
@@ -94,12 +92,13 @@ namespace DDPM.UI.Common.ViewModels
         {
             get
             {
-                if (IsIndexValid(IndexToItem0+ 2))
+                if (IsIndexValid(IndexToItem0 + 2))
                     return SplitList[IndexToItem0 + 2];
                 else
                     return null;
             }
         }
+
         public ContentControl? SplitItem3
         {
             get
@@ -110,6 +109,7 @@ namespace DDPM.UI.Common.ViewModels
                     return null;
             }
         }
+
         public ContentControl? SplitItem4
         {
             get
@@ -120,7 +120,7 @@ namespace DDPM.UI.Common.ViewModels
                     return null;
             }
         }
- 
+
         public void RefreshDisplayItems()
         {
             OnPropertyChanged("SplitItem0");
@@ -131,10 +131,12 @@ namespace DDPM.UI.Common.ViewModels
             RefreshPrevNextButtons();
         }
 
-        #endregion
+        #endregion Split Items
 
         #region Page Navigation
+
         private int _itemsPerPage = 5;
+
         public int ItemsPerPage
         {
             get => _itemsPerPage;
@@ -202,7 +204,7 @@ namespace DDPM.UI.Common.ViewModels
             return false;
         }
 
-        #endregion
+        #endregion Page Navigation
 
         //private ICommand? _itemEditCommand;
 
@@ -211,7 +213,5 @@ namespace DDPM.UI.Common.ViewModels
         //    get => _itemEditCommand;
         //    set => SetProperty(ref _itemEditCommand, value);
         //}
-
-
     }
 }

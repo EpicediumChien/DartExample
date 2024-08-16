@@ -1,17 +1,12 @@
-﻿using System.ComponentModel;
+﻿using DDPM.UI.Plugin.ViewModels;
+using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
-using Newtonsoft.Json.Linq;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.HeadsetAudioSettings
@@ -87,7 +82,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             //_vm.SetDPIValue();
         }
 
-
         private void TiltSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
@@ -96,7 +90,6 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
 
         private void btnPair_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         /// <summary>
@@ -168,15 +161,19 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                     case "Node1":
                         _vm._deviceManager.SetBandsGain(int.Parse(Node1Text.Text), _vm.CurrentDeviceInfo!.ID, "band1gain").Wait();
                         break;
+
                     case "Node2":
                         _vm._deviceManager.SetBandsGain(int.Parse(Node2Text.Text), _vm.CurrentDeviceInfo!.ID, "band2gain").Wait();
                         break;
+
                     case "Node3":
                         _vm._deviceManager.SetBandsGain(int.Parse(Node3Text.Text), _vm.CurrentDeviceInfo!.ID, "band3gain").Wait();
                         break;
+
                     case "Node4":
                         _vm._deviceManager.SetBandsGain(int.Parse(Node4Text.Text), _vm.CurrentDeviceInfo!.ID, "band4gain").Wait();
                         break;
+
                     case "Node5":
                         _vm._deviceManager.SetBandsGain(int.Parse(Node5Text.Text), _vm.CurrentDeviceInfo!.ID, "band5gain").Wait();
                         break;
@@ -420,9 +417,11 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             UpdateShadowVisibility();
         }
     }
+
     public class CollaborationCheckedToVisibilityConverter : IValueConverter
     {
         public HeadsetViewModel ViewModel { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool isChecked)
@@ -447,6 +446,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             }
             return Visibility.Collapsed;
         }
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
@@ -492,6 +492,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             return false;
         }
     }
+
     public class BooleanToInverseForegroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -509,5 +510,4 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             throw new NotImplementedException();
         }
     }
-
 }
