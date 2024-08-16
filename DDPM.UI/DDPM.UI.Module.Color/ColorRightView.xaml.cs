@@ -42,6 +42,9 @@ using WinRT;
 using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 using static System.Windows.Forms.LinkLabel;
 
+
+//using UserControl = System.Windows.Controls.UserControl;
+
 namespace DDPM.UI.Module.Color
 {
 
@@ -73,8 +76,8 @@ namespace DDPM.UI.Module.Color
         //  Jim add 20240606
         private void UserControl_UnLoaded(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
-            
+            DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "OFF");
+
             //Jim remove 20240621
             //Thread.Sleep(200);
 
@@ -140,13 +143,13 @@ namespace DDPM.UI.Module.Color
 
 
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
 
                             // jim add 20240627
                             DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
 
                             // jim add 20240806
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
                         }
                
                     }
@@ -177,12 +180,11 @@ namespace DDPM.UI.Module.Color
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo.Remove(selected_app.AppName);
 
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
+                        }
 
-                        }               
-
-                        Test_AddAppCollectionData.GetInstance().AppsList.Remove(selected_app);                  
-
+                        Test_AddAppCollectionData.GetInstance().AppsList.Remove(selected_app);
+                        Thread.Sleep(100);
                     }
                 }
             }
@@ -243,7 +245,7 @@ namespace DDPM.UI.Module.Color
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     //ColorViewModel vm = (ColorViewModel)DataContext;
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
+                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "OFF");
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
 
 
@@ -257,11 +259,9 @@ namespace DDPM.UI.Module.Color
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     //ColorViewModel vm = (ColorViewModel)DataContext;
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
-					//DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
-
-                }));             
-            
+                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "ON");
+                    //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
+                }));
             }
           
         }
@@ -381,12 +381,12 @@ namespace DDPM.UI.Module.Color
                 //pathName = "Dragging object is not \"single\" file.";
                 //return false;
             }
-            string extName = System.IO.Path.GetExtension(dropFileNames[0]);
-            if (!extName.Equals(".CSV", StringComparison.OrdinalIgnoreCase))
-            {
+            //string extName = System.IO.Path.GetExtension(dropFileNames[0]);
+            //if (!extName.Equals(".CSV", StringComparison.OrdinalIgnoreCase))
+            //{
                 //pathName = "Dragging object is not a \".CSV\" file.";
                 //return false;
-            }
+            //}
             //pathName = dropFileNames[0];
 
             string targetPath = dropFileNames[0];
@@ -403,10 +403,70 @@ namespace DDPM.UI.Module.Color
                 IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
 
                 IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(targetPath);
+          
+                string strAppName = string.Empty;
+                string strFileName = string.Empty;
+                string strAppIcon = string.Empty;
 
-                string temp;
-                
-                temp = shortcut.TargetPath;
+                strAppName = System.IO.Path.GetFileNameWithoutExtension(shortcut.FullName);
+                strFileName = System.IO.Path.GetFileName(shortcut.TargetPath);
+
+
+                string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
+                strFolder += "\\";
+
+                if (!System.IO.Directory.Exists(strFolder))
+                    System.IO.Directory.CreateDirectory(strFolder);
+
+                if (System.IO.File.Exists(strFolder + strFileName + ".png"))
+                {
+                    strAppIcon = strFolder + strFileName + ".png";
+                }
+
+                AppData? be = Test_AddAppCollectionData.GetInstance().AppsList.FirstOrDefault(x => x.AppName == (strAppName));
+
+                if (be != null)
+                { }
+                else
+                {
+                    ColorViewModel vm = (ColorViewModel)DataContext;
+
+                    List<string> _supported_preset = new List<string>();
+                    _supported_preset = vm.SupportColorPresets;
+
+                    Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
+                    {
+                        AppIcon = strAppIcon,
+                        AppName = strAppName,
+                        AppPresetIdx = 0,
+                        IsDeleteAble = System.Windows.Visibility.Visible,
+                        SupportPreset = new List<string>(_supported_preset),
+                    });
+                }
+
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
+
+                int index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+
+                if (index >= 0)
+                {
+                    if (!(Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.ContainsKey(strAppName)))
+                    {
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, new ColorPresetSettings_AppInfo()
+                        {
+                            ColorPresetName = "Standard/Native",
+                            IconName = strAppIcon,
+
+                        });
+
+                    }
+
+                    DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+                    Thread.Sleep(500);
+                    
+                    DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
+                }
+               
             }
 
         }

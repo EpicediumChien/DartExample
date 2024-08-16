@@ -151,10 +151,11 @@ namespace DDPM.UI.Module.Color
             }           
 
             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-            Thread.Sleep(100);
+            Thread.Sleep(500);
 
             // jim add 20240621
             DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
+            Thread.Sleep(100);
 
             // jim modify 20240605
             DdpmCommonHelper.ModuleOwner?.CloseFullView();

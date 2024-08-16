@@ -45,8 +45,8 @@ namespace DDPM.ColorApp
 
         private static AppStatusQuery? INSTANCE = null;
 
-        WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS | Native.WINEVENT_SKIPOWNPROCESS | Native.EVENT_OBJECT_LOCATIONCHANGE | Native.EVENT_OBJECT_SELECTION );
-        WindowFocusWatcher moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
+        private WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS /*| Native.WINEVENT_SKIPOWNPROCESS | Native.EVENT_OBJECT_LOCATIONCHANGE | Native.EVENT_OBJECT_SELECTION*/);
+        private WindowFocusWatcher moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
 
         private static string _LastforgroundTitle = string.Empty;
         private static string _LastLocatedScreen = string.Empty;
@@ -176,11 +176,13 @@ namespace DDPM.ColorApp
 
             Screen screen = Screen.FromHandle(hWnd);
 
+            /* Jim remove 20240816
             if (!string.IsNullOrEmpty(_LastforgroundTitle) && String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
                 ///////logger.WriteLog($"[Watcher-Focus]  Same as last app, drop event");
                 return;
             }
+            */
 
             _LastforgroundTitle = forgroundTitle;
             _LastLocatedScreen = screen.DeviceName;
@@ -208,6 +210,7 @@ namespace DDPM.ColorApp
 
             Screen screen = Screen.FromHandle(hWnd);
 
+            /* Jim remove 20240816
             if (String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
                 ///////logger.WriteLog($"[Watcher-Move]  Same as last app, check screen location");
@@ -219,6 +222,8 @@ namespace DDPM.ColorApp
                     return;
                 }
             }
+            */
+
             _LastforgroundTitle = forgroundTitle;
             _LastLocatedScreen = screen.DeviceName;
 

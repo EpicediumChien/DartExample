@@ -184,7 +184,7 @@ namespace ColorPreset.Plugins
                     DeviceInfo = mo.edid,
                     RunType = (int)ColorPresetRunType.Auto,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard"
+                    PresetForManual = "Standard/Native"
                 });
 
                 index = get_index_of_json_config_for_cur_monitor(mo);
@@ -192,14 +192,14 @@ namespace ColorPreset.Plugins
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard",
+                    ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
 
                 });
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard",
+                    ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
 
                 });
@@ -217,13 +217,13 @@ namespace ColorPreset.Plugins
                 //Default items        
                 temp.AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard",
+                    ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
 
                 });
                 temp.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard",
+                    ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
 
                 });
@@ -241,7 +241,7 @@ namespace ColorPreset.Plugins
                     DeviceInfo = mo.edid,
                     RunType = (int)ColorPresetRunType.Auto,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard"
+                    PresetForManual = "Standard/Native"
                 });
 
                 index = get_index_of_json_config_for_cur_monitor(mo);
@@ -326,7 +326,7 @@ namespace ColorPreset.Plugins
 
         public Task<List<ColorPresetSettings>> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, List<ColorPresetSettings> config)
         {
-            if (on_off.Equals("on", StringComparison.CurrentCultureIgnoreCase))
+            if (on_off.Equals("ON", StringComparison.OrdinalIgnoreCase))
             {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
@@ -341,8 +341,7 @@ namespace ColorPreset.Plugins
 
 
             }
-
-            else if (on_off.Equals("off", StringComparison.CurrentCultureIgnoreCase))
+            else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
             {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
