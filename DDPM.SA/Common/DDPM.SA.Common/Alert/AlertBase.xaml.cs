@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+﻿using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using UserControl = System.Windows.Controls.UserControl;
@@ -23,7 +11,6 @@ namespace DDPM.SA.Common.Alert
     /// </summary>
     public partial class AlertBase : UserControl
     {
-
         public static readonly DependencyProperty AlertTypeProperty = DependencyProperty.Register("AlertType", typeof(AlertType), typeof(AlertBase), new PropertyMetadata(AlertType.Default, OnAlertTypeChanged));
         public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(AlertBase), new PropertyMetadata(string.Empty));
         public AlertType AlertType
@@ -50,14 +37,17 @@ namespace DDPM.SA.Common.Alert
                     control.AlertColorBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0E92F2"));
                     control.AlertImagePath.Style = (Style)control.Resources["InfoPathStyle"];
                     break;
+
                 case AlertType.Error:
                     control.AlertColorBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D0353F"));
                     control.AlertImagePath.Style = (Style)control.Resources["ErrorPathStyle"];
                     break;
+
                 case AlertType.Warning:
                     control.AlertColorBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E67F01"));
                     control.AlertImagePath.Style = (Style)control.Resources["WarningPathStyle"];
                     break;
+
                 default:
                     control.AlertColorBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0E92F2"));
                     control.AlertImagePath.Style = (Style)control.Resources["InfoPathStyle"];

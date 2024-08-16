@@ -1,20 +1,22 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
 namespace NGA.ThickClient.Interfaces
 {
     /// <summary>
-    /// Enum to identify how critical the banner notification is. 
+    /// Enum to identify how critical the banner notification is.
     /// </summary>
     public enum DisplayPriority
     {
         /// <summary>
-        /// Banner notification would go last. 
+        /// Banner notification would go last.
         /// </summary>
         Undefined = 0,
 
@@ -32,11 +34,11 @@ namespace NGA.ThickClient.Interfaces
         /// This will put the notification at the top of the display queue behind any Critical priority Banner Notifications.
         /// </summary>
         Major = 3,
-        
+
         /// <summary>
         /// This will remove any currently displayed Banner Notifications, besides other critical Banner Notifications, and display the next critical Banner Notification.
         /// </summary>
-        Critical = 4       
+        Critical = 4
     }
 
     /// <summary>
@@ -51,12 +53,12 @@ namespace NGA.ThickClient.Interfaces
 
         /// <summary>
         /// Information type.
-        /// </summary>        
+        /// </summary>
         Info,
 
         /// <summary>
         /// Warning type.
-        /// </summary>        
+        /// </summary>
         Warning,
 
         /// <summary>
@@ -96,19 +98,21 @@ namespace NGA.ThickClient.Interfaces
     /// </summary>
     public enum InAppNotificationCloseReason
     {
-
         /// <summary>
         /// Represents an unknown reason or any reason not covered by other enumeration values.
         /// </summary>
         Unknown = 0,
+
         /// <summary>
         /// Represents the scenario where the notification is closed due to the elapse of the preset duration.
         /// </summary>
         TimedOut = 1,
+
         /// <summary>
-        /// Represents the scenario where the notification is explicitly closed by the user. 
+        /// Represents the scenario where the notification is explicitly closed by the user.
         /// </summary>
         UserClosed = 2,
+
         /// <summary>
         /// Represents the scenario where the notification is closed due to a programmatic request by a plugin
         /// </summary>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDPM.UI.Module.PipPbp
+﻿namespace DDPM.UI.Module.PipPbp
 {
     //InputSource {VCP 0x60 Code, Input Source Name} mapping table
     //
@@ -13,8 +7,8 @@ namespace DDPM.UI.Module.PipPbp
     {
         public InputSourceObj_Unused()
         {
-            
         }
+
         public InputSourceObj_Unused(UInt16 code)
         {
             Code = code;
@@ -22,14 +16,15 @@ namespace DDPM.UI.Module.PipPbp
             if (idx >= 0)
                 Name = InputSourceMappingTable[idx].Name;
         }
+
         public InputSourceObj_Unused(UInt16 code, string name)
         {
             Code = code;
             Name = name;
         }
+
         public UInt16 Code { get; set; } = 0;
         public string Name { get; set; } = string.Empty;
-
 
         public static InputSourceObj_Unused[] InputSourceMappingTable = new InputSourceObj_Unused[]
         {

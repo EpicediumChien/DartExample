@@ -1,18 +1,20 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2022, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
 // work for any purpose must be obtained in writing from Dell Inc.
 //
+
 #endregion
 
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.Common.DataModel;
+using Dell.Client.Framework.UX.WPF;
+using NGA.Common;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using NGA.Common;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.UX.WPF;
 using static Dell.Client.Framework.UX.WPF.WindowHelper;
-using Dell.Client.Framework.UX.Common.DataModel;
 
 namespace NGA.ThickClientCore
 {
@@ -35,7 +37,7 @@ namespace NGA.ThickClientCore
             var pluginId = pluginCommand.PluginId.ToString();
 
             if (string.IsNullOrWhiteSpace(pluginId) || pluginCommand.PluginId == Guid.Empty)
-                return paramArgs;           
+                return paramArgs;
 
             //Add plugin id
             paramArgs.Add($"--{Constants.StartingPlugin}={pluginId}");
@@ -44,7 +46,7 @@ namespace NGA.ThickClientCore
 
             if (!string.IsNullOrWhiteSpace(param))
             {
-                JsonSerializerOptions jso = new() {Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping};
+                JsonSerializerOptions jso = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
                 var model = new ParameterModel(param);
                 var startPluginModel = new StartingPluginParameterModel(Constants.StartingPluginParameterModelVersion1,
@@ -97,7 +99,7 @@ namespace NGA.ThickClientCore
             if (string.IsNullOrWhiteSpace(pluginId) || pluginCommand.PluginId == Guid.Empty)
                 return paramArgs;
 
-            //Add plugin Id 
+            //Add plugin Id
             paramArgs.Add(new PLUGIN_PARAMETER_DATA()
             {
                 Version = Constants.StartingPluginParameterModelVersion1.ToString(),
@@ -109,7 +111,7 @@ namespace NGA.ThickClientCore
 
             if (!string.IsNullOrWhiteSpace(param))
             {
-                JsonSerializerOptions jso = new() {Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping};
+                JsonSerializerOptions jso = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
                 var model = new ParameterModel(param);
                 var startPluginModel = new StartingPluginParameterModel(Constants.StartingPluginParameterModelVersion1,
@@ -117,11 +119,11 @@ namespace NGA.ThickClientCore
 
                 //Add plugin parameter
                 paramArgs.Add(new PLUGIN_PARAMETER_DATA()
-                    {
-                        Version = Constants.StartingPluginParameterModelVersion1.ToString(),
-                        Name = Constants.StartingPluginParameter,
-                        Data = JsonSerializer.Serialize(startPluginModel, jso)
-                    }
+                {
+                    Version = Constants.StartingPluginParameterModelVersion1.ToString(),
+                    Name = Constants.StartingPluginParameter,
+                    Data = JsonSerializer.Serialize(startPluginModel, jso)
+                }
                 );
             }
 
@@ -138,7 +140,7 @@ namespace NGA.ThickClientCore
 
             var traceLog = paramArgs.Aggregate("plugin parameters:", (current, arg) => current + $" {arg.Name}:{arg.Data}");
 
-            log?.Trace($"{nameof(CreateParamDataObjects)}: {traceLog}"); 
+            log?.Trace($"{nameof(CreateParamDataObjects)}: {traceLog}");
 
             return paramArgs;
         }

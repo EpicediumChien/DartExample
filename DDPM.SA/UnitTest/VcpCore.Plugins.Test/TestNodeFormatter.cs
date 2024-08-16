@@ -1,16 +1,10 @@
-﻿using Dell.Client.Framework.UnitTestShared.Tests;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Moq;
 
 namespace VcpCore.Plugins.Test
 {
     public class TestNodeFormatter
     {
-        NodeFormatter formatter = new NodeFormatter();
+        private NodeFormatter formatter = new NodeFormatter();
 
         [Test]
         public void TestFormatVCPControlName()
@@ -124,7 +118,7 @@ namespace VcpCore.Plugins.Test
         {
             string vcpControlName1 = "English";
             var expectvcpControlName1 = NodeFormatter.FormatVCP_CC("02");
-            string vcpControlName2 = "Deutschi";
+            string vcpControlName2 = "German";
             var expectvcpControlName2 = NodeFormatter.FormatVCP_CC("04");
             string vcpControlName3 = "Portuguese";
             var expectvcpControlName3 = NodeFormatter.FormatVCP_CC("08");
@@ -194,7 +188,7 @@ namespace VcpCore.Plugins.Test
         [Test]
         public void TestFormatVCP_DC()
         {
-            string vcpControlName1 = "Standard";
+            string vcpControlName1 = "Standard/Native";
             var expectvcpControlName1 = NodeFormatter.FormatVCP_DC("00");
             string vcpControlName2 = "Multimedia";
             var expectvcpControlName2 = NodeFormatter.FormatVCP_DC("02");
@@ -242,13 +236,12 @@ namespace VcpCore.Plugins.Test
             Assert.That(vcpControlName6, Is.EqualTo(expectvcpControlName6));
         }
 
-
         [Test]
         public void TestFormatVCP_E2()
         {
             string vcpControlName1 = "Multimedia";
             var expectvcpControlName1 = NodeFormatter.FormatVCP_E2("01");
-            string vcpControlName2 = "Game";
+            string vcpControlName2 = "Game/Game1";
             var expectvcpControlName2 = NodeFormatter.FormatVCP_E2("04");
             string vcpControlName3 = "DICOM";
             var expectvcpControlName3 = NodeFormatter.FormatVCP_E2("09");

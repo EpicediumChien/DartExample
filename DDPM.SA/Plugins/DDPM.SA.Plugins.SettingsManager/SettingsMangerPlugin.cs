@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,42 +7,41 @@
 //
 // SettingsMangerPlugin.cs created on 06/05/2024T22:12 PM
 //
+
 #endregion
 
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Interfaces;
-using Microsoft;
-using Dell.Client.Framework.Common.PluginConditions;
-using System.Linq;
-using System;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
-using Dell.Client.Framework.Security;
-using System.IO;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Runtime.InteropServices;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.Interfaces;
+using Microsoft;
 using Microsoft.Win32;
-using System.Threading.Tasks;
-using System.Windows;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using DDPM.SA.Common.Display;
-using System.Windows.Media.Animation;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Principal;
+using System.Threading.Tasks;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
     [Plugin(IDs.DDPM_SETTINGS_MANAGER_PLUGIN_ID, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
-    [PublishedUnelevatedInterface(new[] { typeof(ISettingsManagerIT) })]
-
+    [PublishedInterface(new[] { typeof(ISettingsManagerIT) })]
+    [PublishedUnelevatedInterface(new[] { typeof(ISettingsManagerSA) })]
     public class SettingsMangerPlugin : BaseAgentPlugin, IDisposableObservable, ISettingsManagerSA, ISettingsManagerIT
     {
         public const string PluginLogId = "SettingsManager";
 
         #region Private Members
+
         private const string pluginName = "SettingsManagerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Settings Manager Plugin.";
@@ -58,20 +58,32 @@ namespace DDPM.SA.Plugins.SettingsManager
             error
         }
 
+        //Basic
+        private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+
+        private static string folder_product = "Dell Display and Peripheral Manager";
+        private static string filename_appsettings_IT = "DDPM.Configs.json";
+
+        private DDPMITConfig _settings;
+        private string _settings_path;
+
         #endregion
 
         #region Constructor
+
         public SettingsMangerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
             WriteLog($"SettingsManagerPlugin constructor ...(Admin:{_IsAdministrator})");
         }
+
         #endregion
 
         #region ISettingsManagerSA implementation
+
         public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
 
-        //Target to notify CLIProxy
+        //Target to notify User setting
         private void OnITSettingsActionEventNotify(ITSettingEventArgs e)
         {
             if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)
@@ -84,23 +96,97 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"ITSettingsActionEvent Invoked");
             }
         }
+
         #endregion
 
         #region ISettingsManagerIT implementation
-        
+
+        public Task<DDPMITConfig> ReadITConfigData(bool force_reload = false)
+        {
+            string info = "Success";
+            if (force_reload)
+            {
+                WriteLog($"ReadITConfigData: Force reload");
+                if (_settings != null)
+                    return Task.FromResult(_settings);
+
+                WriteLog($"ReadITConfigData: null settings, load data from file");
+            }
+            string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);
+            _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+            return Task.FromResult(_settings);
+        }
+
+        /// <summary>
+        /// Write IT feature to config file
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="IT_Feature_list">If this param not null or count > 0, tell user settings that IT config some data</param>
+        /// <returns></returns>
+        public Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list)
+        {
+            if (data == null)
+            {
+                WriteLog($"WriteITConfigData: null data, failed");
+                return Task.FromResult(false);
+            }
+            _settings = data;
+            string info = "Success";
+            if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
+            {
+                WriteLog($"WriteITConfigData: write failed. Info({info})");
+                return Task.FromResult(false);
+            }
+            if (IT_Feature_list != null && IT_Feature_list.Count > 0)
+            {
+                for (int i = 0; i < IT_Feature_list.Count; i++)
+                {
+                    ITSettingEventArgs e = new ITSettingEventArgs();
+                    e.target_feature = IT_Feature_list[i];
+                    PropertyInfo propertyInfo = _settings.GetType().GetProperty(IT_Feature_list[i]);
+                    if (propertyInfo != null)
+                    {
+                        switch (IT_Feature_list[i])
+                        {
+                            case "isTelemetryConsentAllow":
+                                bool value = (bool)propertyInfo.GetValue(_settings);
+                                WriteLog($"Value of {IT_Feature_list[i]}: {value}");
+                                e.target_value = $"{value}";
+                                OnITSettingsActionEventNotify(e);
+                                break;
+
+                            default:
+                                WriteLog($"Property {IT_Feature_list[i]} not found from definitions.");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        WriteLog($"Property {IT_Feature_list[i]} not found from config.");
+                    }
+                }
+            }
+            return Task.FromResult(true);
+        }
+
         #endregion
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
             PluginCondition = new PluginStartedCondition();
             WriteLog("SettingsManager plugin report started");
+
+            InitDDPMITConfigFile();
         }
+
         #endregion
 
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -125,6 +211,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             base.Dispose(disposing);
         }
+
         #endregion
 
         #region Event Handler
@@ -147,9 +234,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog("ISettingsManager SA plugin started.");
             }
         }
+
         #endregion
 
         #region Private methods
+
         /// <summary>
         /// //
         /// </summary>
@@ -201,13 +290,13 @@ namespace DDPM.SA.Plugins.SettingsManager
                 sidString = s.ToString();
                 WriteLog($"GetUserSid(normal user): SID: {sidString}");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 sidString = null;
                 WriteLog($"GetUserSid(normal user): try translate fail: {ex.Message}");
 
                 //0724 add code that translate normal user and do translate domain user if fail.
-                if(f_domain != null)
+                if (f_domain != null)
                 {
                     try
                     {
@@ -215,7 +304,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                         sidString = s.ToString();
                         WriteLog($"GetUserSid(domain user): SID: {sidString}");
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         sidString = null;
                         WriteLog($"GetUserSid(domain user): try translate fail: {e.Message}");
@@ -261,7 +350,70 @@ namespace DDPM.SA.Plugins.SettingsManager
 
             return null;
         }
-        #endregion
 
+        private DDPMITConfig InitDDPMITConfigFile()
+        {
+            string folder = path_programdata + "\\" + folder_product;
+            WriteLog($"IT admin data folder path: {folder}");
+            try
+            {
+                DirectoryInfo di = System.IO.Directory.CreateDirectory(folder);
+                WriteLog($"create folder {folder} success");
+            }
+            catch
+            {
+                WriteLog($"CreateDirectory with {folder} failed.");
+                _settings = null;
+                return null;
+            }
+            _settings_path = folder + "\\" + filename_appsettings_IT;
+            WriteLog($"_settings_path is {_settings_path}.");
+
+            DDPMITConfig ddpm_it = new DDPMITConfig();
+            string info;
+            if (File.Exists(_settings_path))
+            {
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);
+                if (!string.IsNullOrEmpty(serialized_string))
+                    _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
+                else
+                {
+                    WriteLog("[InitDDPMITConfigFile] GetSerializedJsonString: " + info);
+                    _settings = ddpm_it;
+                    if (_settings != null)
+                    {
+                        WriteLog("[InitDDPMITConfigFile] *** Init cache from file fail, re-create default settings to file");
+                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
+                            WriteLog("[InitDDPMITConfigFile] re-create file content OK");
+                        else
+                            WriteLog("[InitDDPMITConfigFile] save to file failed, please check file access right!!");
+                    }
+                }
+            }
+            else
+            {
+                FileInfo fileInfo = new FileInfo(_settings_path);
+
+                WriteLog("[InitDDPMITConfigFile] settings file not exist, new an object");
+                _settings = new DDPMITConfig();
+                //init data to file
+                if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
+                {
+                    WriteLog("[InitDDPMITConfigFile] settings file create and write success");
+                }
+                else
+                {
+                    WriteLog("[InitDDPMITConfigFile] settings file create and write failed");
+                }
+            }
+            //ACL apply
+            //string info;
+            if (!DDPMFileSecurity.ApplyFileACLNormalUser(_settings_path, out info))
+                WriteLog($"[InitDDPMUserConfigFile] {info}");
+
+            return _settings;
+        }
+
+        #endregion
     }
 }

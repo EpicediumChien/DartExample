@@ -12,7 +12,6 @@ namespace DDPM.UI.Module.DisplayProperties
         private UserControl _rightView = new DisplayPropertiesRightView();
         private DisplayPropertiesViewModel vm = new DisplayPropertiesViewModel();
 
-
         //Robert_Lin 20240530-remove argument on ctor
         //public DisplayPropertiesModule(HomeDevice? SelectedHomeDevice)
         public DisplayPropertiesModule(IModuleOwner? moduleOwner = null)
@@ -25,6 +24,7 @@ namespace DDPM.UI.Module.DisplayProperties
             vm.MyModule = this;
             vm.Invoke_RefreshData();
         }
+
         public string ModuleName { get => "DisplayPropertiesModule"; }
 
         public UserControl? GetLeftView()
@@ -36,30 +36,35 @@ namespace DDPM.UI.Module.DisplayProperties
         {
             return _rightView;
         }
+
         public HomeDevice? SelectedHomeDevice { get; set; }
+
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
             set => vm.ModuleOwner = value;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             vm.Invoke_RefreshData();
-
         }
+
         public void OnActivated()
         {
             vm.UpdateHDRStatus();
         }
+
         public void OnDeactivated()
         {
-
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

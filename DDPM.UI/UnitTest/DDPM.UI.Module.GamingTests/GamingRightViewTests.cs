@@ -1,11 +1,4 @@
-﻿using DDPM.UI.Module.Gaming;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DDPM.UI.Module.Gaming.Tests
+﻿namespace DDPM.UI.Module.Gaming.Tests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
     public class GamingRightViewTests

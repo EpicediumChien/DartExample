@@ -1,21 +1,15 @@
-﻿using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.UX.WPF;
-using NGA.ThickClient.Interfaces;
-using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
-using DDPMConstants = DDPM.UI.Common.Constants;
-using System.Windows;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
-using Dell.Client.Framework.Common.PluginConditions;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
-using System.Collections.ObjectModel;
-using System.Windows.Threading;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.UX.WPF;
+using Microsoft.Extensions.DependencyInjection;
+using NGA.ThickClient.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
-using DDPM.UI.Plugin.DdpmHomePlugin;
+using DDPMConstants = DDPM.UI.Common.Constants;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -63,7 +57,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private CancellationToken CancellationToken { get; }
         private readonly SemaphoreSlim _lock = new(1, 1);
 
-
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -91,8 +84,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             ConfigureServices();
             PrepareHomeDevices();
-        }
-        private void ConfigureServices()
+      Mouse.OverrideCursor = null;
+    }
+    private void ConfigureServices()
         {
             if (_isConfigured)
                 return;
@@ -123,7 +117,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         vmDisplay.HomeDevices.Add(obj);
                 }
             }
-
         }
         /// <summary>
         /// Method to show <see cref="SettingsPage"/>
@@ -133,6 +126,5 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             _log.Info($"{nameof(SettingsPage)} - shown");
             _console.ShowPluginById(PluginId);
         }
-
     }
 }

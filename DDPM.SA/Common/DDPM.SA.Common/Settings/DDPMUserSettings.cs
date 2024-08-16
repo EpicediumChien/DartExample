@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Collections.Generic;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -19,15 +14,16 @@ namespace DDPM.SA.Common.Settings
          * DDPM Language Requirement
             •	English
             •	French
-            •	Traditional Chinese  
+            •	Traditional Chinese
             •	Simplified Chinese
             •	Spanish
             •	German
-            •	Russian  
+            •	Russian
             •	Portuguese (Portugal & Brazil)
             •	Japanese
             •	Korean
         */
+
         public enum Languages
         {
             en,
@@ -40,6 +36,7 @@ namespace DDPM.SA.Common.Settings
             zh_CN,
             zh_TW,
             ko_KR,
+
             //it_IT,
             preferred
         }
@@ -49,21 +46,28 @@ namespace DDPM.SA.Common.Settings
         public double Version { get; set; }
         public int Language { get; set; }
         public bool IsSynchronizemonitor { get; set; } = false;
+        public string Schedule { get; set; } = string.Empty;
 
         //Input
         //public string strInputSourceList { get; set; }
         //FW Update
         public FWUpdateInfoPackage DelayFWUpdateInfoPackage { get; set; }
+
         //0606 Bruce 新增鎖定自動旋轉方向
         public bool LockRotate { get; set; }
+
         //USBKVM
         //public string strUSBKVMPCsList { get; set; }
         public bool isTelemetryConsentOn { get; set; } = true; //global setting -> Analytics page -> checkbox on/off
+
         public bool isTelemetryConsentAllow { get; set; } = true; //global setting -> Analytics page -> checkbox enable/disable
+
         //FW Update
         public bool LockFWU_UI { get; set; }
+
         public DokcUODUpdateInfoPackage UODFWUInfoPackage { get; set; }
         public List<string> SupportedMonitorList { get; set; }
+
         //public bool isOnUSBKVM { get; set; } = false;
         //public bool isOnNKVM { get; set; } = false;
         public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }

@@ -1,29 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Plugins.User.PipPbpManager
 {
     internal class PxpModeObj
     {
         #region Native data
+
         private string _arg;
         private UInt16 _modeCode;
         private string _description;
-        #endregion
+
+        #endregion Native data
 
         #region ctor
+
         public PxpModeObj(string arg, UInt16 modeMode, string desc)
         {
             _arg = arg;
             _modeCode = modeMode;
             _description = desc;
         }
-        #endregion
+
+        #endregion ctor
 
         #region Table
+
         public static PxpModeObj[] Table =
         {
             new PxpModeObj("off", 0x00, "PIP/PBP off, full screen"),
@@ -55,6 +56,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManager
             new PxpModeObj("quad", 0x41, "PBP 4 windows-quadrant"),
             new PxpModeObj("pbp-4b", 0x42, "PBP 4 windows-1row, 4column")
         };
-        #endregion
+
+        #endregion Table
     }
 }

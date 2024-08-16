@@ -1,12 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Input;
 using VcpCore.Common;
 using Windows.System;
 
@@ -24,13 +17,13 @@ namespace DDPM.SA.Common.Display
             HotkeyInfo = new List<HotkeyInfo>();
         }
     }
-	
+
     public class HotkeyPopWrap
     {
         public MonitorInfo monitorInfo { get; set; }
         public HotkeyType hotkeyType { get; set; }
     }
-	
+
     public class HotkeyInfo
     {
         public string Description { get; set; }
@@ -42,15 +35,16 @@ namespace DDPM.SA.Common.Display
 
         public HotkeyType Job = HotkeyType.None;
 
-        public List<InputSourceObj>  InputSource { get; set; } = new List<InputSourceObj>();
-
+        public List<InputSourceObj> InputSource { get; set; } = new List<InputSourceObj>();
     }
 
     public enum HotkeyOption
     {
         None,
+
         //kvm hotkey: auto swtich USB upstream port in PBP side-by-side mode
         KvmAutoApply,
+
         //automatically apply the settings when the same model is detected
         PowerNapAutoApply
     }
@@ -70,6 +64,7 @@ namespace DDPM.SA.Common.Display
         ConflictApps,
         NotConfigured
     }
+
     public enum HotkeyType
     {
         None,
@@ -88,5 +83,4 @@ namespace DDPM.SA.Common.Display
         KvmSwitchKbMsKey,
         KvmChangePIPPosition
     }
-
 }

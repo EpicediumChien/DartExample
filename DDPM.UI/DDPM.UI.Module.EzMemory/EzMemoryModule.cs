@@ -1,4 +1,3 @@
-
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
@@ -17,7 +16,9 @@ namespace DDPM.UI.Module.EzMemory
             _rightView = new EzMemoryRightView(vm);
             //_rightView.DataContext = vm;
         }
+
         public string ModuleName { get => "EzMemoryModule"; }
+
         public UserControl? GetLeftView()
         {
             return (UserControl?)_leftView;
@@ -27,29 +28,33 @@ namespace DDPM.UI.Module.EzMemory
         {
             return _rightView;
         }
+
         public HomeDevice? SelectedHomeDevice { get; set; }
+
         #region ModuleOwner
+
         public IModuleOwner? ModuleOwner
         {
             get => vm.ModuleOwner;
             set => vm.ModuleOwner = value;
         }
-        #endregion
+
+        #endregion ModuleOwner
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
-
         }
+
         public void OnActivated()
         {
-
         }
+
         public void OnDeactivated()
         {
-
         }
-        #endregion
-    }
 
+        #endregion Event Handlers
+    }
 }

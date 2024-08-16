@@ -1,20 +1,15 @@
 ﻿using DDPM.UI.Common.EAEM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace DDPM.UI.Common.Interfaces
 {
-
     //All items in a SplitListView must be type of ISplit.
     // The Item's ItemPresenter will be ISplit.Content which is type of ContentControl
     public interface ISplit
     {
         #region Basic
+
         /// <summary>
         /// The type of the UserControl, it should be a SplitCtrlXX class
         /// For example: => typeof(SplitCtrl2A)
@@ -25,9 +20,11 @@ namespace DDPM.UI.Common.Interfaces
         /// The content will be shown on UI, it should be the SplitCtrlXX it self
         /// </summary>
         public ContentControl? Content { get; }
-        #endregion
+
+        #endregion Basic
 
         #region Creation
+
         /// <summary>
         /// Construct a new ISplit instance
         /// </summary>
@@ -37,22 +34,27 @@ namespace DDPM.UI.Common.Interfaces
         /// <summary>
         /// Duplicate a ISplit object
         /// </summary>
-        /// 
+        ///
         public ISplit Duplicate()
         {
             ISplit isp = New(GetSettings());
             return isp;
         }
-        #endregion
+
+        #endregion Creation
 
         #region Settings
+
         public int SettingsCount { get; }
+
         public abstract List<double> GetSettings();
+
         public abstract bool SetSettings(List<double> settings);
 
-        #endregion
+        #endregion Settings
 
         #region Settings Helpers
+
         /// <summary>
         /// Format the settings (in double list) to a comma separated string
         /// </summary>
@@ -76,10 +78,11 @@ namespace DDPM.UI.Common.Interfaces
         {
             return Array.ConvertAll(strSettings.Split(','), Double.Parse).ToList<double>();
         }
-        #endregion
 
+        #endregion Settings Helpers
 
         #region Used for PIP/PBP
+
         public UInt16 PbpCapabilityCode { get; set; }
         public string Description { get; set; }
 
@@ -127,10 +130,9 @@ namespace DDPM.UI.Common.Interfaces
             new SplitCtrl4A(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x0041, Description="PBP 4 windows-quadrant" },
             //42h: PBP 4 windows-1row, 4column
             new SplitCtrl4D(new List<double>() {1,1,1,1}) { PbpCapabilityCode = (UInt16)0x004D, Description="PBP 4 windows-1row, 4column" },
-
         };
-        #endregion
 
+        #endregion Used for PIP/PBP
 
         //public ICommand? ClickCommand { get; set; }
 

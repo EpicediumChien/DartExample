@@ -1,28 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Plugin.DdpmHomePlugin;
 using Dell.Client.Framework.UX.WPF;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Windows.Devices.Spi.Provider;
-using DDPM.UI.Plugin.DdpmHomePlugin;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -35,6 +21,7 @@ namespace DDPM.UI.Module.Kvm
         private bool isPipLarge = false;
         private bool isPBP = false;
         private UInt16 _pbpcode;
+
         private KvmViewModel vm
         {
             get
@@ -42,7 +29,9 @@ namespace DDPM.UI.Module.Kvm
                 return (KvmViewModel)DataContext;
             }
         }
+
         #region Init
+
         public KVMPIPPBPFullView(KvmViewModel vm)
         {
             InitializeComponent();
@@ -85,8 +74,6 @@ namespace DDPM.UI.Module.Kvm
             //Rebuild splitListView based on vm.PipPbpCaps
             //It will also set IsSelected if the adding SplitItem is current PxpMode
             RefreshPbpSplitListView();
-
-
         }
 
         //Rebuild splitListView based on vm.PipPbpCaps
@@ -107,7 +94,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        #endregion
+        #endregion Init
 
         private void BackMKFullView(object sender, RoutedEventArgs e)
         {
@@ -143,8 +130,8 @@ namespace DDPM.UI.Module.Kvm
                             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                             pc2input, pc3input, null).Result;
                         if (res)
-                        {  
-                            Thread.Sleep(500); 
+                        {
+                            Thread.Sleep(500);
                         }
                     }
                 }
@@ -185,7 +172,7 @@ namespace DDPM.UI.Module.Kvm
             if (vm.isPipSmall)
             {
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeSmall(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-                if(bpxp)
+                if (bpxp)
                 {
                     Thread.Sleep(500);
                 }
@@ -221,6 +208,7 @@ namespace DDPM.UI.Module.Kvm
         }
 
         #region SplitItem ClickCommand Handlers
+
         //For these handlers, need to handle below tasks
         // 1. Set the vm.SelectedSplitItem, this will (unselected previous SplitItem), (Set new SplitItem as Selected)
         // 2. Switch the SplitCtrl in SwapVideo content
@@ -243,8 +231,8 @@ namespace DDPM.UI.Module.Kvm
                 vm.PxPCode = 0x0;
                 vm.VideoSwapContent = vm.PxPcodeDictionary[0x0];
             }
-
         }
+
         private void OnPipSmallClicked(SplitItem? spItem)
         {
             vm.SelectedSplitItem = spItem;
@@ -261,7 +249,6 @@ namespace DDPM.UI.Module.Kvm
                 //splitCtrl1A.PC1_Visibility = Visibility.Visible;
                 vm.PxPCode = 0x11;
                 vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
-
             }
         }
 
@@ -279,7 +266,6 @@ namespace DDPM.UI.Module.Kvm
                 vm.PxPCode = 0x12;
                 vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
             }
-
         }
 
         private void OnPbpItemClicked(SplitItem? spItem)
@@ -295,9 +281,9 @@ namespace DDPM.UI.Module.Kvm
                 vm.PxPCode = _pbpcode;
                 vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
             }
-
         }
-        #endregion
+
+        #endregion SplitItem ClickCommand Handlers
 
         private void SaveInput(object sender, RoutedEventArgs e)
         {

@@ -1,51 +1,25 @@
 using DDPM.SA.Common;
 using DDPM.UI.Common;
-
-using Newtonsoft.Json;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
-using System.Xml.Linq;
-using Windows.System;
-using System.Windows.Threading;
+using System.Windows.Controls;
 using VcpCore.Common;
 
 namespace DDPM.UI.Module.Color
 {
     public partial class AddAppFullPageCtrl : UserControl
-    {       
+    {
         private List<string> _supported_preset = new List<string>();
 
         public AddAppFullPageCtrl()
         {
-            InitializeComponent();  
-            
-        }        
+            InitializeComponent();
+        }
 
         private void UserControl_Loaded(object sender, EventArgs e)
         {
             ColorViewModel vm = (ColorViewModel)DataContext;
-         
-            Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
 
+            Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
 
             string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
             strFolder += "\\";
@@ -55,7 +29,6 @@ namespace DDPM.UI.Module.Color
 
             foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
             {
-
                 Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
 
                 new_Appdata.AppName = kvp.Value.AppName;
@@ -72,20 +45,18 @@ namespace DDPM.UI.Module.Color
 
                 _bind_apps.Add(new_Appdata);
                 _apps_all.Add(new_Appdata);
-
             }
 
             lb_Installed_App.ItemsSource = _bind_apps;
-         
         }
 
         private List<AppCollectionData> _apps { get; set; } = new List<AppCollectionData>();
         private ObservableCollection<Bind_AddFullPage_AppCollectionData> _bind_apps { get; set; } = new ObservableCollection<Bind_AddFullPage_AppCollectionData>();
 
-        private IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();  
+        private IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
 
         private void btnCancel_Click(object sender, EventArgs e)
-        {    
+        {
             // jim modify 20240604
 
             //ColorViewModel vm = (ColorViewModel)DataContext;
@@ -97,16 +68,15 @@ namespace DDPM.UI.Module.Color
         private void btnAdd_Click(object sender, EventArgs e)
         {
             ColorViewModel vm = (ColorViewModel)DataContext;
-         
-            Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result; 
+
+            Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
 
             int index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
 
             if (index < 0)
             {
-               
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
-                {                   
+                {
                     RunType = (int)ColorPresetRunType.Auto,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
                     PresetForManual = "Standard/Native"
@@ -114,7 +84,6 @@ namespace DDPM.UI.Module.Color
 
                 index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
             }
-
 
             _supported_preset = vm.SupportColorPresets;
 
@@ -139,16 +108,14 @@ namespace DDPM.UI.Module.Color
                 }
 
                 if (!(Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.ContainsKey(temp_selApps.AppName)))
-                {                  
+                {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(temp_selApps.AppName, new ColorPresetSettings_AppInfo()
                     {
                         ColorPresetName = "Standard/Native",
                         IconName = temp_selApps.AppIcon,
-                        
                     });
-
                 }
-            }           
+            }
 
             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
             Thread.Sleep(500);
@@ -161,8 +128,7 @@ namespace DDPM.UI.Module.Color
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
 
             //vm.ModuleOwner?.CloseFullView();
-
-        }        
+        }
 
         private int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)
         {
@@ -274,7 +240,6 @@ namespace DDPM.UI.Module.Color
                     _bind_apps.Add(item);
                 }
             }
-        }   
-
+        }
     }
 }

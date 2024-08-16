@@ -5,43 +5,43 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Module.Color"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
-             
-             mc:Ignorable="d" Background="Black" Loaded="UserControl_Loaded"    
-             d:DesignHeight="735" d:DesignWidth="1378" >
+
+             mc:Ignorable="d" Background="Black" Loaded="UserControl_Loaded"
+             d:DesignHeight="735" d:DesignWidth="1378">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="4*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0" Margin="0,0,0,0">
-           <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
-                <Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="13" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="White" Background="Transparent" BorderThickness="0" VerticalAlignment="Top"/>
-                <TextBlock  FontSize="20" Text="Add Application" Foreground="White"/>
+            <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
+                <Button Margin="0,0,0,0"   FontFamily="Segoe MDL2 Assets" FontSize="13" Content="&#xE72B;" Height="30" Width="40"  Click="btnCancel_Click" Foreground="White" Background="Transparent" BorderThickness="0" VerticalAlignment="Top" />
+                <TextBlock  FontSize="20" Text="Add Application" Foreground="White" />
             </StackPanel>
         </Grid>
-        
+
         <Grid Grid.Column="1" Margin="5,0,5,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="20" />
                 <!--Title-->
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" />
                 <!--Decription with little font size-->
-                <RowDefinition Height="0.8*"/>
+                <RowDefinition Height="0.8*" />
                 <!--Search - editable textblock-->
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" />
                 <!--Two sorting buttons-->
-                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="1.5*" />
                 <!--application available list-->
-                <RowDefinition Height="7*"/>
+                <RowDefinition Height="7*" />
                 <!--OK Cancel buttons-->
-                <RowDefinition Height="1.5*"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="1.5*" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
-          
-            <TextBox x:Name="edFilter"  Text="Search" VerticalAlignment="Stretch" Grid.Row="3" FontSize="16" Background="White" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left"/>
+
+            <TextBox x:Name="edFilter"  Text="Search" VerticalAlignment="Stretch" Grid.Row="3" FontSize="16" Background="White" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" />
             <StackPanel Orientation="horizontal" Grid.Row="4">
                 <Button x:Name="btnSortbyName_Ascending"  Width="160" Margin="0,0,10,0" Background="DimGray" VerticalAlignment="Center"  Click="btnSortbyName_Ascending_Click">
                     <StackPanel Orientation="Horizontal">
@@ -51,7 +51,7 @@
                 </Button>
                 <Button x:Name="btnSortbyName_Descending"  Width="160" Margin="0,0,10,0" Background="CornflowerBlue" VerticalAlignment="Center"  Click="btnSortbyName_Descending_Click" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Sort By Name"/>
+                        <TextBlock Text="Sort By Name" />
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="13" Text="&#xE74A;" Margin="10,5,0,0" Foreground="White" />
                     </StackPanel>
                 </Button>
@@ -64,41 +64,40 @@
                 </Button>
                 <Button x:Name="btnSortbyDate_Descending"  Width="160" Margin="0,0,10,0" Background="CornflowerBlue" VerticalAlignment="Center"  Click="btnSortbyDate_Descending_Click" Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Sort By Date"/>
+                        <TextBlock Text="Sort By Date" />
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="13" Text="&#xE74A;" Margin="10,5,0,0" Foreground="White" />
                     </StackPanel>
                 </Button>
-                
             </StackPanel>
             <ListView x:Name="lb_Installed_App" Grid.Row="5" BorderBrush="White" BorderThickness="2" Background="CornflowerBlue" SelectionMode="Multiple" SelectedIndex="{Binding Selected}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid >
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <!--check box-->
-                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto" />
                                 <!--App Icon-->
-                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto" />
                                 <!--App Name-->
-                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="1"/>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="1"/>
+                                <RowDefinition Height="1" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="1" />
                             </Grid.RowDefinitions>
 
-                            <CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}"/>
-                            <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40"  Margin="20,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}" Foreground="White" VerticalAlignment="Center"/>
+                            <CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" />
+                            <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40"  Margin="20,0,10,0" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}" Foreground="White" VerticalAlignment="Center" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
             <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
-                
-                <Button x:Name="btnAdd" Content="Confirm" Width="100" Margin="0,20,0,0" Foreground="White" Background="DodgerBlue" Click="btnAdd_Click"/>
+
+                <Button x:Name="btnAdd" Content="Confirm" Width="100" Margin="0,20,0,0" Foreground="White" Background="DodgerBlue" Click="btnAdd_Click" />
             </StackPanel>
         </Grid>
     </Grid>

@@ -1,32 +1,33 @@
 ﻿<UserControl x:Class="DDPM.UI.Plugin.DdpmHomePlugin.DdpmHomePage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Plugin.DdpmHomePlugin"
              xmlns:model="clr-namespace:DDPM.UI.Plugin.DdpmHomePlugin.Model"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:commonModel="clr-namespace:DDPM.UI.Common.Models;assembly=DDPM.UI.Common"
-              xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"    
+             xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
-               xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase" 
-             mc:Ignorable="d" 
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="rootUserControl"
              Loaded="UserControl_Loaded" SizeChanged="rootUserControl_SizeChanged">
-    
+
     <UserControl.Resources>
-        
+
         <!-- Unused -->
         <Style x:Key="ListBoxStyle_Devices" TargetType="ListBox">
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="ScrollViewer.PanningMode" Value="HorizontalOnly"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="ScrollViewer.PanningMode" Value="HorizontalOnly" />
             <Setter Property="ItemsPanel">
                 <Setter.Value>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
+                        <StackPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </Setter.Value>
             </Setter>
@@ -34,20 +35,20 @@
 
         <!-- Unused -->
         <DataTemplate x:Key="DeviceItemTemplate" DataType="model:DeviceInfo">
-            <Border BorderBrush="Green" BorderThickness="3" >
+            <Border BorderBrush="Green" BorderThickness="3">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Image Grid.Row="0" Stretch="Uniform" Width="360"
-                                           Source="{Binding DeviceImage}">
+                           Source="{Binding DeviceImage}">
                         <Image.Style>
                             <Style TargetType="Image">
-                                <Setter Property="Width" Value="360"/>
+                                <Setter Property="Width" Value="360" />
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Width" Value="400"/>
+                                        <Setter Property="Width" Value="400" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -57,47 +58,47 @@
                                             Foreground="White"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Header4"
-                                            HorizontalAlignment="Center"/>
+                                            HorizontalAlignment="Center" />
                 </Grid>
             </Border>
         </DataTemplate>
-        
+
         <!-- Unused -->
-        <SolidColorBrush x:Key="ListBox.Static.Background" Color="#FFFFFFFF"/>
-        <SolidColorBrush x:Key="ListBox.Static.Border" Color="#FFABADB3"/>
-        <SolidColorBrush x:Key="ListBox.Disabled.Background" Color="#FFFFFFFF"/>
-        <SolidColorBrush x:Key="ListBox.Disabled.Border" Color="#FFD9D9D9"/>
-        
+        <SolidColorBrush x:Key="ListBox.Static.Background" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="ListBox.Static.Border" Color="#FFABADB3" />
+        <SolidColorBrush x:Key="ListBox.Disabled.Background" Color="#FFFFFFFF" />
+        <SolidColorBrush x:Key="ListBox.Disabled.Border" Color="#FFD9D9D9" />
+
         <Style x:Key="ListViewStyle1" TargetType="{x:Type ListView}">
-            <Setter Property="Background" Value="{StaticResource ListBox.Static.Background}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ListBox.Static.Border}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
-            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
-            <Setter Property="ScrollViewer.PanningMode" Value="VerticalOnly"/>
-            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{StaticResource ListBox.Static.Background}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ListBox.Static.Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalOnly" />
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListView}">
                         <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="1" SnapsToDevicePixels="true">
                             <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}">
-                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </ScrollViewer>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Border}"/>
+                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Background}" />
+                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Border}" />
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
-                                    <Condition Property="IsGrouping" Value="true"/>
-                                    <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                                    <Condition Property="IsGrouping" Value="true" />
+                                    <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false" />
                                 </MultiTrigger.Conditions>
-                                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
                             </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -105,15 +106,15 @@
             </Setter>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding HomeDeviceCount}" Value="0">
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        
+
         <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border
         -->
         <Style x:Key="ListViewItemContainerStyle1" TargetType="ListViewItem">
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
@@ -123,25 +124,23 @@
                                 Background="{TemplateBinding Background}"
                                 Padding="{TemplateBinding Padding}"
                                 SnapsToDevicePixels="True">
-                            
+
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </Border>
-                                
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
         <!-- Tooltip -->
-        <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B"/>
-        <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D"/>
-        <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7"/>
+        <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+        <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
+        <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
 
         <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-        
+
         <!-- Dashed Brush for Focus border -->
         <DrawingBrush x:Key="FocusDotBrush" Viewport="0,0,1,1" ViewportUnits="Absolute" TileMode="Tile">
             <DrawingBrush.Drawing>
@@ -149,108 +148,104 @@
                     <GeometryDrawing Brush="#B6B6B6">
                         <GeometryDrawing.Geometry>
                             <GeometryGroup>
-                                <RectangleGeometry Rect="0,0,50,50"/>
-                                <RectangleGeometry Rect="50,50,50,50"/>
+                                <RectangleGeometry Rect="0,0,50,50" />
+                                <RectangleGeometry Rect="50,50,50,50" />
                             </GeometryGroup>
                         </GeometryDrawing.Geometry>
                     </GeometryDrawing>
                 </DrawingGroup>
             </DrawingBrush.Drawing>
         </DrawingBrush>
-        
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
- 
+
             <UXControls:UXTextBlock TextBlock.Text="DDPM 2.0" Visibility="Collapsed"
                                     Foreground="White"
-                                    TextBlockType="Header2"/>
+                                    TextBlockType="Header2" />
             <StackPanel x:Name="debugRwdParams" Orientation="Horizontal" Visibility="Collapsed">
-                <Button Content="+D" Click="addDisplay_Click"/>
-                <Button Content="+K" Click="addKb_Click"/>
-                <Button Content="+M" Click="addMouse_Click"/>
-                <CheckBox Name="ckbGreenBorder" Content="GreenBorder" Foreground="Green"/>
-                
-                <TextBlock Foreground="#FF7BFF00" Text="Items=" Margin="8,0,0,0"/>
-                <TextBlock Foreground="#FF7BFF00" Text="{Binding Path=HomeDeviceCount}"/>
-                <TextBlock Foreground="#FFDA81DA" Text="cxView.Width=" Margin="8,0,0,0"/>
-                <TextBlock Foreground="#FFDA81DA" Text="{Binding ElementName=HomeDevicesListView, Path=ActualWidth}"/>
-                <TextBlock Foreground="Cyan" Text="cxItem=" Margin="8,0,0,0"/>
-                <TextBlock Foreground="Cyan" Text="{Binding cxItem}"/>
-                <Button Content="+" Margin="12,0" Click="addItem_Click" Visibility="Collapsed"/>
-            </StackPanel>
+                <Button Content="+D" Click="addDisplay_Click" />
+                <Button Content="+K" Click="addKb_Click" />
+                <Button Content="+M" Click="addMouse_Click" />
+                <CheckBox Name="ckbGreenBorder" Content="GreenBorder" Foreground="Green" />
 
+                <TextBlock Foreground="#FF7BFF00" Text="Items=" Margin="8,0,0,0" />
+                <TextBlock Foreground="#FF7BFF00" Text="{Binding Path=HomeDeviceCount}" />
+                <TextBlock Foreground="#FFDA81DA" Text="cxView.Width=" Margin="8,0,0,0" />
+                <TextBlock Foreground="#FFDA81DA" Text="{Binding ElementName=HomeDevicesListView, Path=ActualWidth}" />
+                <TextBlock Foreground="Cyan" Text="cxItem=" Margin="8,0,0,0" />
+                <TextBlock Foreground="Cyan" Text="{Binding cxItem}" />
+                <Button Content="+" Margin="12,0" Click="addItem_Click" Visibility="Collapsed" />
+            </StackPanel>
         </StackPanel>
 
         <Grid Grid.Row="2">
-            
+
             <!-- Add Your first device -->
             <Grid Width="860" Height="220">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding HomeDeviceCount}" Value="0">
-                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
-                
+
                 <UXControls:UXTextBlock Grid.Row="0" Text="NO DEVICE DETECTED" Foreground="#FF97DCF4"
-                                        HorizontalAlignment="Center" FontSize="20"/>
+                                        HorizontalAlignment="Center" FontSize="20" />
                 <UXControls:UXTextBlock Grid.Row="1" Text="Add your first device" Foreground="White"
-                                        FontSize="64" HorizontalAlignment="Center" Margin="0,16,0,50"/>
+                                        FontSize="64" HorizontalAlignment="Center" Margin="0,16,0,50" />
                 <UXControls:UXButton Grid.Row="2" Content="Connect" ButtonType="Primary"
                                      MinWidth="160" Padding="24,2" FontSize="14"
-                                     Command="{Binding ConnectButtonClickCommand}"
-                                     />
+                                     Command="{Binding ConnectButtonClickCommand}" />
             </Grid>
-            <!-- Old,Unused, horizontal design, Dell UI team had changed the design 
+            <!-- Old,Unused, horizontal design, Dell UI team had changed the design
             <ListBox Style="{StaticResource ListBoxStyle_Devices}" Visibility="Collapsed"
-                     ItemTemplate="{StaticResource DeviceItemTemplate}"
-                     ItemsSource="{Binding DeviceCollection, Mode=TwoWay}"
-                     SelectedItem="{Binding SelDevice, Mode=OneWay}" 
-                     SelectionChanged="deviceCollectionListBox_SelectionChanged"/>
+            ItemTemplate="{StaticResource DeviceItemTemplate}"
+            ItemsSource="{Binding DeviceCollection, Mode=TwoWay}"
+            SelectedItem="{Binding SelDevice, Mode=OneWay}"
+            SelectionChanged="deviceCollectionListBox_SelectionChanged" />
             -->
             <!-- Multi rows design -->
             <!-- Robert_Lin, 2024-8-5 Add handle PreviewKeyboard to eneble slecte a device with keyboard -->
-            <ListView x:Name="HomeDevicesListView" 
+            <ListView x:Name="HomeDevicesListView"
                       Style="{StaticResource ListViewStyle1}"
                       Background="Transparent" BorderBrush="Transparent"
                       ItemContainerStyle="{StaticResource ListViewItemContainerStyle1}"
-                      ItemsSource="{Binding HomeDevices}" PreviewKeyDown="HomeDevicesListView_PreviewKeyDown"
-                      >
+                      ItemsSource="{Binding HomeDevices}" PreviewKeyDown="HomeDevicesListView_PreviewKeyDown">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <!-- 
-                        <WrapPanel HorizontalAlignment="Center"/>
+                        <!--
+                        <WrapPanel HorizontalAlignment="Center" />
                         -->
-                        <local:HomeDevicesPanel HorizontalContentAlignment="Center"/>
+                        <local:HomeDevicesPanel HorizontalContentAlignment="Center" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
 
                 <ListView.ItemTemplate>
                     <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
                         <StackPanel>
-                            
-                            <Grid Name="devListViewItemRoot" 
-                              Width="{Binding ItemWidth}" Height="{Binding ItemWidth}"
-                              Margin="0"
-                              MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
+
+                            <Grid Name="devListViewItemRoot"
+                                  Width="{Binding ItemWidth}" Height="{Binding ItemWidth}"
+                                  Margin="0"
+                                  MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
                                 <Grid.Triggers>
                                     <EventTrigger RoutedEvent="MouseEnter">
                                         <EventTrigger.Actions>
@@ -260,7 +255,7 @@
                                                                      Storyboard.TargetProperty="Width"
                                                                      To="{Binding HoverWidth}"
                                                                      BeginTime="0:0:0.1"
-                                                                     Duration="0:0:0.5"/>
+                                                                     Duration="0:0:0.5" />
                                                 </Storyboard>
                                             </BeginStoryboard>
                                         </EventTrigger.Actions>
@@ -269,11 +264,11 @@
                                         <EventTrigger.Actions>
                                             <BeginStoryboard>
                                                 <Storyboard AutoReverse="False">
-                                                    <DoubleAnimation 
-                                                    Storyboard.TargetName="devImg"
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="devImg"
                                                         Storyboard.TargetProperty="Width"
                                                         To="{Binding NormalWidth}"
-                                                        Duration="0:0:0.5"/>
+                                                        Duration="0:0:0.5" />
                                                 </Storyboard>
                                             </BeginStoryboard>
                                         </EventTrigger.Actions>
@@ -282,135 +277,132 @@
 
                                 <!-- BorderBrush="{StaticResource FocusDotBrush}"  -->
                                 <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
-                                    Margin="0" Padding="0">
+                                        Margin="0" Padding="0">
                                     <Border.Style>
                                         <Style TargetType="Border">
-                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="BorderThickness" Value="0" />
                                             <Style.Triggers>
                                                 <!-- Engineer debug, when checkbox is check will show ListViewItem border -->
                                                 <DataTrigger Binding="{Binding ElementName=ckbGreenBorder, Path=IsChecked}" Value="True">
-                                                    <Setter Property="BorderThickness" Value="1"/>
+                                                    <Setter Property="BorderThickness" Value="1" />
                                                 </DataTrigger>
                                                 <!-- When the ListViewItem is focus will show gray dot border -->
                                                 <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                              Value="True">
-                                                    <Setter Property="BorderThickness" Value="1"/>
+                                                    <Setter Property="BorderThickness" Value="1" />
                                                 </DataTrigger>
-                                                <!-- 
+                                                <!--
                                                 <DataTrigger Binding="{Binding IsConnectionHoverViewShow}" Value="True">
-                                                   <Setter Property="ToolTip" Value="{x:Null}"/>
-                                               </DataTrigger>
-                                               -->
-                                             </Style.Triggers>
+                                                <Setter Property="ToolTip" Value="{x:Null}" />
+                                                </DataTrigger>
+                                                -->
+                                            </Style.Triggers>
                                         </Style>
                                     </Border.Style>
 
                                     <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform"
-                                       HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                       Margin="0">
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Margin="0">
                                         <Image.Style>
                                             <Style TargetType="Image">
-                                                <Setter Property="Width" Value="{Binding NormalWidth}"/>
+                                                <Setter Property="Width" Value="{Binding NormalWidth}" />
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Width" Value="{Binding HoverWidth}"/>
+                                                        <Setter Property="Width" Value="{Binding HoverWidth}" />
                                                     </Trigger>
 
                                                     <!-- Cannot add EventTrigger here -->
-                                                    <!-- 
-                                                <EventTrigger RoutedEvent="MouseEnter">
+                                                    <!--
+                                                    <EventTrigger RoutedEvent="MouseEnter">
                                                     <BeginStoryboard>
-                                                        <Storyboard AutoReverse="False">
-                                                            <DoubleAnimation 
-                                                        Storyboard.TargetProperty="Width"
-                                                        To="{Binding HoverWidth}"
-                                                        Duration="0:0:0.5"/>
-                                                        </Storyboard>
+                                                    <Storyboard AutoReverse="False">
+                                                    <DoubleAnimation
+                                                    Storyboard.TargetProperty="Width"
+                                                    To="{Binding HoverWidth}"
+                                                    Duration="0:0:0.5" />
+                                                    </Storyboard>
                                                     </BeginStoryboard>
-                                                </EventTrigger>
-                                                -->
+                                                    </EventTrigger>
+                                                    -->
                                                 </Style.Triggers>
                                             </Style>
                                         </Image.Style>
                                         <!-- RobertLin, 2024-7-10, test, move to Border -->
-                                        <!-- 
+                                        <!--
                                         <Image.ToolTip>
-                                            <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
-                                             ToolTipService.HasDropShadow="True"
-                                             ToolTipService.InitialShowDelay="1000"
-                                             ToolTipService.BetweenShowDelay="2000">
-                                                <Border Background="{StaticResource ToolipBkColor}"
-                                                BorderBrush="{StaticResource ToolipBdColor}"
-                                                CornerRadius="4" Padding="8,12">
-                                                    <Border.Resources>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}"/>
-                                                            <Setter Property="FontSize" Value="12"/>
-                                                        </Style>
-                                                    </Border.Resources>
-                                                    <StackPanel>
-                                                        <TextBlock Text="{Binding TooltipModelName}"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </ToolTip>
+                                        <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
+                                        ToolTipService.HasDropShadow="True"
+                                        ToolTipService.InitialShowDelay="1000"
+                                        ToolTipService.BetweenShowDelay="2000">
+                                        <Border Background="{StaticResource ToolipBkColor}"
+                                        BorderBrush="{StaticResource ToolipBdColor}"
+                                        CornerRadius="4" Padding="8,12">
+                                        <Border.Resources>
+                                        <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
+                                        <Setter Property="FontSize" Value="12" />
+                                        </Style>
+                                        </Border.Resources>
+                                        <StackPanel>
+                                        <TextBlock Text="{Binding TooltipModelName}" />
+                                        </StackPanel>
+                                        </Border>
+                                        </ToolTip>
                                         </Image.ToolTip>-->
                                     </Image>
 
                                     <!-- Robert_Lin, 2024-7-10, move the tooltip owner from Image to Border.
-                                         So that when a device has no image can show the device info in tooltip
+                                    So that when a device has no image can show the device info in tooltip
                                     -->
                                     <!-- -->
                                     <Border.ToolTip>
                                         <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
-                                             ToolTipService.HasDropShadow="True"
-                                             ToolTipService.InitialShowDelay="1000"
-                                             ToolTipService.BetweenShowDelay="2000">
-                                            
+                                                 ToolTipService.HasDropShadow="True"
+                                                 ToolTipService.InitialShowDelay="1000"
+                                                 ToolTipService.BetweenShowDelay="2000">
+
                                             <Border Background="{StaticResource ToolipBkColor}"
-                                                BorderBrush="{StaticResource ToolipBdColor}"
-                                                CornerRadius="4" Padding="8,12">
+                                                    BorderBrush="{StaticResource ToolipBdColor}"
+                                                    CornerRadius="4" Padding="8,12">
                                                 <Border.Resources>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}"/>
-                                                        <Setter Property="FontSize" Value="12"/>
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
+                                                        <Setter Property="FontSize" Value="12" />
+                                                        <Setter Property="Visibility" Value="Visible" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsConnectionHoverViewShow}" Value="True">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Setter Property="Visibility" Value="Collapsed" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Resources>
                                                 <Border.Style>
                                                     <Style TargetType="Border">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Visibility" Value="Visible" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding IsConnectionHoverViewShow}"
-                                                                                     Value="True">
-                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                         Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
                                                 <StackPanel>
-                                                    <TextBlock Text="{Binding TooltipModelName}"/>
+                                                    <TextBlock Text="{Binding TooltipModelName}" />
                                                 </StackPanel>
                                             </Border>
-
                                         </ToolTip>
-
                                     </Border.ToolTip>
-                                    
                                 </Border>
 
                                 <!-- Robert_Lin, 2024-7-20, Add Connection hover UI
                                 1 Create a new <Grid> Name=Indicators to replace original single BatteryIndicator element.
                                 2 Move the BatteryIndicator into the Indicators Grid.
                                 3 Inside Indicators Grid, have two elements:
-                                  3.1 ConnectionHoverView, will display the Connection UI when mouse is hovering on the BatteryIndicator
-                                  3.2 Put the BatteryIndicator at bottom of ConnectionHoverView
+                                3.1 ConnectionHoverView, will display the Connection UI when mouse is hovering on the BatteryIndicator
+                                3.2 Put the BatteryIndicator at bottom of ConnectionHoverView
                                 4 ConnectionHoverView is Collapsed by default when mouse enter BatteryIndicator will be displayed,
-                                  And return to Collaped when Mouse leave.
+                                And return to Collaped when Mouse leave.
                                 Copy from KeyboardPlugin.LaunchView.xaml
                                 -->
                                 <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center">
@@ -419,66 +411,62 @@
                                     <StackPanel>
 
                                         <!-- -->
-                                        <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}"/>
-                                        
-                                        <!-- 
-                                        <ContentControl Name="connHover"/>
+                                        <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
+
+                                        <!--
+                                        <ContentControl Name="connHover" />
                                         -->
 
                                         <DDPMUserControls:BatteryIndicator Name="batteryIndicator"
                                                                            Margin="0,8,0,4" HorizontalAlignment="Center"
-                                                                           BatteryLevel="{Binding BatteryLevel}" 
-                                                                           BatteryStatus="{Binding BatteryStatus}"                         
-                                                                           ConnectionType="{Binding ConnectionType}" 
+                                                                           BatteryLevel="{Binding BatteryLevel}"
+                                                                           BatteryStatus="{Binding BatteryStatus}"
+                                                                           ConnectionType="{Binding ConnectionType}"
                                                                            VerticalAlignment="Bottom" Text1="{Binding Text1}"
-                                                                           NoBattery="{Binding NoBattery}" 
-                                                                           MouseEnter="batteryIndicator_MouseEnter" 
-                                                                           MouseLeave="batteryIndicator_MouseLeave"/>
+                                                                           NoBattery="{Binding NoBattery}"
+                                                                           MouseEnter="batteryIndicator_MouseEnter"
+                                                                           MouseLeave="batteryIndicator_MouseLeave" />
                                     </StackPanel>
                                 </Grid>
-                                <!-- Robert_Lin, 2024-6-7 BatteryIndicator position improvement 
-                                     If it's need to move up a litter, you can use margin to archieve -->
+                                <!-- Robert_Lin, 2024-6-7 BatteryIndicator position improvement
+                                If it's need to move up a litter, you can use margin to archieve -->
                                 <!-- Robert_Lin, 2024-7-21 Move into Indicators Grid
-                           <DDPMUserControls:BatteryIndicator  Margin="0,0,0,4" HorizontalAlignment="Center"
-                               BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"                         
-                               ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
-                               NoBattery="{Binding NoBattery}"/>
+                                <DDPMUserControls:BatteryIndicator  Margin="0,0,0,4" HorizontalAlignment="Center"
+                                BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"
+                                ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
+                                NoBattery="{Binding NoBattery}" />
                                 -->
-                                 
-                                
                             </Grid>
 
                             <!--
-                            <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" 
-                                BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"                         
-                                ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom"/>
+                            <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center"
+                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"
+                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
                             -->
                             <!-- Robert_Lin remarked 2026-6-7 : Move it inside Grid above 'devListViewItemRoot'
-                            <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" 
-                                BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"                         
-                                ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
-                                NoBattery="{Binding NoBattery}"/> -->
-                            
+                            <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center"
+                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"
+                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
+                            NoBattery="{Binding NoBattery}" /> -->
                         </StackPanel>
-                        <!-- Add below code will cause all items are invisible 
+                        <!-- Add below code will cause all items are invisible
                         <DataTemplate.Triggers>
-                            <EventTrigger RoutedEvent="MouseEnter">
-                                <BeginStoryboard>
-                                    <Storyboard AutoReverse="False">
-                                        <DoubleAnimation Storyboard.TargetName="devImg"
-                                                        Storyboard.TargetProperty="Width"
-                                                        To="{Binding HoverWidth}"
-                                                        Duration="0:0:0.5"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                        <BeginStoryboard>
+                        <Storyboard AutoReverse="False">
+                        <DoubleAnimation Storyboard.TargetName="devImg"
+                        Storyboard.TargetProperty="Width"
+                        To="{Binding HoverWidth}"
+                        Duration="0:0:0.5" />
+                        </Storyboard>
+                        </BeginStoryboard>
+                        </EventTrigger>
                         </DataTemplate.Triggers>
                         -->
                     </DataTemplate>
                 </ListView.ItemTemplate>
-                
             </ListView>
-            
+
             <!-- Please Wait -->
             <Grid Background="#CC000000"
                   Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -487,20 +475,17 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center">
                     <StackPanel>
                         <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
-                            Margin="0,64,0,32">
-                            <UXControls:UXTextBlock Text="Please wait..."
-                                                Foreground="#F5F6F7" FontSize="32"/>
+                              Margin="0,64,0,32">
+                            <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
+                                                    Foreground="#F5F6F7" FontSize="32" />
                         </Grid>
                         <Grid Height="64">
                             <UXControls:UXBusyIndicator Width="64" Height="64"
-                                                        BusyIndicatorType="Secondary" IsActive="True"/>
+                                                        BusyIndicatorType="Secondary" IsActive="True" />
                         </Grid>
                     </StackPanel>
- 
-                    
                 </Border>
             </Grid>
         </Grid>
-        
     </Grid>
 </UserControl>

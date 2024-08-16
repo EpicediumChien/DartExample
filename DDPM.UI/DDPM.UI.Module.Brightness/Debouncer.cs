@@ -1,5 +1,4 @@
-﻿using System;
-using System.Timers;
+﻿using System.Timers;
 
 namespace DDPM.UI.Module.Brightness
 {
@@ -7,10 +6,10 @@ namespace DDPM.UI.Module.Brightness
     {
         private readonly System.Timers.Timer _timer;
         private readonly int _delayMilliseconds;
-        private Action<double> _action;
-        private double value;
+        private Action<object> _action;
+        private object value;
 
-        public Debouncer(int delayMilliseconds, Action<double> action)
+        public Debouncer(int delayMilliseconds, Action<object> action)
         {
             _delayMilliseconds = delayMilliseconds;
             _action = action;
@@ -21,10 +20,11 @@ namespace DDPM.UI.Module.Brightness
 
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            _action(value);
+            if (_action != null)
+                _action(value);
         }
 
-        public void Debounce(double d)
+        public void Debounce(object d)
         {
             value = d;
             _timer.Stop();

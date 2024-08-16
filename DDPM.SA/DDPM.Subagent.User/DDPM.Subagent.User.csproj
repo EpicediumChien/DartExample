@@ -5,7 +5,7 @@
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-	  <Version>2.0.0.32</Version>
+	  <Version>2.0.0.35</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -27,11 +27,11 @@
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayManager\DDPM.SA.Plugins.User.DisplayManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayProperties\DDPM.SA.Plugins.User.DisplayProperties.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.EasyArrange\DDPM.SA.Plugins.User.EasyArrange.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.FWUpdate\DDPM.SA.Plugins.User.FWUpdate.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Hotkey\DDPM.SA.Plugins.User.Hotkey.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.NetworkKVM\DDPM.SA.Plugins.User.NetworkKVM.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Peripherals\DDPM.SA.Plugins.User.Peripherals.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.PipPbpManager\DDPM.SA.Plugins.User.PipPbpManager.csproj" />
+    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.SchedulerManager\DDPM.SA.Plugins.User.SchedulerManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.SettingsManager\DDPM.SA.Plugins.User.SettingsManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.USBKVM\DDPM.SA.Plugins.User.USBKVM.csproj" />
     <ProjectReference Include="..\Plugins\VcpCore.Plugins\VcpCore.Plugins.csproj" />

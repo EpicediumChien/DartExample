@@ -1,15 +1,8 @@
-﻿using DDPM.Win32Lib;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 //Forms: Cursors
-using System.Windows.Forms;
 
 namespace nsWinEventHook
 {
@@ -20,8 +13,9 @@ namespace nsWinEventHook
         //Hook Hanle, used to detect if hooked, and for Unhook()
         //
         private IntPtr hHook = IntPtr.Zero;
-        public bool IsHooked { get { return (hHook != IntPtr.Zero); } }
 
+        public bool IsHooked
+        { get { return (hHook != IntPtr.Zero); } }
 
         //Hook
         //
@@ -43,37 +37,46 @@ namespace nsWinEventHook
             hHook = IntPtr.Zero;
             return true;
         }
-        #endregion
+
+        #endregion Hook, Unhook
 
         #region Runtime propeties
+
         //Will be refreshed before callback to OnStartMoving(),
         //True=Case of Window moving, False=Case of Window resizing
         //public bool IsWindowMoving { get; private set; } = true;
         public IntPtr hWnd_Foregrgound { get; set; } = IntPtr.Zero;
-        #endregion
+
+        #endregion Runtime propeties
 
         #region Class Callbacks
 
         public delegate void OnForegroundWindowChangedDelegate(IntPtr hWndNew, IntPtr hWndOld);
+
         public OnForegroundWindowChangedDelegate OnForegroundWindowChanged;
 
         public delegate void OnStartMovingDelegate(IntPtr hWnd);
+
         public OnStartMovingDelegate OnStartMoving;
 
-        public delegate void OnEndMovingDelegate(IntPtr hWnd, bool isCanceled=false);
+        public delegate void OnEndMovingDelegate(IntPtr hWnd, bool isCanceled = false);
+
         public OnEndMovingDelegate OnEndMoving;
 
         public delegate void OnLocationChangedDelegate(int x, int y);
+
         public OnLocationChangedDelegate OnLocationChanged;
-        #endregion
+
+        #endregion Class Callbacks
 
         #region WinEvent Handlers
+
         //WinEventDelegate, used to handle the callbacks from System
         //
-        delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject,
+        private delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject,
                                         int idChild, uint dwEventThread, uint dwmsEventTime);
-        private WinEventDelegate evtDelegate = null;
 
+        private WinEventDelegate evtDelegate = null;
 
         //Internal Callback Handler
         //
@@ -124,16 +127,18 @@ namespace nsWinEventHook
                 return;
             }
         }
-        #endregion
+
+        #endregion WinEvent Handlers
 
         #region Detect if user cancel the window moving by pressing [Esc] key
+
         private const short VK_ESCAPE = 0x1b;
         private const short VK_LBUTTON = 0x01;
 
         //Check if user cancel the window moving by pressing [Esc] key
         //Assumption:
         // When user moving window, the mouse [LeftButton] is pressed and hold.
-        // When user canceling the moving, he/she press [Esc] key and the 
+        // When user canceling the moving, he/she press [Esc] key and the
         //     mouse [LeftButton] is strll pressed and hold.
         //
         public static bool IsUserCancelMoving()
@@ -145,13 +150,14 @@ namespace nsWinEventHook
             bool isEscDown = ((sEsc & 0x8000) == 0x8000);
             bool isLBtnDown = ((sLbtn & 0x8000) == 0x8000);
 
-
             //If [Esc] is down  and [LBtn} is down => User cancel the moving
             return (isEscDown && isLBtnDown);
         }
-        #endregion
+
+        #endregion Detect if user cancel the window moving by pressing [Esc] key
 
         #region GetProcessFromWindowHandle
+
         //Description: Get the Process from WindowHandle
         //Return:
         //  True: succsseed. output the Process to p. msg will be "OK"
@@ -185,7 +191,6 @@ namespace nsWinEventHook
 
         public static void SetWindowPosition(IntPtr hWnd, Rect rect)
         {
-            
             //const int HWND_NOTOPMOST = -2;
             const int HWND_TOP = 0;
             //const int HWND_TOPMOST = -1;
@@ -220,13 +225,15 @@ namespace nsWinEventHook
                 (int)rect.X - (xtl.X - wtl.X), (int)rect.Y - (xtl.Y - wtl.Y),
                 (int)rect.Width + (xtl.X - wtl.X) + (wbr.X - xbr.X),
                 (int)rect.Height + (xtl.Y - wtl.Y) + (wbr.Y - wbr.Y));
-            
+
             MoveWindow(hWnd, rcAdiust.X, rcAdiust.Y, rcAdiust.Width, rcAdiust.Height, true);
             */
         }
-        #endregion
+
+        #endregion GetProcessFromWindowHandle
 
         #region Win32 Constants
+
         private const uint EVENT_MIN = 0x00000001;
         private const uint EVENT_MAX = 0x7FFFFFFF;
 
@@ -243,31 +250,33 @@ namespace nsWinEventHook
         // Object IDs
         //
         private const uint OBJID_WINDOW = 0x00000000;
+
         private const uint OBJID_CURSOR = 0xFFFFFFF7;
 
         //dwFlags
         private const uint WINEVENT_OUTOFCONTEXT = 0;
-        #endregion
+
+        #endregion Win32 Constants
 
         #region Win32 P-Invoke
+
         //GetAsyncKeyState
         [DllImport("User32.dll")]
-        static extern short GetAsyncKeyState(System.Int32 vKey);
+        private static extern short GetAsyncKeyState(System.Int32 vKey);
 
         //SetWinEventHook()
         [DllImport("user32.dll")]
-        static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
+        private static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
                                             WinEventDelegate lpfnWinEventProc, uint idProcess,
                                             uint idThread, uint dwFlags);
 
         //UnhookWinEvent()
         [DllImport("user32.dll")]
-        static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+        private static extern bool UnhookWinEvent(IntPtr hWinEventHook);
 
         //GetWindowThreadProcessId()
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
-
 
         public const short SWP_NOMOVE = 0X2;
         public const short SWP_NOSIZE = 1;
@@ -277,24 +286,23 @@ namespace nsWinEventHook
         [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
         public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
 
-
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
         [DllImport("dwmapi")]
-        static extern int DwmGetWindowAttribute(IntPtr hwnd, Int32 dwAttribute, ref Rectangle pvAttribute, Int32 cbAttribute);
+        private static extern int DwmGetWindowAttribute(IntPtr hwnd, Int32 dwAttribute, ref Rectangle pvAttribute, Int32 cbAttribute);
 
         [DllImport("user32")]
-        static extern bool GetWindowRect(IntPtr hwnd, ref Rectangle lpRect);
+        private static extern bool GetWindowRect(IntPtr hwnd, ref Rectangle lpRect);
 
         [DllImport("user32")]
-        static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref System.Drawing.Point lpRect);
+        private static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref System.Drawing.Point lpRect);
 
         [DllImport("user32", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref POINT lpPoint);
 
-        #endregion
+        #endregion Win32 P-Invoke
 
         #region Win32 - GetCursorType
 
@@ -343,24 +351,28 @@ namespace nsWinEventHook
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct CURSORINFO
+        private struct CURSORINFO
         {
-            public Int32 cbSize;        // Specifies the size, in bytes, of the structure. 
-                                        // The caller must set this to Marshal.SizeOf(typeof(CURSORINFO)).
+            public Int32 cbSize;        // Specifies the size, in bytes, of the structure.
+
+            // The caller must set this to Marshal.SizeOf(typeof(CURSORINFO)).
             public Int32 flags;         // Specifies the cursor state. This parameter can be one of the following values:
-                                        //    0             The cursor is hidden.
-                                        //    CURSOR_SHOWING    The cursor is showing.
-            public IntPtr hCursor;          // Handle to the cursor. 
-            public POINT ptScreenPos;       // A POINT structure that receives the screen coordinates of the cursor. 
+
+            //    0             The cursor is hidden.
+            //    CURSOR_SHOWING    The cursor is showing.
+            public IntPtr hCursor;          // Handle to the cursor.
+
+            public POINT ptScreenPos;       // A POINT structure that receives the screen coordinates of the cursor.
         }
 
         [DllImport("user32.dll")]
-        static extern bool GetCursorInfo(out CURSORINFO pci);
+        private static extern bool GetCursorInfo(out CURSORINFO pci);
 
         //GetCursorPos()
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetCursorPos(out POINT lpPoint);
-        #endregion
+
+        #endregion Win32 - GetCursorType
     }
 }

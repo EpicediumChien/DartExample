@@ -2,18 +2,12 @@
 using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using Dell.Client.Framework.Common;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 using VcpCore.Common;
+
 [assembly: InternalsVisibleTo("DDPM.UI.Module.DisplayProperties.Tests")]
 
 namespace DDPM.UI.Module.DisplayProperties
@@ -27,6 +21,7 @@ namespace DDPM.UI.Module.DisplayProperties
         public IModuleOwner? ModuleOwner { get; set; }
         public DisplayPropertiesModule MyModule { get; set; }
         public List<UI_Properties> Resolution_ItemsCollection { get; set; }
+
         public UI_Properties SelectedResolution
         {
             get => _selectedResolution;
@@ -39,7 +34,9 @@ namespace DDPM.UI.Module.DisplayProperties
                     ).Wait();
             }
         }
+
         public List<UI_Orientation> Orientation_ItemsCollection { get; set; }
+
         public UI_Orientation SelectedOrientation
         {
             get => _selectedOrientation;
@@ -52,6 +49,7 @@ namespace DDPM.UI.Module.DisplayProperties
                     ).Wait();
             }
         }
+
         public bool HDRStatus
         {
             get => _HDRStatus;
@@ -64,6 +62,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 RefreshUI();
             }
         }
+
         public string HDRStatus_String
         {
             get
@@ -71,6 +70,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 return HDRStatus ? "ON" : "OFF";
             }
         }
+
         public bool IsHighDataSpeed
         {
             get => _IsHighDataSpeed;
@@ -84,6 +84,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 }
             }
         }
+
         public bool IsHighResolution
         {
             get => _IsHighResolution;
@@ -97,14 +98,17 @@ namespace DDPM.UI.Module.DisplayProperties
                 }
             }
         }
+
         public Visibility SupportedHDR
         {
             get => _SupportedHDR ? Visibility.Visible : Visibility.Collapsed;
         }
+
         public Visibility SupportedUSBCPrioeitization
         {
             get => _SupportedUSBCPrioeitization ? Visibility.Visible : Visibility.Collapsed;
         }
+
         public bool HDREnable
         {
             get
@@ -113,6 +117,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 return _HDREnable;
             }
         }
+
         public string HDROpacity
         {
             get
@@ -124,14 +129,19 @@ namespace DDPM.UI.Module.DisplayProperties
                 return "0.5";
             }
         }
+
         #region UI Enable Flags
+
         private bool _isBusy = false;
+
         public bool IsBusy
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        #endregion
+
+        #endregion UI Enable Flags
+
         public void Invoke_RefreshData()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -144,6 +154,7 @@ namespace DDPM.UI.Module.DisplayProperties
             bw.RunWorkerAsync(); //myArg is the optional argument
             IsBusy = true;
         }
+
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
             try //2024-06-19 Elie, add try catch to get exception.
@@ -180,6 +191,7 @@ namespace DDPM.UI.Module.DisplayProperties
                         _IsHighDataSpeed = true;
                         _IsHighResolution = false;
                         break;
+
                     case USBCPrioritizationType.HighResolution:
                         _IsHighDataSpeed = false;
                         _IsHighResolution = true;
@@ -214,9 +226,9 @@ namespace DDPM.UI.Module.DisplayProperties
             }
             catch (Exception)
             {
-
             }
         }
+
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;
@@ -237,6 +249,7 @@ namespace DDPM.UI.Module.DisplayProperties
             OnPropertyChanged("IsHighDataSpeed");
             OnPropertyChanged("IsHighResolution");
         }
+
         public void UpdateHDRStatus()
         {
             if (Resolution_ItemsCollection != null && Resolution_ItemsCollection.Count > 0)
@@ -259,9 +272,11 @@ namespace DDPM.UI.Module.DisplayProperties
             }
         }
     }
+
     internal class UI_Properties
     {
         public Properties Properties { get; set; }
+
         public string DisplayText
         {
             get
@@ -270,10 +285,12 @@ namespace DDPM.UI.Module.DisplayProperties
             }
         }
     }
+
     internal class UI_Orientation
     {
-        string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
+        private string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
         public DisplayOrientation Orientation { get; set; }
+
         public string DisplayText
         {
             get

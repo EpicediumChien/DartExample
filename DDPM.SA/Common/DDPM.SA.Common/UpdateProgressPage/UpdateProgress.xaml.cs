@@ -1,20 +1,8 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DDPM.SA.Common.UpdateProgressPage
 {
@@ -32,6 +20,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
         private string _AlertMessage;
         private Visibility _AlertVisibility = Visibility.Collapsed;
         private string _ProgressStr_2_Color;
+
         public string UpdateTitle
         {
             get { return _UpdateTitle; }
@@ -41,6 +30,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(UpdateTitle));
             }
         }
+
         public string UpdateVersion
         {
             get { return _UpdateVersion; }
@@ -50,6 +40,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(UpdateVersion));
             }
         }
+
         public string UpdateSubTitle
         {
             get { return _UpdateSubTitle; }
@@ -59,6 +50,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(UpdateSubTitle));
             }
         }
+
         public string ProgressStr
         {
             get { return _ProgressStr; }
@@ -68,6 +60,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(ProgressStr));
             }
         }
+
         public string ProgressStr_2
         {
             get { return _ProgressStr_2; }
@@ -77,6 +70,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(ProgressStr_2));
             }
         }
+
         public string ProgressStr_2_Color
         {
             get { return _ProgressStr_2_Color; }
@@ -86,6 +80,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(ProgressStr_2_Color));
             }
         }
+
         public int ProgressValue
         {
             get { return _ProgressValue; }
@@ -95,6 +90,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(ProgressValue));
             }
         }
+
         public bool Progress_IsAnimated
         {
             get { return _Progress_IsAnimated; }
@@ -104,6 +100,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(Progress_IsAnimated));
             }
         }
+
         public string AlertMessage
         {
             get { return _AlertMessage; }
@@ -113,6 +110,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(AlertMessage));
             }
         }
+
         public Visibility AlertVisibility
         {
             get { return _AlertVisibility; }
@@ -122,16 +120,20 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 OnPropertyChanged(nameof(AlertVisibility));
             }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         public UpdateProgress()
         {
             InitializeComponent();
             DataContext = this;
         }
+
         public void ShowWindow()
         {
             if (!Dispatcher.CheckAccess())
@@ -142,6 +144,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
 
             Show();
         }
+
         public void CloseWindow()
         {
             if (!Dispatcher.CheckAccess())
@@ -151,6 +154,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
             Close();
         }
+
         public void _FWUpdatePlugin_ProgressUpdate(object sender, FWUpdateInfo e)
         {
             UpdateTitle = "Firmware Update - " + e.DeviceName;

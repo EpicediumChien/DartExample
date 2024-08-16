@@ -3,18 +3,16 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+using DDPM.UI.Common.Models;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Management;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
@@ -47,16 +45,15 @@ using System.Reflection;
 //using System.Security.Cryptography.X509Certificates;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Color.Tests")]
-
 namespace DDPM.UI.Module.Color
 {
-    internal class ColorViewModel : ObservableObject 
+    internal class ColorViewModel : ObservableObject
     {
         #region Log
         private ILog? _log;
         public ILog? Log { get; set; }
 
-        #endregion
+        #endregion Log
 
         private List<X509Certificate2> TrustedPublisher = new List<X509Certificate2>();
         private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
@@ -78,11 +75,10 @@ namespace DDPM.UI.Module.Color
 
         // jim mofidy 20240606
         public ManagementEventWatcher startWatcher;
-        public ManagementEventWatcher endProcWatcher;        
+        public ManagementEventWatcher endProcWatcher;
 
         public DDPM.SA.Common.IIC_Metadata _ICC_Metadata = new DDPM.SA.Common.IIC_Metadata();
 
-      
         public IModuleOwner? ModuleOwner { get; set; }
         public ColorModule MyModule { get; set; }
 
@@ -124,7 +120,7 @@ namespace DDPM.UI.Module.Color
         //Dean 0612 add for ALS syncup
         //
         private int _colorPresetSelectedIndex = -1;//no choose
-                
+
         public int ColorPresetSelectedIndex
         {
             get
@@ -137,7 +133,7 @@ namespace DDPM.UI.Module.Color
                 if (CheckIfDisableALSFeature())
                 {
                     _colorPresetSelectedIndex = value;
-                    SetColorPresetBySelection();                    
+                    SetColorPresetBySelection();
                 }
                 else
                 {
@@ -163,7 +159,7 @@ namespace DDPM.UI.Module.Color
             DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
 
             //this.Dispatcher.Invoke((Action)(() =>
-            Task.Run(() => 
+            Task.Run(() =>
             {
                 // 20240717 jim add
                 if (setting.UserSettings.IsSynchronizemonitor)
@@ -173,15 +169,13 @@ namespace DDPM.UI.Module.Color
                         if (hd.MonitorInfo.IsDellMonitor)
                             DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex]);
                     }
-
                 }
                 else
-                //ColorViewModel vm = (ColorViewModel)DataContext;
-                // 20240619 jim modify
-                DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
-                    MyModule.SelectedHomeDevice?.MonitorInfo, 
-                    SupportColorPresets[idex]);
-
+                    //ColorViewModel vm = (ColorViewModel)DataContext;
+                    // 20240619 jim modify
+                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
+                        MyModule.SelectedHomeDevice?.MonitorInfo,
+                        SupportColorPresets[idex]);
             });
 
             //this.Dispatcher.Invoke((Action)(() =>
@@ -214,13 +208,13 @@ namespace DDPM.UI.Module.Color
                                         string[] separators = { "|" };
                                         string[] strICC_ColorPresets = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset.Split(separators, StringSplitOptions.None);
 
-                                        if (string.Equals(SupportColorPresets[idex], "Standard/Native", StringComparison.OrdinalIgnoreCase) )
+                                        if (string.Equals(SupportColorPresets[idex], "Standard/Native", StringComparison.OrdinalIgnoreCase))
                                         {
                                             if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                                             {
                                                 RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
                                                 break;
-                                            }                                          
+                                            }
                                         }
                                         else if (string.Equals(SupportColorPresets[idex], "Game/Game1", StringComparison.OrdinalIgnoreCase))
                                         {
@@ -238,7 +232,6 @@ namespace DDPM.UI.Module.Color
                                                 break;
                                             }
                                         }
-
 
                                         if (string.Equals(SupportColorPresets[idex], strICC_ColorPresets[0], StringComparison.OrdinalIgnoreCase))
                                         {
@@ -258,11 +251,8 @@ namespace DDPM.UI.Module.Color
                                     //else if (string.Equals(SupportColorPresets[idex], "Rec. 709", StringComparison.OrdinalIgnoreCase))
                                     //    RegistryUtils.MonitorProfile.SetMonitorProfile("Dell_U3224KB_Rec709_v2.icm");
                                 }
-
                             }
-
                         }
-
                     }
                 }
             }
@@ -290,13 +280,13 @@ namespace DDPM.UI.Module.Color
         private bool CheckIfDisableALSFeature()
         {
             ALSConfig cfg = DdpmCommonHelper.DeviceManagerSA?.GetALSFeatureValue(MyModule.SelectedHomeDevice?.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
-            if(cfg != null && cfg.isSupportALS > 0)
+            if (cfg != null && cfg.isSupportALS > 0)
             {
-                if(cfg.isAutoColorTemp)
+                if (cfg.isAutoColorTemp)
                 {
                     //Dean 0614 modify to meet figma
                     //if(MessageBox.Show("Auto Color Temperature is currently enabled. Do you wish to disable it to continue?", "Warning", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                    if(DdpmCommonHelper.DDPMMesssageBox("Warning", "Auto Color Temperature is currently enabled. Do you wish to disable it to continue?"))
+                    if (DdpmCommonHelper.DDPMMesssageBox("Warning", "Auto Color Temperature is currently enabled. Do you wish to disable it to continue?"))
                     {
                         //disable Auto color temp and return true to change color preset
                         cfg.isAutoColorTemp = false;
@@ -318,7 +308,6 @@ namespace DDPM.UI.Module.Color
         //Dean 0612 End
         //
 
-
         private ContentControl? _fullView;
         public ContentControl? FullView
         {
@@ -327,7 +316,7 @@ namespace DDPM.UI.Module.Color
         }
 
         public void OpenFullView(ContentControl content)
-        {        
+        {
             FullView = content;
             FullView.Visibility = Visibility.Visible;
         }
@@ -345,29 +334,26 @@ namespace DDPM.UI.Module.Color
             {
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
                                                     x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
                                                     x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
-
                 }
             }
             return index;
-        }  
+        }
 
         public ColorPresetSettings get_cur_monitor_preset_config(MonitorInfo mo, List<ColorPresetSettings> config)
-        {        
+        {
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
             int index = get_index_of_json_config_for_cur_monitor(mo);
-       
 
             if (index < 0)
-            {               
+            {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
                 {
-                    DeviceInfo = mo.edid,                   
-                    RunType = (int)ColorPresetRunType.Auto,                 
+                    DeviceInfo = mo.edid,
+                    RunType = (int)ColorPresetRunType.Auto,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
                     PresetForManual = "Standard/Native"
                 });
@@ -378,16 +364,13 @@ namespace DDPM.UI.Module.Color
                 {
                     ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
-
                 });
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
                     ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
-
                 });
-
             }
             return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
         }
@@ -404,7 +387,7 @@ namespace DDPM.UI.Module.Color
             Log?.Info("RunWorkerCompleted_RefreshData start...");
             IsBusy = true;
             bw.RunWorkerAsync();
-        } 
+        }
 
         // add jim 20240604
         public void WatchForProcessStart()
@@ -423,7 +406,6 @@ namespace DDPM.UI.Module.Color
             startWatcher = new ManagementEventWatcher(scope, queryString);
             startWatcher.EventArrived += startWatcher_EventArrived;
             startWatcher.Start();
-
         }
 
         // add jim 20240606
@@ -443,7 +425,6 @@ namespace DDPM.UI.Module.Color
             //startWatcher = new ManagementEventWatcher(scope, queryString);
             startWatcher.EventArrived -= startWatcher_EventArrived;
             startWatcher.Stop();
-
         }
 
         // add jim 20240604
@@ -455,11 +436,11 @@ namespace DDPM.UI.Module.Color
             if (processName.Contains("ColorManagement"))
             {
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                {     
+                {
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = false;
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
 
-                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;                    
+                    ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
 
                     if (registryMonitor_ICC != null)
                     {
@@ -467,11 +448,8 @@ namespace DDPM.UI.Module.Color
                             registryMonitor_ICC.Dispose();
                         registryMonitor_ICC = null;
                     }
-
                 }));
-
             }
-
         }
 
         // jim modify 20240606
@@ -537,10 +515,8 @@ namespace DDPM.UI.Module.Color
                                 registryMonitor_ICC.Start();
                             }
                         }
-                    }                                      
-
+                    }
                 }));
-
             }
         }
 
@@ -555,7 +531,7 @@ namespace DDPM.UI.Module.Color
                 //WatchForProcessStart();
                 //WatchForProcessEnd();
 
-                // -- end      
+                // -- end
 
                 // -- begin add jim 20240604
                 SupportColorPresets = new List<string>();
@@ -584,7 +560,7 @@ namespace DDPM.UI.Module.Color
                     }
                     //End
                 }));
-                // -- end     
+                // -- end
 
                 //Robert_Lin, 20240528
                 //OLD Code:
@@ -600,13 +576,11 @@ namespace DDPM.UI.Module.Color
                     {
                         ColorPresetName = "Standard/Native",
                         IconName = "Assets/palette.png",
-
                     });
                     config.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                     {
                         ColorPresetName = "Standard/Native",
                         IconName = "Assets/palette.png",
-
                     });
                 }
 
@@ -661,9 +635,7 @@ namespace DDPM.UI.Module.Color
                         //Test_AddAppCollectionData.GetInstance().AppsList.Add(new_Appdata);
                         //NEW Code:
                         tempList.Add(new_Appdata);
-
                     }
-
                 }
 
                 //Robert_Lin, 20240528
@@ -672,13 +644,10 @@ namespace DDPM.UI.Module.Color
 
                 AppsList = Test_AddAppCollectionData.GetInstance().AppsList;
 
-
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     RefreshUI();
-
                 }));
-
 
                 //OnPropertyChanged("ColorPresets_ItemsCollection");
                 //OnPropertyChanged("AppsList");
@@ -693,7 +662,6 @@ namespace DDPM.UI.Module.Color
                 // ICC profiles mapping schema
 
                 _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
-                              
 
                 Visibility vis_ad;
 
@@ -754,7 +722,6 @@ namespace DDPM.UI.Module.Color
 
             IsBusy = false;
 
-
             //If BackgroundWorker. WorkerSupportsCancellation is true, and you set e.Cancel=true in DoWorker
             if (e.Cancelled)
             {
@@ -778,8 +745,8 @@ namespace DDPM.UI.Module.Color
                 Log?.Info($"** RefreshData result: {e.Result}");
 
                 if (e.Result == "OK")
-                {                    
-                    //Result is passed.                    
+                {
+                    //Result is passed.
                 }
                 else
                 {
@@ -820,13 +787,10 @@ namespace DDPM.UI.Module.Color
                                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                                 {
                                     NightlightStatus = "On";
-
                                 }));
-
                             }
                             else if (ch == 0x13)
                             {
-
                                 //nightLightIsOn = false;
 
                                 // jim modify 20240604
@@ -834,19 +798,17 @@ namespace DDPM.UI.Module.Color
                                 {
                                     NightlightStatus = "Off";
                                 }));
-
                             }
-
                         }
                     }
-                    else 
+                    else
                     {
                         // jim add 20240711
                         MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                         {
                             NightlightStatus = "Off";
                         }));
-                    }    
+                    }
                 }
                 else
                 {
@@ -857,7 +819,7 @@ namespace DDPM.UI.Module.Color
                     }));
                 }
             }
-            else 
+            else
             {
                 // jim add 20240711
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
@@ -890,7 +852,6 @@ namespace DDPM.UI.Module.Color
         // add jim 20240604
         public void OnRegChanged_NightLight(object sender, EventArgs e)
         {
-
             SyncNightlightStatus();
             return;
         }
@@ -900,7 +861,6 @@ namespace DDPM.UI.Module.Color
         {
             StopRegistryMonitor();
         }
-
 
         public void OnRegChanged_ICC(object sender, EventArgs e)
         {
@@ -913,7 +873,7 @@ namespace DDPM.UI.Module.Color
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
             {
                 //ColorViewModel vm = (ColorViewModel)DataContext;
-                
+
                 // 20240725 jim add
                 for (int i = 0; i < count; i++)
                 {
@@ -928,13 +888,12 @@ namespace DDPM.UI.Module.Color
 
                         if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Standard/Native");
-                        else if(string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
+                        else if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Game/Game1");
                         else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Rec. 709 / BT.709");
                         else
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, strICC_ColorPresets[0]);
-
 
                         if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                         {
@@ -967,14 +926,13 @@ namespace DDPM.UI.Module.Color
                         {
                             foreach (string colorpreset in SupportColorPresets)
                             {
-
                                 if (string.Equals(colorpreset, strICC_ColorPresets[0], StringComparison.OrdinalIgnoreCase))
                                 {
                                     break;
                                 }
                                 index++;
                             }
-                        }                     
+                        }
 
                         // jim modify 20240604
                         ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
@@ -982,12 +940,10 @@ namespace DDPM.UI.Module.Color
                     }
                 }
 
-
                 //if (string.Equals(Key_Profile_Name, "Dell_U3224KB_Native_v2.icm", StringComparison.OrdinalIgnoreCase))
                 //{
-                    // 20240619 jim modify
+                // 20240619 jim modify
                 //    DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Standard");
-
 
                 //    foreach (string colorpreset in SupportColorPresets)
                 //    {
@@ -999,15 +955,14 @@ namespace DDPM.UI.Module.Color
                 //        index++;
                 //    }
 
-                    // jim modify 20240604
-                //    ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;                  
+                // jim modify 20240604
+                //    ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
 
                 //}
                 //else if (string.Equals(Key_Profile_Name, "Dell_U3224KB_DisplayP3_v2.icm", StringComparison.OrdinalIgnoreCase))
                 //{
-                    // 20240619 jim modify
+                // 20240619 jim modify
                 //    DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Display P3");
-
 
                 //    foreach (string colorpreset in SupportColorPresets)
                 //    {
@@ -1019,15 +974,14 @@ namespace DDPM.UI.Module.Color
                 //        index++;
                 //    }
 
-                    // jim modify 20240604
+                // jim modify 20240604
                 //    ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
 
                 //}
                 //else if (string.Equals(Key_Profile_Name, "Dell_U3224KB_DCIP3_v2.icm", StringComparison.OrdinalIgnoreCase))
                 //{
-                    // 20240619 jim modify
+                // 20240619 jim modify
                 //    DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "DCI-P3");
-
 
                 //    foreach (string colorpreset in SupportColorPresets)
                 //    {
@@ -1039,15 +993,14 @@ namespace DDPM.UI.Module.Color
                 //        index++;
                 //    }
 
-                    // jim modify 20240604
+                // jim modify 20240604
                 //    ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
 
                 //}
                 //else if (string.Equals(Key_Profile_Name, "Dell_U3224KB_sRGB_v2.icm", StringComparison.OrdinalIgnoreCase))
                 //{
-                    // 20240619 jim modify
+                // 20240619 jim modify
                 //    DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "sRGB");
-
 
                 //    foreach (string colorpreset in SupportColorPresets)
                 //    {
@@ -1059,15 +1012,14 @@ namespace DDPM.UI.Module.Color
                 //        index++;
                 //    }
 
-                    // jim modify 20240604
+                // jim modify 20240604
                 //    ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
 
                 //}
                 //else if (string.Equals(Key_Profile_Name, "Dell_U3224KB_Rec709_v2.icm", StringComparison.OrdinalIgnoreCase))
                 //{
-                    // 20240619 jim modify
+                // 20240619 jim modify
                 //    DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Rec. 709");
-
 
                 //    foreach (string colorpreset in SupportColorPresets)
                 //    {
@@ -1079,15 +1031,14 @@ namespace DDPM.UI.Module.Color
                 //        index++;
                 //    }
 
-                    // jim modify 20240604
+                // jim modify 20240604
                 //    ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
 
                 //}
                 //else if (string.Equals(Key_Profile_Name, "Dell_U3224KB_HDR_v4_MHC2.icm", StringComparison.OrdinalIgnoreCase))
                 //{
-                    // 20240619 jim modify
+                // 20240619 jim modify
                 //    DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Rec. 709");
-
 
                 //    foreach (string colorpreset in SupportColorPresets)
                 //    {
@@ -1099,13 +1050,12 @@ namespace DDPM.UI.Module.Color
                 //        index++;
                 //    }
 
-                    // jim modify 20240604
+                // jim modify 20240604
                 //    ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
 
                 //}
 
                 RefreshUI();
-
             }));
 
             return;
@@ -1144,7 +1094,6 @@ namespace DDPM.UI.Module.Color
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
-        #endregion
+        #endregion UI Enable Flags
     }
-
 }

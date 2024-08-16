@@ -1,31 +1,15 @@
-﻿using DDPM.UI.Common.Models;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.UI.Common;
-using DDPM.UI.Plugin.DockPlugin.Interfaces;
+using DDPM.UI.Interfaces;
+using DDPM.UI.Plugin.Common;
+using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
+using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Dell.Client.Framework.UX.WPF;
-using CommunityToolkit.Mvvm.Input;
-using DDPM.UI.Plugin.DockPlugin;
-using DDPM.UI.Interfaces;
-using DDPM.UI.Plugin.ViewModels;
-using DDPM.UI.Plugin.Common;
-using System.Net;
 using System.Windows.Media.Animation;
-using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace DDPM.UI.Plugin.DockPlugin.Views
 {
@@ -35,9 +19,10 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
     public partial class DockPage : UserControl
     {
         public static readonly Ioc PluginIoc = new();
-        private readonly string FWU = "Update Firmware";
+        //private readonly string FWU = "Update Firmware";
         private DockPageViewModel? _vm;
         private ILog? _log;
+
         public DockPage()
         {
             InitializeComponent();
@@ -61,27 +46,28 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
             {
                 btnFWU.Visibility = Visibility.Collapsed;
             }
-            
-            txtFWUpdate.Text = FWU;
+
+            //txtFWUpdate.Text = FWU;
 
             txtSystemName1.Text = _vm!.VisiblePairedHostName1;
             txtSystemName2.Text = _vm.VisiblePairedHostName1;
             txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-            txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
-
+            txtFirmware.Text = string.Format(Strings.DockDongle1,_vm.PhysicalDeviceFWVersion);
+            txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);            
         }
 
         #region RightViewHeader
+
         private void RightViewHeaderCtrl_SelectionChanged(object sender, RoutedEventArgs e)
         {
             if (sender == null)
                 return;
         }
 
-        #endregion
+        #endregion RightViewHeader
 
         #region Mode Change
+
         private void InvokeGotoTwoViewModeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -91,13 +77,13 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
+
         private void InvokeShrinkAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -107,13 +93,13 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
+
         private void InvokeEnlargeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -123,14 +109,14 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
-        #endregion
+
+        #endregion Mode Change
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -230,6 +216,7 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
                 BLConnection.Visibility = Visibility.Visible;
             }*/
         }
+
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             DongleConnection.Visibility = Visibility.Collapsed;
@@ -238,7 +225,6 @@ namespace DDPM.UI.Plugin.DockPlugin.Views
 
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
         }
 
         private void FWUpdate_Click(object sender, MouseButtonEventArgs e)

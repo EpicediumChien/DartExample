@@ -1,4 +1,5 @@
 ﻿#region LicenceHeader
+
 //
 // Copyright © 2024, Dell Inc., All Rights Reserved.
 // This material is confidential and a trade secret.  Permission to use this
@@ -6,60 +7,35 @@
 //
 // ColorPresetPlugin.cs created on 28/03/2024T09:50 AM
 //
+
 #endregion
 
-using Microsoft;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
-using System.Collections.Generic;
+using DDPM.SA.Common;
+using DDPM.ShowOSD;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using System.Management;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Globalization;
-using System.Text;
-using Microsoft.WindowsAPICodePack.Shell;
-using System.Drawing.Imaging;
-using System.Drawing;
+using Microsoft;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Security;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using VcpCore.Common;
-using VcpCore.Interfaces;
-using Newtonsoft.Json.Linq;
-using DDPM.SA.Common;
-using Dell.Client.Framework.Agent;
-using Microsoft.VisualBasic.Logging;
-using DDPM.ShowOSD;
-using DDPM.ColorApp;
-using DDPM.MonitorBorker;
-using System.Windows.Interop;
-using System.Windows.Forms;
-using System.Reflection;
-using System.Threading;
-using System.Diagnostics;
-using Newtonsoft.Json;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using WinCopies.Util;
-using WinCopies.Util.Commands.Primitives;
-using System.Windows.Documents;
-using System.Collections;
-using System.Security.Permissions;
-using static System.Reflection.Metadata.BlobBuilder;
-using System.Security.Cryptography;
-using Microsoft.Win32;
-using System.Security.Cryptography.X509Certificates;
-using static System.Net.WebRequestMethods;
-
-using System.Net.Security;
-using System.IO.Compression;
-using System.Security.Policy;
-using System.Net.Http;
-using System.Net;
-
 
 namespace ColorPreset.Plugins
 {
@@ -68,10 +44,10 @@ namespace ColorPreset.Plugins
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(IColorPresetSA) })]
     [PluginRequires(Id = DDPM.SA.Common.IDs.Device_Manager_Plugin_ID, Version = "1.0.0", AllowDynamicResolving = true)]
-
     public class ColorPresetPlugin : BaseAgentPlugin, IColorPresetSA, IDisposableObservable
     {
         #region Private Members
+
         private const string pluginName = "ColorPresetPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements ColorPreset Plugin.";
@@ -82,7 +58,7 @@ namespace ColorPreset.Plugins
         private IAgent _agent;
         public const string PluginLogId = "ColorPreset";
 
-        Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
+        private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _supported_preset = new List<string>();
 
         private List<string> ColorPresetSupportList = new List<string>();
@@ -95,6 +71,7 @@ namespace ColorPreset.Plugins
 
         //private readonly string[] Issuer = { "CN=Entrust Certification Authority - L1F, O=\"Entrust, C=US", "CN=localhost, O=DigiNow, C=US" };
         private readonly string[] Issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
+
         private readonly string[] Subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
 
         private string[] Issuers;
@@ -108,13 +85,13 @@ namespace ColorPreset.Plugins
 
         public event EventHandler<VCPchangedEventArgs> VCPchanged;
 
-
         private ShowOSDWin OsdWin = null;
         private string iconFolderPath = string.Empty;
 
         #endregion
 
         #region Constructor
+
         public ColorPresetPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
@@ -122,9 +99,11 @@ namespace ColorPreset.Plugins
 
             LoadInstalledAppList(true);
         }
+
         #endregion
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
@@ -133,6 +112,7 @@ namespace ColorPreset.Plugins
 
             writelog("ColorPreset plugin started");
         }
+
         #endregion
 
         #region IColorPresetSA implementation
@@ -153,18 +133,15 @@ namespace ColorPreset.Plugins
 
         public int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)
         {
-
             int index = -1;
 
             if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
             {
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
                                                     x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
                                                     x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
-
                 }
             }
             return index;
@@ -189,21 +166,17 @@ namespace ColorPreset.Plugins
 
                 index = get_index_of_json_config_for_cur_monitor(mo);
 
-
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
                     ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
-
                 });
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
                     ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
-
                 });
-
             }
             return Test_AddAppCollectionData.GetInstance()._monitorConfigs[index];
         }
@@ -214,18 +187,16 @@ namespace ColorPreset.Plugins
 
             if (temp.AppInfo.Count <= 0)
             {
-                //Default items        
+                //Default items
                 temp.AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
                     ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
-
                 });
                 temp.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
                     ColorPresetName = "Standard/Native",
                     IconName = "Assets/palette.png",
-
                 });
             }
 
@@ -267,7 +238,6 @@ namespace ColorPreset.Plugins
             { }
             else
             {
-
                 Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
                 {
                     AppIcon = kvp.Value.IconName,
@@ -283,18 +253,14 @@ namespace ColorPreset.Plugins
                 {
                     ColorPresetName = ColorPreset_Name,
                     IconName = kvp.Value.IconName,
-
                 });
-
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-
         }
 
         public Task<List<ColorPresetSettings>> ChangeColorPresetForMonitorConfig(MonitorInfo mo, string AppName, string ColorPreset_Name, List<ColorPresetSettings> config)
         {
-
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
             int index_config = get_index_of_json_config_for_cur_monitor(mo);
@@ -302,7 +268,6 @@ namespace ColorPreset.Plugins
             {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[AppName].ColorPresetName = ColorPreset_Name;
-
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
@@ -318,7 +283,6 @@ namespace ColorPreset.Plugins
             {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo.Remove(AppName);
-
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
@@ -332,14 +296,10 @@ namespace ColorPreset.Plugins
 
                 int index = get_index_of_json_config_for_cur_monitor(mo);
 
-
                 if (index >= 0)
                 {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
-
                 }
-
-
             }
             else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
             {
@@ -350,9 +310,7 @@ namespace ColorPreset.Plugins
                 if (index >= 0)
                 {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Manual;
-
                 }
-
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
@@ -422,7 +380,6 @@ namespace ColorPreset.Plugins
 
             // 啟動執行緒
             thread.Start();
-
         }
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m, string vcp_capbilities)
@@ -431,11 +388,9 @@ namespace ColorPreset.Plugins
 
             if (string.IsNullOrEmpty(vcp_capbilities))
             {
-
                 ColorPresetSupportList.Clear();
                 return Task.FromResult(ColorPresetSupportList);
             }
-
 
             // 20240619 jim add
             if (!string.IsNullOrEmpty(vcp_capbilities))
@@ -452,10 +407,8 @@ namespace ColorPreset.Plugins
 
                         foreach (var tmp in colorrreset)
                             ColorPresetSupportList.Add(new string(tmp.ToString()));
-
                     }
                 }
-
             }
 
             int index = 0;
@@ -477,7 +430,6 @@ namespace ColorPreset.Plugins
 
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
-
             int index = get_index_of_json_config_for_cur_monitor(m);
 
             if (index >= 0)
@@ -495,24 +447,21 @@ namespace ColorPreset.Plugins
 
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
-
             int index = get_index_of_json_config_for_cur_monitor(m);
 
             if (index >= 0)
             {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
-
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
-
         #endregion
 
-
         #region IDisposableObservable Support
+
         /// <summary>
         /// To detect redundant calls
         /// </summary>
@@ -536,8 +485,8 @@ namespace ColorPreset.Plugins
             }
             base.Dispose(disposing);
         }
-        #endregion
 
+        #endregion
 
         /// <summary>
         /// //
@@ -555,6 +504,7 @@ namespace ColorPreset.Plugins
         }
 
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -563,7 +513,6 @@ namespace ColorPreset.Plugins
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
-
         }
 
         private void LoadInstalledAppList(bool renew_data = false)
@@ -574,7 +523,6 @@ namespace ColorPreset.Plugins
                 writelog("enter reflash procedure");
                 AppsCollectShell appshell = new AppsCollectShell(iconFolderPath);
                 _AllAppData = appshell.FindAppsbyShell();
-
             }
             writelog($"appshell.FindAppsbyShell get app count({_AllAppData.Count})");
         }
@@ -597,14 +545,12 @@ namespace ColorPreset.Plugins
             bool result = false;
             try
             {
-
                 X509Chain x509Chain = new X509Chain();
                 x509Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
                 x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
                 x509Chain.ChainPolicy.UrlRetrievalTimeout = new System.TimeSpan(0, 1, 0);
                 x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
                 result = x509Chain.Build(certificate);
-
             }
             catch (System.Exception ex)
             {
@@ -644,7 +590,6 @@ namespace ColorPreset.Plugins
                 }
 
                 return true;
-
             }
             catch
             {
@@ -687,7 +632,6 @@ namespace ColorPreset.Plugins
             foreach (byte b in bytes) result += b.ToString("x2");
             return result;
         }
-
 
         public bool CheckCA(string URL)
         {
@@ -899,9 +843,9 @@ namespace ColorPreset.Plugins
                 foreach (string strDeviceName in Support_ICC_DeviceName)
                 {
                     index_Support_ICC_DeviceName++;
-                    
+
                     if (m.modelName.ToUpper().Contains(strDeviceName.ToUpper()))
-                    {                        
+                    {
                         _ICC_Metadata.Is_Support_ICC_DeviceName = true;
                         break;
                     }
@@ -944,20 +888,16 @@ namespace ColorPreset.Plugins
                             object obj_tmp_key_EnableDDPMMetadataTest = registryKey?.GetValue("EnableDDPMMetadataTest");
                             object obj_tmp_keyIncludeTestPath = registryKey?.GetValue("IncludeTestPath");
 
-
                             if (obj_tmp_key_EnableDDPMMetadataTest != null)
                             {
                                 str_EnableDDPMMetadataTest = (string)obj_tmp_key_EnableDDPMMetadataTest;
-
                             }
 
                             if (obj_tmp_keyIncludeTestPath != null)
                             {
                                 str_IncludeTestPath = (string)obj_tmp_keyIncludeTestPath;
-
                             }
                         }
-
                     }
 
                     if (str_EnableDDPMMetadataTest.ToUpper().Contains("TRUE"))
@@ -992,12 +932,10 @@ namespace ColorPreset.Plugins
                                 stream.CopyToAsync(fileStream).Wait();
                                 fileStream.Close();
 
-
                                 strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
                                 if (System.IO.File.Exists(strFilePath))
                                 {
-
                                     string strReadJson = string.Empty;
                                     using (var reader = new StreamReader(strFilePath))
                                     {
@@ -1006,7 +944,6 @@ namespace ColorPreset.Plugins
 
                                     ///if (strReadJson == string.Empty || strReadJson.Length == 0)
                                     //return Task.FromResult(_preset_settings);
-
 
                                     try
                                     {
@@ -1019,9 +956,8 @@ namespace ColorPreset.Plugins
                                     catch (System.Exception ex)
                                     {
                                         Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
-                                        writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());                                       
+                                        writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
                                     }
-
                                 }
 
                                 int count = _ICC_Metadata._support_ICC_DeviceName[m.modelName].Count;
@@ -1036,11 +972,10 @@ namespace ColorPreset.Plugins
                                 str_url_prefix += m.modelName;
                                 str_url_prefix += @"/";
 
-
                                 for (int i = 0; i < count; i++)
                                 {
                                     url = string.Empty;
-                                    url = str_url_prefix + _ICC_Metadata._support_ICC_DeviceName[m.modelName][i].File;                                    
+                                    url = str_url_prefix + _ICC_Metadata._support_ICC_DeviceName[m.modelName][i].File;
 
                                     // 向遠端伺服器發送請求
                                     if (CheckCA(url))
@@ -1065,22 +1000,16 @@ namespace ColorPreset.Plugins
                                             writelog($"[DownloadICCData] {_ICC_Metadata._support_ICC_DeviceName[m.modelName][i]} SHA256 error:{txtSha256} , {_ICC_Metadata._support_ICC_DeviceName[m.modelName][i].SHA256}");
                                         }
                                     }
-
                                 }
-
                             }
-
                         }
-
-                    }               
-
+                    }
                 }
 
                 return Task.FromResult(_ICC_Metadata);
             }
             catch (Exception ex)
             {
-               
                 return Task.FromResult(_ICC_Metadata);
             }
         }

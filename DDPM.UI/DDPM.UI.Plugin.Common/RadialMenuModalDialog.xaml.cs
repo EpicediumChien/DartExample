@@ -1,45 +1,33 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-
-//using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿//using System.Drawing;
+using DDPM.UI.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Forms;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
-using DDPM.UI.Common;
-using Dell.Client.Framework.UX.WPF.Controls;
-using static System.Collections.Specialized.BitVector32;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
-namespace DDPM.UI.Plugin.Common {
-  /// <summary>
-  /// OpenRunModalDialog.xaml 的互動邏輯
-  /// </summary>
-  public partial class RadialMenuModalDialog : Window {
-    PenActions PenActions;
-    string Model;
+namespace DDPM.UI.Plugin.Common
+{
+    /// <summary>
+    /// OpenRunModalDialog.xaml 的互動邏輯
+    /// </summary>
+    public partial class RadialMenuModalDialog : Window
+    {
+        PenActions PenActions;
+        string Model;
 
-    private const double OuterRadius = 198;
-    private const double InnerRadius = 58;
-    private const double CenterX = 200;
-    private const double CenterY = 200;
+        private const double OuterRadius = 198;
+        private const double InnerRadius = 58;
+        private const double CenterX = 200;
+        private const double CenterY = 200;
 
-    private int SelectedMenuID = 1;
+    private int SelectedMenuID = 2;
     private int SelectedActionID = 0;
     private bool IsComboOpen = false;
     readonly SolidColorBrush NormalFillBrush = new();
@@ -47,17 +35,18 @@ namespace DDPM.UI.Plugin.Common {
     readonly LinearGradientBrush FocusFillBrush = new();
     readonly LinearGradientBrush FocusBorderBrush = new();
 
-    public RadialMenuModalDialog(double width, double height, PenActions penActions, string model) {
-      InitializeComponent();
-      this.Width = width;
-      this.Height = height;
-      PenActions = penActions;
-      Model = model;
+        public RadialMenuModalDialog(double width, double height, PenActions penActions, string model)
+        {
+            InitializeComponent();
+            this.Width = width;
+            this.Height = height;
+            PenActions = penActions;
+            Model = model;
 
-      DrawPieChart();
+            DrawPieChart();
 
       SelectedMenuID = 2;
-      SelectedActionID = PenActions.RadialActions[1].AssignedAction.ID;
+      SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
       txtTitleBar.Text = Strings.RadialMenu;
       txtFunction.Text = Strings.FunctionForSelectedRadial;
       RefreshAction(true);
@@ -74,7 +63,8 @@ namespace DDPM.UI.Plugin.Common {
       btnSave.Caption = Strings.Save;
 
       NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
-      NormalBorderBrush.Color = Color.FromRgb(0x1E, 0x3F, 0x6C);
+      //NormalBorderBrush.Color = Color.FromRgb(0x1E, 0x3F, 0x6C);
+      NormalBorderBrush.Color = Color.FromRgb(0x13, 0x2F, 0x54);
       FocusFillBrush.StartPoint = new Point(0, 0);
       FocusFillBrush.EndPoint = new Point(1, 0);
       FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x06, 0x72, 0xCB), 0));
@@ -86,168 +76,189 @@ namespace DDPM.UI.Plugin.Common {
     }
 
     private void DrawPieChart() {
-      //CenterX=canvas.po
       int numberOfSections = 8;
       double angleStep = 360.0 / numberOfSections;
 
       for(int i = 0; i < numberOfSections; i++) {
-        // Calculate start and end angles for each section
         double startAngle = i * angleStep;
         double endAngle = startAngle + angleStep;
 
         // Create a path for each section
         Path path = new Path {
-          Fill = (i == 0) ? FocusFillBrush : NormalFillBrush,
-          Stroke = (i == 0) ? FocusBorderBrush : NormalBorderBrush,
+          Name = $"Path{i+1}",
+          Fill = (i == 1) ? FocusFillBrush : NormalFillBrush,
+          Stroke = (i == 1) ? FocusBorderBrush : NormalBorderBrush,
           StrokeThickness = 1
         };
 
         path.Data = CreatePieSliceGeometry(startAngle, endAngle);
+        path.MouseEnter += Path_MouseEnter;
+        path.MouseLeave += Path_MouseLeave;
+        path.MouseLeftButtonDown += Path_MouseLeftButtonDown;
         canvas.Children.Add(path);
       }
     }
 
     private Geometry CreatePieSliceGeometry(double startAngle, double endAngle) {
-      // Convert angles from degrees to radians
       double startRadians = startAngle * Math.PI / 180;
       double endRadians = endAngle * Math.PI / 180;
 
-      // Calculate points on the outer circle
-      Point startOuterPoint = new Point(
-          CenterX + OuterRadius * Math.Cos(startRadians),
-          CenterY - OuterRadius * Math.Sin(startRadians));
-      Point endOuterPoint = new Point(
-          CenterX + OuterRadius * Math.Cos(endRadians),
-          CenterY - OuterRadius * Math.Sin(endRadians));
+            // Calculate points on the outer circle
+            Point startOuterPoint = new Point(
+                CenterX + OuterRadius * Math.Cos(startRadians),
+                CenterY - OuterRadius * Math.Sin(startRadians));
+            Point endOuterPoint = new Point(
+                CenterX + OuterRadius * Math.Cos(endRadians),
+                CenterY - OuterRadius * Math.Sin(endRadians));
 
-      // Calculate points on the inner circle
-      Point startInnerPoint = new Point(
-          CenterX + InnerRadius * Math.Cos(startRadians),
-          CenterY - InnerRadius * Math.Sin(startRadians));
-      Point endInnerPoint = new Point(
-          CenterX + InnerRadius * Math.Cos(endRadians),
-          CenterY - InnerRadius * Math.Sin(endRadians));
+            // Calculate points on the inner circle
+            Point startInnerPoint = new Point(
+                CenterX + InnerRadius * Math.Cos(startRadians),
+                CenterY - InnerRadius * Math.Sin(startRadians));
+            Point endInnerPoint = new Point(
+                CenterX + InnerRadius * Math.Cos(endRadians),
+                CenterY - InnerRadius * Math.Sin(endRadians));
 
-      // Create the path figure
-      PathFigure figure = new PathFigure { StartPoint = startOuterPoint };
-      figure.Segments.Add(new ArcSegment(endOuterPoint, new Size(OuterRadius, OuterRadius), 0, false, SweepDirection.Counterclockwise, true));
-      figure.Segments.Add(new LineSegment(endInnerPoint, true));
-      figure.Segments.Add(new ArcSegment(startInnerPoint, new Size(InnerRadius, InnerRadius), 0, false, SweepDirection.Clockwise, true));
-      figure.Segments.Add(new LineSegment(startOuterPoint, true));
+            // Create the path figure
+            PathFigure figure = new PathFigure { StartPoint = startOuterPoint };
+            figure.Segments.Add(new ArcSegment(endOuterPoint, new Size(OuterRadius, OuterRadius), 0, false, SweepDirection.Counterclockwise, true));
+            figure.Segments.Add(new LineSegment(endInnerPoint, true));
+            figure.Segments.Add(new ArcSegment(startInnerPoint, new Size(InnerRadius, InnerRadius), 0, false, SweepDirection.Clockwise, true));
+            figure.Segments.Add(new LineSegment(startOuterPoint, true));
 
-      return new PathGeometry(new[] { figure });
-    }
-
-    private void BacklClick(object sender, MouseButtonEventArgs e) {
-      DialogResult = false;
-      Close();
-    }
-
-    private void ComboButtonClick(object sender, MouseButtonEventArgs e) {
-      if(IsComboOpen) {
-        CloseActionCombo();
-      }
-      else {
-        OpenActionCombo();
-      }
-    }
-
-    private void ActionRadioButton_Click(object sender, RoutedEventArgs e) {
-      var rb = (UXRadioButton)sender;
-      var id = int.Parse(rb.Name.Replace("Radio", ""));
-      if(id == SelectedActionID) { return; }
-
-      txtLabelText.Visibility = Visibility.Visible;
-      var parameter = "";
-      if(id == 2) {
-        Window parentWindow = Window.GetWindow(this);
-        double windowLeft = 0;
-        double windowTop = 0;
-        ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight);
-        if(parentWindow != null) {
-          modalDialog.Owner = parentWindow;
-          windowLeft = parentWindow.Left;
-          windowTop = parentWindow.Top;
+            return new PathGeometry(new[] { figure });
         }
-        modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-        modalDialog.Left = windowLeft;
-        modalDialog.Top = windowTop;
-        if(modalDialog.ShowDialog()!.Value) {
-          parameter = modalDialog.Parameter;
-          PenActions.RadialLabels[SelectedMenuID] = parameter;
-          spLabel.Visibility = Visibility.Collapsed;
-        }
-        else {
-          RefreshAction();
-          CloseActionCombo();
-          return;
-        }
-      }
-      else if(id == 3) {
-        Window parentWindow = Window.GetWindow(this);
-        double windowLeft = 0;
-        double windowTop = 0;
-        OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
-        if(parentWindow != null) {
-          modalDialog.Owner = parentWindow;
-          windowLeft = parentWindow.Left;
-          windowTop = parentWindow.Top;
-        }
-        modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-        modalDialog.Left = windowLeft;
-        modalDialog.Top = windowTop;
-        if(modalDialog.ShowDialog()!.Value) {
-          parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
-          if(modalDialog.ID == 1) {
-            PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
-          }
-          else {
-            PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
-          }
-          spLabel.Visibility = Visibility.Collapsed;
-        }
-        else {
-          RefreshAction();
-          CloseActionCombo();
-          return;
-        }
-      }
-      else {
-        PenActions.RadialLabels[SelectedMenuID] = Actions.RadialMenuActions[id].Caption;
-        spLabel.Visibility = Visibility.Visible;
-      }
 
-
-      SelectedActionID = id;
-      txtMenu.Text = rb.Content.ToString();
-      CloseActionCombo();
-      PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
-      PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
-      ActionList.ExportActionList(PenActions, Model);
-      RefreshAction();
-    }
-
-    private void ActionButtonLoaded(object sender, RoutedEventArgs e) {
-      int id;
-      if(sender is UXRadioButton rb) {
-        id = (int)((UXRadioButton)sender).DataContext;
-        rb.Name = $"Radio{id}";
-        rb.Content = Actions.RadialMenuActions[id].Caption;
-        rb.IsChecked = id == SelectedActionID;
-      }
-      else if(sender is ActionButton btn) {
-        id = (int)((ActionButton)sender).DataContext;
-        if((id == 2 || id == 3) && id == SelectedActionID) {
-          btn.Name = $"btn{id}";
-          btn.Caption = Strings.Edit;
-          btn.Visibility = Visibility.Visible;
-          btn.Width = 101;
+        private void BacklClick(object sender, MouseButtonEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
-        else {
-          btn.Visibility = Visibility.Collapsed;
+
+        private void ComboButtonClick(object sender, MouseButtonEventArgs e)
+        {
+            if (IsComboOpen)
+            {
+                CloseActionCombo();
+            }
+            else
+            {
+                OpenActionCombo();
+            }
         }
-      }
-    }
+
+        private void ActionRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            var rb = (UXRadioButton)sender;
+            var id = int.Parse(rb.Name.Replace("Radio", ""));
+            if (id == SelectedActionID) { return; }
+
+            txtLabelText.Visibility = Visibility.Visible;
+            var parameter = "";
+            if (id == 2)
+            {
+                Window parentWindow = Window.GetWindow(this);
+                double windowLeft = 0;
+                double windowTop = 0;
+                ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                if (modalDialog.ShowDialog()!.Value)
+                {
+                    parameter = modalDialog.Parameter;
+                    PenActions.RadialLabels[SelectedMenuID] = parameter;
+                    spLabel.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    RefreshAction();
+                    CloseActionCombo();
+                    return;
+                }
+            }
+            else if (id == 3)
+            {
+                Window parentWindow = Window.GetWindow(this);
+                double windowLeft = 0;
+                double windowTop = 0;
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                if (modalDialog.ShowDialog()!.Value)
+                {
+                    parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                    if (modalDialog.ID == 1)
+                    {
+                        PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
+                    }
+                    else
+                    {
+                        PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
+                    }
+                    spLabel.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    RefreshAction();
+                    CloseActionCombo();
+                    return;
+                }
+            }
+            else
+            {
+                PenActions.RadialLabels[SelectedMenuID] = Actions.RadialMenuActions[id].Caption;
+                spLabel.Visibility = Visibility.Visible;
+            }
+
+            SelectedActionID = id;
+            txtMenu.Text = rb.Content.ToString();
+            CloseActionCombo();
+            PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
+            PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
+            ActionList.ExportActionList(PenActions, Model);
+            RefreshAction();
+        }
+
+        private void ActionButtonLoaded(object sender, RoutedEventArgs e)
+        {
+            int id;
+            if (sender is UXRadioButton rb)
+            {
+                id = (int)((UXRadioButton)sender).DataContext;
+                rb.Name = $"Radio{id}";
+                rb.Content = Actions.RadialMenuActions[id].Caption;
+                rb.IsChecked = id == SelectedActionID;
+            }
+            else if (sender is ActionButton btn)
+            {
+                id = (int)((ActionButton)sender).DataContext;
+                if ((id == 2 || id == 3) && id == SelectedActionID)
+                {
+                    btn.Name = $"btn{id}";
+                    btn.Caption = Strings.Edit;
+                    btn.Visibility = Visibility.Visible;
+                    btn.Width = 101;
+                }
+                else
+                {
+                    btn.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
 
     void RefreshAction(bool all = false) {
       txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
@@ -279,145 +290,165 @@ namespace DDPM.UI.Plugin.Common {
     }
     string CheckLabel(string text, int id) {
       double width = id switch {
-        1 or 4 or 5 or 8 => 110,
-        2 or 3 or 6 or 7 => 150,
+        1 or 4 or 5 or 8 => 150,
+        2 or 3 or 6 or 7 => 110,
       };
       var typeface = new Typeface(new FontFamily("Roboto"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
 
-      var formattedText = new FormattedText(
-          text,
-          System.Globalization.CultureInfo.CurrentUICulture,
-          System.Windows.FlowDirection.LeftToRight,
-          typeface,
-          16,
-          Brushes.Black,
-          new NumberSubstitution(),
-          1.0);
-      if(formattedText.Width<= width) { return text; }
+            var formattedText = new FormattedText(
+                text,
+                System.Globalization.CultureInfo.CurrentUICulture,
+                System.Windows.FlowDirection.LeftToRight,
+                typeface,
+                16,
+                Brushes.Black,
+                new NumberSubstitution(),
+                1.0);
+            if (formattedText.Width <= width) { return text; }
 
-      while(formattedText.Width > width) {
-        text = text.Substring(0, text.Length - 2);
-        formattedText = new FormattedText(
-          $"{text}...",
-          System.Globalization.CultureInfo.CurrentUICulture,
-          System.Windows.FlowDirection.LeftToRight,
-          typeface,
-          16,
-          Brushes.Black,
-          new NumberSubstitution(),
-          1.0);
-      }
-      return $"{text}...";
-    }
-    void OpenActionCombo() {
-      MenuPanel.Visibility = Visibility.Visible;
-
-      DoubleAnimation visibilityAnimation = new() {
-        From = 0,
-        To = 1,
-        Duration = new Duration(TimeSpan.FromSeconds(0.3))
-      };
-      MenuPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
-
-      imgCombo.RenderTransform = new RotateTransform();
-      DoubleAnimation rotateAnimation = new() {
-        From = 0,
-        To = 180,
-        Duration = new Duration(TimeSpan.FromSeconds(0.3)),
-      };
-      imgCombo.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
-      SectionB.Visibility = Visibility.Collapsed;
-      IsComboOpen = true;
-    }
-
-    void CloseActionCombo() {
-      imgCombo.RenderTransform = new RotateTransform();
-      DoubleAnimation rotateAnimation = new() {
-        From = 180,
-        To = 0,
-        Duration = new Duration(TimeSpan.FromSeconds(0.3)),
-      };
-      imgCombo.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
-      MenuPanel.Visibility = Visibility.Collapsed;
-      SectionB.Visibility = Visibility.Visible;
-      IsComboOpen = false;
-    }
-
-    private void LabelTextChanged(object sender, TextChangedEventArgs e) {
-      btnSave.IsEnabled = (txtLabelText.Text != PenActions.RadialLabels[SelectedMenuID] && txtLabelText.Text.Trim() != "");
-    }
-
-    private void EditActionClick(object sender, MouseButtonEventArgs e) {
-      var id = int.Parse(((ActionButton)sender).Name.Replace("btn", ""));
-      var parameter = PenActions.RadialLabels[SelectedMenuID];
-
-      Window parentWindow = Window.GetWindow(this);
-      double windowLeft = 0;
-      double windowTop = 0;
-      if(id == 2) {
-        ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
-        if(parentWindow != null) {
-          modalDialog.Owner = parentWindow;
-          windowLeft = parentWindow.Left;
-          windowTop = parentWindow.Top;
+            while (formattedText.Width > width)
+            {
+                text = text.Substring(0, text.Length - 2);
+                formattedText = new FormattedText(
+                  $"{text}...",
+                  System.Globalization.CultureInfo.CurrentUICulture,
+                  System.Windows.FlowDirection.LeftToRight,
+                  typeface,
+                  16,
+                  Brushes.Black,
+                  new NumberSubstitution(),
+                  1.0);
+            }
+            return $"{text}...";
         }
-        modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-        modalDialog.Left = windowLeft;
-        modalDialog.Top = windowTop;
-        if(modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter) {
-          parameter = modalDialog.Parameter;
-          PenActions.RadialLabels[SelectedMenuID] = parameter;
-        }
-        else {
-          CloseActionCombo();
-          return;
-        }
-      }
-      else if(id == 3) {
-        parameter = PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter;
-        var arr = parameter.Split('|');
-        OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
-        if(parentWindow != null) {
-          modalDialog.Owner = parentWindow;
-          windowLeft = parentWindow.Left;
-          windowTop = parentWindow.Top;
-        }
-        modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-        modalDialog.Left = windowLeft;
-        modalDialog.Top = windowTop;
-        if(modalDialog.ShowDialog()!.Value && $"{modalDialog.ID}|{modalDialog.Parameter}" != parameter) {
-          parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
-          if(modalDialog.ID == 1) {
-            PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
-          }
-          else {
-            PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
-          }
-        }
-        else {
-          CloseActionCombo();
-          return;
-        }
-      }
-      PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
-      PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
-      ActionList.ExportActionList(PenActions, Model);
-      RefreshAction();
-      CloseActionCombo();
-    }
+        void OpenActionCombo()
+        {
+            MenuPanel.Visibility = Visibility.Visible;
 
-    private void RestoreClick(object sender, MouseButtonEventArgs e) {
-      PenActions.ResetRadialMenu();
-      ActionList.ExportActionList(PenActions, Model);
-      SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
-      RefreshAction(true);
-    }
+            DoubleAnimation visibilityAnimation = new()
+            {
+                From = 0,
+                To = 1,
+                Duration = new Duration(TimeSpan.FromSeconds(0.3))
+            };
+            MenuPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
 
-    private void SaveClick(object sender, MouseButtonEventArgs e) {
-      PenActions.RadialLabels[SelectedMenuID] = txtLabelText.Text.Trim();
-      ActionList.ExportActionList(PenActions, Model);
-      RefreshLabel();
-    }
+            imgCombo.RenderTransform = new RotateTransform();
+            DoubleAnimation rotateAnimation = new()
+            {
+                From = 0,
+                To = 180,
+                Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+            };
+            imgCombo.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+            SectionB.Visibility = Visibility.Collapsed;
+            IsComboOpen = true;
+        }
+
+        void CloseActionCombo()
+        {
+            imgCombo.RenderTransform = new RotateTransform();
+            DoubleAnimation rotateAnimation = new()
+            {
+                From = 180,
+                To = 0,
+                Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+            };
+            imgCombo.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+            MenuPanel.Visibility = Visibility.Collapsed;
+            SectionB.Visibility = Visibility.Visible;
+            IsComboOpen = false;
+        }
+
+        private void LabelTextChanged(object sender, TextChangedEventArgs e)
+        {
+            btnSave.IsEnabled = (txtLabelText.Text != PenActions.RadialLabels[SelectedMenuID] && txtLabelText.Text.Trim() != "");
+        }
+
+        private void EditActionClick(object sender, MouseButtonEventArgs e)
+        {
+            var id = int.Parse(((ActionButton)sender).Name.Replace("btn", ""));
+            var parameter = PenActions.RadialLabels[SelectedMenuID];
+
+            Window parentWindow = Window.GetWindow(this);
+            double windowLeft = 0;
+            double windowTop = 0;
+            if (id == 2)
+            {
+                ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
+                {
+                    parameter = modalDialog.Parameter;
+                    PenActions.RadialLabels[SelectedMenuID] = parameter;
+                }
+                else
+                {
+                    CloseActionCombo();
+                    return;
+                }
+            }
+            else if (id == 3)
+            {
+                parameter = PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter;
+                var arr = parameter.Split('|');
+                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                if (modalDialog.ShowDialog()!.Value && $"{modalDialog.ID}|{modalDialog.Parameter}" != parameter)
+                {
+                    parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                    if (modalDialog.ID == 1)
+                    {
+                        PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
+                    }
+                    else
+                    {
+                        PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
+                    }
+                }
+                else
+                {
+                    CloseActionCombo();
+                    return;
+                }
+            }
+            PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
+            PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
+            ActionList.ExportActionList(PenActions, Model);
+            RefreshAction();
+            CloseActionCombo();
+        }
+
+        private void RestoreClick(object sender, MouseButtonEventArgs e)
+        {
+            PenActions.ResetRadialMenu();
+            ActionList.ExportActionList(PenActions, Model);
+            SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+            RefreshAction(true);
+        }
+
+        private void SaveClick(object sender, MouseButtonEventArgs e)
+        {
+            PenActions.RadialLabels[SelectedMenuID] = txtLabelText.Text.Trim();
+            ActionList.ExportActionList(PenActions, Model);
+            RefreshLabel();
+        }
 
     private void tsUseCenter_Click(object sender, RoutedEventArgs e) {
       if(tsUseCenter.IsChecked!.Value) {
@@ -430,6 +461,67 @@ namespace DDPM.UI.Plugin.Common {
       }
       PenActions.IsUseCenter = tsUseCenter.IsChecked!.Value;
       ActionList.ExportActionList(PenActions, Model);
+    }
+
+    private void Path_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e) {
+      if(sender is Path path) {
+        path.Fill = FocusFillBrush;
+        path.Stroke = FocusBorderBrush;
+      }
+      if(sender is UXTextBlock tb) {
+        int id = int.Parse(tb.Name.Substring(5, 1));
+        var pa = (Path)canvas.Children[id-1];
+        pa.Fill = FocusFillBrush;
+        pa.Stroke = FocusBorderBrush;
+      }
+    }
+
+    private void Path_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e) {
+      if(sender is Path path) {
+        int id = int.Parse(path.Name.Substring(4, 1));
+        if(id == SelectedMenuID) { return; }
+        path.Fill = NormalFillBrush;
+        path.Stroke = NormalBorderBrush;
+      }
+      if(sender is UXTextBlock tb) {
+        int id = int.Parse(tb.Name.Substring(5, 1));
+        if(id == SelectedMenuID) { return; }
+        var pa = (Path)canvas.Children[id - 1];
+        pa.Fill = NormalFillBrush;
+        pa.Stroke = NormalBorderBrush;
+      }
+    }
+
+    private void Path_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+      if(sender is Path path) {
+        int id = int.Parse(path.Name.Substring(4, 1));
+        if(id == SelectedMenuID) { return; }
+
+        var pa = (Path)canvas.Children[SelectedMenuID - 1];
+        pa.Fill = NormalFillBrush;
+        pa.Stroke = NormalBorderBrush;
+
+        path.Fill = FocusFillBrush;
+        path.Stroke = FocusBorderBrush;
+
+        SelectedMenuID = id;
+      }
+      if(sender is UXTextBlock tb) {
+        int id = int.Parse(tb.Name.Substring(5, 1));
+        if(id == SelectedMenuID) { return; }
+
+        var pa = (Path)canvas.Children[SelectedMenuID - 1];
+        pa.Fill = NormalFillBrush;
+        pa.Stroke = NormalBorderBrush;
+
+        pa = (Path)canvas.Children[id - 1];
+        pa.Fill = FocusFillBrush;
+        pa.Stroke = FocusBorderBrush;
+
+        SelectedMenuID = id;
+      }
+      SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+      RefreshAction();
     }
   }
 }

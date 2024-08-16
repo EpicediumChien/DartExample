@@ -1,33 +1,16 @@
 ﻿using DDPM.SA.Common;
-using DDPM.SA.Plugins.User.DisplayManager;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Interfaces;
+using DDPM.SA.Plugins.User.DisplayProperties;
+using DDPM.SA.Plugins.User.EasyArrange;
 using DDPM.SA.Plugins.User.PipPbpManger;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
 using Moq;
-using System.Data;
-using System.Threading;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies;
-using Windows.Media.AppBroadcasting;
-using Windows.UI.ViewManagement;
-using static VcpCore.Common.User32;
-using DDPM.SA.Plugins.User.DisplayProperties;
-using MS.WindowsAPICodePack.Internal;
-using DDPM.SA.Common.Display;
 using WinCopies.Util;
-using System.Xml.Linq;
-using DDPM.SA.Common.Interfaces;
-using DDPM.SA.Plugins.User.EasyArrange;
-using NuGet.Frameworks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using System.Windows.Controls;
-using Microsoft.VisualBasic.Logging;
-using System.Security.Cryptography;
-using System.Reflection.Emit;
 
 namespace DDPM.SA.Plugins.User.DisplayManager.Test
 {
@@ -121,7 +104,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         {
             displayPlugin = CreateInitializeDisplayMangerPlugin();
 
-
             vcpCorePlugin = CreateInitializeVcpCorePlugin();
             pipPbpMangerPlugin = CreateInitializePipPbpPlugin();
             displayPropertiesPlugin = CreateInitializedisplayPropertiesPlugin();
@@ -141,7 +123,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             getstr = (Dictionary<string, Dictionary<string, string>>)privatevcp.GetField("_ColorPresets");
         }
 
-
         [Test]
         public void TestGetMonitors()
         {
@@ -153,7 +134,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);//set _VcpCorePlugin为我们mock的对象
             var getMonitors = displayPlugin.GetMonitors().Result;
             Assert.Greater(getMonitors.Count, 0);
-
         }
 
         [Test]
@@ -167,7 +147,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
             var re_GetMonitors = displayPlugin.Re_GetMonitors().Result;
             Assert.Greater(re_GetMonitors.Count, 0);
-
         }
 
         [Test]
@@ -181,13 +160,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var getCapabilitiesString = displayPlugin.GetCapabilitiesString(monitorInfo1).Result;
             Assert.Greater(capabilitiesString.Length, 0);
             Assert.That(capabilitiesString, Is.EqualTo(getCapabilitiesString));
-
         }
 
         [Test]
         public void TestGetVCPCapabilities()
         {
-
             string VcpCapabilities = "\"{\\r\\n  \\\"Index\\\": 0,\\r\\n  \\\"ModelName\\\": \\\"DELLU2424H\\\",\\r\\n  \\\"SerialNumber\\\": \\\"926168130\\\",\\r\\n  \\\"ServiceTag\\\": \\\"CN073K0\\\"";
             VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(VcpCapabilities));
             var VcpCoreServiceObject = VcpCoreService.Object;
@@ -201,7 +178,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         [Test]
         public void TestGetVCPCapability()
         {
-
             string funName = "colorpreset";
             int opt = 0;
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = "E2" };
@@ -213,13 +189,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var getVCPCapability = displayPlugin.GetVCPCapability(monitorInfo1, funName, opt).Result;
             Assert.IsTrue(getVCPCapability.result);
             Assert.That(ObjGetvcpValue, Is.EqualTo(getVCPCapability.value));
-
         }
 
         [Test]
         public void TestGetVCPCapability_()
         {
-
             byte code = 0xE7;
             int opt = 0;
             ObjGetVCP ObjGetvcp = new ObjGetVCP() { result = true, value = 10u }; //0xE7
@@ -231,9 +205,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var getVCPCapability_ = displayPlugin.GetVCPCapability(monitorInfo1, code, opt).Result;
             Assert.IsTrue(getVCPCapability_.result);
             Assert.That(ObjGetvcpValue, Is.EqualTo(getVCPCapability_.value));
-
         }
-
 
         [Test]
         public void TestSetVCPCapability()
@@ -247,7 +219,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
             var SetVCPCapabilityResult = displayPlugin.SetVCPCapability(monitorInfo1, code, val).Result;
             Assert.IsTrue(SetVCPCapabilityResult);
-
         }
 
         [Test]
@@ -262,13 +233,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject);
             var SetVCPCapabilityResult_ = displayPlugin.SetVCPCapability(monitorInfo1, FuntionName, val).Result;
             Assert.IsTrue(SetVCPCapabilityResult_);
-
         }
 
         [Test]
         public void TestGetInputSourcelist()
         {
-
             string getVcpCapabilities = "{'CapsDataMap' : {'Input Select': ['Thunderbolt-1', 'DisplayPort-1','HDMI-1']}}";
             VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities));
             var VcpCoreServiceObject = VcpCoreService.Object;
@@ -296,7 +265,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             var GetInputSourcelist = displayPlugin.GetInputSourcelist(monitorInfo1).Result;
             Assert.IsNotNull(GetInputSourcelist);
             Assert.Greater(GetInputSourcelist.Count, 0);
-
         }
 
         [Test]
@@ -339,7 +307,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var GetUSBUpstreamLists = displayPlugin.GetUSBUpstreamList(monitorInfo).Result;
                 Assert.IsNotNull(GetUSBUpstreamLists);
             }
-
         }
 
         [Test]
@@ -379,7 +346,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var GetUSBUpstreamResulit = displayPlugin.GetUSBUpstream(monitorInfo1, inputsource1).Result;
                 Assert.IsNull(GetUSBUpstreamResulit);
             }
-
         }
 
         [Test]
@@ -430,7 +396,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 bool SetUSBUpstreamresult = displayPlugin.SetUSBUpstream(monitorInfo1, inputsource1, upstream).Result;
                 Assert.IsFalse(SetUSBUpstreamresult);
             }
-
         }
 
         [Test]
@@ -451,7 +416,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         [Test]
         public void TestUSBSwitch()
         {
-
             Dictionary<string, List<string>> capabilityDic = new Dictionary<string, List<string>>();
             capabilityDic.Add("EE", new List<string> { "value1" });
             capabilityDic.Add("EF", new List<string> { "value2" });
@@ -515,13 +479,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var PipPbpCapabilitiesWords = displayPlugin.GetPipPbpCapabilitiesWords(monitorInfo1).Result;
                 Assert.IsNull(PipPbpCapabilitiesWords);
             }
-
         }
 
         [Test]
         public void TestSetPipModeOff()
         {
-
             bool setPipModeOff = true;
             PipPbpService.Setup(x => x.SetPipModeOff(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(setPipModeOff));
             var PipPbpServiceObject = PipPbpService.Object;
@@ -539,7 +501,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsFalse(PipModeOffResult);
             }
         }
-
 
         [Test]
         public void TestSetPipModeSmall()
@@ -561,7 +522,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var SetPipModeSmallResult = displayPlugin.SetPipModeSmall(monitorInfo1).Result;
                 Assert.IsFalse(SetPipModeSmallResult);
             }
-
         }
 
         [Test]
@@ -630,11 +590,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             }
         }
 
-
         [Test]
         public void TestSetPbpMode()
         {
-
             bool setPbpMode = true;
             UInt16 modeCode = 20;
             PipPbpService.Setup(x => x.SetPbpMode(It.IsAny<MonitorInfo>(), It.IsAny<UInt16>())).Returns(Task.FromResult(setPbpMode));
@@ -653,9 +611,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var SetPbpModeResult = displayPlugin.SetPbpMode(monitorInfo1, modeCode).Result;
                 Assert.IsFalse(SetPbpModeResult);
             }
-
         }
-
 
         [Test]
         public void TestVideoSwap()
@@ -680,7 +636,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsFalse(VideoSwapResult);
             }
         }
-
 
         [Test]
         public void TestGetPxpMode()
@@ -728,7 +683,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var GetSubInputListResult = displayPlugin.GetSubInputList(monitorInfo1).Result;
                 Assert.That(SubInputList2, Is.EqualTo(GetSubInputListResult));
             }
-
         }
 
         [Test]
@@ -758,7 +712,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             }
         }
 
-
         [Test]
         public void TestSetSubInputs()
         {
@@ -782,7 +735,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var SetPbpModeResult = displayPlugin.SetSubInputs(monitorInfo1, sub1, sub2, sub3).Result;
                 Assert.IsFalse(SetPbpModeResult);
             }
-
         }
 
         [Test]
@@ -828,7 +780,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var SetEAFunctionEnabledResult = displayPlugin.SetEAFunctionEnabled(isEnabled).Result;
                 Assert.That(isDisabled, Is.EqualTo(SetEAFunctionEnabledResult));
             }
-
         }
 
         [Test]
@@ -875,7 +826,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.That(result2, Is.EqualTo(SetEAWrokSplitResult));
             }
         }
-
 
         [Test]
         public void TestRequestEditSplit()
@@ -952,7 +902,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 ALSConfig GetALSFeatureValue_result = displayPlugin.GetALSFeatureValue(monitorInfo, type, val).Result;
                 Assert.IsNotNull(GetALSFeatureValue_result);
             }
-
         }
 
         [Test]
@@ -996,7 +945,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             {
                 var CheckisPrimaryMonitorSyncOnOffResult = displayPlugin.CheckisPrimaryMonitorSyncOnOff(monitorInfo1, aconfig).Result;
                 Assert.IsTrue(CheckisPrimaryMonitorSyncOnOffResult);
-
             }
         }
 
@@ -1015,7 +963,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.Greater(GetConnectedALSConfig_.Count, 0);
             Assert.That(GetConnectedALSConfig_2.serialNumber, Is.EqualTo(monitorInfo1.edid.SerialNumber));
             Assert.That(GetConnectedALSConfig_2.DisplayName, Is.EqualTo(monitorInfo1.DisplayName));
-
         }
 
         [Test]
@@ -1074,7 +1021,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsFalse(GetConnectedALSConfig_.isPrimaryMonitorSync);
             }
             Assert.IsTrue(result);
-
         }
 
         [Test]
@@ -1155,7 +1101,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             }
         }
 
-
         [Test]
         public void TestUpdateALSFeatureValue()
         {
@@ -1198,7 +1143,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsTrue(result);
                 Assert.That(AllALSConfig_[0].serialNumber, Is.EqualTo(monitorInfo1.edid.SerialNumber));
                 Assert.That(AllALSConfig_[0].DisplayName, Is.EqualTo(monitorInfo1.DisplayName));
-
             }
             else
             {
@@ -1208,7 +1152,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsTrue(result);
                 Assert.Greater(allALSConfig2.Count, 0);
             }
-
         }
 
         [Test]
@@ -1279,7 +1222,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsTrue(result.SupportedUSBCPrioritization);
             }
             Assert.Greater(result.SupportedProperties.Properties.Count, 0);
-
         }
 
         [Test]
@@ -1343,7 +1285,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.IsTrue(result1[0]);
         }
 
-
         [Test]
         public void TestSetDisplayPropertiest()
         {
@@ -1368,7 +1309,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.That(ActualResult, Is.EqualTo(SetDisplayPropertiestResult));
         }
 
-
         [Test]
         public void TestCallWindowsDisplaySetting()
         {
@@ -1391,8 +1331,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.That(isLock, Is.EqualTo(isLockOrientation));
         }
 
-
-
         [Test]
         public void TestReset0x52TimerTick()
         {
@@ -1405,9 +1343,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Task result = displayPlugin.Reset0x52TimerTick(millisecond);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.IsCompleted);
-
         }
-
 
         [Test]
         public void TestSetHDRStatus()
@@ -1470,7 +1406,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                     var result = displayPlugin.SetUSBCPrioritizationType(monitorInfo1, type).Result;
                     Assert.IsFalse(result);
                 }
-
             }
             catch
             {
@@ -1496,7 +1431,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privateObject.Invoke("InitializeEAPlugin");
             Assert.IsNotNull(EasyArrangeplugin);
         }
-
 
         [Test]
         public void TestInitializeAllALSInfo()
@@ -1528,7 +1462,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.IsNotNull(caption);
             Assert.That(AllALSConfig_[0].serialNumber, Is.EqualTo(monitorInfo1.edid.SerialNumber));
             Assert.That(AllALSConfig_[0].DisplayName, Is.EqualTo(monitorInfo1.DisplayName));
-
         }
 
         [Test]
@@ -1554,13 +1487,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             if (aconfigNulll == null)
             {
-
                 ALSConfig result = (ALSConfig)privateObject.Invoke("UpdateALSFeatureByValue", monitorInfo1, value);
                 Assert.IsNotNull(result);
                 var AllALSConfig_ = DisplayMangerPlugin.AllALSConfig;
                 Assert.That(AllALSConfig_[0].serialNumber, Is.EqualTo(monitorInfo1.edid.SerialNumber));
                 Assert.That(AllALSConfig_[0].DisplayName, Is.EqualTo(monitorInfo1.DisplayName));
-
             }
             else
             {
@@ -1572,34 +1503,45 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsNotNull(result);
                 Assert.Greater(allALSConfig2.Count, 0);
             }
-
         }
 
         [Test]
         public void TestGetALSupport()
         {
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
-
-            string getVcpCapabilities = "{'CapsDataMap' : {'Ambient Light Sensor': ['ALS full function']}}";
+            string getVcpCapabilities = "{'CapsDataMap' : {'Ambient Light Sensor': ['ALS without sensor']}}";
             VcpCoreService.Setup(x => x.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(getVcpCapabilities)); //GetALSupport GetVCPCapabilities
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
-
+            ALSConfig aconfig2 = new ALSConfig()
+            {
+                DisplayName = "DISPLAY7",
+                serialNumber = "808597589",
+                isSupportALS = 0,
+                isMMSEnable = false,
+                isPrimaryMonitorSync = false,
+                isAutoBrightness = false,
+                isAutoColorTemp = false,
+                LiftTone = 0,
+                AllValue = 0,
+                result = false,
+                AutoBrightnessRangeLevel = new List<AutoBrightnessRangeLevel>() { new AutoBrightnessRangeLevel() { level_name = "Low", level_value = 0 } }
+            };
             PrivateObject privateObject = new PrivateObject(displayPlugin);
-            int issupportAls = 2;
+            int issupportAls = 0;
             if (!string.IsNullOrEmpty(getVcpCapabilities))
             {
-                var result = privateObject.Invoke("GetALSupport", monitorInfo1, aconfig);
-                Assert.That(issupportAls, Is.EqualTo(aconfig.isSupportALS));
-                Assert.IsTrue(aconfig.result);
+                var result = privateObject.Invoke("GetALSupport", monitorInfo1, aconfig2);
+                Assert.That(issupportAls, Is.EqualTo(aconfig2.isSupportALS));
+                Assert.IsTrue(aconfig2.result);
             }
             else
             {
-                var result = privateObject.Invoke("GetALSupport", monitorInfo1, aconfig);
+                var result = privateObject.Invoke("GetALSupport", monitorInfo1, aconfig2);
                 var log = privateObject.GetFieldOrProperty("_logs");
                 var log2 = "[DisplayMangerPlugin] ALSFeature into GetALSMMS ...";
                 Assert.That(log, Is.EqualTo(log2));
-                Assert.IsFalse(aconfig.result);
+                Assert.IsFalse(aconfig2.result);
             }
         }
 
@@ -1643,7 +1585,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsFalse(monitorALS.result);
             }
         }
-
 
         [Test]
         public void TestSetALSMMS()
@@ -1911,7 +1852,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             {
                 var result = privatedispalypluginObject.Invoke("GetALSAutoBrightnessRangeLevel", monitorInfo1, monitorALS);
                 Assert.That(brightnessrangelevellist[0].level_name, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel[0].level_name)); //level_name = "Low"
-                Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel[0].level_value)); //level_value = 0 
+                Assert.That(brightnessrangelevellist[0].level_value, Is.EqualTo(monitorALS.AutoBrightnessRangeLevel[0].level_value)); //level_value = 0
                 Assert.IsTrue(monitorALS.result);
             }
             else
@@ -2148,7 +2089,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             var result = privatedispalypluginObject.Invoke("UpdateAllValue", monitorALS);
             Assert.That(value, Is.EqualTo(result));
-
         }
 
         [Test]

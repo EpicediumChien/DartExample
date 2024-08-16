@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VcpCore.Common;
 
 namespace DDPM.SA.Common.Display
 {
@@ -19,7 +15,6 @@ namespace DDPM.SA.Common.Display
         {
             _ = Task.Run(() =>
             {
-
                 while (!_disposed)
                 {
                     if (_disposed) return;
@@ -31,7 +26,6 @@ namespace DDPM.SA.Common.Display
                         }
                         else
                         {
-
                             Thread.Sleep(100);
                         };
                     }
@@ -40,7 +34,6 @@ namespace DDPM.SA.Common.Display
                         //_logger.Error(ex, @"Unhandled exception in invoked method");
                     }
                 }
-
             });
         }
 
@@ -57,6 +50,5 @@ namespace DDPM.SA.Common.Display
                 _invokeQueue.Clear();
             }
         }
-
     }
 }

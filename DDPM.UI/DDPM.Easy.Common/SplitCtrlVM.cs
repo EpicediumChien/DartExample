@@ -1,19 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using Windows.Foundation.Diagnostics;
 
 namespace DDPM.Easy.Common
 {
     public class SplitCtrlVM : ObservableObject
     {
         #region SplitMode
+
         private eSplitModes splitMode = eSplitModes.Icon;
+
         public eSplitModes SplitMode
         {
             get => splitMode;
@@ -28,22 +25,28 @@ namespace DDPM.Easy.Common
 
         //Wrokaround, until I can databinding, trigger with SplitMode directly
         public bool IsEditMode => SplitMode == eSplitModes.Edit;
+
         public bool IsWorkMode => SplitMode == eSplitModes.Work;
         public bool IsIconMode => SplitMode == eSplitModes.Icon;
-        #endregion
+
+        #endregion SplitMode
 
         #region IsEditable (inside EditWindow or WorkWidnow)
+
         private bool isEditable = false;
+
         public bool IsEditable
         {
             get { return isEditable; }
             set { isEditable = value; OnPropertyChanged("IsEditable"); }
         }
 
-        #endregion
+        #endregion IsEditable (inside EditWindow or WorkWidnow)
 
         #region Border Thickness
+
         private double thickBorder = 8.00;
+
         public double ThickBorder
         {
             get { return thickBorder; }
@@ -60,28 +63,36 @@ namespace DDPM.Easy.Common
             get { return new Thickness(ThickBorder); }
         }
 
-        #endregion
+        #endregion Border Thickness
 
         #region GridSplitter Thickness
+
         private double thickSplitter = 8.00;
+
         public double ThickSplitter
         {
             get { return thickSplitter; }
             set { thickSplitter = value; OnPropertyChanged("ThickSplitter"); }
         }
-        #endregion
+
+        #endregion GridSplitter Thickness
 
         #region Screen Orientation
+
         private bool isVertical = false;
+
         public bool IsVertical
         {
             get { return isVertical; }
             set { isVertical = value; OnPropertyChanged("IsVertical"); }
         }
-        #endregion
+
+        #endregion Screen Orientation
 
         #region Custom Settings
+
         private ObservableCollection<GridLength> settings = null;
+
         public ObservableCollection<GridLength> Settings
         {
             get { return settings; }
@@ -143,6 +154,7 @@ namespace DDPM.Easy.Common
             }
             return listOut;
         }
+
         //double[] to string
         public static string Double_To_String(List<double> settings)
         {
@@ -157,10 +169,13 @@ namespace DDPM.Easy.Common
             }
             return sb.ToString();
         }
-        #endregion
+
+        #endregion Custom Settings
 
         #region HoveringCell (updated by WorkWindow)
+
         private string hoveringCell = "";
+
         public string HoveringCell
         {
             get { return hoveringCell; }
@@ -170,7 +185,7 @@ namespace DDPM.Easy.Common
                 OnPropertyChanged("HoveringCell");
             }
         }
-        #endregion
 
+        #endregion HoveringCell (updated by WorkWindow)
     }
 }

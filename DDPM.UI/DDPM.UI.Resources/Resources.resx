@@ -183,4 +183,232 @@
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="Updates.0" xml:space="preserve">
+    <value>Update available</value>
+  </data>
+  <data name="Updates.1" xml:space="preserve">
+    <value>Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled.</value>
+  </data>
+  <data name="Updates.2" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="Updates.3" xml:space="preserve">
+    <value>There are no available updates at this time.</value>
+  </data>
+  <data name="Updates.4" xml:space="preserve">
+    <value>Network error. Please try again.</value>
+  </data>
+  <data name="Updates.5" xml:space="preserve">
+    <value>Download and install</value>
+  </data>
+  <data name="Updates.6" xml:space="preserve">
+    <value>Preparing for updates. Please wait...</value>
+  </data>
+  <data name="Analytics.0" xml:space="preserve">
+    <value>Analytics</value>
+  </data>
+  <data name="Analytics.1" xml:space="preserve">
+    <value>Help Dell improve its products and services automatically sending diagnostics and usage data.</value>
+  </data>
+  <data name="Analytics.2" xml:space="preserve">
+    <value>Dell's Privacy Policy</value>
+  </data>
+  <data name="Analytics.3" xml:space="preserve">
+    <value>Help Dell improve its products and services automatically</value>
+  </data>
+  <data name="AddDevice" xml:space="preserve">
+    <value>Add Device</value>
+  </data>
+  <data name="AddDevice.Display" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="AddDevice.Webcam" xml:space="preserve">
+    <value>Webcam</value>
+  </data>
+  <data name="AddDevice.KnM" xml:space="preserve">
+    <value>Keyboard\nand Mouse</value>
+  </data>
+  <data name="AddDevice.Pen" xml:space="preserve">
+    <value>Pen</value>
+  </data>
+  <data name="AddDevice.Headset" xml:space="preserve">
+    <value>Headset</value>
+  </data>
+  <data name="AddDevice.Speaker" xml:space="preserve">
+    <value>Speakerphone\nand Soundbar</value>
+  </data>
+  <data name="AddDevice.Dock" xml:space="preserve">
+    <value>Dock</value>
+  </data>
+  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+    <value>Wireless receiver</value>
+  </data>
+  <data name="AddDevice.Type.Wired" xml:space="preserve">
+    <value>Wired</value>
+  </data>
+  <data name="AddDevice.Type.Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+    <value>Adding device, please wait...</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+    <value>Pairing</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+    <value>Pairing may take some time. Do not disconnect your device</value>
+  </data>
+  <data name="AddDevice.Display.0" xml:space="preserve">
+    <value>Wired Connection</value>
+  </data>
+  <data name="AddDevice.Display.1" xml:space="preserve">
+    <value>Connect your display via HDMI/USB-C port on your system</value>
+  </data>
+  <data name="AddDevice.Webcam.0" xml:space="preserve">
+    <value>Connect your webcam via USB port on your system</value>
+  </data>
+  <data name="AddDevice.KnM.0" xml:space="preserve">
+    <value>Bluetooth Connection</value>
+  </data>
+  <data name="AddDevice.KnM.1" xml:space="preserve">
+    <value>Add Bluetooth device by pairing it through Windows settings</value>
+  </data>
+  <data name="AddDevice.KnM.2" xml:space="preserve">
+    <value>Slide power switch slider to ON</value>
+  </data>
+  <data name="AddDevice.KnM.3" xml:space="preserve">
+    <value>Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable</value>
+  </data>
+  <data name="AddDevice.KnM.4" xml:space="preserve">
+    <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered</value>
+  </data>
+  <data name="AddDevice.KnM.5" xml:space="preserve">
+    <value>Windows Settings</value>
+  </data>
+  <data name="AddDevice.KnM.6" xml:space="preserve">
+    <value>Connect your USB wireless receiver to your system</value>
+  </data>
+  <data name="AddDevice.KnM.7" xml:space="preserve">
+    <value>Slide the power switch to OFF.</value>
+  </data>
+  <data name="AddDevice.KnM.8" xml:space="preserve">
+    <value>Press and hold any key/button and slide power to ON</value>
+  </data>
+  <data name="AddDevice.KnM.9" xml:space="preserve">
+    <value>Keep this window open. Pairing will begin after a few seconds. If not, repeat steps 2 &amp; 3 to try again.</value>
+  </data>
+  <data name="AddDevice.KnM.10" xml:space="preserve">
+    <value>Multiple wireless receivers detected. Unplug all Dell wireless receivers for Keyboard and Mouse. Plug in the one you want to pair.</value>
+  </data>
+  <data name="AddDevice.KnM.11" xml:space="preserve">
+    <value>No USB wireless receiver connected. Connect your USB wireless receiver, and pair up to six compatible devices.</value>
+  </data>
+  <data name="AddDevice.KnM.12" xml:space="preserve">
+    <value>No USB wireless receiver connected. Connect a USB wireless receiver for better UC compatibility, lower latency, and more stable connection.</value>
+  </data>
+  <data name="AddDevice.KnM.13" xml:space="preserve">
+    <value>Connect your keyboard and mouse via USB port on your system</value>
+  </data>
+  <data name="AddDevice.Pen.0" xml:space="preserve">
+    <value>Connecting your Pen</value>
+  </data>
+  <data name="AddDevice.Pen.1" xml:space="preserve">
+    <value>Touch your pen tip to the screen</value>
+  </data>
+  <data name="AddDevice.Pen.2" xml:space="preserve">
+    <value>Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows.</value>
+  </data>
+  <data name="AddDevice.Pen.3" xml:space="preserve">
+    <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.</value>
+  </data>
+  <data name="AddDevice.Pen.4" xml:space="preserve">
+    <value>Select 'Yes' to confirm pairing on the prompt box to pair your pen</value>
+  </data>
+  <data name="AddDevice.Headset.0" xml:space="preserve">
+    <value>For USB wireless receiver free and on-the-go connectivity</value>
+  </data>
+  <data name="AddDevice.Headset.1" xml:space="preserve">
+    <value>Power ON headset</value>
+  </data>
+  <data name="AddDevice.Headset.2" xml:space="preserve">
+    <value>Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth</value>
+  </data>
+  <data name="AddDevice.Headset.3" xml:space="preserve">
+    <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.</value>
+  </data>
+  <data name="AddDevice.Headset.4" xml:space="preserve">
+    <value>Power OFF headset. Hold mic mute button and power ON again.</value>
+  </data>
+  <data name="AddDevice.Headset.5" xml:space="preserve">
+    <value>Pairing will automatically begin after a few seconds</value>
+  </data>
+  <data name="AddDevice.Headset.6" xml:space="preserve">
+    <value>Connect your headset via USB port on your system.</value>
+  </data>
+  <data name="AddDevice.Speaker.0" xml:space="preserve">
+    <value>Connect your Speaker or soundbar via USB port on your system.</value>
+  </data>
+  <data name="AddDevice.Dock.0" xml:space="preserve">
+    <value>Connect your Dock via USB port on your system</value>
+  </data>
+  <data name="HomePage.0" xml:space="preserve">
+    <value>Please wait...</value>
+  </data>
+  <data name="UpdateFirmware" xml:space="preserve">
+    <value>Update Firmware</value>
+  </data>
+  <data name="Dock.0" xml:space="preserve">
+    <value>{0} of {1} slots available</value>
+  </data>
+  <data name="Dock.1" xml:space="preserve">
+    <value>Dongle {0}</value>
+  </data>
+  <data name="Headset.0" xml:space="preserve">
+    <value>Audio Settings</value>
+  </data>
+  <data name="Headset.1" xml:space="preserve">
+    <value>Automated Actions</value>
+  </data>
+  <data name="Headset.2" xml:space="preserve">
+    <value>Device Settings</value>
+  </data>
+  <data name="Keyboard.0" xml:space="preserve">
+    <value>There are no advanced features on this device</value>
+  </data>
+  <data name="Keyboard.1" xml:space="preserve">
+    <value>USB Wireless Receiver</value>
+  </data>
+  <data name="Keyboard.2" xml:space="preserve">
+    <value>Key Customization</value>
+  </data>
+  <data name="Keyboard.3" xml:space="preserve">
+    <value>Collaboration</value>
+  </data>
+  <data name="Keyboard.4" xml:space="preserve">
+    <value>Illumination</value>
+  </data>
+  <data name="Mouse.0" xml:space="preserve">
+    <value>Assign actions for</value>
+  </data>
+  <data name="Mouse.1" xml:space="preserve">
+    <value>All Applications</value>
+  </data>
+  <data name="Mouse.2" xml:space="preserve">
+    <value>Microsoft Word</value>
+  </data>
+  <data name="Mouse.3" xml:space="preserve">
+    <value>Microsoft Excel</value>
+  </data>
+  <data name="Mouse.4" xml:space="preserve">
+    <value>Microsoft PowerPoint</value>
+  </data>
+  <data name="Mouse.5" xml:space="preserve">
+    <value>Microsoft Outlook</value>
+  </data>
 </root>

@@ -1,9 +1,9 @@
-using System.Diagnostics;
-using System.Windows.Controls;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
+using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace DDPM.UI.Module.SpeakerAudioPreset
 {
@@ -28,22 +28,27 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         {
             return _rightView;
         }
+
         public HomeDevice SelectedHomeDevice { get; set; }
         public IModuleOwner? ModuleOwner { get; set; }
 
         #region Event Handlers
+
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("SpeakerAudioPresetModule.OnSelectedHomeDeviceChanged");
         }
+
         public void OnActivated()
         {
             Trace.WriteLine("SpeakerAudioPresetModule.OnActivated");
         }
+
         public void OnDeactivated()
         {
             Trace.WriteLine("SpeakerAudioPresetModule.OnDeactivated");
         }
-        #endregion
+
+        #endregion Event Handlers
     }
 }

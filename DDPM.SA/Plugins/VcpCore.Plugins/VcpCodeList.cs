@@ -1,18 +1,4 @@
-using Microsoft;
-using System;
-using System.Text;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Management;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Globalization;
 using System.Collections.Generic;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Common.PluginConditions;
-using Dell.Client.Framework.Interfaces;
-
 
 namespace VcpCore.Plugins
 {
@@ -271,14 +257,14 @@ namespace VcpCore.Plugins
             { "CAL2", 6 },
             { "Metro", 7 },
             { "Paper", 8 },
-            { "Rec. 709 / BT.709", 9 },            
+            { "Rec. 709 / BT.709", 9 },
             { "Rec. 709/BT.709", 9 },  // 20240731 jim remove
             { "Rec.709/BT.709", 9 }, // 20240808 jim remove
             { "Rec. 709", 9 }, // 20240808 jim add back
             { "Rec.709", 9 }, // 20240731 jim add
             { "Rec709", 9 },
             { "Rec 709", 9 },
-            { "BT.709", 9 },           
+            { "BT.709", 9 },
             { "BT.709 D65 BT1886 L100", 9 },
             { "DCI-P3", 10 },
             { "DCI P3 D65 G2.4 L100", 10 },
@@ -361,8 +347,8 @@ namespace VcpCore.Plugins
             { 21, "CAL2" },
             { 24, "Metro" },
             { 25, "Paper" },
-            { 26, "Rec. 709 / BT.709" }, // 20240731 jim remove   
-            //{ 26, "Rec. 709/BT.709" }, // 20240731 jim remove           
+            { 26, "Rec. 709 / BT.709" }, // 20240731 jim remove
+            //{ 26, "Rec. 709/BT.709" }, // 20240731 jim remove
             //{ 26, "Rec. 709" }, // 20240731 jim remove
             //{ 26, "Rec.709" }, // 20240731 jim add
             { 27, "DCI-P3" },
@@ -585,5 +571,4 @@ namespace VcpCore.Plugins
         MultiMonitorSync = 239,
         GamingFeatures = 244
     }
-
 }

@@ -79,11 +79,470 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Device.
+        /// </summary>
+        internal static string AddDevice {
+            get {
+                return ResourceManager.GetString("AddDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display.
+        /// </summary>
+        internal static string AddDevice_Display {
+            get {
+                return ResourceManager.GetString("AddDevice.Display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wired Connection.
+        /// </summary>
+        internal static string AddDevice_Display_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Display.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your display via HDMI/USB-C port on your system.
+        /// </summary>
+        internal static string AddDevice_Display_1 {
+            get {
+                return ResourceManager.GetString("AddDevice.Display.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dock.
+        /// </summary>
+        internal static string AddDevice_Dock {
+            get {
+                return ResourceManager.GetString("AddDevice.Dock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your Dock via USB port on your system.
+        /// </summary>
+        internal static string AddDevice_Dock_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Dock.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Headset.
+        /// </summary>
+        internal static string AddDevice_Headset {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For USB wireless receiver free and on-the-go connectivity.
+        /// </summary>
+        internal static string AddDevice_Headset_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power ON headset.
+        /// </summary>
+        internal static string AddDevice_Headset_1 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth.
+        /// </summary>
+        internal static string AddDevice_Headset_2 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered..
+        /// </summary>
+        internal static string AddDevice_Headset_3 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power OFF headset. Hold mic mute button and power ON again..
+        /// </summary>
+        internal static string AddDevice_Headset_4 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pairing will automatically begin after a few seconds.
+        /// </summary>
+        internal static string AddDevice_Headset_5 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your headset via USB port on your system..
+        /// </summary>
+        internal static string AddDevice_Headset_6 {
+            get {
+                return ResourceManager.GetString("AddDevice.Headset.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyboard\nand Mouse.
+        /// </summary>
+        internal static string AddDevice_KnM {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bluetooth Connection.
+        /// </summary>
+        internal static string AddDevice_KnM_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Bluetooth device by pairing it through Windows settings.
+        /// </summary>
+        internal static string AddDevice_KnM_1 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple wireless receivers detected. Unplug all Dell wireless receivers for Keyboard and Mouse. Plug in the one you want to pair..
+        /// </summary>
+        internal static string AddDevice_KnM_10 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No USB wireless receiver connected. Connect your USB wireless receiver, and pair up to six compatible devices..
+        /// </summary>
+        internal static string AddDevice_KnM_11 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No USB wireless receiver connected. Connect a USB wireless receiver for better UC compatibility, lower latency, and more stable connection..
+        /// </summary>
+        internal static string AddDevice_KnM_12 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your keyboard and mouse via USB port on your system.
+        /// </summary>
+        internal static string AddDevice_KnM_13 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slide power switch slider to ON.
+        /// </summary>
+        internal static string AddDevice_KnM_2 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable.
+        /// </summary>
+        internal static string AddDevice_KnM_3 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.
+        /// </summary>
+        internal static string AddDevice_KnM_4 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Settings.
+        /// </summary>
+        internal static string AddDevice_KnM_5 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your USB wireless receiver to your system.
+        /// </summary>
+        internal static string AddDevice_KnM_6 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slide the power switch to OFF..
+        /// </summary>
+        internal static string AddDevice_KnM_7 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold any key/button and slide power to ON.
+        /// </summary>
+        internal static string AddDevice_KnM_8 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep this window open. Pairing will begin after a few seconds. If not, repeat steps 2 &amp; 3 to try again..
+        /// </summary>
+        internal static string AddDevice_KnM_9 {
+            get {
+                return ResourceManager.GetString("AddDevice.KnM.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string AddDevice_Msg_CancelBtn {
+            get {
+                return ResourceManager.GetString("AddDevice.Msg.CancelBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pairing may take some time. Do not disconnect your device.
+        /// </summary>
+        internal static string AddDevice_Msg_WaitingAlert {
+            get {
+                return ResourceManager.GetString("AddDevice.Msg.WaitingAlert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding device, please wait....
+        /// </summary>
+        internal static string AddDevice_Msg_WaitingCap {
+            get {
+                return ResourceManager.GetString("AddDevice.Msg.WaitingCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pairing.
+        /// </summary>
+        internal static string AddDevice_Msg_WaitingMsg {
+            get {
+                return ResourceManager.GetString("AddDevice.Msg.WaitingMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pen.
+        /// </summary>
+        internal static string AddDevice_Pen {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connecting your Pen.
+        /// </summary>
+        internal static string AddDevice_Pen_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Touch your pen tip to the screen.
+        /// </summary>
+        internal static string AddDevice_Pen_1 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows..
+        /// </summary>
+        internal static string AddDevice_Pen_2 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered..
+        /// </summary>
+        internal static string AddDevice_Pen_3 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select &apos;Yes&apos; to confirm pairing on the prompt box to pair your pen.
+        /// </summary>
+        internal static string AddDevice_Pen_4 {
+            get {
+                return ResourceManager.GetString("AddDevice.Pen.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speakerphone\nand Soundbar.
+        /// </summary>
+        internal static string AddDevice_Speaker {
+            get {
+                return ResourceManager.GetString("AddDevice.Speaker", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your Speaker or soundbar via USB port on your system..
+        /// </summary>
+        internal static string AddDevice_Speaker_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Speaker.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bluetooth.
+        /// </summary>
+        internal static string AddDevice_Type_Bluetooth {
+            get {
+                return ResourceManager.GetString("AddDevice.Type.Bluetooth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        internal static string AddDevice_Type_Other {
+            get {
+                return ResourceManager.GetString("AddDevice.Type.Other", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wired.
+        /// </summary>
+        internal static string AddDevice_Type_Wired {
+            get {
+                return ResourceManager.GetString("AddDevice.Type.Wired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wireless receiver.
+        /// </summary>
+        internal static string AddDevice_Type_Wireless {
+            get {
+                return ResourceManager.GetString("AddDevice.Type.Wireless", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Webcam.
+        /// </summary>
+        internal static string AddDevice_Webcam {
+            get {
+                return ResourceManager.GetString("AddDevice.Webcam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect your webcam via USB port on your system.
+        /// </summary>
+        internal static string AddDevice_Webcam_0 {
+            get {
+                return ResourceManager.GetString("AddDevice.Webcam.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Analytics.
         /// </summary>
         internal static string Analytics {
             get {
                 return ResourceManager.GetString("Analytics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Analytics.
+        /// </summary>
+        internal static string Analytics_0 {
+            get {
+                return ResourceManager.GetString("Analytics.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help Dell improve its products and services automatically sending diagnostics and usage data..
+        /// </summary>
+        internal static string Analytics_1 {
+            get {
+                return ResourceManager.GetString("Analytics.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dell&apos;s Privacy Policy.
+        /// </summary>
+        internal static string Analytics_2 {
+            get {
+                return ResourceManager.GetString("Analytics.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help Dell improve its products and services automatically.
+        /// </summary>
+        internal static string Analytics_3 {
+            get {
+                return ResourceManager.GetString("Analytics.3", resourceCulture);
             }
         }
         
@@ -102,6 +561,24 @@ namespace DDPM.UI.Resources {
         internal static string DisplaySettings {
             get {
                 return ResourceManager.GetString("DisplaySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} slots available.
+        /// </summary>
+        internal static string Dock_0 {
+            get {
+                return ResourceManager.GetString("Dock.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dongle {0}.
+        /// </summary>
+        internal static string Dock_1 {
+            get {
+                return ResourceManager.GetString("Dock.1", resourceCulture);
             }
         }
         
@@ -142,11 +619,92 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio Settings.
+        /// </summary>
+        internal static string Headset_0 {
+            get {
+                return ResourceManager.GetString("Headset.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automated Actions.
+        /// </summary>
+        internal static string Headset_1 {
+            get {
+                return ResourceManager.GetString("Headset.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Settings.
+        /// </summary>
+        internal static string Headset_2 {
+            get {
+                return ResourceManager.GetString("Headset.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please wait....
+        /// </summary>
+        internal static string HomePage_0 {
+            get {
+                return ResourceManager.GetString("HomePage.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input Source.
         /// </summary>
         internal static string InputSource {
             get {
                 return ResourceManager.GetString("InputSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no advanced features on this device.
+        /// </summary>
+        internal static string Keyboard_0 {
+            get {
+                return ResourceManager.GetString("Keyboard.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USB Wireless Receiver.
+        /// </summary>
+        internal static string Keyboard_1 {
+            get {
+                return ResourceManager.GetString("Keyboard.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Customization.
+        /// </summary>
+        internal static string Keyboard_2 {
+            get {
+                return ResourceManager.GetString("Keyboard.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collaboration.
+        /// </summary>
+        internal static string Keyboard_3 {
+            get {
+                return ResourceManager.GetString("Keyboard.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illumination.
+        /// </summary>
+        internal static string Keyboard_4 {
+            get {
+                return ResourceManager.GetString("Keyboard.4", resourceCulture);
             }
         }
         
@@ -174,6 +732,60 @@ namespace DDPM.UI.Resources {
         internal static string ManufactureMonth {
             get {
                 return ResourceManager.GetString("ManufactureMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assign actions for.
+        /// </summary>
+        internal static string Mouse_0 {
+            get {
+                return ResourceManager.GetString("Mouse.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Applications.
+        /// </summary>
+        internal static string Mouse_1 {
+            get {
+                return ResourceManager.GetString("Mouse.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft Word.
+        /// </summary>
+        internal static string Mouse_2 {
+            get {
+                return ResourceManager.GetString("Mouse.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft Excel.
+        /// </summary>
+        internal static string Mouse_3 {
+            get {
+                return ResourceManager.GetString("Mouse.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft PowerPoint.
+        /// </summary>
+        internal static string Mouse_4 {
+            get {
+                return ResourceManager.GetString("Mouse.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft Outlook.
+        /// </summary>
+        internal static string Mouse_5 {
+            get {
+                return ResourceManager.GetString("Mouse.5", resourceCulture);
             }
         }
         
@@ -241,11 +853,83 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update Firmware.
+        /// </summary>
+        internal static string UpdateFirmware {
+            get {
+                return ResourceManager.GetString("UpdateFirmware", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updates.
         /// </summary>
         internal static string Updates {
             get {
                 return ResourceManager.GetString("Updates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update available.
+        /// </summary>
+        internal static string Updates_0 {
+            get {
+                return ResourceManager.GetString("Updates.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled..
+        /// </summary>
+        internal static string Updates_1 {
+            get {
+                return ResourceManager.GetString("Updates.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check for updates.
+        /// </summary>
+        internal static string Updates_2 {
+            get {
+                return ResourceManager.GetString("Updates.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no available updates at this time..
+        /// </summary>
+        internal static string Updates_3 {
+            get {
+                return ResourceManager.GetString("Updates.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network error. Please try again..
+        /// </summary>
+        internal static string Updates_4 {
+            get {
+                return ResourceManager.GetString("Updates.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download and install.
+        /// </summary>
+        internal static string Updates_5 {
+            get {
+                return ResourceManager.GetString("Updates.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preparing for updates. Please wait....
+        /// </summary>
+        internal static string Updates_6 {
+            get {
+                return ResourceManager.GetString("Updates.6", resourceCulture);
             }
         }
         

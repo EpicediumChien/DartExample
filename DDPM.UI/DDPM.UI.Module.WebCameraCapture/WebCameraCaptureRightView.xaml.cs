@@ -1,9 +1,7 @@
-﻿using System.Windows;
+﻿using DDPM.UI.Plugin.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using DDPM.UI.Plugin.ViewModels;
-using Dell.Client.Framework.UX.WPF.Controls;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.WebCameraCapture
@@ -14,7 +12,6 @@ namespace DDPM.UI.Module.WebCameraCapture
     public partial class WebCameraCaptureRightView : UserControl
     {
         private readonly WebCameraViewModel _vm;
-
 
         public WebCameraCaptureRightView(WebCameraViewModel vm)
         {
@@ -33,7 +30,6 @@ namespace DDPM.UI.Module.WebCameraCapture
             //_vm.SetDPIValue();
         }
 
-
         private void TiltSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
@@ -42,47 +38,38 @@ namespace DDPM.UI.Module.WebCameraCapture
 
         private void btnPair_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void Resolution_4KUHD_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void Resolution_FullHD_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void Resolution_HD_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void FPS_24_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void FPS_30_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void FPS_60_Button_Click(object sender, MouseButtonEventArgs e)
         {
-
         }
 
         private void Open_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void Change_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void ChkBoxFramingGrid_Checked(object sender, RoutedEventArgs e)
@@ -95,7 +82,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             Handle(sender as CheckBox);
         }
 
-        void Handle(CheckBox checkBox)
+        private void Handle(CheckBox checkBox)
         {
             // Use IsChecked.
             bool flag = checkBox.IsChecked.Value;

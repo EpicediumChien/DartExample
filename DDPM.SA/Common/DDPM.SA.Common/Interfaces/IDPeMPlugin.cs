@@ -10,13 +10,11 @@
 
 #endregion
 
-using System;
-using System.Threading.Tasks;
-using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.PluginConditions;
 using DPeMPublic.Common.Enums;
-using IndiLogic.DPeM.Broker;
+using System;
+using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
 {
@@ -28,13 +26,15 @@ namespace DDPM.SA.Common
 
         event EventHandler<bool> UpdateNotify;
 
-        event EventHandler<Tuple<string,string>> OverlayNotify;
-        event EventHandler<CollaborationMsg> CollaborationMsgNotify;
-        event EventHandler<bool> IsZoomCallbacksRegisteredChanged;
-        event EventHandler<bool> IsZoomMultipleCallsDetectedChanged;
-        event EventHandler<bool> CollabMultipleCallsDetectedChanged;
-        
+        event EventHandler<Tuple<string, string>> OverlayNotify;
 
+        event EventHandler<CollaborationMsg> CollaborationMsgNotify;
+
+        event EventHandler<bool> IsZoomCallbacksRegisteredChanged;
+
+        event EventHandler<bool> IsZoomMultipleCallsDetectedChanged;
+
+        event EventHandler<bool> CollabMultipleCallsDetectedChanged;
 
         void NotifyNow();
 
@@ -54,7 +54,7 @@ namespace DDPM.SA.Common
 
         void SetDPILevel(int newDPILevel, Guid deviceId);
 
-    void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
+        void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
 
         void SetTouchScrollSensitivityLevel(int newTouchScrollSensitivityLevel, Guid deviceId);
 
@@ -75,25 +75,43 @@ namespace DDPM.SA.Common
         void SetBackLightingControls(int newValue, Guid deviceId);
 
         void SetBackLightingLevel(int newValue, Guid deviceId);
+
         void CheckForUpdate();
+
         void StartPairing(Guid physicalDeviceId);
+
         void StopPairing(Guid physicalDeviceId);
+
         void UnPair(Guid logicalDeviceId);
 
         void SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
+
         void SetWiredAudioMicMuteSoundEnable(bool newValue, Guid deviceId);
+
         void SetWiredAudioVolumeAdjustmentTone(int newValue, Guid deviceId);
+
         void SetAncMode(int newValue, Guid deviceId);
+
         void SetAncGain(int newValue, Guid deviceId);
+
         void SetSelectedPreset(int newValue, Guid deviceId);
+
         void SetBandsGain(int newValue, Guid deviceId, string bandGainNumber);
+
         void SetMicNoiseCancellation(bool newValue, Guid deviceId);
+
         void SetSidetone(bool newValue, Guid deviceId);
+
         void SetSidetoneLevel(int newValue, Guid deviceId);
+
         void SetWearDetection(int newValue, Guid deviceId);
+
         void SetBusyLight(bool newValue, Guid deviceId);
+
         void SetVoiceGuidance(bool newValue, Guid deviceId);
+
         void SetMicNCIncoming(bool newValue, Guid deviceId);
+
         public void SetIsMicEnumerationOn(bool newValue, Guid deviceId);
     }
 

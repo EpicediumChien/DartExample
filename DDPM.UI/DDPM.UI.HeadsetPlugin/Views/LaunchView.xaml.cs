@@ -1,18 +1,17 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
-using DDPM.UI.Plugin.ViewModels;
-using System.Diagnostics;
-using DDPM.UI.Plugin.Common;
-using System.Net;
-using System.Windows.Media.Imaging;
-using DDPM.UI.Module.HeadsetDeviceSettings;
 using DDPM.UI.Module.HeadsetAudioSettings;
 using DDPM.UI.Module.HeadsetAutomatedActions;
-using Windows.Devices.Power;
+using DDPM.UI.Module.HeadsetDeviceSettings;
+using DDPM.UI.Plugin.Common;
+using DDPM.UI.Plugin.ViewModels;
+using System.Diagnostics;
+using System.Net;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 
 namespace DDPM.UI.Plugin.HeadsetPlugin
 {
@@ -23,13 +22,16 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
     {
         private readonly HeadsetViewModel? _vm;
 
-        readonly int[] _rightFrameWidth = new int[] {0, 533, 533, 533};
-        private readonly string Restore = "Restore to default";
-        private readonly string Unpair = "Unpair";
+        private readonly int[] _rightFrameWidth = new int[] { 0, 533, 533, 533 };
+        //private readonly string Restore = "Restore to default";
+        //private readonly string Unpair = "Unpair";
+        private readonly string AudioSettings = Strings.Headset0;
+        private readonly string AutomatedActions = Strings.Headset1;
+        private readonly string DeviceSettings = Strings.Headset2;
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
-        readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
-        readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
+        private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
+        private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
         public LaunchView()
         {
@@ -44,13 +46,13 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 BuildModuleGroups();
             }
 
-            if(_vm!.ConnectionType == "WiredAudio")
+            if (_vm!.ConnectionType == "WiredAudio")
             {
                 btnUnpair.Visibility = Visibility.Collapsed;
             }
-            
-            txtUnpair.Text = Unpair;
-            txtRestore.Text = Restore;
+
+            //txtUnpair.Text = Unpair;
+            //txtRestore.Text = Restore;
 
             //ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
             //ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
@@ -62,6 +64,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         }
 
         #region Init for Modules
+
         /// <summary>
         /// Base on specified monitor's capabiliies to build the Vbar items, and headers/modules
         /// </summary>
@@ -72,38 +75,40 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Audio Settings",
+                GroupName = AudioSettings,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png")
             };
-            moduleGroup.AddHeader("Audio Settings", new HeadsetAudioSettingsModule(_vm!));
+            moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
             //if (!_vm!.IsCollabsKeysSupported)
             //{
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Automated Actions",
+                GroupName = AutomatedActions,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png")
             };
-            moduleGroup.AddHeader("Automated Actions", new HeadsetAutomatedActionsModule(_vm));
+            moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm));
             groups.Add(moduleGroup);
             //}
             //if (!_vm.IsIlluminationSupported)
             //{
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Device Settings",
+                GroupName = DeviceSettings,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png")
             };
-            moduleGroup.AddHeader("Device Settings", new HeadsetDeviceSettingsModule(_vm));
+            moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm));
             groups.Add(moduleGroup);
             //}
 
             _vm.ModuleGroups = groups;
         }
-        #endregion
+
+        #endregion Init for Modules
 
         #region Vbar
+
         /// <summary>
         /// Contron Menu slider position
         /// </summary>
@@ -137,18 +142,21 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
         }
-        #endregion
+
+        #endregion Vbar
 
         #region RightViewHeader
+
         private void RightViewHeaderCtrl_SelectionChanged(object sender, RoutedEventArgs e)
         {
             if (sender == null)
                 return;
         }
 
-        #endregion
+        #endregion RightViewHeader
 
         #region Mode Change
+
         private void InvokeGotoTwoViewModeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -158,13 +166,13 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
+
         private void InvokeShrinkAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -174,13 +182,13 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
+
         private void InvokeEnlargeAnimation()
         {
             Dispatcher.Invoke(new Action(() =>
@@ -190,14 +198,14 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 {
                     sb.Completed += (o, s) =>
                     {
-
                     };
 
                     sb.Begin();
                 }
             }));
         }
-        #endregion
+
+        #endregion Mode Change
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -287,7 +295,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
                 DongleConnection.Visibility = Visibility.Visible;
             }
-            else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?                                                          
+            else if (_vm!.ConnectionType == "Bluetooth")//I can't get Headset connection HostName, FW issue?
             {
                 string hostName = Dns.GetHostName();
                 var hostIndex = _vm!.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (_vm.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
@@ -303,6 +311,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 BLConnection.Visibility = Visibility.Visible;
             }
         }
+
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             DongleConnection.Visibility = Visibility.Collapsed;
@@ -311,7 +320,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-
         }
     }
 }

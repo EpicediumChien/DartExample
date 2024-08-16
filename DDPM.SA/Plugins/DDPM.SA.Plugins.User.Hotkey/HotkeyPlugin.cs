@@ -1,27 +1,13 @@
 ﻿using DDPM.SA.Common;
-using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dell.Client.Framework.Interfaces;
-using VcpCore.Common;
-using System.Windows.Forms;
+using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using System.Reflection;
-using System.Windows;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
-using Windows.System;
-using WinCopies.Util;
-using System.Windows.Interop;
 using System.Diagnostics;
-using DDPM.SA.Common.Display;
-using System.Reflection.Metadata;
-using System.Windows.Threading;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace DDPM.SA.Plugins.User.Hotkey
 {
@@ -33,6 +19,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
     public class HotkeyPlugin : BaseAgentPlugin, IHotkey, IDisposableObservable
     {
         #region Private Members
+
         private const string pluginName = "HotkeyPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Hotkey Plugin.";
@@ -48,18 +35,18 @@ namespace DDPM.SA.Plugins.User.Hotkey
         private string[] _strNumPad0to9Ary = { "NUMPAD0", "NUMPAD1", "NUMPAD2", "NUMPAD3", "NUMPAD4", "NUMPAD5", "NUMPAD6", "NUMPAD7", "NUMPAD8", "NUMPAD9" };
         private string[] _strConverToNumPad0to9Ary = { "NUMBERPAD0", "NUMBERPAD1", "NUMBERPAD2", "NUMBERPAD3", "NUMBERPAD4", "NUMBERPAD5", "NUMBERPAD6", "NUMBERPAD7", "NUMBERPAD8", "NUMBERPAD9" };
 
-
         private enum log_type
         {
             info = 0,
             error
         }
 
+        #endregion Private Members
 
-        #endregion
         #region keyboard hook
 
         #region Constant, Structure and Delegate Definitions
+
         /// <summary>
         /// defines the callback type for the hook
         /// </summary>
@@ -74,31 +61,41 @@ namespace DDPM.SA.Plugins.User.Hotkey
             public int dwExtraInfo;
         }
 
-        const int WH_KEYBOARD_LL = 13;
-        const int WM_KEYDOWN = 0x100;
-        const int WM_KEYUP = 0x101;
-        const int WM_SYSKEYDOWN = 0x104;
-        const int WM_SYSKEYUP = 0x105;
-        #endregion
+        private const int WH_KEYBOARD_LL = 13;
+        private const int WM_KEYDOWN = 0x100;
+        private const int WM_KEYUP = 0x101;
+        private const int WM_SYSKEYDOWN = 0x104;
+        private const int WM_SYSKEYUP = 0x105;
+
+        #endregion Constant, Structure and Delegate Definitions
+
         #region Instance Variables
+
         /// <summary>
         /// Handle to the hook, need this to unhook and call the next hook
         /// </summary>
-        IntPtr hhook = IntPtr.Zero;
-        #endregion
+        private IntPtr hhook = IntPtr.Zero;
+
+        #endregion Instance Variables
 
         #region Events
+
         /// <summary>
         /// Occurs when one of the hooked keys is pressed
         /// </summary>
         public event KeyEventHandler KeyDown;
+
         /// <summary>
         /// Occurs when one of the hooked keys is released
         /// </summary>
         public event KeyEventHandler KeyUp;
-        #endregion
+
+        #endregion Events
+
         private static keyboardHookProc? callbackDelegate;
+
         #region Public Methods
+
         /// <summary>
         /// Installs the global hook
         /// </summary>
@@ -108,15 +105,15 @@ namespace DDPM.SA.Plugins.User.Hotkey
             {
                 Debug.WriteLine("Can't hook more than once");
                 return true;
-            } 
-            
+            }
+
             IntPtr hInstance = LoadLibrary("User32");
 
             callbackDelegate = new keyboardHookProc(hookProc);
             hhook = SetWindowsHookEx(WH_KEYBOARD_LL, callbackDelegate, hInstance, 0);
             string errorMessage = new Win32Exception(Marshal.GetLastWin32Error()).Message;
             Debug.WriteLine($"HotkeyPlugin-hook(): {errorMessage}");
-            return hhook == IntPtr.Zero? false: true;
+            return hhook == IntPtr.Zero ? false : true;
             /*if (hhook != IntPtr.Zero) throw new Win32Exception();
             Debug.WriteLine("Hook(); Success--------");*/
         }
@@ -132,7 +129,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
             if (ok)
             {
                 callbackDelegate = null;
-                return  true;
+                return true;
             }
             return ok;
         }
@@ -146,7 +143,6 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <returns></returns>
         public int hookProc(int code, int wParam, ref keyboardHookStruct lParam)
         {
-
             if (code >= 0)
             {
                 Keys key = (Keys)lParam.vkCode;
@@ -167,18 +163,23 @@ namespace DDPM.SA.Plugins.User.Hotkey
             }
             return CallNextHookEx(hhook, code, wParam, ref lParam);
         }
-        #endregion
 
-        #endregion
+        #endregion Public Methods
+
+        #endregion keyboard hook
+
         #region Constructor
+
         public HotkeyPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
             writelog("HotkeyPlugin constructor ...");
         }
-        #endregion
+
+        #endregion Constructor
 
         #region IDisposableObservable
+
         /// <summary>
         /// unhook
         /// </summary>
@@ -198,7 +199,8 @@ namespace DDPM.SA.Plugins.User.Hotkey
             }
             base.Dispose(disposing);
         }
-        #endregion
+
+        #endregion IDisposableObservable
 
         #region Private Methods
 
@@ -211,19 +213,20 @@ namespace DDPM.SA.Plugins.User.Hotkey
         {
             text = "[Hotkey] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
+            if (Log != null)
+            { 
+                if (log_type == log_type.info)
                 Log.Info(text);
-            else
+                else
                 Log.Error(text);
+            }
         }
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
-
             bool _altPressed = IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
-
 
             string strKey = e.KeyCode.ToString().ToUpper();
             //AddDebugMsg(string.Format("KeyUp Event [{0}], Ctrl : {1}", , _ctrlPressed));
@@ -246,9 +249,11 @@ namespace DDPM.SA.Plugins.User.Hotkey
 
             //var vKeyList = _RunShortcutKeysList.Where(c => "KEY_" + c.ShortcutKey.ToUpper() == strKey);
         }
-        #endregion
+
+        #endregion Private Methods
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
@@ -256,8 +261,11 @@ namespace DDPM.SA.Plugins.User.Hotkey
             PluginCondition = new PluginStartedCondition();
             writelog("Hotkey plugin started");
         }
-        #endregion
+
+        #endregion Overriding methods
+
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -266,11 +274,12 @@ namespace DDPM.SA.Plugins.User.Hotkey
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
-
         }
-        #endregion
+
+        #endregion Event Handler
 
         #region IHotkey implementation
+
         public bool Hook()
         {
             bool ok=false;
@@ -282,6 +291,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
                 // 啟動消息循環
                 System.Windows.Threading.Dispatcher.Run();
                 Debug.WriteLine("System.Windows.Threading.Dispatcher.Run(); end--------");
+                writelog("Hook()...");
             });
 
             // 設定為單線程單元（STA），WPF需要STA模式
@@ -296,35 +306,39 @@ namespace DDPM.SA.Plugins.User.Hotkey
         {
             try
             {
-             bool ok= unhook();
-             Debug.WriteLine("Unhook()  ------exec--");
-            Task.Run(() => {
-            //System.Windows.Threading.Dispatcher.FromThread(_hookThread).BeginInvokeShutdown(DispatcherPriority.Send);
-            if(_hookThread != null && _hookThread.ThreadState == System.Threading.ThreadState.Running)
-                 System.Windows.Threading.Dispatcher.FromThread(_hookThread).InvokeShutdown();
-             Debug.WriteLine("Unhook() --InvokeShutdown; end--------");
-            });
-             return ok;
+                bool ok = unhook();
+                Debug.WriteLine("Unhook()  ------exec--");
+                Task.Run(() =>
+                {
+                    //System.Windows.Threading.Dispatcher.FromThread(_hookThread).BeginInvokeShutdown(DispatcherPriority.Send);
+                    if (_hookThread != null && _hookThread.ThreadState == System.Threading.ThreadState.Running)
+                        System.Windows.Threading.Dispatcher.FromThread(_hookThread).InvokeShutdown();
+                    Debug.WriteLine("Unhook() --InvokeShutdown; end--------");
+                });
+                return ok;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Debug.WriteLine($"Unhook();Exception: {ex.Message}");
             }
             Debug.WriteLine("Unhook(); end--------");
+            writelog("hotkey UnHook()...");
             return false;
         }
-        #endregion
+
+        #endregion IHotkey implementation
 
         #region public Methods
+
         public bool IsKeyPushedDown(System.Windows.Forms.Keys vKey)
         {
             return 0 != (GetAsyncKeyState(vKey) & 0x8000);
         }
 
-
-            #endregion
+        #endregion public Methods
 
         #region DLL imports
+
         /// <summary>
         /// Sets the windows hook, do the desired event, one of hInstance or threadId must be non-null
         /// </summary>
@@ -334,7 +348,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="threadId">The thread you want to attach the event to, can be null</param>
         /// <returns>a handle to the desired hook</returns>
         [DllImport("user32.dll")]
-        static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId);
+        private static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId);
 
         /// <summary>
         /// Unhooks the windows hook.
@@ -342,7 +356,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="hInstance">The hook handle that was returned from SetWindowsHookEx</param>
         /// <returns>True if successful, false otherwise</returns>
         [DllImport("user32.dll")]
-        static extern bool UnhookWindowsHookEx(IntPtr hInstance);
+        private static extern bool UnhookWindowsHookEx(IntPtr hInstance);
 
         /// <summary>
         /// Calls the next hook.
@@ -353,7 +367,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="lParam">The lparam.</param>
         /// <returns></returns>
         [DllImport("user32.dll")]
-        static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam);
+        private static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam);
 
         /// <summary>
         /// Loads the library.
@@ -361,13 +375,13 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="lpFileName">Name of the library</param>
         /// <returns>A handle to the library</returns>
         [DllImport("kernel32.dll")]
-        static extern IntPtr LoadLibrary(string lpFileName);
+        private static extern IntPtr LoadLibrary(string lpFileName);
 
         [DllImport("user32.dll")]
         public static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
 
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetModuleHandle(string lpFileName);
+        private static extern IntPtr GetModuleHandle(string lpFileName);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -382,6 +396,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
 
         [DllImport("kernel32.dll")]
         public static extern ushort GlobalDeleteAtom(ushort nAtom);
-        #endregion
+
+        #endregion DLL imports
     }
 }

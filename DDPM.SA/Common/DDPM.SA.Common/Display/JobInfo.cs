@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using VcpCore.Common;
 
 namespace DDPM.SA.Common.Display
@@ -14,18 +9,16 @@ namespace DDPM.SA.Common.Display
         private Object[] _param;
         private MonitorInfo _monitorInfo;
 
-        public JobInfo(MonitorInfo monitor,Object[] param, Action<MonitorInfo, Object[]> action)
+        public JobInfo(MonitorInfo monitor, Object[] param, Action<MonitorInfo, Object[]> action)
         {
             _action = action;
             _param = param;
             _monitorInfo = monitor;
         }
 
-
         public void Invoke()
         {
-            _action(_monitorInfo,_param);
+            _action(_monitorInfo, _param);
         }
-
     }
 }

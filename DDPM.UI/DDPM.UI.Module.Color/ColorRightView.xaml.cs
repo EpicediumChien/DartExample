@@ -1,53 +1,15 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
-using DDPM.UI.Common.Interfaces;
-using Dell.Client.Framework.UX.WPF.Controls;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using UserControl = System.Windows.Controls.UserControl;
-using Newtonsoft.Json;
 using VcpCore.Common;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static DDPM.SA.Common.IPlugin;
-using Dell.Client.Framework.Common;
-using Microsoft.Win32;
-using Windows.Data.Json;
-using Windows.System;
-using System.Windows.Threading;
-using System.Runtime.InteropServices;
-using RegistryUtils;
-using System.Windows.Media.Animation;
-using DDPM.SA.Common.Settings;
-using System.Management;
-using static DDPM.UI.Module.Color.ColorViewModel;
-using WinRT;
-using MonitorProfile = DDPM.SA.Common.MonitorProfile;
-using static System.Windows.Forms.LinkLabel;
+using UserControl = System.Windows.Controls.UserControl;
 
 
 //using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.Color
 {
-
     /// <summary>
     /// Interaction logic for ColorRightView.xaml
     /// </summary>
@@ -55,23 +17,20 @@ namespace DDPM.UI.Module.Color
     {
         //  Jim remove 20240604
         //private List<string> _Support_DeviceName  = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW" , "UP2720Q" , "UP3221Q" };
-                  
 
         public ColorRightView()
         {
-            InitializeComponent();        
-
+            InitializeComponent();
         }
 
         //  Jim remove 20240604
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-           ColorViewModel vm = (ColorViewModel)DataContext;
+            ColorViewModel vm = (ColorViewModel)DataContext;
 
             vm.WatchForProcessStart();
             vm.WatchForProcessEnd();
-
-        }        
+        }
 
         //  Jim add 20240606
         private void UserControl_UnLoaded(object sender, RoutedEventArgs e)
@@ -82,33 +41,30 @@ namespace DDPM.UI.Module.Color
             //Thread.Sleep(200);
 
             ColorViewModel vm = (ColorViewModel)DataContext;
-            
+
             vm.WatchForProcessStart_Stop();
             vm.WatchForProcessEnd_Stop();
 
             vm.StopRegistryMonitor();
-        }   
+        }
 
-        void RefreshUI()
+        private void RefreshUI()
         {
             ColorViewModel vm = (ColorViewModel)DataContext;
             vm.RefreshUI();
-               
-        }       
+        }
 
         public int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)
-        {     
+        {
             int index = -1;
 
             if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
             {
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
                                                     x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
                                                     x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
-
                 }
             }
             return index;
@@ -120,7 +76,7 @@ namespace DDPM.UI.Module.Color
 
             AppData selected_app;
             System.Windows.Controls.ComboBox cb = sender as System.Windows.Controls.ComboBox;
-          
+
             if (cb != null)
             {
                 object item = cb.DataContext;
@@ -141,7 +97,6 @@ namespace DDPM.UI.Module.Color
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].ColorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
 
-
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
                             Thread.Sleep(500);
 
@@ -151,7 +106,6 @@ namespace DDPM.UI.Module.Color
                             // jim add 20240806
                             Thread.Sleep(500);
                         }
-               
                     }
                 }
             }
@@ -182,9 +136,10 @@ namespace DDPM.UI.Module.Color
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
                             Thread.Sleep(500);
                         }
-
+                        }               
                         Test_AddAppCollectionData.GetInstance().AppsList.Remove(selected_app);
                         Thread.Sleep(100);
+
                     }
                 }
             }
@@ -197,15 +152,14 @@ namespace DDPM.UI.Module.Color
             AddAppFullPageCtrl _addAppFullPage = new AddAppFullPageCtrl();
             _addAppFullPage.DataContext = vm;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_addAppFullPage);
-            //m.ModuleOwner?.OpenFullView(_addAppFullPage);     
+            //m.ModuleOwner?.OpenFullView(_addAppFullPage);
         }
 
         private void nightlight_config_Click(object sender, RoutedEventArgs e)
-        {            
+        {
             string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\DefaultAccount\\Current\\default$windows.data.bluelightreduction.bluelightreductionstate\\windows.data.bluelightreduction.bluelightreductionstate");
 
             ColorViewModel vm = (ColorViewModel)DataContext;
-
 
             if (vm.registryMonitor_NightLight == null)
             {
@@ -214,31 +168,30 @@ namespace DDPM.UI.Module.Color
                 vm.registryMonitor_NightLight.Error += new System.IO.ErrorEventHandler(vm.OnError_NightLight);
                 vm.registryMonitor_NightLight.Start();
             }
-            
 
             var psi = new System.Diagnostics.ProcessStartInfo();
 
             psi.FileName = "ms-settings:nightlight";
             psi.UseShellExecute = true;
 
-            System.Diagnostics.Process.Start(psi);     
+            System.Diagnostics.Process.Start(psi);
         }
 
         private void ICC_profile_config_Click(object sender, RoutedEventArgs e)
-        {   
+        {
             var psi = new System.Diagnostics.ProcessStartInfo();
 
             psi.FileName = "ms-settings:display";
             psi.UseShellExecute = true;
 
             System.Diagnostics.Process.Start(psi);
-        }        
+        }
 
         private void expanderHasExpanded(object sender, RoutedEventArgs args)
         {
-            Expander expander_sender = (Expander)sender;            
+            Expander expander_sender = (Expander)sender;
 
-            if (expander_sender.Name == "Expander_Manual" )
+            if (expander_sender.Name == "Expander_Manual")
             {
                 Expander_Auto.IsExpanded = false;
 
@@ -247,10 +200,7 @@ namespace DDPM.UI.Module.Color
                     //ColorViewModel vm = (ColorViewModel)DataContext;
                     DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "OFF");
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
-
-
                 }));
-             
             }
             else if (expander_sender.Name == "Expander_Auto")
             {
@@ -258,12 +208,13 @@ namespace DDPM.UI.Module.Color
 
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    //ColorViewModel vm = (ColorViewModel)DataContext;
                     DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "ON");
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
                 }));
+
+                }));             
+            
             }
-          
         }
 
         private void Color_Management_Switch_Click(object sender, RoutedEventArgs e)
@@ -290,7 +241,7 @@ namespace DDPM.UI.Module.Color
                     vm.ColorManagement_isChecked = false;
                     vm.ICCprofile_based_Colorpreset_enable = false;
                 }
-            }            
+            }
         }
 
         private void rb_ICCprofile_based_Colorpreset_click(object sender, RoutedEventArgs e)
@@ -318,7 +269,6 @@ namespace DDPM.UI.Module.Color
                     }
                 }
             }
-           
         }
 
         private void rb_Colorpreset_based_ICCprofile_click(object sender, RoutedEventArgs e)
@@ -339,11 +289,10 @@ namespace DDPM.UI.Module.Color
             //OLD Code:
             //  if (vm.Is_Support_ICC_DeviceName)
             //NEW Code:
-            if ((vm!=null) && (vm._ICC_Metadata.Is_Support_ICC_DeviceName))
+            if ((vm != null) && (vm._ICC_Metadata.Is_Support_ICC_DeviceName))
             {
                 if (vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName] != null)
                 {
-
                     int count = vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName].Count;
 
                     for (int i = 0; i < count; i++)
@@ -359,7 +308,6 @@ namespace DDPM.UI.Module.Color
                     vm.registryMonitor_ICC.Start();
                 }
             }
-
         }
 
         private void lb_AppList_PreviewDragEnter(object sender, System.Windows.DragEventArgs e)
@@ -391,8 +339,6 @@ namespace DDPM.UI.Module.Color
 
             string targetPath = dropFileNames[0];
 
-           
-
             if (targetPath.EndsWith(".lnk"))
             {
                 //ShellLinkObject linkedLnk = (ShellLinkObject)shell.NameSpace(targetPath).Items().Item().GetLink;
@@ -400,9 +346,6 @@ namespace DDPM.UI.Module.Color
                 //targetPath = linkedLnk.Target.Path;
 
                 // IWshRuntimeLibrary is in the COM library "Windows Script Host Object Model"
-                IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
-
-                IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(targetPath);
           
                 string strAppName = string.Empty;
                 string strFileName = string.Empty;
@@ -467,10 +410,10 @@ namespace DDPM.UI.Module.Color
                     DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
                 }
                
+                string temp;
+                
+                temp = shortcut.TargetPath;
             }
-
         }
-
-
     }
 }

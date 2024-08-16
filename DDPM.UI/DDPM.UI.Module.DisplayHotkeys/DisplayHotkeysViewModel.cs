@@ -3,23 +3,17 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.System;
 
 namespace DDPM.UI.Module.DisplayHotkeys
 {
-
     public class InputSourceList
     {
         public string inputSource = String.Empty;
         public DisplayHotkeysModule displayHotkeysModule { get; set; }
+
         public string inputDisplayText
         {
             get
@@ -36,6 +30,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
         public Dictionary<string, InputInfo> inputList { get; set; }
 
         private string _toggleInputSourceKey = "None";
+
         public string ToggleInputSourceKey
         {
             get => _toggleInputSourceKey;
@@ -47,6 +42,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
         }
 
         private string _favoriteInputSourceKey = "None";
+
         public string FavoriteInputSourceKey
         {
             get => _favoriteInputSourceKey;
@@ -56,7 +52,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 OnPropertyChanged("FavoriteInputSourceKey");
             }
         }
+
         private string _SwitchInputSourceKey = "None";
+
         public string SwitchInputSourceKey
         {
             get => _SwitchInputSourceKey;
@@ -66,7 +64,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 OnPropertyChanged("SwitchInputSourceKey");
             }
         }
+
         private string _changePIPPositionKey = "None";
+
         public string ChangePIPPositionKey
         {
             get => _changePIPPositionKey;
@@ -76,7 +76,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 OnPropertyChanged("ChangePIPPositionKey");
             }
         }
+
         private string _swapPIPPBPInputSourceKey = "None";
+
         public string SwapPIPPBPInputSourceKey
         {
             get => _swapPIPPBPInputSourceKey;
@@ -87,9 +89,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
             }
         }
 
-
-
         private List<InputSourceList> _inputsList = new List<InputSourceList>();
+
         public List<InputSourceList> InputsList
         {
             get => _inputsList;
@@ -98,12 +99,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 SetProperty(ref _inputsList, value);
                 OnPropertyChanged("InputsList");
             }
-                
         }
 
-
-
         private InputSourceList _switchInput1Selected = new InputSourceList();
+
         public InputSourceList SwitchInput1_Selected
         {
             get => _switchInput1Selected;
@@ -116,6 +115,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
         }
 
         private InputSourceList _switchInput2Selected = new InputSourceList();
+
         public InputSourceList SwitchInput2_Selected
         {
             get => _switchInput2Selected;
@@ -127,6 +127,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
         }
 
         private InputSourceList _FavoriteInputSelect = new InputSourceList();
+
         public InputSourceList FavoriteInput_Selected
         {
             get => _FavoriteInputSelect;
@@ -148,9 +149,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
         }
+
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            try 
+            try
             {
                 //sender is the ‘bw’ object
                 BackgroundWorker bwk = (BackgroundWorker)sender;
@@ -163,7 +165,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 {
                     inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo).Result;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.WriteLine($"InputSource caused crash = {ex.Message}");
                     inputList = null;
@@ -179,12 +181,12 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         });
                     }
                     InputsList = _inputsList;
-                    if (curHotkey!=null && curHotkey.HotkeyInfo.Count > 0)
+                    if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                     {
                         HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(HotkeyType.FavoriteInputSource));
-                        if (hotkeyInfo != null && hotkeyInfo.InputSource.Count > 0) 
+                        if (hotkeyInfo != null && hotkeyInfo.InputSource.Count > 0)
                         {
-                            FavoriteInput_Selected =  _inputsList.Find(x => x.inputDisplayText.Equals(hotkeyInfo.InputSource[0].Name));
+                            FavoriteInput_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(hotkeyInfo.InputSource[0].Name));
                         }
                         else
                         {
@@ -203,7 +205,6 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         {
                             SwitchInput1_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(hotkeyInfo.InputSource[0].Name));
                             SwitchInput2_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(hotkeyInfo.InputSource[1].Name));
-
                         }
                         else
                         {
@@ -223,14 +224,12 @@ namespace DDPM.UI.Module.DisplayHotkeys
                             if (SwitchInput1_Selected != null)
                                 SwitchInput2_Selected = _inputsList.Where(x => x.inputDisplayText != _switchInput1Selected.inputDisplayText).First();
                         }
-                    }                  
+                    }
                 }
 
-                
                 string swHortcutText = string.Empty;
                 if (curHotkey.HotkeyInfo.Count > 0)
                 {
-
                     foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
                     {
                         List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
@@ -241,21 +240,25 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                 hotkeys.Clear();
                                 ToggleInputSourceKey = swHortcutText;
                                 break;
+
                             case HotkeyType.FavoriteInputSource:
                                 KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                                 hotkeys.Clear();
                                 FavoriteInputSourceKey = swHortcutText;
                                 break;
+
                             case HotkeyType.SwitchInputSource:
                                 KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                                 hotkeys.Clear();
                                 SwitchInputSourceKey = swHortcutText;
                                 break;
+
                             case HotkeyType.SwapIputPIPPBP:
                                 KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                                 hotkeys.Clear();
                                 SwapPIPPBPInputSourceKey = swHortcutText;
                                 break;
+
                             case HotkeyType.ChangePIPPosition:
                                 KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
                                 hotkeys.Clear();
@@ -267,11 +270,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
             }
             catch (Exception)
             {
-
                 ;
             }
-
         }
+
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process

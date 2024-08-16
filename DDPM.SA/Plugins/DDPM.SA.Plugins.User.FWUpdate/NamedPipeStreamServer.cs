@@ -1,5 +1,6 @@
 ﻿namespace DDPM.SA.Plugins.User.FWUpdate
 {
+    using DDPM.SA.Common.Security;
     using System;
     using System.Collections.Generic;
     using System.IO.Pipes;
@@ -10,17 +11,20 @@
         private List<NamedPipeStreamConnection> _Connections;
 
         public event EventHandler? ClientConnectedEvent;
+
         public event EventHandler? ClientDisconnectedEvent;
 
         public NamedPipeStreamServer(string pipeName) : base(pipeName)
         {
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
             this._Connections = new List<NamedPipeStreamConnection>();
-            NamedPipeServerStream state = new NamedPipeServerStream(base.PipeName, PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+            NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
         }
 
         private void ClientConnected(IAsyncResult result)
         {
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
             NamedPipeServerStream? asyncState = result.AsyncState as NamedPipeServerStream;
             if (asyncState != null)
             {
@@ -36,7 +40,7 @@
                         ClientConnectedEvent?.Invoke(this, new EventArgs());
                     }
                 }
-                NamedPipeServerStream state = new NamedPipeServerStream(base.PipeName, PipeDirection.InOut, -1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+                NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
                 state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
             }
         }
@@ -78,6 +82,7 @@
         {
             SendMessage(Encoding.UTF8.GetBytes(message));
         }
+
         public override void SendMessage(byte[] message)
         {
             List<NamedPipeStreamConnection>? list = null;

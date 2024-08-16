@@ -13,7 +13,7 @@ namespace DDPM.UI.Module.DisplayProperties.Tests
         [SetUp]
         public void SetUp()
         {
-            DisplayOthersViewModel vm=new DisplayOthersViewModel();
+            DisplayOthersViewModel vm = new DisplayOthersViewModel();
             displayOthersRightView = new DisplayOthersRightView(vm);
             privateObject = new PrivateObject(displayOthersRightView);
         }

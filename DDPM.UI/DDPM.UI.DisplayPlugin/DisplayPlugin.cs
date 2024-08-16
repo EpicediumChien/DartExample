@@ -1,32 +1,23 @@
-
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Dell.Client.Framework.Common.Annotations;
+using DDPM.SA.Common;
+using DDPM.SA.Common.Interfaces;
+using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces.ViewModels;
+using DDPM.UI.Common.Models;
+using DDPM.UI.Plugin.Common.ViewModels;
+using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
+using DDPM.UI.Plugin.DisplayPlugin.ViewModels;
+using DDPM.UI.Plugin.DisplayPlugin.Views;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
-using DDPM.UI.Plugin.DisplayPlugin.Views;
-using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
-using DDPM.UI.Plugin.DisplayPlugin.ViewModels;
-using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
-using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
-using DDPM.UI.Plugin.DdpmHomePlugin.Model;
-using VcpCore.Common;
-using DDPM.UI.Common.Models;
 using System.Windows.Input;
-using Dell.Client.Framework.UX.WPF.Controls;
-using System.Drawing;
-using System.Windows.Media;
-using DDPM.SA.Common;
-using DDPM.SA.Common.Interfaces;
-using Dell.Client.Framework.Common.PluginConditions;
-using DDPM.UI.Plugin.Common;
-using DDPM.UI.Plugin.Common.ViewModels;
-using DDPM.UI.Common.Interfaces.ViewModels;
-using DDPM.UI.Common.ViewModels;
-using DDPM.UI.Common;
-using System.Windows.Threading;
+using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.DisplayPlugin
 {
@@ -38,7 +29,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
     [Publisher(Name = "DDPM DisplayPlugin", Support = "DDPM Wistron Team")]
     [PluginRequires(Id = DDPM.SA.Common.IDs.Device_Manager_Plugin_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = DDPM.SA.Common.IDs.DDPM_EAPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
- //   [PluginRequires(Id = DDPM.SA.Common.IDs.PipPbp_Manager_PLUGIN_ID, AllowDynamicResolving = true)]
+    //   [PluginRequires(Id = DDPM.SA.Common.IDs.PipPbp_Manager_PLUGIN_ID, AllowDynamicResolving = true)]
     [ExcludeFromCodeCoverage]
     public class DisplayPlugin : IConsoleTakeoverPagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
     //IConsolePagePlugin, IConsolePluginSupportsActivations, IThickClientPlugin
@@ -72,7 +63,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         //Robert_Lin, 2024-6-27 using the single view model in DisplayPlugin, copy from other plugins (for example, MousePlugin)
         private DisplayViewModel? _viewModel;
 
-        #endregion
+        #endregion Private
 
         /// <summary>
         /// This property is required by the IConsolePagePlugin. It specifies the text to display when the page is shown.
@@ -115,19 +106,21 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
         }
 
-    public void OnActivated() 
-    {
-      Mouse.OverrideCursor = null;
-      //IDeviceInfo deviceInfo =
-      //(IDeviceInfo)DdpmHomePlugin.DdpmHomePlugin.PluginIoc.GetServices<IDeviceInfo>();//
-    }
+        public void OnActivated()
+        {
+            Mouse.OverrideCursor = null;
+            //IDeviceInfo deviceInfo =
+            //(IDeviceInfo)DdpmHomePlugin.DdpmHomePlugin.PluginIoc.GetServices<IDeviceInfo>();//
+        }
 
-    public void OnDeactivated() {
-      Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-    }
-    private void ConfigureServices() {
-      if (_isConfigured)
-        return;
+        public void OnDeactivated()
+        {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+        }
+        private void ConfigureServices()
+        {
+            if (_isConfigured)
+                return;
 
             // Marked all the instances as singleton
             // Pass the existing _console and _log instance so that Ioc doesn't new'up them
@@ -167,11 +160,10 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             PluginIoc.ConfigureServices(services.BuildServiceProvider());
 
             _viewModel = (DisplayViewModel?)PluginIoc.GetService<IDisplayViewModel>();
-            if ( _viewModel != null )
+            if (_viewModel != null)
             {
                 if (_deviceManagerSAPlugin != null)
                 {
-
                 }
                 _viewModel.SelectedHomeDevice = DdpmHomePlugin.DdpmHomePlugin.GetSelectedHomeDevice();
                 _viewModel.HomeDevices = DdpmHomePlugin.DdpmHomePlugin.GetHomeDevices();
@@ -185,7 +177,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             PrepareHomeDevices();
         }
 
-
         /// <summary>
         /// Get HomeDevices and SelectedHomeDevice from DdpmHomePlugin, and add them to IDisplayPageViewModel
         /// </summary>
@@ -194,7 +185,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             //Get IDisplayPageViewModel, it will be created after ConfigureServices() executed
             IDisplayPageViewModel? vmDisplay = PluginIoc.GetService<IDisplayPageViewModel>();
 
-            if ( vmDisplay != null )
+            if (vmDisplay != null)
             {
                 //Get the selected HomeDevice
                 vmDisplay.SelectedHomeDevice = DdpmHomePlugin.DdpmHomePlugin.GetSelectedHomeDevice();
@@ -203,14 +194,13 @@ namespace DDPM.UI.Plugin.DisplayPlugin
                 List<HomeDevice> monitors = new List<HomeDevice>();
                 foreach (HomeDevice obj in DdpmHomePlugin.DdpmHomePlugin.GetHomeDevices())
                 {
-				    // 20240617 jim modify 
+                    // 20240617 jim modify
                     if (obj.DeviceCategory == DDPM.UI.Common.eDeviceCategory.Display)
                         monitors.Add(obj);
                 }
                 //Assign to DisplayPageViewModel
                 vmDisplay.HomeDevices = monitors;
             }
-
         }
 
         #region Plugin related
@@ -224,7 +214,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin
                     InitializePipPbpPlugin();
                     InitializeDeviceManagerPlugin();
                     InitializeEasyArrangePlugin();
-
                 }
                 catch (Exception e1)
                 {
@@ -232,7 +221,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
                     _log.Error(e1, message);
                 }
             }
-         }
+        }
 
         private void InitializeDeviceManagerPlugin()
         {
@@ -324,7 +313,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
             // Get current condition
             _ = Task.Run(GetCurrentEasyArrangePluginCondition, CancellationToken);
-
         }
 
         private void EasyArrangePluginCondition_PluginConditionChangeHandler(object? sender, EventArgs e)
@@ -393,7 +381,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
             // Get current condition
             _ = Task.Run(GetCurrentPipPbpPluginCondition, CancellationToken);
-
         }
 
         private void PipPbpPluginCondition_PluginConditionChangeHandler(object? sender, EventArgs e)
@@ -433,19 +420,18 @@ namespace DDPM.UI.Plugin.DisplayPlugin
                 _log.Trace($"{nameof(GetCurrentPipPbpPluginCondition)} unlock");
             }
         }
-        #endregion
+        #endregion Plugin related
 
         #region DDC/CI Status Changed
         private void _deviceManagerSA_DDCCIStatuschanged(object? sender, VcpCore.Common.DDCCIchangedEventArgs e)
         {
             List<HomeDevice> homeDevices = DdpmHomePlugin.DdpmHomePlugin.GetHomeDevices();
             MonitorInfo miChanged = e.monitors;
-            
+
             foreach (HomeDevice homeDev in homeDevices)
             {
                 if (homeDev.DeviceCategory != eDeviceCategory.Display)
                     continue;
-
 
                 //If the homeDev is the monitor that DDC/CI is changed
                 if (HomeDevice.IsSameMonitor(homeDev.MonitorInfo, miChanged, "DDCisON"))
@@ -462,7 +448,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             }
         }
 
-        #endregion
+        #endregion DDC/CI Status Changed
     }
-
 }

@@ -1,20 +1,11 @@
 ﻿using DDPM.SA.Common;
-using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows;
-using System.Windows.Media;
-using DDPM.UI.Module.HeadsetAudioSettings;
 
 namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
 {
@@ -47,8 +38,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
             logMock = new Mock<ILog>();
             log = logMock.Object;
             vm = new SoundBarViewModel(console, log, deviceManager);
- 
-
         }
 
         [Test]
@@ -62,7 +51,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
             Assert.That(speakerAudioPresetRightView, Is.Not.Null);
             Assert.That(privateObject!.GetFieldOrProperty("_vm"), Is.EqualTo(vm));
         }
-
 
         //[Test]
         //public void TestSetNodeValue()
@@ -78,7 +66,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset.Tests
         //        Assert.Fail("not invoked");
         //    }
         //}
-
 
         //class CollaborationCheckedToVisibilityConverter
         //[Test]

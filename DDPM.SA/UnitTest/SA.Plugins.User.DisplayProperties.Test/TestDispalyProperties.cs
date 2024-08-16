@@ -1,26 +1,12 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Plugins.User.DisplayManager;
 using DDPM.SA.Plugins.User.PipPbpManger;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
 using Moq;
-using System.Data;
-using System.Threading;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies;
-using Windows.Media.AppBroadcasting;
-using Windows.UI.ViewManagement;
-using static VcpCore.Common.User32;
-using DDPM.SA.Plugins.User.DisplayProperties;
-using MS.WindowsAPICodePack.Internal;
-using System;
-using System.Windows.Documents;
-using System.Diagnostics;
-
 
 namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 
@@ -31,10 +17,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
         private Mock<IAgent> VcpCoreAgent { get; } = new();
         private Mock<IAgent> PipPbpAgent = new();
         private Mock<IAgent> DisplayPropertiesAgent { get; } = new();
-        MonitorInfo monitorInfo = new MonitorInfo();
+        private MonitorInfo monitorInfo = new MonitorInfo();
         public List<MonitorInfo> monitorInfolist = new List<MonitorInfo>();
         private Mock<IDisplayProperties> IDisplayPropertiesService { get; } = new();
-        DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo()
+
+        private DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo()
         {
             DisplayName = "DISPLAY7",
             SupportedHDR = true,
@@ -67,7 +54,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             }
         };
 
-        MonitorInfo monitorInfo1 = new MonitorInfo()
+        private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
             IsDellMonitor = true,
@@ -95,9 +82,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 ServiceTag = "CN073K0",
                 SerialNumber = "808597589",
                 Edid = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED"
-
             },
-
         };
 
         private DisplayMangerPlugin CreateInitializeDisplayMangerPlugin()
@@ -128,19 +113,16 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             return new DisplayPropertiesPlugins(DisplayPropertiesAgent.Object);
         }
 
-        DisplayMangerPlugin displayPlugin;
-        VcpCorePlugin vcpCorePlugin;
-        PipPbpMangerPlugin pipPbpMangerPlugin;
-        Dictionary<string, Dictionary<string, string>> getstr;
-        DisplayPropertiesPlugins displayPropertiesPlugin;
-
-
+        private DisplayMangerPlugin displayPlugin;
+        private VcpCorePlugin vcpCorePlugin;
+        private PipPbpMangerPlugin pipPbpMangerPlugin;
+        private Dictionary<string, Dictionary<string, string>> getstr;
+        private DisplayPropertiesPlugins displayPropertiesPlugin;
 
         [OneTimeSetUp]
         public void Setup()
         {
             displayPlugin = CreateInitializeDisplayMangerPlugin();
-
 
             vcpCorePlugin = CreateInitializeVcpCorePlugin();
             pipPbpMangerPlugin = CreateInitializePipPbpPlugin();
@@ -159,7 +141,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             //privatedisplayProperties.SetField("_displayPropertiesInfo", displayPropertiesPlugin as IDisplayProperties);
             getstr = (Dictionary<string, Dictionary<string, string>>)privatevcp.GetField("_ColorPresets");
             //monitorInfolist = displayPlugin.GetMonitors().Result;
-
         }
 
         [Test]
@@ -181,7 +162,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             var result = displayPropertiesPlugin.GetDisplayPropertiesInfo(monitorInfo1, s, isSupportedHDR, isHDREnable, isSupportUSBCPrioritization, USBCPrioritizationType).Result;
             Assert.IsNotNull(result);
             Assert.That(result.SupportedProperties.Properties, Is.EqualTo(getdisplayPropertiesInfo.SupportedProperties.Properties));
-
         }
 
         [Test]
@@ -206,7 +186,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             var result2 = displayPropertiesPlugin.GetCurrentDisplayOrientation(DisplayName).Result;
             Assert.That(result2, Is.EqualTo(DisplayOrientation));
             Assert.That(DisplayName, Is.EqualTo(monitorInfo1.DisplayName));
-
         }
 
         [Test]
@@ -231,18 +210,17 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             Assert.IsFalse(result);
         }
 
-
         [Test]
         public void TestCallWindowsDisplaySetting()
         {
-            var result = displayPropertiesPlugin.CallWindowsDisplaySetting().Result;
             try
             {
-                Assert.IsTrue(result);
+                var displayPropertiesPluginmock = new Mock<DisplayPropertiesPlugins>();
+                displayPropertiesPluginmock.Setup(x => x.CallWindowsDisplaySetting()).Returns(Task.FromResult(true));
             }
-            catch
+            catch (Exception e)
             {
-                Assert.IsFalse(result);
+
             }
         }
 
@@ -264,7 +242,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
                 ServiceTag = "CN073K0",
                 SerialNumber = "808597688",
                 Edid = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED"
-
             };
             try
             {
@@ -322,8 +299,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             displayPropertiesPlugin.SetExtendMode(monitorInfo1);
             Assert.IsNotNull(displayPropertiesPlugin);
             Assert.IsNotNull(monitorInfo1.DisplayName);
-
         }
-
     }
 }

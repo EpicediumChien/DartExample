@@ -1,0 +1,74 @@
+﻿<Window x:Class="DDPM.UI.Plugin.Common.PairTileModalDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DDPM.UI.Plugin.Common"
+        mc:Ignorable="d"
+        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common" xmlns:viewmodels="clr-namespace:DDPM.UI.Plugin.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:PenViewModel}" AllowsTransparency="True"
+        Title="PairTileModalDialog" ResizeMode="NoResize" ShowInTaskbar="False" 
+        WindowStartupLocation="Manual" WindowStyle="None" Background="#0D121A">
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <Style x:Key="TextStyle1" TargetType="UXControls:UXTextBlock">
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="LineHeight" Value="24" />
+        <Setter Property="Foreground" Value="#CFD2D3" />
+      </Style>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Grid>
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+      <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,65">
+          <Image Margin="64,21,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/arrow-left.png" Stretch="Uniform"
+                 VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24" MouseLeftButtonDown="BacklClick">
+          </Image>
+          <UXControls:UXTextBlock Name="txtTitleBar" Margin="14,19,0,0" HorizontalAlignment="Left"
+                            Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+    <Grid HorizontalAlignment="Center" Margin="0,195,0,0">
+      <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Vertical" Width="376">
+          <Image Source="/DDPM.UI.Resources;component/Resources/Images/R1.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="40" Height="40" />
+          <Image Source="/DDPM.UI.Resources;component/Resources/Images/BluetoothBig.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="116" Height="116" Margin="65,75,0,0" />
+          <UXControls:UXTextBlock Name="txtPairTile1" Margin="0,108,0,0" HorizontalAlignment="Left"
+                                  Style="{StaticResource TextStyle1}" Cursor="" VerticalAlignment="Top" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Width="380">
+          <Image Source="/DDPM.UI.Resources;component/Resources/Images/R2.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="40" Height="40" />
+          <UXControls:UXTextBlock Name="txtDownloadTile" Margin="5,42,0,0" HorizontalAlignment="Left"
+                                  Style="{StaticResource TextStyle1}" Cursor="" VerticalAlignment="Top" />
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/DDPM.UI.Resources;component/Resources/Images/DownloadTileA.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="100" Margin="5,6,0,0" Cursor="Hand" MouseLeftButtonDown="DownloadTile" Tag="A" />
+            <Image Source="/DDPM.UI.Resources;component/Resources/Images/DownloadTileG.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="114" Margin="5,6,0,0" Cursor="Hand" MouseLeftButtonDown="DownloadTile" Tag="G" />
+          </StackPanel>
+          <Image Source="/DDPM.UI.Resources;component/Resources/Images/DownloadTile.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="238" Margin="5,6,0,0" />
+          <UXControls:UXTextBlock Name="txtPairTile2" Margin="5,79,0,0" HorizontalAlignment="Left" Width="250" TextWrapping="Wrap"
+                                  Style="{StaticResource TextStyle1}" Cursor="" VerticalAlignment="Top" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Width="300">
+          <Image Source="/DDPM.UI.Resources;component/Resources/Images/R3.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="40" Height="40" />
+          <Image Source="/DDPM.UI.Resources;component/Resources/Images/PairTile.png" Stretch="Uniform" HorizontalAlignment="Left"
+                 VerticalAlignment="Top" Width="268.5" Margin="5,0,0,0" />
+          <UXControls:UXTextBlock Name="txtPairTile3" Margin="0,30,0,0" HorizontalAlignment="Left" Width="286" TextWrapping="Wrap"
+                                  Style="{StaticResource TextStyle1}" Cursor="" VerticalAlignment="Top" />
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+  </Grid>
+</Window>

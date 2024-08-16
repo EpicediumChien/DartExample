@@ -3,12 +3,6 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Devices.Display.Core;
 
 namespace DDPM.UI.Plugin.DisplayPlugin.Tests
 {
@@ -28,7 +22,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
         private ILog? _log;
         private Mock<IPluginManager>? pluginManagerMock;
         private IPluginManager? pluginManager;
-
 
         [SetUp]
         public void Setup()
@@ -53,12 +46,10 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Tests
         //[Test]
         //public void TestConstructor_InitializesComponent()
         //{
-
         //    Assert.That(displayPage, Is.Not.Null);
         //    //Assert.That(_console, Is.EqualTo(console));
         //   // Assert.That(_pluginManager, Is.EqualTo(pluginManager));
 
         //}
-
     }
 }
