@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Input;
 using VcpCore.Common;
 using static VcpCore.Plugins.EDIDReader;
+using static VcpCore.Plugins.EDIDReader.Monitor_Range_Limit;
 
 namespace VcpCore.Plugins.Test.ParserTest
 {
@@ -25,6 +28,45 @@ namespace VcpCore.Plugins.Test.ParserTest
             int expected = 5;
             int actual = EDIDReader.MaximumCommonDivisor(num4, num5);
             Assert.That(expected, Is.EqualTo(actual));
+
+        }
+
+        [Test]
+        public void TestInformation()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[71] = 0x91;
+
+            validEdid[21] = 0x60; //960mm
+            validEdid[22] = 0x90; //1440mm
+            string Max_Display_Size_CH2 = "68.1(寸)";
+
+            validEdid[8] = 0x10;
+            validEdid[9] = 0xAC;
+            string Manufacturer_Name2 = "DEL";
+
+            validEdid[17] = 0x21;
+            string Year_Of_Manufacture2 = "2023";
+
+            validEdid[16] = 0x16;
+            string Week_Of_Manufacture2 = "22";
+
+            validEdid[56] = 10;
+            validEdid[58] = 20;
+            validEdid[59] = 30;
+            validEdid[61] = 40;
+            string Active_Ratio2 = "133:271";
+
+            validEdid[21] = 0x60; //960mm
+            string Max_Horizontal_Image_Size2 = "960 mm";
+
+            validEdid[22] = 0x90; //1440mm
+            string Max_Vertical_Image_Size2 = "1440 mm";
+
+            string Information1 = "2023年22周; DEL; 68.1(寸)(960 mm,1440 mm); 133:271;\r\n";
+            var result = EDIDReader.Information(validEdid);
+            Assert.That(Information1, Is.EqualTo(result));
+
         }
 
         [Test]
@@ -46,6 +88,7 @@ namespace VcpCore.Plugins.Test.ParserTest
             char result = EDIDReader.ToCharByASCIIShort(a); //66 B
             Assert.That(ch1, Is.EqualTo(result));
         }
+
 
         [Test]
         public void TestContains()
@@ -120,12 +163,14 @@ namespace VcpCore.Plugins.Test.ParserTest
         [Test]
         public void TestManufacturer_Name_()
         {
+
             byte byte8 = 0x10;
             byte byte9 = 0xAC;
             string Manufacturer_Name2 = "DEL";
 
             var result = Vendor_Product_Identification.Manufacturer_Name(byte8, byte9);
             Assert.That(Manufacturer_Name2, Is.EqualTo(result));
+
         }
 
         [Test]
@@ -374,6 +419,7 @@ namespace VcpCore.Plugins.Test.ParserTest
                 {
                     var result = Display_Parameters.Video_White_and_Sync_Levels(validEdid);
                     Assert.That(Video_White_and_Sync_Levels2, Is.EqualTo(result));
+
                 }
                 else if ((validEdid[20] & 0x60) == 0x60)//11
                 {
@@ -570,6 +616,7 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
+
         [Test]
         public void TestVSync_Pulse_Must_Be_Serrated()
         {
@@ -691,6 +738,7 @@ namespace VcpCore.Plugins.Test.ParserTest
                 Assert.That(Image_Size_Ratio2, Is.EqualTo(result));
             }
         }
+
 
         [Test]
         public void TestMax_Display_Size()
@@ -1649,6 +1697,375 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
+        [Test]
+        public void TestInput_Type_Sync_type()
+        {
+            byte[] validEdid1 = new byte[128];
+            validEdid1[71] = 0x18;
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[71] = 0x10;
+
+            byte[] validEdid3 = new byte[128];
+            validEdid3[71] = 0x08;
+
+            byte[] validEdid4 = new byte[128];
+            validEdid4[71] = 0x00;
+
+            byte[] validEdid5 = new byte[128];
+            validEdid5[71] = 0x04;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+
+            string Input_Type_Sync_type0 = ""; //0x04
+            string Input_Type_Sync_type1 = "Digital separate";   //0x18  3
+            string Input_Type_Sync_type2 = "Digital composite (on HSync)"; //0x10  2
+            string Input_Type_Sync_type3 = "Bipolar analog composite"; //0x08  1
+            string Input_Type_Sync_type4 = "Analog composite";  //0x00  0
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Input_Type_Sync_type(InvalidEdid);
+                Assert.That(Input_Type_Sync_type0, Is.EqualTo(result));
+            }
+
+            if (validEdid1.Length >= 128)
+            {
+                if (((validEdid1[71] >> 3) & 0x0003) == 3)
+                {
+                    var result = Preferred_Detailed_Timing.Input_Type_Sync_type(validEdid1);
+                    Assert.That(Input_Type_Sync_type1, Is.EqualTo(result));
+                }
+
+                if (((validEdid2[71] >> 3) & 0x0003) == 2)
+                {
+                    var result = Preferred_Detailed_Timing.Input_Type_Sync_type(validEdid2);
+                    Assert.That(Input_Type_Sync_type2, Is.EqualTo(result));
+                }
+
+                if (((validEdid3[71] >> 3) & 0x0003) == 1)
+                {
+                    var result = Preferred_Detailed_Timing.Input_Type_Sync_type(validEdid3);
+                    Assert.That(Input_Type_Sync_type3, Is.EqualTo(result));
+                }
+
+                if (((validEdid4[71] >> 3) & 0x0003) == 0)
+                {
+                    var result = Preferred_Detailed_Timing.Input_Type_Sync_type(validEdid4);
+                    Assert.That(Input_Type_Sync_type4, Is.EqualTo(result));
+                }
+
+                if (((validEdid5[71] >> 3) & 0x0003) != 1)
+                {
+                    var result = Preferred_Detailed_Timing.Input_Type_Sync_type(validEdid5);
+                    Assert.That(Input_Type_Sync_type4, Is.EqualTo(result));
+                }
+            }
+        }
+
+        [Test]
+        public void TestInterlaced()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[71] = 0x80;
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[71] = 0x41;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Interlaced1 = "";
+            string Interlaced2 = "True";
+            string Interlaced3 = "False";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.Interlaced(InvalidEdid);
+                Assert.That(Interlaced1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (Contains(validEdid[71], 0x80))
+                {
+                    var result = Preferred_Detailed_Timing.Interlaced(validEdid);
+                    Assert.That(Interlaced2, Is.EqualTo(result));
+                }
+                if (Contains(validEdid2[71], 0x80) == false)
+                {
+                    var result = Preferred_Detailed_Timing.Interlaced(validEdid2);
+                    Assert.That(Interlaced3, Is.EqualTo(result));
+                }
+            }
+        }
+
+        [Test]
+        public void TestVerticalPolarity()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[71] = 0x04;
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[71] = 0x08;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string VerticalPolarity1 = "";
+            string VerticalPolarity2 = "True";
+            string VerticalPolarity3 = "False";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.VerticalPolarity(InvalidEdid);
+                Assert.That(VerticalPolarity1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (Contains(validEdid[71], 0x04))
+                {
+                    var result = Preferred_Detailed_Timing.VerticalPolarity(validEdid);
+                    Assert.That(VerticalPolarity2, Is.EqualTo(result));
+                }
+                if (Contains(validEdid2[71], 0x04) == false)
+                {
+                    var result = Preferred_Detailed_Timing.VerticalPolarity(validEdid2);
+                    Assert.That(VerticalPolarity3, Is.EqualTo(result));
+                }
+            }
+        }
+
+        [Test]
+        public void TestHorizontalPolarity()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[71] = 0x02;
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[71] = 0x09;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string HorizontalPolarity1 = "";
+            string HorizontalPolarity2 = "True";
+            string HorizontalPolarity3 = "False";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Preferred_Detailed_Timing.HorizontalPolarity(InvalidEdid);
+                Assert.That(HorizontalPolarity1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (Contains(validEdid[71], 0x02))
+                {
+                    var result = Preferred_Detailed_Timing.HorizontalPolarity(validEdid);
+                    Assert.That(HorizontalPolarity2, Is.EqualTo(result));
+                }
+                if (Contains(validEdid2[71], 0x02) == false)
+                {
+                    var result = Preferred_Detailed_Timing.HorizontalPolarity(validEdid2);
+                    Assert.That(HorizontalPolarity3, Is.EqualTo(result));
+                }
+            }
+        }
     }
 
+    public class TestDetailed_Timing_Sharp2
+    {
+        [Test]
+        public void TestPixel_Clock_()
+        {
+            byte[] validEdid = new byte[128];
+            string Pixel_Clock1 = "";
+
+            var result = Detailed_Timing_Sharp2.Pixel_Clock(validEdid);    // 	114.46 Mhz
+            Assert.That(Pixel_Clock1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestHorizontal_Active_()
+        {
+            byte[] validEdid = new byte[128];
+            string Horizontal_Active1 = "";
+
+            var result = Detailed_Timing_Sharp2.Horizontal_Active(validEdid); //1920 pixels
+            Assert.That(Horizontal_Active1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestHorizontal_Blanking_()
+        {
+            byte[] validEdid = new byte[128];
+            string Horizontal_Blanking1 = "";
+
+            var result = Detailed_Timing_Sharp2.Horizontal_Blanking(validEdid); //244 pixels
+            Assert.That(Horizontal_Blanking1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestHorizontal_Sync_Offset_()
+        {
+            byte[] validEdid = new byte[128];
+            string Horizontal_Sync_Offset1 = "";
+
+            var result = Detailed_Timing_Sharp2.Horizontal_Sync_Offset(validEdid); // 48 pixels
+            Assert.That(Horizontal_Sync_Offset1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestHorizontal_Sync_Pulse_Width_()
+        {
+            byte[] validEdid = new byte[128];
+            string Horizontal_Sync_Pulse_Width1 = "";
+
+            var result = Detailed_Timing_Sharp2.Horizontal_Sync_Pulse_Width(validEdid); //32 pixels
+            Assert.That(Horizontal_Sync_Pulse_Width1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestHorizontal_Border_()
+        {
+            byte[] validEdid = new byte[128];
+            string Horizontal_Border1 = "";
+
+            var result = Detailed_Timing_Sharp2.Horizontal_Border(validEdid); //0 pixels
+            Assert.That(Horizontal_Border1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestHorizontal_Size_()
+        {
+            byte[] validEdid = new byte[128];
+            string Horizontal_Size1 = "";
+
+            var result = Detailed_Timing_Sharp2.Horizontal_Size(validEdid); // 	344 mm
+            Assert.That(Horizontal_Size1, Is.EqualTo(result));
+        }
+
+
+        [Test]
+        public void TestVertical_Active_()
+        {
+            byte[] validEdid = new byte[128];
+            string Vertical_Active1 = "";
+
+            var result = Detailed_Timing_Sharp2.Vertical_Active(validEdid); //1080 lines
+            Assert.That(Vertical_Active1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestVertical_Blanking_()
+        {
+            byte[] validEdid = new byte[128];
+            string Vertical_Blanking1 = "";
+
+            var result = Detailed_Timing_Sharp2.Vertical_Blanking(validEdid); // 22 lines
+            Assert.That(Vertical_Blanking1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestVertical_Sync_Offset_()
+        {
+            byte[] validEdid = new byte[128];
+            string Vertical_Sync_Offset1 = "";
+
+            var result = Detailed_Timing_Sharp2.Vertical_Sync_Offset(validEdid); // 3 lines
+            Assert.That(Vertical_Sync_Offset1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestVertical_Sync_Pulse_Width_()
+        {
+            byte[] validEdid = new byte[128];
+            string Vertical_Sync_Pulse_Width1 = "";
+
+            var result = Detailed_Timing_Sharp2.Vertical_Sync_Pulse_Width(validEdid); // 5 lines
+            Assert.That(Vertical_Sync_Pulse_Width1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestVertical_Border_()
+        {
+            byte[] validEdid = new byte[128];
+            string Vertical_Border1 = "";
+
+            var result = Detailed_Timing_Sharp2.Vertical_Border(validEdid); // 0 lines
+            Assert.That(Vertical_Border1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestVertical_Size_()
+        {
+            byte[] validEdid = new byte[128];
+            string Vertical_Size1 = "";
+
+            var result = Detailed_Timing_Sharp2.Vertical_Size(validEdid); // 194 mm
+            Assert.That(Vertical_Size1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestInput_Type_()
+        {
+            byte[] validEdid = new byte[128];
+            string Input_Type1 = "";
+
+            var result = Detailed_Timing_Sharp2.Input_Type(validEdid); // Digital Separate
+            Assert.That(Input_Type1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestInterlaced_()
+        {
+            byte[] validEdid = new byte[128];
+            string Interlaced1 = "";
+
+            var result = Detailed_Timing_Sharp2.Interlaced(validEdid); // False
+            Assert.That(Interlaced1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestVerticalPolarity_()
+        {
+            byte[] validEdid = new byte[128];
+            string VerticalPolarity1 = "";
+
+            var result = Detailed_Timing_Sharp2.VerticalPolarity(validEdid); // False
+            Assert.That(VerticalPolarity1, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestHorizontalPolarity_()
+        {
+            byte[] validEdid = new byte[128];
+            string HorizontalPolarity1 = "";
+
+            var result = Detailed_Timing_Sharp2.HorizontalPolarity(validEdid); // True
+            Assert.That(HorizontalPolarity1, Is.EqualTo(result));
+        }
+    }
+
+    public class TestMonitor_Range_Limit
+    {
+        [Test]
+        public void TestMaximum_Vertical_Frequency()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[96] = 0x72;  //114
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Maximum_Vertical_Frequency1 = "";
+            string Maximum_Vertical_Frequency2 = "114 Hz";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Monitor_Range_Limit.Maximum_Vertical_Frequency(InvalidEdid);
+                Assert.That(Maximum_Vertical_Frequency1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Monitor_Range_Limit.Maximum_Vertical_Frequency(validEdid);
+                Assert.That(Maximum_Vertical_Frequency2, Is.EqualTo(result));
+            }
+        }
+    }
 }
