@@ -2513,7 +2513,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null && _SWUpdatePlugin != null)
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                _SWUpdatePlugin.SetDelaySWUpdateInfoPackage(config.UserSettings.DelaySWUpdateInfoPackage);
+
+                if (config !=  null) // 2024-08-16 Elie, check if null before using.
+                    _SWUpdatePlugin.SetDelaySWUpdateInfoPackage(config.UserSettings.DelaySWUpdateInfoPackage);
+                else
+                {
+                    writelog("[SW_SetDelaySWUpdateInfoPackage], ReloadAppConfigData is null.");
+                }
+
             }
         }
 
