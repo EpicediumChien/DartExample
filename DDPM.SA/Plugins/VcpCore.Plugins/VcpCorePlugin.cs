@@ -955,7 +955,14 @@ namespace VcpCore.Plugins
                             ro = GetCurrentColorPreset(monitorInfoX);
                         }
                         break;
-
+                    case "Gaming_GameEnhancementMode":
+                        break;
+                    case "Gaming_ResponseTime":
+                        break;
+                    case "Gaming_DarkStabilizer":
+                        break;
+                    case "Gaming_Get S.HDR":
+                        break;
                     default:
                         {
                             byte fucCode = TranslatorVCPctrCode(func);

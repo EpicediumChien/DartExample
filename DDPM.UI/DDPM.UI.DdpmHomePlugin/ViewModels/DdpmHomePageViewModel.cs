@@ -100,7 +100,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         DeviceCategory = eDeviceCategory.Display,
                         MonitorInfo = mi,
                         //Text1 = currentInput,
-                        DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
+                        DeviceImage = mi.modelName.ToUpper().StartsWith("G") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/G.png") : mi.modelName.ToUpper().StartsWith("AW") ? DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/AW.png") : DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png")
                     };
 
                     //2024-6-20 Robert_Lin, check if any some model already in list
