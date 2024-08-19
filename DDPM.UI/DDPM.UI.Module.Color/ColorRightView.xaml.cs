@@ -136,7 +136,7 @@ namespace DDPM.UI.Module.Color
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
                             Thread.Sleep(500);
                         }
-       
+                                       
                         Test_AddAppCollectionData.GetInstance().AppsList.Remove(selected_app);
                         Thread.Sleep(100);
 
@@ -212,7 +212,7 @@ namespace DDPM.UI.Module.Color
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
                 }));
 
-         
+                            
             
             }
         }
@@ -347,8 +347,10 @@ namespace DDPM.UI.Module.Color
 
                 // IWshRuntimeLibrary is in the COM library "Windows Script Host Object Model"
                 IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
+
                 IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(targetPath);
 
+               
                 string strAppName = string.Empty;
                 string strFileName = string.Empty;
                 string strAppIcon = string.Empty;
@@ -411,7 +413,7 @@ namespace DDPM.UI.Module.Color
                     
                     DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
                 }
-
+              
             }
         }
     }

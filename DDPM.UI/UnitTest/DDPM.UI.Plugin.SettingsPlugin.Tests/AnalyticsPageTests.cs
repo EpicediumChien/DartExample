@@ -15,7 +15,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
     {
         private AnalyticsPage? analyticsPage;
         private Mock<IDeviceManagerSA>? DeviceManagerSAMock;
-        private IDeviceManagerSA? iDeviceManagerSA;
+        //private IDeviceManagerSA? iDeviceManagerSA;
 
         [SetUp]
         public void Setup()
