@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using VcpCore.Common;
@@ -60,10 +61,91 @@ namespace DDPM.UI.Module.Kvm
         }
     }
 
+    public class User32_SetWindowPos
+    {
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        public static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+        public static readonly IntPtr HWND_TOP = new IntPtr(0);
+        public const uint SWP_NOSIZE = 0x0001;
+        public const uint SWP_NOMOVE = 0x0002;
+        public const uint SWP_NOACTIVATE = 0x0010;
+        public const uint SWP_SHOWWINDOW = 0x0040;
+        public const uint SWP_NOOWNERZORDER = 0x0200;
+        public const uint SWP_NOREDRAW = 0x0008;
+    }
+
+    public struct WINDOWPOS
+    {
+        public IntPtr hwnd;
+        public IntPtr hwndInsertAfter;
+        public int x;
+        public int y;
+        public int cx;
+        public int cy;
+        public uint flags;
+    }
+
+    public class DDPMWindowPos : NativeWindow
+    {
+        private IntPtr _hwnd;
+        private IntPtr _parent;
+
+        private const int SWP_NOMOVE = 0x0002;
+        private const int SWP_NOSIZE = 0x0001;
+        private const int SWP_NOACTIVATE = 0x0010;
+        private const int WM_WINDOWPOSCHANGING = 0x0046;
+        private const int WM_ACTIVATE = 0x0006;
+        private const int WM_NCACTIVATE = 0x0086;
+
+        public DDPMWindowPos(IntPtr hwnd, IntPtr parent) 
+        {
+            this._hwnd = hwnd;
+            this._parent = parent;
+            this.AssignHandle(parent);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            switch (m.Msg)
+            {
+                case WM_WINDOWPOSCHANGING: // WM_WINDOWPOSCHANGING
+                    {
+                        if (_hwnd != IntPtr.Zero)
+                        {
+                            //var pos = (WINDOWPOS)Marshal.PtrToStructure(m.LParam, typeof(WINDOWPOS));
+                            //pos.hwndInsertAfter = User32_SetWindowPos.HWND_BOTTOM;
+                            //pos.flags |= User32_SetWindowPos.SWP_NOACTIVATE;
+                            //Marshal.StructureToPtr(pos, m.LParam, true);
+                            User32_SetWindowPos.SetWindowPos(_hwnd, User32_SetWindowPos.HWND_TOP, 100, 100, 100, 100, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
+                        }
+                    }
+                    break;
+                //case WM_ACTIVATE: // WM_ACTIVATE
+                //    {
+                //        if (m.WParam != IntPtr.Zero && _hwnd != IntPtr.Zero)
+                //        {
+                //            User32_SetWindowPos.SetWindowPos(this.Handle, User32_SetWindowPos.HWND_BOTTOM, 0, 0, 0, 0, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
+                //        }
+                //    }
+                //    break;
+                //case WM_NCACTIVATE: // WM_NCACTIVATE
+                //    {
+                //        if (m.WParam != IntPtr.Zero && _hwnd != IntPtr.Zero)
+                //        {
+                //            User32_SetWindowPos.SetWindowPos(this.Handle, User32_SetWindowPos.HWND_BOTTOM, 0, 0, 0, 0, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
+                //        }
+                //    }
+                //    break;
+            }
+            base.WndProc(ref m);
+        }
+    }
+
     public class KvmViewModel : ObservableObject
     {
         #region private
-
         private InputSourceList _PC1selectInput = new InputSourceList();
         private InputSourceList _PC2selectInput = new InputSourceList();
         private InputSourceList _PC3selectInput = new InputSourceList();
@@ -81,26 +163,14 @@ namespace DDPM.UI.Module.Kvm
 
         //private Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
         private ImageSource? _PCImage;
-        #region For SetWindowPos
-        static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
-        static readonly IntPtr HWND_TOP = new IntPtr(0);
-        const uint SWP_NOSIZE = 0x0001;
-        const uint SWP_NOMOVE = 0x0002;
-        const uint SWP_NOACTIVATE = 0x0010;
-        const uint SWP_SHOWWINDOW = 0x0040;
-        const uint SWP_NOOWNERZORDER = 0x0200;
-        const uint SWP_NOREDRAW = 0x0008;
         #endregion
-        #endregion
-
-        #endregion private
 
         [DllImport("user32.dll", EntryPoint = "SetParent")]
         public static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
         [DllImport("user32.dll", SetLastError = true)]
-        static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+        //[DllImport("user32.dll", SetLastError = true)]
+        //public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public IModuleOwner? ModuleOwner { get; set; }
         public KvmModule KvmModule { get; set; }
         public UInt16 PxPCode { get; set; } = 0;
@@ -122,7 +192,7 @@ namespace DDPM.UI.Module.Kvm
         public string PC3_Input { get; set; }
         public string PC4_Input { get; set; }
 
-        public Dictionary<UInt16, UserControl> PxPcodeDictionary = new Dictionary<UInt16, UserControl>()
+        public Dictionary<UInt16, System.Windows.Controls.UserControl> PxPcodeDictionary = new Dictionary<UInt16, System.Windows.Controls.UserControl>()
         {
             [0x0] = new PxPSplitCtrl0A(),
             [0x11] = new PIPSplitCtrl1A(),
@@ -1052,14 +1122,15 @@ namespace DDPM.UI.Module.Kvm
                     NkvmdHandle = proc.MainWindowHandle;
                 }
 
-                Window mainWindow = Application.Current.MainWindow;
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
                 IntPtr mainWindowHandle = new WindowInteropHelper(mainWindow).Handle;
 
                 if (NkvmdHandle != IntPtr.Zero && mainWindowHandle != IntPtr.Zero)
                 {
-                    SetParent(NkvmdHandle, mainWindowHandle);
-                    SetWindowPos(mainWindowHandle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOREDRAW);
-                    EnableWindow(mainWindowHandle, false);
+                    //SetParent(NkvmdHandle, mainWindowHandle);
+                    DDPMWindowPos windowPos = new DDPMWindowPos(NkvmdHandle, mainWindowHandle);
+                    //SetWindowPos(mainWindowHandle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOREDRAW);
+                    //EnableWindow(mainWindowHandle, false);
                 }
 
                 //WindowInteropHelper helper = new WindowInteropHelper(mainWindow);

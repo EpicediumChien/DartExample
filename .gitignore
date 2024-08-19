@@ -19,6 +19,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 *.zip
+*.7z
 
 # Roslyn cache directories
 *.ide/
