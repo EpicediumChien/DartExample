@@ -3230,6 +3230,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<MonitorInfo> monitorInfos = GetMonitors().Result;//it it used to active monitor settings
             _AllInfoMonitors.AddRange(monitorInfos);
 
+            _SettingsPlugin.ITSettingsActionEvent += _SettingsPlugin_ITSettingsActionEvent;
+
             GetLockRotateStatus();
             writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK. Monitor count is {_AllInfoMonitors.Count}");
         }
@@ -3303,26 +3305,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _ = Task.Run(async () =>
             {
                 var pluginCondition = await (_SettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _SettingsPluginCondition;
+                //PluginCondition _SettingsPluginCondition; 
                 lock (_PluginConditionLock_Settings)
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
                         writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in an error condition");
-                        //_SettingsPluginCondition = pluginCondition;
                     }
-                    else if (pluginCondition is PluginRunningCondition)
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
-                        writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running condition");
-                        //_SettingsPluginCondition = pluginCondition;
+                        writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
 
                         DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
                         if (config != null)
                         {
-                            config.AppSettings.Version = 8.8;
-                            config.UserSettings.Version = 6.6;
-
-                            _SettingsPlugin.SetAppConfigData(config);
                             //0612 Bruce 自動旋轉畫面功能，因需使用display跟settings兩個Plugin，其中一個可能還沒被叫起來，故兩邊都新增取得狀態方法。
                             //GetLockRotateStatus();
                             //0812 check required plugins before init
@@ -3333,36 +3329,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //load hotkeysetting
                             ReloadHotkeyConfigData();
                             ToNKVM_SupportedMonitorList();
-                            ToNKVM_initHotKeys();
+                            ToNKVM_initHotKeys();                            
                         }
                     }
-                    else if (pluginCondition is PluginStartedCondition)
+                    else
                     {
-                        writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a started condition");
-                        //_SettingsPluginCondition = pluginCondition;
-
-                        DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                        if (config != null)
-                        {
-                            config.AppSettings.Version = 8.8;
-                            config.UserSettings.Version = 6.6;
-
-                            _SettingsPlugin.SetAppConfigData(config);
-                            //0612 Bruce 自動旋轉畫面功能，因需使用display跟settings兩個Plugin，其中一個可能還沒被叫起來，故兩邊都新增取得狀態方法。
-                            //GetLockRotateStatus();
-                            //0812 check required plugins before init
-                            DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
-
-                            SetDelayFWUpdateInfoPackage();
-                            CheckUODFWUInfoPackage();
-                            //load hotkeysetting
-                            ReloadHotkeyConfigData();
-                            ToNKVM_SupportedMonitorList();
-                            ToNKVM_initHotKeys();
-                        }
+                        writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in unknow condition: {pluginCondition}");
                     }
                 }
             });
+        }
+
+        private void _SettingsPlugin_ITSettingsActionEvent(object sender, ITSettingEventArgs e)
+        {
+            _ = Task.Run(() =>
+            {
+                if (_SettingsPlugin == null)
+                {
+                    writelog("[From user Settings with IT event] null Device Manager object!");
+                    return;
+                }
+
+                if (e == null || e == EventArgs.Empty)
+                {
+                    writelog("[From user Settings with IT event] Got Empty ITSettingEventArgs!");
+                    return;
+                }
+                //
+                //Do IT Settings update notify
+                //
+                OnITSettingsActionEventNotify(e);
+            });
+        }
+
+        public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+
+        //Target to notify User setting
+        private void OnITSettingsActionEventNotify(ITSettingEventArgs e)
+        {
+            if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)
+                return;
+
+            EventHandler<ITSettingEventArgs> Handler = ITSettingsActionEvent;
+            if (Handler != null)
+            {
+                Handler.Invoke(this, e);
+                writelog($"ITSettingsActionEvent Invoked at DeviceManagerPlugins");
+            }
         }
 
         //FW Update by Bruce
@@ -4620,6 +4633,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //Bruce 08 - 09 Add a new event to determine whether it is a display signal event or a setting event.
                     Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
                     //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
+                    if(_SettingsPlugin != null)
+                        _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
                 }
 
                 IsDisposed = true;

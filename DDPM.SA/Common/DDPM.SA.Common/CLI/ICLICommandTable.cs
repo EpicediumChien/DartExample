@@ -1,45 +1,75 @@
 ﻿using Dell.Client.Framework.Common;
-using Newtonsoft.Json;
+using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.ObjectiveC;
+using System.Text;
+using System.Threading.Tasks;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace DDPM.SA.Common
 {
-    //Client fromat->/commands -Type -option1=value1 -option2=value2 -option3=value3 ...
-    //get -name=Display.BrightnessLevel
-    //set -name=Display.BrightnessLevel [Level]
+    /*public class IT_Command_Global
+    {
+        public string command { get; set; } = string.Empty;
+        public string type { get; set; } = string.Empty;
+        public string feature { get; set; } = string.Empty;
+        public string option_name { get; set; } = "None";
+        public string option_value { get; set; } = "None";
+
+        public IT_Command_Global(string cmd, string dev_type, string dev_feature, string op_name, string op_value)
+        {
+            command = cmd;
+            type = dev_type;
+            feature = dev_feature;
+            option_name = op_name;
+            option_value = op_value;
+        }
+    }*/
+
+    //get -Display=BrightnessLevel 
+    //set -Display=BrightnessLevel -option=value
     public class ICLICommandTable
     {
+        /*private readonly List<IT_Command_Global> iT_Command_Consists_table = new List<IT_Command_Global>()
+        {
+            new IT_Command_Global("GET", "DISPLSY", "ENERGYSAVER", "OPTION", "LOCK"),
+            new IT_Command_Global("GET", "DISPLSY", "ENERGYSAVER", "OPTION", "UNLOCK"),
+            new IT_Command_Global("GET", "DISPLAY", "OSD", "VALUE")
+        };*/
+        private readonly List<string> Support_Lock_Feature = new List<string>()
+        {
+            "TELEMETRYCONSENT", 
+            "ENGERSAVER"
+        };
         private readonly List<string> commands = new List<string>() { "GET", "SET", "CONFIGURE" };
-        private readonly List<string> types = new List<string>() { "NAME", "APPLYCONFIG" };
-        private readonly List<string> pluginType = new List<string>() { "DISPLAY", "COLOR", "MOUSE", "KEYBOARD", "APP", "DOCK", "HEADSET" };//a part of input Type, ex: -name=Display.Brightness
-        private ILog _Log;
+        //readonly List<string> types = new List<string>() { "NAME", "APPLYCONFIG" };
 
+        //a part of input Type: target feature, ex: -Display=BrightnessLevel
+        private readonly List<string> pluginType = new List<string>() { "DISPLAY", "COLOR", "MOUSE", "KEYBOARD", "APP", "DOCK", "HEADSET" };
+        private ILog _Log;
         public ICLICommandTable(ILog Log)
         {
             _Log = Log;
         }
-
         public class CommandType_Option
         {
             /// <summary>
             /// 呼叫的方法
             /// </summary>
             public string Option_Name { get; set; }
-
             /// <summary>
             /// 設定的數值，如果不是設定(set)，為空值
             /// </summary>
             public string Option_Value { get; set; }
-
             public CommandType_Option(string Model, string Value = "")
             {
                 this.Option_Name = Model;
                 this.Option_Value = Value;
             }
         }
-
         public class CommandType_Name
         {
             public string target { get; set; }
@@ -51,7 +81,6 @@ namespace DDPM.SA.Common
                 this.feature = Value;
             }
         }
-
         public class CommandLineInput
         {
             //Used to judge target command support or not (please everyone refer to your own JIRA story)
@@ -62,23 +91,28 @@ namespace DDPM.SA.Common
             /// </summary>
             public string Command { get; set; }
 
-            public string TargetType { get; set; }//name, log, applyconfig; ex: -name=Display.Brighness, -log=Display.Clear
+            public string TargetType { get; set; }//name, log, applyconfig; ex: -Display=BrightnessLevel
             public string TargetFeature { get; set; }
-
             /// <summary>
             /// 要呼叫的插件
             /// </summary>
             public string PluginsType { get; set; }
-
             /// <summary>
             /// 呼叫的方法
             /// </summary>
             public List<CommandType_Option> Options { get; set; }//use to store options to get/set device features
-
             public List<string> ServiceTag { get; set; }//for display with servicetag
             public List<string> DeviceIndex { get; set; }//for display with index
             public List<string> GuidString { get; set; }//for peripherals
             public string LogPath { get; set; }
+
+            //Here are 3 possible conditions,
+            // 1.only normal command (pass to CLIProxy)
+            // 2.only IT command (process it at CLIManager)
+            // 3.both IT and normal commands in one request (process cli at CLIManager and then bypass command to CLIProxy)
+            // It's not possible that both isITCommands and isNormalCommands are false.
+            public bool isITCommands { get; set; } = false;
+            public bool isNormalCommands { get; set; } = false;
 
             public CommandLineInput()
             {
@@ -89,7 +123,6 @@ namespace DDPM.SA.Common
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
             }
         }
-
         public CommandLineInput StringProcessing(string[] args)
         {
             if (args.Length < 2)
@@ -123,7 +156,7 @@ namespace DDPM.SA.Common
             string[] str = in_type.Split('=');
             if (str.Length < 2)
             {
-                _Log.Error("[CLI] 2nd code should be the format like -name=Display.Feature");
+                _Log.Error("[CLI] 2nd code should be the format like -Display=Feature");
                 return null;
             }
             /*string[] str2 = str[1].Split(".");
@@ -250,7 +283,70 @@ namespace DDPM.SA.Common
                 _Log.Error("[ICLICommandTable] Exception error:" + ex.ToString());
             }
 
+            //Dean 0816 check the command is belong to IT/normal or both
+            CheckCommandRoutePath(commandInput);
+
             return commandInput;
+        }
+
+        private void CheckCommandRoutePath(CommandLineInput commandInput)
+        {
+            commandInput.isNormalCommands = false;
+            commandInput.isITCommands = false;
+
+            int feature_idx = Support_Lock_Feature.FindIndex(x => x.ToUpper().Trim().Equals(commandInput.TargetFeature.ToUpper().Trim()));
+            if (feature_idx >= 0) //has IT feature
+            {
+                if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
+                {
+                    commandInput.isNormalCommands = true;
+                    return;
+                }
+                else
+                {
+                    //assume the option would be -value=on, -value=off,lock, -value=lock, -value=off,unlock
+                    //in this situation the Option_Value would be on / off / on,lock / off,lock / on,unlock / off,unlock
+                    for (int i = 0; i < commandInput.Options.Count; i++)
+                    {
+                        CommandType_Option option = commandInput.Options[i];
+                        try
+                        {
+                            if(option.Option_Value.Length <= 0)
+                            {
+                                commandInput.isNormalCommands = true;//recognized as normal command -> CLIProxy
+                                return;
+                            }
+                            option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
+                            List<string> parse = option.Option_Value.Split(",").ToList();
+                            foreach(string value in parse)
+                            {
+                                //currently only "LOCK" and "UNLOCK" be recognized as IT global settings
+                                //other new global setting should be add to below
+                                if (value.Trim().ToUpper().Equals("LOCK") || value.Trim().ToUpper().Equals("UNLOCK")) //must match length to avoid some error parsing like OSD"LOCK"
+                                {
+                                    commandInput.isITCommands = true;//recognized has IT command -> CLIManager
+                                }
+                                else
+                                {
+                                    commandInput.isNormalCommands = true;//recognized has normal command -> CLIProxy
+                                }
+
+                                if (commandInput.isNormalCommands == true && commandInput.isITCommands == true)
+                                    break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _Log.Error("[CheckCommandRoutePath] exception: " + ex.Message);
+                            //recognized as normal command
+                            commandInput.isNormalCommands = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            else
+                commandInput.isNormalCommands = true;
         }
 
         public static int Response_FormatError()
