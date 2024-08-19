@@ -53,12 +53,12 @@ namespace DDPM.UI.Module.Brightness
             if ((bool)SynchronizeSwitch.IsChecked)
             {
                 x.IsSynchronize = true;
-                SynchronizeSwitch.Content = "ON";
+                SynchronizeSwitch.Content = Strings.On;
             }
             else
             {
                 x.IsSynchronize = false;
-                SynchronizeSwitch.Content = "OFF";
+                SynchronizeSwitch.Content = Strings.Off;
             }
 
             setting.UserSettings.IsSynchronizemonitor = x.IsSynchronize;
@@ -209,7 +209,7 @@ namespace DDPM.UI.Module.Brightness
             var rc = vm.CheckIsTimeOverlap();
 
             if (rc)
-                DdpmCommonHelper.DDPMPureMesssageBox("Error", "Check your settings to make sure your Preset Start Times and Transition Lengths do not overlap", true, Window.GetWindow(this));
+                DdpmCommonHelper.DDPMPureMesssageBox(Strings.Error, Strings.BrightnessErrorMsg0, true, Window.GetWindow(this));
         }
 
         private async void PR1_Preview_UXButton_Click(object sender, RoutedEventArgs e)

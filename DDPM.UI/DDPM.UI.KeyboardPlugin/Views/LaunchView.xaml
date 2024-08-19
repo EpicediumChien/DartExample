@@ -364,7 +364,7 @@
                             </Image.ToolTip>
                         </Image>
                     </StackPanel>
-                    <UXControls:UXTextBlock Name="txtEOL" Text="{Binding [Keyboard.0], Source={x:Static lang:LangHelper.Instance}}" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" />
+                    <UXControls:UXTextBlock Name="txtEOL" Text="{Binding [EOL.0], Source={x:Static lang:LangHelper.Instance}}" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" />
                 </StackPanel>
             </Grid>
             <!--Battery-->
