@@ -191,7 +191,6 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         public void OnActivated()
         {
             _deviceManagerPlugin!.DeviceChanged += DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify += PeripheralsPlugin_UpdateNotify;
             Mouse.OverrideCursor = null;
         }
 
@@ -199,21 +198,26 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         public void OnDeactivated()
         {
             _deviceManagerPlugin!.DeviceChanged -= DeviceManager_DeviceChanged;
-            //_deviceManagerPlugin.UpdateNotify -= PeripheralsPlugin_UpdateNotify;
             Mouse.OverrideCursor = Cursors.Wait;
         }
 
-        /// <inheritdoc/>
-        public void OnShown(string parameter)
-        {
-            ConfigureServices();
-            GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+    /// <inheritdoc/>
+    public void OnShown(string parameter) {
+      ConfigureServices();
+      GetPeripheralsAsync();
+      if(_viewModel != null && _viewModel.SetCurrentDevice(parameter)) {
+        if(_viewModel.CurrentDeviceInfo!.IsCollabsKeysSupported) {
+          _log.Debug($"GetPeripherals is invoked");
+          //_deviceHelper = await peripheralsPlugin.GetDevices();
+          Task<CTKMessageHelper> task = _deviceManagerPlugin!.GetCTKMessageHelper();
+          _viewModel.CTKMessageHelper = task.Result;
         }
+      }
+    }
 
-        #endregion Interface IConsolePluginSupportsActivations
+    #endregion Interface IConsolePluginSupportsActivations
 
-        ~Keyboardplugin()
+    ~Keyboardplugin()
         {
             _deviceManagerPlugin!.DeviceChanged -= DeviceManager_DeviceChanged;
         }

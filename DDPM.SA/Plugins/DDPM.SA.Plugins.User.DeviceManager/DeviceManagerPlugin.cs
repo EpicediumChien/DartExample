@@ -23,6 +23,7 @@ using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Newtonsoft.Json;
 using System;
@@ -1123,18 +1124,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
-        #endregion
+    #endregion
 
-        #endregion
+    #endregion
 
-        #region Peripherals implementation
+    #region Peripherals implementation
 
-        public async Task<DeviceHelper> GetDevices()
-        {
-            return await Task.Run(() => _PeripheralsPlugin.GetDevices());
-        }
+    public async Task<DeviceHelper> GetDevices() {
+      return await Task.Run(() => _PeripheralsPlugin.GetDevices());
+    }
 
-        public async Task<RFDeviceHelper> GetRFDongleDevices()
+    public async Task<CTKMessageHelper> GetCTKMessageHelper() {
+      return await Task.Run(() => _PeripheralsPlugin.GetCTKMessageHelper());
+    }
+
+    public async Task<RFDeviceHelper> GetRFDongleDevices()
         {
             return await Task.Run(() => _PeripheralsPlugin.GetRFDongleDevices());
         }

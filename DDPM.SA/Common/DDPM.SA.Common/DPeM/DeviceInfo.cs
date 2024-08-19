@@ -99,6 +99,14 @@ namespace DDPM.SA.Common
         private bool _isBLE;
         private string _isdServiceVersion;
         private string _isdDriverVersion;
+        private int _monitorCount;
+        private byte[] _dockData;
+        private byte[] _dockInfo;
+        private int _dockType;
+        private string _dockService;
+        private string _dockPackageFwVersion;
+        private int _dockFwUpdateStatus;
+        private int _dockTBTConnectionStatus;
 
         #region private webcam Properties
 
@@ -598,17 +606,6 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
-
-        public int MonitorCount { get; set; }
-        public byte[] DockData { get; set; }
-        public byte[] DockInfo { get; set; }
-        public int DockType { get; set; }
-        public int DockPower { get; set; }
-        public int DockMode { get; set; }
-        public string DockServiceTag { get; set; }
-        public string DockPackageFwVersion { get; set; }
-        public int DockFwUpdateStatus { get; set; }
-        public int DockTBTConnectionStatus { get; set; }
 
         #region Physical Device Dongle Properties
 
@@ -1213,7 +1210,87 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion Pen Properties
+        public int MonitorCount
+        {
+            get => _monitorCount;
+            set
+            {
+                _monitorCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public byte[] DockData
+        {
+            get => _dockData;
+            set
+            {
+                _dockData = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public byte[] DockInfo
+        {
+            get => _dockInfo;
+            set
+            {
+                _dockInfo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int DockType
+        {
+            get => _dockType;
+            set
+            {
+                _dockType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string DockServiceTag
+        {
+            get => _dockService;
+            set
+            {
+                _dockService = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string DockPackageFwVersion
+        {
+            get => _dockPackageFwVersion;
+            set
+            {
+                _dockPackageFwVersion = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int DockFwUpdateStatus
+        {
+            get => _dockFwUpdateStatus;
+            set
+            {
+                _dockFwUpdateStatus = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int DockTBTConnectionStatus
+        {
+            get => _dockTBTConnectionStatus;
+            set
+            {
+                _dockTBTConnectionStatus = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
 
         #endregion Properties
 

@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -215,8 +216,9 @@ namespace DDPM.SA.Common
         #region public for Peripherals
 
         Task<DeviceHelper> GetDevices();
+    Task<CTKMessageHelper> GetCTKMessageHelper();
 
-        Task<RFDeviceHelper> GetRFDongleDevices();
+    Task<RFDeviceHelper> GetRFDongleDevices();
 
         //event EventHandler<DeviceChangedEventArgs> Peripherals_Notify;
         event EventHandler<bool> Peripherals_UpdateNotify;

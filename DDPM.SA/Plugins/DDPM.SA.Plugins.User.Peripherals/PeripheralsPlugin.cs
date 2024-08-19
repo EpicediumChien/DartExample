@@ -118,16 +118,27 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             throw new NotImplementedException();
         }
 
-        public async Task<DeviceHelper> GetDevices()
-        {
-            if (_deviceHelper != null)
-            {
-                return await Task.Run(() => _deviceHelper);
-            }
-            return new DeviceHelper();
-        }
+    public async Task<DeviceHelper> GetDevices() {
+      if(_deviceHelper != null) {
+        return await Task.Run(() => _deviceHelper);
+      }
+      return new DeviceHelper();
+    }
 
-        public async Task<RFDeviceHelper> GetRFDongleDevices()
+    public async Task<CTKMessageHelper> GetCTKMessageHelper() {
+      var CTKMessageHelper = new CTKMessageHelper();
+      CTKMessageHelper.CollaborationMsg = _iCTKMessageHelper.CollaborationMsg.ToString();
+      CTKMessageHelper.IsCollabMultipleCallsDetected = _iCTKMessageHelper.IsCollabMultipleCallsDetected;
+      CTKMessageHelper.IsZoomCallbacksRegistered = _iCTKMessageHelper.IsZoomCallbacksRegistered;
+      CTKMessageHelper.IsZoomClientInstalled = _iCTKMessageHelper.IsZoomClientInstalled;
+      CTKMessageHelper.IsZoomMultipleCallsDetected = _iCTKMessageHelper.IsZoomMultipleCallsDetected;
+      CTKMessageHelper.IsZoomVersionSupported = _iCTKMessageHelper.IsZoomVersionSupported;
+      CTKMessageHelper.TeamsSDKState = _iCTKMessageHelper.TeamsSDKState.ToString();
+
+      return await Task.Run(() => CTKMessageHelper);
+    }
+
+    public async Task<RFDeviceHelper> GetRFDongleDevices()
         {
             if (_rfDeviceHelper != null)
             {
@@ -922,7 +933,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
                         info.HasWindowsHelloPowerConstraint = _iLogicalDeviceWebcam.HasWindowsHelloPowerConstraint;
                         info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
-                        //_iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
+                        _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
                     }
 
                     if (item is ILogicalDeviceHeadset _logicalDeviceHeadset)
@@ -978,6 +989,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
                     }
 
+                    if (item is ILogicalDevicePen _logicalDevicePen)
+                    {
+                        info.IsBLE = _logicalDevicePen.IsBLE;
+                    }
+
                     if (item is ILogicalDeviceDock _logicalDeviceDock)
                     {
                         info.MonitorCount = _logicalDeviceDock.MonitorCount;
@@ -985,7 +1001,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.DockInfo = _logicalDeviceDock.DockInfo;
                         info.DockType = _logicalDeviceDock.DockType;
                         info.DockServiceTag = _logicalDeviceDock.DockServiceTag;
-                        //info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
+                        info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
                         info.DockFwUpdateStatus = _logicalDeviceDock.DockFwUpdateStatus;
                         info.DockTBTConnectionStatus = _logicalDeviceDock.DockTBTConnectionStatus;
                     }
@@ -1002,10 +1018,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
             Console.WriteLine(_deviceHelper.ToString());
         }
-
-        /*private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue)
-        {
-        }*/
 
         private void FillRFDeviceInfo(IPhysicalDevice device)
         {
@@ -1901,7 +1913,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
+    private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue) {
+
+
+    }
+
+    private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
         {
             Console.WriteLine(newValue.ToString());
 
