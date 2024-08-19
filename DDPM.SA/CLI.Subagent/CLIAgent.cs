@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using static DDPM.SA.Common.ICLICommandTable;
+using DDPM.Common;
 
 namespace CLI.Subagent
 {
@@ -49,8 +50,13 @@ namespace CLI.Subagent
         private int _exitcode = (int)CLI_ExitCode.unknow_command;
 
 #if RELEASE
-        private byte[][] certificateHash = { IDs.WST_Hash };
-
+        private static byte[][] certificateHash = { 
+            ThumbprintHash.DELL_Hash,
+            ThumbprintHash.DELL_Hash1,
+            ThumbprintHash.DELL_Hash2,
+            ThumbprintHash.WST_Hash, 
+            ThumbprintHash.WST2_Hash 
+        };
 #endif
 
         #endregion

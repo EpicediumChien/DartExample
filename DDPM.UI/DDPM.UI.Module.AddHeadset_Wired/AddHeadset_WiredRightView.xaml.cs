@@ -10,16 +10,16 @@ namespace DDPM.UI.Module.AddHeadset_Wired
     {
         private readonly AddDeviceViewModel _vm;
 
-        private readonly string Caption = "Wired Connection";
-        private readonly string Step1 = "Connect your headset via USB port on your system.";
+        //private readonly string Caption = "Wired Connection";
+        //private readonly string Step1 = "Connect your headset via USB port on your system.";
 
         public AddHeadset_WiredRightView(AddDeviceViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            txtCaption.Text = Caption;
-            txtStep1.Text = Step1;
+            //txtCaption.Text = Caption;
+            //txtStep1.Text = Step1;
         }
     }
 }

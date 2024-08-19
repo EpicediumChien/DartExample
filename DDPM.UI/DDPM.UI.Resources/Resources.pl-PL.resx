@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>O programie</value>
+</data>
+  <data name="AdaptiveLight" xml:space="preserve">
+    <value>Adaptacyjne oświetlenie</value>
+</data>
+  <data name="Display" xml:space="preserve">
+    <value>Ekran</value>
+</data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Ustawienia ekranu</value>
+</data>
+  <data name="EasyArrange" xml:space="preserve">
+    <value>Łatwe rozmieszczenie</value>
+</data>
+  <data name="FirmwareVersion" xml:space="preserve">
+    <value>Wersja oprogramowania układowego</value>
+</data>
+  <data name="Gaming" xml:space="preserve">
+    <value>Gry</value>
+</data>
+  <data name="InputSource" xml:space="preserve">
+    <value>Źródło wejścia</value>
+</data>
+  <data name="KVM" xml:space="preserve">
+    <value>KVM</value>
+</data>
+  <data name="Manual" xml:space="preserve">
+    <value>Podręcznik</value>
+</data>
+  <data name="ManufactureMonth" xml:space="preserve">
+    <value>Wyprodukowane</value>
+</data>
+  <data name="Off" xml:space="preserve">
+    <value>WYŁ</value>
+</data>
+  <data name="On" xml:space="preserve">
+    <value>WŁ</value>
+</data>
+  <data name="RestoreToDefault" xml:space="preserve">
+    <value>Przywróć domyślne</value>
+</data>
+  <data name="ServiceTag" xml:space="preserve">
+    <value>Tag serwisowy</value>
+</data>
+  <data name="Unpair" xml:space="preserve">
+    <value>Rozłącz</value>
+</data>
+  <data name="VbarText_DisplayOthers" xml:space="preserve">
+    <value>Inne</value>
+</data>
+  <data name="QuickSettings" xml:space="preserve">
+    <value>Szybkie ustawienia</value>
+</data>
+  <data name="Analytics" xml:space="preserve">
+    <value>Analityka</value>
+</data>
+  <data name="Updates" xml:space="preserve">
+    <value>Aktualizacje</value>
+</data>
+  <data name="General" xml:space="preserve">
+    <value>Ogólne</value>
+</data>
+  <data name="Settings" xml:space="preserve">
+    <value>Ustawienia</value>
+</data>
+  <data name="Updates.0" xml:space="preserve">
+    <value>Dostępna aktualizacja</value>
+</data>
+  <data name="Updates.1" xml:space="preserve">
+    <value>Menadżer Urządzeń Dell zamknie się i ponownie otworzy po zakończeniu aktualizacji. Po rozpoczęciu aktualizacji nie można ich anulować.</value>
+</data>
+  <data name="Updates.2" xml:space="preserve">
+    <value>Sprawdź aktualizacje</value>
+</data>
+  <data name="Updates.3" xml:space="preserve">
+    <value>W tej chwili nie ma dostępnych aktualizacji.</value>
+</data>
+  <data name="Updates.4" xml:space="preserve">
+    <value>Błąd sieci. Proszę spróbować ponownie.</value>
+</data>
+  <data name="Updates.5" xml:space="preserve">
+    <value>Pobierz i zainstaluj</value>
+</data>
+  <data name="Updates.6" xml:space="preserve">
+    <value>Przygotowanie do aktualizacji. Proszę czekać...</value>
+</data>
+  <data name="Analytics.0" xml:space="preserve">
+    <value>Analityka</value>
+</data>
+  <data name="Analytics.1" xml:space="preserve">
+    <value>Pomóż Dell ulepszać swoje produkty i usługi, automatycznie wysyłając dane diagnostyczne i użytkowe.</value>
+</data>
+  <data name="Analytics.2" xml:space="preserve">
+    <value>Polityka Prywatności Dell</value>
+</data>
+  <data name="Analytics.3" xml:space="preserve">
+    <value>Pomóż Dell ulepszać swoje produkty i usługi automatycznie</value>
+</data>
+  <data name="AddDevice" xml:space="preserve">
+    <value>Dodaj urządzenie</value>
+</data>
+  <data name="AddDevice.Display" xml:space="preserve">
+    <value>Ekran</value>
+</data>
+  <data name="AddDevice.Webcam" xml:space="preserve">
+    <value>Kamera internetowa</value>
+</data>
+  <data name="AddDevice.KnM" xml:space="preserve">
+    <value>Klawiatura\ni Mysz</value>
+</data>
+  <data name="AddDevice.Pen" xml:space="preserve">
+    <value>Pióro</value>
+</data>
+  <data name="AddDevice.Headset" xml:space="preserve">
+    <value>Zestaw słuchawkowy</value>
+</data>
+  <data name="AddDevice.Speaker" xml:space="preserve">
+    <value>Głośnik\ni soundbar</value>
+</data>
+  <data name="AddDevice.Dock" xml:space="preserve">
+    <value>Stacja dokująca</value>
+</data>
+  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+</data>
+  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+    <value>Odbiornik bezprzewodowy</value>
+</data>
+  <data name="AddDevice.Type.Wired" xml:space="preserve">
+    <value>Przewodowy</value>
+</data>
+  <data name="AddDevice.Type.Other" xml:space="preserve">
+    <value>Inne</value>
+</data>
+  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+    <value>Anuluj</value>
+</data>
+  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+    <value>Dodawanie urządzenia, proszę czekać...</value>
+</data>
+  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+    <value>Parowanie</value>
+</data>
+  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+    <value>Parowanie może zająć trochę czasu. Nie odłączaj urządzenia</value>
+</data>
+  <data name="AddDevice.Display.1" xml:space="preserve">
+    <value>Podłącz swój ekran przez port HDMI/USB-C w systemie</value>
+</data>
+  <data name="AddDevice.Webcam.0" xml:space="preserve">
+    <value>Podłącz swoją kamerę internetową przez port USB w systemie</value>
+</data>
+  <data name="AddDevice.KnM.0" xml:space="preserve">
+    <value>Połączenie Bluetooth</value>
+</data>
+  <data name="AddDevice.KnM.1" xml:space="preserve">
+    <value>Dodaj urządzenie Bluetooth, parując je przez ustawienia Windows</value>
+</data>
+  <data name="AddDevice.KnM.2" xml:space="preserve">
+    <value>Przesuń przełącznik zasilania na WŁ</value>
+</data>
+  <data name="AddDevice.KnM.3" xml:space="preserve">
+    <value>Wybierz kanał Bluetooth, a następnie przytrzymaj przycisk przez 3 sekundy, aby urządzenie było widoczne</value>
+</data>
+  <data name="AddDevice.KnM.4" xml:space="preserve">
+    <value>Zezwól na sparowanie urządzenia lub uruchom ustawienia Windows i wybierz odpowiednie urządzenie po jego wykryciu</value>
+</data>
+  <data name="AddDevice.KnM.5" xml:space="preserve">
+    <value>Ustawienia Windows</value>
+</data>
+  <data name="AddDevice.KnM.6" xml:space="preserve">
+    <value>Podłącz swój odbiornik bezprzewodowy USB do systemu</value>
+</data>
+  <data name="AddDevice.KnM.7" xml:space="preserve">
+    <value>Przesuń przełącznik zasilania na WYŁ.</value>
+</data>
+  <data name="AddDevice.KnM.8" xml:space="preserve">
+    <value>Naciśnij i przytrzymaj dowolny przycisk/przycisk i przesuń zasilanie na WŁ</value>
+</data>
+  <data name="AddDevice.KnM.9" xml:space="preserve">
+    <value>Trzymaj to okno otwarte. Parowanie rozpocznie się po kilku sekundach. Jeśli nie, powtórz kroki 2 i 3, aby spróbować ponownie.</value>
+</data>
+  <data name="AddDevice.KnM.10" xml:space="preserve">
+    <value>Wykryto wiele odbiorników bezprzewodowych. Odłącz wszystkie odbiorniki bezprzewodowe Dell dla klawiatury i myszy. Podłącz ten, który chcesz sparować.</value>
+</data>
+  <data name="AddDevice.KnM.11" xml:space="preserve">
+    <value>Nie podłączono żadnego odbiornika bezprzewodowego USB. Podłącz swój odbiornik bezprzewodowy USB i sparuj do sześciu zgodnych urządzeń.</value>
+</data>
+  <data name="AddDevice.KnM.12" xml:space="preserve">
+    <value>Nie podłączono żadnego odbiornika bezprzewodowego USB. Podłącz odbiornik bezprzewodowy USB dla lepszej kompatybilności UC, niższej latencji i bardziej stabilnego połączenia.</value>
+</data>
+  <data name="AddDevice.KnM.13" xml:space="preserve">
+    <value>Podłącz swoją klawiaturę i mysz przez port USB w systemie</value>
+</data>
+  <data name="AddDevice.Pen.0" xml:space="preserve">
+    <value>Łączenie pióra</value>
+</data>
+  <data name="AddDevice.Pen.1" xml:space="preserve">
+    <value>Dotknij piórem ekranu</value>
+</data>
+  <data name="AddDevice.Pen.2" xml:space="preserve">
+    <value>Naciśnij i przytrzymaj górny przycisk przez 3 sekundy. Poczekaj, aż urządzenie zostanie wykryte przez Windows.</value>
+</data>
+  <data name="AddDevice.Pen.3" xml:space="preserve">
+    <value>Zezwól na sparowanie urządzenia lub uruchom ustawienia Windows i wybierz odpowiednie urządzenie po jego wykryciu.</value>
+</data>
+  <data name="AddDevice.Pen.4" xml:space="preserve">
+    <value>Wybierz 'Tak', aby potwierdzić parowanie w oknie dialogowym, aby sparować pióro</value>
+</data>
+  <data name="AddDevice.Headset.0" xml:space="preserve">
+    <value>Do połączeń bezprzewodowych bez odbiornika USB</value>
+</data>
+  <data name="AddDevice.Headset.1" xml:space="preserve">
+    <value>Włącz zestaw słuchawkowy</value>
+</data>
+  <data name="AddDevice.Headset.2" xml:space="preserve">
+    <value>Naciśnij i przytrzymaj przycisk zasilania przez 3 sekundy, aby zestaw słuchawkowy był widoczny przez Bluetooth</value>
+</data>
+  <data name="AddDevice.Headset.3" xml:space="preserve">
+    <value>Zezwól na sparowanie urządzenia lub uruchom ustawienia Windows i wybierz odpowiednie urządzenie po jego wykryciu.</value>
+</data>
+  <data name="AddDevice.Headset.4" xml:space="preserve">
+    <value>Wyłącz zestaw słuchawkowy. Przytrzymaj przycisk wyciszenia mikrofonu i włącz ponownie.</value>
+</data>
+  <data name="AddDevice.Headset.5" xml:space="preserve">
+    <value>Parowanie rozpocznie się automatycznie po kilku sekundach</value>
+</data>
+  <data name="AddDevice.Headset.6" xml:space="preserve">
+    <value>Podłącz swój zestaw słuchawkowy przez port USB w systemie</value>
+</data>
+  <data name="AddDevice.Speaker.0" xml:space="preserve">
+    <value>Podłącz swój głośnik lub soundbar przez port USB w systemie</value>
+</data>
+  <data name="AddDevice.Dock.0" xml:space="preserve">
+    <value>Podłącz swoją stację dokującą przez port USB w systemie</value>
+</data>
+  <data name="HomePage.0" xml:space="preserve">
+    <value>Proszę czekać...</value>
+</data>
+  <data name="UpdateFirmware" xml:space="preserve">
+    <value>Zaktualizuj oprogramowanie układowe</value>
+</data>
+  <data name="Dock.0" xml:space="preserve">
+    <value>{0} z {1} dostępnych slotów</value>
+</data>
+  <data name="Dock.1" xml:space="preserve">
+    <value>Dongle {0}</value>
+</data>
+  <data name="Headset.0" xml:space="preserve">
+    <value>Ustawienia audio</value>
+</data>
+  <data name="Headset.1" xml:space="preserve">
+    <value>Zautomatyzowane działania</value>
+</data>
+  <data name="Headset.2" xml:space="preserve">
+    <value>Ustawienia urządzenia</value>
+</data>
+  <data name="Keyboard.1" xml:space="preserve">
+    <value>Odbiornik bezprzewodowy USB</value>
+</data>
+  <data name="Keyboard.2" xml:space="preserve">
+    <value>Dostosowanie klawiszy</value>
+</data>
+  <data name="Keyboard.3" xml:space="preserve">
+    <value>Współpraca</value>
+</data>
+  <data name="Keyboard.4" xml:space="preserve">
+    <value>Podświetlenie</value>
+</data>
+  <data name="Mouse.0" xml:space="preserve">
+    <value>Przypisz akcje dla</value>
+</data>
+  <data name="Mouse.1" xml:space="preserve">
+    <value>Wszystkie aplikacje</value>
+</data>
+  <data name="Mouse.2" xml:space="preserve">
+    <value>Microsoft Word</value>
+</data>
+  <data name="Mouse.3" xml:space="preserve">
+    <value>Microsoft Excel</value>
+</data>
+  <data name="Mouse.4" xml:space="preserve">
+    <value>Microsoft PowerPoint</value>
+</data>
+  <data name="Mouse.5" xml:space="preserve">
+    <value>Microsoft Outlook</value>
+</data>
+</root>

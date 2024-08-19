@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using DDPM.Common;
 
 namespace DDPM.Subagent.User
 {
@@ -59,7 +60,13 @@ namespace DDPM.Subagent.User
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_USER_MUTEX_ID);
 
 #if RELEASE
-        private static byte[][] certificateHash = { IDs.WST_Hash };
+        private static byte[][] certificateHash = {
+            ThumbprintHash.DELL_Hash,
+            ThumbprintHash.DELL_Hash1,
+            ThumbprintHash.DELL_Hash2,
+            ThumbprintHash.WST_Hash,
+            ThumbprintHash.WST2_Hash
+        };
 #endif
 
         private static void Main(string[] args)
