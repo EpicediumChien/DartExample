@@ -16,6 +16,35 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
+using static System.Net.WebRequestMethods;
+
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.IO.Compression;
+using System.Security.Policy;
+using System.Net.Http;
+using static DDPM.UI.Module.Color.ColorViewModel;
+
+using System.Security.Cryptography;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows.Input;
+using ABI.System;
+using Microsoft.Win32;
+using RegistryUtils;
+using System.Management;
+using System.Windows.Media.Animation;
+using MonitorProfile = DDPM.SA.Common.MonitorProfile;
+using System.Runtime.CompilerServices;
+using Dell.Client.Framework.Common;
+using DDPM.UI.Common.Models;
+using System.Reflection;
+using System.Diagnostics;
+
+
+//using System.Management;
+//using System.Runtime.CompilerServices;
+//using System.Security.Cryptography.X509Certificates;
+
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Color.Tests")]
 namespace DDPM.UI.Module.Color
 {
@@ -647,10 +676,45 @@ namespace DDPM.UI.Module.Color
 
                     IsisAdvanced_Settings = vis_ad;
                 }
+
+
+                //OSD control back event
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
             }
             catch (System.Exception)
             {
             }
+        }
+
+        //Jim 0816  
+        /// <summary>
+        /// Catch OSD menu event
+        /// </summary>
+        /// <param name="sender">object type</param>
+        /// <param name="e">changed event</param>
+        private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
+        {   
+            Trace.WriteLine($"VCPchangedEventArgs e.vcpcode = {e.vcpcode}");
+
+            if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14")) // Color changes by OSD menu
+            {
+                
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+
+
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {  
+                    if (!string.IsNullOrEmpty(curPreset))
+                    {
+                        int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(curPreset.ToUpper()));
+                        if (idx >= 0)
+                        {
+                            UpdateColorPresetSelectedIndex(idx);
+                        }
+                    }
+                    
+                }));
+            }         
         }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)

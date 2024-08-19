@@ -10,11 +10,13 @@
 
 using Dell.Client.Framework.Agent;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Security;
 using Dell.UnifiedAgent.Common;
 using System.Diagnostics;
 using System.Reflection;
 using System.ServiceProcess;
 using Constants = NGA.Common.Constants;
+using DDPM.Common;
 
 //using DDPMConstants = DDPM.UI.Common.Constants;
 
@@ -41,6 +43,18 @@ namespace NGA.Manager
         ///     A uniqueId that identifies the User Process Mutex
         /// </summary>
         private static readonly Guid UniqueUserProcessMutexGuid = new("{23bd6462-af9d-55d1-bddb-abde62de4528}");
+
+#if RELEASE
+
+
+        private static byte[][] certificateHash = {
+            ThumbprintHash.DELL_Hash,
+            ThumbprintHash.DELL_Hash1,
+            ThumbprintHash.DELL_Hash2,
+            ThumbprintHash.WST_Hash,
+            ThumbprintHash.WST2_Hash
+        };
+#endif
 
         private static void Main(string[] args)
         {
@@ -89,6 +103,10 @@ namespace NGA.Manager
                 QuietPeriodAction = QuietPeriodAction.TrackAndNotify,
                 CertificateStores = new[] { Constants.DellTrust },
                 PluginValidationSchema = PluginValidationSchema.CustomCertStore
+#if RELEASE
+                ,
+                ValidCertificateHashes = certificateHash
+#endif
             };
         }
 

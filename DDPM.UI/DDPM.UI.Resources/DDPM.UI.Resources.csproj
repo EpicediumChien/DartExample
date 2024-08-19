@@ -39,7 +39,8 @@
     <None Remove="Resources\Images\Dongle.png" />
     <None Remove="Resources\Images\DongleC.png" />
     <None Remove="Resources\Images\Down.png" />
-    <None Remove="Resources\Images\DownloadTile.png" />
+    <None Remove="Resources\Images\DownloadTileA.png" />
+    <None Remove="Resources\Images\DownloadTileG.png" />
     <None Remove="Resources\Images\EOLDongle.png" />
     <None Remove="Resources\Images\G.png" />
     <None Remove="Resources\Images\GearConnection.png" />
@@ -302,7 +303,8 @@
     <Resource Include="Resources\Images\Dongle.png" />
     <Resource Include="Resources\Images\DongleC.png" />
     <Resource Include="Resources\Images\Down.png" />
-    <Resource Include="Resources\Images\DownloadTile.png" />
+    <Resource Include="Resources\Images\DownloadTileA.png" />
+    <Resource Include="Resources\Images\DownloadTileG.png" />
     <Resource Include="Resources\Images\EOLDongle.png" />
     <Resource Include="Resources\Images\G.png" />
     <Resource Include="Resources\Images\GearConnection.png" />

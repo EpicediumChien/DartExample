@@ -15,33 +15,33 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     {
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        private string _strTitle = "Analytics";
-        private string _strContent = "Help Dell improve its products and services automatically sending diagnostics and usage data.";
-        private string _strUrlBtnContent = "Dell's Privacy Policy";
+        //private string _strTitle = "Analytics";
+        //private string _strContent = "Help Dell improve its products and services automatically sending diagnostics and usage data.";
+        //private string _strUrlBtnContent = "Dell's Privacy Policy";
         private string _strPrivacyUrl = "https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy";
-        private string _strCheckBtnText = "Help Dell improve its products and services automatically";
+        //private string _strCheckBtnText = "Help Dell improve its products and services automatically";
 
-        public string strCheckBtnText
-        {
-            get
-            { return _strCheckBtnText; }
-            set
-            {
-                _strCheckBtnText = value;
-                NotifyPropertyChanged("strCheckBtnText");
-            }
-        }
+        //public string strCheckBtnText
+        //{
+        //    get
+        //    { return _strCheckBtnText; }
+        //    set
+        //    {
+        //        _strCheckBtnText = value;
+        //        NotifyPropertyChanged("strCheckBtnText");
+        //    }
+        //}
 
-        public string strUrlBtnContent
-        {
-            get
-            { return _strUrlBtnContent; }
-            set
-            {
-                _strUrlBtnContent = value;
-                NotifyPropertyChanged("strUrlBtnContent");
-            }
-        }
+        //public string strUrlBtnContent
+        //{
+        //    get
+        //    { return _strUrlBtnContent; }
+        //    set
+        //    {
+        //        _strUrlBtnContent = value;
+        //        NotifyPropertyChanged("strUrlBtnContent");
+        //    }
+        //}
 
         public string strPrivacyUrl
         {
@@ -54,27 +54,27 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
         }
 
-        public string strTitle
-        {
-            get
-            { return _strTitle; }
-            set
-            {
-                _strTitle = value;
-                NotifyPropertyChanged("strTitle");
-            }
-        }
+        //public string strTitle
+        //{
+        //    get
+        //    { return _strTitle; }
+        //    set
+        //    {
+        //        _strTitle = value;
+        //        NotifyPropertyChanged("strTitle");
+        //    }
+        //}
 
-        public string strContent
-        {
-            get
-            { return _strContent; }
-            set
-            {
-                _strContent = value;
-                NotifyPropertyChanged("strContent");
-            }
-        }
+        //public string strContent
+        //{
+        //    get
+        //    { return _strContent; }
+        //    set
+        //    {
+        //        _strContent = value;
+        //        NotifyPropertyChanged("strContent");
+        //    }
+        //}
 
         private bool _isCheckEnable = true;
 

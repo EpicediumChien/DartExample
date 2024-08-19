@@ -28,9 +28,9 @@ namespace DDPM.UI.Plugin.ViewModels
         private int _deviceBarSelectedIndex = 0;
         private ICommand? _deviceBarItemClickCommand;
 
-        private readonly string multiDongleAlert = "Multiple wireless receivers detected. Unplug all Dell wireless receivers for Keyboard and Mouse. Plug in the one you want to pair.";
-        private readonly string noDongleAlertKnM = "No USB wireless receiver connected. Connect your USB wireless receiver, and pair up to six compatible devices.";
-        private readonly string noDongleAlertHeadset = "No USB wireless receiver connected. Connect a USB wireless receiver for better UC compatibility, lower latency, and more stable connection.";
+        private readonly string multiDongleAlert = Strings.AddDeviceKnMmultiDongleAlert;
+        private readonly string noDongleAlertKnM = Strings.AddDeviceKnMnoDongleAlertKnM;
+        private readonly string noDongleAlertHeadset = Strings.AddDeviceKnMnoDongleAlertHeadset;
 
         //public AddDeviceViewModel(IConsole console, ILog log, IDPeMPlugin peripheralPlugin) {
         public AddDeviceViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log, IDeviceManagerSA peripheralPlugin)
