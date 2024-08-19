@@ -207,10 +207,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
       GetPeripheralsAsync();
       if(_viewModel != null && _viewModel.SetCurrentDevice(parameter)) {
         if(_viewModel.CurrentDeviceInfo!.IsCollabsKeysSupported) {
-          _log.Debug($"GetPeripherals is invoked");
-          //_deviceHelper = await peripheralsPlugin.GetDevices();
+          _log.Debug($"GetCTKMessageHelper is invoked");
           Task<CTKMessageHelper> task = _deviceManagerPlugin!.GetCTKMessageHelper();
           _viewModel.CTKMessageHelper = task.Result;
+          _log.Debug($"GetCTKMessageHelper is successful");
         }
       }
     }

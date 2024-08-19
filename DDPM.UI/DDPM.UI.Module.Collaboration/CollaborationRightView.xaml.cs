@@ -37,8 +37,11 @@ namespace DDPM.UI.Module.Collaboration {
     }
 
     void CheckCTKMessage() {
-      if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_NOT_INSTALLED") {// Scenario 1
-
+      if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_NOT_INSTALLED") { // Scenario 1
+        txtAlert1.Text = Strings.Alert5;
+        txtLearnMore1.Text = Strings.LearnMoreLink;
+        _vm.IsCollaborationKeyEnable = false;
+        tsCollaboration.IsEnabled = false;
       }
       else {
        HasCTKMessage = true;
@@ -47,7 +50,7 @@ namespace DDPM.UI.Module.Collaboration {
       txtAlert1.Text = Strings.Alert5;
       txtLearnMore1.Text = Strings.LearnMoreLink;
 
-      bdrAlert.Visibility = HasCTKMessage && _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed;
+      bdrAlert.Visibility = HasCTKMessage && _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
     }
 
     private void CloseDescription(object sender, System.Windows.Input.MouseButtonEventArgs e) {
