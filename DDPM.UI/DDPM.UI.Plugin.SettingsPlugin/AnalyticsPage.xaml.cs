@@ -3,6 +3,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -135,11 +136,47 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (data.UserSettings == null)
                     return;
 
-                vm.isCheckEnable = data.UserSettings.isTelemetryConsentAllow;
+                vm.isCheckEnable = !data.LockSettings.Lock_TelemetryConsent;
                 vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
+
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
             }
             catch (Exception)
             {
+
+            }
+        }
+
+        ~AnalyticsPage() {
+            if(DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            if (e == null || e.IT_Feature_TriggerList == null || e.target_object == null)
+            {
+                Trace.WriteLine("Got [DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
+                return;
+            }
+            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_TelemetryConsent"));
+            if(idx >= 0)
+            {
+                string feature = e.IT_Feature_TriggerList[idx];
+                PropertyInfo propertyInfo = e.target_object.GetType().GetProperty(feature);
+                Trace.WriteLine($"Got [IT settings event] {feature} : {propertyInfo.GetValue(e.target_object)}");
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    AnalyticsViewModel vm = (AnalyticsViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.isCheckEnable = !(bool)propertyInfo.GetValue(e.target_object);
+                        Trace.WriteLine($"Apply TelemetryConsent(Lock) : {propertyInfo.GetValue(e.target_object)}");
+                        vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
+                        Trace.WriteLine($"Apply TelemetryConsent(check) : {data.UserSettings.isTelemetryConsentOn}");
+                    }
+                }));                
             }
         }
 
