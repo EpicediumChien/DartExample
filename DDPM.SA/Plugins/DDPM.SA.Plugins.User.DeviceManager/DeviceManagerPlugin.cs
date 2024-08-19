@@ -37,6 +37,7 @@ using System.Windows.Threading;
 using VcpCore.Common;
 using WinCopies.Util;
 using Windows.System;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -799,6 +800,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         DDPMMonitorSettings settings = new DDPMMonitorSettings();
                         settings.Model = m.modelName;
                         settings.ServiceTag = m.edid.ServiceTag;
+                        settings.VCPs = GetAllVCPcode(m);
                         monitorSettingsList.Add(settings);
                     }
                     bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
@@ -2529,6 +2531,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region ImpExpSettings
         public Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path)
         {
+            //need test, but need other function
+            ////if vcp code is null, get vcp code
+            //List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            //if (settings != null)
+            //{
+            //    foreach (DDPMMonitorSettings monitorSettings in settings)
+            //    {
+            //        if (monitorSettings != null)
+            //        {
+            //            if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
+            //            {
+            //                foreach (VCP vcp in monitorSettings.VCPs)
+            //                {
+            //                    if (vcp.Value == null)
+            //                    {
+            //                        byte b_vcpcode = Convert.ToByte(vcp.Code);
+            //                        ObjGetVCP res = GetVCPCapability(monitorInfo, b_vcpcode).Result;
+            //                        if(res.result)
+            //                        {
+            //                            vcp.Value.Add((int)res.value);
+            //                        }
+            //                    }
+            //            }
+            //            }
+            //        }
+            //    }
+            //}
+
+            //expot settings
             if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
             {
                 return Task.FromResult(true);
@@ -4607,6 +4638,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
+        #region Settings
+        private List<VCP> GetAllVCPcode(MonitorInfo monitorInfo)
+        {
+            List<VCP> vcps = new List<VCP>();
+            foreach (string key in monitorInfo.CapabilityDic.Keys)
+            {
+                VCP vcp = new VCP(Int32.Parse(key, System.Globalization.NumberStyles.HexNumber), null);
+                vcps.Add(vcp);
+            }
+            return vcps;
+        }
+        #endregion
         #endregion
 
         #region IDisposableObservable Support
