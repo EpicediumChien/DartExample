@@ -11,10 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Formatters.Inferno" Version="2.0.47" />
-    <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="13.0.47" />
-    <PackageReference Include="H.Pipes" Version="2.0.47" />
-    <PackageReference Include="H.Pipes.AccessControl" Version="2.0.47" />
+    <PackageReference Include="H.Formatters.Inferno" Version="2.0.59" />
+    <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="13.0.59" />
+    <PackageReference Include="H.Pipes" Version="2.0.59" />
+    <PackageReference Include="H.Pipes.AccessControl" Version="2.0.59" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.7" />
     <PackageReference Include="System.Management" Version="8.0.0" />
