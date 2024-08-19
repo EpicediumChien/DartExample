@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,414 +118,291 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About" xml:space="preserve">
-    <value>About</value>
-  </data>
+    <value>Σχετικά με</value>
+</data>
   <data name="AdaptiveLight" xml:space="preserve">
-    <value>Adaptive Light</value>
-  </data>
+    <value>Προσαρμοστικός Φωτισμός</value>
+</data>
   <data name="Display" xml:space="preserve">
-    <value>Display</value>
-  </data>
+    <value>Οθόνη</value>
+</data>
   <data name="DisplaySettings" xml:space="preserve">
-    <value>Display Settings</value>
-  </data>
+    <value>Ρυθμίσεις Οθόνης</value>
+</data>
   <data name="EasyArrange" xml:space="preserve">
-    <value>Easy Arrange</value>
-  </data>
+    <value>Εύκολη Διάταξη</value>
+</data>
   <data name="FirmwareVersion" xml:space="preserve">
-    <value>Firmware Version</value>
-  </data>
+    <value>Έκδοση Μικρολογισμικού</value>
+</data>
   <data name="Gaming" xml:space="preserve">
-    <value>Gaming</value>
-  </data>
+    <value>Παιχνίδια</value>
+</data>
   <data name="InputSource" xml:space="preserve">
-    <value>Input Source</value>
-  </data>
+    <value>Πηγή Εισόδου</value>
+</data>
   <data name="KVM" xml:space="preserve">
     <value>KVM</value>
-  </data>
+</data>
   <data name="Manual" xml:space="preserve">
-    <value>Manual</value>
-  </data>
+    <value>Εγχειρίδιο</value>
+</data>
   <data name="ManufactureMonth" xml:space="preserve">
-    <value>Manufactured</value>
-  </data>
+    <value>Κατασκευάστηκε</value>
+</data>
   <data name="Off" xml:space="preserve">
-    <value>OFF</value>
-  </data>
+    <value>ΚΛΕΙΣΤΟ</value>
+</data>
   <data name="On" xml:space="preserve">
-    <value>ON</value>
-  </data>
+    <value>ΑΝΟΙΧΤΟ</value>
+</data>
   <data name="RestoreToDefault" xml:space="preserve">
-    <value>Restore to default</value>
-  </data>
+    <value>Επαναφορά στις προεπιλογές</value>
+</data>
   <data name="ServiceTag" xml:space="preserve">
-    <value>Service Tag</value>
-  </data>
+    <value>Ετικέτα Υπηρεσίας</value>
+</data>
   <data name="Unpair" xml:space="preserve">
-    <value>Unpair</value>
-  </data>
+    <value>Αποσύνδεση</value>
+</data>
   <data name="VbarText_DisplayOthers" xml:space="preserve">
-    <value>Others</value>
-  </data>
+    <value>Άλλοι</value>
+</data>
   <data name="QuickSettings" xml:space="preserve">
-    <value>Quick Settings</value>
-  </data>
+    <value>Γρήγορες Ρυθμίσεις</value>
+</data>
   <data name="Analytics" xml:space="preserve">
-    <value>Analytics</value>
-  </data>
+    <value>Αναλυτικά</value>
+</data>
   <data name="Updates" xml:space="preserve">
-    <value>Updates</value>
-  </data>
+    <value>Ενημερώσεις</value>
+</data>
   <data name="General" xml:space="preserve">
-    <value>General</value>
-  </data>
+    <value>Γενικά</value>
+</data>
   <data name="Settings" xml:space="preserve">
-    <value>Settings</value>
-  </data>
+    <value>Ρυθμίσεις</value>
+</data>
   <data name="Updates.0" xml:space="preserve">
-    <value>Update available</value>
-  </data>
+    <value>Διαθέσιμη ενημέρωση</value>
+</data>
   <data name="Updates.1" xml:space="preserve">
-    <value>Dell Peripheral Manager will close and reopen once updates are completed. Once updates have started, they cannot be cancelled.</value>
-  </data>
+    <value>Ο Διαχειριστής Περιφερειακών Dell θα κλείσει και θα ανοίξει ξανά μόλις ολοκληρωθούν οι ενημερώσεις. Μόλις ξεκινήσουν οι ενημερώσεις, δεν μπορούν να ακυρωθούν.</value>
+</data>
   <data name="Updates.2" xml:space="preserve">
-    <value>Check for updates</value>
-  </data>
+    <value>Έλεγχος για ενημερώσεις</value>
+</data>
   <data name="Updates.3" xml:space="preserve">
-    <value>There are no available updates at this time.</value>
-  </data>
+    <value>Αυτή τη στιγμή δεν υπάρχουν διαθέσιμες ενημερώσεις.</value>
+</data>
   <data name="Updates.4" xml:space="preserve">
-    <value>Network error. Please try again.</value>
-  </data>
+    <value>Σφάλμα δικτύου. Παρακαλώ δοκιμάστε ξανά.</value>
+</data>
   <data name="Updates.5" xml:space="preserve">
-    <value>Download and install</value>
-  </data>
+    <value>Λήψη και εγκατάσταση</value>
+</data>
   <data name="Updates.6" xml:space="preserve">
-    <value>Preparing for updates. Please wait...</value>
-  </data>
+    <value>Προετοιμασία για ενημερώσεις. Παρακαλώ περιμένετε...</value>
+</data>
   <data name="Analytics.0" xml:space="preserve">
-    <value>Analytics</value>
-  </data>
+    <value>Αναλυτικά</value>
+</data>
   <data name="Analytics.1" xml:space="preserve">
-    <value>Help Dell improve its products and services automatically sending diagnostics and usage data.</value>
-  </data>
+    <value>Βοηθήστε την Dell να βελτιώσει τα προϊόντα και τις υπηρεσίες της αποστέλλοντας αυτόματα δεδομένα διάγνωσης και χρήσης.</value>
+</data>
   <data name="Analytics.2" xml:space="preserve">
-    <value>Dell's Privacy Policy</value>
-  </data>
+    <value>Πολιτική Απορρήτου της Dell</value>
+</data>
   <data name="Analytics.3" xml:space="preserve">
-    <value>Help Dell improve its products and services automatically</value>
-  </data>
+    <value>Βοηθήστε την Dell να βελτιώσει τα προϊόντα και τις υπηρεσίες της αυτόματα</value>
+</data>
   <data name="AddDevice" xml:space="preserve">
-    <value>Add Device</value>
-  </data>
+    <value>Προσθήκη Συσκευής</value>
+</data>
   <data name="AddDevice.Display" xml:space="preserve">
-    <value>Display</value>
-  </data>
+    <value>Οθόνη</value>
+</data>
   <data name="AddDevice.Webcam" xml:space="preserve">
-    <value>Webcam</value>
-  </data>
+    <value>Κάμερα Web</value>
+</data>
   <data name="AddDevice.KnM" xml:space="preserve">
-    <value>Keyboard\nand Mouse</value>
-  </data>
+    <value>Πληκτρολόγιο\nκαι Ποντίκι</value>
+</data>
   <data name="AddDevice.Pen" xml:space="preserve">
-    <value>Pen</value>
-  </data>
+    <value>Στυλό</value>
+</data>
   <data name="AddDevice.Headset" xml:space="preserve">
-    <value>Headset</value>
-  </data>
+    <value>Ακουστικά</value>
+</data>
   <data name="AddDevice.Speaker" xml:space="preserve">
-    <value>Speakerphone\nand Soundbar</value>
-  </data>
+    <value>Ηχείο\nκαι Ηχομπάρα</value>
+</data>
   <data name="AddDevice.Dock" xml:space="preserve">
-    <value>Dock</value>
-  </data>
+    <value>Βάση</value>
+</data>
   <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
     <value>Bluetooth</value>
-  </data>
+</data>
   <data name="AddDevice.Type.Wireless" xml:space="preserve">
-    <value>Wireless receiver</value>
-  </data>
+    <value>Ασύρματος δέκτης</value>
+</data>
   <data name="AddDevice.Type.Wired" xml:space="preserve">
-    <value>Wired</value>
-  </data>
+    <value>Ενσύρματο</value>
+</data>
   <data name="AddDevice.Type.Other" xml:space="preserve">
-    <value>Other</value>
-  </data>
+    <value>Άλλο</value>
+</data>
   <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
+    <value>Ακύρωση</value>
+</data>
   <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
-    <value>Adding device, please wait...</value>
-  </data>
+    <value>Προσθήκη συσκευής, παρακαλώ περιμένετε...</value>
+</data>
   <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
-    <value>Pairing</value>
-  </data>
+    <value>Σύζευξη</value>
+</data>
   <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
-    <value>Pairing may take some time. Do not disconnect your device</value>
-  </data>
+    <value>Η σύζευξη μπορεί να πάρει αρκετό χρόνο. Μην αποσυνδέσετε τη συσκευή σας</value>
+</data>
   <data name="AddDevice.Display.1" xml:space="preserve">
-    <value>Connect your display via HDMI/USB-C port on your system</value>
-  </data>
+    <value>Συνδέστε τη οθόνη σας μέσω θύρας HDMI/USB-C στο σύστημά σας</value>
+</data>
   <data name="AddDevice.Webcam.0" xml:space="preserve">
-    <value>Connect your webcam via USB port on your system</value>
-  </data>
+    <value>Συνδέστε τη κάμερα web σας μέσω θύρας USB στο σύστημά σας</value>
+</data>
   <data name="AddDevice.KnM.0" xml:space="preserve">
-    <value>Bluetooth Connection</value>
-  </data>
+    <value>Σύνδεση Bluetooth</value>
+</data>
   <data name="AddDevice.KnM.1" xml:space="preserve">
-    <value>Add Bluetooth device by pairing it through Windows settings</value>
-  </data>
+    <value>Προσθέστε συσκευή Bluetooth σύροντας την από τις ρυθμίσεις των Windows</value>
+</data>
   <data name="AddDevice.KnM.2" xml:space="preserve">
-    <value>Slide power switch slider to ON</value>
-  </data>
+    <value>Ρυθμίστε το διακόπτη τροφοδοσίας σε ON</value>
+</data>
   <data name="AddDevice.KnM.3" xml:space="preserve">
-    <value>Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable</value>
-  </data>
+    <value>Επιλέξτε ένα κανάλι Bluetooth, και μετά πατήστε και κρατήστε πατημένο για 3 δευτερόλεπτα για να κάνετε τη συσκευή ανιχνεύσιμη</value>
+</data>
   <data name="AddDevice.KnM.4" xml:space="preserve">
-    <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered</value>
-  </data>
+    <value>Επιτρέψτε στη συσκευή να συζευχθεί ή ανοίξτε τις ρυθμίσεις των Windows και επιλέξτε τη συγκεκριμένη συσκευή μόλις ανιχνευθεί</value>
+</data>
   <data name="AddDevice.KnM.5" xml:space="preserve">
-    <value>Windows Settings</value>
-  </data>
+    <value>Ρυθμίσεις Windows</value>
+</data>
   <data name="AddDevice.KnM.6" xml:space="preserve">
-    <value>Connect your USB wireless receiver to your system</value>
-  </data>
+    <value>Συνδέστε τον ασύρματο δέκτη USB στο σύστημά σας</value>
+</data>
   <data name="AddDevice.KnM.7" xml:space="preserve">
-    <value>Slide the power switch to OFF.</value>
-  </data>
+    <value>Ρυθμίστε το διακόπτη τροφοδοσίας σε OFF.</value>
+</data>
   <data name="AddDevice.KnM.8" xml:space="preserve">
-    <value>Press and hold any key/button and slide power to ON</value>
-  </data>
+    <value>Πατήστε και κρατήστε πατημένο οποιοδήποτε κουμπί και ρυθμίστε το διακόπτη τροφοδοσίας σε ON</value>
+</data>
   <data name="AddDevice.KnM.9" xml:space="preserve">
-    <value>Keep this window open. Pairing will begin after a few seconds. If not, repeat steps 2 &amp; 3 to try again.</value>
-  </data>
+    <value>Κρατήστε αυτό το παράθυρο ανοιχτό. Η σύζευξη θα ξεκινήσει μετά από λίγα δευτερόλεπτα. Αν όχι, επαναλάβετε τα βήματα 2 και 3 για να δοκιμάσετε ξανά.</value>
+</data>
   <data name="AddDevice.KnM.10" xml:space="preserve">
-    <value>Multiple wireless receivers detected. Unplug all Dell wireless receivers for Keyboard and Mouse. Plug in the one you want to pair.</value>
-  </data>
+    <value>Εντοπίστηκαν πολλαπλοί ασύρματοι δέκτες. Αποσυνδέστε όλους τους ασύρματους δέκτες της Dell για πληκτρολόγιο και ποντίκι. Συνδέστε εκείνον που θέλετε να συζεύξετε.</value>
+</data>
   <data name="AddDevice.KnM.11" xml:space="preserve">
-    <value>No USB wireless receiver connected. Connect your USB wireless receiver, and pair up to six compatible devices.</value>
-  </data>
+    <value>Δεν έχει συνδεθεί κανένας ασύρματος δέκτης USB. Συνδέστε τον ασύρματο δέκτη USB σας και συζεύξτε μέχρι έξι συμβατές συσκευές.</value>
+</data>
   <data name="AddDevice.KnM.12" xml:space="preserve">
-    <value>No USB wireless receiver connected. Connect a USB wireless receiver for better UC compatibility, lower latency, and more stable connection.</value>
-  </data>
+    <value>Δεν έχει συνδεθεί κανένας ασύρματος δέκτης USB. Συνδέστε έναν ασύρματο δέκτη USB για καλύτερη συμβατότητα με UC, χαμηλότερη καθυστέρηση και πιο σταθερή σύνδεση.</value>
+</data>
   <data name="AddDevice.KnM.13" xml:space="preserve">
-    <value>Connect your keyboard and mouse via USB port on your system</value>
-  </data>
+    <value>Συνδέστε το πληκτρολόγιό σας και το ποντίκι σας μέσω της θύρας USB του συστήματός σας</value>
+</data>
   <data name="AddDevice.Pen.0" xml:space="preserve">
-    <value>Connecting your Pen</value>
-  </data>
+    <value>Σύνδεση του Στυλού σας</value>
+</data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>Touch your pen tip to the screen</value>
-  </data>
+    <value>Αγγίξτε την οθόνη με την άκρη του στυλού</value>
+</data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
-    <value>Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows.</value>
-  </data>
+    <value>Πατήστε και κρατήστε πατημένο το επάνω κουμπί για 3 δευτερόλεπτα. Περιμένετε να ανιχνευθεί η συσκευή από τα Windows.</value>
+</data>
   <data name="AddDevice.Pen.3" xml:space="preserve">
-    <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.</value>
-  </data>
+    <value>Επιτρέψτε στη συσκευή να συζευχθεί ή ανοίξτε τις ρυθμίσεις των Windows και επιλέξτε τη συγκεκριμένη συσκευή μόλις ανιχνευθεί.</value>
+</data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Select 'Yes' to confirm pairing on the prompt box to pair your pen</value>
-  </data>
+    <value>Επιλέξτε 'Ναι' για να επιβεβαιώσετε τη σύζευξη στο αναδυόμενο πλαίσιο για να συζεύξετε το στυλό σας</value>
+</data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
-    <value>For USB wireless receiver free and on-the-go connectivity</value>
-  </data>
+    <value>Για ασύρματη συνδεσιμότητα χωρίς δέκτη USB και εν κινήσει</value>
+</data>
   <data name="AddDevice.Headset.1" xml:space="preserve">
-    <value>Power ON headset</value>
-  </data>
+    <value>Ενεργοποιήστε το ακουστικό</value>
+</data>
   <data name="AddDevice.Headset.2" xml:space="preserve">
-    <value>Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth</value>
-  </data>
+    <value>Πατήστε και κρατήστε πατημένο το κουμπί λειτουργίας για 3 δευτερόλεπτα για να κάνετε το ακουστικό ανιχνεύσιμο μέσω Bluetooth</value>
+</data>
   <data name="AddDevice.Headset.3" xml:space="preserve">
-    <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.</value>
-  </data>
+    <value>Επιτρέψτε στη συσκευή να συζευχθεί ή ανοίξτε τις ρυθμίσεις των Windows και επιλέξτε τη συγκεκριμένη συσκευή μόλις ανιχνευθεί.</value>
+</data>
   <data name="AddDevice.Headset.4" xml:space="preserve">
-    <value>Power OFF headset. Hold mic mute button and power ON again.</value>
-  </data>
+    <value>Απενεργοποιήστε το ακουστικό. Κρατήστε πατημένο το κουμπί σίγασης του μικροφώνου και ενεργοποιήστε ξανά.</value>
+</data>
   <data name="AddDevice.Headset.5" xml:space="preserve">
-    <value>Pairing will automatically begin after a few seconds</value>
-  </data>
+    <value>Η σύζευξη θα ξεκινήσει αυτόματα μετά από λίγα δευτερόλεπτα</value>
+</data>
   <data name="AddDevice.Headset.6" xml:space="preserve">
-    <value>Connect your headset via USB port on your system.</value>
-  </data>
+    <value>Συνδέστε το ακουστικό σας μέσω θύρας USB στο σύστημά σας</value>
+</data>
   <data name="AddDevice.Speaker.0" xml:space="preserve">
-    <value>Connect your Speaker or soundbar via USB port on your system.</value>
-  </data>
+    <value>Συνδέστε το ηχείο ή την ηχομπάρα σας μέσω θύρας USB στο σύστημά σας</value>
+</data>
   <data name="AddDevice.Dock.0" xml:space="preserve">
-    <value>Connect your Dock via USB port on your system</value>
-  </data>
+    <value>Συνδέστε τη βάση σας μέσω θύρας USB στο σύστημά σας</value>
+</data>
   <data name="HomePage.0" xml:space="preserve">
-    <value>Please wait...</value>
-  </data>
+    <value>Παρακαλώ περιμένετε...</value>
+</data>
   <data name="UpdateFirmware" xml:space="preserve">
-    <value>Update Firmware</value>
-  </data>
+    <value>Ενημέρωση Μικρολογισμικού</value>
+</data>
   <data name="Dock.0" xml:space="preserve">
-    <value>{0} of {1} slots available</value>
-  </data>
+    <value>{0} από {1} διαθέσιμες υποδοχές</value>
+</data>
   <data name="Dock.1" xml:space="preserve">
     <value>Dongle {0}</value>
-  </data>
+</data>
   <data name="Headset.0" xml:space="preserve">
-    <value>Audio Settings</value>
-  </data>
+    <value>Ρυθμίσεις Ήχου</value>
+</data>
   <data name="Headset.1" xml:space="preserve">
-    <value>Automated Actions</value>
-  </data>
+    <value>Αυτοματοποιημένες Ενέργειες</value>
+</data>
   <data name="Headset.2" xml:space="preserve">
-    <value>Device Settings</value>
-  </data>
+    <value>Ρυθμίσεις Συσκευής</value>
+</data>
   <data name="Keyboard.1" xml:space="preserve">
-    <value>USB Wireless Receiver</value>
-  </data>
+    <value>Ασύρματος Δέκτης USB</value>
+</data>
   <data name="Keyboard.2" xml:space="preserve">
-    <value>Key Customization</value>
-  </data>
+    <value>Προσαρμογή Πλήκτρων</value>
+</data>
   <data name="Keyboard.3" xml:space="preserve">
-    <value>Collaboration</value>
-  </data>
+    <value>Συνεργασία</value>
+</data>
   <data name="Keyboard.4" xml:space="preserve">
-    <value>Illumination</value>
-  </data>
+    <value>Φωτισμός</value>
+</data>
   <data name="Mouse.0" xml:space="preserve">
-    <value>Assign actions for</value>
-  </data>
+    <value>Ανάθεση ενεργειών για</value>
+</data>
   <data name="Mouse.1" xml:space="preserve">
-    <value>All Applications</value>
-  </data>
+    <value>Όλες τις εφαρμογές</value>
+</data>
   <data name="Mouse.2" xml:space="preserve">
     <value>Microsoft Word</value>
-  </data>
+</data>
   <data name="Mouse.3" xml:space="preserve">
     <value>Microsoft Excel</value>
-  </data>
+</data>
   <data name="Mouse.4" xml:space="preserve">
     <value>Microsoft PowerPoint</value>
-  </data>
+</data>
   <data name="Mouse.5" xml:space="preserve">
     <value>Microsoft Outlook</value>
-  </data>
-  <data name="EOL.0" xml:space="preserve">
-    <value>There are no advanced features on this device</value>
-  </data>
-  <data name="Mouse.6" xml:space="preserve">
-    <value>Mouse Settings</value>
-  </data>
-  <data name="Mouse.7" xml:space="preserve">
-    <value>Button\nCustomization</value>
-  </data>
-  <data name="Pen.0" xml:space="preserve">
-    <value>Pen Settings</value>
-  </data>
-  <data name="Soundbar.0" xml:space="preserve">
-    <value>Audio Preset</value>
-  </data>
-  <data name="Soundbar.1" xml:space="preserve">
-    <value>Interactions</value>
-  </data>
-  <data name="Soundbar.2" xml:space="preserve">
-    <value>Audio Settings</value>
-  </data>
-  <data name="Camera.0" xml:space="preserve">
-    <value>Camera Control</value>
-  </data>
-  <data name="Camera.1" xml:space="preserve">
-    <value>Color and Image</value>
-  </data>
-  <data name="Camera.2" xml:space="preserve">
-    <value>Presence Detection</value>
-  </data>
-  <data name="Camera.3" xml:space="preserve">
-    <value>Capture</value>
-  </data>
-  <data name="Camera.4" xml:space="preserve">
-    <value>Microphone</value>
-  </data>
-  <data name="WiredConnection" xml:space="preserve">
-    <value>Wired Connection</value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="Brightness.0" xml:space="preserve">
-    <value>Check your settings to make sure your Preset Start Times and Transition Lengths do not overlap</value>
-  </data>
-  <data name="Brightness.1" xml:space="preserve">
-    <value>Brightness/Contrast is not available when </value>
-  </data>
-  <data name="Brightness.2" xml:space="preserve">
-    <value>Smart HDR </value>
-  </data>
-  <data name="Brightness.3" xml:space="preserve">
-    <value>is turned on</value>
-  </data>
-  <data name="Brightness" xml:space="preserve">
-    <value>Brightness</value>
-  </data>
-  <data name="Contrast" xml:space="preserve">
-    <value>Contrast</value>
-  </data>
-  <data name="Brightness.4" xml:space="preserve">
-    <value>Synchronize between monitors</value>
-  </data>
-  <data name="Brightness.5" xml:space="preserve">
-    <value>Apply the above brightness/luminance, contrast, and color&amp;#x000A;preset controls to your connected monitors.</value>
-  </data>
-  <data name="Luminance" xml:space="preserve">
-    <value>Luminance</value>
-  </data>
-  <data name="Auto" xml:space="preserve">
-    <value>Auto</value>
-  </data>
-  <data name="Brightness.6" xml:space="preserve">
-    <value>Auto Brightness  </value>
-  </data>
-  <data name="Brightness.7" xml:space="preserve">
-    <value>Adjusts the brightness of the display based on the lighting conditions in the surrounding space</value>
-  </data>
-  <data name="Brightness.8" xml:space="preserve">
-    <value>Auto Brightness Range Level  </value>
-  </data>
-  <data name="Brightness.9" xml:space="preserve">
-    <value>Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/ Mid/ Low)</value>
-  </data>
-  <data name="Brightness.10" xml:space="preserve">
-    <value>Auto Color Temperature  </value>
-  </data>
-  <data name="Brightness.11" xml:space="preserve">
-    <value>Adjusts the color temperature of the display automatically to match the light in the surrounding space.</value>
-  </data>
-  <data name="Brightness.12" xml:space="preserve">
-    <value>Primary Monitor for Sync  </value>
-  </data>
-  <data name="Brightness.13" xml:space="preserve">
-    <value>Synchronize the brightness, contrast, color preset and color temperature based on the primary monitor to other ALS monitors</value>
-  </data>
-  <data name="Scheduled" xml:space="preserve">
-    <value>Scheduled</value>
-  </data>
-  <data name="Brightness.14" xml:space="preserve">
-    <value>Preset 1 Name</value>
-  </data>
-  <data name="Brightness.15" xml:space="preserve">
-    <value>Start Time</value>
-  </data>
-  <data name="AM" xml:space="preserve">
-    <value>AM</value>
-  </data>
-  <data name="Brightness.16" xml:space="preserve">
-    <value>Transison Length</value>
-  </data>
-  <data name="Brightness.17" xml:space="preserve">
-    <value>TEST.</value>
-  </data>
-  <data name="Min" xml:space="preserve">
-    <value>min</value>
-  </data>
-  <data name="Brightness.18" xml:space="preserve">
-    <value>Preset 2 Name</value>
-  </data>
-  <data name="PM" xml:space="preserve">
-    <value>PM</value>
-  </data>
+</data>
 </root>

@@ -52,18 +52,18 @@ namespace DDPM.UI.Common {
         public static readonly string ReadyToBePaired = "Ready to be paired";
         public static readonly string DPIMessage = "Move your mouse to complete the change to the DPI value";
         public static readonly string PollingRateMessage = "Increasing polling rate may affect mouse’s battery life.";
-        public static readonly string EOLMessage = "There are no advanced features on this device";
+        //public static readonly string EOLMessage = "There are no advanced features on this device";
         public static readonly string Wired = "Wired";
-        public static readonly string Error = "Error";
+        public static readonly string Error = GetString("Error");
         public static readonly string MultiDeviceTooltip = "You have connected multiple devices of the same model. Actions will be duplicated on each instance of the device";
         public static readonly string NoDeviceFound = "No device found. Make sure your wireless device is charged and turned ON.";
         public static readonly string AlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
         public static readonly string NotSupportedDevice = "This device you are pairing is not supported with the connected USB wireless receiver. Use the receiver that came with the device.";
         public static readonly string DongleSlotFull = "The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the \"Unpair\" button in the device settings page.";
-        public static readonly string PenSettingsCaption = "Pen Settings";
-        public static readonly string MouseSettingsCaption = "Mouse Settings";
+        public static readonly string PenSettingsCaption = GetString("Pen.0");
+        public static readonly string MouseSettingsCaption = GetString("Mouse.6");
         public static readonly string KeyCustomizationCaption = GetString("Keyboard.2");
-        public static readonly string ButtonCustomizationCaption = "Button\nCustomization";
+        public static readonly string ButtonCustomizationCaption = GetString("Mouse.7");
         public static readonly string CollaborationCaption = GetString("Keyboard.3");
         public static readonly string IlluminationCaption = GetString("Keyboard.4");
         public static readonly string TouchScrollCaption = "Touch Scroll Sensitivity";
@@ -371,11 +371,18 @@ namespace DDPM.UI.Common {
     public static readonly string AddDeviceKnMnoDongleAlertHeadset = GetString("AddDevice.KnM.12");
     public static readonly string DockDongle0 = GetString("Dock.0");
     public static readonly string DockDongle1 = GetString("Dock.1");
-    public static readonly string Headset0 = GetString("Headset.0");
-    public static readonly string Headset1 = GetString("Headset.1");
-    public static readonly string Headset2 = GetString("Headset.2");
-    public static readonly string Headset3 = GetString("Headset.3");
-
+    public static readonly string HeadsetAudioSettings = GetString("Headset.0");
+    public static readonly string HeadsetAutomatedActions = GetString("Headset.1");
+    public static readonly string HeadsetDeviceSettings = GetString("Headset.2");
+    public static readonly string SoundBarAudioPreset = GetString("Soundbar.0");
+    public static readonly string SoundBarInteractions = GetString("Soundbar.1");
+    public static readonly string SoundBarAudioSettings = GetString("Soundbar.2");
+    public static readonly string CameraControl = GetString("Camera.0");
+    public static readonly string ColorandImage = GetString("Camera.1");
+    public static readonly string PresenceDetection = GetString("Camera.2");
+    public static readonly string Capture = GetString("Camera.3");
+    public static readonly string Microphone = GetString("Camera.4");
+    public static readonly string BrightnessErrorMsg0 = GetString("Brightness.0");
 
     #endregion
     }

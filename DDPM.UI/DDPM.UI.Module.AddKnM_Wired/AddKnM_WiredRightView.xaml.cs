@@ -10,16 +10,16 @@ namespace DDPM.UI.Module.AddKnM_Wired
     {
         private readonly AddDeviceViewModel _vm;
 
-        private readonly string Caption = "Wired Connection";
-        private readonly string Step1 = "Connect your keyboard and mouse via USB port on your system";
+        //private readonly string Caption = "Wired Connection";
+        //private readonly string Step1 = "Connect your keyboard and mouse via USB port on your system";
 
         public AddKnM_WiredRightView(AddDeviceViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            txtCaption.Text = Caption;
-            txtStep1.Text = Step1;
+            //txtCaption.Text = Caption;
+            //txtStep1.Text = Step1;
         }
     }
 }

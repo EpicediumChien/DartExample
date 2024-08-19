@@ -97,15 +97,6 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wired Connection.
-        /// </summary>
-        internal static string AddDevice_Display_0 {
-            get {
-                return ResourceManager.GetString("AddDevice.Display.0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Connect your display via HDMI/USB-C port on your system.
         /// </summary>
         internal static string AddDevice_Display_1 {
@@ -502,6 +493,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AM.
+        /// </summary>
+        internal static string AM {
+            get {
+                return ResourceManager.GetString("AM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Analytics.
         /// </summary>
         internal static string Analytics {
@@ -547,6 +547,249 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto.
+        /// </summary>
+        internal static string Auto {
+            get {
+                return ResourceManager.GetString("Auto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brightness.
+        /// </summary>
+        internal static string Brightness {
+            get {
+                return ResourceManager.GetString("Brightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check your settings to make sure your Preset Start Times and Transition Lengths do not overlap.
+        /// </summary>
+        internal static string Brightness_0 {
+            get {
+                return ResourceManager.GetString("Brightness.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brightness/Contrast is not available when .
+        /// </summary>
+        internal static string Brightness_1 {
+            get {
+                return ResourceManager.GetString("Brightness.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto Color Temperature  .
+        /// </summary>
+        internal static string Brightness_10 {
+            get {
+                return ResourceManager.GetString("Brightness.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the color temperature of the display automatically to match the light in the surrounding space..
+        /// </summary>
+        internal static string Brightness_11 {
+            get {
+                return ResourceManager.GetString("Brightness.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Primary Monitor for Sync  .
+        /// </summary>
+        internal static string Brightness_12 {
+            get {
+                return ResourceManager.GetString("Brightness.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Synchronize the brightness, contrast, color preset and color temperature based on the primary monitor to other ALS monitors.
+        /// </summary>
+        internal static string Brightness_13 {
+            get {
+                return ResourceManager.GetString("Brightness.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preset 1 Name.
+        /// </summary>
+        internal static string Brightness_14 {
+            get {
+                return ResourceManager.GetString("Brightness.14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Time.
+        /// </summary>
+        internal static string Brightness_15 {
+            get {
+                return ResourceManager.GetString("Brightness.15", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transison Length.
+        /// </summary>
+        internal static string Brightness_16 {
+            get {
+                return ResourceManager.GetString("Brightness.16", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TEST..
+        /// </summary>
+        internal static string Brightness_17 {
+            get {
+                return ResourceManager.GetString("Brightness.17", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preset 2 Name.
+        /// </summary>
+        internal static string Brightness_18 {
+            get {
+                return ResourceManager.GetString("Brightness.18", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smart HDR .
+        /// </summary>
+        internal static string Brightness_2 {
+            get {
+                return ResourceManager.GetString("Brightness.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is turned on.
+        /// </summary>
+        internal static string Brightness_3 {
+            get {
+                return ResourceManager.GetString("Brightness.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Synchronize between monitors.
+        /// </summary>
+        internal static string Brightness_4 {
+            get {
+                return ResourceManager.GetString("Brightness.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply the above brightness/luminance, contrast, and color&amp;#x000A;preset controls to your connected monitors..
+        /// </summary>
+        internal static string Brightness_5 {
+            get {
+                return ResourceManager.GetString("Brightness.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto Brightness  .
+        /// </summary>
+        internal static string Brightness_6 {
+            get {
+                return ResourceManager.GetString("Brightness.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts the brightness of the display based on the lighting conditions in the surrounding space.
+        /// </summary>
+        internal static string Brightness_7 {
+            get {
+                return ResourceManager.GetString("Brightness.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto Brightness Range Level  .
+        /// </summary>
+        internal static string Brightness_8 {
+            get {
+                return ResourceManager.GetString("Brightness.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/ Mid/ Low).
+        /// </summary>
+        internal static string Brightness_9 {
+            get {
+                return ResourceManager.GetString("Brightness.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Control.
+        /// </summary>
+        internal static string Camera_0 {
+            get {
+                return ResourceManager.GetString("Camera.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color and Image.
+        /// </summary>
+        internal static string Camera_1 {
+            get {
+                return ResourceManager.GetString("Camera.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presence Detection.
+        /// </summary>
+        internal static string Camera_2 {
+            get {
+                return ResourceManager.GetString("Camera.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Capture.
+        /// </summary>
+        internal static string Camera_3 {
+            get {
+                return ResourceManager.GetString("Camera.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microphone.
+        /// </summary>
+        internal static string Camera_4 {
+            get {
+                return ResourceManager.GetString("Camera.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contrast.
+        /// </summary>
+        internal static string Contrast {
+            get {
+                return ResourceManager.GetString("Contrast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display.
         /// </summary>
         internal static string Display {
@@ -588,6 +831,24 @@ namespace DDPM.UI.Resources {
         internal static string EasyArrange {
             get {
                 return ResourceManager.GetString("EasyArrange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no advanced features on this device.
+        /// </summary>
+        internal static string EOL_0 {
+            get {
+                return ResourceManager.GetString("EOL.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
             }
         }
         
@@ -664,15 +925,6 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no advanced features on this device.
-        /// </summary>
-        internal static string Keyboard_0 {
-            get {
-                return ResourceManager.GetString("Keyboard.0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to USB Wireless Receiver.
         /// </summary>
         internal static string Keyboard_1 {
@@ -718,6 +970,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Luminance.
+        /// </summary>
+        internal static string Luminance {
+            get {
+                return ResourceManager.GetString("Luminance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manual.
         /// </summary>
         internal static string Manual {
@@ -732,6 +993,15 @@ namespace DDPM.UI.Resources {
         internal static string ManufactureMonth {
             get {
                 return ResourceManager.GetString("ManufactureMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to min.
+        /// </summary>
+        internal static string Min {
+            get {
+                return ResourceManager.GetString("Min", resourceCulture);
             }
         }
         
@@ -790,6 +1060,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mouse Settings.
+        /// </summary>
+        internal static string Mouse_6 {
+            get {
+                return ResourceManager.GetString("Mouse.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Button\nCustomization.
+        /// </summary>
+        internal static string Mouse_7 {
+            get {
+                return ResourceManager.GetString("Mouse.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OFF.
         /// </summary>
         internal static string Off {
@@ -804,6 +1092,24 @@ namespace DDPM.UI.Resources {
         internal static string On {
             get {
                 return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pen Settings.
+        /// </summary>
+        internal static string Pen_0 {
+            get {
+                return ResourceManager.GetString("Pen.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PM.
+        /// </summary>
+        internal static string PM {
+            get {
+                return ResourceManager.GetString("PM", resourceCulture);
             }
         }
         
@@ -826,6 +1132,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scheduled.
+        /// </summary>
+        internal static string Scheduled {
+            get {
+                return ResourceManager.GetString("Scheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Service Tag.
         /// </summary>
         internal static string ServiceTag {
@@ -840,6 +1155,33 @@ namespace DDPM.UI.Resources {
         internal static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio Preset.
+        /// </summary>
+        internal static string Soundbar_0 {
+            get {
+                return ResourceManager.GetString("Soundbar.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interactions.
+        /// </summary>
+        internal static string Soundbar_1 {
+            get {
+                return ResourceManager.GetString("Soundbar.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio Settings.
+        /// </summary>
+        internal static string Soundbar_2 {
+            get {
+                return ResourceManager.GetString("Soundbar.2", resourceCulture);
             }
         }
         
@@ -939,6 +1281,15 @@ namespace DDPM.UI.Resources {
         internal static string VbarText_DisplayOthers {
             get {
                 return ResourceManager.GetString("VbarText_DisplayOthers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wired Connection.
+        /// </summary>
+        internal static string WiredConnection {
+            get {
+                return ResourceManager.GetString("WiredConnection", resourceCulture);
             }
         }
     }

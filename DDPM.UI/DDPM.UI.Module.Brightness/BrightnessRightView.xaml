@@ -6,6 +6,7 @@
     xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
+    xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="950"
     d:DesignWidth="800"
@@ -72,7 +73,7 @@
                                         FontFamily="Roboto"
                                         FontSize="13"
                                         Foreground="White">
-                                        <Run Text="Brightness/Contrast is not available when " />
+                                        <Run Text="{Binding [Brightness.1], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
                                         <Hyperlink Click="Hyperlink_Click">
                                             <Hyperlink.Style>
                                                 <Style TargetType="Hyperlink">
@@ -83,9 +84,9 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Hyperlink.Style>
-                                            <Run Text="Smart HDR " />
+                                            <Run Text="{Binding [Brightness.2], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" />
                                         </Hyperlink>
-                                        <Run Text="is turned on" />
+                                        <Run Text="{Binding [Brightness.3], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" />
                                     </TextBlock>
                                 </StackPanel>
                             </Grid>
@@ -111,7 +112,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="20"
                                         Foreground="White"
-                                        Text="Manual"
+                                        Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
                                 </Grid>
@@ -128,7 +129,7 @@
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
                                                 Foreground="White"
-                                                Text="Brightness"
+                                                Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
                                         </Grid>
@@ -180,7 +181,7 @@
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
                                                 Foreground="White"
-                                                Text="Contrast"
+                                                Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
                                         </Grid>
@@ -269,7 +270,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="16"
                                             Foreground="{Binding IsSynchronizeDisabled, Converter={StaticResource BooleanToBrushConverter}}"
-                                            Text="Synchronize between monitors"
+                                            Text="{Binding [Brightness.4], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
@@ -288,7 +289,7 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Apply the above brightness/luminance, contrast, and color&#x000A;preset controls to your connected monitors." />
+                                                                <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -338,7 +339,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="20"
                                         Foreground="White"
-                                        Text="Manual"
+                                        Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
                                 </Grid>
@@ -358,7 +359,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="16"
                                             Foreground="White"
-                                            Text="Luminance"
+                                            Text="{Binding [Luminance], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
                                     </Grid>
@@ -453,7 +454,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="20"
                                         Foreground="White"
-                                        Text="Auto"
+                                        Text="{Binding [Auto], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
                                 </Grid>
@@ -482,7 +483,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="16"
                                             Foreground="White"
-                                            Text="Auto Brightness  "
+                                            Text="{Binding [Brightness.6], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
@@ -501,7 +502,7 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Adjusts the brightness of the display based on the lighting conditions in the surrounding space" />
+                                                                <TextBlock Text="{Binding [Brightness.7], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -534,7 +535,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="16"
                                             Foreground="White"
-                                            Text="Auto Brightness Range Level  "
+                                            Text="{Binding [Brightness.8], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
                                             Visibility="{Binding AutoBrightnessRangeLevelVisible}" />
@@ -546,7 +547,7 @@
                                             FontSize="16"
                                             FontWeight="Light"
                                             Foreground="Gray"
-                                            Text="Auto Brightness Range Level  "
+                                            Text="{Binding [Brightness.8], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
                                             Visibility="{Binding AutoBrightnessRangeLevelVisible_invert}" />
@@ -566,7 +567,7 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Provides 3 levels of brightness ranges based on the lighting conditions in the surrounding space (High/ Mid/ Low)" />
+                                                                <TextBlock Text="{Binding [Brightness.9], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -597,7 +598,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="16"
                                             Foreground="White"
-                                            Text="Auto Color Temperature  "
+                                            Text="{Binding [Brightness.10], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
 
@@ -616,7 +617,7 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Adjusts the color temperature of the display automatically to match the light in the surrounding space." />
+                                                                <TextBlock Text="{Binding [Brightness.11], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -649,7 +650,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="16"
                                             Foreground="White"
-                                            Text="Primary Monitor for Sync  "
+                                            Text="{Binding [Brightness.12], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
                                             Visibility="{Binding PrimaryMonitorForSyncVisible}" />
@@ -661,7 +662,7 @@
                                             FontSize="16"
                                             FontWeight="Light"
                                             Foreground="Gray"
-                                            Text="Primary Monitor for Sync  "
+                                            Text="{Binding [Brightness.12], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
                                             Visibility="{Binding PrimaryMonitorForSyncVisible_invert}" />
@@ -681,7 +682,7 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="Synchronize the brightness, contrast, color preset and color temperature based on the primary monitor to other ALS monitors" />
+                                                                <TextBlock Text="{Binding [Brightness.13], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -740,7 +741,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="20"
                                         Foreground="White"
-                                        Text="Scheduled"
+                                        Text="{Binding [Scheduled], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
                                 </Grid>
@@ -786,7 +787,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     Foreground="White"
-                                                    Text="Preset 1 Name"
+                                                    Text="{Binding [Brightness.14], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
 
@@ -827,7 +828,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     Foreground="White"
-                                                    Text="Start Time"
+                                                    Text="{Binding [Brightness.15], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
 
@@ -862,7 +863,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     Foreground="White"
-                                                    Text="AM"
+                                                    Text="{Binding [AM], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
                                             </Grid>
@@ -892,7 +893,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="White"
-                                                        Text="Transison Length"
+                                                        Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Display1" />
 
@@ -912,7 +913,7 @@
                                                                     </Border.Resources>
                                                                     <StackPanel>
                                                                         <StackPanel Orientation="Horizontal">
-                                                                            <TextBlock Text="TEST." />
+                                                                            <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" />
                                                                         </StackPanel>
                                                                     </StackPanel>
                                                                 </Border>
@@ -939,7 +940,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     Foreground="White"
-                                                    Text="min"
+                                                    Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
                                             </Grid>
@@ -953,7 +954,7 @@
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
                                                 Foreground="White"
-                                                Text="Brightness"
+                                                Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
                                         </Grid>
@@ -1005,7 +1006,7 @@
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
                                                 Foreground="White"
-                                                Text="Contrast"
+                                                Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
                                         </Grid>
@@ -1107,7 +1108,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     Foreground="White"
-                                                    Text="Preset 2 Name"
+                                                    Text="{Binding [Brightness.18], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
 
@@ -1148,7 +1149,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     Foreground="White"
-                                                    Text="Start Time"
+                                                    Text="{Binding [Brightness.15], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
 
@@ -1183,7 +1184,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     Foreground="White"
-                                                    Text="PM"
+                                                    Text="{Binding [PM], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
                                             </Grid>
@@ -1213,7 +1214,7 @@
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
                                                         Foreground="White"
-                                                        Text="Transison Length"
+                                                        Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Display1" />
 
@@ -1233,7 +1234,7 @@
                                                                     </Border.Resources>
                                                                     <StackPanel>
                                                                         <StackPanel Orientation="Horizontal">
-                                                                            <TextBlock Text="TEST." />
+                                                                            <TextBlock Text="{Binding [Brightness.17], Source={x:Static lang:LangHelper.Instance}}" />
                                                                         </StackPanel>
                                                                     </StackPanel>
                                                                 </Border>
@@ -1260,7 +1261,7 @@
                                                     VerticalAlignment="Center"
                                                     FontSize="16"
                                                     Foreground="White"
-                                                    Text="min"
+                                                    Text="{Binding [Min], Source={x:Static lang:LangHelper.Instance}}"
                                                     TextBlockSemanticColorType="Light"
                                                     TextBlockType="Display1" />
                                             </Grid>
@@ -1274,7 +1275,7 @@
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
                                                 Foreground="White"
-                                                Text="Brightness"
+                                                Text="{Binding [Brightness], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
                                         </Grid>
@@ -1326,7 +1327,7 @@
                                                 VerticalAlignment="Center"
                                                 FontSize="16"
                                                 Foreground="White"
-                                                Text="Contrast"
+                                                Text="{Binding [Contrast], Source={x:Static lang:LangHelper.Instance}}"
                                                 TextBlockSemanticColorType="Light"
                                                 TextBlockType="Display1" />
                                         </Grid>
