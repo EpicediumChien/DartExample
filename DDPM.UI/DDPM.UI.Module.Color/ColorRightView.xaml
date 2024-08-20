@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Color"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="850" d:DesignWidth="800" Loaded="UserControl_Loaded" Unloaded="UserControl_UnLoaded">
 
@@ -33,7 +34,7 @@
                             <Expander.Header>
                                 <!-- Group Header: Manual-->
                                 <Grid Height="60">
-                                    <UXControls:UXTextBlock Margin="30,0,0,0" Text="Manual" FontSize="20"
+                                    <UXControls:UXTextBlock Margin="30,0,0,0" Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}" FontSize="20"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption" Foreground="White"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
@@ -48,7 +49,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <UXControls:UXTextBlock Text="Color Profile" Grid.Column="0" FontSize="16"
+                                    <UXControls:UXTextBlock Text="{Binding [Color.6], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" FontSize="16"
                                                             TextBlockSemanticColorType="Light" Foreground="White"
                                                             TextBlockType="Display1"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
@@ -78,7 +79,7 @@
                             <Expander.Header>
                                 <!-- Group Header: Auto-->
                                 <Grid Height="60">
-                                    <UXControls:UXTextBlock  Margin="30,0,0,0" Text="Auto" FontSize="20"
+                                    <UXControls:UXTextBlock  Margin="30,0,0,0" Text="{Binding [Auto], Source={x:Static lang:LangHelper.Instance}}" FontSize="20"
                                                             TextBlockSemanticColorType="Light" Foreground="White"
                                                             TextBlockType="Caption"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
@@ -88,7 +89,7 @@
                             <Expander.Content>
                                 <StackPanel Margin="16">
 
-                                    <UXControls:UXTextBlock Text="Application Specific Color Preset" FontSize="16"
+                                    <UXControls:UXTextBlock Text="{Binding [Color.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="16"
                                                             TextBlockSemanticColorType="Light" Foreground="White"
                                                             TextBlockType="Display1"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
@@ -164,7 +165,7 @@
                                                 </ListBox.ItemContainerStyle>
                                             </ListBox>
 
-                                            <UXControls:UXButton Name="btn_AddApp" Grid.Row="2" Content="Add Application"
+                                            <UXControls:UXButton Name="btn_AddApp" Grid.Row="2" Content="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"
                                                                  ButtonType="Secondary" ButtonSemanticColorType="Neutral"
                                                                  Foreground="White" HorizontalAlignment="Center"
                                                                  CornerRadius="2" Padding="24,8"
@@ -199,7 +200,7 @@
                                     <ColumnDefinition Width="auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="Night light "  Foreground="White" FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
+                                <TextBlock Text="{Binding [Color.8], Source={x:Static lang:LangHelper.Instance}}"  Foreground="White" FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
                                 <TextBlock Text="(" Grid.Column="1" Foreground="White"  FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
                                 <TextBlock Text="{Binding NightlightStatus}" Grid.Column="2" Foreground="White" VerticalAlignment="Center" FontFamily="Noto Sans" FontSize="14" HorizontalAlignment="Center" />
                                 <TextBlock Text=")" Grid.Column="3" Foreground="White" FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
@@ -213,7 +214,7 @@
                                                 </Border.Resources>
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="Show comfortable colors on your display to help you sleep." />
+                                                        <TextBlock Text="{Binding [Color.9], Source={x:Static lang:LangHelper.Instance}}" />
                                                     </StackPanel>
                                                 </StackPanel>
                                             </Border>
@@ -221,7 +222,7 @@
                                     </Image.ToolTip>
                                 </Image>
                             </Grid>
-                            <UXControls:UXLink Name="nightlight_config" Grid.Column="1" Content="Windows Settings" Click="nightlight_config_Click"
+                            <UXControls:UXLink Name="nightlight_config" Grid.Column="1" Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="nightlight_config_Click"
                                                IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
                                                LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
                                                HorizontalAlignment="Right" VerticalAlignment="Center" Height="40" />
@@ -234,7 +235,7 @@
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->
                                 <Grid Height="60">
-                                    <UXControls:UXTextBlock  Margin="0,0,0,0" Text="Advanced Settings" FontSize="15" Foreground="White"
+                                    <UXControls:UXTextBlock  Margin="0,0,0,0" Text="{Binding [Color.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" Foreground="White"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
@@ -272,7 +273,7 @@
 
                                     <Grid Grid.Column="1" Grid.Row="0"  Margin="0,0,0,0">
                                         <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
-                                            <TextBlock Text="Color Management" Foreground="White"  FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
+                                            <TextBlock Text="{Binding [Color.11], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"  FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
 
                                             <Image Grid.Column="1" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                 <Image.ToolTip>
@@ -283,7 +284,7 @@
                                                             </Border.Resources>
                                                             <StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
-                                                                    <TextBlock Text="Synchronizes the ICC profile with the monitor's color preset automatically." />
+                                                                    <TextBlock Text="{Binding [Color.12], Source={x:Static lang:LangHelper.Instance}}" />
                                                                 </StackPanel>
                                                             </StackPanel>
                                                         </Border>
@@ -309,13 +310,13 @@
                                     </Grid>
 
                                     <Grid Grid.Column="1" Grid.Row="2"  Margin="0,0,0,0">
-                                        <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False" Content="Auto-adjust the ICC Color profile based on color preset" Foreground="WhiteSmoke" FontSize="14" Click="rb_ICCprofile_based_Colorpreset_click" />
+                                        <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False" Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}" Foreground="WhiteSmoke" FontSize="14" Click="rb_ICCprofile_based_Colorpreset_click" />
                                     </Grid>
 
                                     <Grid Grid.Column="1" Grid.Row="3"  Margin="0,0,0,0">
                                         <StackPanel Orientation="Horizontal">
-                                            <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" Content="Auto-adjust the color preset based on" Foreground="WhiteSmoke" FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" />
-                                            <UXControls:UXLink Margin="-8,0,0,0" Name="ICC_profile_config" Content="ICC profile" Click="ICC_profile_config_Click"
+                                            <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" Content="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}}" Foreground="WhiteSmoke" FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" />
+                                            <UXControls:UXLink Margin="-8,0,0,0" Name="ICC_profile_config" Content="{Binding [Color.5], Source={x:Static lang:LangHelper.Instance}}" Click="ICC_profile_config_Click"
                                                                IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
                                                                HorizontalAlignment="Left" VerticalAlignment="Center" />
                                         </StackPanel>
@@ -329,7 +330,7 @@
                         <!-- modify jim 20240604 -->
                         <UXControls:UXAlert Margin="160,0,0,0">
                             <UXControls:UXAlertItem AlertItemType="Info" Margin="8,8,8,8" Label=""
-                                                    Message="Dell Color Management application is recommended for advanced color management." />
+                                                    Message="{Binding [Color.13], Source={x:Static lang:LangHelper.Instance}}" />
                         </UXControls:UXAlert>
                     </StackPanel>
                 </StackPanel>

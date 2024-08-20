@@ -286,15 +286,6 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Windows Settings.
-        /// </summary>
-        internal static string AddDevice_KnM_5 {
-            get {
-                return ResourceManager.GetString("AddDevice.KnM.5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Connect your USB wireless receiver to your system.
         /// </summary>
         internal static string AddDevice_KnM_6 {
@@ -970,6 +961,141 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Application.
+        /// </summary>
+        internal static string Color_0 {
+            get {
+                return ResourceManager.GetString("Color.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort By Name.
+        /// </summary>
+        internal static string Color_1 {
+            get {
+                return ResourceManager.GetString("Color.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced Settings.
+        /// </summary>
+        internal static string Color_10 {
+            get {
+                return ResourceManager.GetString("Color.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color Management.
+        /// </summary>
+        internal static string Color_11 {
+            get {
+                return ResourceManager.GetString("Color.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Synchronizes the ICC profile with the monitor&apos;s color preset automatically..
+        /// </summary>
+        internal static string Color_12 {
+            get {
+                return ResourceManager.GetString("Color.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dell Color Management application is recommended for advanced color management..
+        /// </summary>
+        internal static string Color_13 {
+            get {
+                return ResourceManager.GetString("Color.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort By Date.
+        /// </summary>
+        internal static string Color_2 {
+            get {
+                return ResourceManager.GetString("Color.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-adjust the ICC Color profile based on color preset.
+        /// </summary>
+        internal static string Color_3 {
+            get {
+                return ResourceManager.GetString("Color.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-adjust the color preset based on.
+        /// </summary>
+        internal static string Color_4 {
+            get {
+                return ResourceManager.GetString("Color.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ICC profile.
+        /// </summary>
+        internal static string Color_5 {
+            get {
+                return ResourceManager.GetString("Color.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color Profile.
+        /// </summary>
+        internal static string Color_6 {
+            get {
+                return ResourceManager.GetString("Color.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application Specific Color Preset.
+        /// </summary>
+        internal static string Color_7 {
+            get {
+                return ResourceManager.GetString("Color.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Night light .
+        /// </summary>
+        internal static string Color_8 {
+            get {
+                return ResourceManager.GetString("Color.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show comfortable colors on your display to help you sleep..
+        /// </summary>
+        internal static string Color_9 {
+            get {
+                return ResourceManager.GetString("Color.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        internal static string Confirm {
+            get {
+                return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contrast.
         /// </summary>
         internal static string Contrast {
@@ -993,6 +1119,132 @@ namespace DDPM.UI.Resources {
         internal static string Display {
             get {
                 return ResourceManager.GetString("Display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Source.
+        /// </summary>
+        internal static string DisplayHotkeys_0 {
+            get {
+                return ResourceManager.GetString("DisplayHotkeys.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle to next input source.
+        /// </summary>
+        internal static string DisplayHotkeys_1 {
+            get {
+                return ResourceManager.GetString("DisplayHotkeys.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favorite input.
+        /// </summary>
+        internal static string DisplayHotkeys_2 {
+            get {
+                return ResourceManager.GetString("DisplayHotkeys.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch between 2 input sources.
+        /// </summary>
+        internal static string DisplayHotkeys_3 {
+            get {
+                return ResourceManager.GetString("DisplayHotkeys.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Swapping 2 inputs of PIP/PBP windows.
+        /// </summary>
+        internal static string DisplayHotkeys_4 {
+            get {
+                return ResourceManager.GetString("DisplayHotkeys.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change PIP position.
+        /// </summary>
+        internal static string DisplayHotkeys_5 {
+            get {
+                return ResourceManager.GetString("DisplayHotkeys.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reduce brightness.
+        /// </summary>
+        internal static string DisplayOthers_0 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Put the display to sleep.
+        /// </summary>
+        internal static string DisplayOthers_1 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically apply the settings when the same model is detected.
+        /// </summary>
+        internal static string DisplayOthers_2 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PowerNap helps you conserve power when your screensaver activates.
+        /// </summary>
+        internal static string DisplayOthers_3 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When screensaver activates (choose one):.
+        /// </summary>
+        internal static string DisplayOthers_4 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure Screensaver Settings .
+        /// </summary>
+        internal static string DisplayOthers_5 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application Settings.
+        /// </summary>
+        internal static string DisplayOthers_6 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export a configuration and important to another monitor of the same model.
+        /// </summary>
+        internal static string DisplayOthers_7 {
+            get {
+                return ResourceManager.GetString("DisplayOthers.7", resourceCulture);
             }
         }
         
@@ -1056,6 +1308,15 @@ namespace DDPM.UI.Resources {
         internal static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        internal static string Export {
+            get {
+                return ResourceManager.GetString("Export", resourceCulture);
             }
         }
         
@@ -1191,6 +1452,15 @@ namespace DDPM.UI.Resources {
         internal static string Hotkeys {
             get {
                 return ResourceManager.GetString("Hotkeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        internal static string Import {
+            get {
+                return ResourceManager.GetString("Import", resourceCulture);
             }
         }
         
@@ -1411,11 +1681,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PIP/PBP.
+        /// </summary>
+        internal static string PIPorPBP {
+            get {
+                return ResourceManager.GetString("PIPorPBP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PM.
         /// </summary>
         internal static string PM {
             get {
                 return ResourceManager.GetString("PM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PowerNap.
+        /// </summary>
+        internal static string PowerNap {
+            get {
+                return ResourceManager.GetString("PowerNap", resourceCulture);
             }
         }
         
@@ -1461,6 +1749,15 @@ namespace DDPM.UI.Resources {
         internal static string Scheduled {
             get {
                 return ResourceManager.GetString("Scheduled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        internal static string Search {
+            get {
+                return ResourceManager.GetString("Search", resourceCulture);
             }
         }
         
@@ -1623,6 +1920,24 @@ namespace DDPM.UI.Resources {
         internal static string Video {
             get {
                 return ResourceManager.GetString("Video", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video Swap.
+        /// </summary>
+        internal static string VideoSwap {
+            get {
+                return ResourceManager.GetString("VideoSwap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Settings.
+        /// </summary>
+        internal static string WindowsSettings {
+            get {
+                return ResourceManager.GetString("WindowsSettings", resourceCulture);
             }
         }
         

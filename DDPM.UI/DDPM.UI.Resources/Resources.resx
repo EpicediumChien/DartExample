@@ -285,9 +285,6 @@
   <data name="AddDevice.KnM.4" xml:space="preserve">
     <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered</value>
   </data>
-  <data name="AddDevice.KnM.5" xml:space="preserve">
-    <value>Windows Settings</value>
-  </data>
   <data name="AddDevice.KnM.6" xml:space="preserve">
     <value>Connect your USB wireless receiver to your system</value>
   </data>
@@ -641,5 +638,113 @@
   </data>
   <data name="Collaboration" xml:space="preserve">
     <value>Collaboration</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="Color.0" xml:space="preserve">
+    <value>Add Application</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Color.1" xml:space="preserve">
+    <value>Sort By Name</value>
+  </data>
+  <data name="Color.2" xml:space="preserve">
+    <value>Sort By Date</value>
+  </data>
+  <data name="Color.3" xml:space="preserve">
+    <value>Auto-adjust the ICC Color profile based on color preset</value>
+  </data>
+  <data name="WindowsSettings" xml:space="preserve">
+    <value>Windows Settings</value>
+  </data>
+  <data name="Color.4" xml:space="preserve">
+    <value>Auto-adjust the color preset based on</value>
+  </data>
+  <data name="Color.5" xml:space="preserve">
+    <value>ICC profile</value>
+  </data>
+  <data name="Color.6" xml:space="preserve">
+    <value>Color Profile</value>
+  </data>
+  <data name="Color.7" xml:space="preserve">
+    <value>Application Specific Color Preset</value>
+  </data>
+  <data name="Color.8" xml:space="preserve">
+    <value>Night light </value>
+  </data>
+  <data name="Color.9" xml:space="preserve">
+    <value>Show comfortable colors on your display to help you sleep.</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>Advanced Settings</value>
+  </data>
+  <data name="Color.11" xml:space="preserve">
+    <value>Color Management</value>
+  </data>
+  <data name="Color.12" xml:space="preserve">
+    <value>Synchronizes the ICC profile with the monitor's color preset automatically.</value>
+  </data>
+  <data name="Color.13" xml:space="preserve">
+    <value>Dell Color Management application is recommended for advanced color management.</value>
+  </data>
+  <data name="DisplayHotkeys.0" xml:space="preserve">
+    <value>Input Source</value>
+  </data>
+  <data name="DisplayHotkeys.1" xml:space="preserve">
+    <value>Toggle to next input source</value>
+  </data>
+  <data name="DisplayHotkeys.2" xml:space="preserve">
+    <value>Favorite input</value>
+  </data>
+  <data name="DisplayHotkeys.3" xml:space="preserve">
+    <value>Switch between 2 input sources</value>
+  </data>
+  <data name="VideoSwap" xml:space="preserve">
+    <value>Video Swap</value>
+  </data>
+  <data name="PIPorPBP" xml:space="preserve">
+    <value>PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.4" xml:space="preserve">
+    <value>Swapping 2 inputs of PIP/PBP windows</value>
+  </data>
+  <data name="DisplayHotkeys.5" xml:space="preserve">
+    <value>Change PIP position</value>
+  </data>
+  <data name="DisplayOthers.0" xml:space="preserve">
+    <value>Reduce brightness</value>
+  </data>
+  <data name="DisplayOthers.1" xml:space="preserve">
+    <value>Put the display to sleep</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="DisplayOthers.2" xml:space="preserve">
+    <value>Automatically apply the settings when the same model is detected</value>
+  </data>
+  <data name="PowerNap" xml:space="preserve">
+    <value>PowerNap</value>
+  </data>
+  <data name="DisplayOthers.3" xml:space="preserve">
+    <value>PowerNap helps you conserve power when your screensaver activates</value>
+  </data>
+  <data name="DisplayOthers.4" xml:space="preserve">
+    <value>When screensaver activates (choose one):</value>
+  </data>
+  <data name="DisplayOthers.5" xml:space="preserve">
+    <value>Configure Screensaver Settings </value>
+  </data>
+  <data name="DisplayOthers.6" xml:space="preserve">
+    <value>Application Settings</value>
+  </data>
+  <data name="DisplayOthers.7" xml:space="preserve">
+    <value>Export a configuration and important to another monitor of the same model</value>
   </data>
 </root>
