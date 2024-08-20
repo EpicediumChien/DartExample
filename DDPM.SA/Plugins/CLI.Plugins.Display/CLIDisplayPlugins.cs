@@ -410,6 +410,36 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
+                case "COLORMANAGEMENT":
+                    if (commandLineInput.Command.Equals("GET"))
+                    {
+                        var ret = ColorManagement(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    if (commandLineInput.Command.Equals("SET"))
+                    {
+                        int exitcode = 0;
+                        string output = string.Empty;
+                        for (int j = 0; j < commandLineInput.Options.Count; j++)//呼叫方法名稱
+                        {
+                            if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                            {
+                                var ret = ColorManagement(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                                exitcode = ret.code;
+                                output += "\n" + ret.result;
+                            }
+                            if (exitcode != 0)
+                            {
+                                result.serialize_Json_response = output;
+                                result.ExitCode = exitcode;
+                                return result;
+                            }
+                        }
+                        result.serialize_Json_response = output;
+                        result.ExitCode = exitcode;
+                    }
+                    break;
                 case "RESTOREFACTORYDEFAULTS":
                     if (commandLineInput.Command.Equals("SET"))
                     {
@@ -4325,6 +4355,274 @@ namespace DDPM.CLI.Plugins.Display
         }
 
         // jim add 20240607
+        private async Task<(int code, string result)> ColorManagement(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        {
+            //if (devMgr == null)
+            //{
+            //    writelog("ActiveColorProfile: input null IDeviceManagerSA");
+            //    return (int)CLI_ExitCode.null_device_manager;
+            //}
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            string output = string.Empty;
+
+            if (type == "SET")
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    CLI_RESPONSE ret = new CLI_RESPONSE()
+                    {
+                        Command = type,
+                        Result = "FAIL",
+                        Message = "Empty input value"
+                    };
+                    output = JsonConvert.SerializeObject(ret, Formatting.Indented);
+                    return ((int)CLI_ExitCode.fail_FormantError, output);
+                }
+
+                // jim modify 20240608
+                CLI_Set_AllMonitorProfile_RESPONSE _Set_AllMonitorProfile_RESPONSE = new CLI_Set_AllMonitorProfile_RESPONSE();
+                bool r = false;
+                int n_index = 0;
+
+                if (index.Count == 0 && serviceTag.Count == 0)
+                {
+                    foreach (var monitor in _AllInfoMonitors)
+                    {
+                        //r = devMgr.SetMonitorProfile(monitor, value).Result;
+
+                        switch (value.ToUpper())
+                        {
+                            case "bymonitor":
+                                value = "bymonitor";
+                                r = devMgr.SetMonitorProfile(monitor, value).Result;
+                                break;
+                            case "byhost":
+                                value = "byhost";
+                                r = devMgr.WriteColorPresetByColorProfile(monitor, value).Result;
+                                break;
+
+                        }
+
+                        _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        _Set_AllMonitorProfile_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
+                        _Set_AllMonitorProfile_RESPONSE.Command = "SET";
+                        _Set_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                        _Set_AllMonitorProfile_RESPONSE.Set_AllMonitorProfile = value;
+
+                        if (!r)
+                        {
+                            _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                        }
+                    }
+                }
+                // 20240614 jim modify
+                if (index.Count != 0)
+                {
+                    foreach (string idx in index)
+                    {
+                        switch (value.ToUpper())
+                        {
+                            case "bymonitor":
+                                value = "bymonitor";
+                                r = devMgr.SetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                                break;
+                            case "byhost":
+                                value = "byhost";
+                                r = devMgr.WriteColorPresetByColorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                                break;
+
+                        }
+
+                        // jim modify 20240608
+                        _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
+                        _Set_AllMonitorProfile_RESPONSE.ServiceTag = "";
+                        _Set_AllMonitorProfile_RESPONSE.Command = "SET";
+                        _Set_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                        _Set_AllMonitorProfile_RESPONSE.Set_AllMonitorProfile = value;
+
+                        if (!r)
+                        {
+                            _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                        }
+                    }
+                }
+                // 20240614 jim modify
+                if (serviceTag.Count != 0)
+                {
+                    foreach (string tag in serviceTag)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            switch (value.ToUpper())
+                            {
+                                case "bymonitor":
+                                    value = "bymonitor";
+                                    r = devMgr.SetMonitorProfile(mo, value).Result;
+                                    break;
+                                case "byhost":
+                                    value = "byhost";
+                                    r = devMgr.WriteColorPresetByColorProfile(mo, value).Result;
+                                    break;
+
+                            }
+
+                            _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Set_AllMonitorProfile_RESPONSE.ServiceTag = tag;
+                            _Set_AllMonitorProfile_RESPONSE.Command = "SET";
+                            _Set_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                            _Set_AllMonitorProfile_RESPONSE.Set_AllMonitorProfile = value;
+
+                            if (!r)
+                            {
+                                _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            }
+                            else
+                            {
+                                _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
+                return ((int)CLI_ExitCode.success, output);
+            }
+            else if (type == "GET") //Dean 0726 should check if type matched as well
+            {
+                // jim add 20240608
+                CLI_Get_AllMonitorProfile_RESPONSE _Get_AllMonitorProfile_RESPONSE = new CLI_Get_AllMonitorProfile_RESPONSE();
+
+                string Key_Profile_Name = string.Empty;
+
+                if (index.Count == 0 && serviceTag.Count == 0)
+                {
+                    foreach (var monitor in _AllInfoMonitors)
+                    {
+                        Key_Profile_Name = string.Empty;
+                        Key_Profile_Name = devMgr.GetMonitorProfile(monitor).Result;
+
+                        // jim modify 20240608
+                        _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        _Get_AllMonitorProfile_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
+                        _Get_AllMonitorProfile_RESPONSE.Command = "GET";
+                        _Get_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                        _Get_AllMonitorProfile_RESPONSE.Get_AllMonitorProfile = Key_Profile_Name;
+
+                        if (String.IsNullOrEmpty(Key_Profile_Name))
+                        {
+                            _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                        }
+                    }
+
+                }
+                // 20240614 jim modify
+                if (index.Count != 0)
+                {
+                    foreach (string idx in index)
+                    {
+                        Key_Profile_Name = string.Empty;
+                        Key_Profile_Name = devMgr.GetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
+
+                        // jim modify 20240608
+                        _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
+                        _Get_AllMonitorProfile_RESPONSE.ServiceTag = "";
+                        _Get_AllMonitorProfile_RESPONSE.Command = "GET";
+                        _Get_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                        _Get_AllMonitorProfile_RESPONSE.Get_AllMonitorProfile = Key_Profile_Name;
+
+                        if (String.IsNullOrEmpty(Key_Profile_Name))
+                        {
+                            _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                        }
+                    }
+
+                }
+                // 20240614 jim modify
+                if (serviceTag.Count != 0)
+                {
+                    foreach (string tag in serviceTag)
+                    {
+                        int rc = 0;
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            Key_Profile_Name = string.Empty;
+                            Key_Profile_Name = devMgr.GetMonitorProfile(mo).Result;
+
+                            // jim modify 20240608
+                            _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Get_AllMonitorProfile_RESPONSE.ServiceTag = tag;
+                            _Get_AllMonitorProfile_RESPONSE.Command = "GET";
+                            _Get_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                            _Get_AllMonitorProfile_RESPONSE.Get_AllMonitorProfile = Key_Profile_Name;
+
+                            if (String.IsNullOrEmpty(Key_Profile_Name))
+                            {
+                                _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            }
+                            else
+                            {
+                                _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
+                return ((int)CLI_ExitCode.success, output);
+            }
+            else
+            {
+                CLI_RESPONSE ret = new CLI_RESPONSE()
+                {
+                    Command = type,
+                    Result = "Un-supported command",
+                    Message = "Un-supported command"
+                };
+                output = JsonConvert.SerializeObject(ret, Formatting.Indented);
+                return ((int)CLI_ExitCode.unknow_command, output);
+            }
+        }
         private async Task<(int code, string result)> RestoreFactoryDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
         {
             //if (devMgr == null)
@@ -8155,6 +8453,10 @@ namespace DDPM.CLI.Plugins.Display
         {
             string output = string.Empty;
 
+            StreamReader r = new StreamReader(commandLineInput.Options[0].Option_Value);
+            string jsonString = r.ReadToEnd();
+            r.Close();
+
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
@@ -8172,6 +8474,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     cli_Response.Result = "PASS";
                     cli_Response.Message = "N/A";
+                    output += "\n" + "{" + "\n" + jsonString + "\n" + "}";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
@@ -8190,6 +8493,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     cli_Response.Result = "PASS";
                     cli_Response.Message = "N/A";
+                    output += "\n" + "{" + "\n" + jsonString + "\n" + "}";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
                 foreach (string tag in commandLineInput.ServiceTag)
@@ -8207,6 +8511,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         cli_Response.Result = "PASS";
                         cli_Response.Message = "N/A";
+                        output += "\n" + "{" + "\n" + jsonString + "\n" + "}";
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
