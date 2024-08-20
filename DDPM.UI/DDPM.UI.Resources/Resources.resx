@@ -528,4 +528,118 @@
   <data name="PM" xml:space="preserve">
     <value>PM</value>
   </data>
+  <data name="Hotkeys" xml:space="preserve">
+    <value>Hotkeys</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Hotkey.0" xml:space="preserve">
+    <value>Brightness -</value>
+  </data>
+  <data name="Hotkey.1" xml:space="preserve">
+    <value>Brightness +</value>
+  </data>
+  <data name="Hotkey.2" xml:space="preserve">
+    <value>Contrast -</value>
+  </data>
+  <data name="Hotkey.3" xml:space="preserve">
+    <value>Contrast +</value>
+  </data>
+  <data name="Hotkey.4" xml:space="preserve">
+    <value>Luminance -</value>
+  </data>
+  <data name="Hotkey.5" xml:space="preserve">
+    <value>Luminance +</value>
+  </data>
+  <data name="Hotkey.6" xml:space="preserve">
+    <value>Example: "Alt + P", "Shift + F", "Ctrl + Shift + F".\nNote that for multiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
+  </data>
+  <data name="ButtonSettings.0" xml:space="preserve">
+    <value>Scroll Wheel Click</value>
+  </data>
+  <data name="ButtonSettings.1" xml:space="preserve">
+    <value>Scroll Tilt Left</value>
+  </data>
+  <data name="ButtonSettings.2" xml:space="preserve">
+    <value>Scroll Tilt Right</value>
+  </data>
+  <data name="ButtonSettings.3" xml:space="preserve">
+    <value>Side Button Forward</value>
+  </data>
+  <data name="ButtonSettings.4" xml:space="preserve">
+    <value>Side Button Back</value>
+  </data>
+  <data name="ButtonSettings.5" xml:space="preserve">
+    <value>To customize, click one of the outlined sections on the image to the left</value>
+  </data>
+  <data name="ButtonSettings.6" xml:space="preserve">
+    <value>Restore to All Applictions</value>
+  </data>
+  <data name="ButtonSettings.7" xml:space="preserve">
+    <value>Suggested Actions</value>
+  </data>
+  <data name="ButtonSettings.8" xml:space="preserve">
+    <value>Productivity Actions</value>
+  </data>
+  <data name="ButtonSettings.9" xml:space="preserve">
+    <value>Windows Actions</value>
+  </data>
+  <data name="ButtonSettings.10" xml:space="preserve">
+    <value>Multimedia Actions</value>
+  </data>
+  <data name="ButtonSettings.11" xml:space="preserve">
+    <value>Advanced Actions</value>
+  </data>
+  <data name="ButtonSettings.12" xml:space="preserve">
+    <value>Search Results</value>
+  </data>
+  <data name="ButtonSettings.13" xml:space="preserve">
+    <value>Button Customization</value>
+  </data>
+  <data name="Customize" xml:space="preserve">
+    <value>Customize</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Collaboration.0" xml:space="preserve">
+    <value>Collaboration Icons</value>
+  </data>
+  <data name="Collaboration.1" xml:space="preserve">
+    <value>Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.</value>
+  </data>
+  <data name="Collaboration.3" xml:space="preserve">
+    <value>Enable blink effect when there is a new chat message in conference\ncall</value>
+  </data>
+  <data name="Collaboration.4" xml:space="preserve">
+    <value>Activate icons on the keyboard by double tapping instead of single\ntapping</value>
+  </data>
+  <data name="Collaboration.5" xml:space="preserve">
+    <value>To use Collaboration Keyboard with Microsoft Teams, ensure that you are signed into and using the latest version of Microsoft Teams, and that Third-party app API is enabled</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="Mic" xml:space="preserve">
+    <value>Mic</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Collaboration" xml:space="preserve">
+    <value>Collaboration</value>
+  </data>
 </root>
