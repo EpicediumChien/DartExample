@@ -736,6 +736,132 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scroll Wheel Click.
+        /// </summary>
+        internal static string ButtonSettings_0 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll Tilt Left.
+        /// </summary>
+        internal static string ButtonSettings_1 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multimedia Actions.
+        /// </summary>
+        internal static string ButtonSettings_10 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced Actions.
+        /// </summary>
+        internal static string ButtonSettings_11 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Results.
+        /// </summary>
+        internal static string ButtonSettings_12 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Button Customization.
+        /// </summary>
+        internal static string ButtonSettings_13 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll Tilt Right.
+        /// </summary>
+        internal static string ButtonSettings_2 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Side Button Forward.
+        /// </summary>
+        internal static string ButtonSettings_3 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Side Button Back.
+        /// </summary>
+        internal static string ButtonSettings_4 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To customize, click one of the outlined sections on the image to the left.
+        /// </summary>
+        internal static string ButtonSettings_5 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore to All Applictions.
+        /// </summary>
+        internal static string ButtonSettings_6 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggested Actions.
+        /// </summary>
+        internal static string ButtonSettings_7 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Productivity Actions.
+        /// </summary>
+        internal static string ButtonSettings_8 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Actions.
+        /// </summary>
+        internal static string ButtonSettings_9 {
+            get {
+                return ResourceManager.GetString("ButtonSettings.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera Control.
         /// </summary>
         internal static string Camera_0 {
@@ -781,11 +907,83 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chat.
+        /// </summary>
+        internal static string Chat {
+            get {
+                return ResourceManager.GetString("Chat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collaboration.
+        /// </summary>
+        internal static string Collaboration {
+            get {
+                return ResourceManager.GetString("Collaboration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collaboration Icons.
+        /// </summary>
+        internal static string Collaboration_0 {
+            get {
+                return ResourceManager.GetString("Collaboration.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call..
+        /// </summary>
+        internal static string Collaboration_1 {
+            get {
+                return ResourceManager.GetString("Collaboration.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable blink effect when there is a new chat message in conference\ncall.
+        /// </summary>
+        internal static string Collaboration_3 {
+            get {
+                return ResourceManager.GetString("Collaboration.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Activate icons on the keyboard by double tapping instead of single\ntapping.
+        /// </summary>
+        internal static string Collaboration_4 {
+            get {
+                return ResourceManager.GetString("Collaboration.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use Collaboration Keyboard with Microsoft Teams, ensure that you are signed into and using the latest version of Microsoft Teams, and that Third-party app API is enabled.
+        /// </summary>
+        internal static string Collaboration_5 {
+            get {
+                return ResourceManager.GetString("Collaboration.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contrast.
         /// </summary>
         internal static string Contrast {
             get {
                 return ResourceManager.GetString("Contrast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize.
+        /// </summary>
+        internal static string Customize {
+            get {
+                return ResourceManager.GetString("Customize", resourceCulture);
             }
         }
         
@@ -831,6 +1029,15 @@ namespace DDPM.UI.Resources {
         internal static string EasyArrange {
             get {
                 return ResourceManager.GetString("EasyArrange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
             }
         }
         
@@ -1042,6 +1249,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn more.
+        /// </summary>
+        internal static string LearnMore {
+            get {
+                return ResourceManager.GetString("LearnMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Luminance.
         /// </summary>
         internal static string Luminance {
@@ -1065,6 +1281,15 @@ namespace DDPM.UI.Resources {
         internal static string ManufactureMonth {
             get {
                 return ResourceManager.GetString("ManufactureMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mic.
+        /// </summary>
+        internal static string Mic {
+            get {
+                return ResourceManager.GetString("Mic", resourceCulture);
             }
         }
         
@@ -1159,6 +1384,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ON.
         /// </summary>
         internal static string On {
@@ -1191,6 +1425,15 @@ namespace DDPM.UI.Resources {
         internal static string QuickSettings {
             get {
                 return ResourceManager.GetString("QuickSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        internal static string Remove {
+            get {
+                return ResourceManager.GetString("Remove", resourceCulture);
             }
         }
         
@@ -1236,6 +1479,15 @@ namespace DDPM.UI.Resources {
         internal static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share.
+        /// </summary>
+        internal static string Share {
+            get {
+                return ResourceManager.GetString("Share", resourceCulture);
             }
         }
         
@@ -1362,6 +1614,15 @@ namespace DDPM.UI.Resources {
         internal static string VbarText_DisplayOthers {
             get {
                 return ResourceManager.GetString("VbarText_DisplayOthers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video.
+        /// </summary>
+        internal static string Video {
+            get {
+                return ResourceManager.GetString("Video", resourceCulture);
             }
         }
         

@@ -84,7 +84,7 @@
 
             <Grid HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Brightness -" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.0], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding BrightnessMinsKey,Mode=TwoWay}"
                         Name="tbBrightnessMins"
@@ -102,7 +102,7 @@
             </Grid>
             <Grid Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Brightness +" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding BrightnessAddKey,Mode=TwoWay}"
                         Name="tbBrightnessAdd"
@@ -120,7 +120,7 @@
             </Grid>
             <Grid Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Contrast -" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding ContrastMinsKey,Mode=TwoWay}"
                         Name="tbContrastMins"
@@ -138,7 +138,7 @@
             </Grid>
             <Grid Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Contrast +" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding ContrastAddKey,Mode=TwoWay}"
                         Background="#141D28" Foreground="White" Width="472" Height="30"
@@ -156,7 +156,7 @@
             </Grid>
             <Grid Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Luminance -" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding LuminanceMinsKey,Mode=TwoWay}"
                         Background="#141D28" Foreground="White" Width="472" Height="30"
@@ -174,7 +174,7 @@
             </Grid>
             <Grid Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Luminance +" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.5], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding LuminanceAddKey,Mode=TwoWay}"
                         Background="#141D28" Foreground="White" Width="472" Height="30"
