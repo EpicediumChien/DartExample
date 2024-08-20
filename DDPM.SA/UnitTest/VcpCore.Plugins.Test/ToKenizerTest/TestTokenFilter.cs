@@ -1,4 +1,6 @@
-﻿namespace VcpCore.Plugins.Test.ToKenizerTest
+﻿using WinCopies;
+
+namespace VcpCore.Plugins.Test.ToKenizerTest
 {
     public class TestTokenFilter
     {
@@ -6,13 +8,13 @@
         public void TokenFilterTest()
         {
             string pattern = "#";
+            string Name = "Name1";
             TokenFilter<Token> tokenizer = new TokenFilter<Token>(pattern);
             tokenizer.Pattern = pattern;
-            tokenizer.Name = "Name1";
+            tokenizer.Name = Name;
             Assert.IsNotNull(tokenizer);
-
-            string value = "value1";
-            tokenizer.GetToken(value);
+            Assert.That(pattern, Is.EqualTo(tokenizer.Pattern));
+            Assert.That(Name, Is.EqualTo(tokenizer.Name));
         }
 
         [Test]
