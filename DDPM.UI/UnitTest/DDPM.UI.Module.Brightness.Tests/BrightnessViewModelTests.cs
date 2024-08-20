@@ -248,7 +248,7 @@ namespace DDPM.UI.Module.Brightness.Tests
 
             var myContrastValue = 2;
             brightnessViewModel.ContrastValue = myContrastValue;
-            Assert.That(brightnessViewModel.ContrastValue, Is.EqualTo(myContrastValue));
+            Assert.That(brightnessViewModel.ContrastValue, Is.EqualTo(25)); // The minimum value is 25, so shouldn't be 2.
         }
 
         [Test]

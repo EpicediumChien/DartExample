@@ -205,3 +205,13 @@ testcoverage/
 /DDPM.UI/CommonDll/VcpCore.Interfaces.deps.json
 /DDPM.UI/CommonDll/DDPM.Win32Lib.deps.json
 /DDPM.UI/CommonDll/VcpCore.Common.deps.json
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
+/DDPM.UI/CommonDll/DDPM.ShowOsd.deps.json
+/DDPM.UI/CommonDll/DDPM.Win32Lib.deps.json
+/DDPM.UI/CommonDll/VcpCore.Common.deps.json
+/DDPM.UI/CommonDll/VcpCore.Interfaces.deps.json
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
+/DDPM.UI/CommonDll/DDPM.ShowOsd.deps.json
+/DDPM.UI/CommonDll/DDPM.Win32Lib.deps.json
+/DDPM.UI/CommonDll/VcpCore.Common.deps.json
+/DDPM.UI/CommonDll/VcpCore.Interfaces.deps.json
