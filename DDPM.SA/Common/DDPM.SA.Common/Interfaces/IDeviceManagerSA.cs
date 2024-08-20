@@ -29,6 +29,11 @@ namespace DDPM.SA.Common
         public string changedProperty { get; set; }
     }
 
+    public class UpdateUINotify : EventArgs
+    {
+        public string UI_Field_Name { get; set; } = string.Empty;
+    }
+
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
         #region public for SchedulerManger
@@ -288,10 +293,11 @@ namespace DDPM.SA.Common
 
         #region public for CMA/CLI
 
-        Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input);
+        //Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input);
+        //Task<List<CommandResult>> listConnectedDeviceInfo();
 
-        Task<List<CommandResult>> listConnectedDeviceInfo();
-
+        event EventHandler<UpdateUINotify> UIUpdateNotify;
+        void OnUIUpdateNotify(UpdateUINotify e);
         #endregion public for CMA/CLI
 
         #region public for display properties
