@@ -427,6 +427,17 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                     _settings = new DDPMSettings(ddpm_app, ddpm_user, ddpm_it);
 
+                if(_settings != null)
+                {
+                    //0819 get IT config and apply it
+                    if (_SysSettingsPlugin != null)
+                    {
+                        DDPMITConfig tmp = _SysSettingsPlugin.GetITGlobalConfigs(force_reload).Result;
+                        if (tmp != null)
+                            _settings.LockSettings = tmp;
+                    }
+                }
+
                 return Task.FromResult(_settings);
             }
         }

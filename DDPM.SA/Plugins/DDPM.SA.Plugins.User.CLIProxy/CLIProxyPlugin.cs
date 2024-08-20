@@ -20,6 +20,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
+using DDPM.SA.Common.CLI;
 
 namespace DDPM.SA.Plugin.User.CLIManager
 {
@@ -417,7 +418,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     switch (commandLineInput.TargetFeature)
                     {
                         case "TELEMETRYCONSENT":
-                            cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             break;
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
@@ -443,7 +446,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
             });
         }
 
-        private CLIEventResult CLI_Analytics_Consent(CommandLineInput commandLineInput, string action_guid)
+        /*private CLIEventResult CLI_Analytics_Consent(CommandLineInput commandLineInput, string action_guid)
         {
             if (commandLineInput == null)
                 return Response_EmptyCommandInput(action_guid);
@@ -567,7 +570,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
             result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
             result.ExitCode = (int)CLI_ExitCode.unknow_command;
             return result;
-        }
+        }*/
         #endregion
 
         #region ICLIProxy implementation

@@ -295,7 +295,7 @@ namespace NetworkKVM.Plugins
             string ModelName = monitorInfo.modelName.Replace(" ", "");
             if (ModelName.IndexOf("P2425E") != -1 || ModelName.IndexOf("P2425HE") != -1 || ModelName.IndexOf("P2725HE") != -1)
             {
-                return Task.FromResult(false);
+                return Task.FromResult(true);
             }
             if (monitorInfo.CapabilityDic.ContainsKey("C6"))
             {
@@ -375,6 +375,8 @@ namespace NetworkKVM.Plugins
             {
                 if (pipeServer.IsConnected)
                 {
+                    _logs.DebugMsg("[NetworkKVM] SetVCPNotify VcpCode : " + vcpcode.ToString());
+                    _logs.DebugMsg("[NetworkKVM] SetVCPNotify value : " + value.ToString());
                     SET_VCP_NOTIFY set_VCP_NOTIFY = new SET_VCP_NOTIFY();
                     set_VCP_NOTIFY.MonitorIndex = monitorInfo.Index;
                     set_VCP_NOTIFY.VcpCode = vcpcode;
@@ -612,11 +614,11 @@ namespace NetworkKVM.Plugins
 
         private void CreateNamedPipe()
         {
-//#if DEBUG
-//            string namedPipeName = "VCPNamedPipe";
-//#else
+#if DEBUG
+            string namedPipeName = "VCPNamedPipe";
+#else
             string namedPipeName = Guid.NewGuid().ToString("D");
-//#endif
+#endif
             _logs.DebugMsg("[NetworkKVM] Name: " + namedPipeName);
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
 
@@ -1019,6 +1021,7 @@ namespace NetworkKVM.Plugins
                             jsonHotkey.Alt == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Menu) &&
                             jsonHotkey.Shift == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Shift))
                         {
+                            _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable false");
                             //VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey((Key)jsonHotkey.Key);
                             int index = hotkeyInfo.Hotkey.FindIndex(x => (x == (VirtualKey)jsonHotkey.Key));
                             if (index != -1)
@@ -1031,6 +1034,7 @@ namespace NetworkKVM.Plugins
                         }
                     }
                 }
+                _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable true");
                 is_HOTKEY_AVAILABLE_RESPONSE.Available = true;
                 is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
                 is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
@@ -1050,10 +1054,12 @@ namespace NetworkKVM.Plugins
             chanage_LIMITED_SW.MonitorIndex = monitorInfo.Index;
             if (isON)
             {
+                _logs.DebugMsg("[NetworkKVM] SendChangeLimitedSW true");
                 chanage_LIMITED_SW.Reason = "true";
             }
             else
             {
+                _logs.DebugMsg("[NetworkKVM] SendChangeLimitedSW false");
                 chanage_LIMITED_SW.Reason = "false";
             }
             chanage_LIMITED_SW.Checksum = chanage_LIMITED_SW.CalculateChecksum();

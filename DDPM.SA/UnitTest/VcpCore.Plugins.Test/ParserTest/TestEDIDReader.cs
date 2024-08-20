@@ -2067,5 +2067,388 @@ namespace VcpCore.Plugins.Test.ParserTest
                 Assert.That(Maximum_Vertical_Frequency2, Is.EqualTo(result));
             }
         }
+
+        [Test]
+        public void TestMinimum_Vertical_Frequency()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[95] = 0x10;  //16
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Minimum_Vertical_Frequency1 = "";
+            string Minimum_Vertical_Frequency2 = "16 Hz";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Monitor_Range_Limit.Minimum_Vertical_Frequency(InvalidEdid);
+                Assert.That(Minimum_Vertical_Frequency1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Monitor_Range_Limit.Minimum_Vertical_Frequency(validEdid);
+                Assert.That(Minimum_Vertical_Frequency2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestMaximum_Horizontal_Frequency()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[98] = 0x78;  //120
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Maximum_Horizontal_Frequency1 = "";
+            string Maximum_Horizontal_Frequency2 = "120 KHz";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Monitor_Range_Limit.Maximum_Horizontal_Frequency(InvalidEdid);
+                Assert.That(Maximum_Horizontal_Frequency1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Monitor_Range_Limit.Maximum_Horizontal_Frequency(validEdid);
+                Assert.That(Maximum_Horizontal_Frequency2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestMinimum_Horizontal_Frequency()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[97] = 0x14;  //20
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Minimum_Horizontal_Frequency1 = "";
+            string Minimum_Horizontal_Frequency2 = "20 KHz";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Monitor_Range_Limit.Minimum_Horizontal_Frequency(InvalidEdid);
+                Assert.That(Minimum_Horizontal_Frequency1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Monitor_Range_Limit.Minimum_Horizontal_Frequency(validEdid);
+                Assert.That(Minimum_Horizontal_Frequency2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestMaximum_Pixel_Clock()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[99] = 0x82;  //130
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Maximum_Pixel_Clock1 = "";
+            string Maximum_Pixel_Clock2 = "1300 MHz";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Monitor_Range_Limit.Maximum_Pixel_Clock(InvalidEdid);
+                Assert.That(Maximum_Pixel_Clock1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                var result = Monitor_Range_Limit.Maximum_Pixel_Clock(validEdid);
+                Assert.That(Maximum_Pixel_Clock2, Is.EqualTo(result));
+            }
+        }
+
+        [Test]
+        public void TestExtended_Timing_Information_Type()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[100] = 0x00;
+
+            byte[] validEdid1 = new byte[128];
+            validEdid1[100] = 0x02;
+            validEdid1[101] = 0x32; //50
+            validEdid1[103] = 0x32; //50
+            validEdid1[104] = 0x42; //66
+            validEdid1[105] = 0x52; //82
+            validEdid1[106] = 0x62; //98
+            validEdid1[107] = 0x72; //114
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[100] = 0x03;
+            validEdid2[101] = 0x32; //50
+            validEdid2[103] = 0x32; //50
+            validEdid2[104] = 0x42; //66
+            validEdid2[105] = 0x52; //82
+            validEdid2[106] = 0x62; //98
+            validEdid2[107] = 0x72; //114
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Extended_Timing_Information_Type1 = "";
+            string Extended_Timing_Information_Type2 = "No information, padded with 0A 20 20 20 20 20 20.";
+            string Extended_Timing_Information_Type3 = "Secondary GTF supported02 32 00 32 42 52 62 72 .";
+            string Extended_Timing_Information_Type4 = "Unknow information, padded with 03 32 00 32 42 52 62 72 .";
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Monitor_Range_Limit.Extended_Timing_Information_Type(InvalidEdid);
+                Assert.That(Extended_Timing_Information_Type1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (validEdid[100] == 0x00)
+                {
+                    var result = Monitor_Range_Limit.Extended_Timing_Information_Type(validEdid);
+                    Assert.That(Extended_Timing_Information_Type2, Is.EqualTo(result));
+                }
+
+                if (validEdid1[100] == 0x02)
+                {
+                    var result = Monitor_Range_Limit.Extended_Timing_Information_Type(validEdid1);
+                    Assert.That(Extended_Timing_Information_Type3, Is.EqualTo(result));
+                }
+
+                if ((validEdid2[100] != 0x02) & (validEdid2[100] != 0x00))
+                {
+                    var result = Monitor_Range_Limit.Extended_Timing_Information_Type(validEdid2);
+                    Assert.That(Extended_Timing_Information_Type4, Is.EqualTo(result));
+                }
+            }
+        }
+    }
+
+    public class TestSecondary_GTF
+    {
+        [Test]
+        public void TestSecondary_Curve_Start_Frequency()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[100] = 0x02;
+            validEdid[102] = 0x64;
+
+            byte[] validEdid1 = new byte[128];
+            validEdid1[100] = 0x03;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Secondary_Curve_Start_Frequency1 = "";
+            string Secondary_Curve_Start_Frequency2 = "200 KHz";
+            string Secondary_Curve_Start_Frequency3 = "Invalid";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Secondary_GTF.Secondary_Curve_Start_Frequency(InvalidEdid);
+                Assert.That(Secondary_Curve_Start_Frequency1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (validEdid[100] == 0x02)
+                {
+                    var result = Secondary_GTF.Secondary_Curve_Start_Frequency(validEdid);
+                    Assert.That(Secondary_Curve_Start_Frequency2, Is.EqualTo(result));
+                }
+
+                if (validEdid1[100] != 0x02)
+                {
+                    var result = Secondary_GTF.Secondary_Curve_Start_Frequency(validEdid1);
+                    Assert.That(Secondary_Curve_Start_Frequency3, Is.EqualTo(result));
+                }
+            }
+        }
+
+
+        [Test]
+        public void TestGTF_C()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[100] = 0x02;
+            validEdid[103] = 0x64;
+
+            byte[] validEdid1 = new byte[128];
+            validEdid1[100] = 0x03;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string GTF_C1 = "";
+            string GTF_C2 = "50.0";
+            string GTF_C3 = "Invalid";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Secondary_GTF.GTF_C(InvalidEdid);
+                Assert.That(GTF_C1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (validEdid[100] == 0x02)
+                {
+                    var result = Secondary_GTF.GTF_C(validEdid);
+                    Assert.That(GTF_C2, Is.EqualTo(result));
+                }
+
+                if (validEdid1[100] != 0x02)
+                {
+                    var result = Secondary_GTF.GTF_C(validEdid1);
+                    Assert.That(GTF_C3, Is.EqualTo(result));
+                }
+            }
+        }
+
+        [Test]
+        public void TestGTF_M()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[100] = 0x02;
+            validEdid[104] = 0x82;
+            validEdid[105] = 0x64;
+
+            byte[] validEdid1 = new byte[128];
+            validEdid1[100] = 0x03;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string GTF_M1 = "";
+            string GTF_M2 = "25730";
+            string GTF_M3 = "Invalid";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Secondary_GTF.GTF_M(InvalidEdid);
+                Assert.That(GTF_M1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (validEdid[100] == 0x02)
+                {
+                    var result = Secondary_GTF.GTF_M(validEdid);
+                    Assert.That(GTF_M2, Is.EqualTo(result));
+                }
+
+                if (validEdid1[100] != 0x02)
+                {
+                    var result = Secondary_GTF.GTF_M(validEdid1);
+                    Assert.That(GTF_M3, Is.EqualTo(result));
+                }
+            }
+        }
+
+        [Test]
+        public void TestGTF_K()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[100] = 0x02;
+            validEdid[106] = 0x68; //104
+
+            byte[] validEdid1 = new byte[128];
+            validEdid1[100] = 0x03;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string GTF_K1 = "";
+            string GTF_K2 = "104";
+            string GTF_K3 = "Invalid";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Secondary_GTF.GTF_K(InvalidEdid);
+                Assert.That(GTF_K1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (validEdid[100] == 0x02)
+                {
+                    var result = Secondary_GTF.GTF_K(validEdid);
+                    Assert.That(GTF_K2, Is.EqualTo(result));
+                }
+
+                if (validEdid1[100] != 0x02)
+                {
+                    var result = Secondary_GTF.GTF_K(validEdid1);
+                    Assert.That(GTF_K3, Is.EqualTo(result));
+                }
+            }
+        }
+
+        [Test]
+        public void TestGTF_J()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[100] = 0x02;
+            validEdid[103] = 0x64; //104
+
+            byte[] validEdid1 = new byte[128];
+            validEdid1[100] = 0x03;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string GTF_J1 = "";
+            string GTF_J2 = "50.0";
+            string GTF_J3 = "Invalid";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Secondary_GTF.GTF_J(InvalidEdid);
+                Assert.That(GTF_J1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (validEdid[100] == 0x02)
+                {
+                    var result = Secondary_GTF.GTF_J(validEdid);
+                    Assert.That(GTF_J2, Is.EqualTo(result));
+                }
+
+                if (validEdid1[100] != 0x02)
+                {
+                    var result = Secondary_GTF.GTF_J(validEdid1);
+                    Assert.That(GTF_J3, Is.EqualTo(result));
+                }
+            }
+        }
+    }
+
+    public class TestStereo_Display
+    {
+        [Test]
+        public void TestStereo_Mode()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[71] = 0x91;
+
+            byte[] validEdid1 = new byte[128];
+            validEdid1[71] = 0x60;
+
+            byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
+            string Stereo_Mode1 = "";
+            string Stereo_Mode2 = "Normal display (no stereo)";
+            string Stereo_Mode3 = "4-way interleaved stereo";
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var result = Stereo_Display.Stereo_Mode(InvalidEdid);
+                Assert.That(Stereo_Mode1, Is.EqualTo(result));
+            }
+
+            if (validEdid.Length >= 128)
+            {
+                if (Contains(validEdid[71], 0x01))
+                {
+                    if (validEdid[71] == 0x91)
+                    {
+                        var result = Stereo_Display.Stereo_Mode(validEdid);
+                        Assert.That(Stereo_Mode2, Is.EqualTo(result));
+                    }
+                }
+                if (!Contains(validEdid1[71], 0x01))
+                {
+                    if (validEdid1[71] == 0x60)
+                    {
+                        var result = Stereo_Display.Stereo_Mode(validEdid1);
+                        Assert.That(Stereo_Mode3, Is.EqualTo(result));
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CLI.Plugins.Display;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
@@ -11,8 +12,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
+using Windows.Foundation.Diagnostics;
 using static DDPM.SA.Common.ICLICommandTable;
 using Console = System.Console;
 using Convert = System.Convert;
@@ -407,6 +410,36 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
+                case "COLORMANAGEMENT":
+                    if (commandLineInput.Command.Equals("GET"))
+                    {
+                        var ret = ColorManagement(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    if (commandLineInput.Command.Equals("SET"))
+                    {
+                        int exitcode = 0;
+                        string output = string.Empty;
+                        for (int j = 0; j < commandLineInput.Options.Count; j++)//呼叫方法名稱
+                        {
+                            if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                            {
+                                var ret = ColorManagement(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
+                                exitcode = ret.code;
+                                output += "\n" + ret.result;
+                            }
+                            if (exitcode != 0)
+                            {
+                                result.serialize_Json_response = output;
+                                result.ExitCode = exitcode;
+                                return result;
+                            }
+                        }
+                        result.serialize_Json_response = output;
+                        result.ExitCode = exitcode;
+                    }
+                    break;
                 case "RESTOREFACTORYDEFAULTS":
                     if (commandLineInput.Command.Equals("SET"))
                     {
@@ -487,7 +520,6 @@ namespace DDPM.CLI.Plugins.Display
                         var ret = GetDeviceData(devMgr, commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
-                        return result;
                     }
                     break;
 
@@ -521,7 +553,6 @@ namespace DDPM.CLI.Plugins.Display
                         var ret = SetOSDLanguage(devMgr, commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
-                        return result;
                     }
                     break;
 
@@ -530,7 +561,6 @@ namespace DDPM.CLI.Plugins.Display
                         var ret = GetMonitorCount(devMgr, commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
-                        return result;
                     }
                     break;
 
@@ -539,7 +569,6 @@ namespace DDPM.CLI.Plugins.Display
                         var ret = GetDiagnosticReport(devMgr, commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
-                        return result;
                     }
                     break;
 
@@ -548,13 +577,20 @@ namespace DDPM.CLI.Plugins.Display
                         var ret = ApplyConfigurationX(devMgr, commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
-                        return result;
                     }
                     break;
 
                 case "POWERSETTING":
                     {
                         var ret = SetPowerSetting(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+                case "SPEAKERVOLUME":
+                case "MICROPHONE":
+                    {
+                        var ret = Set_Mute_Unmute(devMgr, commandLineInput);
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
@@ -4319,6 +4355,274 @@ namespace DDPM.CLI.Plugins.Display
         }
 
         // jim add 20240607
+        private async Task<(int code, string result)> ColorManagement(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
+        {
+            //if (devMgr == null)
+            //{
+            //    writelog("ActiveColorProfile: input null IDeviceManagerSA");
+            //    return (int)CLI_ExitCode.null_device_manager;
+            //}
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
+            string output = string.Empty;
+
+            if (type == "SET")
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    CLI_RESPONSE ret = new CLI_RESPONSE()
+                    {
+                        Command = type,
+                        Result = "FAIL",
+                        Message = "Empty input value"
+                    };
+                    output = JsonConvert.SerializeObject(ret, Formatting.Indented);
+                    return ((int)CLI_ExitCode.fail_FormantError, output);
+                }
+
+                // jim modify 20240608
+                CLI_Set_AllMonitorProfile_RESPONSE _Set_AllMonitorProfile_RESPONSE = new CLI_Set_AllMonitorProfile_RESPONSE();
+                bool r = false;
+                int n_index = 0;
+
+                if (index.Count == 0 && serviceTag.Count == 0)
+                {
+                    foreach (var monitor in _AllInfoMonitors)
+                    {
+                        //r = devMgr.SetMonitorProfile(monitor, value).Result;
+
+                        switch (value.ToUpper())
+                        {
+                            case "bymonitor":
+                                value = "bymonitor";
+                                r = devMgr.SetMonitorProfile(monitor, value).Result;
+                                break;
+                            case "byhost":
+                                value = "byhost";
+                                r = devMgr.WriteColorPresetByColorProfile(monitor, value).Result;
+                                break;
+
+                        }
+
+                        _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        _Set_AllMonitorProfile_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
+                        _Set_AllMonitorProfile_RESPONSE.Command = "SET";
+                        _Set_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                        _Set_AllMonitorProfile_RESPONSE.Set_AllMonitorProfile = value;
+
+                        if (!r)
+                        {
+                            _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                        }
+                    }
+                }
+                // 20240614 jim modify
+                if (index.Count != 0)
+                {
+                    foreach (string idx in index)
+                    {
+                        switch (value.ToUpper())
+                        {
+                            case "bymonitor":
+                                value = "bymonitor";
+                                r = devMgr.SetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                                break;
+                            case "byhost":
+                                value = "byhost";
+                                r = devMgr.WriteColorPresetByColorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                                break;
+
+                        }
+
+                        // jim modify 20240608
+                        _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
+                        _Set_AllMonitorProfile_RESPONSE.ServiceTag = "";
+                        _Set_AllMonitorProfile_RESPONSE.Command = "SET";
+                        _Set_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                        _Set_AllMonitorProfile_RESPONSE.Set_AllMonitorProfile = value;
+
+                        if (!r)
+                        {
+                            _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                        }
+                    }
+                }
+                // 20240614 jim modify
+                if (serviceTag.Count != 0)
+                {
+                    foreach (string tag in serviceTag)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            switch (value.ToUpper())
+                            {
+                                case "bymonitor":
+                                    value = "bymonitor";
+                                    r = devMgr.SetMonitorProfile(mo, value).Result;
+                                    break;
+                                case "byhost":
+                                    value = "byhost";
+                                    r = devMgr.WriteColorPresetByColorProfile(mo, value).Result;
+                                    break;
+
+                            }
+
+                            _Set_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Set_AllMonitorProfile_RESPONSE.ServiceTag = tag;
+                            _Set_AllMonitorProfile_RESPONSE.Command = "SET";
+                            _Set_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                            _Set_AllMonitorProfile_RESPONSE.Set_AllMonitorProfile = value;
+
+                            if (!r)
+                            {
+                                _Set_AllMonitorProfile_RESPONSE.Result = "fail";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            }
+                            else
+                            {
+                                _Set_AllMonitorProfile_RESPONSE.Result = "pass";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Set_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
+                return ((int)CLI_ExitCode.success, output);
+            }
+            else if (type == "GET") //Dean 0726 should check if type matched as well
+            {
+                // jim add 20240608
+                CLI_Get_AllMonitorProfile_RESPONSE _Get_AllMonitorProfile_RESPONSE = new CLI_Get_AllMonitorProfile_RESPONSE();
+
+                string Key_Profile_Name = string.Empty;
+
+                if (index.Count == 0 && serviceTag.Count == 0)
+                {
+                    foreach (var monitor in _AllInfoMonitors)
+                    {
+                        Key_Profile_Name = string.Empty;
+                        Key_Profile_Name = devMgr.GetMonitorProfile(monitor).Result;
+
+                        // jim modify 20240608
+                        _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        _Get_AllMonitorProfile_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
+                        _Get_AllMonitorProfile_RESPONSE.Command = "GET";
+                        _Get_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                        _Get_AllMonitorProfile_RESPONSE.Get_AllMonitorProfile = Key_Profile_Name;
+
+                        if (String.IsNullOrEmpty(Key_Profile_Name))
+                        {
+                            _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                        }
+                    }
+
+                }
+                // 20240614 jim modify
+                if (index.Count != 0)
+                {
+                    foreach (string idx in index)
+                    {
+                        Key_Profile_Name = string.Empty;
+                        Key_Profile_Name = devMgr.GetMonitorProfile(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
+
+                        // jim modify 20240608
+                        _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base(idx);
+                        _Get_AllMonitorProfile_RESPONSE.ServiceTag = "";
+                        _Get_AllMonitorProfile_RESPONSE.Command = "GET";
+                        _Get_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                        _Get_AllMonitorProfile_RESPONSE.Get_AllMonitorProfile = Key_Profile_Name;
+
+                        if (String.IsNullOrEmpty(Key_Profile_Name))
+                        {
+                            _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                        }
+                    }
+
+                }
+                // 20240614 jim modify
+                if (serviceTag.Count != 0)
+                {
+                    foreach (string tag in serviceTag)
+                    {
+                        int rc = 0;
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            Key_Profile_Name = string.Empty;
+                            Key_Profile_Name = devMgr.GetMonitorProfile(mo).Result;
+
+                            // jim modify 20240608
+                            _Get_AllMonitorProfile_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Get_AllMonitorProfile_RESPONSE.ServiceTag = tag;
+                            _Get_AllMonitorProfile_RESPONSE.Command = "GET";
+                            _Get_AllMonitorProfile_RESPONSE.TargetFeature = "COLORMANAGEMENT";
+                            _Get_AllMonitorProfile_RESPONSE.Get_AllMonitorProfile = Key_Profile_Name;
+
+                            if (String.IsNullOrEmpty(Key_Profile_Name))
+                            {
+                                _Get_AllMonitorProfile_RESPONSE.Result = "fail";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                            }
+                            else
+                            {
+                                _Get_AllMonitorProfile_RESPONSE.Result = "pass";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Get_AllMonitorProfile_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
+                return ((int)CLI_ExitCode.success, output);
+            }
+            else
+            {
+                CLI_RESPONSE ret = new CLI_RESPONSE()
+                {
+                    Command = type,
+                    Result = "Un-supported command",
+                    Message = "Un-supported command"
+                };
+                output = JsonConvert.SerializeObject(ret, Formatting.Indented);
+                return ((int)CLI_ExitCode.unknow_command, output);
+            }
+        }
         private async Task<(int code, string result)> RestoreFactoryDefaults(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value = "")
         {
             //if (devMgr == null)
@@ -8149,6 +8453,10 @@ namespace DDPM.CLI.Plugins.Display
         {
             string output = string.Empty;
 
+            StreamReader r = new StreamReader(commandLineInput.Options[0].Option_Value);
+            string jsonString = r.ReadToEnd();
+            r.Close();
+
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
@@ -8166,6 +8474,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     cli_Response.Result = "PASS";
                     cli_Response.Message = "N/A";
+                    output += "\n" + "{" + "\n" + jsonString + "\n" + "}";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
@@ -8184,6 +8493,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     cli_Response.Result = "PASS";
                     cli_Response.Message = "N/A";
+                    output += "\n" + "{" + "\n" + jsonString + "\n" + "}";
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
                 foreach (string tag in commandLineInput.ServiceTag)
@@ -8201,6 +8511,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         cli_Response.Result = "PASS";
                         cli_Response.Message = "N/A";
+                        output += "\n" + "{" + "\n" + jsonString + "\n" + "}";
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
@@ -9017,6 +9328,234 @@ namespace DDPM.CLI.Plugins.Display
                 case "STANDBY": return "0x02";
                 default: return "0x00";
             }
+        }
+        private (int code, string result) Set_Mute_Unmute(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "GET" || commandLineInput.Options.Count == 0)
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax.";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+            else
+            {
+                if (commandLineInput.Options == null || commandLineInput.Options[0].Option_Value == string.Empty || commandLineInput.Options.Count > 1)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                    return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                }
+                else
+                {
+                    return mute_unmute(devMgr, commandLineInput).Result;
+                }
+            }
+        }
+
+        private async Task<(int code, string result)> mute_unmute(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+            bool nosupport = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+            {
+                foreach (MonitorInfo monitor in _AllInfoMonitors)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    switch (commandLineInput.TargetFeature)
+                    {
+                        case "MICROPHONE":
+                            if (monitor.CapabilityDic.ContainsKey("8D"))
+                            {
+                                retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(commandLineInput.Options[0].Option_Value)).Result;
+                            }
+                            else
+                            {
+                                nosupport = true;
+                            }
+                            break;
+
+                        case "SPEAKERVOLUME":
+                            if (monitor.CapabilityDic.ContainsKey("62"))
+                            {
+                                if (commandLineInput.Options[0].Option_Value == "MUTE")
+                                    retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFF").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
+                                if (commandLineInput.Options[0].Option_Value == "UNMUTE")
+                                    retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFE").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
+                            }
+                            else
+                            {
+                                nosupport = true;
+                            }
+                            break;
+                    }
+
+                    if (retcode)
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    else
+                    {
+                        if (nosupport)
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                        }
+                        else
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                        }
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            else
+            {
+                foreach (string idx in commandLineInput.DeviceIndex)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base(idx);
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    switch (commandLineInput.TargetFeature)
+                    {
+                        case "MICROPHONE":
+                            if (monitor.CapabilityDic.ContainsKey("8D"))
+                            {
+                                retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(commandLineInput.Options[0].Option_Value)).Result;
+                            }
+                            else
+                            {
+                                nosupport = true;
+                            }
+                            break;
+
+                        case "SPEAKERVOLUME":
+                            if (monitor.CapabilityDic.ContainsKey("62"))
+                            {
+                                if (commandLineInput.Options[0].Option_Value == "MUTE")
+                                    retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFF").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
+                                if (commandLineInput.Options[0].Option_Value == "UNMUTE")
+                                    retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFE").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
+                            }
+                            else
+                            {
+                                nosupport = true;
+                            }
+                            break;
+                    }
+
+                    if (retcode)
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    else
+                    {
+                        if (nosupport)
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                        }
+                        else
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                        }
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+                foreach (string tag in commandLineInput.ServiceTag)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    foreach (MonitorInfo monitor in tmp)
+                    {
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.AliasDeviceName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                        switch (commandLineInput.TargetFeature)
+                        {
+                            case "MICROPHONE":
+                                if (monitor.CapabilityDic.ContainsKey("8D"))
+                                {
+                                    retcode = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(commandLineInput.Options[0].Option_Value)).Result;
+                                }
+                                else
+                                {
+                                    nosupport = true;
+                                }
+                                break;
+
+                            case "SPEAKERVOLUME":
+                                if (monitor.CapabilityDic.ContainsKey("62"))
+                                {
+                                    if (commandLineInput.Options[0].Option_Value == "MUTE")
+                                        retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFF").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
+                                    if (commandLineInput.Options[0].Option_Value == "UNMUTE")
+                                        retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFE").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
+                                }
+                                else
+                                {
+                                    nosupport = true;
+                                }
+                                break;
+                        }
+
+                        if (retcode)
+                        {
+                            cli_Response.Result = "PASS";
+                            cli_Response.Message = "N/A";
+                        }
+                        else
+                        {
+                            if (nosupport)
+                            {
+                                cli_Response.Result = "FAIL";
+                                cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                            }
+                            else
+                            {
+                                cli_Response.Result = "FAIL";
+                                cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                            }
+                        }
+                        System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
+            }
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
         #endregion Malik

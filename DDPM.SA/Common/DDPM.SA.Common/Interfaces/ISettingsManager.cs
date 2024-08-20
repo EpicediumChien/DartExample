@@ -33,6 +33,7 @@ namespace DDPM.SA.Common
     public interface ISettingsManagerSA : IFrameworkPlugin
     {
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        Task<DDPMITConfig> GetITGlobalConfigs(bool force_reload = false);
     }
 
     /// <summary>
