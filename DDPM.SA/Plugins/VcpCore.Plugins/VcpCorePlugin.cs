@@ -781,10 +781,10 @@ namespace VcpCore.Plugins
 
                 uint length = 0;
 
-                GetCapabilitiesStringLength(monitorInfoX.hPhysicalMonitor, out length);
+                _GetCapabilitiesStringLength(monitorInfoX.hPhysicalMonitor, out length);
 
                 var sb = new StringBuilder((int)length);
-                CapabilitiesRequestAndCapabilitiesReply(monitorInfoX.hPhysicalMonitor, sb, (uint)sb.Capacity);
+                _CapabilitiesRequestAndCapabilitiesReply(monitorInfoX.hPhysicalMonitor, sb, (uint)sb.Capacity);
 
                 return sb.ToString();
             }
@@ -1680,9 +1680,9 @@ namespace VcpCore.Plugins
                         string DeviceName = new string(info.szDevice).Trim('\0');
                         //----
                         uint cPhysicalMonitors = 0;
-                        bool bSuccess = GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref cPhysicalMonitors);
+                        bool bSuccess = _GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref cPhysicalMonitors);
                         PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
-                        bSuccess = GetPhysicalMonitorsFromHMONITOR(hMonitor, cPhysicalMonitors, pPhysicalMonitors);
+                        bSuccess = _GetPhysicalMonitorsFromHMONITOR(hMonitor, cPhysicalMonitors, pPhysicalMonitors);
                         DISPLAY_DEVICE dd = new DISPLAY_DEVICE();
                         dd.cb = Marshal.SizeOf(dd);
                         //----
@@ -2076,7 +2076,7 @@ namespace VcpCore.Plugins
 
             do
             {
-                bool rc = SetVCPFeature(monitorInfoX.hPhysicalMonitor, code, val);
+                bool rc = _SetVCPFeature(monitorInfoX.hPhysicalMonitor, code, val);
 
                 if (rc)
                 {
@@ -2118,7 +2118,7 @@ namespace VcpCore.Plugins
 
             do
             {
-                bool rc = GetVCPFeatureAndVCPFeatureReply(monitorInfoX.hPhysicalMonitor, code, IntPtr.Zero, out uint currentValue, out uint maxValue); /*monitor[0].hPhysicalMonitor*/
+                bool rc = _GetVCPFeatureAndVCPFeatureReply(monitorInfoX.hPhysicalMonitor, code, IntPtr.Zero, out uint currentValue, out uint maxValue); /*monitor[0].hPhysicalMonitor*/
                 if (rc)
                 {
                     if (opt == 1)
@@ -2282,7 +2282,7 @@ namespace VcpCore.Plugins
                     bool capabilitiesStringLength = false;
                     int num = 3;
                     uint length = 0;
-                    capabilitiesStringLength = GetCapabilitiesStringLength(hPhysicalMonitor, out length);
+                    capabilitiesStringLength = _GetCapabilitiesStringLength(hPhysicalMonitor, out length);
                     while (!capabilitiesStringLength && num > 0)
                     {
                         _logs.DebugMsg($"[VcpCorePlugin] GetCapabilitiesStringLength error ({GetLastError()})");
@@ -2293,7 +2293,7 @@ namespace VcpCore.Plugins
                     if (capabilitiesStringLength)
                     {
                         var sb = new StringBuilder((int)length);
-                        while (!CapabilitiesRequestAndCapabilitiesReply(hPhysicalMonitor, sb, (uint)sb.Capacity) && num > 0)
+                        while (!_CapabilitiesRequestAndCapabilitiesReply(hPhysicalMonitor, sb, (uint)sb.Capacity) && num > 0)
                         {
                             _logs.DebugMsg($"[VcpCorePlugin] CapabilitiesRequestAndCapabilitiesReply error ({GetLastError()})");
                             num--;
@@ -2368,11 +2368,11 @@ namespace VcpCore.Plugins
         {
             uint dwNumberOfPhysicalMonitors = 0;
 
-            if (!GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref dwNumberOfPhysicalMonitors))
+            if (!_GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref dwNumberOfPhysicalMonitors))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
             PHYSICAL_MONITOR[] physicalMonitorArray = new PHYSICAL_MONITOR[dwNumberOfPhysicalMonitors];
-            if (!GetPhysicalMonitorsFromHMONITOR(hMonitor, dwNumberOfPhysicalMonitors, physicalMonitorArray))
+            if (!_GetPhysicalMonitorsFromHMONITOR(hMonitor, dwNumberOfPhysicalMonitors, physicalMonitorArray))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
             return physicalMonitorArray;
