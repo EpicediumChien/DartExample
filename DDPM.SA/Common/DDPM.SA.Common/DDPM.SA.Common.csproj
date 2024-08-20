@@ -18,6 +18,7 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+    <PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.1.0-bfb389-beta" />
     <PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />
     <PackageReference Include="Dell.RPC.Transport" Version="1.5.1" />
     <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
