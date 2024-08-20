@@ -13,14 +13,25 @@ namespace DDPM.SA.Common.Settings
         private const uint FILE_FLAG_BACKUP_SEMANTICS = 0x2000000;
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern uint GetFinalPathNameByHandle(IntPtr hFile, StringBuilder lpszFilePath, uint cchFilePath, uint dwFlags);
+        private static uint _GetFinalPathNameByHandle(IntPtr hFile, StringBuilder lpszFilePath, uint cchFilePath, uint dwFlags)
+        {
+            return GetFinalPathNameByHandle(hFile, lpszFilePath, cchFilePath, dwFlags);
+        }
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool CloseHandle(IntPtr hObject);
+        private static bool _CloseHandle(IntPtr hObject)
+        {
+            return CloseHandle(hObject); 
+        }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr CreateFile(
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr CreateFile(
             [MarshalAs(UnmanagedType.LPTStr)] string filename,
             [MarshalAs(UnmanagedType.U4)] uint access,
             [MarshalAs(UnmanagedType.U4)] FileShare share,
@@ -29,16 +40,28 @@ namespace DDPM.SA.Common.Settings
             uint flagsAndAttributes,
             IntPtr templateFile);
 
+        private static IntPtr _CreateFile(
+            string filename,
+            uint access,
+            FileShare share,
+            IntPtr securityAttributes,
+            FileMode creationDisposition,
+            uint flagsAndAttributes,
+            IntPtr templateFile)
+        {
+            return CreateFile(filename, access, share, securityAttributes, creationDisposition, flagsAndAttributes, templateFile);
+        }
+
         public static string GetTargetPath(string path)
         {
-            var handle = CreateFile(path, FILE_READ_EA, FileShare.ReadWrite | FileShare.Delete, IntPtr.Zero, FileMode.Open, FILE_FLAG_BACKUP_SEMANTICS, IntPtr.Zero);
+            var handle = _CreateFile(path, FILE_READ_EA, FileShare.ReadWrite | FileShare.Delete, IntPtr.Zero, FileMode.Open, FILE_FLAG_BACKUP_SEMANTICS, IntPtr.Zero);
             if (handle == INVALID_HANDLE_VALUE)
                 throw new Win32Exception();
 
             try
             {
                 var sb = new StringBuilder(1024);
-                var result = GetFinalPathNameByHandle(handle, sb, 1024, 0);
+                var result = _GetFinalPathNameByHandle(handle, sb, 1024, 0);
                 if (result == 0)
                     throw new Win32Exception();
 
@@ -49,7 +72,7 @@ namespace DDPM.SA.Common.Settings
             }
             finally
             {
-                CloseHandle(handle);
+                _CloseHandle(handle);
             }
             return null;
         }
@@ -103,11 +126,6 @@ namespace DDPM.SA.Common.Settings
             info = $"File {path} has symlink";
             try
             {
-                //var attributes = System.IO.File.GetAttributes(path);
-                //if ((attributes & FileAttributes.ReparsePoint) != 0)
-                //{
-                //    return true;
-                //}
                 FileInfo file = new FileInfo(path);
                 if (file.LinkTarget != null)
                     return true;
