@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:local="clr-namespace:DDPM.UI.Module.DisplayOthers"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -47,7 +48,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <UXControls:UXTextBlock Grid.Column="0" Text="PowerNap" Foreground="White"
+                                        <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [PowerNap], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
                                                                 TextBlockSemanticColorType="Light" TextBlockType="Caption"
                                                                 HorizontalAlignment="Left" VerticalAlignment="Center"
                                                                 FontSize="20" LineHeight="28" />
@@ -63,7 +64,7 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="PowerNap helps you conserve power when your screensaver activates" />
+                                                                <TextBlock Text="{Binding [DisplayOthers.3], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -81,7 +82,7 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <UXControls:UXTextBlock Grid.Row="0"
-                                                            Text="When screensaver activates (choose one):"
+                                                            Text="{Binding [DisplayOthers.4], Source={x:Static lang:LangHelper.Instance}}"
                                                             Foreground="#F5F6F7" FontSize="16" LineHeight="28"
                                                             TextBlockSemanticColorType="Light" TextBlockType="Caption"
                                                             HorizontalAlignment="Left" VerticalAlignment="Center" />
@@ -110,7 +111,7 @@
                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
                                                  Background="#0672CB" Click="tbOpenScreensaverSettings_Click">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <UXControls:UXTextBlock Text="Configure Screensaver Settings " Margin="8"
+                                    <UXControls:UXTextBlock Text="{Binding [DisplayOthers.5], Source={x:Static lang:LangHelper.Instance}}" Margin="8"
                                                             Foreground="White"
                                                             VerticalAlignment="Center" />
                                     <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png"
@@ -145,7 +146,7 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock Grid.Column="0" Text="Application Settings" Foreground="White"
+                                    <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [DisplayOthers.6], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
                                                             TextBlockSemanticColorType="Light" TextBlockType="Caption"
                                                             HorizontalAlignment="Left" VerticalAlignment="Center"
                                                             FontSize="20" LineHeight="28" />
@@ -161,7 +162,7 @@
                                                     </Border.Resources>
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="Export a configuration and important to another monitor of the same model" />
+                                                            <TextBlock Text="{Binding [DisplayOthers.7], Source={x:Static lang:LangHelper.Instance}}" />
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>
