@@ -11,8 +11,11 @@ namespace DDPM.UI.Common {
     public static class Strings {
     private static ResourceManager resManager = Resources.Resources.ResourceManager;
     private static string GetString(string key) {
-      string str= resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-      return System.Text.RegularExpressions.Regex.Unescape(str);
+
+            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pl-PL");
+            string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            //string str = resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            return System.Text.RegularExpressions.Regex.Unescape(str);
     }
 
         public static readonly string AdaptiveLight = GetString("AdaptiveLight");

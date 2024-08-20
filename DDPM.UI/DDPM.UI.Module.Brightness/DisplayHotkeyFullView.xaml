@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
              mc:Ignorable="d" Background="#FF0D121A"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -63,7 +64,7 @@
             </Grid>
 
             <!-- Hotkey text -->
-            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="Hotkeys "
+            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                     HorizontalAlignment="Left" TextBlockType="Header2"
                                     TextBlockSemanticColorType="DefaultHeader"
                                     Foreground="White"
@@ -192,8 +193,7 @@
             <Grid Grid.Row="3" Grid.ColumnSpan="2" Width="954" Margin="0,30,0,0">
                 <UXControls:UXAlert>
                     <UXControls:UXAlertItem AlertItemType="Info" Label="" Background="#364861" Margin="8,8,8,8"
-                                            Message="Example: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.&#x0a;
-                                            Note that for mutiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function." />
+                                            Message="{Binding [Hotkey.6], Source={x:Static lang:LangHelper.Instance}}" />
                 </UXControls:UXAlert>
                 <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
             </Grid>

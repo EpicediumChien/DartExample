@@ -528,4 +528,31 @@
   <data name="PM" xml:space="preserve">
     <value>PM</value>
   </data>
+  <data name="Hotkeys" xml:space="preserve">
+    <value>Hotkeys</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Hotkey.0" xml:space="preserve">
+    <value>Brightness -</value>
+  </data>
+  <data name="Hotkey.1" xml:space="preserve">
+    <value>Brightness +</value>
+  </data>
+  <data name="Hotkey.2" xml:space="preserve">
+    <value>Contrast -</value>
+  </data>
+  <data name="Hotkey.3" xml:space="preserve">
+    <value>Contrast +</value>
+  </data>
+  <data name="Hotkey.4" xml:space="preserve">
+    <value>Luminance -</value>
+  </data>
+  <data name="Hotkey.5" xml:space="preserve">
+    <value>Luminance +</value>
+  </data>
+  <data name="Hotkey.6" xml:space="preserve">
+    <value>Example: "Alt + P", "Shift + F", "Ctrl + Shift + F".\nNote that for multiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
+  </data>
 </root>

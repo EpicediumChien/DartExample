@@ -916,6 +916,78 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brightness -.
+        /// </summary>
+        internal static string Hotkey_0 {
+            get {
+                return ResourceManager.GetString("Hotkey.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brightness +.
+        /// </summary>
+        internal static string Hotkey_1 {
+            get {
+                return ResourceManager.GetString("Hotkey.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contrast -.
+        /// </summary>
+        internal static string Hotkey_2 {
+            get {
+                return ResourceManager.GetString("Hotkey.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contrast +.
+        /// </summary>
+        internal static string Hotkey_3 {
+            get {
+                return ResourceManager.GetString("Hotkey.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Luminance -.
+        /// </summary>
+        internal static string Hotkey_4 {
+            get {
+                return ResourceManager.GetString("Hotkey.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Luminance +.
+        /// </summary>
+        internal static string Hotkey_5 {
+            get {
+                return ResourceManager.GetString("Hotkey.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.\nNote that for multiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function..
+        /// </summary>
+        internal static string Hotkey_6 {
+            get {
+                return ResourceManager.GetString("Hotkey.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hotkeys.
+        /// </summary>
+        internal static string Hotkeys {
+            get {
+                return ResourceManager.GetString("Hotkeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input Source.
         /// </summary>
         internal static string InputSource {
@@ -1119,6 +1191,15 @@ namespace DDPM.UI.Resources {
         internal static string QuickSettings {
             get {
                 return ResourceManager.GetString("QuickSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        internal static string Reset {
+            get {
+                return ResourceManager.GetString("Reset", resourceCulture);
             }
         }
         
