@@ -33,22 +33,37 @@ namespace DDPM.SA.Common
     //set -Display=BrightnessLevel -option=value
     public class ICLICommandTable
     {
-        /*private readonly List<IT_Command_Global> iT_Command_Consists_table = new List<IT_Command_Global>()
-        {
-            new IT_Command_Global("GET", "DISPLSY", "ENERGYSAVER", "OPTION", "LOCK"),
-            new IT_Command_Global("GET", "DISPLSY", "ENERGYSAVER", "OPTION", "UNLOCK"),
-            new IT_Command_Global("GET", "DISPLAY", "OSD", "VALUE")
-        };*/
-        private readonly List<string> Support_Lock_Feature = new List<string>()
+        //IT feature table
+        private readonly List<string> Supported_IT_Feature = new List<string>()//ex: /get -app="telemetryconsent"
         {
             "TELEMETRYCONSENT", 
             "ENGERSAVER"
         };
-        private readonly List<string> commands = new List<string>() { "GET", "SET", "CONFIGURE" };
-        //readonly List<string> types = new List<string>() { "NAME", "APPLYCONFIG" };
-
+        //IT value table of IT feature
+        private readonly List<string> Supported_IT_Value_Keyword = new List<string>()//ex: /set -app=telemetryconsent -value=on,"lock"
+        {
+            "UNLOCK",
+            "LOCK"
+        };
+        //---
+        private readonly List<string> commands = new List<string>() 
+        { 
+            "GET", 
+            "SET", 
+            "CONFIGURE" 
+        };
         //a part of input Type: target feature, ex: -Display=BrightnessLevel
-        private readonly List<string> pluginType = new List<string>() { "DISPLAY", "COLOR", "MOUSE", "KEYBOARD", "APP", "DOCK", "HEADSET" };
+        private readonly List<string> pluginType = new List<string>()
+        { 
+            "DISPLAY", 
+            "COLOR", 
+            "MOUSE", 
+            "KEYBOARD", 
+            "APP", 
+            "DOCK",
+            "HEADSET"
+        };
+
         private ILog _Log;
         public ICLICommandTable(ILog Log)
         {
@@ -294,7 +309,7 @@ namespace DDPM.SA.Common
             commandInput.isNormalCommands = false;
             commandInput.isITCommands = false;
 
-            int feature_idx = Support_Lock_Feature.FindIndex(x => x.ToUpper().Trim().Equals(commandInput.TargetFeature.ToUpper().Trim()));
+            int feature_idx = Supported_IT_Feature.FindIndex(x => x.ToUpper().Trim().Equals(commandInput.TargetFeature.ToUpper().Trim()));
             if (feature_idx >= 0) //has IT feature
             {
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
@@ -322,7 +337,11 @@ namespace DDPM.SA.Common
                             {
                                 //currently only "LOCK" and "UNLOCK" be recognized as IT global settings
                                 //other new global setting should be add to below
-                                if (value.Trim().ToUpper().Equals("LOCK") || value.Trim().ToUpper().Equals("UNLOCK")) //must match length to avoid some error parsing like OSD"LOCK"
+                                //must match length to avoid some error parsing like OSD"LOCK"
+                                int value_keyword_idx = Supported_IT_Value_Keyword.FindIndex(x => x.ToUpper().Trim().Equals(value.ToUpper().Trim()));
+                                _Log.Info($"[ICLICommandTable] index of [Supported_IT_Value_Keyword] table is [{value_keyword_idx}]");
+                                if (value_keyword_idx >= 0)
+                                //if (value.Trim().ToUpper().Equals("LOCK") || value.Trim().ToUpper().Equals("UNLOCK"))
                                 {
                                     commandInput.isITCommands = true;//recognized has IT command -> CLIManager
                                 }

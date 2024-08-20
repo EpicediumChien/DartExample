@@ -421,6 +421,12 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            if(cliEventResult.ExitCode == (int)CLI_ExitCode.success)
+                            {
+                                UpdateUINotify no = new UpdateUINotify();
+                                no.UI_Field_Name = "TELEMETRYCONSENT";
+                                _DevManagerPlugin.OnUIUpdateNotify(no);
+                            }
                             break;
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
