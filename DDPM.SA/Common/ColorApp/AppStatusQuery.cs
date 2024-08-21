@@ -32,7 +32,7 @@ namespace DDPM.ColorApp
             return GetWindowThreadProcessId(hWnd, out nProcessId);
         }*/
 
-        [DllImport("USER32.DLL")]
+        [DllImport("USER32.DLL", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
         public static int _GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount)
@@ -40,7 +40,7 @@ namespace DDPM.ColorApp
             return GetWindowText(hWnd, lpString, nMaxCount);
         }
 
-        [DllImport("USER32.DLL")]
+        [DllImport("USER32.DLL", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowTextLength(IntPtr hWnd);
         public static int _GetWindowTextLength(IntPtr hWnd)
@@ -48,7 +48,7 @@ namespace DDPM.ColorApp
             return GetWindowTextLength(hWnd);
         }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc callback, IntPtr lParam);

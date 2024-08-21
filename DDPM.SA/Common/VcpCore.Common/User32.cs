@@ -12,7 +12,7 @@ namespace VcpCore.Common
 
         private const int MonitorinfofPrimary = 0x00000001;
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [ResourceExposure(ResourceScope.None)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool GetMonitorInfo(HandleRef hmonitor, [In, Out] MonitorInfoEx info);
@@ -29,7 +29,7 @@ namespace VcpCore.Common
             return EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
         }
 
-        [DllImport("user32.dll", CharSet = CharSet.Ansi)]
+        [DllImport("user32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
@@ -38,7 +38,7 @@ namespace VcpCore.Common
             return EnumDisplaySettings(lpszDeviceName, iModeNum, ref lpDevMode);
         }
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags);
         public static bool _EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags)
@@ -251,7 +251,7 @@ namespace VcpCore.Common
 
         #region DisplayConfig APIs
 
-        [DllImport("user32")]
+        [DllImport("user32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetDisplayConfigBufferSizes(QDC flags, out int numPathArrayElements, out int numModeInfoArrayElements);
         public static int _GetDisplayConfigBufferSizes(QDC flags, out int numPathArrayElements, out int numModeInfoArrayElements)
@@ -262,7 +262,7 @@ namespace VcpCore.Common
         //[DllImport("user32")]
         //public static extern int QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, out DISPLAYCONFIG_TOPOLOGY_ID currentTopologyId);
 
-        [DllImport("user32")]
+        [DllImport("user32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID currentTopologyId);
         public static int _QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID currentTopologyId)
@@ -276,14 +276,14 @@ namespace VcpCore.Common
         //[DllImport("user32")]
         //public static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_SOURCE_DEVICE_NAME requestPacket);
 
-        [DllImport("user32")]
+        [DllImport("user32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME requestPacket);
         public static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME requestPacket)
         {
             return DisplayConfigGetDeviceInfo(ref requestPacket);
         }
-        [DllImport("user32")]
+        [DllImport("user32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO requestPacket);
         public static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO requestPacket)
@@ -291,7 +291,7 @@ namespace VcpCore.Common
             return DisplayConfigGetDeviceInfo(ref requestPacket);
         }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DisplayConfigSetDeviceInfo(ref DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE requestPacket);
         public static int _DisplayConfigSetDeviceInfo(ref DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE requestPacket)
@@ -625,7 +625,7 @@ namespace VcpCore.Common
 
         #endregion DisplayConfig Enum/Sturct
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int FormatMessage(int flag, ref IntPtr source, int msgid, int langid, ref string buff, int size, ref IntPtr args);
         public static int _FormatMessage(int flag, ref IntPtr source, int msgid, int langid, ref string buff, int size, ref IntPtr args)
@@ -633,7 +633,7 @@ namespace VcpCore.Common
             return FormatMessage(flag, ref source, msgid, langid, ref buff, size, ref args);
         }
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern long GetLastError();
         public static long _GetLastError()
@@ -660,7 +660,7 @@ namespace VcpCore.Common
         /// <param name="dwflags"></param>
         /// <param name="lParam"></param>
         /// <returns></returns>
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int ChangeDisplaySettingsEx(string lpszDeviceName, ref DEVMODE lpDevMode, IntPtr hwnd, ChangeDisplaySettingsFlags dwflags, IntPtr lParam);
         public static int _ChangeDisplaySettingsEx(string lpszDeviceName, ref DEVMODE lpDevMode, IntPtr hwnd, ChangeDisplaySettingsFlags dwflags, IntPtr lParam)
@@ -677,7 +677,7 @@ namespace VcpCore.Common
         /// <param name="modeArray"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern long SetDisplayConfig(uint numPathArrayElements, IntPtr pathArray, uint numModeArrayElements, IntPtr modeArray, uint flags);
         public static long _SetDisplayConfig(uint numPathArrayElements, IntPtr pathArray, uint numModeArrayElements, IntPtr modeArray, uint flags)
@@ -756,7 +756,7 @@ namespace VcpCore.Common
         //[DllImport("user32")]
         //public static extern int QueryDisplayConfig(QDC flags, out int numPathArrayElements, [Out] DISPLAYCONFIG_PATH_INFO[] pathInfoArray, out int modeInfoArrayElements, [Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID id);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_PREFERRED_MODE deviceMode);
         public static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_PREFERRED_MODE deviceMode)

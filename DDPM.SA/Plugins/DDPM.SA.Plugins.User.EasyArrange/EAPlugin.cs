@@ -809,8 +809,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private const short VK_ESCAPE = 0x1b;
         private const short VK_LBUTTON = 0x01;
 
-        [DllImport("User32.dll")]
-        private static extern short GetAsyncKeyState(System.Int32 vKey);
+        //[DllImport("User32.dll")]
+        //private static extern short GetAsyncKeyState(System.Int32 vKey);
 
         #endregion GetAsyncKeyState
 
