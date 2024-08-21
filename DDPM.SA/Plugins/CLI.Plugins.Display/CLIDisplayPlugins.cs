@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -7641,227 +7642,160 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) EnergysaverX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command.Equals("SET"))
+            return Energysaver(devMgr, commandLineInput).Result;
+        }
+
+        private async Task<(int code, string result)> Energysaver(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+            int somethingfail = 0;
+            ObjGetVCP rc = new ObjGetVCP();
+
+            List<int> _monitorIndeies = new List<int>();
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+            foreach (int idx in _monitorIndeies)
             {
-                if (commandLineInput.Options.Count == 1)
+                MonitorInfo monitor = _AllInfoMonitors[idx];
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Model = monitor.AliasDeviceName;
+                cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
                 {
-                    string output = string.Empty;
-                    int exitcode = 0;
-                    for (int j = 0; j < commandLineInput.Options.Count; j++)
+                    retcode = true;
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = "N/A";
+                    rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
+                    if ((int.Parse(rc.value.ToString()) & 0x0c) == 0x00)
+                        cli_Response.Value = "OFF";
+                    else if ((int.Parse(rc.value.ToString()) & 0x0c) == 0x04)
+                        cli_Response.Value = "ON";
+                    else if ((int.Parse(rc.value.ToString()) & 0x0c) == 0x08)
+                        cli_Response.Value = "ON,LOCK";
+                    else if ((int.Parse(rc.value.ToString()) & 0x0c) == 0x0c)
+                        cli_Response.Value = "OFF,LOCK";
+                    else
                     {
-                        if (commandLineInput.Options[j].Option_Name.ToUpper().Equals("VALUE"))
+                        retcode = false;
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Unknown Status.";
+                    }
+                }
+                else if (commandLineInput.Command == "SET" && commandLineInput.Options.Count == 1)
+                {
+                    string capability = monitor.CapabilityString;
+                    if (capability.Contains("E0("))
+                    {
+                        string[] ss = capability.Split("E0(");
+                        ss = ss[1].Split(")");
+                        ss = ss[0].Split(" ");
+                        if (ss[0] == "03" || ss[0] == "0F")
                         {
-                            var temp = Energysaver(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, commandLineInput.Options[j].Option_Value).Result;
-                            output += "\n" + temp.result;
-                            exitcode = temp.code;
-                            if (exitcode != 0)
-                                break;
+                            if (get_Energysaver_code(commandLineInput.Options[0].Option_Value) != "unknown_command")
+                            {
+                                rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
+                                string setvalue = (int.Parse(get_Energysaver_code(commandLineInput.Options[0].Option_Value)) | (int.Parse(rc.value.ToString()) & 0x03)).ToString();
+                                //Trace.WriteLine(setvalue.ToString());
+                                retcode = SetVCPCode(devMgr, monitor, "0xE0", setvalue).Result;
+                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                            }
+                            else
+                                somethingfail |= 0x01;
                         }
                     }
-                    return (exitcode, output);
+                    else
+                        somethingfail |= 0x10;
+
+                    if (retcode)
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    else
+                    {
+                        cli_Response.Result = "FAIL";
+                        if ((somethingfail & 0x01) == 0x01)
+                            cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
+                        else if ((somethingfail & 0x10) == 0x10)
+                            cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                        else
+                            cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                    }
                 }
                 else
                 {
-                    CLI_RESPONSE S_Energysaver_RESPONSE = new CLI_RESPONSE();
-                    S_Energysaver_RESPONSE.Result = "FAIL";
-                    S_Energysaver_RESPONSE.Message = "UNKNOWN OPTION";
-                    System.Console.WriteLine(JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
-                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            }
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private static List<int>? GetMonitorIndeies(CommandLineInput cmdLineInput, List<MonitorInfo> allMonitors)
+        {
+            if (allMonitors == null)
+                return null;
+
+            List<int> listOut = new List<int>();
+            bool isAllMonitors = true;
+
+            //If -ServiceTag=[{tag0}],[{tag1}],[{tag2}],... is specified
+            if (cmdLineInput.ServiceTag.Count > 0)
+            {
+                isAllMonitors = false;
+                foreach (MonitorInfo mi in allMonitors)
+                {
+                    if (!String.IsNullOrWhiteSpace(mi.edid.ServiceTag))
+                    {
+                        //Check if this monitor's service tag in in the -ServiceTag list
+                        string? match = cmdLineInput.ServiceTag.FirstOrDefault(x => x.Equals(mi.edid.ServiceTag, StringComparison.OrdinalIgnoreCase));
+                        if (match != null) //If found, add index value to listOut
+                            listOut.Add(mi.Index);
+                    }
+                    //Empty ServiceTage will not be added
+                }
+            }
+            //If -Index=[{idx0}],[{idx1}],[{idx2}],... is specified
+            if (cmdLineInput.DeviceIndex.Count > 0)
+            {
+                isAllMonitors = false;
+                foreach (string idxString in cmdLineInput.DeviceIndex)
+                {
+                    int idx;
+                    if (int.TryParse(idxString, out idx))
+                    {
+                        if ((idx >= 0) && (idx < allMonitors.Count))
+                        {
+                            listOut.Add(idx);
+                        }
+                    }
+                }
+            }
+
+            if (isAllMonitors)
+            {
+                foreach (MonitorInfo mi in allMonitors)
+                {
+                    listOut.Add(mi.Index);
                 }
             }
             else
             {
-                CLI_RESPONSE S_Energysaver_RESPONSE = new CLI_RESPONSE();
-                S_Energysaver_RESPONSE.Result = "FAIL";
-                S_Energysaver_RESPONSE.Message = "UNKNOWN COMMAND";
-                System.Console.WriteLine(JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
-                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
+                //Remove duplicated
+                listOut = listOut.Distinct().ToList();
             }
-        }
-
-        private async Task<(int code, string result)> Energysaver(IDeviceManagerSA devMgr, string type, List<string> index, List<string> serviceTag, string value)
-        {
-            CLI_RESPONSE S_Energysaver_RESPONSE = new CLI_RESPONSE();
-
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = await devMgr.GetMonitors();
-            string output = string.Empty;
-
-            if (type == "SET")
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    S_Energysaver_RESPONSE.Result = "Format Error";
-                    S_Energysaver_RESPONSE.Message = "Format Error";
-                    return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
-                }
-
-                if (index.Count == 0 && serviceTag.Count == 0)
-                {
-                    foreach (MonitorInfo monitor in _AllInfoMonitors)
-                    {
-                        S_Energysaver_RESPONSE = new CLI_RESPONSE();
-
-                        S_Energysaver_RESPONSE.Model = monitor.edid.ModelName;
-                        S_Energysaver_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
-                        S_Energysaver_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
-                        S_Energysaver_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        S_Energysaver_RESPONSE.Command = "SET";
-                        S_Energysaver_RESPONSE.TargetFeature = "ENERGYSAVER";
-
-                        switch (value.ToUpper())
-                        {
-                            case "ON":
-                                {
-                                    S_Energysaver_RESPONSE.Value = "ON";
-                                    S_Energysaver_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "OFF":
-                                {
-                                    S_Energysaver_RESPONSE.Value = "OFF";
-                                    S_Energysaver_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "ON,LOCK":
-                                {
-                                    S_Energysaver_RESPONSE.Value = "ON,LOCK";
-                                    S_Energysaver_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "OFF,LOCK":
-                                {
-                                    S_Energysaver_RESPONSE.Value = "OFF,LOCK";
-                                    S_Energysaver_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            default:
-                                {
-                                    S_Energysaver_RESPONSE.Result = "FAIL";
-                                    S_Energysaver_RESPONSE.Message = "Unsupport Option";
-                                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
-                                }
-                        }
-                    }
-                    output += "\n" + JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented);
-                    return ((int)CLI_ExitCode.success, output);
-                }
-                else if (index.Count != 0)
-                {
-                    foreach (string idex in index)
-                    {
-                        MonitorInfo monitor = _AllInfoMonitors[int.Parse(idex)];
-                        S_Energysaver_RESPONSE = new CLI_RESPONSE();
-
-                        S_Energysaver_RESPONSE.Model = monitor.edid.ModelName;
-                        S_Energysaver_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
-                        S_Energysaver_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
-                        S_Energysaver_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        S_Energysaver_RESPONSE.Command = "SET";
-                        S_Energysaver_RESPONSE.TargetFeature = "ENERGYSAVER";
-
-                        switch (value.ToUpper())
-                        {
-                            case "ON":
-                                {
-                                    S_Energysaver_RESPONSE.Value = "ON";
-                                    S_Energysaver_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "OFF":
-                                {
-                                    S_Energysaver_RESPONSE.Value = "OFF";
-                                    S_Energysaver_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "ON,LOCK":
-                                {
-                                    S_Energysaver_RESPONSE.Value = "ON,LOCK";
-                                    S_Energysaver_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "OFF,LOCK":
-                                {
-                                    S_Energysaver_RESPONSE.Value = "OFF,LOCK";
-                                    S_Energysaver_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            default:
-                                {
-                                    S_Energysaver_RESPONSE.Result = "FAIL";
-                                    S_Energysaver_RESPONSE.Message = "Unsupport Option";
-                                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
-                                }
-                        }
-                    }
-                    output += "\n" + JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented);
-                    return ((int)CLI_ExitCode.success, output);
-                }
-                else if (serviceTag.Count != 0)
-                {
-                    foreach (string tag in serviceTag)
-                    {
-                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
-                        foreach (MonitorInfo monitor in tmp)
-                        {
-                            S_Energysaver_RESPONSE = new CLI_RESPONSE();
-
-                            S_Energysaver_RESPONSE.Model = monitor.edid.ModelName;
-                            S_Energysaver_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
-                            S_Energysaver_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
-                            S_Energysaver_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                            S_Energysaver_RESPONSE.Command = "SET";
-                            S_Energysaver_RESPONSE.TargetFeature = "ENERGYSAVER";
-
-                            switch (value.ToUpper())
-                            {
-                                case "ON":
-                                    {
-                                        S_Energysaver_RESPONSE.Value = "ON";
-                                        S_Energysaver_RESPONSE.Result = "PASS";
-                                        break;
-                                    }
-                                case "OFF":
-                                    {
-                                        S_Energysaver_RESPONSE.Value = "OFF";
-                                        S_Energysaver_RESPONSE.Result = "PASS";
-                                        break;
-                                    }
-                                case "ON,LOCK":
-                                    {
-                                        S_Energysaver_RESPONSE.Value = "ON,LOCK";
-                                        S_Energysaver_RESPONSE.Result = "PASS";
-                                        break;
-                                    }
-                                case "OFF,LOCK":
-                                    {
-                                        S_Energysaver_RESPONSE.Value = "OFF,LOCK";
-                                        S_Energysaver_RESPONSE.Result = "PASS";
-                                        break;
-                                    }
-                                default:
-                                    {
-                                        S_Energysaver_RESPONSE.Result = "FAIL";
-                                        S_Energysaver_RESPONSE.Message = "Unsupport Option";
-                                        return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented));
-                                    }
-                            }
-                            output += "\n" + JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented);
-                            return ((int)CLI_ExitCode.success, output);
-                        }
-                    }
-                    S_Energysaver_RESPONSE = new CLI_RESPONSE();
-                    S_Energysaver_RESPONSE.Command = "SET";
-                    S_Energysaver_RESPONSE.TargetFeature = "ENERGYSAVER";
-                    S_Energysaver_RESPONSE.Result = "FAIL";
-                    S_Energysaver_RESPONSE.Message = "Invalid Service Tag";
-                    output += "\n" + JsonConvert.SerializeObject(S_Energysaver_RESPONSE, Formatting.Indented);
-                    return ((int)CLI_ExitCode.unknow_command, output);
-                }
-                return ((int)CLI_ExitCode.success, output);
-            }
-
-            return ((int)CLI_ExitCode.success, output);
+            return listOut;
         }
 
         private (int code, string result) AutocolorpresetX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
@@ -9152,6 +9086,8 @@ namespace DDPM.CLI.Plugins.Display
         {
             string output = string.Empty;
             bool retcode = false;
+            int somethingfail = 0;
+            ObjGetVCP rc = new ObjGetVCP();
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
@@ -9174,9 +9110,18 @@ namespace DDPM.CLI.Plugins.Display
                         string[] ss = capability.Split("E0(");
                         ss = ss[1].Split(")");
                         ss = ss[0].Split(" ");
-                        if (ss[0] == "03")
+                        if (ss[0] == "03"|| ss[0] == "0F")
                         {
-                            retcode = SetVCPCode(devMgr, monitor, "0xE0", get_PowerSetting_code(commandLineInput.Options[0].Option_Value.ToUpper())).Result;
+                            if (get_PowerSetting_code(commandLineInput.Options[0].Option_Value) != "unknown_command")
+                            {
+                                rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
+                                string setvalue = (int.Parse(get_PowerSetting_code(commandLineInput.Options[0].Option_Value)) | (int.Parse(rc.value.ToString()) & 0x0c)).ToString();
+                                //Trace.WriteLine(setvalue.ToString());
+                                retcode = SetVCPCode(devMgr, monitor, "0xE0", setvalue).Result;
+                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                            }
+                            else
+                                somethingfail |= 0x01;
                         }
                     }
                     else if (capability.Contains("E0"))
@@ -9194,6 +9139,9 @@ namespace DDPM.CLI.Plugins.Display
                                 break;
                         }
                     }
+                    else
+                        somethingfail |= 0x10;
+
                     if (retcode)
                     {
                         cli_Response.Result = "PASS";
@@ -9202,7 +9150,12 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         cli_Response.Result = "FAIL";
-                        cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                        if ((somethingfail & 0x01) == 0x01)
+                            cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
+                        else if ((somethingfail & 0x10) == 0x10)
+                            cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                        else
+                            cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
                     }
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
@@ -9227,9 +9180,18 @@ namespace DDPM.CLI.Plugins.Display
                         string[] ss = capability.Split("E0(");
                         ss = ss[1].Split(")");
                         ss = ss[0].Split(" ");
-                        if (ss[0] == "03")
+                        if (ss[0] == "03" || ss[0] == "0F")
                         {
-                            retcode = SetVCPCode(devMgr, monitor, "0xE0", get_PowerSetting_code(commandLineInput.Options[0].Option_Value.ToUpper())).Result;
+                            if (get_PowerSetting_code(commandLineInput.Options[0].Option_Value) != "unknown_command")
+                            {
+                                rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
+                                string setvalue = (int.Parse(get_PowerSetting_code(commandLineInput.Options[0].Option_Value)) | (int.Parse(rc.value.ToString()) & 0x0c)).ToString();
+                                //Trace.WriteLine(setvalue.ToString());
+                                retcode = SetVCPCode(devMgr, monitor, "0xE0", setvalue).Result;
+                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                            }
+                            else
+                                somethingfail |= 0x01;
                         }
                     }
                     else if (capability.Contains("E0"))
@@ -9247,6 +9209,9 @@ namespace DDPM.CLI.Plugins.Display
                                 break;
                         }
                     }
+                    else
+                        somethingfail |= 0x10;
+
                     if (retcode)
                     {
                         cli_Response.Result = "PASS";
@@ -9255,7 +9220,12 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         cli_Response.Result = "FAIL";
-                        cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                        if ((somethingfail & 0x01) == 0x01)
+                            cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
+                        else if ((somethingfail & 0x10) == 0x10)
+                            cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                        else
+                            cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
                     }
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
@@ -9279,9 +9249,18 @@ namespace DDPM.CLI.Plugins.Display
                             string[] ss = capability.Split("E0(");
                             ss = ss[1].Split(")");
                             ss = ss[0].Split(" ");
-                            if (ss[0] == "03")
+                            if (ss[0] == "03" || ss[0] == "0F")
                             {
-                                retcode = SetVCPCode(devMgr, monitor, "0xE0", get_PowerSetting_code(commandLineInput.Options[0].Option_Value.ToUpper())).Result;
+                                if (get_PowerSetting_code(commandLineInput.Options[0].Option_Value) != "unknown_command")
+                                {
+                                    rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
+                                    string setvalue = (int.Parse(get_PowerSetting_code(commandLineInput.Options[0].Option_Value)) | (int.Parse(rc.value.ToString()) & 0x0c)).ToString();
+                                    //Trace.WriteLine(setvalue.ToString());
+                                    retcode = SetVCPCode(devMgr, monitor, "0xE0", setvalue).Result;
+                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                }
+                                else
+                                    somethingfail |= 0x01;
                             }
                         }
                         else if (capability.Contains("E0"))
@@ -9299,6 +9278,9 @@ namespace DDPM.CLI.Plugins.Display
                                     break;
                             }
                         }
+                        else
+                            somethingfail |= 0x10;
+
                         if (retcode)
                         {
                             cli_Response.Result = "PASS";
@@ -9307,7 +9289,12 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             cli_Response.Result = "FAIL";
-                            cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                            if ((somethingfail & 0x01) == 0x01)
+                                cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
+                            else if ((somethingfail & 0x10) == 0x10)
+                                cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                            else
+                                cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
                         }
                         System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
@@ -9317,16 +9304,29 @@ namespace DDPM.CLI.Plugins.Display
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
-        private static string get_PowerSetting_code(string code)
+        private static string get_PowerSetting_code(string code) //E0:[b1:b0]
         {
             switch (code.ToUpper())
             {
-                case "OFF": return "0x00";
-                case "ON": return "0x01";
-                case "STANDBY": return "0x02";
-                default: return "0x00";
+                case "OFF": return "0";
+                case "ON": return "1";
+                case "STANDBY": return "2";
+                default: return "unknown_command";
             }
         }
+
+        private static string get_Energysaver_code(string code) //E0:[b3:b2]
+        {
+            switch (code.ToUpper())
+            {
+                case "OFF": return "0";
+                case "ON": return "4";
+                case "OFF,LOCK": return "8";
+                case "ON,LOCK": return "C";
+                default: return "unknown_command";
+            }
+        }
+
         private (int code, string result) Set_Mute_Unmute(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command == "GET" || commandLineInput.Options.Count == 0)
