@@ -65,7 +65,7 @@ namespace DDPM.SA.Common
 
         void DeleteColorPresetForMonitorConfig(string index_monitor, string AppName);
 
-        void AutoSetColorPresetForMonitorConfig(string index_monitor, string on_off);
+        void AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false);
 
         Task<string> GetMonitorProfile(MonitorInfo m);
 
@@ -81,6 +81,11 @@ namespace DDPM.SA.Common
 
         //Jim add 20240801
         Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
+
+        //Jim add 20240820
+        Task<bool> ColorManagement_Off(MonitorInfo mo);
+        Task<bool> ColorManagement_Bymonitor(MonitorInfo mo);
+        Task<bool> ColorManagement_Byhost(MonitorInfo mo);
 
         #endregion public for ColorPreset
 
