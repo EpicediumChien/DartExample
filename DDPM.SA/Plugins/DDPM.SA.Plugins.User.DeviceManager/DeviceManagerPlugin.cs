@@ -3995,14 +3995,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!string.IsNullOrEmpty(nextInput))
             {
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
-                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}] #{setNextInput}");
+                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
             }
         }
 
         private void Kvm_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
         {
-            bool usbSwitch=UsbSwitch1(monitorInfo).Result;
-            writelog($"Kvm_SwitchKbMsKey::[{monitorInfo.edid.SerialNumber}] #{usbSwitch}");
+            bool usbSwitch = UsbSwitch1(monitorInfo).Result;
+            writelog($"Kvm_SwitchKbMsKey::[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
         }
 
         private void Kvm_ChangePIPPosition(MonitorInfo monitorInfo, Object[] param)
@@ -4069,7 +4069,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
             bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
-            writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}] #{swapPxp}");
+            writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
             /*if (subInputs != null && subInputs.Count > 0)
             {
                 allInputs.AddRange(subInputs);
@@ -4105,7 +4105,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (switchTo != null)
             {
                 bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
-                writelog($"Switch_InputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo}] #{setInput}");
+                writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo.Name}]" + (setInput ? "success" : "fail"));
             }
         }
 
@@ -4114,7 +4114,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             HotkeyInfo hotkey = (HotkeyInfo)param[0];
             InputSourceObj changeInput = hotkey.InputSource[0];
             bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput.Name).Result;
-            writelog($"Favorite_InputSource:[{monitorInfo.edid.SerialNumber}] to [{changeInput}] #{setNextInput}");
+            writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput.Name}]" + (setNextInput ? "success" : "fail"));
         }
 
         private void Toggle_InputSource(MonitorInfo monitorInfo, Object[] param)
@@ -4139,7 +4139,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
-            writelog($"Toggle_InputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}] #{setNextInput}");
+            writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
         }
 
         private string GetCurrentInputSource(MonitorInfo monitorInfo)

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:local="clr-namespace:DDPM.UI.Module.DisplayProperties"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="800">
@@ -63,7 +64,7 @@
                             <Grid Height="40" Margin="0,8">
                                 <UXControls:UXTextBlock Text="Change the size of text, apps, and other items" FontSize="16" Foreground="White"
                                                         TextBlockSemanticColorType="Light" TextBlockType="Caption" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                <UXControls:UXLink Content="Windows Settings" Click="CallWindowsSettings_Click"
+                                <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsSettings_Click"
                                                    IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
                                                    LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
                                                    HorizontalAlignment="Right" VerticalAlignment="Center" Height="40" />

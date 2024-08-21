@@ -1249,6 +1249,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to High Data Speed.
+        /// </summary>
+        internal static string DisplayProperties_0 {
+            get {
+                return ResourceManager.GetString("DisplayProperties.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display Settings.
         /// </summary>
         internal static string DisplaySettings {
