@@ -71,7 +71,7 @@ namespace DDPM.SA.Common
         Unknow = 0x0000
     }
     /// <summary>
-    /// Gaming螢幕現在屬性(解析度、HDR等)
+    /// Gaming螢幕屬性(解析度、HDR等)
     /// </summary>
     public class GamingDisplayPropertiesInfo
     {
