@@ -235,7 +235,7 @@
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->
                                 <Grid Height="60">
-                                    <UXControls:UXTextBlock  Margin="0,0,0,0" Text="{Binding [Color.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" Foreground="White"
+                                    <UXControls:UXTextBlock  Margin="0,0,0,0" Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" Foreground="White"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
