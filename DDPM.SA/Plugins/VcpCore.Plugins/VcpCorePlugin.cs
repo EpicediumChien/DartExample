@@ -32,6 +32,9 @@ using VcpCore.Common;
 using VcpCore.Interfaces;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
+using IDs = VcpCore.Common.IDs;
+using DDPM.SA.Common;
+using System.Diagnostics;
 
 namespace VcpCore.Plugins
 {
@@ -955,13 +958,17 @@ namespace VcpCore.Plugins
                             ro = GetCurrentColorPreset(monitorInfoX);
                         }
                         break;
-                    case "Gaming_GameEnhancementMode":
+                    case nameof(Gaming_GameEnhancementMode):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x1F) & 0x0f);
                         break;
-                    case "Gaming_ResponseTime":
+                    case nameof(Gaming_ResponseTime):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x2F) & 0x0f);
                         break;
-                    case "Gaming_DarkStabilizer":
+                    case nameof(Gaming_DarkStabilizer):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x3F) & 0x0f);
                         break;
-                    case "Gaming_Get S.HDR":
+                    case nameof(Gaming_HDRType):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x4F) & 0x0f);
                         break;
                     default:
                         {
@@ -1952,6 +1959,7 @@ namespace VcpCore.Plugins
                     }
                     catch (Exception ex)
                     {
+                        Debug.WriteLine(ex.InnerException);
                         _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection exception : " + ex.Message);
                         return false;
                     }

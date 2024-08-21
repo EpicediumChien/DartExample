@@ -69,7 +69,36 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return Task.FromResult(new DisplayPropertiesInfo());
         }
-
+        public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
+        {
+            try
+            {
+                _logs?.DebugMsg_1(nameof(GetDisplaySupportedProperties) + " start");
+                _displayPropertiesInfo = new DisplayPropertiesInfo();
+                {
+                    DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
+                    HDRSetting hDRSetting = new HDRSetting();
+                    Properties currentProperties = new Properties();
+                    displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
+                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
+                    {
+                        return Task.FromResult(new DisplaySupportedProperties());
+                    }
+                    displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
+                    displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
+                    {
+                    DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
+                    };
+                    _displayPropertiesInfo = (displayPropertiesInfo);
+                }
+                _logs?.DebugMsg_1(nameof(GetDisplaySupportedProperties) + " done");
+                return Task.FromResult(_displayPropertiesInfo.SupportedProperties);
+            }
+            catch (Exception)
+            {
+                return Task.FromResult(new DisplaySupportedProperties());
+            }
+        }
         /// <summary>
         /// 取得螢幕方向
         /// </summary>
@@ -84,7 +113,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return Task.FromResult(DisplayOrientation.Unknow);
         }
-
         private bool RefreshDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType)
         {
             //Bruce 0605 修改註記:因讀取時間過長(約5000mS)，故修改軟體目前降至(約2800mS)
@@ -261,7 +289,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         {
                             string monitorFriendlyDeviceName = deviceName.monitorFriendlyDeviceName;
                             int edidProductCodeId = deviceName.edidProductCodeId;
-                            if (monitorFriendlyDeviceName != "" && monitorInfo.AliasDeviceName.ToUpper().StartsWith(monitorFriendlyDeviceName))
+                            if (monitorFriendlyDeviceName != "" && monitorInfo.AliasDeviceName.ToUpper().Contains(monitorFriendlyDeviceName.ToUpper()))
                             {
                                 DISPLAYCONFIG_TARGET_PREFERRED_MODE pref = default(DISPLAYCONFIG_TARGET_PREFERRED_MODE);
                                 pref.header.size = Marshal.SizeOf(typeof(DISPLAYCONFIG_TARGET_PREFERRED_MODE));

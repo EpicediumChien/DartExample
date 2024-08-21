@@ -432,5 +432,14 @@ namespace DDPM.SA.Common
         #endregion
         //public for GUI to get the changes of display and peripherals
         event EventHandler<DeviceChangedEventArgs> DeviceChanged;
+        #region Gaming
+        event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+        Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
+        Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
+        Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
+        Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
+        Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
+        Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfos, Gaming_DualResolutionType DualResolutionType);
+        #endregion
     }
 }

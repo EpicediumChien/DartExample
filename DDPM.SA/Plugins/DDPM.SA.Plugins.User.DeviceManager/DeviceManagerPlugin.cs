@@ -242,6 +242,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// HDR status change event，return HDR status
         /// </summary>
         public event EventHandler<bool> HDRChangeEvent;
+        /// <summary>
+        /// gaming parameter changes event，return gaming parameter
+        /// </summary>
+        public event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
 
         #endregion
 
@@ -2514,7 +2518,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
 
-                if (config !=  null) // 2024-08-16 Elie, check if null before using.
+                if (config != null) // 2024-08-16 Elie, check if null before using.
                     _SWUpdatePlugin.SetDelaySWUpdateInfoPackage(config.UserSettings.DelaySWUpdateInfoPackage);
                 else
                 {
@@ -2535,6 +2539,58 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+        #endregion
+        #region Gaming
+        public Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.GetGamingProperties(monitorInfo).Result);
+            }
+            return Task.FromResult(new GamingDisplayPropertiesInfo());
+        }
+        public Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SetGameEnhancementMode(monitorInfo, GameEnhancementMode).Result);
+            }
+
+            return Task.FromResult(false);
+        }
+        public Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SetGaming_ResponseTime(monitorInfo, ResponseTime).Result);
+            }
+            return Task.FromResult(false);
+        }
+        public Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SetGaming_DarkStabilizer(monitorInfo, DarkStabilizer).Result);
+            }
+            return Task.FromResult(false);
+        }
+        public Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SetGaming_HDRType(monitorInfo, HDRType).Result);
+            }
+            return Task.FromResult(false);
+        }
+        public Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SetGaming_DualResolutionType(monitorInfo, DualResolutionType).Result);
+            }
+            return Task.FromResult(false);
+        }
+
         #endregion
         #endregion
 
@@ -3188,6 +3244,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.HDRChangeEvent += OnHDRStatusChangeHandler;
                         //0812 check required plugins before init
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
+                        //Bruce, 2024-0820 add new event
+                        _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a running condition");
                     }
@@ -3208,6 +3266,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.HDRChangeEvent += OnHDRStatusChangeHandler;
                         //0812 check required plugins before init
                         DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
+                        //Bruce, 2024-0820 add new event
+                        _DisplayManagerPlugin.GamingChangeEvent += OnGamingParamChangeHandler;
 
                         writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in a started condition");
                     }
@@ -3912,7 +3972,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Kvm_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
         {
-            bool usbSwitch=UsbSwitch1(monitorInfo).Result;
+            bool usbSwitch = UsbSwitch1(monitorInfo).Result;
             writelog($"Kvm_SwitchKbMsKey::[{monitorInfo.edid.SerialNumber}] #{usbSwitch}");
         }
 
@@ -4680,7 +4740,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
             HDRChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-            Console.WriteLine("HDR change:" + e);
+        }
+        //Bruce, 2024-08-09 add new event
+        private void OnGamingParamChangeHandler(object sender, GamingDisplayPropertiesInfo e)
+        {
+            GamingChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
 
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
@@ -4694,7 +4758,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (e.ChangedPlugins.OfType<ISchedulerManager>().Any())
                 InitializeSchedulerManagerPlugin();
-				
+
             if (e.ChangedPlugins.OfType<ISettingsManagerDev>().Any())
                 InitializeSettingsPlugin();
 

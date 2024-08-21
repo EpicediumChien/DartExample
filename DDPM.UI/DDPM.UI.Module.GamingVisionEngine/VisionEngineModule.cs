@@ -4,20 +4,16 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using System.Windows.Controls;
 
-namespace DDPM.UI.Module.Gaming
+namespace DDPM.UI.Module.GamingVisionEngine
 {
-    public class GamingModule : IDdpmModule
+    public class VisionEngineModule : IDdpmModule
     {
         private UserControl? _leftView = null;
-        private UserControl _rightView = new GamingRightView();
-        private GamingViewModel vm = new GamingViewModel();
+        private UserControl _rightView = new VisionEngineRightView();
+        private VisionEngineViewModel vm = new VisionEngineViewModel();
 
-        //Robert_Lin 20240530-remove argument on ctor
-        //public GamingModule(HomeDevice? SelectedHomeDevice)
-        public GamingModule(IModuleOwner? moduleOwner = null)
+        public VisionEngineModule(IModuleOwner? moduleOwner = null)
         {
-            //Robert_Lin 20240530-remove argument on ctor
-            //this.SelectedHomeDevice = SelectedHomeDevice;
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
 
             _rightView.DataContext = vm;
@@ -25,7 +21,7 @@ namespace DDPM.UI.Module.Gaming
             vm.Invoke_RefreshData();
         }
 
-        public string ModuleName { get => "GamingModule"; }
+        public string ModuleName { get => "VisionEngineModule"; }
 
         public UserControl? GetLeftView()
         {
@@ -58,12 +54,10 @@ namespace DDPM.UI.Module.Gaming
 
         public void OnActivated()
         {
-            DdpmCommonHelper.DeviceManagerSA.GamingChangeEvent += vm.GamingParamChang;
         }
 
         public void OnDeactivated()
         {
-            DdpmCommonHelper.DeviceManagerSA.GamingChangeEvent -= vm.GamingParamChang;
         }
 
         #endregion Event Handlers

@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="DDPM.UI.Module.GamingVisionEngine.VisionEngineRightView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:DDPM.UI.Module.GamingVisionEngine" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="800" d:DesignWidth="800" mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <UXControls:UXScrollViewer>
+            <Grid>
+                <Border Style="{StaticResource RightGroupBorderStyle}">
+                    <StackPanel>
+                        <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                        <StackPanel Margin="15" Height="122">
+                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Night" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[0]}" />
+                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Clear" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[1]}" />
+                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Bino" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[2]}" />
+                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Chroma" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[3]}" />
+                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Crosshair" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[4]}" />
+                        </StackPanel>
+                        <Grid>
+                            <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Toggle Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                            <UXControls:UXTextBox Width="260" Height="40" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14" Foreground="#FFA4B8CD" Text="{Binding VisionEngineToggle_Text}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                <Border Name="DisableAll" Background="#4C24273C">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <!--  Add a UXBusyIndicator from Robert  -->
+                    <UXControls:UXBusyIndicator Width="64" Height="64" HorizontalAlignment="Center" VerticalAlignment="Center" BusyIndicatorType="Secondary" IsActive="{Binding IsBusy}" />
+                </Border>
+            </Grid>
+        </UXControls:UXScrollViewer>
+    </Grid>
+</UserControl>

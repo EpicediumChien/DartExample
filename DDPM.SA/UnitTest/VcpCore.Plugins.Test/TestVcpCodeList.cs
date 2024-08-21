@@ -1,4 +1,5 @@
-﻿using static VcpCore.Plugins.VcpCodeList;
+﻿using VcpCore.Common;
+using static VcpCore.Common.VcpCodeList;
 
 namespace VcpCore.Plugins.Test
 {
