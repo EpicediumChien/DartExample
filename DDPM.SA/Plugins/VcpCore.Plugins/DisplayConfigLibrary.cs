@@ -23,7 +23,7 @@ namespace VcpCore.Plugins
                     var paths = new DISPLAYCONFIG_PATH_INFO[pathCount];
                     var modes = new DISPLAYCONFIG_MODE_INFO[modeCount];
 
-                    if (_QueryDisplayConfig(QDC.QDC_ONLY_ACTIVE_PATHS, ref pathCount, paths, ref modeCount, modes, IntPtr.Zero) == 0)
+                    if (_QueryDisplayConfig(QDC.QDC_ONLY_ACTIVE_PATHS, ref pathCount, paths, ref modeCount, modes, DISPLAYCONFIG_TOPOLOGY_ID.Zero) == 0)
                     {
                         foreach (var path in paths)
                         {

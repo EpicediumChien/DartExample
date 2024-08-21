@@ -240,7 +240,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 DISPLAYCONFIG_PATH_INFO[] array = new DISPLAYCONFIG_PATH_INFO[numPathArrayElements];
                 DISPLAYCONFIG_MODE_INFO[] modeInfoArray = new DISPLAYCONFIG_MODE_INFO[numModeInfoArrayElements];
                 var queryDisplayConfig = _QueryDisplayConfig(QDC.QDC_ALL_PATHS,
-                    out numPathArrayElements, array, out numModeInfoArrayElements, modeInfoArray,
+                    ref numPathArrayElements, array, ref numModeInfoArrayElements, modeInfoArray,
                     DISPLAYCONFIG_TOPOLOGY_ID.Zero);
 
                 if (queryDisplayConfig == 0)

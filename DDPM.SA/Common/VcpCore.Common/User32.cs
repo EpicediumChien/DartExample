@@ -264,8 +264,8 @@ namespace VcpCore.Common
 
         [DllImport("user32")]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern int QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, IntPtr currentTopologyId);
-        public static int _QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, IntPtr currentTopologyId)
+        private static extern int QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID currentTopologyId);
+        public static int _QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID currentTopologyId)
         {
             return QueryDisplayConfig(flags, ref numPathArrayElements, pathArray, ref numModeInfoArrayElements, modeInfoArray, currentTopologyId);
         }
@@ -280,6 +280,13 @@ namespace VcpCore.Common
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME requestPacket);
         public static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME requestPacket)
+        {
+            return DisplayConfigGetDeviceInfo(ref requestPacket);
+        }
+        [DllImport("user32")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO requestPacket);
+        public static int _DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO requestPacket)
         {
             return DisplayConfigGetDeviceInfo(ref requestPacket);
         }
