@@ -400,7 +400,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin == null
             try
             {
-                deviceMangerPlugin.AutoSetColorPresetForMonitorConfig("0", "on");
+                deviceMangerPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo, "on");
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -415,7 +415,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
             try
             {
-                deviceMangerPlugin.AutoSetColorPresetForMonitorConfig("0", "1");
+                deviceMangerPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo, "1");
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -434,7 +434,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("newWindowThread_AutoSetColorPresetForMonitorConfig", new Thread(new ThreadStart(showmsg)));
             try
             {
-                deviceMangerPlugin.AutoSetColorPresetForMonitorConfig("0", "off");
+                deviceMangerPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo, "off");
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -445,7 +445,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null,on_off=="on",
             try
             {
-                deviceMangerPlugin.AutoSetColorPresetForMonitorConfig("0", "on");
+                deviceMangerPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo, "on");
                 Assert.True(true);
             }
             catch (Exception ex)
