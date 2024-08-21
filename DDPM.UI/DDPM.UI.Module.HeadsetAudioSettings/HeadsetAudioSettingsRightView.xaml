@@ -7,6 +7,7 @@
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:HeadsetViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="655" d:DesignWidth="520" VerticalAlignment="Top" HorizontalAlignment="Left">
@@ -96,7 +97,7 @@
             <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Width="520" Height="auto"  Margin="0,10,0,0">
                 <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                     <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="0,0,0,0">
-                        <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="Audio Settings" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                        <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                     </Grid>
 
                     <!-- Control the noise I hear -->
@@ -104,7 +105,7 @@
                         <Border Visibility="{Binding ControlTheNoiseIHearPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="NoiseControlBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="NoiseControlStackPanel" Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="8">
-                                    <UXControls:UXTextBlock x:Name="NoiseControlTextBlock" Text="Control the noise I hear" Foreground="White" FontSize="16" Margin="8,20,8,20" />
+                                    <UXControls:UXTextBlock x:Name="NoiseControlTextBlock" Text="{Binding [HeadsetAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" Margin="8,20,8,20" />
                                     <Image Width="16" Height="16" Margin="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                         <Image.ToolTip>
                                             <ToolTip>
@@ -130,7 +131,7 @@
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <Image Source="/DDPM.UI.Common;component/Resources/Headset_Noise.png" Width="24" Height="24" />
-                                                            <UXControls:UXTextBlock x:Name="ActiveNoiseCancellingTextBlock" Text="Active Noise Cancelling" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
+                                                            <UXControls:UXTextBlock x:Name="ActiveNoiseCancellingTextBlock" Text="{Binding [HeadsetAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
                                                         </StackPanel>
                                                         <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
@@ -167,7 +168,7 @@
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <Image Source="/DDPM.UI.Common;component/Resources/Headset_Transparency.png" Width="24" Height="24" />
-                                                            <UXControls:UXTextBlock x:Name="TransparencyButtonTextBlock" Text="Transparency" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
+                                                            <UXControls:UXTextBlock x:Name="TransparencyButtonTextBlock" Text="{Binding [HeadsetAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
                                                         </StackPanel>
                                                         <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
@@ -204,7 +205,7 @@
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <Image Source="/DDPM.UI.Common;component/Resources/Headset_off.png" Width="24" Height="24" />
-                                                            <UXControls:UXTextBlock x:Name="NoiseOffButtonTextBlock" Text="Off" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
+                                                            <UXControls:UXTextBlock x:Name="NoiseOffButtonTextBlock" Text="{Binding [HeadsetAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
                                                         </StackPanel>
                                                         <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
@@ -241,7 +242,7 @@
                                         <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" Margin="0,0,0,20" StrokeThickness="1" HorizontalAlignment="Center" />
                                     </Grid>
                                     <StackPanel>
-                                        <TextBlock Text="Transparency level" FontSize="16" Foreground="White" Margin="20,20,0,20" />
+                                        <TextBlock Text="{Binding [HeadsetAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="White" Margin="20,20,0,20" />
                                         <Grid Margin="0,10,0,20">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -272,7 +273,7 @@
                     <Grid Visibility="{Binding ConfigureMyAudioModesPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="AudioModesGrid" VerticalAlignment="Top" Margin="0,0,0,15">
                         <Border x:Name="AudioModesBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
-                                <UXControls:UXTextBlock x:Name="AudioModesTextBlock" Text="Configure my audio modes" Foreground="White" FontSize="16" Margin="20" />
+                                <UXControls:UXTextBlock x:Name="AudioModesTextBlock" Text="{Binding [HeadsetAudioSettings.5], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" Margin="20" />
                                 <StackPanel x:Name="AudioModesButtonsStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
                                     <UXControls:UXToggleSwitch x:Name="CollaborationButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCollaborationChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
@@ -281,7 +282,7 @@
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <Image x:Name="CollaborationImage" Width="25" Height="25" Source="/DDPM.UI.Common;component/Resources/Headset_Collaboration.png" Margin="0,0,0,8" />
-                                                            <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="Collaboration" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="{Binding [Collaboration], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                         <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
@@ -317,7 +318,7 @@
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <Image x:Name="MultimediaImage" Width="25" Height="25" Source="/DDPM.UI.Common;component/Resources/Headset_Multimedia.png"  Margin="0,0,0,8" />
-                                                            <UXControls:UXTextBlock x:Name="MultimediaTextBlock" Text="Multimedia" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock x:Name="MultimediaTextBlock" Text="{Binding [Multimedia], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                         <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
@@ -365,7 +366,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                        <UXControls:UXTextBlock x:Name="AudioOutputPresetsTextBlock1" Text="Audio Output Presets" Grid.Row="0" Grid.Column="0"  Foreground="White" FontSize="16" Margin="20,20,0,20" />
+                                        <UXControls:UXTextBlock x:Name="AudioOutputPresetsTextBlock1" Text="{Binding [HeadsetAudioSettings.6], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="0" Grid.Column="0"  Foreground="White" FontSize="16" Margin="20,20,0,20" />
                                         <Image Width="16" Height="16" Grid.Row="0" Grid.Column="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,20,0,20" HorizontalAlignment="Left">
                                             <Image.ToolTip>
                                                 <ToolTip>
@@ -391,7 +392,7 @@
                                                     <Border x:Name="DefaultButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="Default" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock Text="{Binding [Default], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -410,7 +411,7 @@
                                                     <Border x:Name="BassBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="Bass Boost" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -430,7 +431,7 @@
                                                     <Border x:Name="SpeechBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="Speech Boost" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -450,7 +451,7 @@
                                                     <Border x:Name="TrebleBoostButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="Treble Boost" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -471,7 +472,7 @@
                                                 <Border x:Name="CustomButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="Custom" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [Custom], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -493,10 +494,10 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <StackPanel Grid.Row="0" HorizontalAlignment="Left" Margin="20,20,0,0">
-                                            <UXControls:UXTextBlock Text="Audio Equalizer" Foreground="White" FontSize="16" />
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.10], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="16" />
                                         </StackPanel>
                                         <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="20,20,0,20">
-                                            <UXControls:UXTextBlock Text="Adjust the audio ranges of the sound you hear" Foreground="White" FontSize="14" />
+                                            <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.11], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14" />
                                         </StackPanel>
                                         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="20,20,0,0">
                                             <Canvas x:Name="EqualizerCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="456" Height="324" Margin="0,0,0,0">
@@ -564,19 +565,19 @@
                                                 </Border>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="-5,51,0,0">
-                                                    <UXControls:UXTextBlock Text="0 db" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="40,165,0,0">
-                                                    <UXControls:UXTextBlock Text="Bass" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.13], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="205,165,0,0">
-                                                    <UXControls:UXTextBlock Text="Mid-range" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.14], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="395,165,0,0">
-                                                    <UXControls:UXTextBlock Text="Treble" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.15], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
                                             </Canvas>
                                         </StackPanel>
@@ -601,7 +602,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Mic Noise Cancellation" Margin="20,0,0,0" />
+                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                         </Grid>
 
                                         <!--Outgoing Audio-->
@@ -611,7 +612,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Outgoing Audio" Margin="20,0,0,0" />
+                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.17], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -638,7 +639,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Incoming Audio" Margin="20,0,0,0" />
+                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.18], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -681,7 +682,7 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Mic Noise Cancellation" Margin="20,20,0,0" />
+                                            <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,0" />
                                             <Image Grid.Column="1" Width="16" Height="16" Margin="8,20,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip>
@@ -724,7 +725,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="Sidetone" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,20,0,0" />
+                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,20,0,0" />
                                         <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,20,0,0">
                                             <Image.ToolTip>
                                                 <ToolTip>

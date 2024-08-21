@@ -484,6 +484,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced Settings.
+        /// </summary>
+        internal static string AdvancedSettings {
+            get {
+                return ResourceManager.GetString("AdvancedSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to AM.
         /// </summary>
         internal static string AM {
@@ -538,11 +547,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio Settings.
+        /// </summary>
+        internal static string AudioSettings {
+            get {
+                return ResourceManager.GetString("AudioSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto.
         /// </summary>
         internal static string Auto {
             get {
                 return ResourceManager.GetString("Auto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automated Actions.
+        /// </summary>
+        internal static string AutomatedActions {
+            get {
+                return ResourceManager.GetString("AutomatedActions", resourceCulture);
             }
         }
         
@@ -979,15 +1006,6 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Advanced Settings.
-        /// </summary>
-        internal static string Color_10 {
-            get {
-                return ResourceManager.GetString("Color.10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Color Management.
         /// </summary>
         internal static string Color_11 {
@@ -1105,11 +1123,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom.
+        /// </summary>
+        internal static string Custom {
+            get {
+                return ResourceManager.GetString("Custom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Customize.
         /// </summary>
         internal static string Customize {
             get {
                 return ResourceManager.GetString("Customize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        internal static string Default {
+            get {
+                return ResourceManager.GetString("Default", resourceCulture);
             }
         }
         
@@ -1258,6 +1294,60 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to High Resolution.
+        /// </summary>
+        internal static string DisplayProperties_1 {
+            get {
+                return ResourceManager.GetString("DisplayProperties.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolution and Refresh Rate.
+        /// </summary>
+        internal static string DisplayProperties_2 {
+            get {
+                return ResourceManager.GetString("DisplayProperties.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change the size of text, apps, and other items.
+        /// </summary>
+        internal static string DisplayProperties_3 {
+            get {
+                return ResourceManager.GetString("DisplayProperties.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USB-C Prioritization .
+        /// </summary>
+        internal static string DisplayProperties_4 {
+            get {
+                return ResourceManager.GetString("DisplayProperties.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Priority on data and network speeds over screen performance..
+        /// </summary>
+        internal static string DisplayProperties_5 {
+            get {
+                return ResourceManager.GetString("DisplayProperties.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Priority on screen performance over data and network speed..
+        /// </summary>
+        internal static string DisplayProperties_6 {
+            get {
+                return ResourceManager.GetString("DisplayProperties.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display Settings.
         /// </summary>
         internal static string DisplaySettings {
@@ -1330,6 +1420,60 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 2 Windows.
+        /// </summary>
+        internal static string EzArrange_1 {
+            get {
+                return ResourceManager.GetString("EzArrange.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3 Windows.
+        /// </summary>
+        internal static string EzArrange_2 {
+            get {
+                return ResourceManager.GetString("EzArrange.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4 Windows.
+        /// </summary>
+        internal static string EzArrange_3 {
+            get {
+                return ResourceManager.GetString("EzArrange.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5 Windows.
+        /// </summary>
+        internal static string EzArrange_4 {
+            get {
+                return ResourceManager.GetString("EzArrange.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6 Windows.
+        /// </summary>
+        internal static string EzArrange_5 {
+            get {
+                return ResourceManager.GetString("EzArrange.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 7 Windows or more.
+        /// </summary>
+        internal static string EzArrange_6 {
+            get {
+                return ResourceManager.GetString("EzArrange.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Firmware Version.
         /// </summary>
         internal static string FirmwareVersion {
@@ -1357,29 +1501,272 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Audio Settings.
-        /// </summary>
-        internal static string Headset_0 {
-            get {
-                return ResourceManager.GetString("Headset.0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Automated Actions.
-        /// </summary>
-        internal static string Headset_1 {
-            get {
-                return ResourceManager.GetString("Headset.1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Device Settings.
         /// </summary>
         internal static string Headset_2 {
             get {
                 return ResourceManager.GetString("Headset.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control the noise I hear.
+        /// </summary>
+        internal static string HeadsetAudioSettings_0 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active Noise Cancelling.
+        /// </summary>
+        internal static string HeadsetAudioSettings_1 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio Equalizer.
+        /// </summary>
+        internal static string HeadsetAudioSettings_10 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust the audio ranges of the sound you hear.
+        /// </summary>
+        internal static string HeadsetAudioSettings_11 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0 db.
+        /// </summary>
+        internal static string HeadsetAudioSettings_12 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bass.
+        /// </summary>
+        internal static string HeadsetAudioSettings_13 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mid-range.
+        /// </summary>
+        internal static string HeadsetAudioSettings_14 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Treble.
+        /// </summary>
+        internal static string HeadsetAudioSettings_15 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.15", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mic Noise Cancellation.
+        /// </summary>
+        internal static string HeadsetAudioSettings_16 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.16", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outgoing Audio.
+        /// </summary>
+        internal static string HeadsetAudioSettings_17 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.17", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incoming Audio.
+        /// </summary>
+        internal static string HeadsetAudioSettings_18 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.18", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sidetone.
+        /// </summary>
+        internal static string HeadsetAudioSettings_19 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.19", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transparency.
+        /// </summary>
+        internal static string HeadsetAudioSettings_2 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        internal static string HeadsetAudioSettings_3 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transparency level.
+        /// </summary>
+        internal static string HeadsetAudioSettings_4 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure my audio modes.
+        /// </summary>
+        internal static string HeadsetAudioSettings_5 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio Output Presets.
+        /// </summary>
+        internal static string HeadsetAudioSettings_6 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bass Boost.
+        /// </summary>
+        internal static string HeadsetAudioSettings_7 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speech Boost.
+        /// </summary>
+        internal static string HeadsetAudioSettings_8 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Treble Boost.
+        /// </summary>
+        internal static string HeadsetAudioSettings_9 {
+            get {
+                return ResourceManager.GetString("HeadsetAudioSettings.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wear Detection.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_0 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sensitivity.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_1 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_2 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_3 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When headset is removed:.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_4 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause Music.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_5 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mute Microphone.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_6 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quick Pause.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_7 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Answer Calls.
+        /// </summary>
+        internal static string HeadsetAutomatedActions_8 {
+            get {
+                return ResourceManager.GetString("HeadsetAutomatedActions.8", resourceCulture);
             }
         }
         
@@ -1654,6 +2041,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multimedia.
+        /// </summary>
+        internal static string Multimedia {
+            get {
+                return ResourceManager.GetString("Multimedia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OFF.
         /// </summary>
         internal static string Off {
@@ -1677,6 +2073,15 @@ namespace DDPM.UI.Resources {
         internal static string On {
             get {
                 return ResourceManager.GetString("On", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orientation.
+        /// </summary>
+        internal static string Orientation {
+            get {
+                return ResourceManager.GetString("Orientation", resourceCulture);
             }
         }
         
@@ -1722,6 +2127,15 @@ namespace DDPM.UI.Resources {
         internal static string QuickSettings {
             get {
                 return ResourceManager.GetString("QuickSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent.
+        /// </summary>
+        internal static string Recent {
+            get {
+                return ResourceManager.GetString("Recent", resourceCulture);
             }
         }
         
@@ -1798,6 +2212,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Smart HDR.
+        /// </summary>
+        internal static string SmartHDR {
+            get {
+                return ResourceManager.GetString("SmartHDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Audio Preset.
         /// </summary>
         internal static string Soundbar_0 {
@@ -1812,15 +2235,6 @@ namespace DDPM.UI.Resources {
         internal static string Soundbar_1 {
             get {
                 return ResourceManager.GetString("Soundbar.1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Audio Settings.
-        /// </summary>
-        internal static string Soundbar_2 {
-            get {
-                return ResourceManager.GetString("Soundbar.2", resourceCulture);
             }
         }
         

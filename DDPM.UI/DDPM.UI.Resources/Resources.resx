@@ -363,12 +363,6 @@
   <data name="Dock.1" xml:space="preserve">
     <value>Dongle {0}</value>
   </data>
-  <data name="Headset.0" xml:space="preserve">
-    <value>Audio Settings</value>
-  </data>
-  <data name="Headset.1" xml:space="preserve">
-    <value>Automated Actions</value>
-  </data>
   <data name="Headset.2" xml:space="preserve">
     <value>Device Settings</value>
   </data>
@@ -419,9 +413,6 @@
   </data>
   <data name="Soundbar.1" xml:space="preserve">
     <value>Interactions</value>
-  </data>
-  <data name="Soundbar.2" xml:space="preserve">
-    <value>Audio Settings</value>
   </data>
   <data name="Camera.0" xml:space="preserve">
     <value>Camera Control</value>
@@ -678,9 +669,6 @@
   <data name="Color.9" xml:space="preserve">
     <value>Show comfortable colors on your display to help you sleep.</value>
   </data>
-  <data name="Color.10" xml:space="preserve">
-    <value>Advanced Settings</value>
-  </data>
   <data name="Color.11" xml:space="preserve">
     <value>Color Management</value>
   </data>
@@ -749,5 +737,155 @@
   </data>
   <data name="DisplayProperties.0" xml:space="preserve">
     <value>High Data Speed</value>
+  </data>
+  <data name="DisplayProperties.1" xml:space="preserve">
+    <value>High Resolution</value>
+  </data>
+  <data name="DisplayProperties.2" xml:space="preserve">
+    <value>Resolution and Refresh Rate</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>Orientation</value>
+  </data>
+  <data name="SmartHDR" xml:space="preserve">
+    <value>Smart HDR</value>
+  </data>
+  <data name="DisplayProperties.3" xml:space="preserve">
+    <value>Change the size of text, apps, and other items</value>
+  </data>
+  <data name="AdvancedSettings" xml:space="preserve">
+    <value>Advanced Settings</value>
+  </data>
+  <data name="DisplayProperties.4" xml:space="preserve">
+    <value>USB-C Prioritization </value>
+  </data>
+  <data name="DisplayProperties.5" xml:space="preserve">
+    <value>Priority on data and network speeds over screen performance.</value>
+  </data>
+  <data name="DisplayProperties.6" xml:space="preserve">
+    <value>Priority on screen performance over data and network speed.</value>
+  </data>
+  <data name="EzArrange.1" xml:space="preserve">
+    <value>2 Windows</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="EzArrange.2" xml:space="preserve">
+    <value>3 Windows</value>
+  </data>
+  <data name="EzArrange.3" xml:space="preserve">
+    <value>4 Windows</value>
+  </data>
+  <data name="EzArrange.4" xml:space="preserve">
+    <value>5 Windows</value>
+  </data>
+  <data name="EzArrange.5" xml:space="preserve">
+    <value>6 Windows</value>
+  </data>
+  <data name="EzArrange.6" xml:space="preserve">
+    <value>7 Windows or more</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="AudioSettings" xml:space="preserve">
+    <value>Audio Settings</value>
+  </data>
+  <data name="HeadsetAudioSettings.0" xml:space="preserve">
+    <value>Control the noise I hear</value>
+  </data>
+  <data name="HeadsetAudioSettings.1" xml:space="preserve">
+    <value>Active Noise Cancelling</value>
+  </data>
+  <data name="HeadsetAudioSettings.2" xml:space="preserve">
+    <value>Transparency</value>
+  </data>
+  <data name="HeadsetAudioSettings.3" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="HeadsetAudioSettings.4" xml:space="preserve">
+    <value>Transparency level</value>
+  </data>
+  <data name="HeadsetAudioSettings.5" xml:space="preserve">
+    <value>Configure my audio modes</value>
+  </data>
+  <data name="Multimedia" xml:space="preserve">
+    <value>Multimedia</value>
+  </data>
+  <data name="HeadsetAudioSettings.6" xml:space="preserve">
+    <value>Audio Output Presets</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="HeadsetAudioSettings.7" xml:space="preserve">
+    <value>Bass Boost</value>
+  </data>
+  <data name="HeadsetAudioSettings.8" xml:space="preserve">
+    <value>Speech Boost</value>
+  </data>
+  <data name="HeadsetAudioSettings.9" xml:space="preserve">
+    <value>Treble Boost</value>
+  </data>
+  <data name="HeadsetAudioSettings.10" xml:space="preserve">
+    <value>Audio Equalizer</value>
+  </data>
+  <data name="HeadsetAudioSettings.11" xml:space="preserve">
+    <value>Adjust the audio ranges of the sound you hear</value>
+  </data>
+  <data name="HeadsetAudioSettings.12" xml:space="preserve">
+    <value>0 db</value>
+  </data>
+  <data name="HeadsetAudioSettings.13" xml:space="preserve">
+    <value>Bass</value>
+  </data>
+  <data name="HeadsetAudioSettings.14" xml:space="preserve">
+    <value>Mid-range</value>
+  </data>
+  <data name="HeadsetAudioSettings.15" xml:space="preserve">
+    <value>Treble</value>
+  </data>
+  <data name="HeadsetAudioSettings.16" xml:space="preserve">
+    <value>Mic Noise Cancellation</value>
+  </data>
+  <data name="HeadsetAudioSettings.17" xml:space="preserve">
+    <value>Outgoing Audio</value>
+  </data>
+  <data name="HeadsetAudioSettings.18" xml:space="preserve">
+    <value>Incoming Audio</value>
+  </data>
+  <data name="HeadsetAudioSettings.19" xml:space="preserve">
+    <value>Sidetone</value>
+  </data>
+  <data name="AutomatedActions" xml:space="preserve">
+    <value>Automated Actions</value>
+  </data>
+  <data name="HeadsetAutomatedActions.0" xml:space="preserve">
+    <value>Wear Detection</value>
+  </data>
+  <data name="HeadsetAutomatedActions.1" xml:space="preserve">
+    <value>Sensitivity</value>
+  </data>
+  <data name="HeadsetAutomatedActions.2" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="HeadsetAutomatedActions.3" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="HeadsetAutomatedActions.4" xml:space="preserve">
+    <value>When headset is removed:</value>
+  </data>
+  <data name="HeadsetAutomatedActions.5" xml:space="preserve">
+    <value>Pause Music</value>
+  </data>
+  <data name="HeadsetAutomatedActions.6" xml:space="preserve">
+    <value>Mute Microphone</value>
+  </data>
+  <data name="HeadsetAutomatedActions.7" xml:space="preserve">
+    <value>Quick Pause</value>
+  </data>
+  <data name="HeadsetAutomatedActions.8" xml:space="preserve">
+    <value>Answer Calls</value>
   </data>
 </root>

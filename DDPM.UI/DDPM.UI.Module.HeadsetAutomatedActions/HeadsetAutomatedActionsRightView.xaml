@@ -7,6 +7,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:HeadsetViewModel}"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              mc:Ignorable="d"
@@ -93,7 +94,7 @@
         <Border x:Name="MainBorder" Background="#99132F54" CornerRadius="13" Width="520" Height="655" Margin="0,10,0,0">
             <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                 <Grid>
-                    <UXControls:UXTextBlock x:Name="txtCaption" Style="{StaticResource ModuleCaptionStyle}" Text="Automated Actions" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                    <UXControls:UXTextBlock x:Name="txtCaption" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [AutomatedActions], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                 </Grid>
                 <Grid x:Name="WearDetectionGrid" Visibility="{Binding WearDetectionPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Top" Margin="0,0,0,15">
                     <Border x:Name="MainContentBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">

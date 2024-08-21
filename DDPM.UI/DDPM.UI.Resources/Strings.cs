@@ -374,12 +374,12 @@ namespace DDPM.UI.Common {
     public static readonly string AddDeviceKnMnoDongleAlertHeadset = GetString("AddDevice.KnM.12");
     public static readonly string DockDongle0 = GetString("Dock.0");
     public static readonly string DockDongle1 = GetString("Dock.1");
-    public static readonly string HeadsetAudioSettings = GetString("Headset.0");
-    public static readonly string HeadsetAutomatedActions = GetString("Headset.1");
+    public static readonly string HeadsetAudioSettings = GetString("AudioSettings");
+    public static readonly string HeadsetAutomatedActions = GetString("AutomatedActions");
     public static readonly string HeadsetDeviceSettings = GetString("Headset.2");
     public static readonly string SoundBarAudioPreset = GetString("Soundbar.0");
     public static readonly string SoundBarInteractions = GetString("Soundbar.1");
-    public static readonly string SoundBarAudioSettings = GetString("Soundbar.2");
+    public static readonly string SoundBarAudioSettings = GetString("AudioSettings");
     public static readonly string CameraControl = GetString("Camera.0");
     public static readonly string ColorandImage = GetString("Camera.1");
     public static readonly string PresenceDetection = GetString("Camera.2");
