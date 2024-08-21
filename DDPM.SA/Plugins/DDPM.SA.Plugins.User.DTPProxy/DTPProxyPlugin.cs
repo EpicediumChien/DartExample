@@ -52,7 +52,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
     private ClientAppId appId = new ClientAppId("{b397b9b3-04cb-4cdf-8a79-852d63cf4801}");
     private readonly object _PluginConditionLock = new object();
 
-    private Type _mouseInterface;
+    private Type _mouseInterfaceType;
+    private Type _keyboardInterfaceType;
+    private Type _penInterfaceType;
+    private Type _speakerInterfaceType;
+    private Type _dockInterfaceType;
+    private Type _headsetInterfaceType;
+    private MethodInfo _mouseMethodInfo;
+    private MethodInfo _keyboardMethodInfo;
+    private MethodInfo _penMethodInfo;
+    private MethodInfo _speakerMethodInfo;
+    private MethodInfo _dockMethodInfo;
+    private MethodInfo _headseMethodInfo;
+
+    private ItemId _itemID;
 
     public const string PluginLogId = "DTPProxy";
 
@@ -87,14 +100,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
       OnNotify(new DeviceChangedEventArgs());
     }
 
-    public Task<int> GetDpiValue(ItemId item) {
-      //_mouseInterface = FindCommodityInterfaceType("IMouseCommodity");
-      //var methodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-      //                                            .MakeGenericMethod(commodityInterfaceType);
-      //var value = _mouseInterface.GetProperty("DpiValue").GetGetMethod().Invoke(commodity, null);
-      //writelog($"GetDpiValue called - Item \"{commodity.ItemId}\": Value: {value}");
-      //return int.Parse(value.ToString());
-      return Task.Run(() => 1000);
+    public async Task<int> GetDpiValue(string itemID) {
+      _itemID = new ItemId(itemID);
+
+      if(await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity) {
+        var value = GetPropertyValue(_mouseInterfaceType, commodity, "DpiValue");
+        return (int)value;
+      }
+      else {
+        Console.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+        writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+        return -1;
+      }
     }
 
     public void SetDPIValue(int newDPIValue, Guid deviceId) {
@@ -110,7 +127,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
       _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
       PluginCondition = new PluginStartedCondition();
-      writelog("DTPProxyPlugin plugin started");
+      writelog("DTPProxyPlugin plugin starting");
     }
 
     #endregion
@@ -166,9 +183,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
       return null;
     }
 
-    ICommodity GetCommodityInterfaceInstance(MethodInfo methodInfo, ItemId itemId) {
-      dynamic rawResult = methodInfo.Invoke(_commSdk, new object[] { itemId, new CancellationTokenSource().Token });
-      return rawResult is null ? null : (ICommodity)rawResult;
+    async Task<ICommodity> GetCommodityInterfaceInstanceAsync(MethodInfo methodInfo) {
+      try {
+        dynamic rawResult = methodInfo.Invoke(_commSdk, new object[] { _itemID, new CancellationTokenSource().Token });
+        Console.WriteLine($"rawResult: {rawResult}");
+        return rawResult is null ? null : (ICommodity)await rawResult;
+
+      }
+      catch(Exception ex) {
+        Console.WriteLine($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
+        writelog($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
+        return null;
+      }
     }
 
     bool IsAssemblyCanditate(Assembly a)
@@ -190,42 +216,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
       _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
 
       if(_commSdk != null) {
-        Task.Run(async () =>
-        {
+        _ = Task.Run(async () => {
           await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
-          var commodityInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
-          var methodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                      .MakeGenericMethod(commodityInterfaceType);
-          ItemId itemId = new ItemId("DellPeripheral.Mouse.0");
-          string property = "ModelNumber";
-
-          await CallForEachPropertyAsync((commodityInterfaceType, itemId, commodity, property) =>
-          {
-            var value = commodityInterfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
-            Console.WriteLine($"Item \"{commodity.ItemId}\": {commodityInterfaceType}.{property} is {ToString(value)}");
-
-            string ToString(object v) {
-              if(v is null) {
-                return "null";
-              }
-              if((v.GetType().IsGenericType && (v.GetType().GetGenericTypeDefinition() == typeof(List<>)))) {
-                return $"[{string.Join(", ", ((IList)v).Cast<object>())}]";
-              }
-              // TODO: Might need to handle more complex types like Dictionary if needed.
-              return v.ToString();
-            }
-          });
+          _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
+          _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                      .MakeGenericMethod(_mouseInterfaceType);
         });
       }
       else {
         if(_commSdk is IFrameworkPluginConditionNotification pluginCondition) {
-          pluginCondition.PluginConditionChangeHandler += OnDisplayManagerPluginConditionChangeHandler;
+          pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
           GetCurrentDTPProxyPluginCondition();
         }
       }
     }
 
-    private void OnDisplayManagerPluginConditionChangeHandler(object sender, EventArgs e) {
+    private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e) {
       GetCurrentDTPProxyPluginCondition();
     }
 
@@ -249,81 +255,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
       });
     }
 
-    private async Task CallForEachPropertyAsync(Action<Type /*CommodityInterfaceType*/, ItemId, ICommodity, string /*PropertyName*/> action) {
-      var commodityInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
-      var methodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                  .MakeGenericMethod(commodityInterfaceType);
-      ItemId itemId = new ItemId("DellPeripheral.Mouse.0");
-      string property = "ModelNumber";
-
+    object GetPropertyValue(Type interfaceType, ICommodity commodity, string property) {
       try {
-        if(await GetCommodityInterfaceInstanceAsync(methodInfo, itemId) is ICommodity commodity) {
-          try {
-            action(commodityInterfaceType, itemId, commodity, property);
-          }
-          catch(Exception ex) {
-            Console.WriteLine($"\nError while handling {commodityInterfaceType}.{property} on item \"{itemId}\".\n{ex}");
-          }
-        }
-        else {
-          Console.WriteLine($"Could not retrieve the Commodity Interface {commodityInterfaceType} for the {itemId} item.");
-        }
+        return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
       }
       catch(Exception ex) {
-        Console.WriteLine($"\nError handling {commodityInterfaceType}'s {itemId} item.\n{ex}");
+        writelog($"Error while handling {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+        return null;
       }
-      return;
-
-      Type FindCommodityInterfaceType(string commodityName) {
-        foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => IsAssemblyCanditate(a))) {
-          try {
-            var type = assembly.GetExportedTypes()
-                               .FirstOrDefault(t => t.FullName.Equals($"Dell.TechHub.Commodity.Peripheral.{commodityName}", StringComparison.OrdinalIgnoreCase));
-            if(type is not null)
-              return type;
-          }
-          catch(Exception ex) {
-            Console.WriteLine($"\nFailed to get exported type from assembly {assembly.FullName}\n{ex}");
-            Log.Trace(ex, $"Failed to get exported type from assembly {assembly.FullName}");
-          }
-        }
-        throw new DtpException($"The {commodityName} type cannot be resolved");
-
-        //Type Find(string commodityName) {
-        //  foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies()
-        //                                    .Where(a => IsAssemblyCanditate(a))) {
-        //    try {
-        //      var type = assembly.GetExportedTypes()
-        //                         .FirstOrDefault(t => t.FullName.Equals(commodityName, StringComparison.OrdinalIgnoreCase));
-        //      if(type is not null)
-        //        return type;
-        //    }
-        //    catch(Exception ex) {
-        //      Log.Trace(ex, $"Failed to get exported type from assembly {assembly.FullName}");
-        //    }
-        //  }
-        //  return null;
-        //}
-      }
-
-      async Task<ICommodity> GetCommodityInterfaceInstanceAsync(MethodInfo methodInfo, ItemId itemId) {
-        Console.WriteLine($"methodInfo: {methodInfo}");
-        dynamic rawResult = methodInfo.Invoke(_commSdk, new object[] { itemId, new CancellationTokenSource().Token });
-        Console.WriteLine($"rawResult: {rawResult}");
-        return rawResult is null ? null : (ICommodity)await rawResult;
-      }
-
-      static bool IsAssemblyCanditate(Assembly a)
-          => !a.IsDynamic
-          && a.FullName is var fullName
-          && IsCanditate(fullName, "Dell.")
-          && !IsCanditate(fullName, "Dell.TechHub.Sdk.")
-          && !IsCanditate(fullName, "Dell.UnifiedAgent.")
-          && !IsCanditate(fullName, "Dell.Client.")
-          && !IsCanditate(fullName, "Dell.RPC.");
-
-      static bool IsCanditate(string name, string startsWith)
-          => name.StartsWith(startsWith, StringComparison.OrdinalIgnoreCase);
     }
   }
 }

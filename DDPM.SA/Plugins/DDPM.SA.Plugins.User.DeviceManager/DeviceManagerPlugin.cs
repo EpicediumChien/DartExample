@@ -75,17 +75,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private INKVMService _NKVMPlugin;
         private IHotkey _HotkeyPlugin;
         private ISWUpdateService _SWUpdatePlugin;
-        private ISchedulerManager _ScheduleManagerPlugin;
+    private ISchedulerManager _ScheduleManagerPlugin;
+    private IDTPProxyPlugin _DTPProxyPlugin;
 
-        private readonly object _PluginConditionLock = new object();
+    private readonly object _PluginConditionLock = new object();
         private readonly object _PluginConditionLock_Display = new object();
         private readonly object _PluginConditionLock_Peripherals = new object();
         private readonly object _PluginConditionLock_Settings = new object();
         private readonly object _PluginConditionLock_ColorPreset = new object();
         private readonly object _PluginConditionLock_NKVM = new object();
         private readonly object _PluginConditionLock_Hotkey = new object();
-        private readonly object _PluginConditionLock_ScheduleManager = new object();
-        DisplayChange displayChange;
+    private readonly object _PluginConditionLock_ScheduleManager = new object();
+    private readonly object _PluginConditionLock_DTPProxy = new object();
+    DisplayChange displayChange;
 
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
@@ -176,9 +178,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             InitializeNKVMPlugin();
             InitializeHotkeyPlugin();
             InitializeSWUpdatePlugin();
-            InitializeSchedulerManagerPlugin();
+      InitializeSchedulerManagerPlugin();
+      InitializeDTPProxyPlugin();
 
-            PluginCondition = new PluginStartedCondition();
+      PluginCondition = new PluginStartedCondition();
             writelog("DeviceManager plugin started");
 
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
@@ -2532,12 +2535,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
-        #endregion
-        #endregion
+    #endregion
 
-        #region Private Methods
+    #region DTPProxy implementation
 
-        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+    public async Task<int> GetDpiValueByDTP(string itemID) {
+      return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(itemID));
+    }
+    #endregion
+
+    #endregion
+
+
+    #region Private Methods
+
+    private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
             if (displayInOut)
             {
@@ -3103,21 +3115,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private void InitializeSchedulerManagerPlugin()
-        {
-            if (_ScheduleManagerPlugin != null)
-                return;
+    private void InitializeSchedulerManagerPlugin() {
+      if(_ScheduleManagerPlugin != null)
+        return;
 
-            _ScheduleManagerPlugin = _agent.PluginManager.FindPluginByType<ISchedulerManager>(PluginResolution.Dynamic);
+      _ScheduleManagerPlugin = _agent.PluginManager.FindPluginByType<ISchedulerManager>(PluginResolution.Dynamic);
 
-            if (_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
-            {
-                pluginCondition.PluginConditionChangeHandler += OnScheduleManagerPluginConditionChangeHandler;
-                GetCurrentScheduleManagerCondition();
-            }
-        }
+      if(_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition) {
+        pluginCondition.PluginConditionChangeHandler += OnScheduleManagerPluginConditionChangeHandler;
+        GetCurrentScheduleManagerCondition();
+      }
+    }
 
-        private void InitializeSWUpdatePlugin()
+    private void InitializeDTPProxyPlugin() {
+      if(_DTPProxyPlugin != null)
+        return;
+
+      _DTPProxyPlugin = _agent.PluginManager.FindPluginByType<IDTPProxyPlugin>(PluginResolution.Dynamic);
+
+      if(_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition) {
+        pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
+        GetCurrentDTPProxyPluginCondition();
+      }
+    }
+
+    private void InitializeSWUpdatePlugin()
         {
             if (_SWUpdatePlugin != null)
                 return;
@@ -3257,7 +3279,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
-                        writelog($"{nameof(GetCurrentDisplayManagerCondition)} - ColorPreset Plugin is in a started condition");
+                        writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in a started condition");
                         //_ColorPresetPluginCondition = pluginCondition;
                         _ColorPresetPlugin.VCPchanged += show_colorpreset;
 
@@ -3424,19 +3446,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - NKVM Plugin is in an error condition");
+                        writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in an error condition");
                         //_NKVMPluginCondition = pluginCondition;
                     }
                     else if (pluginCondition is PluginRunningCondition)
                     {
-                        writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - NKVM Plugin is in a running condition");
+                        writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a running condition");
                         //_NKVMPluginCondition = pluginCondition;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
-                        writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - NKVM Plugin is in a started condition");
+                        writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a started condition");
                         //_NKVMPluginCondition = pluginCondition;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
@@ -3505,6 +3527,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _SWUpdatePlugin.StartCheckUpdateScheduleTimer();
                         SW_SetDelaySWUpdateInfoPackage();
                         _SWUpdatePlugin.CallPopup += CallPopup;
+                    }
+                }
+            });
+        }
+
+        private void GetCurrentDTPProxyPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_DTPProxyPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                lock (_PluginConditionLock_DTPProxy)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a running condition");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a started condition");
                     }
                 }
             });
@@ -4673,6 +4718,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             GetCurrentSWUpdatePluginCondition();
         }
 
+        private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+      GetCurrentDTPProxyPluginCondition();
+        }
+
         //Bruce, 2024-08-09 add new event
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
@@ -4709,8 +4759,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (e.ChangedPlugins.OfType<ISWUpdateService>().Any())
                 InitializeSWUpdatePlugin();
-        }
 
-        #endregion
+      if(e.ChangedPlugins.OfType<IDTPProxyPlugin>().Any())
+        InitializeDTPProxyPlugin();
     }
+
+    #endregion
+  }
 }

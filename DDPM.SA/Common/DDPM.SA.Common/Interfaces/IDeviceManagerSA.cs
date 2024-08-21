@@ -434,5 +434,10 @@ namespace DDPM.SA.Common
         #endregion
         //public for GUI to get the changes of display and peripherals
         event EventHandler<DeviceChangedEventArgs> DeviceChanged;
-    }
+
+    #region public for DTPProxy
+
+    Task<int> GetDpiValueByDTP(string itemID);
+    #endregion
+  }
 }
