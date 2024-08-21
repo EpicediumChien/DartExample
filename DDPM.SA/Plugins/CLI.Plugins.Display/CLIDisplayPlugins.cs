@@ -139,6 +139,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             if (commandLineInput != null || commandLineInput.ServiceTag.Count > 0)
             {
+                bool is_match = false;
                 foreach (string tag in commandLineInput.ServiceTag)
                 {
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
@@ -155,10 +156,13 @@ namespace DDPM.CLI.Plugins.Display
                             Trace.WriteLine($"sting is not the same");
                             result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
                             result.ExitCode = (int)CLI_ExitCode.invalid_servicetag;
-                            return false;
                         }
+                        else
+                            is_match = true;
                     }
                 }
+                if (!is_match)
+                    return false;
             }
             return true;
         }
@@ -467,7 +471,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
-                case "OSD":
+                case "OSDACCESS":
                     if (commandLineInput.Command.Equals("SET"))
                     {
                         int exitcode = 0;
@@ -5010,7 +5014,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         _Set_CLI_RESPONSE_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
-                        _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSD";
+                        _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                         _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
                         if (!r)
@@ -5049,7 +5053,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base(idx);
                         _Set_CLI_RESPONSE_RESPONSE.ServiceTag = "";
                         _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
-                        _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSD";
+                        _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                         _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
                         if (!r)
@@ -5092,7 +5096,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo).ToString());
                             _Set_CLI_RESPONSE_RESPONSE.ServiceTag = tag;
                             _Set_CLI_RESPONSE_RESPONSE.Command = "SET";
-                            _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSD";
+                            _Set_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
                             _Set_CLI_RESPONSE_RESPONSE.Value = value;
 
                             if (!r)
@@ -7583,7 +7587,7 @@ namespace DDPM.CLI.Plugins.Display
                     get_Capabilitystring.CapabilityString = monitor.CapabilityString;
 
                     output += "\n" + JsonConvert.SerializeObject(get_Capabilitystring, Formatting.Indented);
-                    return ((int)CLI_ExitCode.success, output);
+                    //return ((int)CLI_ExitCode.success, output);
                 }
             }
             else if (commandLineInput.DeviceIndex.Count > 0)
@@ -7604,7 +7608,7 @@ namespace DDPM.CLI.Plugins.Display
                     get_Capabilitystring.CapabilityString = monitor.CapabilityString;
 
                     output += "\n" + JsonConvert.SerializeObject(get_Capabilitystring, Formatting.Indented);
-                    return ((int)CLI_ExitCode.success, output);
+                    //return ((int)CLI_ExitCode.success, output);
                 }
             }
             else if (commandLineInput.ServiceTag.Count > 0)
@@ -7627,15 +7631,9 @@ namespace DDPM.CLI.Plugins.Display
                         get_Capabilitystring.CapabilityString = monitor.CapabilityString;
 
                         output += "\n" + JsonConvert.SerializeObject(get_Capabilitystring, Formatting.Indented);
-                        return ((int)CLI_ExitCode.success, output);
+                        //return ((int)CLI_ExitCode.success, output);
                     }
                 }
-                get_Capabilitystring = new Get_Capabilitystring();
-                get_Capabilitystring.Command = "GET";
-                get_Capabilitystring.TargetFeature = "CAPABILITYSTRING";
-                get_Capabilitystring.Result = "FAIL";
-                get_Capabilitystring.Message = "Invalid Service Tag";
-                output += "\n" + JsonConvert.SerializeObject(get_Capabilitystring, Formatting.Indented);
             }
 
             return ((int)CLI_ExitCode.success, output);
