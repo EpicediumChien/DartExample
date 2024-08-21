@@ -1,9 +1,14 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using UserControl = System.Windows.Controls.UserControl;
+
+
+//using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.Color
 {
@@ -32,7 +37,7 @@ namespace DDPM.UI.Module.Color
         //  Jim add 20240606
         private void UserControl_UnLoaded(object sender, RoutedEventArgs e)
         {
-            DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
+            DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF");
 
             //Jim remove 20240621
             //Thread.Sleep(200);
@@ -95,13 +100,13 @@ namespace DDPM.UI.Module.Color
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].ColorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
 
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
 
                             // jim add 20240627
                             DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
 
                             // jim add 20240806
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
                         }
                     }
                 }
@@ -131,10 +136,12 @@ namespace DDPM.UI.Module.Color
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo.Remove(selected_app.AppName);
 
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                            Thread.Sleep(100);
+                            Thread.Sleep(500);
                         }
-
+                                       
                         Test_AddAppCollectionData.GetInstance().AppsList.Remove(selected_app);
+                        Thread.Sleep(100);
+
                     }
                 }
             }
@@ -193,7 +200,7 @@ namespace DDPM.UI.Module.Color
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     //ColorViewModel vm = (ColorViewModel)DataContext;
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
+                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF");
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
                 }));
             }
@@ -203,18 +210,22 @@ namespace DDPM.UI.Module.Color
 
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    //ColorViewModel vm = (ColorViewModel)DataContext;
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
+                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON");
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
-                }));
+                })); 
+            
             }
         }
 
         private void Color_Management_Switch_Click(object sender, RoutedEventArgs e)
         {
+            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
             ColorViewModel vm = (ColorViewModel)DataContext;
             if ((bool)ColorManagement_ToggleSwitch.IsChecked)
             {
+                setting.UserSettings.ColorManagement_off = false;
+
                 rb_ICCprofile_based_Colorpreset.IsEnabled = true;
                 rb_Colorpreset_based_ICCprofile.IsEnabled = true;
                 //Dean add for ALS
@@ -226,8 +237,21 @@ namespace DDPM.UI.Module.Color
             }
             else
             {
+                setting.UserSettings.ColorManagement_off = true;
+
                 rb_ICCprofile_based_Colorpreset.IsEnabled = false;
-                rb_Colorpreset_based_ICCprofile.IsEnabled = false;
+                rb_Colorpreset_based_ICCprofile.IsEnabled = false;               
+
+                if (vm._ICC_Metadata.Is_Support_ICC_DeviceName)
+                {
+                    if (vm.registryMonitor_ICC != null)
+                    {
+                        if (vm.registryMonitor_ICC.IsMonitoring)
+                            vm.registryMonitor_ICC.Dispose();
+                        vm.registryMonitor_ICC = null;
+                    }                
+                }
+
                 //Dean Add For ALS
                 if (vm != null)
                 {
@@ -235,12 +259,19 @@ namespace DDPM.UI.Module.Color
                     vm.ICCprofile_based_Colorpreset_enable = false;
                 }
             }
+
+            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
         }
 
         private void rb_ICCprofile_based_Colorpreset_click(object sender, RoutedEventArgs e)
         {
+            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
             if ((bool)rb_Colorpreset_based_ICCprofile.IsChecked)
             {
+                setting.UserSettings.ColorManagement_bymonitor = true;
+                setting.UserSettings.ColorManagement_byhost = false;
+
                 rb_Colorpreset_based_ICCprofile.IsChecked = false;
 
                 ColorViewModel vm = (ColorViewModel)DataContext;
@@ -262,14 +293,21 @@ namespace DDPM.UI.Module.Color
                     }
                 }
             }
+
+            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
         }
 
         private void rb_Colorpreset_based_ICCprofile_click(object sender, RoutedEventArgs e)
         {
+            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
             ColorViewModel vm = (ColorViewModel)DataContext;
 
             if ((bool)rb_ICCprofile_based_Colorpreset.IsChecked)
             {
+                setting.UserSettings.ColorManagement_bymonitor = false;
+                setting.UserSettings.ColorManagement_byhost = true;
+
                 rb_ICCprofile_based_Colorpreset.IsChecked = false;
                 //Dean 0612 add
                 if (vm != null)
@@ -301,6 +339,8 @@ namespace DDPM.UI.Module.Color
                     vm.registryMonitor_ICC.Start();
                 }
             }
+
+            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
         }
 
         private void lb_AppList_PreviewDragEnter(object sender, System.Windows.DragEventArgs e)
@@ -308,44 +348,111 @@ namespace DDPM.UI.Module.Color
             System.Windows.DataObject dataObj = (System.Windows.DataObject)e.Data;
             if (!dataObj.ContainsFileDropList())
             {
-                //pathName = "Dragging object is not file list.";
-                //return false;
+                //pathName = "Dragging object is not file list.";          
+                return;
             }
             string[] dropFileNames = (string[])dataObj.GetData(System.Windows.DataFormats.FileDrop);
             if (dropFileNames == null)
             {
-                //pathName = "Dragging object is a file list, but it\'s empty.";
-                //return false;
+                //pathName = "Dragging object is a file list, but it\'s empty.";                
+                return;
             }
             if (dropFileNames.Length != 1)
             {
-                //pathName = "Dragging object is not \"single\" file.";
-                //return false;
+                //pathName = "Dragging object is not \"single\" file.";               
+                return;
             }
-            string extName = System.IO.Path.GetExtension(dropFileNames[0]);
-            if (!extName.Equals(".CSV", StringComparison.OrdinalIgnoreCase))
-            {
-                //pathName = "Dragging object is not a \".CSV\" file.";
-                //return false;
-            }
-            //pathName = dropFileNames[0];
-
+        
             string targetPath = dropFileNames[0];
 
-            if (targetPath.EndsWith(".lnk"))
-            {
-                //ShellLinkObject linkedLnk = (ShellLinkObject)shell.NameSpace(targetPath).Items().Item().GetLink;
-                //targetPath = linkedLnk.Target.Path;
-                //targetPath = linkedLnk.Target.Path;
+            if (targetPath.EndsWith(".lnk")  || targetPath.EndsWith(".exe"))
+            {     
+                string strAppName = string.Empty;
+                string strFileName = string.Empty;
+                string strAppIcon = string.Empty;
 
-                // IWshRuntimeLibrary is in the COM library "Windows Script Host Object Model"
-                IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
+                if (targetPath.EndsWith(".lnk"))
+                {
+                    // IWshRuntimeLibrary is in the COM library "Windows Script Host Object Model"
+                    IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
 
-                IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(targetPath);
+                    IWshRuntimeLibrary.IWshShortcut shortcut = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(targetPath);
 
-                string temp;
+                    strAppName = System.IO.Path.GetFileNameWithoutExtension(shortcut.FullName);
+                    //strFileName = System.IO.Path.GetFileName(shortcut.TargetPath);
+                    strFileName = shortcut.TargetPath;
+                }
+               
+                if (targetPath.EndsWith(".exe"))
+                {
+                    strFileName = targetPath;
+                }
 
-                temp = shortcut.TargetPath;
+                Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
+
+                foreach (KeyValuePair<string, InstalledAppInfo> kvp in data) 
+                { 
+                    if (kvp.Value.AppInstallPath.Equals(strFileName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        strAppName = kvp.Value.AppName;   
+
+                        string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
+                        strFolder += "\\";
+
+                        if (!System.IO.Directory.Exists(strFolder))
+                            System.IO.Directory.CreateDirectory(strFolder);
+
+                        if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                        {
+                            strAppIcon = strFolder + kvp.Value.IconName + ".png";
+                        }
+
+                        AppData? be = Test_AddAppCollectionData.GetInstance().AppsList.FirstOrDefault(x => x.AppName == (strAppName));
+
+                        if (be != null)
+                        { }
+                        else
+                        {
+                            ColorViewModel vm = (ColorViewModel)DataContext;
+
+                            List<string> _supported_preset = new List<string>();
+                            _supported_preset = vm.SupportColorPresets;
+
+                            Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
+                            {
+                                AppIcon = strAppIcon,
+                                AppName = strAppName,
+                                AppPresetIdx = 0,
+                                IsDeleteAble = System.Windows.Visibility.Visible,
+                                SupportPreset = new List<string>(_supported_preset),
+                            });
+                        }
+
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
+
+                        int index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+
+                        if (index >= 0)
+                        {
+                            if (!(Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.ContainsKey(strAppName)))
+                            {
+                                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, new ColorPresetSettings_AppInfo()
+                                {
+                                    ColorPresetName = "Standard/Native",
+                                    IconName = strAppIcon,
+
+                                });
+
+                            }
+
+                            DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+                            Thread.Sleep(500);
+
+                            DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
+                        }
+                    }
+                }               
+              
             }
         }
     }

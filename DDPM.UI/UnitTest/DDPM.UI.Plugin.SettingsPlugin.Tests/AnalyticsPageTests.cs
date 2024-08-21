@@ -27,7 +27,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         [Test]
         public void TestConstructor_AnalyticsPage()
         {
-            DeviceManagerSAMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings())));
+            DeviceManagerSAMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(),new DDPMITConfig())));
             analyticsPage = new AnalyticsPage();
             Assert.That(analyticsPage, Is.Not.Null);
         }

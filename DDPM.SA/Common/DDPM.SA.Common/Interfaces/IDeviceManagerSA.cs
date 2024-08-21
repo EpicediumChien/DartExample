@@ -30,6 +30,11 @@ namespace DDPM.SA.Common
         public string changedProperty { get; set; }
     }
 
+    public class UpdateUINotify : EventArgs
+    {
+        public string UI_Field_Name { get; set; } = string.Empty;
+    }
+
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
         #region public for SchedulerManger
@@ -61,7 +66,7 @@ namespace DDPM.SA.Common
 
         void DeleteColorPresetForMonitorConfig(string index_monitor, string AppName);
 
-        void AutoSetColorPresetForMonitorConfig(string index_monitor, string on_off);
+        void AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false);
 
         Task<string> GetMonitorProfile(MonitorInfo m);
 
@@ -77,6 +82,11 @@ namespace DDPM.SA.Common
 
         //Jim add 20240801
         Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
+
+        //Jim add 20240820
+        Task<bool> ColorManagement_Off(MonitorInfo mo);
+        Task<bool> ColorManagement_Bymonitor(MonitorInfo mo);
+        Task<bool> ColorManagement_Byhost(MonitorInfo mo);
 
         #endregion public for ColorPreset
 
@@ -290,10 +300,11 @@ namespace DDPM.SA.Common
 
         #region public for CMA/CLI
 
-        Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input);
+        //Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input);
+        //Task<List<CommandResult>> listConnectedDeviceInfo();
 
-        Task<List<CommandResult>> listConnectedDeviceInfo();
-
+        event EventHandler<UpdateUINotify> UIUpdateNotify;
+        void OnUIUpdateNotify(UpdateUINotify e);
         #endregion public for CMA/CLI
 
         #region public for display properties
@@ -434,6 +445,12 @@ namespace DDPM.SA.Common
         #endregion
         //public for GUI to get the changes of display and peripherals
         event EventHandler<DeviceChangedEventArgs> DeviceChanged;
+        
+        #region public for IT lock event
+        //IT lock
+        event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        #endregion
+    }
 
     #region public for DTPProxy
 

@@ -11,6 +11,7 @@
              xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="rootUserControl"
@@ -475,7 +476,7 @@
                     <StackPanel>
                         <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
                               Margin="0,64,0,32">
-                            <UXControls:UXTextBlock Text="Please wait..."
+                            <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
                                                     Foreground="#F5F6F7" FontSize="32" />
                         </Grid>
                         <Grid Height="64">

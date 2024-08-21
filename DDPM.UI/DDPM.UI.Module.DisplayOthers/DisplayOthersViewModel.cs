@@ -39,8 +39,9 @@ namespace DDPM.UI.Module.DisplayOthers
             get => _powerNapEnabled;
             set
             {
+                
                 SetProperty(ref _powerNapEnabled, value);
-                PowerNap_text = _powerNapEnabled ? "ON" : "OFF";
+                PowerNap_text = _powerNapEnabled ? Strings.On : Strings.Off;
                 OnPropertyChanged("PowerNap_Enable");
                 savePowerNapSetting();
             }
@@ -119,7 +120,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 if (crtSetting != null)
                 {
                     _powerNapEnabled = crtSetting.Status;
-                    _powerNapText = _powerNapEnabled ? "ON" : "OFF";
+                    _powerNapText = _powerNapEnabled ? Strings.On : Strings.Off;
                     switch (crtSetting.RunType)
                     {
                         case PowerNapType.ReduceBrightness:
@@ -161,6 +162,17 @@ namespace DDPM.UI.Module.DisplayOthers
                 {
                     return true;
                 }
+            }
+            return false;
+        }
+        public bool ImportSettings()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.Filter = "jason files (*.json)|*.json";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filename = openFileDialog.FileName;
             }
             return false;
         }

@@ -24,18 +24,38 @@ namespace DDPM.ColorApp
     {
         #region Native Win32 APIs
 
-        [DllImport("USER32.DLL", CharSet = CharSet.Auto)]
-        public static extern int GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
+        /*[DllImport("USER32.DLL", CharSet = CharSet.Auto)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
+        public static int _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
+        {
+            return GetWindowThreadProcessId(hWnd, out nProcessId);
+        }*/
 
         [DllImport("USER32.DLL")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+        public static int _GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount)
+        {
+            return GetWindowText(hWnd, lpString, nMaxCount);
+        }
 
         [DllImport("USER32.DLL")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowTextLength(IntPtr hWnd);
+        public static int _GetWindowTextLength(IntPtr hWnd)
+        {
+            return GetWindowTextLength(hWnd);
+        }
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc callback, IntPtr lParam);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc callback, IntPtr lParam);
+        public static bool _EnumChildWindows(IntPtr hwnd, WindowEnumProc callback, IntPtr lParam)
+        {
+            return EnumChildWindows(hwnd, callback, lParam);
+        }
 
         public delegate bool WindowEnumProc(IntPtr hwnd, IntPtr lparam);
 
@@ -43,7 +63,7 @@ namespace DDPM.ColorApp
 
         private static AppStatusQuery? INSTANCE = null;
 
-        private WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS | Native.WINEVENT_SKIPOWNPROCESS | Native.EVENT_OBJECT_LOCATIONCHANGE | Native.EVENT_OBJECT_SELECTION);
+        private WindowFocusWatcher focusWatcher = new WindowFocusWatcher(WindowFocusWatcherEvent, Native.EVENT_OBJECT_FOCUS /*| Native.WINEVENT_SKIPOWNPROCESS | Native.EVENT_OBJECT_LOCATIONCHANGE | Native.EVENT_OBJECT_SELECTION*/);
         private WindowFocusWatcher moveWatcher = new WindowFocusWatcher(WindowMoveResizeWatcherEvent, Native.EVENT_SYSTEM_MOVESIZEEND);
 
         private static string _LastforgroundTitle = string.Empty;
@@ -74,12 +94,12 @@ namespace DDPM.ColorApp
         private static string GetAWindowTitle(IntPtr hWnd)
         {
             string Title = string.Empty;
-            int length = GetWindowTextLength(hWnd);
+            int length = _GetWindowTextLength(hWnd);
             if (length == 0) return
                     string.Empty;
 
             StringBuilder builder = new StringBuilder(length);
-            GetWindowText(hWnd, builder, length + 1);
+            _GetWindowText(hWnd, builder, length + 1);
 
             Title = builder.ToString();
             return Title;
@@ -91,14 +111,14 @@ namespace DDPM.ColorApp
 
         private static Process? GetRealProcess(Process foregroundProcess)
         {
-            EnumChildWindows(foregroundProcess.MainWindowHandle, ChildWindowCallback, IntPtr.Zero);
+            _EnumChildWindows(foregroundProcess.MainWindowHandle, ChildWindowCallback, IntPtr.Zero);
             return _realProcess;
         }
 
         private static bool ChildWindowCallback(IntPtr hwnd, IntPtr lparam)
         {
             uint pid = 0;
-            GetWindowThreadProcessId(hwnd, out pid);
+            Native._GetWindowThreadProcessId(hwnd, out pid);
             var process = Process.GetProcessById((int)pid);
             if (process.ProcessName != "ApplicationFrameHost")
             {
@@ -158,12 +178,12 @@ namespace DDPM.ColorApp
 
         private static void WindowFocusWatcherEvent(IntPtr hwnd)
         {
-            uint uid = 0;
-            GetWindowThreadProcessId(hwnd, out uid);
+            //uint uid = 0;
+            //_GetWindowThreadProcessId(hwnd, out uid);
             string activeTitle = GetAWindowTitle(hwnd);
-            var hWnd = Native.GetForegroundWindow();
+            var hWnd = Native._GetForegroundWindow();
             uint pid;
-            Native.GetWindowThreadProcessId(hWnd, out pid);
+            Native._GetWindowThreadProcessId(hWnd, out pid);
 
             if (pid == 0)
                 return;
@@ -176,11 +196,13 @@ namespace DDPM.ColorApp
 
             Screen screen = Screen.FromHandle(hWnd);
 
+            /* Jim remove 20240816
             if (!string.IsNullOrEmpty(_LastforgroundTitle) && String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
                 ///////logger.WriteLog($"[Watcher-Focus]  Same as last app, drop event");
                 return;
             }
+            */
 
             _LastforgroundTitle = forgroundTitle;
             _LastLocatedScreen = screen.DeviceName;
@@ -190,12 +212,12 @@ namespace DDPM.ColorApp
 
         private static void WindowMoveResizeWatcherEvent(IntPtr hwnd)
         {
-            uint uid = 0;
-            GetWindowThreadProcessId(hwnd, out uid);
+            //uint uid = 0;
+            //GetWindowThreadProcessId(hwnd, out uid);
             string activeTitle = GetAWindowTitle(hwnd);
-            var hWnd = Native.GetForegroundWindow();
+            var hWnd = Native._GetForegroundWindow();
             uint pid;
-            Native.GetWindowThreadProcessId(hWnd, out pid);
+            Native._GetWindowThreadProcessId(hWnd, out pid);
 
             if (pid == 0)
                 return;
@@ -208,6 +230,7 @@ namespace DDPM.ColorApp
 
             Screen screen = Screen.FromHandle(hWnd);
 
+            /* Jim remove 20240816
             if (String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
                 ///////logger.WriteLog($"[Watcher-Move]  Same as last app, check screen location");
@@ -219,6 +242,8 @@ namespace DDPM.ColorApp
                     return;
                 }
             }
+            */
+
             _LastforgroundTitle = forgroundTitle;
             _LastLocatedScreen = screen.DeviceName;
 

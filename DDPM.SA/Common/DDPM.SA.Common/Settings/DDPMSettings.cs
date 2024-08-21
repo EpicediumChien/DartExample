@@ -14,14 +14,16 @@ namespace DDPM.SA.Common.Settings
 
         public DDPMUserSettings UserSettings { get; set; }
 
-        public DDPMSettings(DDPMAppSettings appsettings, DDPMUserSettings usersettings)//, DDMMonitorSettings monitorsettings)
+        public DDPMITConfig LockSettings { get; set; }
+
+        public DDPMSettings(DDPMAppSettings appSettings, DDPMUserSettings userSettings, DDPMITConfig lockSettings)
         {
-            AppSettings = appsettings;
-            UserSettings = usersettings;
-            //MonitorSettings = monitorsettings;
+            AppSettings = appSettings;
+            UserSettings = userSettings;
+            LockSettings = lockSettings;
         }
 
-        public static bool exportSettingstoFile(string path, DDPMAppSettings appsettings, DDPMUserSettings usersettings)//, DDMMonitorSettings monitorsettings)
+        /*public static bool exportSettingstoFile(string path, DDPMAppSettings appsettings, DDPMUserSettings usersettings)//, DDMMonitorSettings monitorsettings)
         {
             try
             {
@@ -93,6 +95,6 @@ namespace DDPM.SA.Common.Settings
         {
             using SHA256 sHA = SHA256.Create();
             return sHA.ComputeHash(message, offset, count);
-        }
+        }*/
     }
 }

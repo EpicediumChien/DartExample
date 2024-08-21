@@ -364,7 +364,7 @@ namespace DDPM.ColorApp
                                 return;
                             }
 
-                            if (!Pre_reqKey.Equals(reqKey))
+                            if (!Pre_reqKey.Equals(reqKey,StringComparison.OrdinalIgnoreCase))
                             {
                                 Pre_reqKey = reqKey;
                                 //

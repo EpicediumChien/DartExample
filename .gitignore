@@ -19,6 +19,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 *.zip
+*.7z
 
 # Roslyn cache directories
 *.ide/
@@ -199,3 +200,18 @@ testcoverage/
 *.coveragexml
 /CLI.Subagent/CLI - Backup.Subagent.csproj
 /_BIN
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
+/DDPM.UI/CommonDll/DDPM.ShowOsd.deps.json
+/DDPM.UI/CommonDll/VcpCore.Interfaces.deps.json
+/DDPM.UI/CommonDll/DDPM.Win32Lib.deps.json
+/DDPM.UI/CommonDll/VcpCore.Common.deps.json
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
+/DDPM.UI/CommonDll/DDPM.ShowOsd.deps.json
+/DDPM.UI/CommonDll/DDPM.Win32Lib.deps.json
+/DDPM.UI/CommonDll/VcpCore.Common.deps.json
+/DDPM.UI/CommonDll/VcpCore.Interfaces.deps.json
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
+/DDPM.UI/CommonDll/DDPM.ShowOsd.deps.json
+/DDPM.UI/CommonDll/DDPM.Win32Lib.deps.json
+/DDPM.UI/CommonDll/VcpCore.Common.deps.json
+/DDPM.UI/CommonDll/VcpCore.Interfaces.deps.json

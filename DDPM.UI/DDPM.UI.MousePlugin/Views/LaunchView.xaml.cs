@@ -28,12 +28,12 @@ namespace DDPM.UI.Plugin.MousePlugin
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
         private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
-        private readonly string ActionCaption = "Assign actions for";
-        private readonly string AllAppCaption = "All Applications";
-        private readonly string WordCaption = "Microsoft Word";
-        private readonly string ExcelCaption = "Microsoft Excel";
-        private readonly string PowerPointCaption = "Microsoft PowerPoint";
-        private readonly string OutlookCaption = "Microsoft Outlook";
+        //private readonly string ActionCaption = "Assign actions for";
+        //private readonly string AllAppCaption = "All Applications";
+        //private readonly string WordCaption = "Microsoft Word";
+        //private readonly string ExcelCaption = "Microsoft Excel";
+        //private readonly string PowerPointCaption = "Microsoft PowerPoint";
+        //private readonly string OutlookCaption = "Microsoft Outlook";
 
         private readonly SolidColorBrush buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
         private readonly SolidColorBrush buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0xFF, 0xFF, 0xFF));
@@ -52,7 +52,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 {
                     Battery.Visibility = Visibility.Collapsed;
                     //btnRestore.Visibility = Visibility.Collapsed;
-                    txtEOL.Text = Strings.EOLMessage;
+                    //txtEOL.Text = Strings.EOLMessage;
                     txtEOL.Visibility = Visibility.Visible;
                     SectionA.Visibility = Visibility.Collapsed;
                     SectionB.Visibility = Visibility.Collapsed;
@@ -61,19 +61,19 @@ namespace DDPM.UI.Plugin.MousePlugin
                 BuildModuleGroups();
             }
 
-            txtUnpair.Text = Strings.Unpair;
+            //txtUnpair.Text = Strings.Unpair;
             //txtRestore.Text = Strings.RestoreToDefault;
             ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
             ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-            txtDongleHost.Text = Strings.USBWirelessReceiver;
+            //txtDongleHost.Text = Strings.USBWirelessReceiver;
 
-            txtActionCaption.Text = ActionCaption;
-            txtAllApp.Text = AllAppCaption;
+            //txtActionCaption.Text = ActionCaption;
+           // txtAllApp.Text = AllAppCaption;
             SetAppFocus();
-            txtWord.Text = WordCaption;
-            txtExcel.Text = ExcelCaption;
-            txtPowerPoint.Text = PowerPointCaption;
-            txtOutlook.Text = OutlookCaption;
+           // txtWord.Text = WordCaption;
+            //txtExcel.Text = ExcelCaption;
+            //txtPowerPoint.Text = PowerPointCaption;
+            //txtOutlook.Text = OutlookCaption;
 
             InitializeButtonImage();
             //if(_vm!.IsRestoreEnable) {

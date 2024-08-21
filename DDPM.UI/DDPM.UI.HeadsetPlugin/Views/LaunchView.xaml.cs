@@ -23,8 +23,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly HeadsetViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = new int[] { 0, 533, 533, 533 };
-        private readonly string Restore = "Restore to default";
-        private readonly string Unpair = "Unpair";
+        //private readonly string Restore = "Restore to default";
+        //private readonly string Unpair = "Unpair";
+        private readonly string AudioSettings = Strings.HeadsetAudioSettings;
+        private readonly string AutomatedActions = Strings.HeadsetAutomatedActions;
+        private readonly string DeviceSettings = Strings.HeadsetDeviceSettings;
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
@@ -48,8 +51,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 btnUnpair.Visibility = Visibility.Collapsed;
             }
 
-            txtUnpair.Text = Unpair;
-            txtRestore.Text = Restore;
+            //txtUnpair.Text = Unpair;
+            //txtRestore.Text = Restore;
 
             //ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
             //ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
@@ -72,30 +75,30 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Audio Settings",
+                GroupName = AudioSettings,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Setting.png")
             };
-            moduleGroup.AddHeader("Audio Settings", new HeadsetAudioSettingsModule(_vm!));
+            moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
             //if (!_vm!.IsCollabsKeysSupported)
             //{
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Automated Actions",
+                GroupName = AutomatedActions,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png")
             };
-            moduleGroup.AddHeader("Automated Actions", new HeadsetAutomatedActionsModule(_vm));
+            moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm));
             groups.Add(moduleGroup);
             //}
             //if (!_vm.IsIlluminationSupported)
             //{
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Device Settings",
+                GroupName = DeviceSettings,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Main.png")
             };
-            moduleGroup.AddHeader("Device Settings", new HeadsetDeviceSettingsModule(_vm));
+            moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm));
             groups.Add(moduleGroup);
             //}
 

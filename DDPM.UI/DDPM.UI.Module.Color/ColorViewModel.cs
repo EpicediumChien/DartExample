@@ -16,6 +16,37 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
+using static System.Net.WebRequestMethods;
+
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.IO.Compression;
+using System.Security.Policy;
+using System.Net.Http;
+using static DDPM.UI.Module.Color.ColorViewModel;
+
+using System.Security.Cryptography;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows.Input;
+using ABI.System;
+using Microsoft.Win32;
+using RegistryUtils;
+using System.Management;
+using System.Windows.Media.Animation;
+using MonitorProfile = DDPM.SA.Common.MonitorProfile;
+using System.Runtime.CompilerServices;
+using Dell.Client.Framework.Common;
+using DDPM.UI.Common.Models;
+using System.Reflection;
+using System.Diagnostics;
+using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+
+//using System.Management;
+//using System.Runtime.CompilerServices;
+//using System.Security.Cryptography.X509Certificates;
+
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Color.Tests")]
 namespace DDPM.UI.Module.Color
 {
@@ -62,7 +93,7 @@ namespace DDPM.UI.Module.Color
         //public List<string> ColorPresets_ItemsCollection { get; set; } = new List<string>();
         public List<string> ColorPresets_ItemsCollection { get; set; }
 
-        private static List<ColorPresetSettings> AddAppist = new List<ColorPresetSettings>();
+        //private static List<ColorPresetSettings> AddAppist = new List<ColorPresetSettings>();
 
         private Visibility isAdvanced_Settings;
 
@@ -316,6 +347,10 @@ namespace DDPM.UI.Module.Color
 
         public ColorPresetSettings get_cur_monitor_preset_config(MonitorInfo mo, List<ColorPresetSettings> config)
         {
+            // Jim, 20240819
+            if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs.Clear();
+            
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
             int index = get_index_of_json_config_for_cur_monitor(mo);
@@ -413,6 +448,7 @@ namespace DDPM.UI.Module.Color
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsExpanded = false;
 
                     ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Visible;
+                    DCM_Visibility = Visibility.Visible;
 
                     if (registryMonitor_ICC != null)
                     {
@@ -472,6 +508,7 @@ namespace DDPM.UI.Module.Color
                 {
                     ((Expander)(MyModule.GetRightView().FindName("Expander_Advanced_Settings"))).IsEnabled = true;
                     ((StackPanel)(MyModule.GetRightView().FindName("stackpanel_DCM"))).Visibility = Visibility.Hidden;
+                    DCM_Visibility = Visibility.Hidden;
 
                     if (((UXToggleSwitch)(MyModule.GetRightView().FindName("ColorManagement_ToggleSwitch"))).IsChecked == true)
                     {
@@ -538,6 +575,10 @@ namespace DDPM.UI.Module.Color
                 //OLD Code:
                 //Test_AddAppCollectionData.GetInstance().AppsList.Clear();
                 //NEW Code:
+
+                //Jim, 20240819, Fixed for applist increase repeatedly when change a different Monitor.
+                Test_AddAppCollectionData.GetInstance().AppsList.Clear();
+
                 List<AppData> tempList = new List<AppData>();
 
                 ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
@@ -619,6 +660,7 @@ namespace DDPM.UI.Module.Color
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     RefreshUI();
+                    update_ui_over_runtype(config.RunType);
                 }));
 
                 //OnPropertyChanged("ColorPresets_ItemsCollection");
@@ -641,16 +683,79 @@ namespace DDPM.UI.Module.Color
                 if (_ICC_Metadata != null)
                 {
                     if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                    {
                         vis_ad = Visibility.Visible;
-                    else
-                        vis_ad = Visibility.Hidden;
 
-                    IsisAdvanced_Settings = vis_ad;
+                        DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
+                        if (setting.UserSettings.ColorManagement_off)
+                        {
+                            ((UXToggleSwitch)(MyModule.GetRightView().FindName("ColorManagement_ToggleSwitch"))).IsChecked = false; 
+                        }
+                        else
+                        {
+                            ((UXToggleSwitch)(MyModule.GetRightView().FindName("ColorManagement_ToggleSwitch"))).IsChecked = true;
+                        }
+
+                        if (setting.UserSettings.ColorManagement_bymonitor)
+                        {
+                            //((UXToggleSwitch)(MyModule.GetRightView().FindName("ColorManagement_ToggleSwitch"))).IsChecked = true;
+                            ((UXRadioButton)(MyModule.GetRightView().FindName("rb_ICCprofile_based_Colorpreset"))).IsChecked = true;
+                            ((UXRadioButton)(MyModule.GetRightView().FindName("rb_Colorpreset_based_ICCprofile"))).IsChecked = false;
+                        }
+
+                        if (setting.UserSettings.ColorManagement_byhost)
+                        {
+                            //((UXToggleSwitch)(MyModule.GetRightView().FindName("ColorManagement_ToggleSwitch"))).IsChecked = true;
+                            ((UXRadioButton)(MyModule.GetRightView().FindName("rb_ICCprofile_based_Colorpreset"))).IsChecked = false;
+                            ((UXRadioButton)(MyModule.GetRightView().FindName("rb_Colorpreset_based_ICCprofile"))).IsChecked = true;
+                        }
+
+
+                    }
+                    else
+                        vis_ad = Visibility.Hidden;                  
+
+                    IsisAdvanced_Settings = vis_ad;               
                 }
+
+                //OSD control back event
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
             }
             catch (System.Exception)
             {
             }
+        }
+
+        //Jim 0816  
+        /// <summary>
+        /// Catch OSD menu event
+        /// </summary>
+        /// <param name="sender">object type</param>
+        /// <param name="e">changed event</param>
+        private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
+        {   
+            Trace.WriteLine($"VCPchangedEventArgs e.vcpcode = {e.vcpcode}");
+
+            if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14") || e.vcpcode.Equals("E2")) // Color changes by OSD menu
+            {
+                
+                string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+
+
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {  
+                    if (!string.IsNullOrEmpty(curPreset))
+                    {
+                        int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(curPreset.ToUpper()));
+                        if (idx >= 0)
+                        {
+                            UpdateColorPresetSelectedIndex(idx);
+                        }
+                    }
+                    
+                }));
+            }         
         }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
@@ -1017,11 +1122,39 @@ namespace DDPM.UI.Module.Color
         }
 
         public void RefreshUI()
-        {
+        {           
             OnPropertyChanged("ColorPresets_ItemsCollection");
             OnPropertyChanged("AppsList");
             OnPropertyChanged("NightlightStatus");
             OnPropertyChanged("IsisAdvanced_Settings");
+        }
+
+        private void update_ui_over_runtype(int runtype)
+        {
+            if (runtype == (int)ColorPresetRunType.Auto)
+            {
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = true;              
+         
+            }
+            else
+            {
+
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = true;
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;            
+        
+            }
+
+            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
+            if (setting.UserSettings.IsAutoColorPreset_Lock)
+            {
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsEnabled = false;
+                ((ListBox)(MyModule.GetRightView().FindName("lb_AppList"))).IsEnabled = false;
+                ((UXButton)(MyModule.GetRightView().FindName("btn_AddApp"))).IsEnabled = false;
+                
+            }
+
         }
 
         #region UI Enable Flags

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
@@ -271,26 +272,71 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 if (_SysSettingsPlugin == null)
                 {
-                    WriteLog("[IT Settings event] null Device Manager object!");
+                    WriteLog("[From IT Settings event] null Device Manager object!");
                     return;
                 }
 
                 if (e == null || e == EventArgs.Empty)
                 {
-                    WriteLog("[IT Settings event] Got Empty ITSettingEventArgs!");
+                    WriteLog("[From IT Settings event] Got Empty ITSettingEventArgs!");
+                    return;
+                }
+                if (e.target_object == null)
+                {
+                    WriteLog("[From IT Settings event] Got Empty target_object!");
                     return;
                 }
                 //
-                //Do Settings update action
+                //Do Settings update
                 //
-                string target_feature = e.target_feature;
-                string target_value = e.target_value;
+                if (_settings.LockSettings == null)
+                {
+                    WriteLog("[From IT Settings event] Got Empty LockSettings of _settings!");
+                    return;
+                }
+            
+                foreach (string feature in e.IT_Feature_TriggerList)
+                {
+                    PropertyInfo propertyOrigin = _settings.LockSettings.GetType().GetProperty(feature);
+                    PropertyInfo propertyUpdate = e.target_object.GetType().GetProperty(feature);
+                    WriteLog($"[Settings at user] {feature} = (origin){propertyOrigin.GetValue(_settings.LockSettings)}; (update){propertyUpdate.GetValue(e.target_object)}");
+                    if (propertyOrigin != null && propertyOrigin.CanWrite)
+                    {
+                        propertyOrigin.SetValue(_settings.LockSettings, propertyUpdate.GetValue(e.target_object));
+                        WriteLog($"[Settings at user] Feature [{feature}] updated");
+                    }
+                    else
+                    {
+                        WriteLog($"propertyOrigin of {feature} not found or not writable.");
+                    }
+                }
+                SetAppConfigData(_settings);
+
+                //
+                //Try to Notify UI for subscriber
+                //
+                OnITSettingsActionEventNotify(e);
             });
         }
 
         #endregion Private methods
 
         #region ISettingManagerDev implementation
+        public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+
+        //Event from SettingsManagerPlugin.cs and bypass to subscriber
+        private void OnITSettingsActionEventNotify(ITSettingEventArgs e)
+        {
+            if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)
+                return;
+
+            EventHandler<ITSettingEventArgs> Handler = ITSettingsActionEvent;
+            if (Handler != null)
+            {
+                Handler.Invoke(this, e);
+                WriteLog($"[User Settings plugin] ITSettingsActionEvent Invoked to subscriber");
+            }
+        }
 
         public Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname)
         {
@@ -359,6 +405,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 var ddpm_app = new DDPMAppSettings();
                 var ddpm_user = new DDPMUserSettings();
+                var ddpm_it = new DDPMITConfig();
 
                 if (!string.IsNullOrEmpty(_settings_path)) // 2024-07-09, Elie: check string is null or empty before using.
                 {
@@ -378,7 +425,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     }
                 }
                 else
-                    _settings = new DDPMSettings(ddpm_app, ddpm_user);
+                    _settings = new DDPMSettings(ddpm_app, ddpm_user, ddpm_it);
+
+                if(_settings != null)
+                {
+                    //0819 get IT config and apply it
+                    if (_SysSettingsPlugin != null)
+                    {
+                        DDPMITConfig tmp = _SysSettingsPlugin.GetITGlobalConfigs(force_reload).Result;
+                        if (tmp != null)
+                            _settings.LockSettings = tmp;
+                    }
+                }
 
                 return Task.FromResult(_settings);
             }
@@ -1098,8 +1156,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                 {
                     WriteLog("[InitDDPMUserConfigFile] GetSerializedJsonString: " + info);
-                    _settings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings());
-                    if (_settings != null)
+                    _settings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig());                    
+                    if(_settings != null)
                     {
                         WriteLog("[InitDDPMUserConfigFile] *** Init cache from file fail, re-create default settings to file");
                         if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))
@@ -1114,7 +1172,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 FileInfo fileInfo = new FileInfo(file_appdatapath_userconfig);
 
                 WriteLog("[InitDDPMUserConfigFile] settings file not exist, new an object");
-                _settings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings());
+                _settings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig());
                 //init data to file
                 if (SetAppConfigData(_settings).Result)
                 {

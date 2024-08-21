@@ -23,8 +23,12 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private readonly SoundBarViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = new int[] { 0, 483, 483, 483 };
-        private readonly string Restore = "Restore to default";
-        private readonly string Unpair = "Unpair";
+        //private readonly string Restore = "Restore to default";
+        //private readonly string Unpair = "Unpair";
+        private readonly string AudioPreset = Strings.SoundBarAudioPreset;
+        private readonly string AudioSettings = Strings.SoundBarAudioSettings;
+        private readonly string Interactions = Strings.SoundBarInteractions;
+        
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
@@ -47,15 +51,15 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             }
 
             //txtUnpair.Text = Unpair;
-            txtRestore.Text = Restore;
+            //txtRestore.Text = Restore;
 
             ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
             ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
             txtSystemName1.Text = _vm!.VisiblePairedHostName1;
             txtSystemName2.Text = _vm.VisiblePairedHostName1;
             txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-            txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+            txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
+            txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
         }
 
         #region Init for Modules
@@ -70,26 +74,26 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Audio Preset",
+                GroupName = AudioPreset,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioPreset.png")
             };
-            moduleGroup.AddHeader("Audio Preset", new SpeakerAudioPresetModule(_vm!));
+            moduleGroup.AddHeader(AudioPreset, new SpeakerAudioPresetModule(_vm!));
             groups.Add(moduleGroup);
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Audio Settings",
+                GroupName = AudioSettings,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_AudioSettings.png")
             };
-            moduleGroup.AddHeader("Audio Settings", new SpeakerAudioSettingsModule(_vm!));
+            moduleGroup.AddHeader(AudioSettings, new SpeakerAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Interactions",
+                GroupName = Interactions,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Speaker_Interactions.png")
             };
-            moduleGroup.AddHeader("Interactions", new SpeakerInteractionsModule(_vm!));
+            moduleGroup.AddHeader(Interactions, new SpeakerInteractionsModule(_vm!));
             groups.Add(moduleGroup);
 
             _vm!.ModuleGroups = groups;
