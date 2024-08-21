@@ -363,9 +363,6 @@
   <data name="Dock.1" xml:space="preserve">
     <value>Dongle {0}</value>
   </data>
-  <data name="Headset.2" xml:space="preserve">
-    <value>Device Settings</value>
-  </data>
   <data name="Keyboard.1" xml:space="preserve">
     <value>USB Wireless Receiver</value>
   </data>
@@ -765,26 +762,14 @@
   <data name="DisplayProperties.6" xml:space="preserve">
     <value>Priority on screen performance over data and network speed.</value>
   </data>
-  <data name="EzArrange.1" xml:space="preserve">
-    <value>2 Windows</value>
+  <data name="Windows" xml:space="preserve">
+    <value>Windows</value>
   </data>
   <data name="Custom" xml:space="preserve">
     <value>Custom</value>
   </data>
-  <data name="EzArrange.2" xml:space="preserve">
-    <value>3 Windows</value>
-  </data>
-  <data name="EzArrange.3" xml:space="preserve">
-    <value>4 Windows</value>
-  </data>
-  <data name="EzArrange.4" xml:space="preserve">
-    <value>5 Windows</value>
-  </data>
-  <data name="EzArrange.5" xml:space="preserve">
-    <value>6 Windows</value>
-  </data>
-  <data name="EzArrange.6" xml:space="preserve">
-    <value>7 Windows or more</value>
+  <data name="EzArrange.1" xml:space="preserve">
+    <value>Windows or more</value>
   </data>
   <data name="Recent" xml:space="preserve">
     <value>Recent</value>
@@ -835,7 +820,7 @@
     <value>Adjust the audio ranges of the sound you hear</value>
   </data>
   <data name="HeadsetAudioSettings.12" xml:space="preserve">
-    <value>0 db</value>
+    <value>db</value>
   </data>
   <data name="HeadsetAudioSettings.13" xml:space="preserve">
     <value>Bass</value>
@@ -887,5 +872,80 @@
   </data>
   <data name="HeadsetAutomatedActions.8" xml:space="preserve">
     <value>Answer Calls</value>
+  </data>
+  <data name="DeviceSettings" xml:space="preserve">
+    <value>Device Settings</value>
+  </data>
+  <data name="HeadsetDeviceSettings.0" xml:space="preserve">
+    <value>Busy Light</value>
+  </data>
+  <data name="HeadsetDeviceSettings.1" xml:space="preserve">
+    <value>Voice Guidance</value>
+  </data>
+  <data name="HeadsetDeviceSettings.2" xml:space="preserve">
+    <value>Essential</value>
+  </data>
+  <data name="HeadsetDeviceSettings.3" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="HeadsetDeviceSettings.4" xml:space="preserve">
+    <value>Download Dell Audio</value>
+  </data>
+  <data name="HeadsetDeviceSettings.5" xml:space="preserve">
+    <value>Download Dell Audio now to optimize and personalize your headset settings from the convenience of your iPhone or Android device.</value>
+  </data>
+  <data name="HeadsetDeviceSettings.6" xml:space="preserve">
+    <value>Learnmore</value>
+  </data>
+  <data name="Illumination.0" xml:space="preserve">
+    <value>Illumination Control</value>
+  </data>
+  <data name="Illumination.1" xml:space="preserve">
+    <value>Illumination</value>
+  </data>
+  <data name="InputSource.0" xml:space="preserve">
+    <value>Current Input Source</value>
+  </data>
+  <data name="InputSource.1" xml:space="preserve">
+    <value>Rename Input Source and Assign USB Connectivity</value>
+  </data>
+  <data name="InputSource.2" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="InputSource.3" xml:space="preserve">
+    <value>Input Name</value>
+  </data>
+  <data name="InputSource.4" xml:space="preserve">
+    <value>USB Upstream</value>
+  </data>
+  <data name="KeyCustomization.0" xml:space="preserve">
+    <value>To customize a key, click one of the outlined keys on the image to the left</value>
+  </data>
+  <data name="KeyCustomization.1" xml:space="preserve">
+    <value>Restore all actions to default</value>
+  </data>
+  <data name="KeyCustomization.2" xml:space="preserve">
+    <value>Key Customization</value>
+  </data>
+  <data name="Kvm.0" xml:space="preserve">
+    <value>PC</value>
+  </data>
+  <data name="Kvm.1" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Kvm.2" xml:space="preserve">
+    <value>USB KVM SETUP</value>
+  </data>
+  <data name="Kvm.3" xml:space="preserve">
+    <value>Connect Mouse\n and Keyboard</value>
+  </data>
+  <data name="Kvm.4" xml:space="preserve">
+    <value>For Mouse and Keyboard, connect to rear of monitor (USB-A).\n Note: You can also connect other USB Peripherals such as\n Webcam.</value>
+  </data>
+  <data name="Kvm.5" xml:space="preserve">
+    <value>USB-A</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
   </data>
 </root>
