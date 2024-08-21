@@ -523,9 +523,9 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         string DeviceName = new string(info.szDevice).Trim('\0');
                         //----
                         uint cPhysicalMonitors = 0;
-                        bool bSuccess = GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref cPhysicalMonitors);
+                        bool bSuccess = _GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref cPhysicalMonitors);
                         PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
-                        bSuccess = GetPhysicalMonitorsFromHMONITOR(hMonitor, cPhysicalMonitors, pPhysicalMonitors);
+                        bSuccess = _GetPhysicalMonitorsFromHMONITOR(hMonitor, cPhysicalMonitors, pPhysicalMonitors);
                         DISPLAY_DEVICE dd = new DISPLAY_DEVICE();
                         dd.cb = Marshal.SizeOf(dd);
                         //----

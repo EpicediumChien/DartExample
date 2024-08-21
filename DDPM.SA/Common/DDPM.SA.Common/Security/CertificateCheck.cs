@@ -145,7 +145,7 @@ namespace DDPM.SA.Common.Security
                 Console.WriteLine("[ValidateCertificate] certificate2 is not Valid.");
                 return false;
             }
-            Console.WriteLine("[PinPublicKey] Check Certificate Vaild");
+            Console.WriteLine("[PinPublicKey] Check Certificate Valid");
 
             //flag=CheckCertificateIsVaild(certificate2) && CheckIssuerAndSubject(certificate2);
 

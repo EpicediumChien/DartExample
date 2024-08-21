@@ -1411,9 +1411,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-        #region CMA Function area
+        #region CMA/CLI Function area
 
-        public void notifyDeviceConnected(CommandInput_notifyDeviceConnection input)
+        /*public void notifyDeviceConnected(CommandInput_notifyDeviceConnection input)
         {
             notifyDeviceAddToListenPool(input, "connected");
         }
@@ -1446,9 +1446,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     });
                 }
             }
-        }
-
-        public Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input)
+        }*/
+        /*public Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input)
         {
             CommandOutput_DeviceConnection output = new CommandOutput_DeviceConnection();
             output.methodName = "queryConnectedDeviceInfo";
@@ -1551,9 +1550,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //no matched device and set it as error
             output.error = error;
             return Task.FromResult(output);
-        }
-
-        public Task<List<CommandResult>> listConnectedDeviceInfo()
+        }*/
+        /*public Task<List<CommandResult>> listConnectedDeviceInfo()
         {
             List<CommandResult> result = new List<CommandResult>();
             List<DeviceInfo> peripheralslist = new List<DeviceInfo>();
@@ -1610,8 +1608,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("null displaymanagerplugin");
 
             return Task.FromResult(result);
-        }
+        }*/
 
+        public event EventHandler<UpdateUINotify> UIUpdateNotify;
+
+        //Target to notify UI update
+        public void OnUIUpdateNotify(UpdateUINotify e)
+        {
+            if (UIUpdateNotify == null || e == null || e == EventArgs.Empty)
+                return;
+
+            EventHandler<UpdateUINotify> Handler = UIUpdateNotify;
+            if (Handler != null)
+            {
+                Handler.Invoke(this, e);
+                writelog($"[UIUpdateNotify] be Invoked");
+            }
+        }
         #endregion
 
         #region Bruce display properties implementation

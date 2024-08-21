@@ -9,7 +9,25 @@ namespace VcpCore.Plugins.Test.ToKenizerTest.TokensTest
     public class TestToken
     {
         [Test]
-        public void OpenTokenTest()
+        public void ValueTest()
+        {
+            string value = "value1";
+            Token token = new Token();
+            token.Value = value;
+            Assert.That(value, Is.EqualTo(token.Value));
+        }
+
+        [Test]
+        public void TypeTest()
+        {
+            string type = "type1";
+            Token token = new Token();
+            token.Type = type;
+            Assert.That(type, Is.EqualTo(token.Type));
+        }
+
+        [Test]
+        public void TokenTest()
         {
             string Type = "type1";
             string Value = "value1";

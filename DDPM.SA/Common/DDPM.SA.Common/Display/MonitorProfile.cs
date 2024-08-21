@@ -130,16 +130,34 @@ namespace DDPM.SA.Common
         //  _In_ DWORD           dwFlags
         //);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern UInt32 EnumDisplayDevices(string s, UInt32 iDevNum, ref DISPLAY_DEVICE displayDevice, UInt32 dwFlags);
+        private static UInt32 _EnumDisplayDevices(string s, UInt32 iDevNum, ref DISPLAY_DEVICE displayDevice, UInt32 dwFlags)
+        {
+            return EnumDisplayDevices(s, iDevNum, ref displayDevice, dwFlags);
+        }
 
         [DllImport("mscms.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool AssociateColorProfileWithDevice(
         IntPtr pMachineName,
         string pProfileName,
         string pDeviceName);
+        private static bool _AssociateColorProfileWithDevice(
+        IntPtr pMachineName,
+        string pProfileName,
+        string pDeviceName)
+        {
+            return AssociateColorProfileWithDevice(pMachineName, pProfileName, pDeviceName);
+        }
 
         [DllImport("mscms.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool InstallColorProfile(IntPtr pMachineName, string pProfileName);
+        private static bool _InstallColorProfile(IntPtr pMachineName, string pProfileName)
+        {
+            return InstallColorProfile(pMachineName, pProfileName);
+        }
 
         // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
         //BOOL WINAPI WcsGetUsePerUserProfiles(
@@ -152,7 +170,12 @@ namespace DDPM.SA.Common
         /// </summary>
         /// <returns>0, if failed</returns>
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern UInt32 WcsGetUsePerUserProfiles(string deviceName, DeviceClassFlags deviceClass, out UInt32 usePerUserProfiles);
+        private static UInt32 _WcsGetUsePerUserProfiles(string deviceName, DeviceClassFlags deviceClass, out UInt32 usePerUserProfiles)
+        {
+            return WcsGetUsePerUserProfiles(deviceName, deviceClass, out usePerUserProfiles);
+        }
 
         // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
         //BOOL WINAPI WcsGetDefaultColorProfileSize(
@@ -169,13 +192,22 @@ namespace DDPM.SA.Common
         /// <param name="cbProfileName">Size in bytes! String length is /2</param>
         /// <returns>0, if failed</returns>
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern UInt32 WcsGetDefaultColorProfileSize(WCS_PROFILE_MANAGEMENT_SCOPE scope,
             string deviceName,
             COLORPROFILETYPE colorProfileType,
             COLORPROFILESUBTYPE colorProfileSubType,
             UInt32 dwProfileID,
-            out UInt32 cbProfileName
-        );
+            out UInt32 cbProfileName);
+        private static UInt32 _WcsGetDefaultColorProfileSize(WCS_PROFILE_MANAGEMENT_SCOPE scope,
+            string deviceName,
+            COLORPROFILETYPE colorProfileType,
+            COLORPROFILESUBTYPE colorProfileSubType,
+            UInt32 dwProfileID,
+            out UInt32 cbProfileName)
+        {
+            return WcsGetDefaultColorProfileSize(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, out cbProfileName);
+        }
 
         // from: c:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\Icm.h
         //BOOL WINAPI WcsGetDefaultColorProfile(
@@ -192,23 +224,42 @@ namespace DDPM.SA.Common
         /// </summary>
         /// <returns>0, if failed</returns>
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern UInt32 WcsGetDefaultColorProfile(WCS_PROFILE_MANAGEMENT_SCOPE scope,
             string deviceName,
             COLORPROFILETYPE colorProfileType,
             COLORPROFILESUBTYPE colorProfileSubType,
             UInt32 dwProfileID,
             UInt32 cbProfileName,
-            StringBuilder profileName
-        );
+            StringBuilder profileName);
+        private static UInt32 _WcsGetDefaultColorProfile(WCS_PROFILE_MANAGEMENT_SCOPE scope,
+            string deviceName,
+            COLORPROFILETYPE colorProfileType,
+            COLORPROFILESUBTYPE colorProfileSubType,
+            UInt32 dwProfileID,
+            UInt32 cbProfileName,
+            StringBuilder profileName)
+        {
+            return WcsGetDefaultColorProfile(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, cbProfileName, profileName);
+        }
 
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool WcsSetDefaultColorProfile(WCS_PROFILE_MANAGEMENT_SCOPE scope,
            string deviceName,
            COLORPROFILETYPE colorProfileType,
            COLORPROFILESUBTYPE colorProfileSubType,
            UInt32 dwProfileID,
-           StringBuilder profileName
-       );
+           StringBuilder profileName);
+        private static bool _WcsSetDefaultColorProfile(WCS_PROFILE_MANAGEMENT_SCOPE scope,
+           string deviceName,
+           COLORPROFILETYPE colorProfileType,
+           COLORPROFILESUBTYPE colorProfileSubType,
+           UInt32 dwProfileID,
+           StringBuilder profileName)
+        {
+            return WcsSetDefaultColorProfile(scope,deviceName,colorProfileType,colorProfileSubType, dwProfileID, profileName);
+        }
 
         public static string GetMonitorProfile(string strDisplayName)
         {
@@ -234,7 +285,7 @@ namespace DDPM.SA.Common
             // Second, find the first active (and attached) monitor
             string deviceName = null;
             deviceIndex = 0;
-            while (EnumDisplayDevices(adaptorName, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
+            while (_EnumDisplayDevices(adaptorName, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
             {
                 if ((displayDevice.StateFlags & DisplayDeviceStateFlags.Active) != 0 &&
                     (displayDevice.StateFlags & DisplayDeviceStateFlags.Attached) != 0)
@@ -246,7 +297,7 @@ namespace DDPM.SA.Common
 
             // Third, find out whether to use the global or user profile
             UInt32 usePerUserProfiles = 0;
-            UInt32 res = WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
+            UInt32 res = _WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
             if (res == 0)
             {
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
@@ -261,7 +312,7 @@ namespace DDPM.SA.Common
                 WCS_PROFILE_MANAGEMENT_SCOPE.WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE;
 
             UInt32 cbProfileName = 0;   // in bytes
-            res = WcsGetDefaultColorProfileSize(scope,
+            res = _WcsGetDefaultColorProfileSize(scope,
                 deviceName,
                 COLORPROFILETYPE.CPT_ICC,
                  COLORPROFILESUBTYPE.CPST_NONE | COLORPROFILESUBTYPE.CPST_RGB_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_CUSTOM_WORKING_SPACE,
@@ -274,7 +325,7 @@ namespace DDPM.SA.Common
 
             int nLengthProfileName = (int)cbProfileName / 2;    // WcsGetDefaultColor... is using LPWSTR, i.e. 2 bytes/char
             StringBuilder profileName = new StringBuilder(nLengthProfileName);
-            res = WcsGetDefaultColorProfile(scope,
+            res = _WcsGetDefaultColorProfile(scope,
                 deviceName,
                 COLORPROFILETYPE.CPT_ICC,
                 COLORPROFILESUBTYPE.CPST_NONE | COLORPROFILESUBTYPE.CPST_RGB_WORKING_SPACE | COLORPROFILESUBTYPE.CPST_CUSTOM_WORKING_SPACE,
@@ -300,7 +351,7 @@ namespace DDPM.SA.Common
             string adaptorName = null;
             UInt32 deviceIndex = 0;
 
-            while (EnumDisplayDevices(null, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
+            while (_EnumDisplayDevices(null, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
             {
                 if ((displayDevice.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) != 0)
                 {
@@ -312,7 +363,7 @@ namespace DDPM.SA.Common
             // Second, find the first active (and attached) monitor
             string deviceName = null;
             deviceIndex = 0;
-            while (EnumDisplayDevices(adaptorName, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
+            while (_EnumDisplayDevices(adaptorName, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
             {
                 if ((displayDevice.StateFlags & DisplayDeviceStateFlags.Active) != 0 &&
                     (displayDevice.StateFlags & DisplayDeviceStateFlags.Attached) != 0)
@@ -324,7 +375,7 @@ namespace DDPM.SA.Common
 
             // Third, find out whether to use the global or user profile
             UInt32 usePerUserProfiles = 0;
-            UInt32 res = WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
+            UInt32 res = _WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
             if (res == 0)
             {
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
@@ -338,7 +389,7 @@ namespace DDPM.SA.Common
             StringBuilder sb = new StringBuilder();
             sb.Append(profile_name);
 
-            bool bRes = WcsSetDefaultColorProfile(scope,
+            bool bRes = _WcsSetDefaultColorProfile(scope,
               deviceName,
               COLORPROFILETYPE.CPT_ICC,
               COLORPROFILESUBTYPE.CPST_RGB_WORKING_SPACE,
@@ -351,7 +402,7 @@ namespace DDPM.SA.Common
         public static bool IntsallMonitorProfile(string pProfileName)
         {
             bool blRes = false;
-            blRes = InstallColorProfile(IntPtr.Zero, pProfileName);
+            blRes = _InstallColorProfile(IntPtr.Zero, pProfileName);
 
             // c++ recommendation: http://stackoverflow.com/questions/13533754/code-example-for-wcsgetdefaultcolorprofile
 
@@ -362,7 +413,7 @@ namespace DDPM.SA.Common
             string adaptorName = null;
             UInt32 deviceIndex = 0;
 
-            while (EnumDisplayDevices(null, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
+            while (_EnumDisplayDevices(null, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
             {
                 if ((displayDevice.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) != 0)
                 {
@@ -374,7 +425,7 @@ namespace DDPM.SA.Common
             // Second, find the first active (and attached) monitor
             string deviceName = null;
             deviceIndex = 0;
-            while (EnumDisplayDevices(adaptorName, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
+            while (_EnumDisplayDevices(adaptorName, deviceIndex++, ref displayDevice, EDD_GET_DEVICE_INTERFACE_NAME) != 0)
             {
                 if ((displayDevice.StateFlags & DisplayDeviceStateFlags.Active) != 0 &&
                     (displayDevice.StateFlags & DisplayDeviceStateFlags.Attached) != 0)
@@ -386,7 +437,7 @@ namespace DDPM.SA.Common
 
             // Third, find out whether to use the global or user profile
             UInt32 usePerUserProfiles = 0;
-            UInt32 res = WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
+            UInt32 res = _WcsGetUsePerUserProfiles(deviceName, DeviceClassFlags.CLASS_MONITOR, out usePerUserProfiles);
             if (res == 0)
             {
                 throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
@@ -397,20 +448,25 @@ namespace DDPM.SA.Common
                 WCS_PROFILE_MANAGEMENT_SCOPE.WCS_PROFILE_MANAGEMENT_SCOPE_CURRENT_USER :
                 WCS_PROFILE_MANAGEMENT_SCOPE.WCS_PROFILE_MANAGEMENT_SCOPE_SYSTEM_WIDE;
 
-            blRes = AssociateColorProfileWithDevice(IntPtr.Zero, pProfileName, deviceName);
+            blRes = _AssociateColorProfileWithDevice(IntPtr.Zero, pProfileName, deviceName);
 
             return blRes;
         }
 
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool GetColorDirectory(IntPtr pMachineName, StringBuilder pBuffer, ref uint pdwSize);
+        private static bool _GetColorDirectory(IntPtr pMachineName, StringBuilder pBuffer, ref uint pdwSize)
+        {
+            return GetColorDirectory(pMachineName, pBuffer, ref pdwSize);
+        }
 
         public static string GetColorDirectory()
         {
             // s. http://stackoverflow.com/questions/14792764/is-there-an-equivalent-to-winapi-getcolordirectory-in-net
             uint pdwSize = 260;  // MAX_PATH
             StringBuilder sb = new StringBuilder((int)pdwSize);
-            if (GetColorDirectory(IntPtr.Zero, sb, ref pdwSize))
+            if (_GetColorDirectory(IntPtr.Zero, sb, ref pdwSize))
             {
                 return sb.ToString();
             }
