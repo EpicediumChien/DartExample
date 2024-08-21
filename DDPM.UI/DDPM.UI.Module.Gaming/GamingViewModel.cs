@@ -85,6 +85,54 @@ namespace DDPM.UI.Module.Gaming
         }
         public Visibility IsGameSeries { get; set; } = Visibility.Collapsed;
         public Visibility IsAWSeries { get; set; } = Visibility.Collapsed;
+        public bool GameEnhanceMode_IsEnable { get; set; }
+        public string GameEnhanceMode_Opacity
+        {
+            get
+            {
+                if (GameEnhanceMode_IsEnable)
+                {
+                    return "1.0";
+                }
+                return "0.5";
+            }
+        }
+        public bool ResponseTime_IsEnable { get; set; }
+        public string ResponseTime_Opacity
+        {
+            get
+            {
+                if (ResponseTime_IsEnable)
+                {
+                    return "1.0";
+                }
+                return "0.5";
+            }
+        }
+        public bool HDRType_IsEnable { get; set; }
+        public string HDRType_Opacity
+        {
+            get
+            {
+                if (HDRType_IsEnable)
+                {
+                    return "1.0";
+                }
+                return "0.5";
+            }
+        }
+        public bool DarkStabilizer_IsEnable { get; set; }
+        public string DarkStabilizer_Opacity
+        {
+            get
+            {
+                if (DarkStabilizer_IsEnable)
+                {
+                    return "1.0";
+                }
+                return "0.5";
+            }
+        }
 
         #region UI Enable Flags
 
@@ -186,7 +234,26 @@ namespace DDPM.UI.Module.Gaming
                         });
                     }
                 }));
-
+                GameEnhanceMode_IsEnable = true;
+                ResponseTime_IsEnable = true;
+                HDRType_IsEnable = true;
+                DarkStabilizer_IsEnable = true;
+                if (displayPropertiesInfo.Current_GameEnhancementMode == Gaming_GameEnhancementMode.Disable)
+                {
+                    GameEnhanceMode_IsEnable = false;
+                }
+                if (displayPropertiesInfo.Current_ResponseTime == Gaming_ResponseTime.Disable)
+                {
+                    ResponseTime_IsEnable = false;
+                }
+                if (displayPropertiesInfo.Current_HDRType == Gaming_HDRType.Disable)
+                {
+                    HDRType_IsEnable = false;
+                }
+                if (displayPropertiesInfo.Current_DarkStabilizer == Gaming_DarkStabilizer.Disable)
+                {
+                    DarkStabilizer_IsEnable = false;
+                }
                 _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
                 _selectedGameEnhancementMode = GameEnhanceMode_ItemsCollection.Find(x => (x.GameEnhancementMode.Equals(displayPropertiesInfo.Current_GameEnhancementMode)));
                 _selectedResponseTime = ResponseTime_ItemsCollection.Find(x => (x.ResponseTime.Equals(displayPropertiesInfo.Current_ResponseTime)));
@@ -219,6 +286,14 @@ namespace DDPM.UI.Module.Gaming
             OnPropertyChanged("HDRType_ItemsCollection");
             OnPropertyChanged("IsGameSeries");
             OnPropertyChanged("IsAWSeries");
+            OnPropertyChanged("GameEnhanceMode_IsEnable");
+            OnPropertyChanged("GameEnhanceMode_Opacity");
+            OnPropertyChanged("ResponseTime_IsEnable");
+            OnPropertyChanged("ResponseTime_Opacity");
+            OnPropertyChanged("HDRType_IsEnable");
+            OnPropertyChanged("HDRType_Opacity");
+            OnPropertyChanged("DarkStabilizer_IsEnable");
+            OnPropertyChanged("DarkStabilizer_Opacity");
         }
     }
 
