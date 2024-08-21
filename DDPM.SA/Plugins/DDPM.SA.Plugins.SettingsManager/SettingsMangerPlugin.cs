@@ -97,6 +97,12 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
         }
 
+        public Task<DDPMITConfig> GetITGlobalConfigs(bool force_reload = false)
+        {
+            WriteLog($"Got ISettingsManagerSA [GetITGlobalConfigs to ReadITConfigData]: Force reload={force_reload}");
+            return ReadITConfigData(force_reload);
+        }
+
         #endregion
 
         #region ISettingsManagerIT implementation
@@ -125,50 +131,35 @@ namespace DDPM.SA.Plugins.SettingsManager
         /// <returns></returns>
         public Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list)
         {
-            if (data == null)
+            if(data == null)
             {
                 WriteLog($"WriteITConfigData: null data, failed");
                 return Task.FromResult(false);
             }
             _settings = data;
             string info = "Success";
-            if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
             {
                 WriteLog($"WriteITConfigData: write failed. Info({info})");
                 return Task.FromResult(false);
             }
             if (IT_Feature_list != null && IT_Feature_list.Count > 0)
             {
-                for (int i = 0; i < IT_Feature_list.Count; i++)
-                {
-                    ITSettingEventArgs e = new ITSettingEventArgs();
-                    e.target_feature = IT_Feature_list[i];
-                    PropertyInfo propertyInfo = _settings.GetType().GetProperty(IT_Feature_list[i]);
-                    if (propertyInfo != null)
-                    {
-                        switch (IT_Feature_list[i])
-                        {
-                            case "isTelemetryConsentAllow":
-                                bool value = (bool)propertyInfo.GetValue(_settings);
-                                WriteLog($"Value of {IT_Feature_list[i]}: {value}");
-                                e.target_value = $"{value}";
-                                OnITSettingsActionEventNotify(e);
-                                break;
+                ITSettingEventArgs e = new ITSettingEventArgs();
+                List<string> IT_Feature_TriggerList = new List<string>();
+                IT_Feature_TriggerList.AddRange( IT_Feature_list );
+                e.IT_Feature_TriggerList = IT_Feature_TriggerList;
+                e.target_object = data;
 
-                            default:
-                                WriteLog($"Property {IT_Feature_list[i]} not found from definitions.");
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        WriteLog($"Property {IT_Feature_list[i]} not found from config.");
-                    }
+                foreach (string feature in IT_Feature_list)
+                {
+                    PropertyInfo propertyInfo = data.GetType().GetProperty(feature);
+                    WriteLog($"[System settings event] {feature} : {propertyInfo.GetValue(_settings)}");
                 }
+                OnITSettingsActionEventNotify(e);
             }
             return Task.FromResult(true);
         }
-
         #endregion
 
         #region Overriding methods

@@ -37,6 +37,7 @@ using System.Windows.Threading;
 using VcpCore.Common;
 using WinCopies.Util;
 using Windows.System;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -266,6 +267,33 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return Task.FromResult(_ICC_Metadata);
+        }
+
+        public Task<bool> ColorManagement_Off(MonitorInfo m)
+        {
+            DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
+            setting.UserSettings.ColorManagement_off = true;
+            _SettingsPlugin.SetAppConfigData(setting);
+
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> ColorManagement_Bymonitor(MonitorInfo m)
+        {
+            DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
+            setting.UserSettings.ColorManagement_bymonitor = true;
+            _SettingsPlugin.SetAppConfigData(setting);
+
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> ColorManagement_Byhost(MonitorInfo m)
+        {
+            DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
+            setting.UserSettings.ColorManagement_byhost = true;
+            _SettingsPlugin.SetAppConfigData(setting);
+
+            return Task.FromResult(true);
         }
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m)
@@ -660,9 +688,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <summary>
         /// 自動根據App name 去設定 color preset
         /// </summary>
-        /// <param name="index_monitor"></param> 螢幕 index number
+        /// <param name="mo"></param> 螢幕資訊
         /// <param name="on_off"></param> 啟用/關閉 自動根據App name 去設定 color preset
-        public void AutoSetColorPresetForMonitorConfig(string index_monitor, string on_off)
+        //public void AutoSetColorPresetForMonitorConfig(string index_monitor, string on_off, bool Islock = false)
+        public void AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false)        
         {
             writelog("ColorPresetPlugin received AutoSetColorPresetForMonitorConfig requested ...");
 
@@ -672,9 +701,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
 
-            if (on_off.Equals("on", StringComparison.CurrentCultureIgnoreCase))
+            DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
+            setting.UserSettings.IsAutoColorPreset_Lock = Islock;
+            _SettingsPlugin.SetAppConfigData(setting);
+
+            if (on_off.Equals("ON", StringComparison.OrdinalIgnoreCase))
             {
-                var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(_AllInfoMonitors[Convert.ToInt32(index_monitor)], on_off, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
+                var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
                 _SettingsPlugin.WriteColorPresetSettings(temp);
                 Thread.Sleep(100);
 
@@ -684,7 +717,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     newWindowThread_AutoSetColorPresetForMonitorConfig = new Thread(new ThreadStart(() =>
                     {
                         // create and show the window
-                        Launch_MonitorBorker(_AllInfoMonitors[Convert.ToInt32(index_monitor)]);
+                        Launch_MonitorBorker(mo);
 
                         // start the Dispatcher processing
                         // 啟動消息循環
@@ -709,13 +742,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
                 }
             }
-            else if (on_off.Equals("off", StringComparison.CurrentCultureIgnoreCase))
+            else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
             {
                 // jim modify 20240605
                 if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
                 {
                     // 20240620 jim add back the code
-                    var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(_AllInfoMonitors[Convert.ToInt32(index_monitor)], on_off, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
+                    var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
                     _SettingsPlugin.WriteColorPresetSettings(temp);
                     Thread.Sleep(100);
 
@@ -803,6 +836,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         DDPMMonitorSettings settings = new DDPMMonitorSettings();
                         settings.Model = m.modelName;
                         settings.ServiceTag = m.edid.ServiceTag;
+                        settings.VCPs = GetAllVCPcode(m);
                         monitorSettingsList.Add(settings);
                     }
                     bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
@@ -1413,9 +1447,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-        #region CMA Function area
+        #region CMA/CLI Function area
 
-        public void notifyDeviceConnected(CommandInput_notifyDeviceConnection input)
+        /*public void notifyDeviceConnected(CommandInput_notifyDeviceConnection input)
         {
             notifyDeviceAddToListenPool(input, "connected");
         }
@@ -1448,9 +1482,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     });
                 }
             }
-        }
-
-        public Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input)
+        }*/
+        /*public Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input)
         {
             CommandOutput_DeviceConnection output = new CommandOutput_DeviceConnection();
             output.methodName = "queryConnectedDeviceInfo";
@@ -1553,9 +1586,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //no matched device and set it as error
             output.error = error;
             return Task.FromResult(output);
-        }
-
-        public Task<List<CommandResult>> listConnectedDeviceInfo()
+        }*/
+        /*public Task<List<CommandResult>> listConnectedDeviceInfo()
         {
             List<CommandResult> result = new List<CommandResult>();
             List<DeviceInfo> peripheralslist = new List<DeviceInfo>();
@@ -1612,8 +1644,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("null displaymanagerplugin");
 
             return Task.FromResult(result);
-        }
+        }*/
 
+        public event EventHandler<UpdateUINotify> UIUpdateNotify;
+
+        //Target to notify UI update
+        public void OnUIUpdateNotify(UpdateUINotify e)
+        {
+            if (UIUpdateNotify == null || e == null || e == EventArgs.Empty)
+                return;
+
+            EventHandler<UpdateUINotify> Handler = UIUpdateNotify;
+            if (Handler != null)
+            {
+                Handler.Invoke(this, e);
+                writelog($"[UIUpdateNotify] be Invoked");
+            }
+        }
         #endregion
 
         #region Bruce display properties implementation
@@ -2533,6 +2580,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region ImpExpSettings
         public Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path)
         {
+            //need test, but need other function
+            ////if vcp code is null, get vcp code
+            //List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            //if (settings != null)
+            //{
+            //    foreach (DDPMMonitorSettings monitorSettings in settings)
+            //    {
+            //        if (monitorSettings != null)
+            //        {
+            //            if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
+            //            {
+            //                foreach (VCP vcp in monitorSettings.VCPs)
+            //                {
+            //                    if (vcp.Value == null)
+            //                    {
+            //                        byte b_vcpcode = Convert.ToByte(vcp.Code);
+            //                        ObjGetVCP res = GetVCPCapability(monitorInfo, b_vcpcode).Result;
+            //                        if(res.result)
+            //                        {
+            //                            vcp.Value.Add((int)res.value);
+            //                        }
+            //                    }
+            //            }
+            //            }
+            //        }
+            //    }
+            //}
+
+            //expot settings
             if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
             {
                 return Task.FromResult(true);
@@ -3290,6 +3366,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<MonitorInfo> monitorInfos = GetMonitors().Result;//it it used to active monitor settings
             _AllInfoMonitors.AddRange(monitorInfos);
 
+            _SettingsPlugin.ITSettingsActionEvent += _SettingsPlugin_ITSettingsActionEvent;
+
             GetLockRotateStatus();
             writelog($"[DoThingsAfterDisplayRelatedPluginsReady] caller: {caller}, OK. Monitor count is {_AllInfoMonitors.Count}");
         }
@@ -3363,26 +3441,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _ = Task.Run(async () =>
             {
                 var pluginCondition = await (_SettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _SettingsPluginCondition;
+                //PluginCondition _SettingsPluginCondition; 
                 lock (_PluginConditionLock_Settings)
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
                         writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in an error condition");
-                        //_SettingsPluginCondition = pluginCondition;
                     }
-                    else if (pluginCondition is PluginRunningCondition)
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
-                        writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running condition");
-                        //_SettingsPluginCondition = pluginCondition;
+                        writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
 
                         DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
                         if (config != null)
                         {
-                            config.AppSettings.Version = 8.8;
-                            config.UserSettings.Version = 6.6;
-
-                            _SettingsPlugin.SetAppConfigData(config);
                             //0612 Bruce 自動旋轉畫面功能，因需使用display跟settings兩個Plugin，其中一個可能還沒被叫起來，故兩邊都新增取得狀態方法。
                             //GetLockRotateStatus();
                             //0812 check required plugins before init
@@ -3393,36 +3465,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //load hotkeysetting
                             ReloadHotkeyConfigData();
                             ToNKVM_SupportedMonitorList();
-                            ToNKVM_initHotKeys();
+                            ToNKVM_initHotKeys();                            
                         }
                     }
-                    else if (pluginCondition is PluginStartedCondition)
+                    else
                     {
-                        writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a started condition");
-                        //_SettingsPluginCondition = pluginCondition;
-
-                        DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
-                        if (config != null)
-                        {
-                            config.AppSettings.Version = 8.8;
-                            config.UserSettings.Version = 6.6;
-
-                            _SettingsPlugin.SetAppConfigData(config);
-                            //0612 Bruce 自動旋轉畫面功能，因需使用display跟settings兩個Plugin，其中一個可能還沒被叫起來，故兩邊都新增取得狀態方法。
-                            //GetLockRotateStatus();
-                            //0812 check required plugins before init
-                            DoThingsAfterDisplayRelatedPluginsReady(nameof(GetCurrentDisplayManagerCondition));
-
-                            SetDelayFWUpdateInfoPackage();
-                            CheckUODFWUInfoPackage();
-                            //load hotkeysetting
-                            ReloadHotkeyConfigData();
-                            ToNKVM_SupportedMonitorList();
-                            ToNKVM_initHotKeys();
-                        }
+                        writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in unknow condition: {pluginCondition}");
                     }
                 }
             });
+        }
+
+        private void _SettingsPlugin_ITSettingsActionEvent(object sender, ITSettingEventArgs e)
+        {
+            _ = Task.Run(() =>
+            {
+                if (_SettingsPlugin == null)
+                {
+                    writelog("[From user Settings with IT event] null Device Manager object!");
+                    return;
+                }
+
+                if (e == null || e == EventArgs.Empty)
+                {
+                    writelog("[From user Settings with IT event] Got Empty ITSettingEventArgs!");
+                    return;
+                }
+                //
+                //Do IT Settings update notify
+                //
+                OnITSettingsActionEventNotify(e);
+            });
+        }
+
+        public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+
+        //Target to notify User setting
+        private void OnITSettingsActionEventNotify(ITSettingEventArgs e)
+        {
+            if (ITSettingsActionEvent == null || e == null || e == EventArgs.Empty)
+                return;
+
+            EventHandler<ITSettingEventArgs> Handler = ITSettingsActionEvent;
+            if (Handler != null)
+            {
+                Handler.Invoke(this, e);
+                writelog($"ITSettingsActionEvent Invoked at DeviceManagerPlugins");
+            }
         }
 
         //FW Update by Bruce
@@ -3966,14 +4055,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!string.IsNullOrEmpty(nextInput))
             {
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
-                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}] #{setNextInput}");
+                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
             }
         }
 
         private void Kvm_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
         {
             bool usbSwitch = UsbSwitch1(monitorInfo).Result;
-            writelog($"Kvm_SwitchKbMsKey::[{monitorInfo.edid.SerialNumber}] #{usbSwitch}");
+            writelog($"Kvm_SwitchKbMsKey::[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
         }
 
         private void Kvm_ChangePIPPosition(MonitorInfo monitorInfo, Object[] param)
@@ -4040,7 +4129,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
             bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
-            writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}] #{swapPxp}");
+            writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
             /*if (subInputs != null && subInputs.Count > 0)
             {
                 allInputs.AddRange(subInputs);
@@ -4076,7 +4165,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (switchTo != null)
             {
                 bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
-                writelog($"Switch_InputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo}] #{setInput}");
+                writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo.Name}]" + (setInput ? "success" : "fail"));
             }
         }
 
@@ -4085,7 +4174,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             HotkeyInfo hotkey = (HotkeyInfo)param[0];
             InputSourceObj changeInput = hotkey.InputSource[0];
             bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput.Name).Result;
-            writelog($"Favorite_InputSource:[{monitorInfo.edid.SerialNumber}] to [{changeInput}] #{setNextInput}");
+            writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput.Name}]" + (setNextInput ? "success" : "fail"));
         }
 
         private void Toggle_InputSource(MonitorInfo monitorInfo, Object[] param)
@@ -4110,7 +4199,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
-            writelog($"Toggle_InputSource:[{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}] #{setNextInput}");
+            writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
         }
 
         private string GetCurrentInputSource(MonitorInfo monitorInfo)
@@ -4654,6 +4743,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
+        #region Settings
+        private List<VCP> GetAllVCPcode(MonitorInfo monitorInfo)
+        {
+            List<VCP> vcps = new List<VCP>();
+            foreach (string key in monitorInfo.CapabilityDic.Keys)
+            {
+                VCP vcp = new VCP(Int32.Parse(key, System.Globalization.NumberStyles.HexNumber), null);
+                vcps.Add(vcp);
+            }
+            return vcps;
+        }
+        #endregion
         #endregion
 
         #region IDisposableObservable Support
@@ -4680,6 +4781,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //Bruce 08 - 09 Add a new event to determine whether it is a display signal event or a setting event.
                     Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
                     //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
+                    if(_SettingsPlugin != null)
+                        _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
                 }
 
                 IsDisposed = true;

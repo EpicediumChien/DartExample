@@ -74,11 +74,13 @@ namespace DDPM.UI.Module.Brightness
 
         public bool IsMouseEnterSchedule_1 { get; set; }
         public bool IsMouseEnterSchedule_2 { get; set; }
+
         public void UpdataScheduleBoaderUI()
         {
             NotifyPropertyChanged(nameof(IsMouseEnterSchedule_1));
             NotifyPropertyChanged(nameof(IsMouseEnterSchedule_2));
         }
+
         public List<int> hOurs { get; } = Enumerable.Range(1, 12).ToList();
         public List<int> mIns { get; } = Enumerable.Range(0, 60).ToList();
         public List<int> dUration { get; } = new List<int>() { 0, 15, 30, 45, 60 };
@@ -970,8 +972,8 @@ namespace DDPM.UI.Module.Brightness
 
             set
             {
-                PR1Contrast_Value = value;
-                PR1Contrast_Debouncer.Debounce(value);
+                PR1Contrast_Value = (value < 25) ? 25 : value;
+                PR1Contrast_Debouncer.Debounce(PR1Contrast_Value);
                 NotifyPropertyChanged("PR1ContrastValue");
             }
         }
@@ -1003,8 +1005,8 @@ namespace DDPM.UI.Module.Brightness
 
             set
             {
-                PR2Contrast_Value = value;
-                PR2Contrast_Debouncer.Debounce(value);
+                PR2Contrast_Value = (value < 25) ? 25 : value;
+                PR2Contrast_Debouncer.Debounce(PR2Contrast_Value);
                 NotifyPropertyChanged("PR2ContrastValue");
             }
         }
@@ -1522,8 +1524,8 @@ namespace DDPM.UI.Module.Brightness
 
             set
             {
-                Contrast_Value = value;
-                Contrast_Debouncer.Debounce(value);
+                Contrast_Value = (value < 25) ? 25 : value;
+                Contrast_Debouncer.Debounce(Contrast_Value);
                 NotifyPropertyChanged("ContrastValue");
             }
         }

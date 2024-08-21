@@ -34,8 +34,8 @@ namespace DDPM.UI.Plugin.PenPlugin
                 BuildModuleGroups();
             }
 
-            txtUnpair.Text = Strings.Unpair;
-            txtRestore.Text = Strings.RestoreToDefault;
+            //txtUnpair.Text = Strings.Unpair;
+            //txtRestore.Text = Strings.RestoreToDefault;
 
             InitializeButtonImage();
             if (_vm!.IsRestoreEnable)

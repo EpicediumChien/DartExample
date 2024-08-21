@@ -52,8 +52,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly WebCameraViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = new int[] { 0, 500, 500, 500, 500, 500 };//SDL, change to use new
-        private readonly string Restore = "Restore to default";
-        private readonly string Unpair = "Unpair";
+        //private readonly string Restore = "Restore to default";
+        //private readonly string Unpair = "Unpair";
+        private readonly string CameraControl = Strings.CameraControl;
+        private readonly string ColorandImage = Strings.ColorandImage;
+        private readonly string PresenceDetection = Strings.PresenceDetection;
+        private readonly string Capture = Strings.Capture;
+        private readonly string Microphone = Strings.Microphone;
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
@@ -80,16 +85,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 BuildModuleGroups();
             }
 
-            txtUnpair.Text = Unpair;
-            txtRestore.Text = Restore;
+            //txtUnpair.Text = Unpair;
+            //txtRestore.Text = Restore;
 
             ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
             ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
             txtSystemName1.Text = _vm!.VisiblePairedHostName1;
             txtSystemName2.Text = _vm.VisiblePairedHostName1;
             txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
-            //txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+            txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
+            //txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
         }
 
         //  Jim remove 20240626
@@ -117,41 +122,41 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Camera Control",
+                GroupName = CameraControl,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraControl.png", "DDPM.UI.Resources")
             };
-            moduleGroup.AddHeader("Camera Control", new WebCameraSettingsModule(_vm!));
+            moduleGroup.AddHeader(CameraControl, new WebCameraSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Color and Image",
+                GroupName = ColorandImage,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraColorImage.png", "DDPM.UI.Resources")
             };
-            moduleGroup.AddHeader("Color and Image", new WebCameraColorImageModule(_vm!));
+            moduleGroup.AddHeader(ColorandImage, new WebCameraColorImageModule(_vm!));
             groups.Add(moduleGroup);
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Presence Detection",
+                GroupName = PresenceDetection,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources")
             };
-            moduleGroup.AddHeader("Presence Detection", new WebCameraPresenceDetectionModule(_vm!));
+            moduleGroup.AddHeader(PresenceDetection, new WebCameraPresenceDetectionModule(_vm!));
             groups.Add(moduleGroup);
 
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Capture",
+                GroupName = Capture,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraCapture.png", "DDPM.UI.Resources")
             };
-            moduleGroup.AddHeader("Capture", new WebCameraCaptureModule(_vm!));
+            moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
             moduleGroup = new ModuleGroup()
             {
-                GroupName = "Microphone",
+                GroupName = Microphone,
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
             };
-            moduleGroup.AddHeader("Microphone", new WebCameraMicrophoneModule(_vm!));
+            moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
             groups.Add(moduleGroup);
 
             _vm!.ModuleGroups = groups;

@@ -245,10 +245,15 @@ namespace DDPM.UI.Module.Brightness.Tests
             brightnessViewModel.ModuleOwner = moduleOwner;
             var monitorInfo = new MonitorInfo();
             brightnessViewModel.ModuleOwner.SelectedHomeDevice.MonitorInfo = monitorInfo;
-
+            //value < 25
             var myContrastValue = 2;
             brightnessViewModel.ContrastValue = myContrastValue;
+            Assert.That(brightnessViewModel.ContrastValue, Is.EqualTo(25));
+            //value >25
+            myContrastValue = 28;
+            brightnessViewModel.ContrastValue = myContrastValue;
             Assert.That(brightnessViewModel.ContrastValue, Is.EqualTo(myContrastValue));
+
         }
 
         [Test]

@@ -7,6 +7,7 @@
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:KeyboardViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="647" d:DesignWidth="520" VerticalAlignment="Top" HorizontalAlignment="Left">
@@ -45,8 +46,8 @@
                         </Image>
                         <UXControls:UXTextBlock Name="txtMessage" FontSize="14" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="415" Focusable="True"
                                                 VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="21" Padding="0,3,35,2">
-                            <Run Name="txtAlert1" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert" />
-                            <Run Name="txtLearnMore1" FontFamily="Roboto" Foreground="#31A2E3" FontWeight="Bold" Cursor="Hand" TextDecorations="Underline" KeyDown="txtLearnMore1_KeyDown" MouseLeftButtonDown="LearnMore_Click" Focusable="True" KeyboardNavigation.TabIndex="1" KeyboardNavigation.IsTabStop="True" />
+                            <Run Name="txtAlert1" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert" Text="{Binding [Collaboration.5], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
+                            <Run Name="txtLearnMore1" FontFamily="Roboto" Foreground="#31A2E3" FontWeight="Bold" Cursor="Hand" TextDecorations="Underline" KeyDown="txtLearnMore1_KeyDown" MouseLeftButtonDown="LearnMore_Click" Focusable="True" KeyboardNavigation.TabIndex="1" KeyboardNavigation.IsTabStop="True" Text="{Binding [LearnMore], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
                         </UXControls:UXTextBlock>
                         <Border Focusable="True" KeyboardNavigation.TabIndex="2" BorderThickness="0" KeyDown="Border_KeyDown">
                             <Image x:Name="CloseIcon" Source="/DDPM.UI.Common;component/Resources/Close.png" Stretch="Fill" Focusable="True"
@@ -66,12 +67,12 @@
                                 <UXControls:UXTextBlock Name="txtCollabsCaption" FontSize="20" Foreground="White" FontFamily="Roboto"
                                                         TextBlockSemanticColorType="Light" Margin="16,24,0,0" FontWeight="Normal" AutomationProperties.Name="nattt"
                                                         TextBlockType="Caption" MouseEnter="MessageBox_MouseEnter"
-                                                        VerticalAlignment="Top" HorizontalAlignment="Left" />
+                                                        VerticalAlignment="Top" HorizontalAlignment="Left" Text="{Binding [Collaboration.0], Source={x:Static lang:LangHelper.Instance}}"/>
                                 <Image Margin="9,28,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Uniform"
                                        VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="16" Height="16">
                                     <Image.ToolTip>
                                         <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <TextBlock Name="txtCollabsTooltip" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                            <TextBlock Name="txtCollabsTooltip" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding [Collaboration.1], Source={x:Static lang:LangHelper.Instance}}"/>
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
@@ -93,7 +94,7 @@
                                         <Image Margin="16,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Video.png" Stretch="Uniform" HorizontalAlignment="Left"
                                                Width="20" Height="14">
                                         </Image>
-                                        <UXControls:UXTextBlock Name="txtVideo" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                        <UXControls:UXTextBlock Name="txtVideo" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"/>
                                     </Grid>
                                     <Grid Width="120">
                                         <UXControls:UXToggleSwitch Margin="0" IsChecked="{Binding IsCollaborationCameraEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -111,7 +112,7 @@
                                         <Image Margin="16,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Share.png" Stretch="Uniform" VerticalAlignment="Center"
                                                Width="19" Height="20" HorizontalAlignment="Left">
                                         </Image>
-                                        <UXControls:UXTextBlock Name="txtShare" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                        <UXControls:UXTextBlock Name="txtShare" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Share], Source={x:Static lang:LangHelper.Instance}}"/>
                                     </Grid>
                                     <Grid Width="120">
                                         <UXControls:UXToggleSwitch Margin="0" IsChecked="{Binding IsCollaborationScreenShareEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -131,7 +132,7 @@
                                         <Image Margin="17,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/ChatC.png" Stretch="Uniform"
                                                Width="18" Height="16" VerticalAlignment="Center" HorizontalAlignment="Left">
                                         </Image>
-                                        <UXControls:UXTextBlock Name="txtChat" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                        <UXControls:UXTextBlock Name="txtChat" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Chat], Source={x:Static lang:LangHelper.Instance}}"/>
                                     </Grid>
                                     <Grid Width="120">
                                         <UXControls:UXToggleSwitch Margin="0" IsChecked="{Binding IsCollaborationChatEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -149,7 +150,7 @@
                                         <Image Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Mic.png" Stretch="Uniform"
                                                Width="28" Height="28" VerticalAlignment="Center" HorizontalAlignment="Left">
                                         </Image>
-                                        <UXControls:UXTextBlock Name="txtMic" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                        <UXControls:UXTextBlock Name="txtMic" Style="{StaticResource TextStyle1}" Margin="44,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding [Mic], Source={x:Static lang:LangHelper.Instance}}"/>
                                     </Grid>
                                     <Grid Width="120">
                                         <UXControls:UXToggleSwitch Margin="0" IsChecked="{Binding IsCollaborationMicEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -169,11 +170,11 @@
                                 <UXControls:UXCheckBox Margin="10,0,0,0" Width="470" Height="42" IsChecked="{Binding IsCollaborationBlinkEffectEnable}" VerticalContentAlignment="Center"
                                                        IsEnabled="{Binding BlinkEffectToggleEnabled}"
                                                        Name="cbCollaborationBlinkEffectText" BorderThickness="0" Foreground="#F5F6F7" FontFamily="Roboto"
-                                                       VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Light" />
+                                                       VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Light" Content="{Binding [Collaboration.3], Source={x:Static lang:LangHelper.Instance}}"/>
                                 <UXControls:UXCheckBox Margin="10,8,0,0" Width="470" Height="42" IsChecked="{Binding IsCollaborationDoubleTapEnable}" VerticalContentAlignment="Center"
                                                        IsEnabled="{Binding DoubleTapToggleEnabled}"
                                                        Name="cbCollaborationDoubleTapText" BorderThickness="0" Foreground="#F5F6F7" FontFamily="Roboto"
-                                                       VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Light" />
+                                                       VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Light" Content="{Binding [Collaboration.4], Source={x:Static lang:LangHelper.Instance}}"/>
                             </StackPanel>
                         </Grid>
                     </Border>

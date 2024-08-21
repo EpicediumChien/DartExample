@@ -25,9 +25,9 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         private readonly int[] _rightFrameWidth = new int[] { 0, 533, 533, 533 };
         //private readonly string Restore = "Restore to default";
         //private readonly string Unpair = "Unpair";
-        private readonly string AudioSettings = Strings.Headset0;
-        private readonly string AutomatedActions = Strings.Headset1;
-        private readonly string DeviceSettings = Strings.Headset2;
+        private readonly string AudioSettings = Strings.HeadsetAudioSettings;
+        private readonly string AutomatedActions = Strings.HeadsetAutomatedActions;
+        private readonly string DeviceSettings = Strings.HeadsetDeviceSettings;
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));

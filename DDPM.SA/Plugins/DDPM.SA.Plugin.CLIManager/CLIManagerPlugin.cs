@@ -20,6 +20,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
+using DDPM.SA.Common.CLI;
 
 namespace DDPM.SA.Plugin.CLIManager
 {
@@ -177,36 +178,27 @@ namespace DDPM.SA.Plugin.CLIManager
 
             WriteLog($"Got CLI request: ID:{arg.command_guid_string}, command: {arg.commandLineInput.Command}, target type: {arg.commandLineInput.TargetType}");
 
-            //Dean 0812, check if IT admin command and do not relay to CLIProxy if it's IT lock command.
-            bool isITCommand = false;
-            if (commandLineInput.PluginsType.Equals("APP"))
+            //Dean 0816, check if IT admin command and do not relay to CLIProxy if it's IT lock command.
+            if(commandLineInput.isITCommands)
             {
-                CLIEventResult rst;
-                switch (commandLineInput.TargetFeature)
-                {
-                    case "TELEMETRYCONSENT":
-                        //If return null means command isn't belong to IT, bypass to user SA(CLIProxy).
-                        rst = CLI_Analytics_Consent(commandLineInput, arg.command_guid_string);
-                        if (rst == null)
-                            break;
-                        else
-                        {
-                            //return to IT for the result
-                            return Task.FromResult(rst);
-                        }
-                    default:
-                        break;
-                }
+                CLIEventResult rst = HandleITCommands(commandLineInput, arg.command_guid_string);
+                if(!commandLineInput.isNormalCommands)//only IT command, return directly
+                    return Task.FromResult(rst);
+
+                if(rst.ExitCode != (int)CLI_ExitCode.success)//IT command failed
+                    return Task.FromResult(rst);
             }
-            //Not IT command, invoke to user plugin for command processing
-            OnCLIActionEventNotify(arg);
+
+            //Include IT command, invoke to user plugin for command processing
+            if (commandLineInput.isNormalCommands)
+                OnCLIActionEventNotify(arg);
 
             CLIEventResult result = new CLIEventResult();
             int counter = 0;
             while (true)
             {
                 Sleep(1000);
-                lock (_resultLock)
+                lock(_resultLock)
                 {
                     int idx = _result_list.FindIndex(x => x.command_guid_string.Trim().ToLower().Equals(arg.command_guid_string.ToLower().Trim()));
                     if (idx >= 0)//result found
@@ -236,6 +228,64 @@ namespace DDPM.SA.Plugin.CLIManager
             return Task.FromResult(result);//temp return: it should has timer to check write back result list
         }
 
+        private CLIEventResult HandleITCommands(CommandLineInput commandLineInput, string command_guid)
+        {
+            CLIEventResult rst = new CLIEventResult();
+            rst.ticket = DateTime.Now;
+            rst.ExitCode = (int)CLI_ExitCode.IT_Command_Not_Support;
+            rst.command_guid_string = command_guid;
+
+            CLI_RESPONSE response = new CLI_RESPONSE();//for fail return using
+            response.TargetFeature = commandLineInput.TargetFeature;
+            response.Command = commandLineInput.Command;
+
+            //Get IT data before passing to function
+            DDPMITConfig data;
+            var tmp = RetrieveITSettings(out data);
+            if (tmp.code != (int)CLI_ExitCode.success)
+            {
+                response.Message = tmp.msg;
+                response.Result = "FAIL";
+                rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                return rst;
+            }
+
+            if (commandLineInput.PluginsType.Equals("APP"))
+            {                
+                // !!!
+                // Implement this switch-case, should match the Support_Lock_Feature in ICLICommandTable.cs
+                // !!!
+                switch (commandLineInput.TargetFeature)
+                {
+                    case "TELEMETRYCONSENT":
+                        //If return null means command isn't belong to IT, bypass to user SA(CLIProxy).                        
+                        rst = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                        //rst = CLI_Analytics_Consent(commandLineInput, command_guid);
+                        return rst;
+
+                    case "ENERGESAVER":
+                        break;
+                    default:
+                        response.Message = $"Feature {commandLineInput.TargetFeature} doesn't support as global setting";
+                        response.Result = "FAIL";
+                        rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                        break;
+                }
+            }
+            else
+            {
+                //CLI_RESPONSE response = new CLI_RESPONSE();
+                //response.TargetFeature = commandLineInput.TargetFeature;
+                //response.Command = commandLineInput.Command;
+                response.Message = $"{commandLineInput.TargetFeature} doesn't support as global setting";
+                response.Result = "FAIL";
+                rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+            }
+
+            return rst;
+        }
+
+        
         #endregion
 
         #region ICliManagerSA implementation
@@ -245,15 +295,18 @@ namespace DDPM.SA.Plugin.CLIManager
         //Target to notify CLIProxy
         private void OnCLIActionEventNotify(CLIEventArgs e)
         {
-            if (CLIActionEvent == null || e == null || e == EventArgs.Empty)
-                return;
-
-            EventHandler<CLIEventArgs> Handler = CLIActionEvent;
-            if (Handler != null)
+            Task.Run(() =>
             {
-                Handler.Invoke(this, e);
-                WriteLog($"CLIActionEvent Invoked: ID:{e.command_guid_string}");
-            }
+                if (CLIActionEvent == null || e == null || e == EventArgs.Empty)
+                    return;
+
+                EventHandler<CLIEventArgs> Handler = CLIActionEvent;
+                if (Handler != null)
+                {
+                    Handler.Invoke(this, e);
+                    WriteLog($"CLIActionEvent Invoked: ID:{e.command_guid_string}");
+                }
+            });
         }
 
         public Task WriteCommandResult(CLIEventResult result)
@@ -344,8 +397,10 @@ namespace DDPM.SA.Plugin.CLIManager
         }
 
         //If return null means it's not IT command
-        private CLIEventResult CLI_Analytics_Consent(CommandLineInput commandLineInput, string action_guid)
+        /*private CLIEventResult CLI_Analytics_Consent(CommandLineInput commandLineInput, string action_guid)
         {
+            //Expected format: /set -app=TelemetryConsent -value=on,lock / on,unlock / off,lock / off,unlock
+
             CLIEventResult result = new CLIEventResult();
             result.ticket = DateTime.Now;
             result.command_guid_string = action_guid;
@@ -361,136 +416,108 @@ namespace DDPM.SA.Plugin.CLIManager
                 result.ExitCode = (int)CLI_ExitCode.fail_no_analytics_options;
                 return result;
             }
-
-            if (commandLineInput.Command.Equals("GET")) //ex: cli.exe /get -app=TelemetryConsent -value=isAllow
+            if (commandLineInput.Options.Count > 1)
             {
-                bool ever = false;
-                result.ExitCode = (int)CLI_ExitCode.success;
-                foreach (var op in commandLineInput.Options)
-                {
-                    if (op.Option_Name.ToUpper().Equals("VALUE"))
-                    {
-                        if (op.Option_Value.ToUpper().Equals("ISALLOW"))
-                        {
-                            DDPMITConfig data = new DDPMITConfig();
-                            var tmp = RetrieveITSettings(out data);
-                            if (tmp.code == (int)CLI_ExitCode.success)
-                            {
-                                WriteLog($"Telemetry Consent: isAllow {data.isTelemetryConsentAllow}");
-                                response.Value = $"{data.isTelemetryConsentAllow}";
-                                response.Result = $"isAllow = {data.isTelemetryConsentAllow}";
-                                response.Message = tmp.msg;
-                                result.ExitCode = tmp.code;
-                                ever = true;
-                            }
-                        }
-                        else
-                        {
-                            WriteLog($"Telemetry Consent: option value [{op.Option_Value}] not support");
-                            response.Result = "Fail";
-                            response.Message = $"Telemetry Consent: option value [{op.Option_Value}] not support";
-                            result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                            ever = true;
-                        }
-                    }
-                    else
-                    {
-                        WriteLog($"Telemetry Consent: option name [{op.Option_Name}] not support");
-                        response.Result = "Fail";
-                        response.Message = $"Telemetry Consent: option name [{op.Option_Name}] not support";
-                        result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                        ever = true;
-                    }
-                }
-                if (ever)
-                {
-                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                    return result;
-                }
+                WriteLog("Telemetry Consent: doesn't support multiple value options");
+                response.Result = "Fail";
+                response.Message = "Telemetry Consent: doesn't support multiple value options";
+                result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                return result;
             }
-            else if (commandLineInput.Command.Equals("SET")) //ex: cli.exe /set -app=TelemetryConsent -Allow=yes(or no)
+            CommandType_Option op = commandLineInput.Options[0];
+
+            //Retrieve IT settings first
+            DDPMITConfig data = new DDPMITConfig();
+            var get_IT_setting_result = RetrieveITSettings(out data);
+            if (get_IT_setting_result.code != (int)CLI_ExitCode.success)
             {
-                result.ExitCode = (int)CLI_ExitCode.success;
-                foreach (var op in commandLineInput.Options)
-                {
-                    if (op.Option_Name.ToUpper().Equals("ALLOW"))
-                    {
-                        DDPMITConfig data = new DDPMITConfig();
-                        var tmp = RetrieveITSettings(out data);
-                        if (tmp.code != (int)CLI_ExitCode.success)
-                        {
-                            response.Message = tmp.msg;
-                            result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                            result.ExitCode = tmp.code;
-                            return result;
-                        }
-                        bool status = true;
-                        if (op.Option_Value.ToUpper().Equals("YES"))
-                        {
-                            if (data.isTelemetryConsentAllow != true)
-                            {
-                                data.isTelemetryConsentAllow = true;
-                                status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "isTelemetryConsentAllow" }).Result;
-                            }
-                            else
-                            {
-                                response.Message = "TelemetryConsent is ALLOW already";
-                            }
-                        }
-                        else if (op.Option_Value.ToUpper().Equals("NO"))
-                        {
-                            if (data.isTelemetryConsentAllow != false)
-                            {
-                                data.isTelemetryConsentAllow = false;
-                                status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "isTelemetryConsentAllow" }).Result;
-                            }
-                            else
-                            {
-                                response.Message = "TelemetryConsent is NOT ALLOW already";
-                            }
-                        }
-                        else
-                        {
-                            WriteLog($"Telemetry Consent: option value [{op.Option_Value}] not support");
-                            response.Result = "Fail";
-                            response.Message = $"Telemetry Consent: option value [{op.Option_Value}] not support";
-                            result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                            return result;
-                        }
-
-                        //WriteLog($"Telemetry Consent: set Allow to {data.isTelemetryConsentAllow}");
-                        //response.Message = $"Set Allow of consent to be {op.Option_Value}";
-
-                        if (status)
-                        {
-                            response.Result = "Completed";
-                            result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                            result.ExitCode = (int)CLI_ExitCode.success;
-                            return result;
-                        }
-                        else
-                        {
-                            response.Message = "Write to IT config failed";
-                            response.Result = "FAIL";
-                            result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                            result.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        WriteLog($"Telemetry Consent: option name [{op.Option_Name}] not support");
-                        response.Result = "Fail";
-                        response.Message = $"Telemetry Consent: option name [{op.Option_Name}] not support";
-                        result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                        return result;
-                    }
-                }
+                response.Message = get_IT_setting_result.msg;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                result.ExitCode = get_IT_setting_result.code;
+                return result;
             }
 
-            return null;
-        }
+            if (!commandLineInput.Command.Equals("SET"))
+            {
+                WriteLog("Telemetry Consent: for global IT setting the command should be SET");
+                response.Result = "Fail";
+                response.Value = op.Option_Value;
+                response.Message = "Telemetry Consent: LOCK/UNLOCK only support SET command";
+                result.ExitCode = (int)CLI_ExitCode.fail_analytics_command_notsupport;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                return result;
+            }
+            
+            result.ExitCode = (int)CLI_ExitCode.success;
+            
+            if (!op.Option_Name.ToUpper().Equals("VALUE"))            
+            {
+                WriteLog($"Telemetry Consent: option name [{op.Option_Name}] not support");
+                response.Result = "Fail";
+                response.Value = op.Option_Value;
+                response.Message = $"Telemetry Consent: option name [{op.Option_Name}] not support";
+                result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                return result;
+            }
+            bool status = true;
+            List<string> ops = op.Option_Value.Split(",").ToList();
+            if (ops.FindIndex(x => x.ToUpper().Trim().Equals("UNLOCK"))>= 0)
+            {
+                if (data.Lock_TelemetryConsent != false)
+                {
+                    data.Lock_TelemetryConsent = false;
+                    status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "Lock_TelemetryConsent" }).Result;
+                }
+                else
+                {
+                    response.Message = "TelemetryConsent is UNLOCKed already";
+                    status = true;
+                }
+            }
+            else if (ops.FindIndex(x => x.ToUpper().Trim().Equals("LOCK")) >= 0)
+            {
+                if (data.Lock_TelemetryConsent != true)
+                {
+                    data.Lock_TelemetryConsent = true;
+                    status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "Lock_TelemetryConsent" }).Result;
+                }
+                else
+                {
+                    response.Message = "TelemetryConsent is LOCKed already";
+                    status = true;
+                }
+            }
+            else
+            {
+                WriteLog($"Telemetry Consent: option value [{op.Option_Value}] not support");
+                response.Result = "Fail";
+                response.Message = $"Telemetry Consent: option value [{op.Option_Value}] not support";
+                response.Value = op.Option_Value;
+                result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                return result;
+            }
 
+            if (status)
+            {
+                response.Result = "Completed";
+                response.Value = op.Option_Value;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                result.ExitCode = (int)CLI_ExitCode.success;
+                return result;
+            }
+            else
+            {
+                response.Message = "Write to IT config failed";
+                response.Result = "FAIL";
+                response.Value = op.Option_Value;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                result.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
+                return result;
+            }       
+        }*/
         #endregion
     }
 }

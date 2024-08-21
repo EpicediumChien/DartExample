@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
              mc:Ignorable="d" Background="#FF0D121A"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -63,7 +64,7 @@
             </Grid>
 
             <!-- Hotkey text -->
-            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="Hotkeys "
+            <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                     HorizontalAlignment="Left" TextBlockType="Header2"
                                     TextBlockSemanticColorType="DefaultHeader"
                                     Foreground="White"
@@ -83,7 +84,7 @@
 
             <Grid HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Brightness -" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.0], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding BrightnessMinsKey,Mode=TwoWay}"
                         Name="tbBrightnessMins"
@@ -101,7 +102,7 @@
             </Grid>
             <Grid Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Brightness +" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding BrightnessAddKey,Mode=TwoWay}"
                         Name="tbBrightnessAdd"
@@ -119,7 +120,7 @@
             </Grid>
             <Grid Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Contrast -" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding ContrastMinsKey,Mode=TwoWay}"
                         Name="tbContrastMins"
@@ -137,7 +138,7 @@
             </Grid>
             <Grid Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Contrast +" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding ContrastAddKey,Mode=TwoWay}"
                         Background="#141D28" Foreground="White" Width="472" Height="30"
@@ -155,7 +156,7 @@
             </Grid>
             <Grid Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Luminance -" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding LuminanceMinsKey,Mode=TwoWay}"
                         Background="#141D28" Foreground="White" Width="472" Height="30"
@@ -173,7 +174,7 @@
             </Grid>
             <Grid Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
                 <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
-                    <Label  Content="Luminance +" FontSize="14" Foreground="White" />
+                    <Label  Content="{Binding [Hotkey.5], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" />
                     <UXControls:UXTextBox
                         Text="{Binding LuminanceAddKey,Mode=TwoWay}"
                         Background="#141D28" Foreground="White" Width="472" Height="30"
@@ -192,8 +193,7 @@
             <Grid Grid.Row="3" Grid.ColumnSpan="2" Width="954" Margin="0,30,0,0">
                 <UXControls:UXAlert>
                     <UXControls:UXAlertItem AlertItemType="Info" Label="" Background="#364861" Margin="8,8,8,8"
-                                            Message="Example: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.&#x0a;
-                                            Note that for mutiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function." />
+                                            Message="{Binding [Hotkey.6], Source={x:Static lang:LangHelper.Instance}}" />
                 </UXControls:UXAlert>
                 <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
             </Grid>
