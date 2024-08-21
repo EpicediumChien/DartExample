@@ -73,12 +73,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             On = 1
         }
 
-        [DllImport("kernel32.dll")]
-        public static extern bool GetSystemPowerStatus(out SYSTEM_POWER_STATUS status);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool GetSystemPowerStatus(out SYSTEM_POWER_STATUS status);
+        private static bool _GetSystemPowerStatus(out SYSTEM_POWER_STATUS status)
+        {
+            return GetSystemPowerStatus(out status);
+        }
 
         public bool GetBatteryInfo(out SYSTEM_POWER_STATUS powerStatus)
         {
-            if (GetSystemPowerStatus(out powerStatus))
+            if (_GetSystemPowerStatus(out powerStatus))
             {
                 return true;
             }

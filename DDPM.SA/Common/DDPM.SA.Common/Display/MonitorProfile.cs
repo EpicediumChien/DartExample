@@ -129,7 +129,7 @@ namespace DDPM.SA.Common
         //  _Out_ PDISPLAY_DEVICE lpDisplayDevice,
         //  _In_ DWORD           dwFlags
         //);
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern UInt32 EnumDisplayDevices(string s, UInt32 iDevNum, ref DISPLAY_DEVICE displayDevice, UInt32 dwFlags);
         private static UInt32 _EnumDisplayDevices(string s, UInt32 iDevNum, ref DISPLAY_DEVICE displayDevice, UInt32 dwFlags)
