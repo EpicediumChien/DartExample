@@ -565,7 +565,7 @@
                                                 </Border>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="-5,51,0,0">
-                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="12" />
+                                                    <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.12], Source={x:Static lang:LangHelper.Instance},StringFormat={}0 {0}}" Foreground="White" FontSize="12" />
                                                 </StackPanel>
 
                                                 <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="40,165,0,0">

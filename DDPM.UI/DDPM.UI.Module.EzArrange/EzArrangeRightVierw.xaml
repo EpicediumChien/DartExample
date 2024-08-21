@@ -65,37 +65,37 @@
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
                             <!-- 2 Windows -->
                             <Grid Height="40" Margin="0,16,0,0">
-                                <UXControls:UXTextBlock Text="{Binding [EzArrange.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" />
+                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}2 {0}}" Style="{StaticResource UXTextBlock_Caption}" />
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_2w" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
                             <!-- 3 Windows -->
                             <Grid Height="40" Margin="0,16,0,0">
-                                <UXControls:UXTextBlock Text="{Binding [EzArrange.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" />
+                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}3 {0}}" Style="{StaticResource UXTextBlock_Caption}" />
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_3w" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
                             <!-- 4 Windows -->
                             <Grid Height="40" Margin="0,16,0,0">
-                                <UXControls:UXTextBlock Text="{Binding [EzArrange.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" />
+                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}4 {0}}" Style="{StaticResource UXTextBlock_Caption}" />
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_4w" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
                             <!-- 5 Windows -->
                             <Grid Height="40" Margin="0,16,0,0">
-                                <UXControls:UXTextBlock Text="{Binding [EzArrange.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" />
+                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}5 {0}}" Style="{StaticResource UXTextBlock_Caption}" />
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_5w" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
                             <!-- 6 Windows -->
                             <Grid Height="40" Margin="0,16,0,0">
-                                <UXControls:UXTextBlock Text="{Binding [EzArrange.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" />
+                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}6 {0}}" Style="{StaticResource UXTextBlock_Caption}" />
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_6w" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
                             <!-- 7 Windows or more -->
                             <Grid Height="40">
-                                <UXControls:UXTextBlock Text="{Binding [EzArrange.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" />
+                                <UXControls:UXTextBlock Text="{Binding [EzArrange.1], Source={x:Static lang:LangHelper.Instance},StringFormat={}7 {0}}" Style="{StaticResource UXTextBlock_Caption}" />
                             </Grid>
                             <commonCtrl:SplitListView Name="splitListView_7w" Margin="0,4"
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
