@@ -231,7 +231,7 @@
 
                     <!-- RightGroupBorder.AdvancedSettings -->
                     <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
-                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}"  Expanded="expanderHasExpanded">
+                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" >
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->
                                 <Grid Height="60">

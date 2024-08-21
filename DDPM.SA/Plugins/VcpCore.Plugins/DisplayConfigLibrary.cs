@@ -18,12 +18,12 @@ namespace VcpCore.Plugins
 
             try
             {
-                if (GetDisplayConfigBufferSizes(QDC.QDC_ONLY_ACTIVE_PATHS, out var pathCount, out var modeCount) == 0)
+                if (_GetDisplayConfigBufferSizes(QDC.QDC_ONLY_ACTIVE_PATHS, out var pathCount, out var modeCount) == 0)
                 {
                     var paths = new DISPLAYCONFIG_PATH_INFO[pathCount];
                     var modes = new DISPLAYCONFIG_MODE_INFO[modeCount];
 
-                    if (QueryDisplayConfig(QDC.QDC_ONLY_ACTIVE_PATHS, ref pathCount, paths, ref modeCount, modes, IntPtr.Zero) == 0)
+                    if (_QueryDisplayConfig(QDC.QDC_ONLY_ACTIVE_PATHS, ref pathCount, paths, ref modeCount, modes, IntPtr.Zero) == 0)
                     {
                         foreach (var path in paths)
                         {
@@ -63,7 +63,7 @@ namespace VcpCore.Plugins
                 info.header.adapterId = path.targetInfo.adapterId;
                 info.header.id = path.targetInfo.id;
 
-                if (DisplayConfigGetDeviceInfo(ref info) == 0)
+                if (_DisplayConfigGetDeviceInfo(ref info) == 0)
                 {
                     blOnOff = info.advancedColorEnabled;
                     result = true;
@@ -88,7 +88,7 @@ namespace VcpCore.Plugins
                 deviceInfo.header.id = Path.targetInfo.id;
                 deviceInfo.advancedColorEnabled = bEnable;
 
-                if (DisplayConfigSetDeviceInfo(ref deviceInfo) == 0)
+                if (_DisplayConfigSetDeviceInfo(ref deviceInfo) == 0)
                     result = true;
             }
             catch (Exception) { }
@@ -104,7 +104,7 @@ namespace VcpCore.Plugins
             info.header.size = Marshal.SizeOf<DISPLAYCONFIG_TARGET_DEVICE_NAME>();
             info.header.adapterId = path.targetInfo.adapterId;
             info.header.id = path.targetInfo.id;
-            if (DisplayConfigGetDeviceInfo(ref info) == 0)
+            if (_DisplayConfigGetDeviceInfo(ref info) == 0)
             {
                 string var = CommonFun.ConvertManufacturerID(info.edidManufactureId.ToString("X"));
                 result = true;
@@ -122,7 +122,7 @@ namespace VcpCore.Plugins
             info.header.size = Marshal.SizeOf<DISPLAYCONFIG_TARGET_DEVICE_NAME>();
             info.header.adapterId = path.targetInfo.adapterId;
             info.header.id = path.targetInfo.id;
-            if (DisplayConfigGetDeviceInfo(ref info) == 0)
+            if (_DisplayConfigGetDeviceInfo(ref info) == 0)
             {
                 string var = CommonFun.ConvertManufacturerID(info.edidManufactureId.ToString("X"));
                 string[] getDispName = info.monitorDevicePat.Split('#');
