@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace VcpCore.Plugins
+namespace VcpCore.Common
 {
     public static class VcpCodeList
     {
@@ -169,7 +169,8 @@ namespace VcpCore.Plugins
             {"Dell Customize Specific" , 0xEA },
             {"USB-C Prioritization" , 0xEA },
             {"HDR Modes Specific" , 0xF0 },
-            {"Specify Feature Support" , 0xF1 }
+            {"Specify Feature Support" , 0xF1 },
+            {"Gaming" , 0xF4 },
         };
 
         public static Dictionary<string, uint> VCP60 = new Dictionary<string, uint>
@@ -215,7 +216,9 @@ namespace VcpCore.Plugins
         public static Dictionary<string, uint> VCPF8 = new Dictionary<string, uint> // USB-C Prioritization
         {
             { "High Resolution", 0xF800 },
-            { "High Data Speed", 0xF801 }
+            { "High Data Speed", 0xF801 },
+            { "4K", 0xF811 },
+            { "FHD", 0xF810 }
         };
 
         public static Dictionary<string, byte> VCPDC = new Dictionary<string, byte>

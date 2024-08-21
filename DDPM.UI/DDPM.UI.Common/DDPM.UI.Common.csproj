@@ -20,6 +20,7 @@
   <ItemGroup>
     <None Remove="Resources\Alert.png" />
     <None Remove="Resources\arrow-left.png" />
+    <None Remove="Resources\AW.png" />
     <None Remove="Resources\Background_Glow.png" />
     <None Remove="Resources\BatteryOutline.png" />
     <None Remove="Resources\Camera.png" />
@@ -31,6 +32,7 @@
     <None Remove="Resources\Close.png" />
     <None Remove="Resources\Connect_M_K.png" />
     <None Remove="Resources\DP.png" />
+    <None Remove="Resources\G.png" />
     <None Remove="Resources\HD22Q.png" />
     <None Remove="Resources\HDMI.png" />
     <None Remove="Resources\HeadsetModel_7024-Large.png" />
@@ -158,6 +160,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\AW.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\G.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Headset_AppleStore.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
