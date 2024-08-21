@@ -9322,7 +9322,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "OFF": return "0";
                 case "ON": return "4";
                 case "OFF,LOCK": return "8";
-                case "ON,LOCK": return "C";
+                case "ON,LOCK": return "12";
                 default: return "unknown_command";
             }
         }
