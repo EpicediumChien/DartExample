@@ -47,14 +47,14 @@ namespace DDPM.UI.Common {
         public static readonly string KeyCustomizeRestoreCaption = GetString("KeyCustomization.1");
         public static readonly string ButtonCustomizeMessage = GetString("ButtonSettings.5");
         public static readonly string ButtonCustomizeRestoreCaption = GetString("ButtonSettings.6");
-        public static readonly string PenButtonCustomizeRestoreCaption = "Restore to default actions";
+        public static readonly string PenButtonCustomizeRestoreCaption = GetString("PenButtonSettings.8");
         public static readonly string NullActionTooltip1 = "Click to Assign an action";
         public static readonly string NullActionTooltip2 = "Select an action from\nthe list on the right";
         public static readonly string USBWirelessReceiver = "USB Wireless Receiver";
         public static readonly string ReceiverFirmwareVersion = "Receiver Firmware Version";
         public static readonly string ReadyToBePaired = "Ready to be paired";
-        public static readonly string DPIMessage = "Move your mouse to complete the change to the DPI value";
-        public static readonly string PollingRateMessage = "Increasing polling rate may affect mouse’s battery life.";
+        public static readonly string DPIMessage = GetString("MouseSettings.0");
+        public static readonly string PollingRateMessage = GetString("MouseSettings.1");
         //public static readonly string EOLMessage = "There are no advanced features on this device";
         public static readonly string Wired = "Wired";
         public static readonly string Error = GetString("Error");
@@ -74,14 +74,14 @@ namespace DDPM.UI.Common {
         public static readonly string PrimaryButtonCaption = "Primary Mouse Button";
         public static readonly string DPISettingCaption = "DPI Setting";
         public static readonly string PollingRateCaption = "Polling Rate";
-        public static readonly string PenButtonClickOnce = "Click Once";
-        public static readonly string PenButtonDoubleClick = "Double Click";
-        public static readonly string PenButtonPressHold = "Press and Hold";
-        public static readonly string TopButtonCaption = "Top Button";
-        public static readonly string TopBarrelButtonCaption = "Top Barrel Button";
-        public static readonly string BottomBarrelButtonCaption = "Bottom Barrel Button";
-        public static readonly string PenButtonCustomizeMessage = "To customize a button, click an outlined button on the image to the left";
-        public static readonly string HoverClick = "Hover Click";
+        public static readonly string PenButtonClickOnce = GetString("PenButtonSettings.3");
+        public static readonly string PenButtonDoubleClick = GetString("PenButtonSettings.4");
+        public static readonly string PenButtonPressHold = GetString("PenButtonSettings.5");
+        public static readonly string TopButtonCaption = GetString("PenButtonSettings.0");
+        public static readonly string TopBarrelButtonCaption = GetString("PenButtonSettings.1");
+        public static readonly string BottomBarrelButtonCaption = GetString("PenButtonSettings.2");
+        public static readonly string PenButtonCustomizeMessage = GetString("PenButtonSettings.7");
+        public static readonly string HoverClick = GetString("PenButtonSettings.6");
 
         //Robert_Lin, 2024-7-25, Vbar Text for DisplayPlugin
         public static readonly string VbarText_DisplaySettings = GetString("DisplaySettings");
@@ -337,14 +337,14 @@ namespace DDPM.UI.Common {
     public static readonly string SelectedFile = "Selected file";
 
     //Pen settings
-    public static readonly string PenSettings = "Pen Settings";
-    public static readonly string TipSensitivity = "Tip Sensitivity";
-    public static readonly string TipTooltip = "Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure";
-    public static readonly string TiltSensitivity = "Tilt Sensitivity";
-    public static readonly string TiltTooltip = "Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle";
-    public static readonly string PairWithTile = "Pair with Tile";
-    public static readonly string PairTooltip = "Pair your pen to your mobile device using\nthe Tile app";
-    public static readonly string GetStarted2 = "Get started";
+    public static readonly string PenSettings = GetString("PenSettings.0");
+    public static readonly string TipSensitivity = GetString("PenSettings.1");
+    public static readonly string TipTooltip = GetString("PenSettings.2");
+    public static readonly string TiltSensitivity = GetString("PenSettings.3");
+    public static readonly string TiltTooltip = GetString("PenSettings.4");
+    public static readonly string PairWithTile = GetString("PenSettings.5");
+    public static readonly string PairTooltip = GetString("PenSettings.6");
+    public static readonly string GetStarted2 = GetString("PenSettings.7");
     public static readonly string PairTile1 = "Enable Bluetooth on your device.";
     public static readonly string PairTile2 = "Scan the QR Code to download Tile on to your mobile device.";
     public static readonly string PairTile3 = "Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.";
