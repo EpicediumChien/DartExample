@@ -19,6 +19,6 @@ namespace DDPM.SA.Common {
 
     Task<int> GetDpiValue(string itemID);
 
-    void SetDPIValue(string itemID, int newValue);
+    Task SetDPIValue(string itemID, int newValue);
   }
 }

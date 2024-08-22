@@ -16,18 +16,12 @@ using Dell.Client.Framework.Interfaces;
 using System.Reflection;
 using System.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 using DDPM.SA.Common;
 using System.Linq;
 using Dell.Client.Framework.Common.Annotations;
 using System.Threading;
-using Dell.TechHub.Sdk.Exceptions;
 using Dell.TechHub.Commodity;
 using Dell.TechHub.Sdk.Common.Identifiers;
-using Dell.TechHub.Common;
-using Dell.TechHub.Common.Attributes;
-using Dell.TechHub.Versioning;
-using System.Collections;
 
 namespace DDPM.SA.Plugins.User.DTPProxy {
   [Plugin(IDs.DDPM_DTP_Proxy_Plugin, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
@@ -72,12 +66,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
 
     #endregion
 
-    #region Private Members
-
-
-    #endregion
-
-
     #region Constructor
 
     public DTPProxyPlugin(IAgent agent) : base(agent, PluginLogId) {
@@ -114,7 +102,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
       }
     }
 
-    public void SetDPIValue(string itemID, int newValue) {
+    public async Task SetDPIValue(string itemID, int newValue) {
+      _itemID = new ItemId(itemID);
+
+      if(await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity) {
+        SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
+      }
+      else {
+        Console.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+        writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+      }
     }
 
     public void SetPrimaryMouseButton(string newMouseButton, Guid deviceId) {
@@ -260,8 +257,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
         return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
       }
       catch(Exception ex) {
-        writelog($"Error while handling {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+        writelog($"Error while Getting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
         return null;
+      }
+    }
+
+    void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value) {
+      try {
+        interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+      }
+      catch(Exception ex) {
+        writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+      }
+    }
+
+    void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value) {
+      try {
+        interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+      }
+      catch(Exception ex) {
+        writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
       }
     }
   }

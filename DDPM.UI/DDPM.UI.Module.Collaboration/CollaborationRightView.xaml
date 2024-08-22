@@ -45,7 +45,7 @@
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                         </Image>
                         <UXControls:UXTextBlock Name="txtMessage" FontSize="14" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="415" Focusable="True"
-                                                VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="21" Padding="0,3,35,2">
+                                                VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="21" Padding="2,3,35,2">
                             <Run Name="txtAlert1" FontFamily="Roboto" FontWeight="Normal" AutomationProperties.Name="naAlert" Text="{Binding [Collaboration.5], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
                             <Run Name="txtLearnMore1" FontFamily="Roboto" Foreground="#31A2E3" FontWeight="Bold" Cursor="Hand" TextDecorations="Underline" KeyDown="txtLearnMore1_KeyDown" MouseLeftButtonDown="LearnMore_Click" Focusable="True" KeyboardNavigation.TabIndex="1" KeyboardNavigation.IsTabStop="True" Text="{Binding [LearnMore], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}"/>
                         </UXControls:UXTextBlock>

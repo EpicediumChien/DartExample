@@ -38,17 +38,18 @@ namespace DDPM.UI.Module.Collaboration {
 
     void CheckCTKMessage() {
       if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_NOT_INSTALLED") { // Scenario 1
-        txtAlert1.Text = Strings.Alert5;
-        txtLearnMore1.Text = Strings.LearnMoreLink;
-        _vm.IsCollaborationKeyEnable = false;
-        tsCollaboration.IsEnabled = false;
+        txtAlert1.Text = Strings.Alert1;
+        //txtLearnMore1.Text = Strings.LearnMoreLink;
+        txtLearnMore1.Text = "";
+        //_vm.IsCollaborationKeyEnable = false;
+        //tsCollaboration.IsEnabled = false;
       }
       else {
-       HasCTKMessage = true;
+       HasCTKMessage = false;
       }
 
-      txtAlert1.Text = Strings.Alert5;
-      txtLearnMore1.Text = Strings.LearnMoreLink;
+      //txtAlert1.Text = Strings.Alert5;
+      //txtLearnMore1.Text = Strings.LearnMoreLink;
 
       bdrAlert.Visibility = HasCTKMessage && _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
     }
