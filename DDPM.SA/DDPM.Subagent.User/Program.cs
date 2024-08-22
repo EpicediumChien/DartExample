@@ -59,15 +59,6 @@ namespace DDPM.Subagent.User
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_USER_MUTEX_ID);
 
-#if RELEASE
-        private static byte[][] certificateHash = {
-            ThumbprintHash.DELL_Hash,
-            ThumbprintHash.DELL_Hash1,
-            ThumbprintHash.DELL_Hash2,
-            ThumbprintHash.WST_Hash,
-            ThumbprintHash.WST2_Hash
-        };
-#endif
 
         private static void Main(string[] args)
         {
@@ -151,7 +142,7 @@ namespace DDPM.Subagent.User
                 MultiSessionAgent = true
 #if RELEASE
                 ,
-                ValidCertificateHashes = certificateHash
+                ValidCertificateHashes = ThumbprintHash.certificateHash
 #endif
             };
 
