@@ -8,6 +8,7 @@
              xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:eaem="clr-namespace:DDPM.UI.Common.EAEM;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="800"
              Loaded="UserControl_Loaded"
@@ -50,11 +51,11 @@
                     <Border Style="{StaticResource RightGroupBorderStyle}">
                         <StackPanel>
                             <!-- PipPbpSectionHeader -->
-                            <UXControls:UXTextBlock Text="PIP/PBP" Foreground="White"
+                            <UXControls:UXTextBlock Text="{Binding [PIPorPBP], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
                                                     FontSize="20" />
 
                             <!-- FullScreen divTitle-->
-                            <UXControls:UXTextBlock Text="Fullscreen" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [Fullscreen], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
                                                     FontSize="14" />
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -91,7 +92,7 @@
                             </StackPanel>
 
                             <!-- PIP divTitle-->
-                            <UXControls:UXTextBlock Text="PIP" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [PipPbp.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
                                                     FontSize="14" />
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
@@ -151,14 +152,14 @@
                                     -->
                                 </commonCtrl:SplitItem>
 
-                                <UXControls:UXButton Content="Toggle between positions" Height="40" CornerRadius="2" Padding="12,8"
+                                <UXControls:UXButton Content="{Binding [PipPbp.7], Source={x:Static lang:LangHelper.Instance}}" Height="40" CornerRadius="2" Padding="12,8"
                                                      Margin="4,0" IsEnabled="{Binding IsPipItemSelected}"
                                                      ButtonType="Secondary" ButtonSemanticColorType="Neutral" Foreground="Gray"
                                                      Command="{Binding PipTogglePositionClickCommand}" />
                             </StackPanel>
 
                             <!-- PBP divTitle-->
-                            <UXControls:UXTextBlock Text="PBP" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [PipPbp.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
                                                     FontSize="14" />
 
                             <commonCtrl:SplitListView Name="spliListView_Pbp" Margin="0,4"
@@ -179,7 +180,7 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <UXControls:UXTextBlock Text="Video Swap" FontSize="20" Margin="4,16,0,20" />
+                            <UXControls:UXTextBlock Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
 
                             <!-- Main Input -->
                             <Grid Height="50">
@@ -189,7 +190,7 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Input 1 (Main)" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <!--
                                 <UXControls:UXComboBox Grid.Column="2"
                                 Width="184" Height="40" Margin="0,8"
@@ -222,7 +223,7 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Input 2 (Sub)" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <!--
                                 <UXControls:UXComboBox Grid.Column="2"
                                 Width="184" Height="40" Margin="0,8"
@@ -255,7 +256,7 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Input 3 (Sub)" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <!--
                                 <UXControls:UXComboBox Grid.Column="2"
                                 Width="184" Height="40" Margin="0,8"
@@ -288,7 +289,7 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Input 4 (Sub)" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <!--
                                 <UXControls:UXComboBox Grid.Column="2"
                                 Width="184" Height="40" Margin="0,8"
@@ -317,7 +318,7 @@
                                 IsEnabled="{Binding IsVideoSwapButtonEnabled, Mode=OneWay}"
                                 Visibility="{Binding IsVideoSwapButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" MouseLeftButtonDown="videoSwapButton_MouseLeftButtonDown">
 
-                            <UXControls:UXTextBlock Name="VideoSwapButtonText" Text="Video Swap"
+                            <UXControls:UXTextBlock Name="VideoSwapButtonText" Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}"
                                                     Foreground="#FFFFFF" FontSize="14"
                                                     VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>
@@ -330,7 +331,7 @@
                                 Visibility="{Binding IsUsbSwitchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                                 MouseLeftButtonDown="usbSwitchButton_MouseLeftButtonDown">
                             <UXControls:UXTextBlock Style="{StaticResource BlackButtonText}"
-                                                    Name="UsbSwitchButtonText" Text="USB Switch" />
+                                                    Name="UsbSwitchButtonText" Text="{Binding [PipPbp.6], Source={x:Static lang:LangHelper.Instance}}" />
                         </Border>
                     </StackPanel>
                 </StackPanel>
