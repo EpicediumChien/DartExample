@@ -58,10 +58,12 @@ namespace DDPM.UI.Module.Gaming
 
         public void OnActivated()
         {
+            DdpmCommonHelper.DeviceManagerSA.GamingChangeEvent += vm.GamingParamChang;
         }
 
         public void OnDeactivated()
         {
+            DdpmCommonHelper.DeviceManagerSA.GamingChangeEvent -= vm.GamingParamChang;
         }
 
         #endregion Event Handlers

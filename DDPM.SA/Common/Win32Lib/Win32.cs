@@ -261,33 +261,38 @@ namespace DDPM.Win32Lib
 
         public static void HideWinFromAltTab(IntPtr hWnd)
         {
-            int exStyle = (int)Win32Lib.Win32.GetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE);
+            int exStyle = (int)Win32Lib.Win32._GetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE);
 
             exStyle |= (int)Win32Lib.Win32.WindowStylesEx.WS_EX_TOOLWINDOW;
             Win32Lib.Win32.SetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE, (IntPtr)exStyle);
         }
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+        public static IntPtr _GetWindowLong(IntPtr hWnd, int nIndex)
+        {
+            return GetWindowLong(hWnd, nIndex);
+        }
 
         public static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {
             int error = 0;
             IntPtr result = IntPtr.Zero;
             // Win32 SetWindowLong doesn't clear error on success
-            SetLastError(0);
+            _SetLastError(0);
 
             if (IntPtr.Size == 4)
             {
                 // use SetWindowLong
-                Int32 tempResult = IntSetWindowLong(hWnd, nIndex, IntPtrToInt32(dwNewLong));
+                Int32 tempResult = _IntSetWindowLong(hWnd, nIndex, IntPtrToInt32(dwNewLong));
                 error = Marshal.GetLastWin32Error();
                 result = new IntPtr(tempResult);
             }
             else
             {
                 // use SetWindowLongPtr
-                result = IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
+                result = _IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
                 error = Marshal.GetLastWin32Error();
             }
 
@@ -300,10 +305,20 @@ namespace DDPM.Win32Lib
         }
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
-        public static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+        public static IntPtr _IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+            return IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
+        }
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
-        public static extern Int32 IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern Int32 IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong);
+        public static Int32 _IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong)
+        {
+            return IntSetWindowLong(hWnd, nIndex, dwNewLong);
+        }
 
         public static int IntPtrToInt32(IntPtr intPtr)
         {
@@ -311,28 +326,42 @@ namespace DDPM.Win32Lib
         }
 
         [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
-        public static extern void SetLastError(int dwErrorCode);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern void SetLastError(int dwErrorCode);
+        public static void _SetLastError(int dwErrorCode)
+        {
+            SetLastError(dwErrorCode);
+        }
 
         #region Read/Write INI file
 
         //Robert_Lin 2024-7-5 copy from VCPCorePlugin.cs, shared with other projects
         public static int IniReadInt(string sec, string key, int def, string pathName)
         {
-            return GetPrivateProfileInt(sec, key, def, pathName);
+            return _GetPrivateProfileInt(sec, key, def, pathName);
         }
 
         //Usage: int value=GetPrivateProfileInt("sectionName", "key", 3, @"C:\temp\a.ini");
-        [DllImport("kernel32")]
+        [DllImport("kernel32", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
+        private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
+        {
+            return GetPrivateProfileInt(section, key, def, filePath);
+        }
 
         //Uage:
         // //allocate string buffer, for large string you can allocate 4096 chars.
         // StringBuilder sb1=new StringBuilder(255);
         // int charsRet=GetPrivateProfileString("secName","key","defValue",sb1,sb1.Capacity,@"C:\temp\a.ini");
         // string result=sb1.ToString();
-        [DllImport("kernel32")]
-        public static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
-
+        [DllImport("kernel32", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+        public static int _GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath)
+        {
+            return GetPrivateProfileString(section, key, def, retVal, size, filePath);
+        }
         #endregion Read/Write INI file
     }
 }

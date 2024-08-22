@@ -69,7 +69,36 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return Task.FromResult(new DisplayPropertiesInfo());
         }
-
+        public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
+        {
+            try
+            {
+                _logs?.DebugMsg_1(nameof(GetDisplaySupportedProperties) + " start");
+                _displayPropertiesInfo = new DisplayPropertiesInfo();
+                {
+                    DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
+                    HDRSetting hDRSetting = new HDRSetting();
+                    Properties currentProperties = new Properties();
+                    displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
+                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
+                    {
+                        return Task.FromResult(new DisplaySupportedProperties());
+                    }
+                    displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
+                    displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
+                    {
+                    DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
+                    };
+                    _displayPropertiesInfo = (displayPropertiesInfo);
+                }
+                _logs?.DebugMsg_1(nameof(GetDisplaySupportedProperties) + " done");
+                return Task.FromResult(_displayPropertiesInfo.SupportedProperties);
+            }
+            catch (Exception)
+            {
+                return Task.FromResult(new DisplaySupportedProperties());
+            }
+        }
         /// <summary>
         /// 取得螢幕方向
         /// </summary>
@@ -78,13 +107,12 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         public Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName)
         {
             DEVMODE devMode = new DEVMODE();
-            if (EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
+            if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
             {
                 return Task.FromResult((DisplayOrientation)devMode.dmDisplayOrientation);
             }
             return Task.FromResult(DisplayOrientation.Unknow);
         }
-
         private bool RefreshDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType)
         {
             //Bruce 0605 修改註記:因讀取時間過長(約5000mS)，故修改軟體目前降至(約2800mS)
@@ -155,7 +183,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             DEVMODE devMode = new DEVMODE();
             int i = 0;
             bool found_Current = false, found_Recommended = false;
-            while (EnumDisplaySettings(monitorInfo.DisplayName, i, ref devMode))
+            while (_EnumDisplaySettings(monitorInfo.DisplayName, i, ref devMode))
             {
                 if (!(devMode.dmPelsWidth >= 800 && devMode.dmPelsHeight >= 600) &&
                     !(devMode.dmPelsWidth >= 600 && devMode.dmPelsHeight >= 800))
@@ -205,7 +233,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         private bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation)
         {
             DEVMODE devMode = new DEVMODE();
-            if (EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
+            if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
             {
                 properties = new Properties()
                 {
@@ -233,14 +261,14 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         {
             int numPathArrayElements = 0;
             int numModeInfoArrayElements = 0;
-            if (GetDisplayConfigBufferSizes(QDC.QDC_ALL_PATHS,
+            if (_GetDisplayConfigBufferSizes(QDC.QDC_ALL_PATHS,
                     out numPathArrayElements,
                     out numModeInfoArrayElements) == 0)
             {
                 DISPLAYCONFIG_PATH_INFO[] array = new DISPLAYCONFIG_PATH_INFO[numPathArrayElements];
                 DISPLAYCONFIG_MODE_INFO[] modeInfoArray = new DISPLAYCONFIG_MODE_INFO[numModeInfoArrayElements];
-                var queryDisplayConfig = QueryDisplayConfig(QDC.QDC_ALL_PATHS,
-                    out numPathArrayElements, array, out numModeInfoArrayElements, modeInfoArray,
+                var queryDisplayConfig = _QueryDisplayConfig(QDC.QDC_ALL_PATHS,
+                    ref numPathArrayElements, array, ref numModeInfoArrayElements, modeInfoArray,
                     DISPLAYCONFIG_TOPOLOGY_ID.Zero);
 
                 if (queryDisplayConfig == 0)
@@ -257,11 +285,11 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         deviceName.header.adapterId = adapterId;
                         deviceName.header.id = id;
                         deviceName.header.type = DISPLAYCONFIG_DEVICE_INFO_TYPE.DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
-                        if (DisplayConfigGetDeviceInfo(ref deviceName) == 0)
+                        if (_DisplayConfigGetDeviceInfo(ref deviceName) == 0)
                         {
                             string monitorFriendlyDeviceName = deviceName.monitorFriendlyDeviceName;
                             int edidProductCodeId = deviceName.edidProductCodeId;
-                            if (monitorFriendlyDeviceName != "" && monitorInfo.AliasDeviceName.ToUpper().StartsWith(monitorFriendlyDeviceName))
+                            if (monitorFriendlyDeviceName != "" && monitorInfo.AliasDeviceName.ToUpper().Contains(monitorFriendlyDeviceName.ToUpper()))
                             {
                                 DISPLAYCONFIG_TARGET_PREFERRED_MODE pref = default(DISPLAYCONFIG_TARGET_PREFERRED_MODE);
                                 pref.header.size = Marshal.SizeOf(typeof(DISPLAYCONFIG_TARGET_PREFERRED_MODE));
@@ -269,7 +297,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                                 pref.header.id = id;
                                 pref.header.type = DISPLAYCONFIG_DEVICE_INFO_TYPE
                                     .DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_PREFERRED_MODE;
-                                if (DisplayConfigGetDeviceInfo(ref pref) == 0)
+                                if (_DisplayConfigGetDeviceInfo(ref pref) == 0)
                                 {
                                     var Width = pref.width;
                                     var Height = pref.height;
@@ -313,7 +341,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
             DEVMODE deviceMode = new DEVMODE();
 
-            for (int i = 0; EnumDisplaySettings(deviceName, i, ref deviceMode) != false; i++)
+            for (int i = 0; _EnumDisplaySettings(deviceName, i, ref deviceMode) != false; i++)
             {
                 if (deviceMode.dmDisplayFrequency >= refreshRate &&
 
@@ -339,7 +367,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 DEVMODE devMode = new DEVMODE();
                 devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
 
-                if (EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
+                if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
                 {
                     int w = properties.Resolutions_Width, h = properties.Resolutions_High;
                     if (properties.Resolutions_Width <= 0 && properties.Resolutions_High <= 0)
@@ -413,7 +441,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         devMode.dmPelsHeight = h;
                     }
 
-                    int result = ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
+                    int result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
                     if (result == DISP_CHANGE_SUCCESSFUL)
                     {
                         return Task.FromResult(true);
@@ -497,7 +525,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             List<MonitorInfo> monitorInfos1 = monitorInfos.FindAll(o => o.DisplayName == info.DisplayName);
             if (monitorInfos1.Count >= 2)
             {
-                SetDisplayConfig(0, IntPtr.Zero, 0, IntPtr.Zero, (uint)(SetDisplayConfigFlags.SDC_APPLY | SetDisplayConfigFlags.SDC_TOPOLOGY_EXTEND));
+                _SetDisplayConfig(0, IntPtr.Zero, 0, IntPtr.Zero, (uint)(SetDisplayConfigFlags.SDC_APPLY | SetDisplayConfigFlags.SDC_TOPOLOGY_EXTEND));
                 Thread.Sleep(1000);
             }
         }
@@ -519,18 +547,18 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
                         watch.Start();
                         var info = new MonitorInfoEx();
-                        GetMonitorInfo(new HandleRef(null, hMonitor), info);
+                        _GetMonitorInfo(new HandleRef(null, hMonitor), info);
                         string DeviceName = new string(info.szDevice).Trim('\0');
                         //----
                         uint cPhysicalMonitors = 0;
-                        bool bSuccess = GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref cPhysicalMonitors);
+                        bool bSuccess = _GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref cPhysicalMonitors);
                         PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
-                        bSuccess = GetPhysicalMonitorsFromHMONITOR(hMonitor, cPhysicalMonitors, pPhysicalMonitors);
+                        bSuccess = _GetPhysicalMonitorsFromHMONITOR(hMonitor, cPhysicalMonitors, pPhysicalMonitors);
                         DISPLAY_DEVICE dd = new DISPLAY_DEVICE();
                         dd.cb = Marshal.SizeOf(dd);
                         //----
                         int realindex = -1;
-                        for (int jj = 0; EnumDisplayDevices(DeviceName, (uint)jj, ref dd, 0); jj++)
+                        for (int jj = 0; _EnumDisplayDevices(DeviceName, (uint)jj, ref dd, 0); jj++)
                         {
                             if ((dd.StateFlags & DisplayDeviceStateFlags.AttachedToDesktop) == 0)
                                 continue;
@@ -538,7 +566,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                             realindex++;
 
                             DEVMODE devmode = new DEVMODE();
-                            bool success = EnumDisplaySettings(DeviceName, ENUM_CURRENT_SETTINGS, ref devmode);
+                            bool success = _EnumDisplaySettings(DeviceName, ENUM_CURRENT_SETTINGS, ref devmode);
                             MonitorInfo _TargetMonitor = new MonitorInfo();
                             _TargetMonitor.DisplayName = DeviceName;
                             if (!string.IsNullOrWhiteSpace(_TargetMonitor.DisplayName))
@@ -557,7 +585,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
                 //MonitorEnumDelegate lpfnEnum1 = _Get_Monitors;
 
-                if ((!EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, _Get_Monitors, IntPtr.Zero)))
+                if ((!_EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, _Get_Monitors, IntPtr.Zero)))
                     throw new Win32Exception(Marshal.GetLastWin32Error());
 
                 _logs?.DebugMsg_1("_GetMonitors() ... done");

@@ -20,6 +20,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
+using DDPM.SA.Common.CLI;
 
 namespace DDPM.SA.Plugin.CLIManager
 {
@@ -234,6 +235,21 @@ namespace DDPM.SA.Plugin.CLIManager
             rst.ExitCode = (int)CLI_ExitCode.IT_Command_Not_Support;
             rst.command_guid_string = command_guid;
 
+            CLI_RESPONSE response = new CLI_RESPONSE();//for fail return using
+            response.TargetFeature = commandLineInput.TargetFeature;
+            response.Command = commandLineInput.Command;
+
+            //Get IT data before passing to function
+            DDPMITConfig data;
+            var tmp = RetrieveITSettings(out data);
+            if (tmp.code != (int)CLI_ExitCode.success)
+            {
+                response.Message = tmp.msg;
+                response.Result = "FAIL";
+                rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                return rst;
+            }
+
             if (commandLineInput.PluginsType.Equals("APP"))
             {                
                 // !!!
@@ -242,16 +258,14 @@ namespace DDPM.SA.Plugin.CLIManager
                 switch (commandLineInput.TargetFeature)
                 {
                     case "TELEMETRYCONSENT":
-                        //If return null means command isn't belong to IT, bypass to user SA(CLIProxy).
-                        rst = CLI_Analytics_Consent(commandLineInput, command_guid);
+                        //If return null means command isn't belong to IT, bypass to user SA(CLIProxy).                        
+                        rst = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                        //rst = CLI_Analytics_Consent(commandLineInput, command_guid);
                         return rst;
 
                     case "ENERGESAVER":
                         break;
                     default:
-                        CLI_RESPONSE response = new CLI_RESPONSE();
-                        response.TargetFeature = commandLineInput.TargetFeature;
-                        response.Command = commandLineInput.Command;
                         response.Message = $"Feature {commandLineInput.TargetFeature} doesn't support as global setting";
                         response.Result = "FAIL";
                         rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
@@ -260,9 +274,9 @@ namespace DDPM.SA.Plugin.CLIManager
             }
             else
             {
-                CLI_RESPONSE response = new CLI_RESPONSE();
-                response.TargetFeature = commandLineInput.TargetFeature;
-                response.Command = commandLineInput.Command;
+                //CLI_RESPONSE response = new CLI_RESPONSE();
+                //response.TargetFeature = commandLineInput.TargetFeature;
+                //response.Command = commandLineInput.Command;
                 response.Message = $"{commandLineInput.TargetFeature} doesn't support as global setting";
                 response.Result = "FAIL";
                 rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
@@ -383,7 +397,7 @@ namespace DDPM.SA.Plugin.CLIManager
         }
 
         //If return null means it's not IT command
-        private CLIEventResult CLI_Analytics_Consent(CommandLineInput commandLineInput, string action_guid)
+        /*private CLIEventResult CLI_Analytics_Consent(CommandLineInput commandLineInput, string action_guid)
         {
             //Expected format: /set -app=TelemetryConsent -value=on,lock / on,unlock / off,lock / off,unlock
 
@@ -503,7 +517,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 result.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
                 return result;
             }       
-        }
+        }*/
         #endregion
     }
 }

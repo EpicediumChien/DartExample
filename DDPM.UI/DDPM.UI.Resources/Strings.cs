@@ -11,8 +11,11 @@ namespace DDPM.UI.Common {
     public static class Strings {
     private static ResourceManager resManager = Resources.Resources.ResourceManager;
     private static string GetString(string key) {
-      string str= resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-      return System.Text.RegularExpressions.Regex.Unescape(str);
+
+            //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pl-PL");
+           // string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            string str = resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            return System.Text.RegularExpressions.Regex.Unescape(str);
     }
 
         public static readonly string AdaptiveLight = GetString("AdaptiveLight");
@@ -24,26 +27,26 @@ namespace DDPM.UI.Common {
         public static readonly string PollingRateInfoTip1 = "Number of times per second your mouse’s position is reported to system";
         public static readonly string PollingRateInfoTip2 = "Number of times per second mouse’s position reports to system. Connect via USB for higher polling rate.";
 
-        public static readonly string ButtonCustomizeCaption = "Button Customization";
-        public static readonly string ScrollWheelCaption = "Scroll Wheel Click";
-        public static readonly string ScrollTiltLCaption = "Scroll Tilt Left";
-        public static readonly string ScrollTiltRCaption = "Scroll Tilt Right";
-        public static readonly string SideButtonFCaption = "Side Button Forward";
-        public static readonly string SideButtonBCaption = "Side Button Back";
-        public static readonly string SuggestedActionsCaption = "Suggested Actions";
-        public static readonly string ProductivityActionsCaption = "Productivity Actions";
-        public static readonly string WindowsActionsCaption = "Windows Actions";
-        public static readonly string MultimediaActionsCaption = "Multimedia Actions";
-        public static readonly string AdvancedActionsCaption = "Advanced Actions";
-        public static readonly string Edit = "Edit";
-        public static readonly string Remove = "Remove";
-        public static readonly string SearchResultsCaption = "Search Results";
-        public static readonly string KeyCustomizeCaptionCaption = "Key Customization";
-        public static readonly string Customize = "Customize";
-        public static readonly string KeyCustomizeMessage = "To customize a key, click one of the outlined keys on the image to the left";
-        public static readonly string KeyCustomizeRestoreCaption = "Restore all actions to default";
-        public static readonly string ButtonCustomizeMessage = "To customize, click one of the outlined sections on the image to the left";
-        public static readonly string ButtonCustomizeRestoreCaption = "Restore to All Applictions";
+        public static readonly string ButtonCustomizeCaption = GetString("ButtonSettings.13");
+        public static readonly string ScrollWheelCaption = GetString("ButtonSettings.0");
+        public static readonly string ScrollTiltLCaption = GetString("ButtonSettings.1");
+        public static readonly string ScrollTiltRCaption = GetString("ButtonSettings.2");
+        public static readonly string SideButtonFCaption = GetString("ButtonSettings.3");
+        public static readonly string SideButtonBCaption = GetString("ButtonSettings.4");
+        public static readonly string SuggestedActionsCaption = GetString("ButtonSettings.7");
+        public static readonly string ProductivityActionsCaption = GetString("ButtonSettings.8");
+        public static readonly string WindowsActionsCaption = GetString("ButtonSettings.9");
+        public static readonly string MultimediaActionsCaption = GetString("ButtonSettings.10");
+        public static readonly string AdvancedActionsCaption = GetString("ButtonSettings.11");
+        public static readonly string Edit = GetString("Edit");
+        public static readonly string Remove = GetString("Remove");
+        public static readonly string SearchResultsCaption = GetString("ButtonSettings.12");
+        public static readonly string KeyCustomizeCaptionCaption = GetString("KeyCustomization.2");
+        public static readonly string Customize = GetString("Customize");
+        public static readonly string KeyCustomizeMessage = GetString("KeyCustomization.0");
+        public static readonly string KeyCustomizeRestoreCaption = GetString("KeyCustomization.1");
+        public static readonly string ButtonCustomizeMessage = GetString("ButtonSettings.5");
+        public static readonly string ButtonCustomizeRestoreCaption = GetString("ButtonSettings.6");
         public static readonly string PenButtonCustomizeRestoreCaption = "Restore to default actions";
         public static readonly string NullActionTooltip1 = "Click to Assign an action";
         public static readonly string NullActionTooltip2 = "Select an action from\nthe list on the right";
@@ -371,18 +374,21 @@ namespace DDPM.UI.Common {
     public static readonly string AddDeviceKnMnoDongleAlertHeadset = GetString("AddDevice.KnM.12");
     public static readonly string DockDongle0 = GetString("Dock.0");
     public static readonly string DockDongle1 = GetString("Dock.1");
-    public static readonly string HeadsetAudioSettings = GetString("Headset.0");
-    public static readonly string HeadsetAutomatedActions = GetString("Headset.1");
-    public static readonly string HeadsetDeviceSettings = GetString("Headset.2");
+    public static readonly string HeadsetAudioSettings = GetString("AudioSettings");
+    public static readonly string HeadsetAutomatedActions = GetString("AutomatedActions");
+    public static readonly string HeadsetDeviceSettings = GetString("DeviceSettings");
     public static readonly string SoundBarAudioPreset = GetString("Soundbar.0");
     public static readonly string SoundBarInteractions = GetString("Soundbar.1");
-    public static readonly string SoundBarAudioSettings = GetString("Soundbar.2");
+    public static readonly string SoundBarAudioSettings = GetString("AudioSettings");
     public static readonly string CameraControl = GetString("Camera.0");
     public static readonly string ColorandImage = GetString("Camera.1");
     public static readonly string PresenceDetection = GetString("Camera.2");
     public static readonly string Capture = GetString("Camera.3");
     public static readonly string Microphone = GetString("Camera.4");
     public static readonly string BrightnessErrorMsg0 = GetString("Brightness.0");
+    public static readonly string OK = GetString("OK");
+    public static readonly string LearnMore = GetString("LearnMore");
+    public static readonly string Collaboration = GetString("Collaboration");
 
     #endregion
     }

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.InputSource"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="850" d:DesignWidth="800">
     <UserControl.Resources>
@@ -23,7 +24,7 @@
 
                         <StackPanel>
                             <Grid Height="50">
-                                <UXControls:UXTextBlock AutomationProperties.Name="abc" Text="Current Input Source"
+                                <UXControls:UXTextBlock AutomationProperties.Name="abc" Text="{Binding [InputSource.0], Source={x:Static lang:LangHelper.Instance}}"
                                                         Foreground="White"
                                                         FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                 <!--
@@ -46,7 +47,7 @@
                             </Grid>
                             <Grid Height="50">
                                 <UXControls:UXTextBlock AutomationProperties.Name="TextDisplay1"
-                                                        Text="Rename Input Source and Assign USB Connectivity"
+                                                        Text="{Binding [InputSource.1], Source={x:Static lang:LangHelper.Instance}}"
                                                         Foreground="White" VerticalAlignment="Center"
                                                         FontSize="16" HorizontalAlignment="Left" />
                             </Grid>
@@ -58,18 +59,18 @@
                                 </Grid.ColumnDefinitions>
                                 <UXControls:UXTextBlock Grid.Column="0" AutomationProperties.Name="TextBody3"
                                                         Foreground="#FFA4B8CD" FontSize="14"
-                                                        Text="Input" TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
+                                                        Text="{Binding [InputSource.2], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                 <Grid Grid.Column="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="{Binding NameHWidth}" />
                                         <ColumnDefinition Width="{Binding USBHWidth}" />
                                     </Grid.ColumnDefinitions>
                                     <UXControls:UXTextBlock Grid.Column="{Binding NameHColumn}" x:Name="InputNameHeader"
-                                                            AutomationProperties.Name="TextBody3" Text="Input Name"
+                                                            AutomationProperties.Name="TextBody3" Text="{Binding [InputSource.3], Source={x:Static lang:LangHelper.Instance}}"
                                                             Foreground="#FFA4B8CD" FontSize="14"
                                                             TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                     <UXControls:UXTextBlock Grid.Column="1" x:Name="USBUpstreamHeader" Visibility="{Binding IsUSBH}"
-                                                            AutomationProperties.Name="TextBody3" Text="USB Upstream"
+                                                            AutomationProperties.Name="TextBody3" Text="{Binding [InputSource.4], Source={x:Static lang:LangHelper.Instance}}"
                                                             Foreground="#FFA4B8CD" FontSize="14"
                                                             TextBlockType="Body3" HorizontalAlignment="Left" Margin="8,8,8,8" />
                                 </Grid>

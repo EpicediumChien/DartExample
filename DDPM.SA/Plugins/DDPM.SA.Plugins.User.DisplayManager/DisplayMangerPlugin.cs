@@ -22,11 +22,13 @@ using Microsoft;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -112,6 +114,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// HDR status change event，return HDR status
         /// </summary>
         public event EventHandler<bool> HDRChangeEvent;
+        /// <summary>
+        /// gaming parameter changes event，return gaming parameter
+        /// </summary>
+        public event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
 
         #endregion
 
@@ -1716,6 +1722,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                 }
             }
+            //Bruce 0820
+            GamingChangeEventHandle(_VCPchangedEventArgs);
             OnVCPchanged(_VCPchangedEventArgs);
         }
 
@@ -2548,6 +2556,209 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        #endregion
+
+        #region Gaming
+        bool GamingChangeEventByPass = false;
+        public Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo)
+        {
+            GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
+            GetCurrentGamingParam(monitorInfo, ref gamingDisplayPropertiesInfo);
+            gamingDisplayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
+            gamingDisplayPropertiesInfo.SupportedProperties = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
+
+            string[] ss = monitorInfo.CapabilityString.Split("F4(");
+            if (ss.Length == 2)
+            {
+                ss = ss[1].Split(")");
+                ss = ss[0].Split(" ");
+                foreach (string temps in ss)
+                {
+                    if (!string.IsNullOrEmpty(temps))
+                    {
+                        string a = "0x" + temps;
+                        uint u = Convert.ToUInt32(a, 16);
+                        switch ((uint)(u & 0xf0))
+                        {
+                            case (uint)Gaming_Supported.GameEnhancementMode:
+                                gamingDisplayPropertiesInfo.Supported_GameEnhancementMode.Add((Gaming_GameEnhancementMode)(u & 0x0f));
+                                break;
+                            case (uint)Gaming_Supported.ResponseTime:
+                                gamingDisplayPropertiesInfo.Supported_ResponseTime.Add((Gaming_ResponseTime)(u & 0x0f));
+                                break;
+                            case (uint)Gaming_Supported.DarkStabilizer:
+                                gamingDisplayPropertiesInfo.Supported_DarkStabilizer.Add((Gaming_DarkStabilizer)(u & 0x0f));
+                                break;
+                            case (uint)Gaming_Supported.HDRType:
+                                gamingDisplayPropertiesInfo.Supported_HDRType.Add((Gaming_HDRType)(u & 0x0f));
+                                break;
+                        }
+                    }
+                }
+            }
+            ss = monitorInfo.CapabilityString.Split("EA(");
+            if (ss.Length == 2)
+            {
+                ss = ss[1].Split(")");
+                ss = ss[0].Split(" ");
+                foreach (string temps in ss)
+                {
+                    if (!string.IsNullOrEmpty(temps))
+                    {
+                        uint u = Convert.ToUInt32(temps, 16);
+                        if (Enum.IsDefined(typeof(Gaming_DualResolutionType), u))
+                        {
+                            gamingDisplayPropertiesInfo.Supported_DualResolutionType.Add((Gaming_DualResolutionType)u);
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(gamingDisplayPropertiesInfo);
+        }
+        public Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode)
+        {
+            GamingChangeEventByPass = true;
+            bool ret = false;
+            try
+            {
+                uint title = (uint)Gaming_Supported.GameEnhancementMode;
+                uint param = (uint)GameEnhancementMode;
+                ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+            }
+            catch
+            {
+
+            }
+            GamingChangeEventByPass = false;
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime)
+        {
+            GamingChangeEventByPass = true;
+            bool ret = false;
+            try
+            {
+                uint title = (uint)Gaming_Supported.ResponseTime;
+                uint param = (uint)ResponseTime;
+                ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+            }
+            catch
+            {
+
+            }
+            GamingChangeEventByPass = false;
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer)
+        {
+            GamingChangeEventByPass = true;
+            bool ret = false;
+            try
+            {
+                uint title = (uint)Gaming_Supported.DarkStabilizer;
+                uint param = (uint)DarkStabilizer;
+                ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+            }
+            catch
+            {
+
+            }
+            GamingChangeEventByPass = false;
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType)
+        {
+            GamingChangeEventByPass = true;
+            bool ret = false;
+            try
+            {
+                uint title = (uint)Gaming_Supported.HDRType;
+                uint param = (uint)HDRType;
+                ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
+            }
+            catch
+            {
+
+            }
+            GamingChangeEventByPass = false;
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfos, Gaming_DualResolutionType DualResolutionType)
+        {
+            try
+            {
+                if (DualResolutionType != Gaming_DualResolutionType.Unknow)
+                {
+                    string setParam = "USB-C Prioritization";
+                    string PrioritizationType = DualResolutionType == Gaming_DualResolutionType._4K ? "4K" : "FHD";
+                    if (!SetVCPCapability(monitorInfos, setParam, PrioritizationType).Result)
+                    {
+                        return Task.FromResult(false);
+                    }
+                    return Task.FromResult(true);
+                }
+                else
+                {
+                    return Task.FromResult(false);
+                }
+            }
+            catch
+            {
+                return Task.FromResult(false);
+            }
+        }
+        private bool GetCurrentGamingParam(MonitorInfo monitorInfo, ref GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
+        {
+            GamingChangeEventByPass = true;
+            bool ret = false;
+            try
+            {
+                ObjGetVCP ObjGetVCP;
+                ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_GameEnhancementMode)).Result;
+                if (ObjGetVCP.result == true)
+                {
+                    gamingDisplayPropertiesInfo.Current_GameEnhancementMode = (Gaming_GameEnhancementMode)(uint)ObjGetVCP.value;
+                }
+                ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_ResponseTime)).Result;
+                if (ObjGetVCP.result == true)
+                {
+                    gamingDisplayPropertiesInfo.Current_ResponseTime = (Gaming_ResponseTime)(uint)ObjGetVCP.value;
+                }
+                ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_DarkStabilizer)).Result;
+                if (ObjGetVCP.result == true)
+                {
+                    gamingDisplayPropertiesInfo.Current_DarkStabilizer = (Gaming_DarkStabilizer)(uint)ObjGetVCP.value;
+                }
+                ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_HDRType)).Result;
+                if (ObjGetVCP.result == true)
+                {
+                    gamingDisplayPropertiesInfo.Current_HDRType = (Gaming_HDRType)(uint)ObjGetVCP.value;
+                }
+                ObjGetVCP = GetVCPCapability(monitorInfo, "USB-C Prioritization").Result;
+                if (ObjGetVCP.result == true)
+                {
+                    gamingDisplayPropertiesInfo.Current_DualResolutionType = ObjGetVCP.value.ToString() == "4K" ? Gaming_DualResolutionType._4K : Gaming_DualResolutionType._FHD; ;
+                }
+                ret = true;
+            }
+            catch
+            {
+                ret = false;
+            }
+            GamingChangeEventByPass = false;
+            return ret;
+        }
+        private void GamingChangeEventHandle(VCPchangedEventArgs vcpchangedEventArgs)
+        {
+            if (!GamingChangeEventByPass && vcpchangedEventArgs.vcpcode == "F4")
+            {
+                GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
+                if (GetCurrentGamingParam(vcpchangedEventArgs.monitor, ref gamingDisplayPropertiesInfo))
+                {
+                    GamingChangeEvent?.AsyncFireAndForget(this, gamingDisplayPropertiesInfo, System.Threading.CancellationToken.None);
+                }
+            }
+        }
         #endregion
     }
 }

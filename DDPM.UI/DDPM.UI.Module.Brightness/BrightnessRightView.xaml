@@ -235,7 +235,7 @@
                                                     ButtonSemanticColorType="Neutral"
                                                     ButtonType="Secondary"
                                                     Click="Hotkey_Click"
-                                                    Content="Hotkeys"
+                                                    Content="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                                     CornerRadius="2"
                                                     Foreground="White" />
                                                 <UXControls:UXButton
@@ -244,7 +244,7 @@
                                                     ButtonSemanticColorType="Destructive"
                                                     ButtonType="Primary"
                                                     Click="Reset_Click"
-                                                    Content="Reset"
+                                                    Content="{Binding [Reset], Source={x:Static lang:LangHelper.Instance}}"
                                                     CornerRadius="2"
                                                     Foreground="White" />
                                             </StackPanel>
@@ -414,7 +414,7 @@
                                                 ButtonSemanticColorType="Neutral"
                                                 ButtonType="Secondary"
                                                 Click="Hotkey_Click"
-                                                Content="Hotkeys"
+                                                Content="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                                 CornerRadius="2"
                                                 Foreground="White" />
                                             <UXControls:UXButton
@@ -423,7 +423,7 @@
                                                 ButtonSemanticColorType="Destructive"
                                                 ButtonType="Primary"
                                                 Click="Reset_Click"
-                                                Content="Reset"
+                                                Content="{Binding [Reset], Source={x:Static lang:LangHelper.Instance}}"
                                                 CornerRadius="2"
                                                 Foreground="White" />
                                         </StackPanel>

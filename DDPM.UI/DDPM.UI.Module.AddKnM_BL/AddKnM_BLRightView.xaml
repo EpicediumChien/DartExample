@@ -79,7 +79,7 @@
                             <UXControls:UXTextBlock Name="txtStep3" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Width="250" Text="{Binding [AddDevice.KnM.4], Source={x:Static lang:LangHelper.Instance}}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="38,32,0,0" MouseLeftButtonDown="OpenWindowsSettings" Cursor="Hand">
-                            <UXControls:UXTextBlock Name="txtStep3_1" Margin="0" Style="{StaticResource TextStyle2}" Text="{Binding [AddDevice.KnM.5], Source={x:Static lang:LangHelper.Instance}}"/>
+                            <UXControls:UXTextBlock Name="txtStep3_1" Margin="0" Style="{StaticResource TextStyle2}" Text="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}"/>
                             <Image Margin="3,1,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/WindowsSettings.png" Stretch="Uniform"
                                    HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="16" Height="16" />
                         </StackPanel>

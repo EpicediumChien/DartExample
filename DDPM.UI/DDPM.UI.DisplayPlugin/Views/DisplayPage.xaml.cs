@@ -17,10 +17,10 @@ using DDPM.UI.Module.EzArrange;
 using DDPM.UI.Module.EzMemory;
 using DDPM.UI.Module.EzSettings;
 using DDPM.UI.Module.Gaming;
+using DDPM.UI.Module.GamingVisionEngine;
 using DDPM.UI.Module.InputSource;
 using DDPM.UI.Module.Kvm;
 using DDPM.UI.Module.PipPbp;
-using DDPM.UI.Module.VisionEngine;
 using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.UI.Plugin.DisplayPlugin.Interfaces;
 using Dell.Client.Framework.Common;
@@ -262,7 +262,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //If the monitor has Display Properties capability
-            if (moduleCapabilities.DisplayProperties)
+            if (moduleCapabilities.DisplayProperties && !moduleCapabilities.Gaming)
             {
                 sw.Restart();
 

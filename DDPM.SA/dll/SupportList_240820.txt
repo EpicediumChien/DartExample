@@ -23,7 +23,7 @@ Dell Gaming Monitors
  • G2723HN
  • G3223D
  • G3223Q
- • G2724D 
+ • G2724D
 Dell C Series Displays
  • C2422HE
  • C2423H
@@ -206,6 +206,11 @@ Dell S Series Monitors
  • S3423DWC
  • S2422HGA
 Dell E Series Monitors
+ • E2725HM
+ • E2425HM
+ • E2425HSM
+ • E2225HM
+ • E2225HSM
  • E1715S
  • E1916HV
  • E1920H
@@ -238,7 +243,7 @@ Dell E Series Monitors
  • E2225HS
  • E2425H
  • E2425HS
- • E2725H 
+ • E2725H
 Dell UltraSharp (U) Series Monitors
  • U2725QE
  • U3225QE

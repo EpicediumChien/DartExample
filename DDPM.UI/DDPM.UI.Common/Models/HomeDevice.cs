@@ -1153,7 +1153,7 @@ namespace DDPM.UI.Common.Models
                 if (MonitorInfo != null)
                 {
                     if (MonitorInfo.CapabilityDic != null)
-                        return MonitorInfo.CapabilityDic.ContainsKey("F5");
+                        return MonitorInfo.CapabilityDic.ContainsKey("F4");
                 }
                 return false;
             }

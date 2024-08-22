@@ -17,7 +17,6 @@ namespace DDPM.SA.Common.Security
         private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
         private string Issuer = "CN=Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US";
         private string[] Subject = new string[] { "content-cdn.dell.com", "*.dell.com" };
-
         public bool CheckFileCACertificate(string certificateFilePath)
         {
             // 讀取憑證檔案並創建 X509Certificate2 物件
@@ -134,21 +133,7 @@ namespace DDPM.SA.Common.Security
                 return false;
             }
             bool flag = false;
-            bool flag2 = false;
-            if (CheckIssuerAndSubject(certificate2))
-            {
-                Console.WriteLine("[PinPublicKey: CheckIssuerAndSubject] PASS");
-                return true;
-            }
-            if (!CheckCertificateIsVaild(certificate2))
-            {
-                Console.WriteLine("[ValidateCertificate] certificate2 is not Valid.");
-                return false;
-            }
-            Console.WriteLine("[PinPublicKey] Check Certificate Vaild");
-
-            //flag=CheckCertificateIsVaild(certificate2) && CheckIssuerAndSubject(certificate2);
-
+            flag = CheckCertificateIsVaild(certificate2) && CheckIssuerAndSubject(certificate2);
             return flag;
         }
         private bool CheckHTTPAvailable(string URL)
@@ -236,6 +221,7 @@ namespace DDPM.SA.Common.Security
             try
             {
                 bool isCNMatch = false;
+                Console.WriteLine("--------------CheckIssuerAndSubject------------------");
                 Console.WriteLine($"Issuer:{certificate.Issuer.ToString()}");
                 Console.WriteLine($"Subject:{certificate.Subject.ToString()}");
                 Console.WriteLine($"SubjectName:{certificate.SubjectName.ToString()}");
@@ -252,7 +238,6 @@ namespace DDPM.SA.Common.Security
                         isCNMatch = true;
                     }
                 }
-
                 if (isCNMatch)
                 {
                     Console.WriteLine("[CheckIssuerAndSubject] Is match.");
@@ -269,6 +254,7 @@ namespace DDPM.SA.Common.Security
                         Console.WriteLine("[CheckIssuerAndSubject] Not match.");
                     }
                 }
+                Console.WriteLine("--------------CheckIssuerAndSubject------------------");
                 return isCNMatch;
             }
             catch (Exception ex)
@@ -285,7 +271,7 @@ namespace DDPM.SA.Common.Security
             // List all certificates in the store
             foreach (X509Certificate2 cert in TrustedRoot)
             {
-                Console.WriteLine("--------------------------------");
+                Console.WriteLine("-------------Local Root-------------------");
                 Console.WriteLine("CN: " + ExtractCN(cert.Subject));
                 Console.WriteLine("Subject: " + cert.Subject);
                 Console.WriteLine("Issuer: " + cert.Issuer);
@@ -294,6 +280,7 @@ namespace DDPM.SA.Common.Security
                 Console.WriteLine("Expiration Date: " + cert.NotAfter);
                 Console.WriteLine("--------------------------------");
             }
+            Console.WriteLine("Proxy check end");
             return true; // Assuming the proxy certificate is valid
         }
         private string ExtractCN(string subject)
