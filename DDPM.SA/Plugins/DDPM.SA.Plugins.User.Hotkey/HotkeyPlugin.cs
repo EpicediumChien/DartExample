@@ -347,7 +347,8 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="hInstance">The handle you want to attach the event to, can be null</param>
         /// <param name="threadId">The thread you want to attach the event to, can be null</param>
         /// <returns>a handle to the desired hook</returns>
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId);
         public static  IntPtr _SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId)
         {
@@ -359,7 +360,8 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// </summary>
         /// <param name="hInstance">The hook handle that was returned from SetWindowsHookEx</param>
         /// <returns>True if successful, false otherwise</returns>
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnhookWindowsHookEx(IntPtr hInstance);
         public static  bool _UnhookWindowsHookEx(IntPtr hInstance)
         {
@@ -374,7 +376,8 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="wParam">The wparam.</param>
         /// <param name="lParam">The lparam.</param>
         /// <returns></returns>
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam);
         public static  int _CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam)
         {
@@ -386,14 +389,16 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// </summary>
         /// <param name="lpFileName">Name of the library</param>
         /// <returns>A handle to the library</returns>
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr LoadLibrary(string lpFileName);
         public static  IntPtr _LoadLibrary(string lpFileName)
         {
             return LoadLibrary(lpFileName);
         }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
         public static short _GetAsyncKeyState(System.Windows.Forms.Keys vKey)
         {

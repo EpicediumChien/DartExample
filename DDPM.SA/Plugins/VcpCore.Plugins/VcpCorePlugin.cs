@@ -93,15 +93,19 @@ namespace VcpCore.Plugins
         //1  If file exist (C:\temp\DDPMDebug.txt)
         //2  Read Ini File [DDPMDebug] key="IsOnlyGetDellMontor" (Note that not Mon(i)tor.miss  'i')
         //3  ini file value, 0=false, otherwise=true
-        [DllImport("kernel32")]
+        [DllImport("kernel32", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
-
+        private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
+        {
+            return GetPrivateProfileInt(section, key, def, filePath);
+        }
         private static bool IsOnlyDellMonitorForDebug()
         {
             const string iniPathName = @"C:\temp\DDPMDebug.txt";
             if (File.Exists(iniPathName))
             {
-                int iValue = GetPrivateProfileInt("DDPMDebug", "IsOnlyGetDellMontor", 1, iniPathName);
+                int iValue = _GetPrivateProfileInt("DDPMDebug", "IsOnlyGetDellMontor", 1, iniPathName);
                 return (iValue != 0);
             }
             return true;

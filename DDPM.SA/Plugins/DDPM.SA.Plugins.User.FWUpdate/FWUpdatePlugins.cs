@@ -56,11 +56,21 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     {
         //0531 Bruce 因應IL的現有安裝包修改底層邏輯，FWUpdatePlugins.cs有稍作大改
         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
+        {
+            return ShowWindow(hWnd, nCmdShow);
+        }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
+        private static bool _SetForegroundWindow(IntPtr hWnd)
+        {
+            return SetForegroundWindow(hWnd); 
+        }
 
         #region Private Members
 
@@ -861,9 +871,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     IntPtr mainWindowHandle = processes[0].MainWindowHandle;
                     // 將窗口最大化
-                    ShowWindow(mainWindowHandle, SW_SHOWMAXIMIZED);
+                    _ShowWindow(mainWindowHandle, SW_SHOWMAXIMIZED);
                     // 顯示到前景
-                    SetForegroundWindow(mainWindowHandle);
+                    _SetForegroundWindow(mainWindowHandle);
                 }
                 else
                 {

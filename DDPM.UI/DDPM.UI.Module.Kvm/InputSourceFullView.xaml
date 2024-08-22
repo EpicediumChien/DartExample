@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="#FF0D121A"
              d:DesignHeight="671" d:DesignWidth="1378">
     <UserControl.Resources>
@@ -74,7 +75,7 @@
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"
-                                                 Content="Next ⭢"  Margin="0"
+                                                 Content="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" ContentStringFormat="{}{0} ⭢"  Margin="0"
                                                  IconAnimation="Move" Width="164" Height="40"
                                                  Click="OpenMKFullView" Visibility="{Binding SetInput}" />
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"

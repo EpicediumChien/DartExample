@@ -153,8 +153,8 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
 
     public static class CommonApi
     {
-        [DllImport("Shcore.dll", SetLastError = true)]
-        internal static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
+        //[DllImport("Shcore.dll", SetLastError = true)]
+        //internal static extern int GetDpiForMonitor(IntPtr hmonitor, Monitor_DPI_Type dpiType, out uint dpiX, out uint dpiY);
 
         internal enum Monitor_DPI_Type : int
         {

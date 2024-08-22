@@ -6,13 +6,12 @@ namespace DDPM.Common
     public class ThumbprintHash
     {
 
-#if RELEASE
         /* Default 
-         99933f486c93fa39ea1f6b9d0d5c95a8c50511e9
-ed23ea1e2b1d71e21e921d97de8ea5cb564e0ec0
-21dfcd954923696a5548e851ff256370956b09e0
+            99933f486c93fa39ea1f6b9d0d5c95a8c50511e9
+            ed23ea1e2b1d71e21e921d97de8ea5cb564e0ec0
+            21dfcd954923696a5548e851ff256370956b09e0
          */
-        public static readonly byte[] DELL_Hash = new byte[]
+        private static readonly byte[] DELL_Hash = new byte[]
         {
             //99933f486c93fa39ea1f6b9d0d5c95a8c50511e9
             //99 93 3f 48 6c 93 fa 39 ea 1f
@@ -21,7 +20,7 @@ ed23ea1e2b1d71e21e921d97de8ea5cb564e0ec0
             0x6b, 0x9d, 0x0d, 0x5c, 0x95, 0xa8, 0xc5, 0x05, 0x11, 0xe9
         };
 
-        public static readonly byte[] DELL_Hash1 = new byte[]
+        private static readonly byte[] DELL_Hash1 = new byte[]
         {
             //ed23ea1e2b1d71e21e921d97de8ea5cb564e0ec0
             //ed 23 ea 1e 2b 1d 71 e2 1e 92
@@ -30,7 +29,7 @@ ed23ea1e2b1d71e21e921d97de8ea5cb564e0ec0
             0x1d, 0x97, 0xde, 0x8e, 0xa5, 0xcb, 0x56, 0x4e, 0x0e, 0xc0
         };
 
-        public static readonly byte[] DELL_Hash2 = new byte[]
+        private static readonly byte[] DELL_Hash2 = new byte[]
         {
             //21dfcd954923696a5548e851ff256370956b09e0
             //21 df cd 95 49 23 69 6a 55 48
@@ -39,7 +38,7 @@ ed23ea1e2b1d71e21e921d97de8ea5cb564e0ec0
             0xe8, 0x51, 0xff, 0x25, 0x63, 0x70, 0x95, 0x6b, 0x09, 0xe0
         };
 
-        public static readonly byte[] WST_Hash = new byte[]
+        private static readonly byte[] WST_Hash = new byte[]
         {
             //Wistron1 Thumbprint : 0c 38 4f 7d 61 27 68 94 6c 06 38 76 b7 42 85 95 61 56 c6 a1
             // 0c 38 4f 7d 61 27 68 94 6c 06
@@ -48,7 +47,7 @@ ed23ea1e2b1d71e21e921d97de8ea5cb564e0ec0
             0x38, 0x76, 0xb7, 0x42, 0x85, 0x95, 0x61, 0x56, 0xc6, 0xa1
         };
 
-        public static readonly byte[] WST2_Hash = new byte[]
+        private static readonly byte[] WST2_Hash = new byte[]
         {
 
             //Wistron2 Thumbprint : 841c87c9f5a679dcdba8a9c7f743847d157cd598
@@ -57,6 +56,13 @@ ed23ea1e2b1d71e21e921d97de8ea5cb564e0ec0
             0x84, 0x1c, 0x87, 0xc9, 0xf5, 0xa6, 0x79, 0xdc, 0xdb, 0xa8,
             0xa9, 0xc7, 0xf7, 0x43, 0x84, 0x7d, 0x15, 0x7c, 0xd5, 0x98
         };
-#endif
+
+        public static byte[][] certificateHash = {
+            ThumbprintHash.DELL_Hash,
+            ThumbprintHash.DELL_Hash1,
+            ThumbprintHash.DELL_Hash2,
+            ThumbprintHash.WST_Hash,
+            ThumbprintHash.WST2_Hash
+        };
     }
 }
