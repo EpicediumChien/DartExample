@@ -365,13 +365,14 @@ namespace DDPM.UI.Module.Color
         
             string targetPath = dropFileNames[0];
 
-            if (targetPath.EndsWith(".lnk")  || targetPath.EndsWith(".exe"))
+            //if (targetPath.EndsWith(".lnk")  || targetPath.EndsWith(".exe"))
+            if (targetPath.EndsWith(".exe"))
             {     
                 string strAppName = string.Empty;
                 string strFileName = string.Empty;
                 string strAppIcon = string.Empty;
 
-                if (targetPath.EndsWith(".lnk"))
+                /*if (targetPath.EndsWith(".lnk"))
                 {
                     // IWshRuntimeLibrary is in the COM library "Windows Script Host Object Model"
                     IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
@@ -381,7 +382,7 @@ namespace DDPM.UI.Module.Color
                     strAppName = System.IO.Path.GetFileNameWithoutExtension(shortcut.FullName);
                     //strFileName = System.IO.Path.GetFileName(shortcut.TargetPath);
                     strFileName = shortcut.TargetPath;
-                }
+                }*/
                
                 if (targetPath.EndsWith(".exe"))
                 {
