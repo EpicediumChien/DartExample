@@ -15,4 +15,8 @@
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="C:\Users\Wistronits.1302085-NB\.nuget\packages\dell.techhub.commodity.sdk\3.1.0-bfb389-beta\build\net8.0\debug\Dell.TechHub.AnalyticsDatatypes.pdb" />
+  </ItemGroup>
+
 </Project>

@@ -2680,6 +2680,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
     public async Task<int> GetDpiValueByDTP(string itemID) {
       return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(itemID));
     }
+
+    public Task SetDPIValueByDTP(string itemID, int newValue) {
+      writelog("DeviceMangerPlugin received SetDPIValueByDTP requested ...");
+      writelog($"Target DeviceID is {itemID}");
+      writelog($"Target DPI Value is {newValue}");
+      _DTPProxyPlugin.SetDPIValue(itemID, newValue);
+      return Task.FromResult(true);
+    }
+
     #endregion
 
     #endregion

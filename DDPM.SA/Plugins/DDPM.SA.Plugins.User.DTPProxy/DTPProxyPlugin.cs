@@ -114,7 +114,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
       }
     }
 
-    public void SetDPIValue(int newDPIValue, Guid deviceId) {
+    public void SetDPIValue(string itemID, int newValue) {
     }
 
     public void SetPrimaryMouseButton(string newMouseButton, Guid deviceId) {

@@ -10,6 +10,7 @@
 
 #endregion
 
+using System;
 using System.Threading.Tasks;
 using Dell.Client.Framework.Common;
 
@@ -18,6 +19,6 @@ namespace DDPM.SA.Common {
 
     Task<int> GetDpiValue(string itemID);
 
+    void SetDPIValue(string itemID, int newValue);
   }
-
 }
