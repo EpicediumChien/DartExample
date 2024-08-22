@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Media.Animation;
 
 namespace DDPM.Easy.Common
 {
@@ -108,5 +109,31 @@ namespace DDPM.Easy.Common
         public string FriendlyName { get; set; }
 
         #endregion FriendlyName
+
+        public bool IsEditable
+        {
+            get { return VM.IsEditable; }
+            set
+            {
+                VM.IsEditable = value;
+
+            }
+        }
+        public eSplitModes SplitMode
+        {
+            get => VM.SplitMode;
+            set
+            {
+                VM.SplitMode = value;
+                if (VM.SplitMode == eSplitModes.Work)
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        Opacity = 0.001;
+                    });
+                }
+            }
+        }
+
     }
 }
