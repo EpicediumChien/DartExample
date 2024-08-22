@@ -2361,6 +2361,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        public Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo)
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.NKVM_ChangeMonitorIndex(monitorInfo);
+            }
+            return Task.CompletedTask;
+        }
         #endregion
 
         #region EasyArrage

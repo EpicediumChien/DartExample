@@ -1,4 +1,6 @@
-﻿using System.IO.Pipes;
+﻿using System.Diagnostics;
+using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace VCPSDK
@@ -13,6 +15,8 @@ namespace VCPSDK
     }
     public class NamedPipeClient
     {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool GetNamedPipeServerProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
         private NamedPipeClientStream pipeClient;
         private CancellationTokenSource cancellationTokenSource;
         public delegate void VCPEventHandler(object sender, EventArgsjson eventArgsjson);
@@ -31,13 +35,15 @@ namespace VCPSDK
             if (!pipeClient.IsConnected)
             {
                 await pipeClient.ConnectAsync(timeout/*cancellationTokenSource.Token*/).ConfigureAwait(false);
+                if (!NamedPipeServerSecurity(pipeClient))
+                {
+                    Disconnect();
+                }
             }
             //Task.Run(() => ReadAsync(), cancellationTokenSource.Token);
         }
         public async Task NKVMtoDDPM(string message) //NKVM->DDPM json file
-        {
-            //await ConnectAsync();
-
+        { 
             try
             {
                 Console.WriteLine("NKVMCommand : " + message);
@@ -53,8 +59,6 @@ namespace VCPSDK
         }
         public async Task<string> DDPMtoNKVM() //DDPM->NKVM json file
         {
-            //await ConnectAsync();
-
             byte[] buffer = new byte[2048];
             int bytesRead = await pipeClient.ReadAsync(buffer, 0, buffer.Length/*, cancellationTokenSource.Token*/).ConfigureAwait(false);
             //VCPResponse(Encoding.UTF8.GetString(buffer, 0, bytesRead));
@@ -78,6 +82,19 @@ namespace VCPSDK
         public void VCPEvent(string response)
         {
             DDPMEvent?.Invoke(this, new EventArgsjson(response));
+        }
+        private bool NamedPipeServerSecurity(NamedPipeClientStream pipeServer)
+        {
+            if (GetNamedPipeServerProcessId(pipeServer.SafePipeHandle.DangerousGetHandle(), out uint pid))
+            {
+                Console.WriteLine("pid: " + pid);
+                Process process = Process.GetProcessById((int)pid);
+                string filePath = process.MainModule.FileName;
+                Console.WriteLine("File path: " + filePath);
+                //check file path security
+            }
+            return true; // temporarily
+            //return false;
         }
     }
 }
