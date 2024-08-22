@@ -12,17 +12,19 @@ namespace DDPM.UI.Module.GamingVisionEngine
         public VisionEngineRightView()
         {
             InitializeComponent();
-        }
 
-        private void CallWindowsSettings_Click(object sender, RoutedEventArgs e)
-        {
-            DdpmCommonHelper.DeviceManagerSA.CallWindowsDisplaySetting();
         }
 
         private void RefreshUI()
         {
             VisionEngineViewModel vm = (VisionEngineViewModel)DataContext;
             vm.RefreshUI();
+        }
+
+        private void UXCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            VisionEngineViewModel vm = (VisionEngineViewModel)DataContext;
+            vm.VisionEngine_Debouncer.Debounce(null);
         }
     }
 }
