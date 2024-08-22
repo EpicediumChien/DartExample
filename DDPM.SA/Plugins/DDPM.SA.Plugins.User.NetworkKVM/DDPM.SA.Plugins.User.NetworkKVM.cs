@@ -795,7 +795,7 @@ namespace NetworkKVM.Plugins
 
         private void CreateNamedPipe()
         {
-#if DEBUG
+#if DEBUG_NKVM
             string namedPipeName = "VCPNamedPipe";
 #else
             string namedPipeName = Guid.NewGuid().ToString("D");
