@@ -41,6 +41,9 @@ using Dell.Client.Framework.Security.Interfaces;
 using Dell.Client.Framework.Security;
 using System.Security;
 using DDPM.SA.Common.Security;
+using DDPM.SA.Common.Method;
+using System.Dynamic;
+using WinCopies.DotNetFix;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -101,8 +104,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         private List<DeviceType>? _DeviceTypeList;
 
-        private long? _size = null;
-        private FileStream? _fileStream = null;
+        private Download? download = null;
 
         //安裝更新檔使用的命名管道伺服器
         private NamedPipeStreamServer? _namedPipeServer;
@@ -514,47 +516,40 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             try
             {
-                CertificateCheck caCheck = new CertificateCheck();
+                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
+                string saveFolderName = Guid.NewGuid().ToString();
+                string savePath;
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+                if (string.IsNullOrEmpty(installPath))
+                {
+                    savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                }
+                else
+                {
+                    savePath = installPath;
+                }
+                if (!Directory.Exists(savePath))
+                {
+                    Directory.CreateDirectory(savePath);
+                }
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
+                    _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " start");
                     _notificationStr = "";
                     _fWUpdateInfo = fwUpdateInfos[i];
                     _updateErrorCode = FWUErrorCode.Unknow;
                     fwUpdateInfos[i].FWUErrorCode = _updateErrorCode;
-                    _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + nameof(DownloadAndInstall) + " start");
                     if (CheckSameDevice(fwUpdateInfos[i]))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.ConnectMultipleDocks;
-                        break;
+                        continue;
                     }
                     if (CheckPCBattery(fwUpdateInfos[i]))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.PCBatteryTooLow;
-                        break;
+                        continue;
                     }
                     string url = fwUpdateInfos[i].ServerPath;
-                    /*暫時註解 因現在使用測試伺服器故先將檢查CA註解
-                    if (!caCheck.CheckURLCACertificate(url))//0815 Bruce Add Security
-                    {
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
-                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " CA Fail");
-                        continue;
-                    }*/
-                    //0627 Bruce 因CLI可能會自訂路徑顧新增傳入參數，變新增判斷
-                    string savePath;
-                    if (string.IsNullOrEmpty(installPath))
-                    {
-                        savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + fwUpdateInfos[i].FileSavepath + "\\";
-                    }
-                    else
-                    {
-                        savePath = installPath;
-                    }
-                    if (!Directory.Exists(savePath))
-                    {
-                        Directory.CreateDirectory(savePath);
-                    }
                     string FolderInfo;
                     if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
                     {
@@ -565,43 +560,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _downloadTimer = new Timer();
                     _downloadTimer.Interval = 1000;
                     _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
-
-                    //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
-                    HttpClientHandler handler = new HttpClientHandler();
-                    handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
-                                                                                                                        //Should enable server certificate validation on this SSL/TLS connection before formal release
-
-                    HttpClient client = new HttpClient(handler);
-                    client.Timeout = TimeSpan.FromMinutes(1);
-                    // 發送 HTTP GET 請求到指定的 URL
-                    HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                    _downloadTimer.Start();
+                    download = new Download(_logs);
+                    string downloadInfo = "";
                     // 將儲存路徑與從 URL 中提取的檔案名稱組合
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                    // 從 URL 中取得回應標頭
-                    var header = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                    // 從回應標頭中提取檔案大小
-                    _size = header.Content.Headers.ContentLength;
-                    // 取得包含 URL 內容的串流
-                    var stream = client.GetStreamAsync(url).Result;
-                    // 建立檔案串流以將下載的內容寫入
-                    _fileStream = File.Create(_installationFileStoragePath);
-                    _downloadTimer.Start();
-                    // 將串流的內容複製到檔案中
-                    stream.CopyToAsync(_fileStream).Wait();
+                    bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo);
                     _downloadTimer.Stop();
-                    _fileStream.Close();
-                    string exeFilePath;
-                    if (!Unzip(_fileStream.Name, _fileStream.Name.Substring(0, _fileStream.Name.Length - 4), out exeFilePath))
-                    {
-                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile:" + exeFilePath);
-                        continue;
-                    }
-
-                    //測試用，OTATestClient(模擬正常安裝包流程)
-                    //exeFilePath = "C:\\FW_SW_ICC_Update\\OTATestSampleCode From_IndiLogic\\src\\OTATestClient\\bin\\Debug\\OTATestClient.exe";
-
-                    _fileStream = null;
                     FWUpdateInfo fWUpdateInfo_Status = new FWUpdateInfo()
                     {
                         DeviceName = fwUpdateInfos[i].DeviceName,
@@ -610,6 +575,39 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         ProcessProgress = 100,
                     };
                     sendMessageToEvent(fWUpdateInfo_Status);
+                    if (!downloadRet)
+                    {
+                        if (downloadInfo.Equals("CA check fail"))
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
+                        }
+                        else if (downloadInfo.Equals("Network fail"))
+                        {
+                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
+                        }
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail");
+                        continue;
+                    }
+                    string extractPath = Path.Combine(savePath + Path.GetFileName(url).Substring(0, Path.GetFileName(url).Length - 4));
+                    if (!Directory.Exists(extractPath))
+                    {
+                        Directory.CreateDirectory(extractPath);
+                    }
+                    FolderInfo = "";
+                    if (!DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo))//0815 Bruce Add Security
+                    {
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
+                        continue;
+                    }
+                    string exeFilePath;
+                    Unzip unzip = new Unzip(_logs);
+                    if (!unzip.ExecuteUnzip(_installationFileStoragePath, extractPath, out exeFilePath))
+                    {
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile");
+                        continue;
+                    }
                     //暫時註解 等待check sha512和CA
                     //if (caCheck.CheckFileCA(exeFilePath))
                     {
@@ -625,6 +623,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         NotificationFWupdate("Error", _notificationStr);
                     }
                 }
+                // 檢查資料夾是否存在
+                if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
+                {
+                    // 刪除資料夾及其所有內容
+                    Directory.Delete(savePath, true);
+                }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " done");
                 if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                 {
@@ -635,7 +639,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelayFWUpdateInfoPackage, System.Threading.CancellationToken.None);
                 }
-
                 _IsShowNotify = true;
                 _isDefer = false;
                 _isForce = false;
@@ -656,76 +659,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 return Task.FromResult(fwUpdateInfos);
             }
         }
-
-        private bool Unzip(string zipFilePath, string extractPath, out string exeFilePath)
-        {
-            try
-            {
-                _logs.DebugMsg_1(nameof(Unzip) + " start");
-                // 如果目標目錄不存在，則建立目錄
-                if (!Directory.Exists(extractPath))
-                {
-                    Directory.CreateDirectory(extractPath);
-                }
-                string FolderInfo;
-                if (!DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo))//0815 Bruce Add Security
-                {
-                    exeFilePath = FolderInfo;
-                    return false;
-                }
-                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
-                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
-                var constraints = new LeafCertConstraints(hashes)
-                {
-                    RequireAllCerts = false
-                };
-                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
-                {
-                    Constraints = constraints
-                };
-                using (FileLock fileLock = new FileLock(zipFilePath, PathCheckOption.None, lockNow: true))
-                {
-                    AclChecker aclChecker = new AclChecker();
-                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
-                    {
-                        throw new SecurityException($"File ACLs for {zipFilePath} contained unprivileged write access for one or more identity");
-                    }
-                    /*暫時註解 因還沒有簽章
-                    var result = verifier.Verify(fileLock);
-                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
-                    {
-                        throw new SecurityException($"Signature validation failed for {zipFilePath}! Received the following return code {result}");
-                    }*/
-                    // 解壓縮zip檔案，並覆蓋現有檔案
-                    ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
-                    _logs.DebugMsg_1(nameof(Unzip) + " done");
-                    exeFilePath = GetExeFilePath(extractPath);
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logs.DebugMsg_1(nameof(Unzip) + "Unzip fail: " + ex.Message);
-                exeFilePath = "";
-                return false;
-            }
-        }
-
-        private string GetExeFilePath(string directory)
-        {
-            // 列舉資料夾中的所有 .exe 檔案
-            string[] exeFiles = Directory.GetFiles(directory, "*.exe");
-            // 如果存在 .exe 檔案，則返回第一個 .exe 檔案的路徑
-            if (exeFiles.Length > 0)
-            {
-                return exeFiles[0];
-            }
-            else
-            {
-                return "";
-            }
-        }
-
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>
@@ -733,21 +666,24 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="e"></param>
         private void DownloadTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            if (_fileStream != null)
+            if (download != null)
             {
-                if (_size == null)
+                if (download.DownloadFileStream != null)
                 {
-                    _size = 1;
+                    if (download.DownloadFileSize == null)
+                    {
+                        download.DownloadFileSize = 1;
+                    }
+                    double d = Math.Round(((double)download.DownloadFileStream.Length / (double)download.DownloadFileSize) * 100.0, 2);
+                    FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                    {
+                        DeviceName = _fWUpdateInfo.DeviceName,
+                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                        ProcessName = "Downloading",
+                        ProcessProgress = d,
+                    };
+                    sendMessageToEvent(fWUpdateInfo);
                 }
-                double d = Math.Round(((double)_fileStream.Length / (double)_size) * 100.0, 2);
-                FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
-                {
-                    DeviceName = _fWUpdateInfo.DeviceName,
-                    TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                    ProcessName = "Downloading",
-                    ProcessProgress = d,
-                };
-                sendMessageToEvent(fWUpdateInfo);
             }
         }
 
@@ -1205,8 +1141,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 resetState();
                 _updateErrorCode = FWUErrorCode.FirmwareUpdateTimeout;
-                _notificationStr = $"{_fWUpdateInfo.DeviceName} E6:Timeout error";
-                _logs.DebugMsg_1("Get E6:Firmware update timeout");
+                _notificationStr = $"{_fWUpdateInfo.DeviceName} E7:Timeout error";
+                _logs.DebugMsg_1("Get E7:Firmware update timeout");
             }
         }
 
@@ -1356,12 +1292,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 _notificationStr = $"{_fWUpdateInfo.DeviceName} E5:Timeout error";
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E5:Firmware update timeout");
                             }
-                            //else if (errorCodeNode.InnerText == "E6")
-                            //{
-                            //    _updateErrorCode = FWUErrorCode.FirmwareUpdateTimeout;
-                            //    _notificationStr = $"{_fWUpdateInfo.DeviceName} E6:Timeout error";
-                            //    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E6:Firmware update timeout");
-                            //}
+                            else if (errorCodeNode.InnerText == "E6")
+                            {
+                                _updateErrorCode = FWUErrorCode.FirmwareUpdateTimeout;
+                                _notificationStr = $"{_fWUpdateInfo.DeviceName} E6:Timeout error";
+                                _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get E6:Firmware update timeout");
+                            }
                             else
                             {
                                 _updateErrorCode = FWUErrorCode.Unknow;
