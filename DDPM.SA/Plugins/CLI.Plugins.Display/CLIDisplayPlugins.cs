@@ -138,29 +138,28 @@ namespace DDPM.CLI.Plugins.Display
                     }
                 }
             }
-            if (commandLineInput != null || commandLineInput.ServiceTag.Count > 0)
+            if (commandLineInput != null && commandLineInput.ServiceTag.Count > 0)
             {
                 bool is_match = false;
                 foreach (string tag in commandLineInput.ServiceTag)
                 {
-                    foreach (MonitorInfo monitor in _AllInfoMonitors)
+                    int idx = _AllInfoMonitors.FindIndex(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    if (idx < 0)
                     {
-                        if (!(monitor.edid.ServiceTag.ToUpper().Equals(tag.ToUpper())))
+                        CLI_RESPONSE rsp = new CLI_RESPONSE()
                         {
-                            CLI_RESPONSE rsp = new CLI_RESPONSE()
-                            {
-                                Command = commandLineInput.Command,
-                                TargetFeature = commandLineInput.TargetFeature,
-                                Result = "FAIL",
-                                Message = $"Invalid Service Tag: {tag}"
-                            };
-                            Trace.WriteLine($"sting is not the same");
-                            result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
-                            result.ExitCode = (int)CLI_ExitCode.invalid_servicetag;
-                        }
-                        else
-                            is_match = true;
+                            Command = commandLineInput.Command,
+                            TargetFeature = commandLineInput.TargetFeature,
+                            Result = "FAIL",
+                            Message = $"Invalid Service Tag: {tag}"
+                        };
+                        foreach (MonitorInfo monitor in _AllInfoMonitors)
+                            Trace.WriteLine($"Service tag in Monitor {monitor.edid.ServiceTag} ");
+                        result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
+                        result.ExitCode = (int)CLI_ExitCode.invalid_servicetag;
                     }
+                    else
+                        is_match = true;
                 }
                 if (!is_match)
                     return false;
@@ -576,7 +575,13 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
-
+                case "ACTIVEHOURS":
+                    {
+                        var ret = ActiveHours(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
                 case "APPLYCONFIGURATION":
                     {
                         var ret = ApplyConfigurationX(devMgr, commandLineInput);
@@ -5001,12 +5006,12 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         switch (value.ToUpper())
                         {
-                            case "LOCK":
+                            case "OSDLOCK":
                                 value = "Lock";
                                 r = devMgr.SetVCPCapability(monitor, 0xCA, 0x01).Result;
                                 break;
 
-                            case "UNLOCK":
+                            case "OSDUNLOCK":
                                 value = "UnLock";
                                 r = devMgr.SetVCPCapability(monitor, 0xCA, 0x02).Result;
                                 break;
@@ -5040,12 +5045,12 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         switch (value.ToUpper())
                         {
-                            case "LOCK":
+                            case "OSDLOCK":
                                 value = "Lock";
                                 r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x01).Result;
                                 break;
 
-                            case "UNLOCK":
+                            case "OSDUNLOCK":
                                 value = "UnLock";
                                 r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x02).Result;
                                 break;
@@ -5083,12 +5088,12 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             switch (value.ToUpper())
                             {
-                                case "LOCK":
+                                case "OSDLOCK":
                                     value = "Lock";
                                     r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
                                     break;
 
-                                case "UNLOCK":
+                                case "OSDUNLOCK":
                                     value = "UnLock";
                                     r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
                                     break;
@@ -8450,7 +8455,95 @@ namespace DDPM.CLI.Plugins.Display
             }
             return ((int)CLI_ExitCode.success, output);
         }
+        private (int code, string result) ActiveHours(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "SET" || commandLineInput.Options.Count != 0)
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax.";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+            else
+            {
+                return ActiveHoursX(devMgr, commandLineInput).Result;
+            }
+        }
 
+        private async Task<(int code, string result)> ActiveHoursX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            ObjGetVCP rc = new ObjGetVCP();
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+            {
+                foreach (MonitorInfo monitor in _AllInfoMonitors)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    cli_Response.Value = (rc.value).ToString() + " hours";
+
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = "N/A";
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            else
+            {
+                foreach (string idx in commandLineInput.DeviceIndex)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base(idx);
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                    cli_Response.Value = (rc.value).ToString() + " hours";
+
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = "N/A";
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+                foreach (string tag in commandLineInput.ServiceTag)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    foreach (MonitorInfo monitor in tmp)
+                    {
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.AliasDeviceName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                        rc = GetVCPCode(devMgr, monitor, "0xC0").Result;
+                        cli_Response.Value = (rc.value).ToString() + " hours";
+
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
+            }
+            return ((int)CLI_ExitCode.success, output);
+        }
         private (int code, string result) ApplyConfigurationX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command == "GET" || commandLineInput.Options.Count == 0)
@@ -8970,8 +9063,8 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (status.ToUpper())
             {
-                case "MUTE": return "1";
-                case "UNMUTE": return "2";
+                case "OSDDISABLE": return "1";
+                case "OSDENABLE": return "2";
                 default: return "1";
             }
         }
@@ -9393,9 +9486,9 @@ namespace DDPM.CLI.Plugins.Display
                         case "SPEAKERVOLUME":
                             if (monitor.CapabilityDic.ContainsKey("62"))
                             {
-                                if (commandLineInput.Options[0].Option_Value == "MUTE")
+                                if (commandLineInput.Options[0].Option_Value == "OSDDISABLE")
                                     retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFF").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
-                                if (commandLineInput.Options[0].Option_Value == "UNMUTE")
+                                if (commandLineInput.Options[0].Option_Value == "OSDENABLE")
                                     retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFE").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
                             }
                             else
@@ -9456,9 +9549,9 @@ namespace DDPM.CLI.Plugins.Display
                         case "SPEAKERVOLUME":
                             if (monitor.CapabilityDic.ContainsKey("62"))
                             {
-                                if (commandLineInput.Options[0].Option_Value == "MUTE")
+                                if (commandLineInput.Options[0].Option_Value == "OSDDISABLE")
                                     retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFF").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
-                                if (commandLineInput.Options[0].Option_Value == "UNMUTE")
+                                if (commandLineInput.Options[0].Option_Value == "OSDENABLE")
                                     retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFE").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
                             }
                             else
@@ -9518,9 +9611,9 @@ namespace DDPM.CLI.Plugins.Display
                             case "SPEAKERVOLUME":
                                 if (monitor.CapabilityDic.ContainsKey("62"))
                                 {
-                                    if (commandLineInput.Options[0].Option_Value == "MUTE")
+                                    if (commandLineInput.Options[0].Option_Value == "OSDDISABLE")
                                         retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFF").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
-                                    if (commandLineInput.Options[0].Option_Value == "UNMUTE")
+                                    if (commandLineInput.Options[0].Option_Value == "OSDENABLE")
                                         retcode = SetVCPCode(devMgr, monitor, "0x62", "0xFE").Result; // speaker volume 0xff:mute 0xfe:unmute level:0x00-0x64
                                 }
                                 else
