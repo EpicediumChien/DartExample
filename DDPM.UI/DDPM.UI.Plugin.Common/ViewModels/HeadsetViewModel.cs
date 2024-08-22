@@ -85,6 +85,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 case "WH3024"://Airmax
                     //Page 1
+                    _controlTheNoiseIHearPageShow = false;//Fix PIMS-PIMS-294568
                     _configureMyAudioModesPageShow = true;
                     //Page 2
                     _automatedActionsAnswerCallPageShow = true;

@@ -123,6 +123,7 @@ namespace DDPM.Subagent.User
                     new Guid(IDs.DDPM_CLI_Proxy_Plugin),
                     new Guid(IDs.CLI_Plugin_Display),
                     new Guid(IDs.CLI_Plugin_Peripherals),
+                    new Guid(IDs.DDPM_ACTIONS_MANGER_PLUGIN_ID),
                 },
                 /*
                  * This is the name used in the log file
