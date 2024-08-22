@@ -267,7 +267,7 @@ namespace DDPM.Win32Lib
             Win32Lib.Win32.SetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE, (IntPtr)exStyle);
         }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
         public static IntPtr _GetWindowLong(IntPtr hWnd, int nIndex)
@@ -342,7 +342,7 @@ namespace DDPM.Win32Lib
         }
 
         //Usage: int value=GetPrivateProfileInt("sectionName", "key", 3, @"C:\temp\a.ini");
-        [DllImport("kernel32")]
+        [DllImport("kernel32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
         private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
@@ -355,7 +355,7 @@ namespace DDPM.Win32Lib
         // StringBuilder sb1=new StringBuilder(255);
         // int charsRet=GetPrivateProfileString("secName","key","defValue",sb1,sb1.Capacity,@"C:\temp\a.ini");
         // string result=sb1.ToString();
-        [DllImport("kernel32")]
+        [DllImport("kernel32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
         public static int _GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath)

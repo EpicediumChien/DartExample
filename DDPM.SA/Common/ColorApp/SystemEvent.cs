@@ -91,7 +91,7 @@ namespace DDPM.ColorApp
 
             #region Methods
 
-            [DllImport("user32.dll")]
+            [DllImport("user32.dll", SetLastError = true)]
             [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             private static extern IntPtr GetForegroundWindow();
             public static IntPtr _GetForegroundWindow()
@@ -99,7 +99,7 @@ namespace DDPM.ColorApp
                 return GetForegroundWindow();
             }
 
-            [DllImport("user32.dll")]
+            [DllImport("user32.dll", SetLastError = true)]
             [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             private static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
             public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
@@ -107,7 +107,7 @@ namespace DDPM.ColorApp
                 return GetWindowThreadProcessId(hWnd, out nProcessId);
             }
 
-            [DllImport("user32.dll")]
+            [DllImport("user32.dll", SetLastError = true)]
             [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             private static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
                 WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
@@ -117,7 +117,7 @@ namespace DDPM.ColorApp
                 return SetWinEventHook(eventMin, eventMax, hmodWinEventProc, lpfnWinEventProc, idProcess, idThread, dwFlags);
             }
 
-            [DllImport("user32.dll")]
+            [DllImport("user32.dll", SetLastError = true)]
             [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
             private static extern bool UnhookWinEvent(IntPtr hWinEventHook);
             public static bool _UnhookWinEvent(IntPtr hWinEventHook)

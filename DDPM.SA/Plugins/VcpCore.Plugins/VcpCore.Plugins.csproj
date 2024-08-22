@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
 	  <ProjectReference Include="..\..\Common\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
 	</ItemGroup>
 

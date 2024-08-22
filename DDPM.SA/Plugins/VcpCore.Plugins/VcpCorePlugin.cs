@@ -32,6 +32,9 @@ using VcpCore.Common;
 using VcpCore.Interfaces;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
+using IDs = VcpCore.Common.IDs;
+using DDPM.SA.Common;
+using System.Diagnostics;
 
 namespace VcpCore.Plugins
 {
@@ -90,15 +93,19 @@ namespace VcpCore.Plugins
         //1  If file exist (C:\temp\DDPMDebug.txt)
         //2  Read Ini File [DDPMDebug] key="IsOnlyGetDellMontor" (Note that not Mon(i)tor.miss  'i')
         //3  ini file value, 0=false, otherwise=true
-        [DllImport("kernel32")]
+        [DllImport("kernel32", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
-
+        private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
+        {
+            return GetPrivateProfileInt(section, key, def, filePath);
+        }
         private static bool IsOnlyDellMonitorForDebug()
         {
             const string iniPathName = @"C:\temp\DDPMDebug.txt";
             if (File.Exists(iniPathName))
             {
-                int iValue = GetPrivateProfileInt("DDPMDebug", "IsOnlyGetDellMontor", 1, iniPathName);
+                int iValue = _GetPrivateProfileInt("DDPMDebug", "IsOnlyGetDellMontor", 1, iniPathName);
                 return (iValue != 0);
             }
             return true;
@@ -955,7 +962,18 @@ namespace VcpCore.Plugins
                             ro = GetCurrentColorPreset(monitorInfoX);
                         }
                         break;
-
+                    case nameof(Gaming_GameEnhancementMode):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x1F) & 0x0f);
+                        break;
+                    case nameof(Gaming_ResponseTime):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x2F) & 0x0f);
+                        break;
+                    case nameof(Gaming_DarkStabilizer):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x3F) & 0x0f);
+                        break;
+                    case nameof(Gaming_HDRType):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x4F) & 0x0f);
+                        break;
                     default:
                         {
                             byte fucCode = TranslatorVCPctrCode(func);
@@ -1945,6 +1963,7 @@ namespace VcpCore.Plugins
                     }
                     catch (Exception ex)
                     {
+                        Debug.WriteLine(ex.InnerException);
                         _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection exception : " + ex.Message);
                         return false;
                     }

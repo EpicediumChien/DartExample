@@ -63,7 +63,7 @@ namespace DDPM.SA.Common
 
         public const int SpiSetMouseButtonLeft = 23;
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SwapMouseButton([param: MarshalAs(UnmanagedType.Bool)] bool fSwap);
