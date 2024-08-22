@@ -28,7 +28,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     public class EAPlugin : BaseAgentPlugin, IDisposableObservable, IEasyArrangeService
     {
         #region Private Members
-
+        //Plugin strings
         private const string pluginName = "EAPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements EasyArrange Plugin functions.";
@@ -57,10 +57,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private readonly object _PluginConditionLock = new object();
 
-        #endregion Private Members
-
         public static readonly Ioc PluginIoc = new();
         private bool _isConfigured = false;
+
+        #endregion Private Members
+
 
         #region Constructor
 
@@ -69,12 +70,21 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _agent = agent;
             _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
             _log = Log;
-            //_logs = new Logs(Log, pluginName);
-            //_logs.DebugMsg($"[EAPlugin] is constructed, IsAdministrator={_IsAdministrator}.", true);
+            _vmArrange.Log = Log;
             _log?.Info($"[{pluginName}] is constructed.");
         }
-
-        #endregion Constructor
+        #endregion ctor
+ 
+        #region Log/Debug messages
+        private void LogInfo(string msg)
+        {
+            _log?.Info(msg);
+        }
+        private void ConsoleWriteLine(string msg)
+        {
+            Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + "[EAPlugin] " + msg);
+        }
+        #endregion Log/Debug messages
 
         #region IDisposableObservable Support
 
@@ -103,8 +113,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion IDisposableObservable Support
 
-
-
         #region Overriding methods
 
         //The method is called by Agent when the plugin is starting
@@ -114,9 +122,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
             //Monitoring plugins state
+            //2024-8-13 Robert_Lin, EAPlugin has fixed .NET 8 issues, so uncomment below statements.
             // 2024-08-06 Elie, Mask InitializeDeviceManagerPlugin() function to skip .NET 8 for more than two monitor cause exception issue. ==> System.IO.IOException: 'Cannot locate resource 'eaworkwindow.baml'.'
-            //InitializeDeviceManagerPlugin();
-            //InitializeDisplayManagerPlugin();
+            InitializeDeviceManagerPlugin();
+            InitializeDisplayManagerPlugin();
         }
 
         #endregion Overriding methods
@@ -132,7 +141,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (e.ChangedPlugins.Any() == false)
                 return;
 
-            _log?.Info($"[{pluginName} @PluginManagerOnPluginsStarted, ChangedPlugins.Count={e.ChangedPlugins.Count}");
+            _log?.Info($"@ PluginManagerOnPluginsStarted, ChangedPlugins.Count={e.ChangedPlugins.Count}");
             //foreach(IFrameworkPlugin plugin in e.ChangedPlugins)
             //{
             //    _log?.Info($"      Name=[{plugin.} @PluginManagerOnPluginsStarted, ChangedPlugins.Count={e.ChangedPlugins.Count}");
@@ -154,7 +163,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 DeviceManagerCondition.PluginConditionChangeHandler += OnDeviceManagerPluginConditionChangeHandler;
                 GetCurrentDeviceManagerPluginCondition();
             }
-            _log?.Info($"[{pluginName}] Initializing DeviceManager plugin.");
+            _log?.Info($"Initializing DeviceManager plugin.");
         }
 
         private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
@@ -172,23 +181,26 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        _log?.Info($"[{pluginName}] DeviceManager plugin is in an error condition");
+                        _log?.Info($"DeviceManager plugin is in an error condition");
                         _deviceManagerPluginCondition = pluginCondition;
                         _deviceManagerPluginUsable = false;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
-                        _log?.Info($"[{pluginName}] DeviceManager plugin is in a started condition");
+                        _log?.Info($"DeviceManager plugin is in a started condition");
                         _deviceManagerPluginCondition = pluginCondition;
                         _deviceManagerPluginUsable = true;
 
-                        ConfigureServices();
-                        //Only after DisplayManager is ready to use, will start the EasyArrange service
-                        EABroker_Start();
+                        if (CheckIfReadyToStartEABorker())
+                        {
+                            ConfigureServices();
+                            //Only after DisplayManager is ready to use, will start the EasyArrange service
+                            EABroker_Start();
+                        }
                     }
                     else
                     {
-                        _log?.Info($"[{pluginName}] DeviceManager plugin is in others condition");
+                        _log?.Info($"DeviceManager plugin is in others condition");
                     }
                 }
             });
@@ -221,18 +233,23 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        _log?.Info($"[{pluginName}] {nameof(GetCurrentDisplayManagerPluginCondition)} - Display ManagerPlugin is in an error condition");
+                        _log?.Info($"{nameof(GetCurrentDisplayManagerPluginCondition)} - Display ManagerPlugin is in an error condition");
                         _displayManagerPluginCondition = pluginCondition;
                         _displayManagerPluginUsable = false;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
-                        _log?.Info($"[{pluginName}] {nameof(GetCurrentDisplayManagerPluginCondition)} -Display ManagerPlugin is in a started condition");
+                        _log?.Info($"{nameof(GetCurrentDisplayManagerPluginCondition)} -Display ManagerPlugin is in a started condition");
                         _displayManagerPluginCondition = pluginCondition;
                         _displayManagerPluginUsable = true;
 
-                        //Only after DisplayManager is ready to use, will start the EasyArrange service
-                        EABroker_Start();
+                        if (CheckIfReadyToStartEABorker())
+                        {
+                            ConfigureServices();
+                            //Only after DisplayManager is ready to use, will start the EasyArrange service
+                            EABroker_Start();
+                        }
+
                     }
                 }
             });
@@ -243,7 +260,47 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             GetCurrentDisplayManagerPluginCondition();
         }
 
-        #endregion PluginManager related
+        private object _lockCheckIfReadyToStartEABorker = new object();
+        /// <summary>
+        /// Determine if all depended DDPM.SA plugins are ready to start EABroker, which will initiate
+        /// EasyArrange subagent to run.
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckIfReadyToStartEABorker()
+        {
+            lock (_lockCheckIfReadyToStartEABorker)
+            {
+                if (!_displayManagerPluginUsable || !_deviceManagerPluginUsable)
+                {
+                    //Either DisplayManager or DeviceManager is not ready
+                    _log?.Info("@ CheckIfReadyToStartEABorker: DisplayManager or DeviceManager not ready.");
+                    return false;
+                }
+                if (_isEaBrokerStarted)
+                {
+                    //EABroker is started already
+                    _log?.Info("@ CheckIfReadyToStartEABorker: EABroker is started already.");
+                    return false;
+                }
+
+                List<MonitorInfo>? monitors = GetMonitors();
+                if (monitors == null)
+                {
+                    _log?.Info("@ CheckIfReadyToStartEABorker: Monitors is null.");
+                    return false;
+                }
+                if (!monitors.Any())
+                {
+                    _log?.Info("@ CheckIfReadyToStartEABorker: Monitors is empty.");
+                    return false;
+                }
+
+                _log?.Info($"@ CheckIfReadyToStartEABorker: Monitor count={monitors.Count}");
+                return true;
+            }
+        }
+        
+        #endregion
 
         #region IEasyArrangeService Implementation
 
@@ -253,9 +310,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             set => _vmArrange.IsFunctionEnabled = value;
         }
 
-        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings=null)
         {
-            EAWorkWindow? workWin = FindWorkWindowByMonitorInfo(monitorInfo);
+            EAWorkWindow? workWin = _vmArrange.FindWorkWindowByDisplayName(monitorInfo.DisplayName);
+                                    //FindWorkWindowByMonitorInfo(monitorInfo);
+
             if (workWin == null)
             {
                 return Task.FromResult(false);
@@ -293,7 +352,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Thread thread = new Thread(() =>
             {
                 Console.WriteLine("[EAPlugin] RequestEditSplit().");
-                UI_RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
+                UI_RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings); 
                 System.Windows.Threading.Dispatcher.Run();
             });
 
@@ -399,6 +458,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Thread thread = new Thread(() =>
             {
                 UI_EditCommand(monitorInfo, args);
+                //EAEditWindow editWindow = new EAEditWindow();
+                //if (!editWindow.SetInputArg(args, false))
+                //    editWindow.Show();
+
+                //SaveCustomWindow saveCustomWindow = new SaveCustomWindow();
+                //saveCustomWindow.Show();
+
                 System.Windows.Threading.Dispatcher.Run();
             });
 
@@ -442,21 +508,32 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Stop WorkWindow fade out animation
 
-            //Create a new EAEditWindow
-            if (_editWindow != null)
-            {
-                _editWindow.Close();
-                _editWindow = null;
-            }
-            EAEditWindow editWin = new EAEditWindow();
+            //if (_editWindow != null)
+            //{
+            //    _editWindow.SetInputArg(args);
+            //    _editWindow.Left = 0;
+            //    _editWindow.Top = 0;
+            //    _editWindow.Width = 1024;
+            //    _editWindow.Height = 768;
+            //}
 
+            ////Create a new EAEditWindow
+            //if (_editWindow != null)
+            //{
+            //    _editWindow.Close();
+            //    _editWindow = null;
+            //}
+
+            //_editWindow = new EAEditWindow();
+            //EAEditWindow editWin = new EAEditWindow();
+
+            _eaArgs = args;
             //Register callback for EditReturn from the EditWindow
             //editWin.EditCompleted += (object? sender, string result) =>
-            editWin.EditReturn += (object? sender, EAArgs args) =>
+            _editWindow.EditReturn += (object? sender, EAArgs args) =>
             {
                 _vmArrange.IsWorkUIEnabled = true;
-                _editWindow?.Close();
-                _editWindow = null;
+                _editWindow?.Hide();
 
                 if (EditReturn != null)
                 {
@@ -473,22 +550,25 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 dpiX = (double)varX / (double)96;
             }
 
-            if (!editWin.SetInputArg(args, isVertical))
+            if (!_editWindow.SetInputArg(args, scr))
             {
                 if (EditStarted != null)
                 {
-                    EditStarted(this, editWin.LastError);
+                    EditStarted(this, _editWindow.LastError);
                 }
                 return false;
             }
 
-            editWin.Left = scr.WorkingArea.Left / (double)dpiX;
-            editWin.Top = scr.WorkingArea.Top / (double)dpiX;
-            editWin.Width = scr.WorkingArea.Width / (double)dpiX;
-            editWin.Height = scr.WorkingArea.Height / (double)dpiX;
+            if (_saveCustomWindow != null)
+            {
+                _saveCustomWindow.SetInputArg(args, scr);
+                
+                
+            }
 
-            editWin.Show();
-            _editWindow = editWin;
+
+            //_editWindow.Show();
+            //_editWindow = editWin;
 
             //Signal EditStart event
             if (EditStarted != null)
@@ -498,8 +578,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return true;
         }
-
-        #endregion IEasyArrangeService Implementation
+        #endregion
 
         #region EA Broker
 
@@ -507,34 +586,40 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// A <Display.DeviceName, WorkWindow> dictionary, each display will allcate a WorkWindow to serve it.
         /// where Display.DeviceName example: "\\.\DISPLAY1"
         /// </summary>
-        private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
+        //private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
 
         private readonly object _eaBrokerLock = new object();
         private bool _isEaBrokerStarted = false;
         private ArrangeVM _vmArrange = new ArrangeVM();
         private EAEditWindow? _editWindow = null;
+        private SaveCustomWindow? _saveCustomWindow = null;
+        private EAArgs _eaArgs;
 
         public void EABroker_Start()
         {
-            lock (_eaBrokerLock)
+            lock (_eaBrokerLock) 
             {
                 if (!_isEaBrokerStarted)
                 {
                     _isEaBrokerStarted = true;
                 }
-                Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + "[EAPlugin] EABroker_Start.");
+                ConsoleWriteLine("EABroker Start.");
+                _vmArrange.DisplayManager = _displayManagerPlugin;
 
-                Thread thread = new Thread(() =>
-                {
-                    InitWorkWindows();
-                    WinEventHook_Start();
-                    System.Windows.Threading.Dispatcher.Run();
-                });
+                InitInfoWindow();
+                
+               // InitWorkWindows();
+                //UI_RefreshWorkWindows();
 
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.Start();
+                InitEditWindow();
+                InitSaveCustomWindow();
 
-                Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+                //if (_displayManag_erPlugin != null)
+                //    _displayManagerPlugin.Displaychanged += _displayManagerPlugin_Displaychanged;
+
+                //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+                _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+                _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
             }
         }
 
@@ -544,9 +629,214 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + "[EAPlugin] EABroker_Stop.");
 
-                WinEventHook_Stop();
-                ClearWorkWindows();
+                //WinEventHook_Stop();
+                _vmArrange.ClearWorkWindows();
 
+                System.Windows.Threading.Dispatcher.Run();
+
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+
+            //if (_displayManagerPlugin != null)
+            //    _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
+            _agent.UnregisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+        }
+
+
+
+
+
+
+        //It should be call once DeviceManagerSA & DisplayManager are loaded
+        private void ConfigureServices()
+        {
+            if (_isConfigured)
+                return;
+            _isConfigured = true;
+
+            ServiceCollection services = new ServiceCollection();
+            if (_log != null)
+                services.AddSingleton(_log);
+            if (_deviceManagerPlugin != null)
+                services.AddSingleton(_deviceManagerPlugin);
+            if (_displayManagerPlugin != null)
+                services.AddSingleton(_displayManagerPlugin);
+
+            PluginIoc.ConfigureServices(services.BuildServiceProvider());
+
+        }
+
+        #endregion
+
+        #region Display Changed event
+        //private void _displayManagerPlugin_Displaychanged(object? sender, DisplaychangedEventArgs e)
+        //{
+        //    _log?.Info($"@ OnDisplaychanged, ChangedCount={e.count}");
+        //    Invoke_RefreshWorkWindows();
+        //}
+
+        private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
+        {
+            _log?.Info($"@ OnDisplaychanged");
+            //UI_RefreshWorkWindows();
+            InitWorkWindows();
+        }
+        #endregion
+
+        #region InfoWindow
+        private InfoWindow _infoWindow;
+        private void InitInfoWindow()
+        {
+            if (_infoWindow == null)
+            {
+                Thread thread = new Thread(() =>
+                {
+                    _infoWindow = new InfoWindow();
+                    _infoWindow.DataContext = _vmArrange;
+                    _infoWindow.Show();
+
+                    //InfoWindow w = new InfoWindow();
+                    //w.Show();
+                    //InfoWindow w1 = new InfoWindow();
+                    //w1.Show();
+
+                    System.Windows.Threading.Dispatcher.Run();
+                });
+
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+            }
+        }
+        #endregion
+
+        #region WorkWindows
+        private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
+        private EAWorkWindow _tempWorkWindow;
+
+        //Run in background thread
+        private void InitWorkWindows()
+        {
+            //Double check, it should be true if it has ran into Broker_Start()
+            if (!_displayManagerPluginUsable)
+            {
+                LogInfo("@ InitWorkWindows, exit due to _displayManagerPluginUsable is false.");
+                return;
+            }
+            LogInfo("@ InitWorkWindows");
+
+            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            var varX = (int)dpiXProperty.GetValue(null, null);
+            double dpiX = (double)varX / (double)96;
+            LogInfo($"  * dpiX={dpiX}");
+
+            //GetMonitors() will return all supported Monitors (Dell Monitors)
+            List<MonitorInfo>? monitors = GetMonitors();
+            if (monitors == null)
+            {
+                LogInfo($"  * Monitors is null.");
+                return;
+            }
+            if (monitors.Count <= 0)
+            {
+                LogInfo($"  * Monitors is empty.");
+                return;
+            }
+            LogInfo($"  * Monitors.Count={monitors.Count}");
+
+            //Default SplitCtrl, in official release it sould be read from per-monitor settings file
+            int cellCount = 0;
+            char splitKey = 'A';
+            List<double> settings = new List<double>();
+
+            _vmArrange.ClearWorkWindows();
+
+            //Rebuild WorkWindows in a temp list
+            Dictionary<string, EAWorkWindow> tempWorkWindows = new Dictionary<string, EAWorkWindow>();
+
+            //Refresh with new AllScreens
+            LogInfo($"  * Refreshing WorkWindows... AllScreens.Count={System.Windows.Forms.Screen.AllScreens.Length}");
+            int idxScr = 0;
+            int addCount = 0;
+            foreach (Screen scr in System.Windows.Forms.Screen.AllScreens)
+            {
+                bool isVertical = (scr.Bounds.Width < scr.Bounds.Height);
+                double left = scr.WorkingArea.Left / (double)dpiX;
+                double top = scr.WorkingArea.Top / (double)dpiX;
+                double width = scr.WorkingArea.Width / (double)dpiX;
+                double height = scr.WorkingArea.Height / (double)dpiX;
+                LogInfo($"    - Screen[{idxScr}] {scr.DeviceName}   IsPrimary={scr.Primary}");
+                LogInfo($"      WorkingArea: ({left},{top}){width}x{height}");
+
+                //Add new WorkWindow
+
+                //Find all monitors which have the same DeviceName (DisplayName)
+                List<MonitorInfo> attachedMonitors = monitors.FindAll(x => x.DisplayName.Equals(scr.DeviceName, StringComparison.OrdinalIgnoreCase));
+
+                //If there is no any Dell Monitor attached on this Screen, then do not need to create a
+                // Workwindow for it
+                if ((attachedMonitors == null) || (attachedMonitors.Count <= 0))
+                {
+                    LogInfo($"      No attached Monitor for this screen => No WorkWindow to creat for it.");
+                    continue;
+                }
+
+                //Dump attached monitors
+                LogInfo($"    - AttachedMonitors");
+                int idxMonitor = 0;
+                foreach (MonitorInfo mi in attachedMonitors)
+                {
+                    LogInfo($"        [{mi.Index}] Name={mi.AliasDeviceName}]");
+                    idxMonitor++;
+                }
+
+                //Create a WorkWindow work for it
+                //
+                Thread thread = new Thread(() =>
+                {
+                    EAWorkWindow workWin = new EAWorkWindow(_vmArrange, scr, attachedMonitors);
+
+                    workWin.Left = left;
+                    workWin.Top = top;
+                    workWin.Width = width;
+                    workWin.Height = height;
+                    workWin.SetWorkingSplit(cellCount, splitKey, settings);
+                    workWin.Show();
+                    tempWorkWindows.Add(scr.DeviceName, workWin);
+                    LogInfo($"        New WorkWindow created and Shown.");
+
+                    System.Windows.Threading.Dispatcher.Run();
+                });
+
+                addCount++;
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                idxScr++;
+            } //foreach(Screen scr)
+
+            //Wait for all WorkWindows are added into tempWorkWindows
+            while (tempWorkWindows.Count < addCount)
+            {
+                Thread.Sleep(10);
+            }
+            _vmArrange.WorkWindows = tempWorkWindows;
+        }
+
+        //private void ClearWorkWindows()
+        //{
+        //    foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+        //    {
+        //        keyValuePair.Value.Close();
+        //    }
+        //    _workWindows.Clear();
+        //}
+
+        private void Invoke_RefreshWorkWindows()
+        {
+            Thread thread = new Thread(() =>
+            {
+                UI_RefreshWorkWindows();
                 System.Windows.Threading.Dispatcher.Run();
             });
 
@@ -554,87 +844,248 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             thread.Start();
         }
 
-        private void InitWorkWindows()
+        private void UI_RefreshWorkWindows()
         {
-            int isOnlyDellMonitor = Win32Lib.Win32.IniReadInt("DDPMDebug", "EA.IsOnlyDellMonitor", 1, @"C:\temp\DDPMDebug.txt");
-            if (!_deviceManagerPluginUsable)
+            //Double check, it should be true if it has ran into Broker_Start()
+            if (!_displayManagerPluginUsable)
             {
-                _log?.Error($"[{pluginName}] @InitWorkWindows, DeviceManager is not usable.");
+                LogInfo("@ UI_RefreshWorkWindows, exit due to _displayManagerPluginUsable is false.");
                 return;
             }
+            LogInfo("@ UI_RefreshWorkWindows");
+
+            //Case 4 => failed
+            //Move into InfoWindow, use Dispathcer to invoke => return is failed
+            //_infoWindow.RefreshWorkWindows();
 
             var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
             var varX = (int)dpiXProperty.GetValue(null, null);
             double dpiX = (double)varX / (double)96;
-            Log?.Info($"[{pluginName}] @InitWorkWindows, ScreenDpi={dpiX}");
+            LogInfo($"  * dpiX={dpiX}");
 
-            List<MonitorInfo> allMonitors = _deviceManagerPlugin.GetMonitors().Result;
-            Log?.Info($"[{pluginName}] @InitWorkWindows, Monitors.Count={allMonitors.Count}");
-            Log?.Info($"[{pluginName}] @InitWorkWindows, Screens.Count={System.Windows.Forms.Screen.AllScreens.Length}");
-
-            ClearWorkWindows();
-
-            if (allMonitors.Count <= 0)
+            //GetMonitors() will return all supported Monitors (Dell Monitors)
+            List<MonitorInfo>? monitors = GetMonitors();
+            if (monitors == null)
             {
-                Log?.Info($"[{pluginName}] @InitWorkWindows, No any Monitor found.");
+                LogInfo($"  * Monitors is null.");
                 return;
             }
-
-            int idxScreen = 0;
-            foreach (Screen s in System.Windows.Forms.Screen.AllScreens)
+            if (monitors.Count <= 0)
             {
-                bool isVertical = (s.Bounds.Width < s.Bounds.Height);
-                Log?.Info($"[{pluginName}] @InitWorkWindows, Screen[{idxScreen}]:DeviceName=[{s.DeviceName}],WorkArea=[{FormatRectangle(s.WorkingArea)}]");
+                LogInfo($"  * Monitors is empty.");
+                return;
+            }
+            LogInfo($"  * Monitors.Count={monitors.Count}");
 
-                //Find all monitors which have the same DeviceName (DisplayName)
-                List<MonitorInfo> attachedMonitors = allMonitors.FindAll(x => x.DisplayName.Equals(s.DeviceName, StringComparison.OrdinalIgnoreCase));
+            //Default SplitCtrl, in official release it sould be read from per-monitor settings file
+            int cellCount = 2;
+            char splitKey = 'A';
+            List<double> settings = new List<double>();
 
-                Log?.Info($"[{pluginName}] @InitWorkWindows, Attached Monitors: Count=[{attachedMonitors.Count}]:");
-                int dellMoniorCount = 0;
-                foreach (MonitorInfo mi in attachedMonitors)
+            //_vmArrange.ClearWorkWindows();
+
+            //Rebuild WorkWindows in a temp list
+            Dictionary<string, EAWorkWindow> tempWorkWindows = new Dictionary<string, EAWorkWindow>();
+
+            //Refresh with new AllScreens
+            LogInfo($"  * Refreshing WorkWindows... AllScreens.Count={System.Windows.Forms.Screen.AllScreens.Length}");
+            int idxScr = 0;
+            int addCount = 0;
+            foreach (Screen scr in System.Windows.Forms.Screen.AllScreens)
+            {
+                bool isVertical = (scr.Bounds.Width < scr.Bounds.Height);
+                double left = scr.WorkingArea.Left / (double)dpiX;
+                double top = scr.WorkingArea.Top / (double)dpiX;
+                double width = scr.WorkingArea.Width / (double)dpiX;
+                double height = scr.WorkingArea.Height / (double)dpiX;
+                LogInfo($"    - Screen[{idxScr}] {scr.DeviceName}   IsPrimary={scr.Primary}");
+                LogInfo($"      WorkingArea: ({left},{top}){width}x{height}");
+
+                EAWorkWindow workWin = null;
+
+                //Try to find if the WorkWindow work for current scr is exist
+                if (_vmArrange.WorkWindows.TryGetValue(scr.DeviceName, out workWin))
                 {
-                    Log?.Info($"        [{mi.Index}] Name={mi.AliasDeviceName}, IsDellMonitor=[{mi.IsDellMonitor}]");
-                    if (mi.IsDellMonitor)
-                        dellMoniorCount++;
+                    LogInfo($"      Changed: (Exist => refresh WorkingArea)");
+                    //The scr have an existing WorkWindow, no need to create new
+                    //Just to renew some screen properties
+                    //workWin.Left = left;
+                    //workWin.Top = top;
+                    //workWin.Width = width;
+                    //workWin.Height = height;
+                    workWin.ChangeWindowPos(left, top, width, height);
+
+                    //Refresh screen orientation (not been implemented)
+
+                    //Add to temp workwindows
+                    addCount++;
+                    tempWorkWindows.Add(scr.DeviceName, workWin);
+                    //Remove from old dictionary
+                    _vmArrange.RemoveWorkWindow(scr.DeviceName);
                 }
-                if (dellMoniorCount <= 0)
+                else
                 {
-                    Log?.Info($"[{pluginName}] @InitWorkWindows, No any Dell Monitor attahced at [{s.DeviceName}]");
-                    if (isOnlyDellMonitor == 1)
+                    //Add new WorkWindow
+                    LogInfo($"      Changed: (Added => Add new WorkWindow)");
+
+                    //Cannot find the WorkWindow which is work for scr => scr is a new screen
+                    //We will need to create a new WorkWindow work for scr
+                    List<MonitorInfo> attachedMonitors = monitors.FindAll(x => x.DisplayName.Equals(scr.DeviceName, StringComparison.OrdinalIgnoreCase));
+
+                    //If there is no any Dell Monitor attached on this Screen, then do not need to create a
+                    // Workwindow for it
+
+                    if ((attachedMonitors == null) || (attachedMonitors.Count <= 0))
+                    {
+                        LogInfo($"      No attached Monitor for this screen => No WorkWindow to creat for it.");
                         continue;
+                    }
+
+                    //Dump attached monitors
+                    LogInfo($"    - AttachedMonitors");
+                    int idxMonitor = 0;
+                    foreach (MonitorInfo mi in attachedMonitors)
+                    {
+                        LogInfo($"        [{mi.Index}] Name={mi.AliasDeviceName}]");
+                        idxMonitor++;
+                    }
+
+                    //Create a WorkWindow work for it
+                    //
+                    Thread thread = new Thread(() =>
+                    {
+                        //Read settings for this monitor
+
+                        //Case 2 => failed
+                        //New a WorkWindow in local
+                        EAWorkWindow addedWorkWin = new EAWorkWindow(_vmArrange, scr, attachedMonitors);
+                        addedWorkWin.Left = left;
+                        addedWorkWin.Top = top;
+                        addedWorkWin.Width = width;
+                        addedWorkWin.Height = height;
+                        addedWorkWin.SetWorkingSplit(cellCount, splitKey, settings);
+                        addedWorkWin.Show();
+                        tempWorkWindows.Add(scr.DeviceName, addedWorkWin);
+
+                        //Case 3 => failed
+                        //New a WorkWindow in class member
+                        //_tempWorkWindow = new EAWorkWindow(_vmArrange, scr, attachedMonitors);
+                        //_tempWorkWindow.Left = left;
+                        //_tempWorkWindow.Top = top;
+                        //_tempWorkWindow.Width = width;
+                        //_tempWorkWindow.Height = height;
+                        //_tempWorkWindow.SetWorkingSplit(cellCount, splitKey, settings);
+                        //_tempWorkWindow.Show();
+                        //tempWorkWindows.Add(scr.DeviceName, _tempWorkWindow);
+
+                        System.Windows.Threading.Dispatcher.Run();
+                    });
+                    addCount++;
+                    thread.SetApartmentState(ApartmentState.STA);
+                    thread.Start();
                 }
+                idxScr++;
+            } //foreach (Screen scr)
 
-                //Load the settings from the first attached Monitor
-                int workCellCount = 0;
-                char workSplitKey = 'A';
-                List<double>? workSettings = null;
+            //Case_3 Exist->NotExist, a display has been unplugged
+            LogInfo($"  * Removing unplugged WorkWindows... Count={_vmArrange.WorkWindows.Count}");
+                _vmArrange.ClearWorkWindows();
 
-                //Create a WorkWindow work for it
-                EAWorkWindow workWin = new EAWorkWindow(_vmArrange);
-                workWin.Left = s.WorkingArea.Left / (double)dpiX;
-                workWin.Top = s.WorkingArea.Top / (double)dpiX;
-                workWin.Width = s.WorkingArea.Width / (double)dpiX;
-                workWin.Height = s.WorkingArea.Height / (double)dpiX;
-                workWin.SetWorkingSplit(workCellCount, workSplitKey, workSettings);
-                workWin.Show();
-                _workWindows.Add(s.DeviceName, workWin);
-            }
-        }
+            //foreach (KeyValuePair<string, EAWorkWindow> pair in _vmArrange.WorkWindows)
+            //{
+            //    _vmArrange.WorkWindows.Remove(pair.Key);
+            //    //Close the workWin
+            //    pair.Value.DispatcherClose();
+            //}
 
-        private void ClearWorkWindows()
-        {
-            foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+            //Wait for all WorkWindows are added into tempWorkWindows
+            while (tempWorkWindows.Count < addCount)
             {
-                keyValuePair.Value.Close();
+                Thread.Sleep(10);
             }
-            _workWindows.Clear();
-        }
+                _vmArrange.WorkWindows = tempWorkWindows;
 
-        private void RefreshWorkWindows()
+
+            
+        }
+        #endregion
+
+        #region EditWindow and SaveCustomWindow
+        private void InitEditWindow()
         {
+            if (_editWindow == null)
+            {
+                Thread thread = new Thread(() =>
+                {
+                    _editWindow = new EAEditWindow();
+                    _editWindow.DataContext = _vmArrange;
+                    _editWindow.Show();
+                    System.Windows.Threading.Dispatcher.Run();
+                });
+
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+            }
         }
 
-        #endregion EA Broker
+        private void InitSaveCustomWindow()
+        {
+            if (_saveCustomWindow == null)
+            {
+                Thread thread = new Thread(() =>
+                {
+                    _saveCustomWindow = new SaveCustomWindow();
+                    //_saveCustomWindow.Show();
+
+                    _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
+                    _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
+
+                    System.Windows.Threading.Dispatcher.Run();
+                });
+
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+            }
+        }
+        private void saveCustomWidow_CancelButtonClick(object sender, string e)
+        {
+            //if (EditCompleted != null)
+            //    EditCompleted(this, "");
+
+            if (EditReturn != null)
+            {
+                EAArgs retArgs = new EAArgs(_eaArgs);
+                retArgs.Result = false;
+                retArgs.Command = "EditReturn";
+                retArgs.Message = "User cancel the editing.";
+                EditReturn(this, retArgs);
+            }
+            _editWindow.InvokeClose();
+            _saveCustomWindow.Hide();
+        }
+        private void saveCustomWidow_SaveButtonClick(object sender, string e)
+        {
+            //if (EditCompleted != null)
+            //    EditCompleted(this, "");
+
+
+            if (EditReturn != null)
+            {
+                EAArgs retArgs = new EAArgs(_eaArgs);
+                retArgs.Result = true;
+
+
+
+                retArgs.Settings = _editWindow.GetSettings();
+                retArgs.CustomName = e;
+                retArgs.Command = "EditReturn";
+                EditReturn(this, retArgs);
+            }
+            _editWindow.InvokeClose();
+            _saveCustomWindow.Hide();
+        }
+
+        #endregion
 
         #region Window Event Hook
 
@@ -651,11 +1102,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private void WinEventHook_Stop()
         {
-            _winEventHook.Unhook();
-            _winEventHook.OnStartMoving -= OnWindowStartMovingProc;
-            _winEventHook.OnEndMoving -= OnWindowEndMovingProc;
-            _winEventHook.OnLocationChanged -= OnLocationChangedProc;
-            _winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
+            //_winEventHook.Unhook();
+            //_winEventHook.OnStartMoving -= OnWindowStartMovingProc;
+            //_winEventHook.OnEndMoving -= OnWindowEndMovingProc;
+            //_winEventHook.OnLocationChanged -= OnLocationChangedProc;
+            //_winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
         }
 
         private void OnForegroundWindowChangedProc(IntPtr hWndNew, IntPtr hWndOld)
@@ -786,7 +1237,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
             {
                 EAWorkWindow workWin = keyValuePair.Value;
-                workWin.RefreshCellRects();
+                workWin.Invoke_RefreshCellRects();
             }
         }
 
@@ -818,16 +1269,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #region Helpers
 
-        private EAWorkWindow? FindWorkWindowByMonitorInfo(MonitorInfo monitorInfo)
-        {
-            EAWorkWindow workWindow = null;
-            string key = monitorInfo.DisplayName;
-            if (_workWindows.TryGetValue(key, out workWindow))
-            {
-                return workWindow;
-            }
-            return null;
-        }
+        //private EAWorkWindow? FindWorkWindowByMonitorInfo(MonitorInfo monitorInfo)
+        //{
+        //    EAWorkWindow workWindow = null;
+        //    string key = monitorInfo.DisplayName;
+        //    if (_workWindows.TryGetValue(key, out workWindow))
+        //    {
+        //        return workWindow;
+        //    }
+        //    return null;
+        //}
 
         /// <summary>
         /// Format a Rectangle to string, format: "(0,0)-(1920,1200)1920x1200"
@@ -838,12 +1289,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
         }
-
-        #endregion Helpers
-
-        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
-        {
-        }
+        #endregion
 
         #region Debug Msg
 
@@ -851,22 +1297,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + msg);
         }
+        #endregion
 
-        #endregion Debug Msg
-
-        //It should be call once DeviceManagerSA is loaded
-        private void ConfigureServices()
+        #region General DDPM.SA Plugins Methods
+        private List<MonitorInfo>? GetMonitors()
         {
-            if (_isConfigured)
-                return;
-            _isConfigured = true;
+            if (_displayManagerPlugin == null)
+                return null;
 
-            ServiceCollection services = new ServiceCollection();
-            if (_log != null)
-                services.AddSingleton(_log);
-            if (_deviceManagerPlugin != null)
-                services.AddSingleton(_deviceManagerPlugin);
-            PluginIoc.ConfigureServices(services.BuildServiceProvider());
+            return _displayManagerPlugin.GetMonitors().Result;
         }
+        #endregion
+
     }
 }
