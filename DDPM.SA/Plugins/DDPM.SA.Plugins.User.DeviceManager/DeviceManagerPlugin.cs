@@ -408,12 +408,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //{
             //write VCP over display manager
             r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
+
+            Trace.Write($"ColorPreset_Name = {ColorPreset_Name}");
             //}
             return Task.FromResult(r);
         }
 
         // 20240619 jim modify
-        public Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name)
+        public async Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name)
         {
             writelog("ColorPresetPlugin received WriteColorPreset_AUTO requested ...");
 
@@ -421,7 +423,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_ColorPresetPlugin == null)
             {
                 writelog("null _ColorPresetPlugin in [WriteColorPreset_AUTO]");
-                return Task.FromResult(r);
+                return r;
             }
 
             //data process
@@ -438,10 +440,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //if (r)
             //{
             //write VCP over display manager
-            r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
+            r = await Task.Run(()=>SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
 
             //}
-            return Task.FromResult(r);
+            return r;
         }
 
         // jim add 20240607
