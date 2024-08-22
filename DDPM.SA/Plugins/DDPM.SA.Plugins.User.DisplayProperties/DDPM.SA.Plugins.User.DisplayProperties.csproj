@@ -5,6 +5,7 @@
 	  <UseWindowsForms>true</UseWindowsForms>
 	  <ImplicitUsings>disable</ImplicitUsings>
 	  <Nullable>enable</Nullable>
+	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
