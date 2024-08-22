@@ -14,9 +14,6 @@ namespace DDPM.UI.Module.Collaboration {
   public partial class CollaborationRightView : UserControl {
     private readonly KeyboardViewModel _vm;
 
-    private bool HasCTKMessage = true;
-
-
     public CollaborationRightView(KeyboardViewModel vm) {
       InitializeComponent();
       _vm = vm;
@@ -39,23 +36,28 @@ namespace DDPM.UI.Module.Collaboration {
     void CheckCTKMessage() {
       if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_NOT_INSTALLED") { // Scenario 1
         txtAlert1.Text = Strings.Alert1;
+        bdrAlert1.Visibility = Visibility.Visible;
         //txtLearnMore1.Text = Strings.LearnMoreLink;
-        txtLearnMore1.Text = "";
+        //txtLearnMore1.Text = "";
         //_vm.IsCollaborationKeyEnable = false;
         //tsCollaboration.IsEnabled = false;
       }
-      else {
-       HasCTKMessage = false;
+      else if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_UNPAIRED") {
+        txtAlert1.Text = Strings.Alert2;
+        bdrAlert1.Visibility = Visibility.Visible;
       }
 
       //txtAlert1.Text = Strings.Alert5;
       //txtLearnMore1.Text = Strings.LearnMoreLink;
 
-      bdrAlert1.Visibility = HasCTKMessage && _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
+      spAlert.Visibility = _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
     }
 
     private void CloseDescription1(object sender, System.Windows.Input.MouseButtonEventArgs e) {
       CloseAlert1();
+    }
+    private void CloseDescription2(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+      CloseAlert2();
     }
 
     private void LearnMore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e) {
@@ -91,7 +93,7 @@ else {
 
     private void MessageBox_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e) {
       //CloseIcon.Focus();
-      txtLearnMore1.Focus();
+      //txtLearnMore1.Focus();
     }
 
     private void Border1_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
@@ -107,7 +109,7 @@ else {
       bdrAlert1.Visibility = Visibility.Collapsed;
     }
     private void CloseAlert2() {
-      bdrAlert1.Visibility = Visibility.Collapsed;
+      bdrAlert2.Visibility = Visibility.Collapsed;
     }
 
     private void txtLearnMore1_KeyDown(object sender, KeyEventArgs e) {
