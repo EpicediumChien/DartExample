@@ -51,11 +51,11 @@ namespace DDPM.UI.Module.Collaboration {
       //txtAlert1.Text = Strings.Alert5;
       //txtLearnMore1.Text = Strings.LearnMoreLink;
 
-      bdrAlert.Visibility = HasCTKMessage && _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
+      bdrAlert1.Visibility = HasCTKMessage && _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
     }
 
-    private void CloseDescription(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-      CloseAlert();
+    private void CloseDescription1(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+      CloseAlert1();
     }
 
     private void LearnMore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e) {
@@ -94,13 +94,20 @@ else {
       txtLearnMore1.Focus();
     }
 
-    private void Border_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+    private void Border1_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
       if(e.Key == Key.Enter)
-        CloseAlert();
+        CloseAlert1();
+    }
+    private void Border2_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+      if(e.Key == Key.Enter)
+        CloseAlert2();
     }
 
-    private void CloseAlert() {
-      bdrAlert.Visibility = Visibility.Collapsed;
+    private void CloseAlert1() {
+      bdrAlert1.Visibility = Visibility.Collapsed;
+    }
+    private void CloseAlert2() {
+      bdrAlert1.Visibility = Visibility.Collapsed;
     }
 
     private void txtLearnMore1_KeyDown(object sender, KeyEventArgs e) {
@@ -108,12 +115,11 @@ else {
     }
 
     private void Collaboration_Checked(object sender, RoutedEventArgs e) {
-      if(HasCTKMessage)
-        bdrAlert.Visibility = Visibility.Visible;
+      spAlert.Visibility = Visibility.Visible;
     }
 
     private void Collaboration_Unchecked(object sender, RoutedEventArgs e) {
-      bdrAlert.Visibility = Visibility.Collapsed;
+      spAlert.Visibility = Visibility.Collapsed;
     }
   }
 }
