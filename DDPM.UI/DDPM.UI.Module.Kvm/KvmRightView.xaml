@@ -85,10 +85,11 @@
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center"
                                                          Margin="16" Padding="40,8"
-                                                         Background="#0672CB"
+                                                         Background="#0672CB" Opacity="{Binding USBKVMButtonOpacity}"
                                                          Foreground="White"
                                                          Click="OpenUSBKVM"
-                                                         Visibility="Collapsed" />
+                                                         Visibility="Collapsed"
+                                                         IsEnabled="{Binding isUSBKVMButton}"/>
                                     <UXControls:UXButton ButtonType="Primary"
                                                          AutomationProperties.Name="Primary1"
                                                          x:Name="ONUSBKVM"
@@ -97,10 +98,11 @@
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center"
                                                          Margin="16" Padding="40,8"
-                                                         Background="#0672CB"
+                                                         Background="#0672CB" Opacity="{Binding USBKVMButtonOpacity}"
                                                          Foreground="White"
                                                          Click="OpenUSBKVM"
-                                                         Visibility="Collapsed" />
+                                                         Visibility="Collapsed"
+                                                         IsEnabled="{Binding isUSBKVMButton}"/>
                                     <UXControls:UXButton ButtonType="Secondary"
                                                          x:Name="USBKVMHotkeys"
                                                          ButtonSize="Medium"
