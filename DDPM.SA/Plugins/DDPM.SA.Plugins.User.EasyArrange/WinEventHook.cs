@@ -25,7 +25,7 @@ namespace nsWinEventHook
             uint myMaxEvent = EVENT_OBJECT_LOCATIONCHANGE;
 
             evtDelegate = new WinEventDelegate(WinEventProc);
-            hHook = SetWinEventHook(myMinEvent, myMaxEvent, IntPtr.Zero, evtDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
+            hHook = _SetWinEventHook(myMinEvent, myMaxEvent, IntPtr.Zero, evtDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
             return IsHooked;
         }
 
@@ -33,7 +33,7 @@ namespace nsWinEventHook
         //
         public bool Unhook()
         {
-            UnhookWinEvent(hHook);
+            _UnhookWinEvent(hHook);
             hHook = IntPtr.Zero;
             return true;
         }
@@ -118,7 +118,7 @@ namespace nsWinEventHook
             {
                 //Get current cursor position
                 POINT ptCur;
-                if (!GetCursorPos(out ptCur))
+                if (!_GetCursorPos(out ptCur))
                     return;
 
                 if (OnLocationChanged != null)
@@ -143,8 +143,8 @@ namespace nsWinEventHook
         //
         public static bool IsUserCancelMoving()
         {
-            short sEsc = GetAsyncKeyState(VK_ESCAPE);
-            short sLbtn = GetAsyncKeyState(VK_LBUTTON);
+            short sEsc = _GetAsyncKeyState(VK_ESCAPE);
+            short sLbtn = _GetAsyncKeyState(VK_LBUTTON);
 
             //Check the hightest bit: 1=Down; 0=Up
             bool isEscDown = ((sEsc & 0x8000) == 0x8000);
@@ -175,7 +175,7 @@ namespace nsWinEventHook
 
             //Get ProcessId from window handle
             uint processId = 0;
-            uint threadId = GetWindowThreadProcessId(hWnd, out processId);
+            uint threadId = _GetWindowThreadProcessId(hWnd, out processId);
 
             //Get Process from ProcessId
             p = Process.GetProcessById((int)processId);
@@ -196,13 +196,13 @@ namespace nsWinEventHook
             //const int HWND_TOPMOST = -1;
             const int SWP_FRAMECHANGED = 0x0020;
 
-            SetWindowPos(hWnd, 0, (int)rect.Left, (int)rect.Top,
+            _SetWindowPos(hWnd, 0, (int)rect.Left, (int)rect.Top,
                 (int)rect.Width, (int)rect.Height, SWP_NOZORDER | SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 
-            SetWindowPos(hWnd, HWND_TOP, (int)rect.Left, (int)rect.Top,
+            _SetWindowPos(hWnd, HWND_TOP, (int)rect.Left, (int)rect.Top,
                 (int)rect.Width, (int)rect.Height, SWP_SHOWWINDOW);
 
-            MoveWindow(hWnd, (int)rect.Left, (int)rect.Top,
+            _MoveWindow(hWnd, (int)rect.Left, (int)rect.Top,
                 (int)rect.Width, (int)rect.Height, true);
 
             /*
@@ -261,46 +261,80 @@ namespace nsWinEventHook
         #region Win32 P-Invoke
 
         //GetAsyncKeyState
-        [DllImport("User32.dll")]
+        [DllImport("User32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern short GetAsyncKeyState(System.Int32 vKey);
+        private static short _GetAsyncKeyState(System.Int32 vKey)
+        {
+            return GetAsyncKeyState(vKey);
+        }
 
         //SetWinEventHook()
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
                                             WinEventDelegate lpfnWinEventProc, uint idProcess,
                                             uint idThread, uint dwFlags);
+        private static IntPtr _SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
+                                            WinEventDelegate lpfnWinEventProc, uint idProcess,
+                                            uint idThread, uint dwFlags)
+        {
+            return SetWinEventHook(eventMin, eventMax, hmodWinEventProc,
+                                            lpfnWinEventProc, idProcess,
+                                            idThread, dwFlags);
+        }
 
         //UnhookWinEvent()
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+        private static bool _UnhookWinEvent(IntPtr hWinEventHook)
+        {
+            return UnhookWinEvent(hWinEventHook);
+        }
 
         //GetWindowThreadProcessId()
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+        public static uint _GetWindowThreadProcessId(IntPtr hWnd, out uint processId)
+        {
+            return GetWindowThreadProcessId(hWnd, out processId);
+        }
 
         public const short SWP_NOMOVE = 0X2;
         public const short SWP_NOSIZE = 1;
         public const short SWP_NOZORDER = 0X4;
         public const int SWP_SHOWWINDOW = 0x0040;
 
-        [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
-        public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
+        [DllImport("user32.dll", EntryPoint = "SetWindowPos", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
+        public static IntPtr _SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags)
+        {
+            return SetWindowPos(hWnd, hWndInsertAfter, x, Y, cx, cy, wFlags);
+        }
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         public static extern int MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
+        public static int _MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint)
+        {
+            return MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);
+        }
 
-        [DllImport("dwmapi")]
-        private static extern int DwmGetWindowAttribute(IntPtr hwnd, Int32 dwAttribute, ref Rectangle pvAttribute, Int32 cbAttribute);
+        //[DllImport("dwmapi")]
+        //private static extern int DwmGetWindowAttribute(IntPtr hwnd, Int32 dwAttribute, ref Rectangle pvAttribute, Int32 cbAttribute);
 
-        [DllImport("user32")]
-        private static extern bool GetWindowRect(IntPtr hwnd, ref Rectangle lpRect);
+        //[DllImport("user32")]
+        //private static extern bool GetWindowRect(IntPtr hwnd, ref Rectangle lpRect);
 
-        [DllImport("user32")]
-        private static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref System.Drawing.Point lpRect);
+        //[DllImport("user32")]
+        //private static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref System.Drawing.Point lpRect);
 
-        [DllImport("user32", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref POINT lpPoint);
+        //[DllImport("user32", SetLastError = true)]
+        //[return: MarshalAs(UnmanagedType.Bool)]
+        //public static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref POINT lpPoint);
 
         #endregion Win32 P-Invoke
 
@@ -322,7 +356,7 @@ namespace nsWinEventHook
         {
             CURSORINFO pci;
             pci.cbSize = Marshal.SizeOf(typeof(CURSORINFO));
-            GetCursorInfo(out pci);
+            _GetCursorInfo(out pci);
 
             if (pci.hCursor == Cursors.SizeNESW.Handle)// "/"
                 return true;
@@ -365,13 +399,23 @@ namespace nsWinEventHook
             public POINT ptScreenPos;       // A POINT structure that receives the screen coordinates of the cursor.
         }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool GetCursorInfo(out CURSORINFO pci);
+        private static bool _GetCursorInfo(out CURSORINFO pci)
+        {
+            return GetCursorInfo(out pci);
+        }
 
         //GetCursorPos()
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetCursorPos(out POINT lpPoint);
+        private static extern bool GetCursorPos(out POINT lpPoint);
+        public static bool _GetCursorPos(out POINT lpPoint)
+        {
+            return GetCursorPos(out lpPoint);
+        }
 
         #endregion Win32 - GetCursorType
     }

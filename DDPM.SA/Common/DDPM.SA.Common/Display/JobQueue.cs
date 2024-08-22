@@ -57,8 +57,13 @@ namespace DDPM.SA.Common.Display
             }
         }
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool SystemParametersInfo(uint uAction, uint uParam, ref bool lpvParam, int fWinIni);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SystemParametersInfo(uint uAction, uint uParam, ref bool lpvParam, int fWinIni);
+        public static bool _SystemParametersInfo(uint uAction, uint uParam, ref bool lpvParam, int fWinIni)
+        {
+            return SystemParametersInfo(uAction, uParam, ref lpvParam, fWinIni);
+        }
 
         public const uint SPI_GETSCREENSAVEACTIVE = 0x10;   //check if screen saver is actived
         public const uint SPI_GETSCREENSAVERRUNNING = 0x72; //check if screen saver is running now
@@ -66,7 +71,7 @@ namespace DDPM.SA.Common.Display
         public static bool GetScreensaverCurrentStatus(uint param)
         {
             bool lparam = false;
-            if (!SystemParametersInfo(param, 0, ref lparam, 0))
+            if (!_SystemParametersInfo(param, 0, ref lparam, 0))
             {
                 return false;
             }

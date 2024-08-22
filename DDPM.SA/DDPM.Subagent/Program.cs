@@ -31,13 +31,11 @@ namespace DDPM.Subagent
     /// </summary>
     internal class Program
     {
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetConsoleWindow();
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        private const int SW_HIDE = 0;
+        //[DllImport("kernel32.dll")]
+        //private static extern IntPtr GetConsoleWindow();
+        //[DllImport("user32.dll")]
+        //private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        //private const int SW_HIDE = 0;
 
         /// <summary>
         ///     A name for your product.
@@ -60,15 +58,7 @@ namespace DDPM.Subagent
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_MUTEX_ID);
 
-#if RELEASE
-        private static byte[][] certificateHash = {
-            ThumbprintHash.DELL_Hash,
-            ThumbprintHash.DELL_Hash1,
-            ThumbprintHash.DELL_Hash2,
-            ThumbprintHash.WST_Hash,
-            ThumbprintHash.WST2_Hash
-        };
-#endif
+
         private static void Main(string[] args)
         {
             //#if DEBUG
@@ -130,7 +120,7 @@ namespace DDPM.Subagent
                 MultiSessionAgent = false
 #if RELEASE
                 ,
-                ValidCertificateHashes = certificateHash
+                ValidCertificateHashes = ThumbprintHash.certificateHash
 #endif
             };
 

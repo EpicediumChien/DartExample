@@ -58,14 +58,19 @@ namespace DDPM.SA.Common
         private string _deviceName;
         private bool _muteStatus;
 
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int GetSystemMetrics(int nIndex);
+        //[DllImport("user32.dll", SetLastError = true)]
+        //public static extern int GetSystemMetrics(int nIndex);
 
         public const int SpiSetMouseButtonLeft = 23;
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SwapMouseButton([param: MarshalAs(UnmanagedType.Bool)] bool fSwap);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SwapMouseButton([param: MarshalAs(UnmanagedType.Bool)] bool fSwap);
+        public static bool _SwapMouseButton(bool fSwap)
+        {
+            return SwapMouseButton(fSwap);
+        }
 
         private const uint SpiSetMouseButtonRight = 33;
         private const uint SpiSendWinInChange = 2;
@@ -73,7 +78,12 @@ namespace DDPM.SA.Common
 
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni);
+        private static bool _SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni)
+        {
+            return SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -634,8 +644,8 @@ namespace DDPM.SA.Common
 
         public void UpdateSwapButtonSetting(string selectedValue)
         {
-            SwapMouseButton(selectedValue != "Left");
-            SystemParametersInfo(
+            _SwapMouseButton(selectedValue != "Left");
+            _SystemParametersInfo(
                 selectedValue == "Right" ? SpiSetMouseButtonRight : SpiSetMouseButtonLeft,
                 1, IntPtr.Zero, SpiSendWinInChange | SpiUpdateable);
         }

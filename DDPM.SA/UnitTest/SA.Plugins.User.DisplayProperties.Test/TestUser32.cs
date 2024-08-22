@@ -27,7 +27,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             DEVMODE devMode = new DEVMODE();
             var monitorInfoname = monitorInfo1.DisplayName;
             int i = ENUM_CURRENT_SETTINGS;  //ENUM_CURRENT_SETTINGS=-1
-            var result = EnumDisplaySettings(monitorInfoname, i, ref devMode);
+            var result = _EnumDisplaySettings(monitorInfoname, i, ref devMode);
             Assert.IsNotNull(result);
             // Assert.IsTrue(result);   需要用真实get的monitor才可以跑pass
         }
@@ -38,7 +38,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             DEVMODE devMode = new DEVMODE();
             var monitorInfoname = monitorInfo1.DisplayName;
             int expectresult = DISP_CHANGE_SUCCESSFUL;  //DISP_CHANGE_SUCCESSFUL=0;
-            int result = ChangeDisplaySettingsEx(monitorInfoname, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
+            int result = _ChangeDisplaySettingsEx(monitorInfoname, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
             Assert.IsNotNull(result);
             // Assert.That(expectresult, Is.EqualTo(result)); 需要用真实get的monitor才可以跑pass
         }

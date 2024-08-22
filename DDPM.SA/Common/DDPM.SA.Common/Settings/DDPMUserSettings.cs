@@ -69,5 +69,14 @@ namespace DDPM.SA.Common.Settings
         //public bool isOnUSBKVM { get; set; } = false;
         //public bool isOnNKVM { get; set; } = false;
         public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }
+
+        //20240820 Jim add Lock(Unlock) for Auto Color Preset
+        public bool IsAutoColorPreset_Lock { get; set; } = false;
+
+        //20240820 Jim add for Color Management
+        public bool ColorManagement_off { get; set; } = false;
+        public bool ColorManagement_bymonitor { get; set; } = false;
+        public bool ColorManagement_byhost { get; set; } = false;
+        
     }
 }

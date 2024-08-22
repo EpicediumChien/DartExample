@@ -131,7 +131,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         /// <returns></returns>
         public Task<bool> WriteITConfigData(DDPMITConfig data, List<string> IT_Feature_list)
         {
-            if(data == null)
+            if (data == null)
             {
                 WriteLog($"WriteITConfigData: null data, failed");
                 return Task.FromResult(false);
@@ -147,7 +147,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             {
                 ITSettingEventArgs e = new ITSettingEventArgs();
                 List<string> IT_Feature_TriggerList = new List<string>();
-                IT_Feature_TriggerList.AddRange( IT_Feature_list );
+                IT_Feature_TriggerList.AddRange(IT_Feature_list);
                 e.IT_Feature_TriggerList = IT_Feature_TriggerList;
                 e.target_object = data;
 
@@ -251,14 +251,28 @@ namespace DDPM.SA.Plugins.SettingsManager
             WTSDomainName = 7,
         }
 
-        [DllImport("Kernel32.dll")]
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int WTSGetActiveConsoleSessionId();
+        private static int _WTSGetActiveConsoleSessionId()
+        {
+            return WTSGetActiveConsoleSessionId();
+        }
 
-        [DllImport("Wtsapi32.dll")]
+
+        [DllImport("Wtsapi32.dll", SetLastError = true)]
         private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+        private static bool _WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
+        {
+            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+        }
 
-        [DllImport("Wtsapi32.dll")]
+        [DllImport("Wtsapi32.dll", SetLastError = true)]
         private static extern void WTSFreeMemory(IntPtr pointer);
+        private static void _WTSFreeMemory(IntPtr pointer)
+        {
+            WTSFreeMemory(pointer);
+        }
 
         private string GetUserSid(string userName)
         {
@@ -309,13 +323,13 @@ namespace DDPM.SA.Plugins.SettingsManager
         {
             IntPtr buffer;
             int bytesReturned = 0;
-            int sessionId = WTSGetActiveConsoleSessionId(); // This gets the session ID of the user logged into the console
+            int sessionId = _WTSGetActiveConsoleSessionId(); // This gets the session ID of the user logged into the console
             WriteLog($"WTSGetActiveConsoleSessionId: {sessionId}");
 
-            if (WTSQuerySessionInformation(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
+            if (_WTSQuerySessionInformation(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
             {
                 string userName = Marshal.PtrToStringAnsi(buffer);
-                WTSFreeMemory(buffer);
+                _WTSFreeMemory(buffer);
                 WriteLog($"WTSQuerySessionInformation: user name ({userName})");
 
                 if (!string.IsNullOrEmpty(userName))

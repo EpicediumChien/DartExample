@@ -285,9 +285,6 @@
   <data name="AddDevice.KnM.4" xml:space="preserve">
     <value>Erlauben Sie die Koppelung des Geräts oder öffnen Sie die Windows-Einstellungen und wählen Sie das jeweilige Gerät, sobald es entdeckt wurde</value>
 </data>
-  <data name="AddDevice.KnM.5" xml:space="preserve">
-    <value>Windows-Einstellungen</value>
-</data>
   <data name="AddDevice.KnM.6" xml:space="preserve">
     <value>Schließen Sie den USB-Wireless-Empfänger an Ihr System an</value>
 </data>
@@ -365,15 +362,6 @@
 </data>
   <data name="Dock.1" xml:space="preserve">
     <value>Adapter {0}</value>
-</data>
-  <data name="Headset.0" xml:space="preserve">
-    <value>Audioeinstellungen</value>
-</data>
-  <data name="Headset.1" xml:space="preserve">
-    <value>Automatisierte Aktionen</value>
-</data>
-  <data name="Headset.2" xml:space="preserve">
-    <value>Geräteeinstellungen</value>
 </data>
   <data name="Keyboard.1" xml:space="preserve">
     <value>USB-Wireless-Empfänger</value>

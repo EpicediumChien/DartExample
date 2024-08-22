@@ -32,6 +32,9 @@ using VcpCore.Common;
 using VcpCore.Interfaces;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
+using IDs = VcpCore.Common.IDs;
+using DDPM.SA.Common;
+using System.Diagnostics;
 
 namespace VcpCore.Plugins
 {
@@ -90,15 +93,19 @@ namespace VcpCore.Plugins
         //1  If file exist (C:\temp\DDPMDebug.txt)
         //2  Read Ini File [DDPMDebug] key="IsOnlyGetDellMontor" (Note that not Mon(i)tor.miss  'i')
         //3  ini file value, 0=false, otherwise=true
-        [DllImport("kernel32")]
+        [DllImport("kernel32", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
-
+        private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
+        {
+            return GetPrivateProfileInt(section, key, def, filePath);
+        }
         private static bool IsOnlyDellMonitorForDebug()
         {
             const string iniPathName = @"C:\temp\DDPMDebug.txt";
             if (File.Exists(iniPathName))
             {
-                int iValue = GetPrivateProfileInt("DDPMDebug", "IsOnlyGetDellMontor", 1, iniPathName);
+                int iValue = _GetPrivateProfileInt("DDPMDebug", "IsOnlyGetDellMontor", 1, iniPathName);
                 return (iValue != 0);
             }
             return true;
@@ -781,10 +788,10 @@ namespace VcpCore.Plugins
 
                 uint length = 0;
 
-                GetCapabilitiesStringLength(monitorInfoX.hPhysicalMonitor, out length);
+                _GetCapabilitiesStringLength(monitorInfoX.hPhysicalMonitor, out length);
 
                 var sb = new StringBuilder((int)length);
-                CapabilitiesRequestAndCapabilitiesReply(monitorInfoX.hPhysicalMonitor, sb, (uint)sb.Capacity);
+                _CapabilitiesRequestAndCapabilitiesReply(monitorInfoX.hPhysicalMonitor, sb, (uint)sb.Capacity);
 
                 return sb.ToString();
             }
@@ -955,7 +962,18 @@ namespace VcpCore.Plugins
                             ro = GetCurrentColorPreset(monitorInfoX);
                         }
                         break;
-
+                    case nameof(Gaming_GameEnhancementMode):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x1F) & 0x0f);
+                        break;
+                    case nameof(Gaming_ResponseTime):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x2F) & 0x0f);
+                        break;
+                    case nameof(Gaming_DarkStabilizer):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x3F) & 0x0f);
+                        break;
+                    case nameof(Gaming_HDRType):
+                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x4F) & 0x0f);
+                        break;
                     default:
                         {
                             byte fucCode = TranslatorVCPctrCode(func);
@@ -1676,18 +1694,18 @@ namespace VcpCore.Plugins
                         System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
                         watch.Start();
                         var info = new MonitorInfoEx();
-                        GetMonitorInfo(new HandleRef(null, hMonitor), info);
+                        _GetMonitorInfo(new HandleRef(null, hMonitor), info);
                         string DeviceName = new string(info.szDevice).Trim('\0');
                         //----
                         uint cPhysicalMonitors = 0;
-                        bool bSuccess = GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref cPhysicalMonitors);
+                        bool bSuccess = _GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref cPhysicalMonitors);
                         PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
-                        bSuccess = GetPhysicalMonitorsFromHMONITOR(hMonitor, cPhysicalMonitors, pPhysicalMonitors);
+                        bSuccess = _GetPhysicalMonitorsFromHMONITOR(hMonitor, cPhysicalMonitors, pPhysicalMonitors);
                         DISPLAY_DEVICE dd = new DISPLAY_DEVICE();
                         dd.cb = Marshal.SizeOf(dd);
                         //----
                         int realindex = -1;
-                        for (int jj = 0; EnumDisplayDevices(DeviceName, (uint)jj, ref dd, 0); jj++)
+                        for (int jj = 0; _EnumDisplayDevices(DeviceName, (uint)jj, ref dd, 0); jj++)
                         {
                             token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
@@ -1697,7 +1715,7 @@ namespace VcpCore.Plugins
                             realindex++;
 
                             DEVMODE devmode = new DEVMODE();
-                            bool success = EnumDisplaySettings(DeviceName, ENUM_CURRENT_SETTINGS, ref devmode);
+                            bool success = _EnumDisplaySettings(DeviceName, ENUM_CURRENT_SETTINGS, ref devmode);
                             MonitorInfo_complex _TargetMonitor = new MonitorInfo_complex();
 
                             _TargetMonitor.DisplayName = DeviceName;
@@ -1945,6 +1963,7 @@ namespace VcpCore.Plugins
                     }
                     catch (Exception ex)
                     {
+                        Debug.WriteLine(ex.InnerException);
                         _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection exception : " + ex.Message);
                         return false;
                     }
@@ -1952,7 +1971,7 @@ namespace VcpCore.Plugins
 
                 //MonitorEnumDelegate lpfnEnum1 = _Get_Monitors;
 
-                if (token.IsCancellationRequested || (!EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, _Get_Monitors, IntPtr.Zero)))
+                if (token.IsCancellationRequested || (!_EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, _Get_Monitors, IntPtr.Zero)))
                     throw new Win32Exception(Marshal.GetLastWin32Error());
 
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin exit _GetMonitors() ...");
@@ -2076,7 +2095,7 @@ namespace VcpCore.Plugins
 
             do
             {
-                bool rc = SetVCPFeature(monitorInfoX.hPhysicalMonitor, code, val);
+                bool rc = _SetVCPFeature(monitorInfoX.hPhysicalMonitor, code, val);
 
                 if (rc)
                 {
@@ -2118,7 +2137,7 @@ namespace VcpCore.Plugins
 
             do
             {
-                bool rc = GetVCPFeatureAndVCPFeatureReply(monitorInfoX.hPhysicalMonitor, code, IntPtr.Zero, out uint currentValue, out uint maxValue); /*monitor[0].hPhysicalMonitor*/
+                bool rc = _GetVCPFeatureAndVCPFeatureReply(monitorInfoX.hPhysicalMonitor, code, IntPtr.Zero, out uint currentValue, out uint maxValue); /*monitor[0].hPhysicalMonitor*/
                 if (rc)
                 {
                     if (opt == 1)
@@ -2282,10 +2301,10 @@ namespace VcpCore.Plugins
                     bool capabilitiesStringLength = false;
                     int num = 3;
                     uint length = 0;
-                    capabilitiesStringLength = GetCapabilitiesStringLength(hPhysicalMonitor, out length);
+                    capabilitiesStringLength = _GetCapabilitiesStringLength(hPhysicalMonitor, out length);
                     while (!capabilitiesStringLength && num > 0)
                     {
-                        _logs.DebugMsg($"[VcpCorePlugin] GetCapabilitiesStringLength error ({GetLastError()})");
+                        _logs.DebugMsg($"[VcpCorePlugin] GetCapabilitiesStringLength error ({_GetLastError()})");
                         num--;
                         Thread.Sleep(100 * (3 - num));
                     }
@@ -2293,9 +2312,9 @@ namespace VcpCore.Plugins
                     if (capabilitiesStringLength)
                     {
                         var sb = new StringBuilder((int)length);
-                        while (!CapabilitiesRequestAndCapabilitiesReply(hPhysicalMonitor, sb, (uint)sb.Capacity) && num > 0)
+                        while (!_CapabilitiesRequestAndCapabilitiesReply(hPhysicalMonitor, sb, (uint)sb.Capacity) && num > 0)
                         {
-                            _logs.DebugMsg($"[VcpCorePlugin] CapabilitiesRequestAndCapabilitiesReply error ({GetLastError()})");
+                            _logs.DebugMsg($"[VcpCorePlugin] CapabilitiesRequestAndCapabilitiesReply error ({_GetLastError()})");
                             num--;
                             Thread.Sleep(100 * (3 - num));
                         }
@@ -2310,7 +2329,7 @@ namespace VcpCore.Plugins
                 }
                 catch (Exception)
                 {
-                    _logs.DebugMsg($"[VcpCorePlugin] GetCapabilities_String Exception ({GetLastError()})");
+                    _logs.DebugMsg($"[VcpCorePlugin] GetCapabilities_String Exception ({_GetLastError()})");
                     return string.Empty;
                 }
             } while (count < 3);
@@ -2368,11 +2387,11 @@ namespace VcpCore.Plugins
         {
             uint dwNumberOfPhysicalMonitors = 0;
 
-            if (!GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref dwNumberOfPhysicalMonitors))
+            if (!_GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, ref dwNumberOfPhysicalMonitors))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
             PHYSICAL_MONITOR[] physicalMonitorArray = new PHYSICAL_MONITOR[dwNumberOfPhysicalMonitors];
-            if (!GetPhysicalMonitorsFromHMONITOR(hMonitor, dwNumberOfPhysicalMonitors, physicalMonitorArray))
+            if (!_GetPhysicalMonitorsFromHMONITOR(hMonitor, dwNumberOfPhysicalMonitors, physicalMonitorArray))
                 throw new Win32Exception(Marshal.GetLastWin32Error());
 
             return physicalMonitorArray;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 
 namespace DDPM.SA.Common
 {
@@ -16,6 +17,90 @@ namespace DDPM.SA.Common
         Unknow = -1,
         HighDataSpeed = 0,
         HighResolution = 1
+    }
+    public enum Gaming_Supported
+    {
+        GameEnhancementMode = 0x10,
+        ResponseTime = 0x20,
+        DarkStabilizer = 0x30,
+        HDRType = 0x40
+    }
+    public enum Gaming_GameEnhancementMode
+    {
+        Off = 0x00,
+        Frame_Rate = 0x01,
+        Display_Alignment = 0x02,
+        Timer__30min = 0x03,
+        Timer__40min = 0x04,
+        Timer__50min = 0x05,
+        Timer__60min = 0x06,
+        Timer__90min = 0x07,
+        Disable = 0x0E
+    }
+    public enum Gaming_ResponseTime
+    {
+        Extreme = 0x00,
+        Super_Fast = 0x01,
+        Fast = 0x02,
+        Normal = 0x03,
+        Disable = 0x0E
+    }
+    public enum Gaming_DarkStabilizer
+    {
+        Level_0 = 0x00,
+        Level_1 = 0x01,
+        Level_2 = 0x02,
+        Level_3 = 0x03,
+        Disable = 0x0E
+    }
+    public enum Gaming_HDRType
+    {
+        Off = 0x00,
+        Desktop = 0x01,
+        Movie_HDR = 0x02,
+        Game_HDR = 0x03,
+        Display_HDR = 0x04,
+        Custom_Color_HDR = 0x05,
+        HDRPeak1000 = 0x06,
+        Disable = 0x0E
+    }
+    public enum Gaming_DualResolutionType : uint
+    {
+        _4K = 0xF811,
+        _FHD = 0xF810,
+        Unknow = 0x0000
+    }
+    /// <summary>
+    /// Gaming螢幕屬性(解析度、HDR等)
+    /// </summary>
+    public class GamingDisplayPropertiesInfo
+    {
+        public string DisplayName;
+        public Gaming_GameEnhancementMode Current_GameEnhancementMode;
+        public Gaming_ResponseTime Current_ResponseTime;
+        public Gaming_DarkStabilizer Current_DarkStabilizer;
+        public Gaming_HDRType Current_HDRType;
+        public Gaming_DualResolutionType Current_DualResolutionType;
+        public List<Gaming_GameEnhancementMode> Supported_GameEnhancementMode;
+        public List<Gaming_ResponseTime> Supported_ResponseTime;
+        public List<Gaming_DarkStabilizer> Supported_DarkStabilizer;
+        public List<Gaming_HDRType> Supported_HDRType;
+        public List<Gaming_DualResolutionType> Supported_DualResolutionType;
+        public DisplaySupportedProperties SupportedProperties;
+        public GamingDisplayPropertiesInfo()
+        {
+            Current_GameEnhancementMode = Gaming_GameEnhancementMode.Disable;
+            Current_ResponseTime = Gaming_ResponseTime.Disable;
+            Current_DarkStabilizer = Gaming_DarkStabilizer.Disable;
+            Current_HDRType = Gaming_HDRType.Disable;
+            Current_DualResolutionType = Gaming_DualResolutionType.Unknow;
+            Supported_GameEnhancementMode = new List<Gaming_GameEnhancementMode>();
+            Supported_ResponseTime = new List<Gaming_ResponseTime>();
+            Supported_DarkStabilizer = new List<Gaming_DarkStabilizer>();
+            Supported_HDRType = new List<Gaming_HDRType>();
+            Supported_DualResolutionType = new List<Gaming_DualResolutionType>();
+            SupportedProperties = new DisplaySupportedProperties();
+        }
     }
 
     /// <summary>

@@ -21,10 +21,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         // Windows API Imports
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr NotificationFilter, uint Flags);
+        private static IntPtr _RegisterDeviceNotification(IntPtr hRecipient, IntPtr NotificationFilter, uint Flags)
+        {
+            return RegisterDeviceNotification(hRecipient, NotificationFilter, Flags);
+        }
 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnregisterDeviceNotification(IntPtr Handle);
+        private static bool _UnregisterDeviceNotification(IntPtr Handle)
+        {
+            return UnregisterDeviceNotification(Handle);
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         private struct DEV_BROADCAST_DEVICEINTERFACE
@@ -74,7 +84,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 IntPtr filter = Marshal.AllocHGlobal(Marshal.SizeOf(dbi));
                 Marshal.StructureToPtr(dbi, filter, false);
 
-                _notificationHandle = RegisterDeviceNotification(this.Handle, filter, 0);
+                _notificationHandle = _RegisterDeviceNotification(this.Handle, filter, 0);
 
                 if (_notificationHandle == IntPtr.Zero)
                 {
@@ -154,7 +164,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 // Unregister device notifications
                 if (_notificationHandle != IntPtr.Zero)
                 {
-                    UnregisterDeviceNotification(_notificationHandle);
+                    _UnregisterDeviceNotification(_notificationHandle);
                 }
 
                 base.OnFormClosed(e);

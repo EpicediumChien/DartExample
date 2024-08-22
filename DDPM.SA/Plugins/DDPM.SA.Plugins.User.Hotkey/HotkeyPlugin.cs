@@ -107,10 +107,10 @@ namespace DDPM.SA.Plugins.User.Hotkey
                 return true;
             }
 
-            IntPtr hInstance = LoadLibrary("User32");
+            IntPtr hInstance = _LoadLibrary("User32");
 
             callbackDelegate = new keyboardHookProc(hookProc);
-            hhook = SetWindowsHookEx(WH_KEYBOARD_LL, callbackDelegate, hInstance, 0);
+            hhook = _SetWindowsHookEx(WH_KEYBOARD_LL, callbackDelegate, hInstance, 0);
             string errorMessage = new Win32Exception(Marshal.GetLastWin32Error()).Message;
             Debug.WriteLine($"HotkeyPlugin-hook(): {errorMessage}");
             return hhook == IntPtr.Zero ? false : true;
@@ -125,7 +125,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
         {
             //UnhookWindowsHookEx(hhook);
             if (callbackDelegate == null) return true;
-            bool ok = UnhookWindowsHookEx(hhook);
+            bool ok = _UnhookWindowsHookEx(hhook);
             if (ok)
             {
                 callbackDelegate = null;
@@ -161,7 +161,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
                         return 1;
                 }
             }
-            return CallNextHookEx(hhook, code, wParam, ref lParam);
+            return _CallNextHookEx(hhook, code, wParam, ref lParam);
         }
 
         #endregion Public Methods
@@ -332,7 +332,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
 
         public bool IsKeyPushedDown(System.Windows.Forms.Keys vKey)
         {
-            return 0 != (GetAsyncKeyState(vKey) & 0x8000);
+            return 0 != (_GetAsyncKeyState(vKey) & 0x8000);
         }
 
         #endregion public Methods
@@ -347,16 +347,26 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="hInstance">The handle you want to attach the event to, can be null</param>
         /// <param name="threadId">The thread you want to attach the event to, can be null</param>
         /// <returns>a handle to the desired hook</returns>
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId);
+        public static  IntPtr _SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId)
+        {
+            return SetWindowsHookEx(idHook,callback,hInstance,threadId);
+        }
 
         /// <summary>
         /// Unhooks the windows hook.
         /// </summary>
         /// <param name="hInstance">The hook handle that was returned from SetWindowsHookEx</param>
         /// <returns>True if successful, false otherwise</returns>
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnhookWindowsHookEx(IntPtr hInstance);
+        public static  bool _UnhookWindowsHookEx(IntPtr hInstance)
+        {
+            return UnhookWindowsHookEx(hInstance);
+        }
 
         /// <summary>
         /// Calls the next hook.
@@ -366,21 +376,36 @@ namespace DDPM.SA.Plugins.User.Hotkey
         /// <param name="wParam">The wparam.</param>
         /// <param name="lParam">The lparam.</param>
         /// <returns></returns>
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam);
+        public static  int _CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam)
+        {
+            return CallNextHookEx(idHook,nCode,wParam,ref lParam);
+        }
 
         /// <summary>
         /// Loads the library.
         /// </summary>
         /// <param name="lpFileName">Name of the library</param>
         /// <returns>A handle to the library</returns>
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr LoadLibrary(string lpFileName);
+        public static  IntPtr _LoadLibrary(string lpFileName)
+        {
+            return LoadLibrary(lpFileName);
+        }
 
-        [DllImport("user32.dll")]
-        public static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
+        public static short _GetAsyncKeyState(System.Windows.Forms.Keys vKey)
+        {
+            return GetAsyncKeyState(vKey);
+        }
 
-        [DllImport("kernel32.dll")]
+/*        [DllImport("kernel32.dll")]
         private static extern IntPtr GetModuleHandle(string lpFileName);
 
         [DllImport("user32.dll")]
@@ -395,7 +420,7 @@ namespace DDPM.SA.Plugins.User.Hotkey
         public static extern ushort GlobalAddAtom(string lpString);
 
         [DllImport("kernel32.dll")]
-        public static extern ushort GlobalDeleteAtom(ushort nAtom);
+        public static extern ushort GlobalDeleteAtom(ushort nAtom);*/
 
         #endregion DLL imports
     }

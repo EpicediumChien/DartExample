@@ -49,15 +49,7 @@ namespace CLI.Subagent
         private const int TIMEOUT_IN_SECONDS = 30;
         private int _exitcode = (int)CLI_ExitCode.unknow_command;
 
-#if RELEASE
-        private static byte[][] certificateHash = { 
-            ThumbprintHash.DELL_Hash,
-            ThumbprintHash.DELL_Hash1,
-            ThumbprintHash.DELL_Hash2,
-            ThumbprintHash.WST_Hash, 
-            ThumbprintHash.WST2_Hash 
-        };
-#endif
+
 
         #endregion
 
@@ -99,7 +91,7 @@ namespace CLI.Subagent
                 MultiSessionAgent = true
 #if RELEASE
                 ,
-                ValidCertificateHashes = certificateHash
+                ValidCertificateHashes = ThumbprintHash.certificateHash
 #endif
             };
 
