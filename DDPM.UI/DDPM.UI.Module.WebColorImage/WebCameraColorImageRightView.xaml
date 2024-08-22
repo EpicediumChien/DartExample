@@ -8,6 +8,7 @@
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="675" d:DesignWidth="554" VerticalAlignment="Top" HorizontalAlignment="Left" Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -30,7 +31,7 @@
                 </Border.Height>
                 <StackPanel>
                     <Grid Margin="14,16,14,16">
-                        <UXControls:UXTextBlock Text="Color and Image" Margin="0,6,0,6" Style="{StaticResource ModuleCaptionStyle}" />
+                        <UXControls:UXTextBlock Text="{Binding [Camera.1], Source={x:Static lang:LangHelper.Instance}}" Margin="0,6,0,6" Style="{StaticResource ModuleCaptionStyle}" />
                     </Grid>
                     <Grid Margin="16,0,16,10">
                         <Border Background="#99132F54" CornerRadius="6">

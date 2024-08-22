@@ -2995,6 +2995,105 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Intelligent Mic Noise Cancellation.
+        /// </summary>
+        internal static string SpeakerAudioSettings_0 {
+            get {
+                return ResourceManager.GetString("SpeakerAudioSettings.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mute Sound Notification.
+        /// </summary>
+        internal static string SpeakerAudioSettings_1 {
+            get {
+                return ResourceManager.GetString("SpeakerAudioSettings.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volume Adjustment Tone.
+        /// </summary>
+        internal static string SpeakerAudioSettings_2 {
+            get {
+                return ResourceManager.GetString("SpeakerAudioSettings.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every Level.
+        /// </summary>
+        internal static string SpeakerAudioSettings_3 {
+            get {
+                return ResourceManager.GetString("SpeakerAudioSettings.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min &amp; Max Only.
+        /// </summary>
+        internal static string SpeakerAudioSettings_4 {
+            get {
+                return ResourceManager.GetString("SpeakerAudioSettings.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interactions.
+        /// </summary>
+        internal static string SpeakerInteractions_0 {
+            get {
+                return ResourceManager.GetString("SpeakerInteractions.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hover on the application names below to view available speakerphone buttons (indicated by green).
+        /// </summary>
+        internal static string SpeakerInteractions_1 {
+            get {
+                return ResourceManager.GetString("SpeakerInteractions.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft Teams.
+        /// </summary>
+        internal static string SpeakerInteractions_2 {
+            get {
+                return ResourceManager.GetString("SpeakerInteractions.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom.
+        /// </summary>
+        internal static string SpeakerInteractions_3 {
+            get {
+                return ResourceManager.GetString("SpeakerInteractions.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Meet.
+        /// </summary>
+        internal static string SpeakerInteractions_4 {
+            get {
+                return ResourceManager.GetString("SpeakerInteractions.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skype for Business.
+        /// </summary>
+        internal static string SpeakerInteractions_5 {
+            get {
+                return ResourceManager.GetString("SpeakerInteractions.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unpair.
         /// </summary>
         internal static string Unpair {
@@ -3117,6 +3216,195 @@ namespace DDPM.UI.Resources {
         internal static string VideoSwap {
             get {
                 return ResourceManager.GetString("VideoSwap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3-2-1 Countdown.
+        /// </summary>
+        internal static string WebCameraCapture_0 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Framing Grid.
+        /// </summary>
+        internal static string WebCameraCapture_1 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Media Files Location.
+        /// </summary>
+        internal static string WebCameraCapture_10 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        internal static string WebCameraCapture_2 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change.
+        /// </summary>
+        internal static string WebCameraCapture_3 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolution.
+        /// </summary>
+        internal static string WebCameraCapture_4 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 4K UHD.
+        /// </summary>
+        internal static string WebCameraCapture_5 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full HD.
+        /// </summary>
+        internal static string WebCameraCapture_6 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HD.
+        /// </summary>
+        internal static string WebCameraCapture_7 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FPS.
+        /// </summary>
+        internal static string WebCameraCapture_8 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls video clarity and style by adjusting the number of images captured per second.
+        /// </summary>
+        internal static string WebCameraCapture_9 {
+            get {
+                return ResourceManager.GetString("WebCameraCapture.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HDR.
+        /// </summary>
+        internal static string WebCameraColorImage_0 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High Dynamic Range automatically corrects for optimal image quality at various lighting conditions.
+        /// </summary>
+        internal static string WebCameraColorImage_1 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto White Balance.
+        /// </summary>
+        internal static string WebCameraColorImage_2 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brightness.
+        /// </summary>
+        internal static string WebCameraColorImage_3 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sharpness.
+        /// </summary>
+        internal static string WebCameraColorImage_4 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contrast.
+        /// </summary>
+        internal static string WebCameraColorImage_5 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saturation.
+        /// </summary>
+        internal static string WebCameraColorImage_6 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anti-Flicker.
+        /// </summary>
+        internal static string WebCameraColorImage_7 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flicker reduction when recording under artificial lighting.
+        /// </summary>
+        internal static string WebCameraColorImage_8 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hz.
+        /// </summary>
+        internal static string WebCameraColorImage_9 {
+            get {
+                return ResourceManager.GetString("WebCameraColorImage.9", resourceCulture);
             }
         }
         

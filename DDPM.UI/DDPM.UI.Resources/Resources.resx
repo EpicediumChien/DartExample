@@ -1146,4 +1146,100 @@
   <data name="SpeakerAudioPreset.3" xml:space="preserve">
     <value>Adjust audio ranges to your preference. These settings apply to multimedia audio only.</value>
   </data>
+  <data name="SpeakerAudioSettings.0" xml:space="preserve">
+    <value>Intelligent Mic Noise Cancellation</value>
+  </data>
+  <data name="SpeakerAudioSettings.1" xml:space="preserve">
+    <value>Mute Sound Notification</value>
+  </data>
+  <data name="SpeakerAudioSettings.2" xml:space="preserve">
+    <value>Volume Adjustment Tone</value>
+  </data>
+  <data name="SpeakerAudioSettings.3" xml:space="preserve">
+    <value>Every Level</value>
+  </data>
+  <data name="SpeakerAudioSettings.4" xml:space="preserve">
+    <value>Min &amp; Max Only</value>
+  </data>
+  <data name="SpeakerInteractions.0" xml:space="preserve">
+    <value>Interactions</value>
+  </data>
+  <data name="SpeakerInteractions.1" xml:space="preserve">
+    <value>Hover on the application names below to view available speakerphone buttons (indicated by green)</value>
+  </data>
+  <data name="SpeakerInteractions.2" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="SpeakerInteractions.3" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="SpeakerInteractions.4" xml:space="preserve">
+    <value>Google Meet</value>
+  </data>
+  <data name="SpeakerInteractions.5" xml:space="preserve">
+    <value>Skype for Business</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 Countdown</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Framing Grid</value>
+  </data>
+  <data name="WebCameraCapture.2" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="WebCameraCapture.3" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="WebCameraCapture.4" xml:space="preserve">
+    <value>Resolution</value>
+  </data>
+  <data name="WebCameraCapture.5" xml:space="preserve">
+    <value>4K UHD</value>
+  </data>
+  <data name="WebCameraCapture.6" xml:space="preserve">
+    <value>Full HD</value>
+  </data>
+  <data name="WebCameraCapture.7" xml:space="preserve">
+    <value>HD</value>
+  </data>
+  <data name="WebCameraCapture.8" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="WebCameraCapture.9" xml:space="preserve">
+    <value>Controls video clarity and style by adjusting the number of images captured per second</value>
+  </data>
+  <data name="WebCameraCapture.10" xml:space="preserve">
+    <value>Media Files Location</value>
+  </data>
+  <data name="WebCameraColorImage.0" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="WebCameraColorImage.1" xml:space="preserve">
+    <value>High Dynamic Range automatically corrects for optimal image quality at various lighting conditions</value>
+  </data>
+  <data name="WebCameraColorImage.2" xml:space="preserve">
+    <value>Auto White Balance</value>
+  </data>
+  <data name="WebCameraColorImage.3" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="WebCameraColorImage.4" xml:space="preserve">
+    <value>Sharpness</value>
+  </data>
+  <data name="WebCameraColorImage.5" xml:space="preserve">
+    <value>Contrast</value>
+  </data>
+  <data name="WebCameraColorImage.6" xml:space="preserve">
+    <value>Saturation</value>
+  </data>
+  <data name="WebCameraColorImage.7" xml:space="preserve">
+    <value>Anti-Flicker</value>
+  </data>
+  <data name="WebCameraColorImage.8" xml:space="preserve">
+    <value>Flicker reduction when recording under artificial lighting</value>
+  </data>
+  <data name="WebCameraColorImage.9" xml:space="preserve">
+    <value>Hz</value>
+  </data>
 </root>
