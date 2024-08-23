@@ -3409,6 +3409,159 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Microphone.
+        /// </summary>
+        internal static string WebCameraMicrophone_0 {
+            get {
+                return ResourceManager.GetString("WebCameraMicrophone.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Microphone.
+        /// </summary>
+        internal static string WebCameraMicrophone_1 {
+            get {
+                return ResourceManager.GetString("WebCameraMicrophone.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note: This mic is not Microsoft Teams certified. For an optimal Microsoft Teams call experience, use Dell’s Microsoft Teams certified audio devices..
+        /// </summary>
+        internal static string WebCameraMicrophone_2 {
+            get {
+                return ResourceManager.GetString("WebCameraMicrophone.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presence Detection.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_0 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proximity Sensor.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_1 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Hello.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_10 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signs you in with facial recognition. This link will direct you to Windows Settings..
+        /// </summary>
+        internal static string WebCameraPresenceDetection_11 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detects your presence when you are in the field of view.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_2 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wake on Approach.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_3 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wakes up the PC as you approach.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_4 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Walk Away Lock.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_5 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locks the PC and turns off the display when you walk away.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_6 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delay.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_7 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Snooze.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_8 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Snooze Length.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_9 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Control.
+        /// </summary>
+        internal static string WebCameraSettings_0 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string WebCameraSettings_1 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Windows.
         /// </summary>
         internal static string Windows {

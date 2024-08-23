@@ -1242,4 +1242,55 @@
   <data name="WebCameraColorImage.9" xml:space="preserve">
     <value>Hz</value>
   </data>
+  <data name="WebCameraMicrophone.0" xml:space="preserve">
+    <value>Microphone</value>
+  </data>
+  <data name="WebCameraMicrophone.1" xml:space="preserve">
+    <value>Camera Microphone</value>
+  </data>
+  <data name="WebCameraMicrophone.2" xml:space="preserve">
+    <value>Note: This mic is not Microsoft Teams certified. For an optimal Microsoft Teams call experience, use Dell’s Microsoft Teams certified audio devices.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.0" xml:space="preserve">
+    <value>Presence Detection</value>
+  </data>
+  <data name="WebCameraPresenceDetection.1" xml:space="preserve">
+    <value>Proximity Sensor</value>
+  </data>
+  <data name="WebCameraPresenceDetection.2" xml:space="preserve">
+    <value>Detects your presence when you are in the field of view</value>
+  </data>
+  <data name="WebCameraPresenceDetection.3" xml:space="preserve">
+    <value>Wake on Approach</value>
+  </data>
+  <data name="WebCameraPresenceDetection.4" xml:space="preserve">
+    <value>Wakes up the PC as you approach</value>
+  </data>
+  <data name="WebCameraPresenceDetection.5" xml:space="preserve">
+    <value>Walk Away Lock</value>
+  </data>
+  <data name="WebCameraPresenceDetection.6" xml:space="preserve">
+    <value>Locks the PC and turns off the display when you walk away</value>
+  </data>
+  <data name="WebCameraPresenceDetection.7" xml:space="preserve">
+    <value>Delay</value>
+  </data>
+  <data name="WebCameraPresenceDetection.8" xml:space="preserve">
+    <value>Snooze</value>
+  </data>
+  <data name="WebCameraPresenceDetection.9" xml:space="preserve">
+    <value>Snooze Length</value>
+  </data>
+  <data name="WebCameraPresenceDetection.10" xml:space="preserve">
+    <value>Windows Hello</value>
+  </data>
+  <data name="WebCameraPresenceDetection.11" xml:space="preserve">
+    <value>Signs you in with facial recognition. This link will direct you to Windows Settings.</value>
+  </data>
+  <data name="WebCameraSettings.0" xml:space="preserve">
+    <value>Camera Control</value>
+  </data>
+  <data name="WebCameraSettings.1" xml:space="preserve">
+    <value></value>
+  </data>
 </root>
