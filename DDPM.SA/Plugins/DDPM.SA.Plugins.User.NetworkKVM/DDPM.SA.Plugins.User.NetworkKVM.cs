@@ -308,15 +308,15 @@ namespace NetworkKVM.Plugins
         public Task<bool> isSupportMonitor(MonitorInfo monitorInfo)
         {
             string ModelName = monitorInfo.modelName.Replace(" ", "");
-            if (ModelName.IndexOf("P2424HEB") == -1 ||
-                ModelName.IndexOf("P2725DEB") == -1 ||
-                ModelName.IndexOf("P3424WEB") == -1 ||
-                ModelName.IndexOf("P5524Q") == -1 ||
-                ModelName.IndexOf("P5524QT") == -1 ||
-                ModelName.IndexOf("P6524QT") == -1 ||
-                ModelName.IndexOf("P7524QT") == -1 ||
-                ModelName.IndexOf("P8624QT") == -1 ||
-                ModelName.IndexOf("P5525QC") == -1)
+            if (ModelName.IndexOf("P2424HEB") != -1 ||
+                ModelName.IndexOf("P2725DEB") != -1 ||
+                ModelName.IndexOf("P3424WEB") != -1 ||
+                ModelName.IndexOf("P5524Q") != -1 ||
+                ModelName.IndexOf("P5524QT") != -1 ||
+                ModelName.IndexOf("P6524QT") != -1 ||
+                ModelName.IndexOf("P7524QT") != -1 ||
+                ModelName.IndexOf("P8624QT") != -1 ||
+                ModelName.IndexOf("P5525QC") != -1)
             {
                 return Task.FromResult(true);
             }
