@@ -8,6 +8,7 @@
 	  <Version>2.0.0.5</Version>
 	  <OutputType>Library</OutputType>
 	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
+	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

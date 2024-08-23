@@ -172,7 +172,7 @@ namespace DDPM.ColorApp
         {
             if (b_AUTO_ColorPresetConfig)
             {
-                ActiveWindowData data = null;
+                /*ActiveWindowData data = null;
                 Screen screen = null;
 
                 if (sender != null)
@@ -187,15 +187,29 @@ namespace DDPM.ColorApp
 
                     if ((screen.WorkingArea.Height != s.WorkingArea.Height) || (screen.WorkingArea.Width != s.WorkingArea.Width) || (screen.WorkingArea.Left != s.WorkingArea.Left))
                         return;
-                }
+                }*/
 
                 if (sender != null)
                 {
                     //Get window data from active window's event
+                    ActiveWindowData data = null;
+                    Screen screen = null;
                     data = sender as ActiveWindowData;
-                    tbWndName.Text = data.ActiveWindowTitle;
-                    tbWndPID.Text = data.ActiveWindowProcessId.ToString();
-                    tbWndModule.Text = data.ActiveWindowProcessModuleName;
+                    //tbWndName.Text = data.ActiveWindowTitle;
+                    //tbWndPID.Text = data.ActiveWindowProcessId.ToString();
+                    //tbWndModule.Text = data.ActiveWindowProcessModuleName;
+                  
+                    screen = Screen.FromHandle(data.ActiveWindowHandle);
+
+                    System.Windows.Forms.Screen? s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Mi.DisplayName);
+
+                    if (s == null)//Dean 0626 fix SAST issue
+                        return;
+
+                    if ((screen.WorkingArea.Height != s.WorkingArea.Height) || (screen.WorkingArea.Width != s.WorkingArea.Width) || (screen.WorkingArea.Left != s.WorkingArea.Left))
+                        return;
+
+
                     string strFilePath = data.ActiveWindowFilePath;
 
                     writelog("EventAppStatus_SendValue ActiveWindowTitle = " + data.ActiveWindowTitle);
@@ -204,7 +218,7 @@ namespace DDPM.ColorApp
                     writelog("EventAppStatus_SendValue ActiveWindowFilePath = " + data.ActiveWindowFilePath);
 
                     //Get actived Monitor from actived window
-                    screen = Screen.FromHandle(data.ActiveWindowHandle);
+                    //screen = Screen.FromHandle(data.ActiveWindowHandle);
 
                     MonitorInfo actived_mi = Mi;
 
@@ -241,19 +255,21 @@ namespace DDPM.ColorApp
                         index = _apps.FindIndex(x => folder.Trim().IndexOf(x.AppPath.Trim()) >= 0);
                         if (index < 0)
                         {
-                            //writelog("index < 0 -1");
+                            writelog("check with filepath (UWP like app would be this condition) no matched");
                             return;
                         }
-                        //writelog("index < 0 -2 ");
+                        writelog("check with filepath (UWP like app would be this condition) " + index.ToString());
                     }
 
                     reqAppName = _apps[index].AppName;
 
                     //Trace.WriteLine("reqAppName = " + reqAppName);
+                    writelog("reqAppName = " + reqAppName);
 
                     bool isDesktop = _apps[index].AppType.Equals("Desktop"); //besides are UWP
 
                     //Trace.WriteLine("isDesktop  = " + isDesktop);
+                    writelog("isDesktop  = " + isDesktop.ToString());
 
                     //string tmp = string.Empty;// used for UI display
 
@@ -264,12 +280,14 @@ namespace DDPM.ColorApp
                     appconfigs = ddmLib.ReadColorPresetSettings().Result;
 
                     //Trace.WriteLine("appconfigs.Count = " + appconfigs.Count.ToString());
+                    writelog("appconfigs.Count = " + appconfigs.Count.ToString());
 
                     foreach (var config in appconfigs)
                     {
                         if (config.AppInfo == null || config.AppInfo.Count <= 0)
                         {
                             //Trace.WriteLine("config.AppInfo.Count = " +  config.AppInfo.Count.ToString());
+                            writelog("appconfigs.Count = " + appconfigs.Count.ToString());
                             continue;
                         }
 
@@ -281,6 +299,7 @@ namespace DDPM.ColorApp
                             {
                                 writelog("config.RunType  is not ColorPresetRunType.Auto");
                                 //Trace.WriteLine("config.RunType  is not ColorPresetRunType.Auto");
+                                writelog("config.RunType  is not ColorPresetRunType.Auto");
                                 break;
                             }
 
@@ -354,12 +373,12 @@ namespace DDPM.ColorApp
                             else
                             {
                                 reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
-                                writelog("reqKey = " + reqKey);
+                                writelog("reqKey [ColorPresetName] = " + reqKey);
                             }
 
                             if (string.IsNullOrEmpty(reqKey))
                             {
-                                writelog("reqKey is string.IsNullOrEmpty");
+                                writelog("reqKey [ColorPresetName] is string.IsNullOrEmpty");
                                 //Trace.WriteLine("reqKey is string.IsNullOrEmpty");
                                 return;
                             }

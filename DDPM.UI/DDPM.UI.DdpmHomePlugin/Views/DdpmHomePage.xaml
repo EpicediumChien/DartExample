@@ -475,14 +475,17 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center">
                     <StackPanel>
                         <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"
-                              Margin="0,64,0,32">
-                            <UXControls:UXTextBlock Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}"
-                                                    Foreground="#F5F6F7" FontSize="32" />
+                            Margin="0,64,0,32">
+                            <UXControls:UXTextBlock Text="Please wait..."
+                                                Foreground="#F5F6F7" FontSize="32"/>
                         </Grid>
                         <Grid Height="64">
                             <UXControls:UXBusyIndicator Width="64" Height="64"
-                                                        BusyIndicatorType="Secondary" IsActive="True" />
+                                                        BusyIndicatorType="Secondary" IsActive="True"/>
                         </Grid>
+                        <WrapPanel HorizontalAlignment="Center" Margin="0,8">
+                            <TextBlock Text="{Binding PleaseWaitMessage}" Foreground="#FF797F84"/>
+                        </WrapPanel>
                     </StackPanel>
                 </Border>
             </Grid>

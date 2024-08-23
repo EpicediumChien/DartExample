@@ -8,6 +8,7 @@
              d:DataContext="{d:DesignInstance Type=plugin:MouseViewModel}"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="675" d:DesignWidth="520" VerticalAlignment="Top" HorizontalAlignment="Left">
     <UserControl.Resources>
@@ -60,15 +61,15 @@
                                     </StackPanel>
                                 </Grid>
                                 <Grid Grid.Row="1">
-                                    <UXControls:UXTextBlock Text="Medium" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Opacity="{Binding IsMediumVisible}"
+                                    <UXControls:UXTextBlock Text="{Binding [Medium], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Opacity="{Binding IsMediumVisible}"
                                                             Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Center" />
                                 </Grid>
                                 <Grid VerticalAlignment="top" Grid.Row="2">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,7,0,0">
-                                        <UXControls:UXTextBlock Text="Slow" FontSize="14" Foreground="#A4B8CD" Margin="0,0,10,0" />
+                                        <UXControls:UXTextBlock Text="{Binding [Slow], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="#A4B8CD" Margin="0,0,10,0" />
                                         <UXControls:UXSlider TickFrequency="1" TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TouchScrollSensitivityLevel}" Minimum="0" Maximum="2" Width="360"
                                                              Thumb.DragStarted="TouchScrollSlider_DragStarted" Thumb.DragCompleted="TouchScrollSlider_DragCompleted" />
-                                        <UXControls:UXTextBlock Text="High" FontSize="14" Foreground="#A4B8CD" Margin="10,0,0,0" />
+                                        <UXControls:UXTextBlock Text="{Binding [High], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="#A4B8CD" Margin="10,0,0,0" />
                                     </StackPanel>
                                 </Grid>
                             </Grid>

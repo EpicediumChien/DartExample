@@ -1,6 +1,9 @@
 ﻿using Dell.Client.Framework.Security;
 using Dell.RPC.Transport;
+using System;
+using System.Diagnostics;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 
@@ -8,6 +11,8 @@ namespace DDPM.SA.Common.Security
 {
     public class NPipeSecurity
     {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
         /// <summary>
         /// For buildin user please make your decision for PipeAccessRights.ReadWrite or PipeAccessRights.FullControl
         /// </summary>
@@ -43,6 +48,20 @@ namespace DDPM.SA.Common.Security
             accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);
             pipeSecurity.AddAccessRule(accessRule);
             return pipeSecurity;
+        }
+        public static bool NamedPipeClientSecurity(NamedPipeServerStream pipeServer)
+        {
+            IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
+            if (GetNamedPipeClientProcessId(hPipe, out uint pid))
+            {
+                Console.WriteLine("pid: " + pid);
+                Process process = Process.GetProcessById((int)pid);
+                string filePath = process.MainModule.FileName;
+                Console.WriteLine("File path: " + filePath);
+                //check file path security
+            }
+            return true; // temporarily
+            //return false;
         }
     }
 }
