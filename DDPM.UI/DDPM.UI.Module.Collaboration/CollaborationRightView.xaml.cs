@@ -14,6 +14,8 @@ namespace DDPM.UI.Module.Collaboration {
   public partial class CollaborationRightView : UserControl {
     private readonly KeyboardViewModel _vm;
 
+    private string LearnMoreText = "";
+
     public CollaborationRightView(KeyboardViewModel vm) {
       InitializeComponent();
       _vm = vm;
@@ -37,14 +39,16 @@ namespace DDPM.UI.Module.Collaboration {
       if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_NOT_INSTALLED") { // Scenario 1
         txtAlert1.Text = Strings.Alert1;
         bdrAlert1.Visibility = Visibility.Visible;
-        //txtLearnMore1.Text = Strings.LearnMoreLink;
-        //txtLearnMore1.Text = "";
-        //_vm.IsCollaborationKeyEnable = false;
-        //tsCollaboration.IsEnabled = false;
       }
-      else if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_UNPAIRED") {
+      else if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_UNPAIRED") { // Scenario 2
         txtAlert1.Text = Strings.Alert2;
         bdrAlert1.Visibility = Visibility.Visible;
+      }
+      else if(!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_BLOCKED") { // Scenario 3
+        txtAlert2.Text = Strings.Alert3;
+        bdrAlert2.Visibility = Visibility.Visible;
+        txtLearnMore2.Text = Strings.LearnMoreLink;
+        LearnMoreText = Strings.LearnMoreText1;
       }
 
       //txtAlert1.Text = Strings.Alert5;
@@ -65,21 +69,7 @@ namespace DDPM.UI.Module.Collaboration {
     }
 
     private void ShowLearnMore() {
-      string text;
-      //Robert_Lin, 2024-6-26, fix SAST issue: [Bug] Correct one of the identical expression of both side of operator '=='
-      //OLD Code:
-      /*
-if(1 == 1) {
-  text = LearnMoreText1;
-}
-else {
-  text = LearnMoreText2;
-}
-      */
-      //NEW Code:
-      text = Strings.LearnMoreText1;
-
-      MessageModalDialog messageModalDialog = new(Strings.LearnMoreCaption, text, "", Strings.OKCaption, 600);
+      MessageModalDialog messageModalDialog = new(Strings.LearnMoreCaption, LearnMoreText, "", "", 600);
       Window parentWindow = Window.GetWindow(this);
       if(parentWindow != null) {
         messageModalDialog.Owner = parentWindow;

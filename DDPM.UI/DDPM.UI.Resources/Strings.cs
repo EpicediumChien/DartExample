@@ -398,7 +398,7 @@ namespace DDPM.UI.Common {
     public static readonly string CollaborationBlinkEffectText = "Enable blink effect when there is a new chat message in conference\ncall";
     public static readonly string CollaborationDoubleTapText = "Activate icons on the keyboard by double tapping instead of single\ntapping";
     public static readonly string LearnMoreCaption = "Learn More";
-    public static readonly string LearnMoreText1 = "To use Collaboration Keyboard with Microsoft Teams, open Teams and go to privacy settings.\n\nSelect Third-party app API and ensure that Dell Display and Peripheral Manager is not on the blocked list.\n\nYou’ll then be able to pair Microsoft Teams with Dell Display and Peripheral Manager again by launching a Microsoft Teams conference call.";
+    public static readonly string LearnMoreText1 = "To use Collaboration Keyboard with Microsoft Teams:\r\n1. Open Teams and go to privacy settings.\n\n2. Select Third-party app API and ensure that Dell Display and Peripheral Manager is not on the blocked list.\n\n3. Pair Microsoft Teams with Dell Display and Peripheral Manager by launching a Microsoft Teams conference call.";
     public static readonly string LearnMoreText2 = "If you are still having trouble, contact your IT department (if applicable) as they may have policies in place that are prohibiting Collaboration Keyboard from connecting to Microsoft Teams.";
     public static readonly string Alert1 = "To use Collaboration Keyboard you need the latest version of Zoom or Microsoft Teams";
     public static readonly string Alert2 = "Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request";
