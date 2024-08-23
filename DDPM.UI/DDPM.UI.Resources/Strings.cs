@@ -404,15 +404,7 @@ namespace DDPM.UI.Common {
     public static readonly string Alert2 = "Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request";
     public static readonly string Alert3 = "Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \"Learn more\" for instructions on how to re-connect.";
     public static readonly string Alert4 = "To use Collaboration Keyboard with Zoom, install Zoom’s latest desktop version";
-    public static readonly string Alert5 = "To use Collaboration Keyboard with Microsoft Teams, ensure that you are signed into and using the latest version of Microsoft Teams, and that Third-party app API is enabled";
-    public static readonly string Alert6 = "Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request";
-    public static readonly string Alert7 = "";
-    public static readonly string Alert8 = "";
-    public static readonly string Alert9 = "";
-    public static readonly string Alert10 = "";
-    public static readonly string Alert11 = "";
-    public static readonly string Alert12 = "";
-    public static readonly string Alert13 = "";
+    public static readonly string Alert5 = "To use Collaboration Keyboard with Microsoft Teams, ensure you are signed into Microsoft Teams, using the latest version, and have the Third-party app API enabled";
     public static readonly string LearnMoreLink = "Learn more";
     public static readonly string VideoCaption = "Video";
     public static readonly string ShareCaption = "Share";

@@ -52,12 +52,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
     private Type _speakerInterfaceType;
     private Type _dockInterfaceType;
     private Type _headsetInterfaceType;
+    private Type _webcamInterfaceType;
     private MethodInfo _mouseMethodInfo;
     private MethodInfo _keyboardMethodInfo;
     private MethodInfo _penMethodInfo;
     private MethodInfo _speakerMethodInfo;
     private MethodInfo _dockMethodInfo;
-    private MethodInfo _headseMethodInfo;
+    private MethodInfo _headsetMethodInfo;
+    private MethodInfo _webcamMethodInfo;
 
     private ItemId _itemID;
 
@@ -218,6 +220,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy {
           _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
           _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                       .MakeGenericMethod(_mouseInterfaceType);
+          _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
+          _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                      .MakeGenericMethod(_webcamInterfaceType);
         });
       }
       else {
