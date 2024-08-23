@@ -12,12 +12,16 @@
                 <Border Style="{StaticResource RightGroupBorderStyle}">
                     <StackPanel>
                         <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
-                        <StackPanel Margin="15" Height="122">
-                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Night" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[0]}" />
-                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Clear" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[1]}" />
-                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Bino" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[2]}" />
-                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Chroma" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[3]}" />
-                            <UXControls:UXCheckBox Width="100" Height="23" HorizontalAlignment="Left" VerticalContentAlignment="Center" Content="Crosshair" FontSize="14" Foreground="WhiteSmoke" Background="Transparent" IsChecked="{Binding IsCheck_VisionEngine[4]}" />
+                        <StackPanel Margin="15" Height="150">
+                            <ListBox ItemsSource="{Binding VisionEngineList}" Name="listTopics" Background="Transparent" BorderThickness="0" >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <UXControls:UXCheckBox FontSize="14" Content="{Binding DisplayText}" IsChecked="{Binding VisionEngine_Enable}" Foreground="WhiteSmoke" Click="UXCheckBox_Click"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </StackPanel>
                         <Grid>
                             <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Toggle Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />

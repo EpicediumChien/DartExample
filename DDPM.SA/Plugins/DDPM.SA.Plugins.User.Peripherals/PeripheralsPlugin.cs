@@ -985,7 +985,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.DockInfo = _logicalDeviceDock.DockInfo;
                         info.DockType = _logicalDeviceDock.DockType;
                         info.DockServiceTag = _logicalDeviceDock.DockServiceTag;
-                        //info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
+                        info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
                         info.DockFwUpdateStatus = _logicalDeviceDock.DockFwUpdateStatus;
                         info.DockTBTConnectionStatus = _logicalDeviceDock.DockTBTConnectionStatus;
                     }

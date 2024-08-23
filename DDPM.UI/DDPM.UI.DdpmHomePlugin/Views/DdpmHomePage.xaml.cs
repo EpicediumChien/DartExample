@@ -943,6 +943,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (bi.DataContext == null) return;
             HomeDevice homeDevice = bi.DataContext as HomeDevice;
 
+            if (homeDevice == null) return;
+
             //If the device is Display
             if (homeDevice.DeviceCategory == eDeviceCategory.Display)
                 return;

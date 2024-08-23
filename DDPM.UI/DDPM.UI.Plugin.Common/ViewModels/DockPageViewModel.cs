@@ -55,8 +55,9 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (!base.SetCurrentDevice(instanceID))
                 return false;
-            //0730 Bruce Add show Dock service tag
-            FirmwareVersion2 += $"\nServiceTag {CurrentDeviceInfo.DockServiceTag}";
+            //0821 Bruce Add show Dock Fw Version
+            var fv = CurrentDeviceInfo.DockPackageFwVersion;
+            FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}\nServiceTag {CurrentDeviceInfo.DockServiceTag}";
             FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)

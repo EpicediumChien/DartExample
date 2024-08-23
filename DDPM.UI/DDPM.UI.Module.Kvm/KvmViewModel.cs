@@ -412,10 +412,9 @@ namespace DDPM.UI.Module.Kvm
         }
 
         public string? ConnectionType { get; set; }
-        public double? BatteryLevel { get; set; }
-        public string? BatteryStatus { get; set; }
-        public bool? NoBattery { get; set; }
         public string? Text1 { get; set; }
+        public bool isUSBKVMButton { get; set; } = true;
+        public double USBKVMButtonOpacity { get; set; } = 1;
 
         #region Hotkey
 
@@ -590,6 +589,8 @@ namespace DDPM.UI.Module.Kvm
                 NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(selHomeDevice.MonitorInfo).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
+                    isUSBKVMButton = true;
+                    USBKVMButtonOpacity = 1;
                     //_isUSBKVM = KvmModule.isUSBKVM;
                     if (USBKVMisON)
                     {
@@ -669,6 +670,11 @@ namespace DDPM.UI.Module.Kvm
                             }
                         }
                     }
+                    else 
+                    {
+                        isUSBKVMButton = false;
+                        USBKVMButtonOpacity = 0.5;
+                    }
                     OnPropertyChanged("PC1Inputs_Selected");
                     OnPropertyChanged("PC2Inputs_Selected");
                     OnPropertyChanged("PC3Inputs_Selected");
@@ -737,6 +743,11 @@ namespace DDPM.UI.Module.Kvm
                                     break;
                             }
                         }
+                    }
+                    else
+                    {
+                        isUSBKVMButton = false;
+                        USBKVMButtonOpacity = 0.5;
                     }
 
                     //Get current Main InputSource from MonitorInfo
