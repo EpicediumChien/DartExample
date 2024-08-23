@@ -479,7 +479,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (_isForce)
                         {
                             isUpdate = true;
-                            s += $"{fwUpdateInfo.DeviceName} will be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                            s += $"{fwUpdateInfo.Model} will be updated to {fwUpdateInfo.TheLatestVersion}\n";
                         }
                         if (_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(fwUpdateInfo)))
                         {
@@ -491,24 +491,24 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
                                     if (_isDefer)
                                     {
-                                        s += $"{fwUpdateInfo.DeviceName} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                                        s += $"{fwUpdateInfo.Model} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
                                     }
                                     else if (difference.TotalHours >= 24 && _DelayFWUpdateInfoPackage.DelayTimesAvailable > 0)
                                     {
-                                        s += $"{fwUpdateInfo.DeviceName} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                                        s += $"{fwUpdateInfo.Model} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
                                     }
                                     else if (difference.TotalHours >= 24 && _DelayFWUpdateInfoPackage.DelayTimesAvailable <= 0)
                                     {
                                         _ForceUpdates.Add(delayFUpdateInfo);
                                         isUpdate = true;
-                                        s += $"{fwUpdateInfo.DeviceName} will be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                                        s += $"{fwUpdateInfo.Model} will be updated to {fwUpdateInfo.TheLatestVersion}\n";
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            s += $"{fwUpdateInfo.DeviceName} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                            s += $"{fwUpdateInfo.Model} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
                         }
                     }
                 }

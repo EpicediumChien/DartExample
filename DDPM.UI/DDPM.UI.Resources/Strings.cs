@@ -348,9 +348,15 @@ namespace DDPM.UI.Common {
     public static readonly string PairTile2 = "Scan the QR Code to download Tile on to your mobile device.";
     public static readonly string PairTile3 = "Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.";
     public static readonly string DownloadTile = "Download tile";
+        public static readonly string USB_C_DP_14 = "USB-C (DP 1.4)";
+        public static readonly string Dual_USB__C_DP_14 = "Dual USB-C (DP 1.4)";
+        public static readonly string DUSB__C_TB_4 = "USB-C (TB 4)";
+        public static readonly string DUSB__C_TB_5 = "USB-C (TB 5)";
 
-    // add device 
-    public static readonly string AddDevice = GetString("AddDevice");
+        #region [2]
+        //please do not insert any code to region [2]
+        // add device 
+        public static readonly string AddDevice = GetString("AddDevice");
     public static readonly string AddDevice_Display = GetString("AddDevice.Display");
     public static readonly string AddDevice_Webcam = GetString("AddDevice.Webcam");
     public static readonly string AddDevice_KnM = GetString("AddDevice.KnM");

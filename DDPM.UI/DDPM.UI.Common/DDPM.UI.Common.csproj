@@ -83,6 +83,9 @@
     <None Remove="Resources\Progressbar2.png" />
     <None Remove="Resources\Progressbar3.png" />
     <None Remove="Resources\SB3022.png" />
+    <None Remove="Resources\SD25.png" />
+    <None Remove="Resources\SD25TB4.png" />
+    <None Remove="Resources\SD25TB5.png" />
     <None Remove="Resources\Share.png" />
     <None Remove="Resources\SP3022.png" />
     <None Remove="Resources\Speaker_AudioPreset.png" />
@@ -137,6 +140,7 @@
     <None Remove="Resources\WD19S_130W.png" />
     <None Remove="Resources\WD19S_180W.png" />
     <None Remove="Resources\WD22TB4.png" />
+    <None Remove="Resources\WD25.png" />
     <None Remove="Resources\WebCamModel_P2424HEB_Large.png" />
     <None Remove="Resources\WebCamModel_P2424HEB_Small.png" />
     <None Remove="Resources\WebCamModel_U3223QZ_Large.png" />
@@ -184,7 +188,16 @@
     <Resource Include="Resources\Headset_GooglePlayStoreQR.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\SD25.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Loading.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SD25TB4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\SD25TB5.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\SP3022.png">
@@ -245,6 +258,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\u2723qe.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\WebCamModel_WB5023_Small.png">

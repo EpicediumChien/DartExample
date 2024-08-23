@@ -2581,15 +2581,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         switch ((uint)(u & 0xf0))
                         {
                             case (uint)Gaming_Supported.GameEnhancementMode:
+                                gamingDisplayPropertiesInfo.IsSupported_GameEnhancementMode = true;
                                 gamingDisplayPropertiesInfo.Supported_GameEnhancementMode.Add((Gaming_GameEnhancementMode)(u & 0x0f));
                                 break;
                             case (uint)Gaming_Supported.ResponseTime:
+                                gamingDisplayPropertiesInfo.IsSupported_ResponseTime = true;
                                 gamingDisplayPropertiesInfo.Supported_ResponseTime.Add((Gaming_ResponseTime)(u & 0x0f));
                                 break;
                             case (uint)Gaming_Supported.DarkStabilizer:
+                                gamingDisplayPropertiesInfo.IsSupported_DarkStabilizer = true;
                                 gamingDisplayPropertiesInfo.Supported_DarkStabilizer.Add((Gaming_DarkStabilizer)(u & 0x0f));
                                 break;
                             case (uint)Gaming_Supported.HDRType:
+                                gamingDisplayPropertiesInfo.IsSupported_HDRType = true;
                                 gamingDisplayPropertiesInfo.Supported_HDRType.Add((Gaming_HDRType)(u & 0x0f));
                                 break;
                         }
@@ -2609,24 +2613,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         uint u = Convert.ToUInt32(temps, 16);
                         if (Enum.IsDefined(typeof(Gaming_DualResolutionType), u))
                         {
+                            gamingDisplayPropertiesInfo.IsSupported_DualResolutionType = true;
                             gamingDisplayPropertiesInfo.Supported_DualResolutionType.Add((Gaming_DualResolutionType)u);
                         }
                     }
                 }
             }
-            ss = monitorInfo.CapabilityString.Split("EC(");
-            if (ss.Length == 2)
+            if (monitorInfo.modelName.Contains("G"))
             {
-                ss = ss[1].Split(")");
-                ss = ss[0].Split(" ");
-                foreach (string temps in ss)
+                ss = monitorInfo.CapabilityString.Split("EC(");
+                if (ss.Length == 2)
                 {
-                    if (!string.IsNullOrEmpty(temps))
+                    ss = ss[1].Split(")");
+                    ss = ss[0].Split(" ");
+                    foreach (string temps in ss)
                     {
-                        uint u = Convert.ToUInt32(temps, 16);
-                        if (Enum.IsDefined(typeof(Gaming_VisionEngineType), u))
+                        if (!string.IsNullOrEmpty(temps))
                         {
-                            gamingDisplayPropertiesInfo.Supported_VisionEngineType.Add((Gaming_VisionEngineType)u);
+                            uint u = Convert.ToUInt32(temps, 16);
+                            if (Enum.IsDefined(typeof(Gaming_VisionEngineType), u))
+                            {
+                                gamingDisplayPropertiesInfo.IsSupported_VisionEngineType = true;
+                                gamingDisplayPropertiesInfo.Supported_VisionEngineType.Add((Gaming_VisionEngineType)u);
+                            }
                         }
                     }
                 }
@@ -2811,31 +2820,34 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     gamingDisplayPropertiesInfo.Current_DualResolutionType = ObjGetVCP.value.ToString() == "4K" ? Gaming_DualResolutionType._4K : Gaming_DualResolutionType._FHD; ;
                 }
-                ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
-                if (ObjGetVCP.result == true)
+                if (monitorInfo.modelName.Contains("G"))
                 {
-                    // 右移8位，將後半段不要的曲調
-                    uint ea_Ret = ((uint)ObjGetVCP.value >> 8);
-                    //轉成二進制
-                    string binaryString = Convert.ToString(ea_Ret, 2).PadLeft(8, '0');
-                    // 反向字串，使得順向
-                    string reversedBinaryString = Algorithm.ReverseString(binaryString);
+                    ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
+                    if (ObjGetVCP.result == true)
+                    {
+                        // 右移8位，將後半段不要的曲調
+                        uint ea_Ret = ((uint)ObjGetVCP.value >> 8);
+                        //轉成二進制
+                        string binaryString = Convert.ToString(ea_Ret, 2).PadLeft(8, '0');
+                        // 反向字串，使得順向
+                        string reversedBinaryString = Algorithm.ReverseString(binaryString);
 
-                    for (int i = 0; i < gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length; i++)
-                    {
-                        //字串中為1的代表啟用該引擎
-                        if (reversedBinaryString[i] == ('1'))
+                        for (int i = 0; i < gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length; i++)
                         {
-                            gamingDisplayPropertiesInfo.IsEnable_VisionEngineType[i] = true;
+                            //字串中為1的代表啟用該引擎
+                            if (reversedBinaryString[i] == ('1'))
+                            {
+                                gamingDisplayPropertiesInfo.IsEnable_VisionEngineType[i] = true;
+                            }
                         }
-                    }
-                    string command = "";
-                    for (int i = 0; i < gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length; i++)
-                    {
-                        //需啟用的引擎增加1字串
-                        if (gamingDisplayPropertiesInfo.IsEnable_VisionEngineType[i])
+                        string command = "";
+                        for (int i = 0; i < gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length; i++)
                         {
-                            command += "1";
+                            //需啟用的引擎增加1字串
+                            if (gamingDisplayPropertiesInfo.IsEnable_VisionEngineType[i])
+                            {
+                                command += "1";
+                            }
                         }
                     }
                 }
