@@ -19,8 +19,10 @@ using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 
@@ -1004,6 +1006,26 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
                         info.DockFwUpdateStatus = _logicalDeviceDock.DockFwUpdateStatus;
                         info.DockTBTConnectionStatus = _logicalDeviceDock.DockTBTConnectionStatus;
+                        try
+                        {
+                            string textString = System.Text.Encoding.UTF8.GetString(_logicalDeviceDock.DockData);
+                            Debug.WriteLine(textString);
+                            DockData dockData = JsonSerializer.Deserialize<DockData>(textString);
+                            info.ModelNumber = dockData.MarketingName;
+                            info.Name = $"Dell Dock {dockData.MarketingName}";
+                            if (string.IsNullOrEmpty(info.DockServiceTag))
+                            {
+                                info.DockServiceTag = dockData.ServiceTag;
+                            }
+                            if (string.IsNullOrEmpty(info.FirmwareVersion))
+                            {
+                                info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
+                            }
+                        }
+                        catch
+                        {
+
+                        }
                     }
                     _deviceHelper.deviceInfo.Add(info);
 

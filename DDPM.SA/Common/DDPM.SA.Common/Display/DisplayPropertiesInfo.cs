@@ -70,22 +70,39 @@ namespace DDPM.SA.Common
         _FHD = 0xF810,
         Unknow = 0x0000
     }
+    public enum Gaming_VisionEngineType : uint
+    {
+        Night_Vision = 0x01,
+        Clear_Vision = 0x02,
+        Bino_Vision = 0x03,
+        Chroma_Vision = 0x04,
+        Steady_Vision = 0x05,
+        Crosshair = 0x06
+    }
     /// <summary>
     /// Gaming螢幕屬性(解析度、HDR等)
     /// </summary>
     public class GamingDisplayPropertiesInfo
     {
         public string DisplayName;
+        public bool IsSupported_GameEnhancementMode;
+        public bool IsSupported_ResponseTime;
+        public bool IsSupported_DarkStabilizer;
+        public bool IsSupported_HDRType;
+        public bool IsSupported_DualResolutionType;
+        public bool IsSupported_VisionEngineType;
         public Gaming_GameEnhancementMode Current_GameEnhancementMode;
         public Gaming_ResponseTime Current_ResponseTime;
         public Gaming_DarkStabilizer Current_DarkStabilizer;
         public Gaming_HDRType Current_HDRType;
         public Gaming_DualResolutionType Current_DualResolutionType;
+        public bool[] IsEnable_VisionEngineType;
         public List<Gaming_GameEnhancementMode> Supported_GameEnhancementMode;
         public List<Gaming_ResponseTime> Supported_ResponseTime;
         public List<Gaming_DarkStabilizer> Supported_DarkStabilizer;
         public List<Gaming_HDRType> Supported_HDRType;
         public List<Gaming_DualResolutionType> Supported_DualResolutionType;
+        public List<Gaming_VisionEngineType> Supported_VisionEngineType;
         public DisplaySupportedProperties SupportedProperties;
         public GamingDisplayPropertiesInfo()
         {
@@ -94,11 +111,13 @@ namespace DDPM.SA.Common
             Current_DarkStabilizer = Gaming_DarkStabilizer.Disable;
             Current_HDRType = Gaming_HDRType.Disable;
             Current_DualResolutionType = Gaming_DualResolutionType.Unknow;
+            IsEnable_VisionEngineType = new bool[6];
             Supported_GameEnhancementMode = new List<Gaming_GameEnhancementMode>();
             Supported_ResponseTime = new List<Gaming_ResponseTime>();
             Supported_DarkStabilizer = new List<Gaming_DarkStabilizer>();
             Supported_HDRType = new List<Gaming_HDRType>();
             Supported_DualResolutionType = new List<Gaming_DualResolutionType>();
+            Supported_VisionEngineType = new List<Gaming_VisionEngineType>();
             SupportedProperties = new DisplaySupportedProperties();
         }
     }
