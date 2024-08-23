@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
+    <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

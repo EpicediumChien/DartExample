@@ -1,10 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.Easy.Common;
+using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
+using VcpCore.Common;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
     public class ArrangeVM : ObservableObject
     {
+        private readonly object _lockObject = new();
+        private IDisplayService? _displayManagerPlugin;
+
         #region Enabled flag
 
         private bool _isFunctionEnabled = true;
@@ -29,7 +36,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             get
             {
-                return _isWorkUIEnabled && IsMoving;
+                return (_isWorkUIEnabled && IsMoving);
             }
         }
 
@@ -40,8 +47,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// </summary>
         public bool IsWorkUIEnabled
         {
-            get => IsWorkUIEnabled;
-            set
+            get => _isWorkUIEnabled;
+            set 
             {
                 SetProperty(ref _isWorkUIEnabled, value);
                 OnPropertyChanged("IsWorkUIShowing");
@@ -56,11 +63,24 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             get => _isMoving;
             set
             {
+                bool isChanged = (value != _isMoving);
                 SetProperty(ref _isMoving, value);
                 OnPropertyChanged("IsWorkUIShowing");
+                if (isChanged) 
+                {
+                    if (IsMovingChanged != null)
+                        IsMovingChanged(this, IsMoving);
+
+                }
+                if (value)
+                {
+                    RefreshWorkWinInfos();
+                }
             }
         }
 
+        public event EventHandler<bool> IsMovingChanged;
+        
         #endregion Option flags
 
         #region Cursor position
@@ -137,6 +157,207 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             get { return _hoveringCell; }
             set => SetProperty(ref _hoveringCell, value);
         }
+        public CellObj? DetermineHoveringCellObj(int x, int y)
+        {
+            foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+            {
+                EAWorkWindow workWin = keyValuePair.Value;
+                CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
+                if (cellObj != null)
+                {
+                    HoveringScreen = keyValuePair.Key;
+                    HoveringCellObj = cellObj;
+                    return cellObj;
+                }
+            }
+            HoveringCellObj = null;
+            return null;
+        }
+        #endregion
+
+        #region HoveringScreen
+        private string _hoveringScreen = "";
+        public string HoveringScreen
+        {
+            get => _hoveringScreen;
+            set => SetProperty(ref _hoveringScreen, value);
+        }
+        #endregion
+
+        #region WorkWindows
+        private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
+        private List<string> _workWinCellInfos = new List<string>();
+
+        public Dictionary<string, EAWorkWindow> WorkWindows
+        { 
+            get => _workWindows; 
+            set
+            {
+                SetProperty(ref _workWindows, value);
+            }
+        }
+        public void AddWorkWindow(string key, EAWorkWindow workWin)
+        {
+            _workWindows.Add(key, workWin);
+
+            OnPropertyChanged("WorkWindows");
+            OnPropertyChanged("WorkWindowCount");
+            //RefreshWorkWinInfos();
+        }
+
+        public int WorkWindowCount
+        {
+            get { return WorkWindows.Count; }
+        }
+
+        public void ClearWorkWindows()
+        {
+            foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+            {
+                keyValuePair.Value.DispatcherClose();
+            }
+            _workWindows.Clear();
+            RefreshWorkWinInfos();
+        }
+        
+        public void RemoveWorkWindow(string key)
+        {
+            EAWorkWindow workWindow;
+            if (WorkWindows.TryGetValue(key, out workWindow))
+            {
+                workWindow.DispatcherClose();
+                WorkWindows.Remove(key);
+                RefreshWorkWinInfos();
+            }
+        }
+
+        public List<string> WorkWinCellInfos
+        {
+            get => _workWinCellInfos;
+            set
+            {
+                SetProperty(ref _workWinCellInfos, value);
+            }
+        }
+        public void RefreshWorkWinInfos()
+        {
+            lock(_lockObject)
+            {
+                List<string> newInfo = new List<string>();
+                foreach (KeyValuePair<string, EAWorkWindow> kv in _workWindows)
+                {
+                    EAWorkWindow workWin = kv.Value as EAWorkWindow;
+                    if (workWin != null)
+                    {
+                        string workInfo = $"{workWin.WindowName}={workWin.CellListJson}";
+                        newInfo.Add(workInfo);
+                    }
+                }
+                WorkWinCellInfos = newInfo;
+            }
+        }
+
+        public void RefreshCellRects()
+        {
+            foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+            {
+                EAWorkWindow workWin = keyValuePair.Value;
+                workWin.Invoke_RefreshCellRects();
+            }
+            RefreshWorkWinInfos();
+        }
+
+        //Find the WorkWindow in WorkWindows by DisplayName, for exmaple "\\.\DISPLAY1"
+        public EAWorkWindow? FindWorkWindowByDisplayName(string displayName)
+        {
+            if (_workWinCellInfos == null)
+                return null;
+
+            EAWorkWindow workWindow = null;
+            if (_workWindows.TryGetValue(displayName, out workWindow))
+            {
+                return workWindow;
+            }
+            return null;
+        }
+
+        #endregion
+
+        #region Foreground Window Info
+        private IntPtr _hWndForeground = IntPtr.Zero;
+
+        public IntPtr hWndForeground
+        {
+            get => _hWndForeground;
+            set => SetProperty(ref _hWndForeground, value);
+        }
+
+        private string _pathNameForeground = "";
+        public string PathNameForeground
+        {
+            get => _pathNameForeground;
+            set => SetProperty(ref _pathNameForeground, value);
+        }
+
+        private string _startMovingMsg = "";
+        public string StartMovingMsg
+        {
+            get => _startMovingMsg;
+            set => SetProperty(ref _startMovingMsg, value);
+        }
+
+        public bool IsAllowToMoveFromPathName(string pathName)
+        {
+            string fileName = System.IO.Path.GetFileName(pathName);
+            if (fileName.Equals("DDPM.Subagent.User.exe", StringComparison.OrdinalIgnoreCase))
+                return false;
+            if (fileName.Equals("DDPM.exe", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            return true;
+        }
+        #endregion
+
+        #region DCF Features
+        public ILog Log { get; set; }
+        public void LogInfo(string message)
+        {
+            if (Log != null)
+            {
+                Log.Info(message);
+            }
+        }
+        #endregion
+
+        #region Helper Functions
+        public static string FormatRect(System.Windows.Rect rc)
+        {
+            return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
+        }
+        #endregion
+
+        #region DDPM.SA Interfaces
+        public IDisplayService? DisplayManager
+        {
+            get => _displayManagerPlugin;
+            set => _displayManagerPlugin = value;
+        }
+        public List<MonitorInfo>? GetMonitors()
+        {
+            if (_displayManagerPlugin == null)
+                return null;
+
+            return _displayManagerPlugin.GetMonitors().Result;
+        }
+        #endregion
+
+        #region WorkWindow FadeOut
+        //private bool _isFading = false;
+        //public bool IsFading
+        //{
+        //    get => _isFading;
+        //    set => SetProperty(ref _isFading, value);
+        //}
 
         #endregion Hovering Cell
     }

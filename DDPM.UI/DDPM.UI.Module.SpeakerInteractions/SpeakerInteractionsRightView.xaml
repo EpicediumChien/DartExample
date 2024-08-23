@@ -8,6 +8,7 @@
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:SoundBarViewModel}"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="655" d:DesignWidth="470" VerticalAlignment="Top" HorizontalAlignment="Left">
     <UserControl.Resources>
@@ -95,7 +96,7 @@
                     <Border  Background="#99132F54" CornerRadius="6" Width="470" Height="auto" VerticalAlignment="Top">
                         <StackPanel Orientation="Vertical">
                             <Grid  VerticalAlignment="Top" Margin="20,0,0,0">
-                                <UXControls:UXTextBlock x:Name="InteractionsTextBlock" Text="Interactions" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                                <UXControls:UXTextBlock x:Name="InteractionsTextBlock" Text="{Binding [SpeakerInteractions.0], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                             </Grid>
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -108,7 +109,7 @@
                                 </Grid.RowDefinitions>
 
                                 <StackPanel>
-                                    <UXControls:UXTextBlock  Text="Hover on the application names below to view available speakerphone buttons (indicated by green)" TextWrapping="Wrap"  Foreground="White" FontSize="14" Margin="20,0,0,20" />
+                                    <UXControls:UXTextBlock  Text="{Binding [SpeakerInteractions.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap"  Foreground="White" FontSize="14" Margin="20,0,0,20" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Row="1">
@@ -118,7 +119,7 @@
                                                 <Border x:Name="MicrosoftTeamsBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="Microsoft Teams" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerInteractions.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -144,7 +145,7 @@
                                                 <Border x:Name="ZoomButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="Zoom" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerInteractions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -170,7 +171,7 @@
                                                 <Border x:Name="GoogleMeetButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="Google Meet" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerInteractions.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -196,7 +197,7 @@
                                                 <Border x:Name="SkypeforBusinessBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="Skype for Business" FontSize="14" Foreground="White" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerInteractions.5], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="White" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>

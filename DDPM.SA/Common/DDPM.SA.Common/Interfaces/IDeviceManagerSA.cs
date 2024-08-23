@@ -426,7 +426,9 @@ namespace DDPM.SA.Common {
 
     Task<bool> isNKVMSupportMonitor(MonitorInfo monitorInfo);
 
-    #endregion for NKVM
+        Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+
+        #endregion for NKVM
 
     #region public for SW Update
 

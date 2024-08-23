@@ -154,6 +154,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 if (pluginCondition is PluginErrorCondition)
                 {
+                    if (_viewModel!=null)
+                        _viewModel.IsDeviceManagerReady = false;
+
                     _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
                 }
                 else if (pluginCondition is PluginRunningCondition)
@@ -164,6 +167,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     {
                         if (!_HasRegisted)
                         {
+                            if (_viewModel != null)
+                                _viewModel.IsDeviceManagerReady = true;
                             _HasRegisted = true;
                             _deviceManager.DeviceChanged += _deviceManager_DeviceChanged;
                             _deviceManager.VCPchanged += _deviceManager_VCPchanged;
@@ -423,6 +428,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _viewModel = (DdpmHomePageViewModel?)PluginIoc.GetService<IDdpmHomePageViewModel>();
             if (_viewModel != null)
             {
+                _viewModel.Invoke_PleaseWait();
             }
             _isConfigured = true;
         }

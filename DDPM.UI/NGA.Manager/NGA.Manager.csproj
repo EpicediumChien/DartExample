@@ -23,4 +23,10 @@
 		<PackageReference Include="DellClientFramework" Version="6.4.5.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="DDPM.SA.Common">
+	    <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 </Project>
