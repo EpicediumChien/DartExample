@@ -277,7 +277,7 @@ namespace NGA.ThickClientCore
         {
             /* If already an instance is opened finding the window and bring to front */
             var windowName = string.IsNullOrEmpty(config.WindowText) ? config.HeaderText : config.WindowText;
-            var hWnd = NativeMethods.FindWindow(null, windowName);
+            var hWnd = NativeMethods._FindWindow(null, windowName);
 
             if (hWnd == IntPtr.Zero)
             {

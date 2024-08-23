@@ -24,8 +24,8 @@ namespace DDPM.UI.Common {
         public static readonly string Off = GetString("Off");
         public static readonly string RestoreToDefault = GetString("RestoreToDefault");
         public static readonly string Unpair = GetString("Unpair");
-        public static readonly string PollingRateInfoTip1 = "Number of times per second your mouse’s position is reported to system";
-        public static readonly string PollingRateInfoTip2 = "Number of times per second mouse’s position reports to system. Connect via USB for higher polling rate.";
+        public static readonly string PollingRateInfoTip1 = GetString("Mouse.13");
+        public static readonly string PollingRateInfoTip2 = GetString("Mouse.14");
 
         public static readonly string ButtonCustomizeCaption = GetString("ButtonSettings.13");
         public static readonly string ScrollWheelCaption = GetString("ButtonSettings.0");
@@ -48,32 +48,31 @@ namespace DDPM.UI.Common {
         public static readonly string ButtonCustomizeMessage = GetString("ButtonSettings.5");
         public static readonly string ButtonCustomizeRestoreCaption = GetString("ButtonSettings.6");
         public static readonly string PenButtonCustomizeRestoreCaption = GetString("PenButtonSettings.8");
-        public static readonly string NullActionTooltip1 = "Click to Assign an action";
-        public static readonly string NullActionTooltip2 = "Select an action from\nthe list on the right";
-        public static readonly string USBWirelessReceiver = "USB Wireless Receiver";
-        public static readonly string ReceiverFirmwareVersion = "Receiver Firmware Version";
-        public static readonly string ReadyToBePaired = "Ready to be paired";
+        public static readonly string NullActionTooltip1 = GetString("Mouse.14");
+        public static readonly string NullActionTooltip2 = GetString("Mouse.15");
+        public static readonly string USBWirelessReceiver = GetString("USBWirelessReceiver");
+        public static readonly string ReceiverFirmwareVersion = GetString("ReceiverFirmwareVersion");
+        public static readonly string ReadyToBePaired = GetString("ReadyToBePaired");
         public static readonly string DPIMessage = GetString("MouseSettings.0");
         public static readonly string PollingRateMessage = GetString("MouseSettings.1");
-        //public static readonly string EOLMessage = "There are no advanced features on this device";
-        public static readonly string Wired = "Wired";
+        public static readonly string Wired = GetString("Wired");
         public static readonly string Error = GetString("Error");
-        public static readonly string MultiDeviceTooltip = "You have connected multiple devices of the same model. Actions will be duplicated on each instance of the device";
-        public static readonly string NoDeviceFound = "No device found. Make sure your wireless device is charged and turned ON.";
-        public static readonly string AlreadyPaired = "This device is already paired. Unpair the device first if you would like to pair again.";
-        public static readonly string NotSupportedDevice = "This device you are pairing is not supported with the connected USB wireless receiver. Use the receiver that came with the device.";
-        public static readonly string DongleSlotFull = "The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the \"Unpair\" button in the device settings page.";
+        public static readonly string MultiDeviceTooltip = GetString("Tooltip.0");
+        public static readonly string NoDeviceFound = GetString("Tooltip.1");
+        public static readonly string AlreadyPaired = GetString("Tooltip.2");
+        public static readonly string NotSupportedDevice = GetString("Tooltip.3");
+        public static readonly string DongleSlotFull = GetString("Tooltip.4");
         public static readonly string PenSettingsCaption = GetString("Pen.0");
         public static readonly string MouseSettingsCaption = GetString("Mouse.6");
         public static readonly string KeyCustomizationCaption = GetString("Keyboard.2");
         public static readonly string ButtonCustomizationCaption = GetString("Mouse.7");
         public static readonly string CollaborationCaption = GetString("Keyboard.3");
         public static readonly string IlluminationCaption = GetString("Keyboard.4");
-        public static readonly string TouchScrollCaption = "Touch Scroll Sensitivity";
-        public static readonly string TouchScrollInfoTip = "Adjust the Scroll Speed";
-        public static readonly string PrimaryButtonCaption = "Primary Mouse Button";
-        public static readonly string DPISettingCaption = "DPI Setting";
-        public static readonly string PollingRateCaption = "Polling Rate";
+        public static readonly string TouchScrollCaption = GetString("Mouse.8");
+        public static readonly string TouchScrollInfoTip = GetString("Mouse.9");
+        public static readonly string PrimaryButtonCaption = GetString("Mouse.10");
+        public static readonly string DPISettingCaption = GetString("Mouse.11");
+        public static readonly string PollingRateCaption = GetString("Mouse.12");
         public static readonly string PenButtonClickOnce = GetString("PenButtonSettings.3");
         public static readonly string PenButtonDoubleClick = GetString("PenButtonSettings.4");
         public static readonly string PenButtonPressHold = GetString("PenButtonSettings.5");
@@ -93,17 +92,17 @@ namespace DDPM.UI.Common {
         public static readonly string VbarText_DisplayOthers = GetString("VbarText_DisplayOthers");
 
         //RightViewHeaderText
-        public static readonly string RightViewHeader_BrightnessContrast = "Brightness/Contrast";
+        public static readonly string RightViewHeader_BrightnessContrast = GetString("BrightnessOrContrast");
 
-        public static readonly string RightViewHeader_Color = "Color";
-        public static readonly string RightViewHeader_DisplayProperties = "Display Properties";
-        public static readonly string RightViewHeader_General = "General";
-        public static readonly string RightViewHeader_PIPPBP = "PIP/PBP";
-        public static readonly string RightViewHeader_Hotkeys = "Hotkeys";
-        public static readonly string RightViewHeader_Layout = "Layout";
-        public static readonly string RightViewHeader_EasyMemory = "Easy Memory";
-        public static readonly string RightViewHeader_Settings = "Settings";
-        public static readonly string RightViewHeader_VisionEngine = "Vision Engine";
+        public static readonly string RightViewHeader_Color = GetString("Color");//"Color";
+        public static readonly string RightViewHeader_DisplayProperties = GetString("DisplayProperties");
+        public static readonly string RightViewHeader_General = GetString("General");
+        public static readonly string RightViewHeader_PIPPBP = GetString("PIPorPBP");
+        public static readonly string RightViewHeader_Hotkeys = GetString("Hotkeys");
+        public static readonly string RightViewHeader_Layout = GetString("Layout");
+        public static readonly string RightViewHeader_EasyMemory = GetString("EasyMemory");
+        public static readonly string RightViewHeader_Settings = GetString("Settings");
+        public static readonly string RightViewHeader_VisionEngine = GetString("VisionEngine");
 
         public static readonly string Display = GetString("Display"); //"Display"
         public static readonly string FirmwareVersion = GetString("FirmwareVersion"); //"Firmware Version"
@@ -112,64 +111,64 @@ namespace DDPM.UI.Common {
         public static readonly string RestoreToDefaultButton = GetString("RestoreToDefaultButton"); //"Restore to default"
 
         //strings for Action
-        public static readonly string None = "None";
+        public static readonly string None = GetString("None");//None
 
         //Windows Actions
-        public static readonly string Copilot = "Copilot";
+        public static readonly string Copilot = GetString("Copilot");//Copilot
 
-        public static readonly string Devices = "Devices";
-        public static readonly string Lock = "Lock";
-        public static readonly string NotificationCenter = "Notification Center";
-        public static readonly string ScreenSnip = "Screen Snip";
-        public static readonly string Search = "Search";
-        public static readonly string Settings = "Settings";
-        public static readonly string ShowHideDesktop = "Show/Hide Desktop";
-        public static readonly string Shutdown = "Shutdown";
-        public static readonly string SignOut = "Sign Out";
-        public static readonly string Sleep = "Sleep";
-        public static readonly string SwitchApplications = "Switch Applications";
-        public static readonly string TaskView = "Task View";
+        public static readonly string Devices = GetString("Devices");//Devices
+        public static readonly string Lock = GetString("Lock");//Lock
+        public static readonly string NotificationCenter = GetString("NotificationCenter");//Notification Center
+        public static readonly string ScreenSnip = GetString("ScreenSnip");//Screen Snip
+        public static readonly string Search = GetString("Search");//Search
+        public static readonly string Settings = GetString("Settings");//Settings
+        public static readonly string ShowHideDesktop = GetString("ShowHideDesktop");//Show/Hide Desktop
+        public static readonly string Shutdown = GetString("Shutdown");//Shutdown
+        public static readonly string SignOut = GetString("SignOut");//Sign Out
+        public static readonly string Sleep = GetString("Sleep");//Sleep
+        public static readonly string SwitchApplications = GetString("SwitchApplications");//Switch Applications
+        public static readonly string TaskView = GetString("TaskView");//Task View
 
         //pen
-        public static readonly string BarrelButton = "Barrel Button";
+        public static readonly string BarrelButton = GetString("BarrelButton");//Barrel Button
 
-        public static readonly string DefineBySystem = "Define by system";
-        public static readonly string EMail = "E-mail";
-        public static readonly string OneNote = "One Note";
-        public static readonly string PenMenu = "Pen Menu";
-        public static readonly string QuickNote = "Quick Note";
-        public static readonly string ScreenSnipping = "Screen Snipping"; //ScreenSnip?
-        public static readonly string StickyNotes = "Sticky Notes";
-        public static readonly string SwitchApplication = "Switch Application";
-        public static readonly string Widgets = "Widgets";
-        public static readonly string WindowsSearch = "Windows Search"; //Search?
+        public static readonly string DefineBySystem = GetString("DefineBySystem");//Define by system
+        public static readonly string EMail = GetString("EMail");//E-mail
+        public static readonly string OneNote = GetString("OneNote");//One Note
+        public static readonly string PenMenu = GetString("PenMenu");//Pen Menu
+        public static readonly string QuickNote = GetString("QuickNote");//Quick Note
+        public static readonly string ScreenSnipping = GetString("ScreenSnipping");//Screen Snipping //ScreenSnip?
+        public static readonly string StickyNotes = GetString("StickyNotes");//Sticky Notes
+        public static readonly string SwitchApplication = GetString("SwitchApplication");//Switch Application
+        public static readonly string Widgets = GetString("Widgets");//Widgets
+        public static readonly string WindowsSearch = GetString("WindowsSearch");//Windows Search //Search?
 
         //Productivity Actions
-        public static readonly string AssignKeystroke = "Assign Keystroke";
+        public static readonly string AssignKeystroke = GetString("AssignKeystroke");//Assign Keystroke
 
-        public static readonly string Back = "Back";
-        public static readonly string Calculator = "Calculator";
-        public static readonly string CloseWindow = "Close Window";
-        public static readonly string Copy = "Copy";
-        public static readonly string Cut = "Cut";
-        public static readonly string Documents = "Documents";
-        public static readonly string Forward = "Forward";
-        public static readonly string MaximizeWindow = "Maximize Window";
-        public static readonly string MinimizeWindow = "Minimize Window";
-        public static readonly string MyHome = "My Home";
-        public static readonly string OpenFile = "Open File";
-        public static readonly string OpenFolder = "Open Folder";
-        public static readonly string OpenNewBrowserTab = "Open New Browser Tab";
-        public static readonly string OpenWebPage = "Open Web Page";
-        public static readonly string Paste = "Paste";
-        public static readonly string ZoomIn = "Zoom In";
-        public static readonly string ZoomOut = "Zoom Out";
-        public static readonly string ZoomReset = "Zoom Reset";
+        public static readonly string Back = GetString("Back");//Back
+        public static readonly string Calculator = GetString("Calculator");//Calculator
+        public static readonly string CloseWindow = GetString("CloseWindow");//Close Window
+        public static readonly string Copy = GetString("Copy");//Copy
+        public static readonly string Cut = GetString("Cut");//Cut
+        public static readonly string Documents = GetString("Documents"); //Documents
+        public static readonly string Forward = GetString("Forward"); //Forward
+        public static readonly string MaximizeWindow = GetString("MaximizeWindow");//Maximize Window
+        public static readonly string MinimizeWindow = GetString("MinimizeWindow");//Minimize Window
+        public static readonly string MyHome = GetString("MyHome");//My Home
+        public static readonly string OpenFile = GetString("OpenFile");//Open File
+        public static readonly string OpenFolder = GetString("OpenFolder");//Open Folder
+        public static readonly string OpenNewBrowserTab = GetString("OpenNewBrowserTab");//Open New Browser Tab
+        public static readonly string OpenWebPage = GetString("OpenWebPage");//Open Web Page
+        public static readonly string Paste = GetString("Paste");//Paste
+        public static readonly string ZoomIn = GetString("ZoomIn");//Zoom In
+        public static readonly string ZoomOut = GetString("ZoomOut");//Zoom Out
+        public static readonly string ZoomReset = GetString("ZoomReset");//Zoom Reset
 
-        public static readonly string _4thClick = "4th Click";
-        public static readonly string _5thClick = "5th Click";
-        public static readonly string Erase = "Erase";
-        public static readonly string LeftClick = "Left Click";
+        public static readonly string _4thClick = GetString("4thClick");//"4th Click";
+        public static readonly string _5thClick = GetString("5thClick");//"5th Click";
+        public static readonly string Erase = GetString("Erase");//"Erase";
+        public static readonly string LeftClick = GetString("LeftClick");// "Left Click";
         public static readonly string MiddleClick = "Middle Click";
         public static readonly string OpenRun = "Open/Run";
         public static readonly string OpenRun2 = "Open Run";
@@ -393,7 +392,5 @@ namespace DDPM.UI.Common {
     public static readonly string OK = GetString("OK");
     public static readonly string LearnMore = GetString("LearnMore");
     public static readonly string Collaboration = GetString("Collaboration");
-
-    #endregion
     }
 }

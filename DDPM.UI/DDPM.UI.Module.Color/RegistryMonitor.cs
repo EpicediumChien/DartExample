@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace RegistryUtils
 {
@@ -12,16 +13,34 @@ namespace RegistryUtils
         #region P/Invoke
 
         [DllImport("advapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult);
+        public static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
+                                               out IntPtr phkResult)
+        {
+            return RegOpenKeyEx(hKey,  subKey,  options,  samDesired, out phkResult);
+        }
 
         [DllImport("advapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int RegNotifyChangeKeyValue(IntPtr hKey, bool bWatchSubtree,
                                                           RegChangeNotifyFilter dwNotifyFilter, IntPtr hEvent,
                                                           bool fAsynchronous);
+        private static int _RegNotifyChangeKeyValue(IntPtr hKey, bool bWatchSubtree,
+                                                  RegChangeNotifyFilter dwNotifyFilter, IntPtr hEvent,
+                                                  bool fAsynchronous)
+        {
+            return RegNotifyChangeKeyValue(hKey, bWatchSubtree, dwNotifyFilter, hEvent, fAsynchronous);
+        }
 
         [DllImport("advapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int RegCloseKey(IntPtr hKey);
+        private static int _RegCloseKey(IntPtr hKey)
+        {
+            return RegCloseKey(hKey);
+        }
 
         private const int KEY_QUERY_VALUE = 0x0001;
         private const int KEY_NOTIFY = 0x0010;
@@ -247,7 +266,7 @@ namespace RegistryUtils
         private void ThreadLoop()
         {
             IntPtr registryKey;
-            int result = RegOpenKeyEx(_registryHive, _registrySubName, 0, STANDARD_RIGHTS_READ | KEY_QUERY_VALUE | KEY_NOTIFY,
+            int result = _RegOpenKeyEx(_registryHive, _registrySubName, 0, STANDARD_RIGHTS_READ | KEY_QUERY_VALUE | KEY_NOTIFY,
                                       out registryKey);
             if (result != 0)
                 throw new Win32Exception(result);
@@ -258,7 +277,7 @@ namespace RegistryUtils
                 WaitHandle[] waitHandles = new WaitHandle[] { _eventNotify, _eventTerminate };
                 while (!_eventTerminate.WaitOne(0, true))
                 {
-                    result = RegNotifyChangeKeyValue(registryKey, true, _regFilter, _eventNotify.Handle, true);
+                    result = _RegNotifyChangeKeyValue(registryKey, true, _regFilter, _eventNotify.Handle, true);
                     if (result != 0)
                         throw new Win32Exception(result);
 
@@ -272,7 +291,7 @@ namespace RegistryUtils
             {
                 if (registryKey != IntPtr.Zero)
                 {
-                    RegCloseKey(registryKey);
+                    _RegCloseKey(registryKey);
                 }
             }
         }
@@ -293,16 +312,34 @@ namespace RegistryUtils
         #region P/Invoke
 
         [DllImport("advapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult);
+        private static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
+                                               out IntPtr phkResult)
+        {
+            return RegOpenKeyEx(hKey,  subKey,  options,  samDesired, out  phkResult);
+        }
 
         [DllImport("advapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int RegNotifyChangeKeyValue(IntPtr hKey, bool bWatchSubtree,
                                                           RegChangeNotifyFilter dwNotifyFilter, IntPtr hEvent,
                                                           bool fAsynchronous);
+        private static int _RegNotifyChangeKeyValue(IntPtr hKey, bool bWatchSubtree,
+                                                          RegChangeNotifyFilter dwNotifyFilter, IntPtr hEvent,
+                                                          bool fAsynchronous)
+        {
+            return RegNotifyChangeKeyValue(hKey, bWatchSubtree, dwNotifyFilter, hEvent, fAsynchronous);
+        }
 
         [DllImport("advapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int RegCloseKey(IntPtr hKey);
+        private static int _RegCloseKey(IntPtr hKey)
+        {
+            return RegCloseKey(hKey);
+        }
 
         private const int KEY_QUERY_VALUE = 0x0001;
         private const int KEY_NOTIFY = 0x0010;
@@ -528,7 +565,7 @@ namespace RegistryUtils
         private void ThreadLoop()
         {
             IntPtr registryKey;
-            int result = RegOpenKeyEx(_registryHive, _registrySubName, 0, STANDARD_RIGHTS_READ | KEY_QUERY_VALUE | KEY_NOTIFY,
+            int result = _RegOpenKeyEx(_registryHive, _registrySubName, 0, STANDARD_RIGHTS_READ | KEY_QUERY_VALUE | KEY_NOTIFY,
                                       out registryKey);
             if (result != 0)
                 throw new Win32Exception(result);
@@ -539,7 +576,7 @@ namespace RegistryUtils
                 WaitHandle[] waitHandles = new WaitHandle[] { _eventNotify, _eventTerminate };
                 while (!_eventTerminate.WaitOne(0, true))
                 {
-                    result = RegNotifyChangeKeyValue(registryKey, true, _regFilter, _eventNotify.Handle, true);
+                    result = _RegNotifyChangeKeyValue(registryKey, true, _regFilter, _eventNotify.Handle, true);
                     if (result != 0)
                         throw new Win32Exception(result);
 
@@ -553,7 +590,7 @@ namespace RegistryUtils
             {
                 if (registryKey != IntPtr.Zero)
                 {
-                    RegCloseKey(registryKey);
+                    _RegCloseKey(registryKey);
                 }
             }
         }
