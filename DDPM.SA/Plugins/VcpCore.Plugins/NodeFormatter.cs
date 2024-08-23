@@ -199,6 +199,8 @@ namespace VcpCore.Plugins
             {
                 case "F800": return "High Resolution";
                 case "F801": return "High Data Speed";
+                case "F810": return "FHD";
+                case "F811":return "4K";
                 default: return null;
             }
         }
