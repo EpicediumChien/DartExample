@@ -3553,11 +3553,236 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to AI Auto-Framing.
         /// </summary>
         internal static string WebCameraSettings_1 {
             get {
                 return ResourceManager.GetString("WebCameraSettings.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Narrow.
+        /// </summary>
+        internal static string WebCameraSettings_10 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard.
+        /// </summary>
+        internal static string WebCameraSettings_11 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field of View.
+        /// </summary>
+        internal static string WebCameraSettings_12 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Narrows or widens angle of the camera’s field of view.
+        /// </summary>
+        internal static string WebCameraSettings_13 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to °.
+        /// </summary>
+        internal static string WebCameraSettings_14 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zoom.
+        /// </summary>
+        internal static string WebCameraSettings_15 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.15", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autofocus.
+        /// </summary>
+        internal static string WebCameraSettings_16 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.16", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Intelligently adjusts the camera lens to obtain focus and sharpness.
+        /// </summary>
+        internal static string WebCameraSettings_17 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.17", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Priority.
+        /// </summary>
+        internal static string WebCameraSettings_18 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.18", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prioritizes FPS video smoothness or exposure to maintain the ideal level of light.
+        /// </summary>
+        internal static string WebCameraSettings_19 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.19", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Utilizes intelligent scene analysis and facial tracking to zoom and pan the view when you move.
+        /// </summary>
+        internal static string WebCameraSettings_2 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exposure.
+        /// </summary>
+        internal static string WebCameraSettings_20 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.20", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frame Rate.
+        /// </summary>
+        internal static string WebCameraSettings_21 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.21", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frame Rate/Exposure will not work when HDR is on.\rClick .
+        /// </summary>
+        internal static string WebCameraSettings_22 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.22", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to here .
+        /// </summary>
+        internal static string WebCameraSettings_23 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.23", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to change your HDR settings..
+        /// </summary>
+        internal static string WebCameraSettings_24 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.24", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prioritize External Webcam.
+        /// </summary>
+        internal static string WebCameraSettings_25 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.25", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition. Note: Only one camera can be enabled and accessible at a time..
+        /// </summary>
+        internal static string WebCameraSettings_26 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.26", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Transition.
+        /// </summary>
+        internal static string WebCameraSettings_3 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smoothly transitions by panning and zooming when the camera readjusts your position in the frame.
+        /// </summary>
+        internal static string WebCameraSettings_4 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tracking Sensitivity.
+        /// </summary>
+        internal static string WebCameraSettings_5 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjusts how quickly the camera responds to your movement and readjusts your position in the frame.
+        /// </summary>
+        internal static string WebCameraSettings_6 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        internal static string WebCameraSettings_7 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fast.
+        /// </summary>
+        internal static string WebCameraSettings_8 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Frame Size.
+        /// </summary>
+        internal static string WebCameraSettings_9 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.9", resourceCulture);
             }
         }
         

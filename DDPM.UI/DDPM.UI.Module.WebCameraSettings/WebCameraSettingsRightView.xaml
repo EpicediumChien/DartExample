@@ -31,7 +31,7 @@
                 </Border.Height>
                 <StackPanel>
                     <Grid Margin="14,16,14,16">
-                        <UXControls:UXTextBlock Margin="0,6,0,6" Text="Camera Control" Style="{StaticResource ModuleCaptionStyle}" />
+                        <UXControls:UXTextBlock Margin="0,6,0,6" Text="{Binding [WebCameraSettings.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
                     </Grid>
                     <Grid Margin="16,0,16,10">
                         <Border Background="#99132F54" CornerRadius="6">
@@ -39,7 +39,7 @@
                                 <Grid Margin="18,22,16,8">
                                     <StackPanel Orientation="Horizontal">
 
-                                        <UXControls:UXTextBlock  Text="AI Auto-Framing" Style="{StaticResource ModuleItemStyle}" />
+                                        <UXControls:UXTextBlock  Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <Grid>
                                             <Path Data="M8 5.05078C8.55228 5.05078 9 4.60307 9 4.05078C9 3.4985 8.55228 3.05078 8 3.05078C7.44772 3.05078 7 3.4985 7 4.05078C7 4.60307 7.44772 5.05078 8 5.05078Z M8.75 6.44922H7.25V12.6492H8.75V6.44922Z M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z" Fill="#B6B6B6">
                                                 <Path.ToolTip>
@@ -49,7 +49,7 @@
                                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
                                                             </Border.Resources>
 
-                                                            <TextBlock Text="Utilizes intelligent scene analysis and facial tracking to zoom and pan the view when you move" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                            <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Path.ToolTip>
@@ -67,11 +67,11 @@
                                 </Grid>
                                 <Grid Margin="38,22,16,8">
                                     <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock Margin="0,8,0,8" Text="Camera Transition" Style="{StaticResource ModuleItemStyle}" />
+                                        <UXControls:UXTextBlock Margin="0,8,0,8" Text="{Binding [WebCameraSettings.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                             <Image.ToolTip>
                                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                    <TextBlock Text="Smoothly transitions by panning and zooming when the camera readjusts your position in the frame" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                    <TextBlock Text="{Binding [WebCameraSettings.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
@@ -80,11 +80,11 @@
                                 </Grid>
                                 <StackPanel Orientation="Vertical" Margin="38,22,16,8">
                                     <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock Text="Tracking Sensitivity" Style="{StaticResource ModuleItemStyle}" />
+                                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                             <Image.ToolTip>
                                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                    <TextBlock Text="Adjusts how quickly the camera responds to your movement and readjusts your position in the frame" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                    <TextBlock Text="{Binding [WebCameraSettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
@@ -106,7 +106,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="Normal" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                         <Border Grid.Column="1" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="TrackingSensitivity_Fast_Button_Click" Height="30">
@@ -121,18 +121,18 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="Fast" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                     </Grid>
                                 </StackPanel>
                                 <StackPanel Orientation="Vertical" Margin="38,22,16,16">
                                     <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock Text="Frame Size" Style="{StaticResource ModuleItemStyle}" />
+                                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                             <Image.ToolTip>
                                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                    <TextBlock Text="Adjusts how quickly the camera responds to your movement and readjusts your position in the frame" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                    <TextBlock Text="{Binding [WebCameraSettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
@@ -154,7 +154,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="Narrow" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.10], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                         <Border Grid.Column="1" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="FrameSize_Standard_Button_Click" Height="30">
@@ -169,7 +169,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="Standard" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -182,11 +182,11 @@
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Vertical" Margin="18,22,16,10">
                                     <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock Text="Field of View" Style="{StaticResource ModuleItemStyle}" />
+                                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.12], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                             <Image.ToolTip>
                                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                    <TextBlock Text="Narrows or widens angle of the camera’s field of view" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                    <TextBlock Text="{Binding [WebCameraSettings.13], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
@@ -209,7 +209,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="65°" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.14], Source={x:Static lang:LangHelper.Instance},StringFormat={}65{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                         <Border Grid.Column="1" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="FOV_78_Button_Click" Height="30">
@@ -224,7 +224,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="78°" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.14], Source={x:Static lang:LangHelper.Instance},StringFormat={}78{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                         <Border Grid.Column="2" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="FOV_90_Button_Click" Height="30">
@@ -239,7 +239,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="90°" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.14], Source={x:Static lang:LangHelper.Instance},StringFormat={}90{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -251,7 +251,7 @@
                         <Border Background="#99132F54" CornerRadius="6">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Vertical" Margin="18,22,16,10">
-                                    <UXControls:UXTextBlock Text="Zoom" Style="{StaticResource ModuleItemStyle}" />
+                                    <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.15], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                     <Grid Margin="0,5,0,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -280,11 +280,11 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <UXControls:UXTextBlock Grid.Column="0" Text="Autofocus" Style="{StaticResource ModuleItemStyle}" />
+                                        <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <Image Grid.Column="1" Margin="9,0,9,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                             <Image.ToolTip>
                                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                    <TextBlock Text="Intelligently adjusts the camera lens to obtain focus and sharpness" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                    <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
@@ -305,11 +305,11 @@
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Vertical" Margin="18,22,16,10">
                                     <StackPanel Orientation="Horizontal">
-                                        <UXControls:UXTextBlock Text="Priority" Style="{StaticResource ModuleItemStyle}" />
+                                        <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.18], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                         <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                             <Image.ToolTip>
                                                 <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                    <TextBlock Text="Prioritizes FPS video smoothness or exposure to maintain the ideal level of light" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                    <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
@@ -331,7 +331,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="Exposure" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.20], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                         <Border Grid.Column="1" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="Priority_FrameRate_Button_Click" Height="30">
@@ -346,7 +346,7 @@
                                                 </Style>
                                             </Border.Style>
                                             <Grid>
-                                                <UXControls:UXTextBlock Text="Frame Rate" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
+                                                <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.21], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -368,7 +368,7 @@
                                                     </Grid>
                                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                                         <TextBlock Foreground="White" FontSize="13">
-                                                            <Run Text="Frame Rate/Exposure will not work when HDR is on. &#13;Click " />
+                                                            <Run Text="{Binding [WebCameraSettings.22], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" />
                                                             <Hyperlink Click="Hyperlink_Click">
                                                                 <Hyperlink.Style><Style TargetType="Hyperlink">
                                                                         <Style.Triggers>
@@ -378,9 +378,9 @@
                                                                         </Style.Triggers>
                                                                     </Style>
                                                                 </Hyperlink.Style>
-                                                                <Run Text="here " />
+                                                                <Run Text="{Binding [WebCameraSettings.23], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" />
                                                             </Hyperlink>
-                                                            <Run Text="to change your HDR settings." />
+                                                            <Run Text="{Binding [WebCameraSettings.24], Source={x:Static lang:LangHelper.Instance},Mode=OneWay}" />
                                                         </TextBlock>
                                                     </StackPanel>
                                                 </Grid>
@@ -395,11 +395,11 @@
                         <Border Background="#99132F54" CornerRadius="6" VerticalAlignment="Top">
                             <Grid Margin="18,27,16,27">
                                 <StackPanel Orientation="Horizontal">
-                                    <UXControls:UXTextBlock Text="Prioritize External Webcam" Style="{StaticResource ModuleItemStyle}" />
+                                    <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.25], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                     <Image Margin="9,0,9,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                         <Image.ToolTip>
                                             <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                <TextBlock Text="Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition. Note: Only one camera can be enabled and accessible at a time." Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                <TextBlock Text="{Binding [WebCameraSettings.26], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
@@ -412,16 +412,16 @@
                         <Border Background="#99132F54" CornerRadius="6" VerticalAlignment="Top">
                             <Grid Margin="18,22,16,22">
                                 <StackPanel Orientation="Horizontal">
-                                    <UXControls:UXTextBlock Text="Windows Hello" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     <Image Margin="9,0,9,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                         <Image.ToolTip>
                                             <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                <TextBlock Text="Signs you in with facial recognition. This link will direct you to Windows Settings." Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
                                 </StackPanel>
-                                <UXControls:UXLink Content="Windows Settings" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                <UXControls:UXLink Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="CallWindowsHello_Click" IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary" LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z" HorizontalAlignment="Right" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
                     </Grid>

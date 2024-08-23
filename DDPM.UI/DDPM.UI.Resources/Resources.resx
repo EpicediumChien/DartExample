@@ -1291,6 +1291,81 @@
     <value>Camera Control</value>
   </data>
   <data name="WebCameraSettings.1" xml:space="preserve">
-    <value></value>
+    <value>AI Auto-Framing</value>
+  </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>Utilizes intelligent scene analysis and facial tracking to zoom and pan the view when you move</value>
+  </data>
+  <data name="WebCameraSettings.3" xml:space="preserve">
+    <value>Camera Transition</value>
+  </data>
+  <data name="WebCameraSettings.4" xml:space="preserve">
+    <value>Smoothly transitions by panning and zooming when the camera readjusts your position in the frame</value>
+  </data>
+  <data name="WebCameraSettings.5" xml:space="preserve">
+    <value>Tracking Sensitivity</value>
+  </data>
+  <data name="WebCameraSettings.6" xml:space="preserve">
+    <value>Adjusts how quickly the camera responds to your movement and readjusts your position in the frame</value>
+  </data>
+  <data name="WebCameraSettings.7" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="WebCameraSettings.8" xml:space="preserve">
+    <value>Fast</value>
+  </data>
+  <data name="WebCameraSettings.9" xml:space="preserve">
+    <value>Frame Size</value>
+  </data>
+  <data name="WebCameraSettings.10" xml:space="preserve">
+    <value>Narrow</value>
+  </data>
+  <data name="WebCameraSettings.11" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="WebCameraSettings.12" xml:space="preserve">
+    <value>Field of View</value>
+  </data>
+  <data name="WebCameraSettings.13" xml:space="preserve">
+    <value>Narrows or widens angle of the camera’s field of view</value>
+  </data>
+  <data name="WebCameraSettings.14" xml:space="preserve">
+    <value>°</value>
+  </data>
+  <data name="WebCameraSettings.15" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="WebCameraSettings.16" xml:space="preserve">
+    <value>Autofocus</value>
+  </data>
+  <data name="WebCameraSettings.17" xml:space="preserve">
+    <value>Intelligently adjusts the camera lens to obtain focus and sharpness</value>
+  </data>
+  <data name="WebCameraSettings.18" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="WebCameraSettings.19" xml:space="preserve">
+    <value>Prioritizes FPS video smoothness or exposure to maintain the ideal level of light</value>
+  </data>
+  <data name="WebCameraSettings.20" xml:space="preserve">
+    <value>Exposure</value>
+  </data>
+  <data name="WebCameraSettings.21" xml:space="preserve">
+    <value>Frame Rate</value>
+  </data>
+  <data name="WebCameraSettings.22" xml:space="preserve">
+    <value>Frame Rate/Exposure will not work when HDR is on.\rClick </value>
+  </data>
+  <data name="WebCameraSettings.23" xml:space="preserve">
+    <value>here </value>
+  </data>
+  <data name="WebCameraSettings.24" xml:space="preserve">
+    <value>to change your HDR settings.</value>
+  </data>
+  <data name="WebCameraSettings.25" xml:space="preserve">
+    <value>Prioritize External Webcam</value>
+  </data>
+  <data name="WebCameraSettings.26" xml:space="preserve">
+    <value>Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition. Note: Only one camera can be enabled and accessible at a time.</value>
   </data>
 </root>
