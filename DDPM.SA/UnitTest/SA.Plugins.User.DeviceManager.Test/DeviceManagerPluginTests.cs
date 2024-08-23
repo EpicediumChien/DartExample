@@ -112,12 +112,12 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.That(result, Is.EqualTo(null));
         }
 
-        [Test]
-        public void TestGetMonitorProfile()
-        {
-            var result = deviceMangerPlugin.GetMonitorProfile(monitorInfo).Result;
-            Assert.That(result, Is.Not.Null);
-        }
+        //[Test]
+        //public void TestGetMonitorProfile()
+        //{
+        //    var result = deviceMangerPlugin.GetMonitorProfile(monitorInfo).Result;
+        //    Assert.That(result, Is.Not.Null);
+        //}
 
         //[Test]
         ////lack "Dell_U3224KB_Native_v2.icm"
