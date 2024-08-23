@@ -2645,6 +2645,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 uint title = (uint)Gaming_Supported.GameEnhancementMode;
                 uint param = (uint)GameEnhancementMode;
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + title + param);
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
             catch (Exception ex)
@@ -2664,6 +2665,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 uint title = (uint)Gaming_Supported.ResponseTime;
                 uint param = (uint)ResponseTime;
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + title + param);
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
             catch (Exception ex)
@@ -2683,6 +2685,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 uint title = (uint)Gaming_Supported.DarkStabilizer;
                 uint param = (uint)DarkStabilizer;
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + title + param);
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
             catch (Exception ex)
@@ -2702,6 +2705,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 uint title = (uint)Gaming_Supported.HDRType;
                 uint param = (uint)HDRType;
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + title + param);
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
             catch (Exception ex)
@@ -2722,6 +2726,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     string setParam = "USB-C Prioritization";
                     string PrioritizationType = DualResolutionType == Gaming_DualResolutionType._4K ? "4K" : "FHD";
+                    _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + PrioritizationType);
                     ret = SetVCPCapability(monitorInfo, setParam, PrioritizationType).Result;
                 }
             }
@@ -2755,13 +2760,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                     //1.將字串反向，因韌體是右到左，修改回韌體順序
                     //2.反向後先往右邊補0，補齊b8-b15共7位
-                    //3.載往左邊補0，共補16位b0-17
+                    //3.再往左邊補0，共補16位b0-17
                     command = Algorithm.ReverseString(command).PadLeft(8, '0').PadRight(16, '0');
                     //轉成16進制
                     command = Algorithm.BinaryToHex(command);
                     var hexStyle = System.Globalization.NumberStyles.HexNumber;
                     int number;
-                    _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " command:" + command);
+                    _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " value:" + command);
                     if (int.TryParse(command, hexStyle, CultureInfo.CurrentCulture, out number))
                     {
                         ret = SetVCPCapability(monitorInfo, 0xEC, (uint)number).Result;
