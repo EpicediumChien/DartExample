@@ -1952,31 +1952,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<List<bool>> SetDisplayOrientation(List<MonitorInfo> monitorInfos)
         {
             bool[] bools = new bool[monitorInfos.Count];
-            if (!isLockOrientation)
+
+            for (int i = 0; i < monitorInfos.Count; i++)
             {
-                for (int i = 0; i < monitorInfos.Count; i++)
+                int count = 0;
+                ObjGetVCP ObjGetVCP;
+                do
                 {
-                    int count = 0;
-                    ObjGetVCP ObjGetVCP;
-                    do
+                    ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
+                    count++;
+                } while (ObjGetVCP.result != true && count < 3);
+                if (ObjGetVCP.result == true)
+                {
+                    uint retValue;
+                    if (uint.TryParse(ObjGetVCP.value.ToString(), out retValue))
                     {
-                        ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
-                        count++;
-                    } while (ObjGetVCP.result != true && count < 3);
-                    if (ObjGetVCP.result == true)
-                    {
-                        uint retValue;
-                        if (uint.TryParse(ObjGetVCP.value.ToString(), out retValue))
+                        if (_DisplayPropertiesPlugin != null)
                         {
-                            if (_DisplayPropertiesPlugin != null)
+                            DisplayOrientation currentOrientation = _DisplayPropertiesPlugin.GetCurrentDisplayOrientation(monitorInfos[i].DisplayName).Result;
+                            DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
+                            if (!currentOrientation.Equals(orientation))
                             {
-                                DisplayOrientation currentOrientation = _DisplayPropertiesPlugin.GetCurrentDisplayOrientation(monitorInfos[i].DisplayName).Result;
-                                DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
-                                if (!currentOrientation.Equals(orientation))
-                                {
-                                    Properties properties = new Properties();
-                                    bools[i] = SetDisplayPropertiest(monitorInfos[i], properties, orientation).Result;
-                                }
+                                Properties properties = new Properties();
+                                bools[i] = SetDisplayPropertiest(monitorInfos[i], properties, orientation).Result;
                             }
                         }
                     }
@@ -2007,7 +2005,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
         {
-            if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
+            if (!isLockOrientation && IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
             {
                 for (int i = 1; i < OrientationString.Length; i++)
                 {
