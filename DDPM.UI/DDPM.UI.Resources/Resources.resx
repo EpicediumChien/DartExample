@@ -363,9 +363,6 @@
   <data name="Dock.1" xml:space="preserve">
     <value>Dongle {0}</value>
   </data>
-  <data name="Keyboard.1" xml:space="preserve">
-    <value>USB Wireless Receiver</value>
-  </data>
   <data name="Keyboard.2" xml:space="preserve">
     <value>Key Customization</value>
   </data>
@@ -1367,5 +1364,221 @@
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
     <value>Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition. Note: Only one camera can be enabled and accessible at a time.</value>
+  </data>
+  <data name="Mouse.8" xml:space="preserve">
+    <value>Touch Scroll Sensitivity</value>
+  </data>
+  <data name="Mouse.9" xml:space="preserve">
+    <value>Adjust the Scroll Speed</value>
+  </data>
+  <data name="Mouse.10" xml:space="preserve">
+    <value>Primary Mouse Button</value>
+  </data>
+  <data name="Mouse.11" xml:space="preserve">
+    <value>DPI Setting</value>
+  </data>
+  <data name="Mouse.12" xml:space="preserve">
+    <value>Polling Rate</value>
+  </data>
+  <data name="Mouse.13" xml:space="preserve">
+    <value>Number of times per second your mouse’s position is reported to system</value>
+  </data>
+  <data name="Wired" xml:space="preserve">
+    <value>Wired</value>
+  </data>
+  <data name="Tooltip.0" xml:space="preserve">
+    <value>You have connected multiple devices of the same model. Actions will be duplicated on each instance of the device</value>
+  </data>
+  <data name="Tooltip.1" xml:space="preserve">
+    <value>No device found. Make sure your wireless device is charged and turned ON.</value>
+  </data>
+  <data name="Tooltip.2" xml:space="preserve">
+    <value>This device is already paired. Unpair the device first if you would like to pair again.</value>
+  </data>
+  <data name="Tooltip.3" xml:space="preserve">
+    <value>This device you are pairing is not supported with the connected USB wireless receiver. Use the receiver that came with the device.</value>
+  </data>
+  <data name="Tooltip.4" xml:space="preserve">
+    <value>The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the \"Unpair\" button in the device settings page.</value>
+  </data>
+  <data name="Mouse.14" xml:space="preserve">
+    <value>Click to Assign an action</value>
+  </data>
+  <data name="Mouse.15" xml:space="preserve">
+    <value>Select an action from\nthe list on the right</value>
+  </data>
+  <data name="USBWirelessReceiver" xml:space="preserve">
+    <value>USB Wireless Receiver</value>
+  </data>
+  <data name="ReceiverFirmwareVersion" xml:space="preserve">
+    <value>Receiver Firmware Version</value>
+  </data>
+  <data name="ReadyToBePaired" xml:space="preserve">
+    <value>Ready to be paired</value>
+  </data>
+  <data name="BrightnessOrContrast" xml:space="preserve">
+    <value>Brightness/Contrast</value>
+  </data>
+  <data name="DisplayProperties" xml:space="preserve">
+    <value>Display Properties</value>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="EasyMemory" xml:space="preserve">
+    <value>Easy Memory</value>
+  </data>
+  <data name="VisionEngine" xml:space="preserve">
+    <value>Vision Engine</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Copilot" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>Devices</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="NotificationCenter" xml:space="preserve">
+    <value>Notification Center</value>
+  </data>
+  <data name="ScreenSnip" xml:space="preserve">
+    <value>Screen Snip</value>
+  </data>
+  <data name="ShowHideDesktop" xml:space="preserve">
+    <value>Show/Hide Desktop</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Shutdown</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="Sleep" xml:space="preserve">
+    <value>Sleep</value>
+  </data>
+  <data name="SwitchApplications" xml:space="preserve">
+    <value>Switch Applications</value>
+  </data>
+  <data name="TaskView" xml:space="preserve">
+    <value>Task View</value>
+  </data>
+  <data name="BarrelButton" xml:space="preserve">
+    <value>Barrel Button</value>
+  </data>
+  <data name="DefineBySystem" xml:space="preserve">
+    <value>Define by system</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="OneNote" xml:space="preserve">
+    <value>One Note</value>
+  </data>
+  <data name="PenMenu" xml:space="preserve">
+    <value>Pen Menu</value>
+  </data>
+  <data name="QuickNote" xml:space="preserve">
+    <value>Quick Note</value>
+  </data>
+  <data name="ScreenSnipping" xml:space="preserve">
+    <value>Screen Snipping</value>
+  </data>
+  <data name="StickyNotes" xml:space="preserve">
+    <value>Sticky Notes</value>
+  </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>Widgets</value>
+  </data>
+  <data name="WindowsSearch" xml:space="preserve">
+    <value>Windows Search</value>
+  </data>
+  <data name="SwitchApplication" xml:space="preserve">
+    <value>Switch Application</value>
+  </data>
+  <data name="AssignKeystroke" xml:space="preserve">
+    <value>Assign Keystroke</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Calculator" xml:space="preserve">
+    <value>Calculator</value>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>Close Window</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Forward</value>
+  </data>
+  <data name="MaximizeWindow" xml:space="preserve">
+    <value>Maximize Window</value>
+  </data>
+  <data name="MinimizeWindow" xml:space="preserve">
+    <value>Minimize Window</value>
+  </data>
+  <data name="MyHome" xml:space="preserve">
+    <value>My Home</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>Open File</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Open Folder</value>
+  </data>
+  <data name="OpenNewBrowserTab" xml:space="preserve">
+    <value>Open New Browser Tab</value>
+  </data>
+  <data name="OpenWebPage" xml:space="preserve">
+    <value>Open Web Page</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>Zoom In</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>Zoom Out</value>
+  </data>
+  <data name="ZoomReset" xml:space="preserve">
+    <value>Zoom Reset</value>
+  </data>
+  <data name="4thClick" xml:space="preserve">
+    <value>4th Click</value>
+  </data>
+  <data name="5thClick" xml:space="preserve">
+    <value>5th Click</value>
+  </data>
+  <data name="Erase" xml:space="preserve">
+    <value>Erase</value>
+  </data>
+  <data name="LeftClick" xml:space="preserve">
+    <value>Left Click</value>
+  </data>
+  <data name="MiddleClick" xml:space="preserve">
+    <value>Middle Click</value>
+  </data>
+  <data name="OpenRun" xml:space="preserve">
+    <value>Open/Run</value>
+  </data>
+  <data name="OpenRun2" xml:space="preserve">
+    <value>Open Run</value>
   </data>
 </root>
