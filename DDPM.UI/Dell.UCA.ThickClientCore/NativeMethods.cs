@@ -17,7 +17,12 @@ namespace NGA.ThickClientCore
     /// </summary>
     internal static class NativeMethods
     {
-        [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
+        [DllImport("USER32.DLL", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         internal static extern IntPtr FindWindow(string? lpClassName, string lpWindowName);
+        public static IntPtr _FindWindow(string? lpClassName, string lpWindowName)
+        {
+            return FindWindow(lpClassName, lpWindowName);
+        }
     }
 }
