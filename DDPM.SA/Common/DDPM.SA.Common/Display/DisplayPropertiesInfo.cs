@@ -85,6 +85,12 @@ namespace DDPM.SA.Common
     public class GamingDisplayPropertiesInfo
     {
         public string DisplayName;
+        public bool IsSupported_GameEnhancementMode;
+        public bool IsSupported_ResponseTime;
+        public bool IsSupported_DarkStabilizer;
+        public bool IsSupported_HDRType;
+        public bool IsSupported_DualResolutionType;
+        public bool IsSupported_VisionEngineType;
         public Gaming_GameEnhancementMode Current_GameEnhancementMode;
         public Gaming_ResponseTime Current_ResponseTime;
         public Gaming_DarkStabilizer Current_DarkStabilizer;
