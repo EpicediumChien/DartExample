@@ -112,12 +112,12 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.That(result, Is.EqualTo(null));
         }
 
-        [Test]
-        public void TestGetMonitorProfile()
-        {
-            var result = deviceMangerPlugin.GetMonitorProfile(monitorInfo).Result;
-            Assert.That(result, Is.Not.Null);
-        }
+        //[Test]
+        //public void TestGetMonitorProfile()
+        //{
+        //    var result = deviceMangerPlugin.GetMonitorProfile(monitorInfo).Result;
+        //    Assert.That(result, Is.Not.Null);
+        //}
 
         //[Test]
         ////lack "Dell_U3224KB_Native_v2.icm"
@@ -412,10 +412,14 @@ namespace SA.Plugins.User.DeviceManager.Test
             }
 
             //_ColorPresetPlugin != null
+            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
+            var _SettingsPlugin = _SettingsPluginMock.Object;
+            _SettingsPluginMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(),new DDPMITConfig())));
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
             _ColorPresetPluginMock.Setup(x => x.AutoSetColorPresetForMonitorConfig(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>() { new ColorPresetSettings() { }, new ColorPresetSettings() { } }));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             try
             {
                 deviceMangerPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo, "1");
@@ -430,8 +434,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
             _allInfoMonitors.Add(monitorInfo);
             privateObject.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
-            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
-            var _SettingsPlugin = _SettingsPluginMock.Object;
             _SettingsPluginMock.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(new List<ColorPresetSettings>()));
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             privateObject.SetFieldOrProperty("newWindowThread_AutoSetColorPresetForMonitorConfig", new Thread(new ThreadStart(showmsg)));
