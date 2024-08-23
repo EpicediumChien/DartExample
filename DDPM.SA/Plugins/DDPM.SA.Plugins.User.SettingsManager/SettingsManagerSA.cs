@@ -496,7 +496,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     {
                         //string info;
                         //string output = DDPMFileSecurity.GetSerializedJsonString(monitorSettings_path, out info);//, false);
-                        monitorSettings = RunMonitorDeserializeObject(strReadJson);
+                        monitorSettings = RunMonitorListDeserializeObject(strReadJson);
                     }
                     catch (Exception)
                     {
@@ -844,10 +844,26 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return Task.FromResult<bool>(false);
         }
-        public Task<bool> DisplayImportSettings(string path)
-        {
-            return Task.FromResult<bool>(false);
-        }
+        //public Task<bool> DisplayImportSettings(string path)
+        //{
+        //    DDPMMonitorSettings monitorSettings = ReadMonitorSettingsFile(path).Result;
+        //    List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
+        //    if (monitorSettings != null)
+        //    {
+        //        string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
+        //        if (File.Exists(monitorSettings_path))
+        //        {
+        //            monitorSettingsList = ReloadMonitorSettings(monitorSettings_path).Result;
+        //            foreach (DDPMMonitorSettings settings in monitorSettingsList)
+        //            {
+        //                if (settings.ServiceTag == monitorSettings.ServiceTag)
+        //                {
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return Task.FromResult<bool>(false);
+        //}
         #endregion
         #endregion
 
@@ -1054,7 +1070,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return jsonString;
         }
 
-        private List<DDPMMonitorSettings> RunMonitorDeserializeObject(string value)
+        private List<DDPMMonitorSettings> RunMonitorListDeserializeObject(string value)
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
 
@@ -1068,6 +1084,22 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             return monitorSettingsList;
+        }
+
+        private DDPMMonitorSettings RunMonitorDeserializeObject(string value)
+        {
+            DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+
+            try
+            {
+                monitorSettings = JsonConvert.DeserializeObject<DDPMMonitorSettings>(value);
+            }
+            catch (Exception)
+            {
+                ;
+            }
+
+            return monitorSettings;
         }
 
         #endregion Monitor Settings
@@ -1120,6 +1152,35 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //}
 
             return true;
+        }
+        private Task<DDPMMonitorSettings> ReadMonitorSettingsFile(string path)
+        {
+            DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (File.Exists(path))
+                {
+                    string strReadJson = string.Empty;
+                    using (var reader = new StreamReader(path))
+                    {
+                        strReadJson = reader.ReadToEnd();
+                    }
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                        return Task.FromResult(monitorSettings);
+                    try
+                    {
+                        //string info;
+                        //string output = DDPMFileSecurity.GetSerializedJsonString(monitorSettings_path, out info);//, false);
+                        monitorSettings = RunMonitorDeserializeObject(strReadJson);
+                    }
+                    catch (Exception)
+                    {
+                        ;
+                    }
+                }
+            }
+            return Task.FromResult(monitorSettings);
         }
         #endregion
 

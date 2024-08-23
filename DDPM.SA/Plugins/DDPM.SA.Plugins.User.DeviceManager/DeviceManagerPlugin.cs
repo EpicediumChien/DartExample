@@ -2625,6 +2625,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+        public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, string path)
+        {
+            //if()
+            return Task.FromResult(false);
+        }
         #endregion
         #region Gaming
         public Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo)
