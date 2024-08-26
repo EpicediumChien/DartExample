@@ -3058,6 +3058,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Page Down.
+        /// </summary>
+        internal static string PenPageDown {
+            get {
+                return ResourceManager.GetString("PenPageDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page Up.
+        /// </summary>
+        internal static string PenPageUp {
+            get {
+                return ResourceManager.GetString("PenPageUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pen Settings.
         /// </summary>
         internal static string PenSettings_0 {
@@ -3247,6 +3265,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Radial Menu.
+        /// </summary>
+        internal static string RadialMenu {
+            get {
+                return ResourceManager.GetString("RadialMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ready to be paired.
         /// </summary>
         internal static string ReadyToBePaired {
@@ -3274,6 +3301,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Redo.
+        /// </summary>
+        internal static string Redo {
+            get {
+                return ResourceManager.GetString("Redo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
         internal static string Remove {
@@ -3297,6 +3333,15 @@ namespace DDPM.UI.Resources {
         internal static string RestoreToDefault {
             get {
                 return ResourceManager.GetString("RestoreToDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right Click.
+        /// </summary>
+        internal static string RightClick {
+            get {
+                return ResourceManager.GetString("RightClick", resourceCulture);
             }
         }
         
@@ -3657,6 +3702,15 @@ namespace DDPM.UI.Resources {
         internal static string Tooltip_4 {
             get {
                 return ResourceManager.GetString("Tooltip.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        internal static string Undo {
+            get {
+                return ResourceManager.GetString("Undo", resourceCulture);
             }
         }
         

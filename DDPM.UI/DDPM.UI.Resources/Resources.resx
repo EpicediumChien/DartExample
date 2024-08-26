@@ -1581,4 +1581,22 @@
   <data name="OpenRun2" xml:space="preserve">
     <value>Open Run</value>
   </data>
+  <data name="PenPageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="PenPageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="RadialMenu" xml:space="preserve">
+    <value>Radial Menu</value>
+  </data>
+  <data name="Redo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="RightClick" xml:space="preserve">
+    <value>Right Click</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
 </root>
