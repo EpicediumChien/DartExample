@@ -147,7 +147,10 @@ namespace DDPM.UI.Module.Gaming
                 return "0.5";
             }
         }
-
+        public Visibility IsSupported_GameEnhanceMode { get; set; } = Visibility.Collapsed;
+        public Visibility IsSupported_ResponseTime { get; set; } = Visibility.Collapsed;
+        public Visibility IsSupported_DarkStabilizer { get; set; } = Visibility.Collapsed;
+        public Visibility IsSupported_DualResolution { get; set; } = Visibility.Collapsed;
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -212,9 +215,16 @@ namespace DDPM.UI.Module.Gaming
                 DualResolution_ItemsCollection = new List<UI_DualResolution>();
 
                 GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties(MyModule.SelectedHomeDevice.MonitorInfo).Result;
-                IsGameSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
-                IsAWSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
-
+                if (displayPropertiesInfo.IsSupported_HDRType)
+                {
+                    IsGameSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
+                    IsAWSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
+                }
+                IsSupported_GameEnhanceMode = displayPropertiesInfo.IsSupported_GameEnhancementMode ? Visibility.Visible : Visibility.Collapsed;
+                IsSupported_ResponseTime = displayPropertiesInfo.IsSupported_ResponseTime ? Visibility.Visible : Visibility.Collapsed;
+                IsSupported_DarkStabilizer = displayPropertiesInfo.IsSupported_DarkStabilizer ? Visibility.Visible : Visibility.Collapsed;
+                IsSupported_DualResolution = displayPropertiesInfo.IsSupported_DualResolutionType ? Visibility.Visible : Visibility.Collapsed;
+                
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
@@ -323,6 +333,10 @@ namespace DDPM.UI.Module.Gaming
             OnPropertyChanged("HDRType_Opacity");
             OnPropertyChanged("DarkStabilizer_IsEnable");
             OnPropertyChanged("DarkStabilizer_Opacity");
+            OnPropertyChanged("IsSupported_GameEnhanceMode");
+            OnPropertyChanged("IsSupported_ResponseTime");
+            OnPropertyChanged("IsSupported_DarkStabilizer");
+            OnPropertyChanged("IsSupported_DualResolution");
         }
     }
 
