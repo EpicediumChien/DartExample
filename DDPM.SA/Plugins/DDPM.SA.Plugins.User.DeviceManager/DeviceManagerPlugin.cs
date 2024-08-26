@@ -655,6 +655,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         MonitorBorkerWin = new MainWindow(this, m);
 
                         MonitorBorkerWin.Show();
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
                     }
                     else
                     {
