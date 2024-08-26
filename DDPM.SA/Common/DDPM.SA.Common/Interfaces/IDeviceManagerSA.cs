@@ -438,25 +438,27 @@ namespace DDPM.SA.Common {
 
     #endregion public for SW Update
 
-    #region public for ImpExpSettings
-    Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
+        #region public for ImpExpSettings
+        Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
+        #endregion
+        //public for GUI to get the changes of display and peripherals
+        event EventHandler<DeviceChangedEventArgs> DeviceChanged;
+        
+        #region public for IT lock event
+        //IT lock
+        event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+        #endregion
+        #region Gaming
+        event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+        Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
+        Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
+        Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
+        Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
+        Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
+        Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
+        Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
     #endregion
-    //public for GUI to get the changes of display and peripherals
-    event EventHandler<DeviceChangedEventArgs> DeviceChanged;
 
-    #region public for IT lock event
-    //IT lock
-    event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
-    #endregion
-    #region Gaming
-    event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
-    Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
-    Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
-    Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
-    Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
-    Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
-    Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfos, Gaming_DualResolutionType DualResolutionType);
-    #endregion
 
     #region public for DTPProxy
 

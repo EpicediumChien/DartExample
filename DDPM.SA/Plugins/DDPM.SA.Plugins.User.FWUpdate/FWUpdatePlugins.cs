@@ -69,7 +69,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private static extern bool SetForegroundWindow(IntPtr hWnd);
         private static bool _SetForegroundWindow(IntPtr hWnd)
         {
-            return SetForegroundWindow(hWnd); 
+            return SetForegroundWindow(hWnd);
         }
 
         #region Private Members
@@ -479,7 +479,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (_isForce)
                         {
                             isUpdate = true;
-                            s += $"{fwUpdateInfo.DeviceName} will be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                            s += $"{fwUpdateInfo.Model} will be updated to {fwUpdateInfo.TheLatestVersion}\n";
                         }
                         if (_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(fwUpdateInfo)))
                         {
@@ -491,24 +491,24 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
                                     if (_isDefer)
                                     {
-                                        s += $"{fwUpdateInfo.DeviceName} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                                        s += $"{fwUpdateInfo.Model} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
                                     }
                                     else if (difference.TotalHours >= 24 && _DelayFWUpdateInfoPackage.DelayTimesAvailable > 0)
                                     {
-                                        s += $"{fwUpdateInfo.DeviceName} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                                        s += $"{fwUpdateInfo.Model} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
                                     }
                                     else if (difference.TotalHours >= 24 && _DelayFWUpdateInfoPackage.DelayTimesAvailable <= 0)
                                     {
                                         _ForceUpdates.Add(delayFUpdateInfo);
                                         isUpdate = true;
-                                        s += $"{fwUpdateInfo.DeviceName} will be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                                        s += $"{fwUpdateInfo.Model} will be updated to {fwUpdateInfo.TheLatestVersion}\n";
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            s += $"{fwUpdateInfo.DeviceName} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
+                            s += $"{fwUpdateInfo.Model} can be updated to {fwUpdateInfo.TheLatestVersion}\n";
                         }
                     }
                 }
@@ -740,7 +740,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             if (dockCount >= 2 && isDockUpdate)
             {
-                _notificationStr = " update download cancel, because multiple docks are detected. Keep only one dock connected to prevent damage to your dock(s).";
+                _notificationStr = "Multiple docks are detected. Keep only one dock connected to prevent damage to your docks.";
                 NotificationFWupdate("Error", _notificationStr);
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " Error：" + _notificationStr); // 輸出錯誤訊息
                 return true;
@@ -762,12 +762,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             BatteryInfo batteryInfo = new BatteryInfo();
             batteryInfo.GetBatteryInfo(out var battery);
+            _logs.DebugMsg_1(nameof(CheckPCBattery) + " battery life percent：" + battery.BatteryLifePercent);
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
-            if (isDockUpdate && battery.ACLineStatus == BatteryInfo.ACLineStatus.Offline && battery.BatteryLifePercent <= 10)
+            if (isDockUpdate && battery.BatteryLifePercent <= 10)
             {
                 _notificationStr = $"{_fWUpdateInfo.DeviceName} update download cancel, because PC battery too low.";
                 NotificationFWupdate("Error", _notificationStr);
-                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " Error：" + _notificationStr); // 輸出錯誤訊息
+                _logs.DebugMsg_1(nameof(CheckPCBattery) + " Error：" + _notificationStr); // 輸出錯誤訊息
                 return true;
             }
             return false;

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -1316,5 +1317,19 @@ namespace DDPM.SA.Common
         }
 
         #endregion Methods
+    }
+    public class DockData
+    {
+        public int BoardId { get; set; }
+        public int Configuration { get; set; }
+        public int DockType { get; set; }
+        public string MarketingName { get; set; }
+        public string ModuleSerialNumber { get; set; }
+        public int ModuleType { get; set; }
+        public string OriginalModuleSerialNumber { get; set; }
+        public int PackageFirmwareVersion { get; set; }
+        public int PowerSupplyWattage { get; set; }
+        public string ServiceTag { get; set; }
+        public int Status { get; set; }
     }
 }
