@@ -16,10 +16,18 @@
 
         public NamedPipeStreamServer(string pipeName) : base(pipeName)
         {
+        }
+        public bool CreateNamedPipe()
+        {
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
             this._Connections = new List<NamedPipeStreamConnection>();
             NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
+            if (!NPipeSecurity.NamedPipeClientSecurity(state))
+            {
+                return false;
+            }
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
+            return true;
         }
 
         private void ClientConnected(IAsyncResult result)
