@@ -134,7 +134,7 @@ namespace NGA.Common
             if (string.IsNullOrEmpty(mainWindowTitle))
                 throw new ArgumentNullException(nameof(mainWindowTitle));
 
-            return WinApi.NativeMethods.FindWindow(null, mainWindowTitle);
+            return WinApi.NativeMethods._FindWindow(null, mainWindowTitle);
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace NGA.Common
                         appHandle = appHandles.First();
                     }
 
-                    WinApi.NativeMethods.SendMessage(appHandle, WmClose, IntPtr.Zero, IntPtr.Zero);
+                    WinApi.NativeMethods._SendMessage(appHandle, WmClose, IntPtr.Zero, IntPtr.Zero);
 
                     if (!appProcess.HasExited)
                         appProcess.WaitForExit();
@@ -211,7 +211,7 @@ namespace NGA.Common
         {
             List<IntPtr> windows = new();
 
-            WinApi.NativeMethods.EnumWindows(delegate (IntPtr wnd, IntPtr param)
+            WinApi.NativeMethods._EnumWindows(delegate (IntPtr wnd, IntPtr param)
             {
                 if (TextMatchingProc(wnd, param))
                 {
@@ -231,11 +231,11 @@ namespace NGA.Common
         /// </summary>
         private static string GetWindowTitleText(IntPtr hWnd)
         {
-            int length = WinApi.NativeMethods.GetWindowTextLength(hWnd);
+            int length = WinApi.NativeMethods._GetWindowTextLength(hWnd);
             if (length > 0)
             {
                 var sb = new StringBuilder(length + 1);
-                if (WinApi.NativeMethods.GetWindowText(hWnd, sb, sb.Capacity) != 0)
+                if (WinApi.NativeMethods._GetWindowText(hWnd, sb, sb.Capacity) != 0)
                     return sb.ToString();
             }
 

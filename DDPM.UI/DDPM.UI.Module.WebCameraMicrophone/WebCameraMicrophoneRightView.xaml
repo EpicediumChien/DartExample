@@ -9,6 +9,7 @@
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="675" d:DesignWidth="554" VerticalAlignment="Top" HorizontalAlignment="Left">
     <UserControl.Resources>
@@ -31,17 +32,17 @@
                 </Border.Height>
                 <StackPanel>
                     <Grid Margin="14,16,14,16">
-                        <UXControls:UXTextBlock Text="Microphone" Margin="0,6,0,6" Style="{StaticResource ModuleCaptionStyle}" />
+                        <UXControls:UXTextBlock Text="{Binding [WebCameraMicrophone.0], Source={x:Static lang:LangHelper.Instance}}" Margin="0,6,0,6" Style="{StaticResource ModuleCaptionStyle}" />
                     </Grid>
                     <Grid Margin="16,0,16,10">
                         <Border Background="#99132F54" CornerRadius="6">
                             <Grid Margin="18,25,16,23">
                                 <StackPanel Orientation="Horizontal">
-                                    <UXControls:UXTextBlock Text="Camera Microphone" Style="{StaticResource ModuleItemStyle}" />
+                                    <UXControls:UXTextBlock Text="{Binding [WebCameraMicrophone.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                     <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                         <Image.ToolTip>
                                             <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                <TextBlock Text="Note: This mic is not Microsoft Teams certified. For an optimal Microsoft Teams call experience, use Dell’s Microsoft Teams certified audio devices." Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                                <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>

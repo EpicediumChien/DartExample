@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿#define ENABLE_CALL_SA
+//Robert_Lin, 2024-8-14, comment out the #define line if you would like to disable calling to Subagent EAPlugin
+using CommunityToolkit.Mvvm.Input;
 using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.UI.Common.Models;

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using VcpCore.Common;
+using static DDPM.UI.Module.Gaming.UI_HDRType;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
 
@@ -19,6 +20,7 @@ namespace DDPM.UI.Module.Gaming
         private UI_ResponseTime? _selectedResponseTime;
         private UI_DarkStabilizer? _selectedDarkStabilizer;
         private UI_HDRType? _selectedHDRType;
+        private UI_DualResolution? _selectedDualResolution;
         public IModuleOwner? ModuleOwner { get; set; }
         public GamingModule MyModule { get; set; }
         public List<UI_Properties> Resolution_ItemsCollection { get; set; }
@@ -83,6 +85,18 @@ namespace DDPM.UI.Module.Gaming
                     ).Wait();
             }
         }
+        public List<UI_DualResolution> DualResolution_ItemsCollection { get; set; }
+        public UI_DualResolution SelectedDualResolution
+        {
+            get => _selectedDualResolution;
+            set
+            {
+                SetProperty(ref _selectedDualResolution, value);
+                DdpmCommonHelper.DeviceManagerSA.SetGaming_DualResolutionType(MyModule.SelectedHomeDevice.MonitorInfo,
+                    _selectedDualResolution.DualResolutionType
+                    ).Wait();
+            }
+        }
         public Visibility IsGameSeries { get; set; } = Visibility.Collapsed;
         public Visibility IsAWSeries { get; set; } = Visibility.Collapsed;
         public bool GameEnhanceMode_IsEnable { get; set; }
@@ -133,7 +147,10 @@ namespace DDPM.UI.Module.Gaming
                 return "0.5";
             }
         }
-
+        public Visibility IsSupported_GameEnhanceMode { get; set; } = Visibility.Collapsed;
+        public Visibility IsSupported_ResponseTime { get; set; } = Visibility.Collapsed;
+        public Visibility IsSupported_DarkStabilizer { get; set; } = Visibility.Collapsed;
+        public Visibility IsSupported_DualResolution { get; set; } = Visibility.Collapsed;
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -165,6 +182,10 @@ namespace DDPM.UI.Module.Gaming
                 {
                     _selectedHDRType = HDRType_ItemsCollection.Find(x => (x.HDRType.Equals(e.Current_HDRType)));
                 }
+                if (DualResolution_ItemsCollection != null)
+                {
+                    _selectedDualResolution = DualResolution_ItemsCollection.Find(x => (x.DualResolutionType.Equals(e.Supported_DualResolutionType)));
+                }
                 RefreshUI();
             }
         }
@@ -191,11 +212,19 @@ namespace DDPM.UI.Module.Gaming
                 ResponseTime_ItemsCollection = new List<UI_ResponseTime>();
                 DarkStabilizer_ItemsCollection = new List<UI_DarkStabilizer>();
                 HDRType_ItemsCollection = new List<UI_HDRType>();
+                DualResolution_ItemsCollection = new List<UI_DualResolution>();
 
                 GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties(MyModule.SelectedHomeDevice.MonitorInfo).Result;
-                IsGameSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
-                IsAWSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
-
+                if (displayPropertiesInfo.IsSupported_HDRType)
+                {
+                    IsGameSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
+                    IsAWSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
+                }
+                IsSupported_GameEnhanceMode = displayPropertiesInfo.IsSupported_GameEnhancementMode ? Visibility.Visible : Visibility.Collapsed;
+                IsSupported_ResponseTime = displayPropertiesInfo.IsSupported_ResponseTime ? Visibility.Visible : Visibility.Collapsed;
+                IsSupported_DarkStabilizer = displayPropertiesInfo.IsSupported_DarkStabilizer ? Visibility.Visible : Visibility.Collapsed;
+                IsSupported_DualResolution = displayPropertiesInfo.IsSupported_DualResolutionType ? Visibility.Visible : Visibility.Collapsed;
+                
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
@@ -233,6 +262,13 @@ namespace DDPM.UI.Module.Gaming
                             HDRType = Properties
                         });
                     }
+                    foreach (Gaming_DualResolutionType Properties in displayPropertiesInfo.Supported_DualResolutionType)
+                    {
+                        DualResolution_ItemsCollection.Add(new UI_DualResolution
+                        {
+                            DualResolutionType = Properties
+                        });
+                    }
                 }));
                 GameEnhanceMode_IsEnable = true;
                 ResponseTime_IsEnable = true;
@@ -259,6 +295,7 @@ namespace DDPM.UI.Module.Gaming
                 _selectedResponseTime = ResponseTime_ItemsCollection.Find(x => (x.ResponseTime.Equals(displayPropertiesInfo.Current_ResponseTime)));
                 _selectedDarkStabilizer = DarkStabilizer_ItemsCollection.Find(x => (x.DarkStabilizer.Equals(displayPropertiesInfo.Current_DarkStabilizer)));
                 _selectedHDRType = HDRType_ItemsCollection.Find(x => (x.HDRType.Equals(displayPropertiesInfo.Current_HDRType)));
+                _selectedDualResolution = DualResolution_ItemsCollection.Find(x => (x.DualResolutionType.Equals(displayPropertiesInfo.Current_DualResolutionType)));
                 RefreshUI();
             }
             catch (Exception)
@@ -279,11 +316,13 @@ namespace DDPM.UI.Module.Gaming
             OnPropertyChanged("SelectedResponseTime");
             OnPropertyChanged("SelectedDarkStabilizer");
             OnPropertyChanged("SelectedHDRType");
+            OnPropertyChanged("SelectedDualResolution");
             OnPropertyChanged("Resolution_ItemsCollection");
             OnPropertyChanged("GameEnhanceMode_ItemsCollection");
             OnPropertyChanged("ResponseTime_ItemsCollection");
             OnPropertyChanged("DarkStabilizer_ItemsCollection");
             OnPropertyChanged("HDRType_ItemsCollection");
+            OnPropertyChanged("DualResolution_ItemsCollection");
             OnPropertyChanged("IsGameSeries");
             OnPropertyChanged("IsAWSeries");
             OnPropertyChanged("GameEnhanceMode_IsEnable");
@@ -294,6 +333,10 @@ namespace DDPM.UI.Module.Gaming
             OnPropertyChanged("HDRType_Opacity");
             OnPropertyChanged("DarkStabilizer_IsEnable");
             OnPropertyChanged("DarkStabilizer_Opacity");
+            OnPropertyChanged("IsSupported_GameEnhanceMode");
+            OnPropertyChanged("IsSupported_ResponseTime");
+            OnPropertyChanged("IsSupported_DarkStabilizer");
+            OnPropertyChanged("IsSupported_DualResolution");
         }
     }
 
@@ -354,6 +397,18 @@ namespace DDPM.UI.Module.Gaming
             get
             {
                 return $"{HDRType.ToString().Replace("__", "/").Replace("_", " ")}";
+            }
+        }
+        internal class UI_DualResolution
+        {
+            public Gaming_DualResolutionType DualResolutionType { get; set; }
+
+            public string DisplayText
+            {
+                get
+                {
+                    return $"{DualResolutionType.ToString().Replace("__", "/").Replace("_", "")}";
+                }
             }
         }
     }

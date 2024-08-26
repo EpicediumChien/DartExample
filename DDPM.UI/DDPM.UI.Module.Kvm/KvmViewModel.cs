@@ -64,7 +64,12 @@ namespace DDPM.UI.Module.Kvm
     public class User32_SetWindowPos
     {
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        public static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
+        {
+            return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+        }
 
         public static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
         public static readonly IntPtr HWND_TOP = new IntPtr(0);
@@ -118,7 +123,7 @@ namespace DDPM.UI.Module.Kvm
                             //pos.hwndInsertAfter = User32_SetWindowPos.HWND_BOTTOM;
                             //pos.flags |= User32_SetWindowPos.SWP_NOACTIVATE;
                             //Marshal.StructureToPtr(pos, m.LParam, true);
-                            User32_SetWindowPos.SetWindowPos(_hwnd, User32_SetWindowPos.HWND_TOP, 100, 100, 100, 100, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
+                            User32_SetWindowPos._SetWindowPos(_hwnd, User32_SetWindowPos.HWND_TOP, 100, 100, 100, 100, User32_SetWindowPos.SWP_NOMOVE | User32_SetWindowPos.SWP_NOSIZE);
                         }
                     }
                     break;
@@ -165,10 +170,21 @@ namespace DDPM.UI.Module.Kvm
         private ImageSource? _PCImage;
         #endregion
 
-        [DllImport("user32.dll", EntryPoint = "SetParent")]
-        public static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        [DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        private static int _SetParent(IntPtr hWndChild, IntPtr hWndNewParent)
+        {
+            return SetParent(hWndChild, hWndNewParent);
+        }
+
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
+        private static bool _EnableWindow(IntPtr hWnd, bool bEnable)
+        {
+            return EnableWindow(hWnd, bEnable);
+        }
         //[DllImport("user32.dll", SetLastError = true)]
         //public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public IModuleOwner? ModuleOwner { get; set; }
@@ -396,10 +412,9 @@ namespace DDPM.UI.Module.Kvm
         }
 
         public string? ConnectionType { get; set; }
-        public double? BatteryLevel { get; set; }
-        public string? BatteryStatus { get; set; }
-        public bool? NoBattery { get; set; }
         public string? Text1 { get; set; }
+        public bool isUSBKVMButton { get; set; } = true;
+        public double USBKVMButtonOpacity { get; set; } = 1;
 
         #region Hotkey
 
@@ -574,6 +589,8 @@ namespace DDPM.UI.Module.Kvm
                 NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(selHomeDevice.MonitorInfo).Result;
                 if (mi.CapabilityDic.ContainsKey("EE"))
                 {
+                    isUSBKVMButton = true;
+                    USBKVMButtonOpacity = 1;
                     //_isUSBKVM = KvmModule.isUSBKVM;
                     if (USBKVMisON)
                     {
@@ -653,6 +670,11 @@ namespace DDPM.UI.Module.Kvm
                             }
                         }
                     }
+                    else 
+                    {
+                        isUSBKVMButton = false;
+                        USBKVMButtonOpacity = 0.5;
+                    }
                     OnPropertyChanged("PC1Inputs_Selected");
                     OnPropertyChanged("PC2Inputs_Selected");
                     OnPropertyChanged("PC3Inputs_Selected");
@@ -721,6 +743,11 @@ namespace DDPM.UI.Module.Kvm
                                     break;
                             }
                         }
+                    }
+                    else
+                    {
+                        isUSBKVMButton = false;
+                        USBKVMButtonOpacity = 0.5;
                     }
 
                     //Get current Main InputSource from MonitorInfo

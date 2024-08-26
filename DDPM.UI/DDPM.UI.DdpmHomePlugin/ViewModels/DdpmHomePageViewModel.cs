@@ -11,6 +11,7 @@ using Microsoft;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.ServiceProcess;
 using System.Windows.Data;
 using System.Windows.Input;
 using VcpCore.Common;
@@ -505,9 +506,24 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
+            //Check if DTH service is running
+            ServiceController sc = new ServiceController("DellTechHub");
+
+            while (sc.Status == ServiceControllerStatus.Stopped ||
+                sc.Status == ServiceControllerStatus.StopPending)
+            {
+                PleaseWaitMessage = "DellTechHub service is not running";
+                Thread.Sleep(200);
+            }
+            while (!IsDeviceManagerReady)
+            {
+                PleaseWaitMessage = "DDPM.Subagent.DeviceManagere is not ready";
+                Thread.Sleep(200);
+            }
             int timeoutMsec = 10000;
             while (HomeDeviceCount == 0)
             {
+                PleaseWaitMessage = "Do device detected";
                 Thread.Sleep(500);
                 if (sw.ElapsedMilliseconds > timeoutMsec)
                     break;
@@ -520,6 +536,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             IsPleaseWaitVisible = false;
         }
 
+        private string _pleaseWaitMessage = "";
+        public string PleaseWaitMessage
+        {
+            get => _pleaseWaitMessage;
+            set => SetProperty(ref _pleaseWaitMessage, value);
+        }
+
+        private bool _isDeviceManagerReady = false;
+        public bool IsDeviceManagerReady
+        {
+            get => _isDeviceManagerReady;
+            set => SetProperty(ref _isDeviceManagerReady, value);
+        }
         #endregion Please Wait
     }
 }

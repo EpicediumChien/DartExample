@@ -2169,26 +2169,31 @@ namespace VcpCore.Plugins
                 bool TF_Boolean = ColorPresetHash.TryGetValue(ResourceName, out myresources);
                 if (TF_Boolean)
                 {
-                    foreach (var item in myresources.Keys)
-                    {
-                        if (string.Equals(item, presetName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            GetResourceName = ResourceName;
-                            GetPresetValue = myresources[presetName].ToString();
-                            GetResult = true;
-                            break;
-                        }
-                    }
+                    Trace.Write($" presetName = {presetName}");                
 
-                    //if (myresources.ContainsKey(presetName))
-                    //{
-                    //    GetResourceName = ResourceName;
-                    //    GetPresetValue = myresources[presetName].ToString();
-                    //    GetResult = true;
-                    //    break;
-                    //}
+                    /*
+                    if (myresources.ContainsKey(presetName.))
+                    {
+                        GetResourceName = ResourceName;
+                        GetPresetValue = myresources[presetName].ToString();
+                        GetResult = true;
+                        break;
+                    }
+                    */
+
+                    var lookup = myresources.FirstOrDefault(x => x.Key.Equals(presetName, StringComparison.OrdinalIgnoreCase));
+                     
+                    if (lookup.Key != null)
+                    {
+                        GetResourceName = ResourceName;
+                        GetPresetValue = myresources[lookup.Key];
+                        GetResult = true;
+                        break;
+                    }
                 }
             }
+
+            Trace.Write($" GetResult = {GetResult}");
 
             if (GetResult)
             {

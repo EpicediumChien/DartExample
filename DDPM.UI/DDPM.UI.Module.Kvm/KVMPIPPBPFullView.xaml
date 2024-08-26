@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:commonCtrls="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
              xmlns:eaem="clr-namespace:DDPM.UI.Common.EAEM;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="#FF0D121A"
              d:DesignHeight="671" d:DesignWidth="1378"
              Loaded="UserControl_Loaded">
@@ -57,17 +58,17 @@
                 <Grid Grid.Row="1">
                     <StackPanel>
                         <Grid Grid.Row="1" Margin="76, 50, 0, 0"  Width="400" HorizontalAlignment="Left">
-                            <UXControls:UXTextBlock Text="PIP/PBP SETUP"
+                            <UXControls:UXTextBlock Text="{Binding [Kvm.16], Source={x:Static lang:LangHelper.Instance}}"
                                                     Foreground="#DAF5FD"
                                                     FontSize="20"  LineHeight="28" />
                         </Grid>
                         <Grid Grid.Row="2" Margin="76, 8, 0, 0" Width="476" HorizontalAlignment="Left">
-                            <UXControls:UXTextBlock Text="Setup PIP/PBP &#x000A;for your monitor"
+                            <UXControls:UXTextBlock Text="{Binding [Kvm.17], Source={x:Static lang:LangHelper.Instance}}"
                                                     Foreground="#F5F6F7"
                                                     FontSize="48" LineHeight="76" />
                         </Grid>
                         <Grid Grid.Row="3" Margin="76, 16, 0, 0"  Width="476" HorizontalAlignment="Left">
-                            <UXControls:UXTextBlock Text="Your monitor can display one PC or source at a time (fullscreen), &#x000A;or be partitioned between sources (picture-in/by-picture)."
+                            <UXControls:UXTextBlock Text="{Binding [Kvm.18], Source={x:Static lang:LangHelper.Instance}}"
                                                     Foreground="#F5F6F7"
                                                     FontSize="16" LineHeight="24" />
                         </Grid>
@@ -88,13 +89,14 @@
                     <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                          ButtonType="Primary" Padding="40, 8"
                                          ButtonSize="Medium" VerticalContentAlignment="Center"
-                                         Content="Save"  Margin="0"
+                                         Content="{Binding [Save], Source={x:Static lang:LangHelper.Instance}}"  Margin="0"
                                          IconAnimation="Move" Width="164" Height="40"
                                          Click="SaveInput" Visibility="{Binding EditPXP}" />
                     <UXControls:UXButton IconPosition="IconRight"
                                          ButtonType="Primary"
                                          ButtonSize="Medium"
-                                         Content="Finish  ⭢"
+                                         Content="{Binding [Finish], Source={x:Static lang:LangHelper.Instance}}"
+                                         ContentStringFormat="{}{0} ⭢"
                                          IconAnimation="Move"
                                          Click="USBKVMFinish"
                                          HorizontalContentAlignment="Center"
@@ -103,7 +105,7 @@
                                          Visibility="{Binding SetPXP}" />
                     <UXControls:UXButton ButtonType="Tertiary" Width="90" Height="40"
                                          ButtonSize="Medium" Margin="10, 0"
-                                         Content="Cancel"
+                                         Content="{Binding [Cancel], Source={x:Static lang:LangHelper.Instance}}"
                                          IconAnimation="Move"
                                          Click="CloseUSBKVM" Visibility="{Binding EditPXP}" />
                 </StackPanel>
@@ -175,7 +177,7 @@
                                     <eaem:SplitCtrl1B />
                                 </commonCtrls:SplitItem>
 
-                                <UXControls:UXButton Content="Toggle between positions" Height="40" CornerRadius="2" Padding="12,8"
+                                <UXControls:UXButton Content="{Binding [Kvm.15], Source={x:Static lang:LangHelper.Instance}}" Height="40" CornerRadius="2" Padding="12,8"
                                                      Margin="4,0" IsEnabled="{Binding PipPbp.IsTogglePositionEnabled}"
                                                      ButtonType="Secondary" ButtonSemanticColorType="Neutral" Foreground="Gray"
                                                      Command="{Binding PipTogglePositionClickCommand}" />

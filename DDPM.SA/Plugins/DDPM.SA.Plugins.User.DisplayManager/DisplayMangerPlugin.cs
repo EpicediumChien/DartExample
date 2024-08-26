@@ -13,6 +13,7 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
+using DDPM.SA.Common.Method;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -1951,31 +1952,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<List<bool>> SetDisplayOrientation(List<MonitorInfo> monitorInfos)
         {
             bool[] bools = new bool[monitorInfos.Count];
-            if (!isLockOrientation)
+
+            for (int i = 0; i < monitorInfos.Count; i++)
             {
-                for (int i = 0; i < monitorInfos.Count; i++)
+                int count = 0;
+                ObjGetVCP ObjGetVCP;
+                do
                 {
-                    int count = 0;
-                    ObjGetVCP ObjGetVCP;
-                    do
+                    ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
+                    count++;
+                } while (ObjGetVCP.result != true && count < 3);
+                if (ObjGetVCP.result == true)
+                {
+                    uint retValue;
+                    if (uint.TryParse(ObjGetVCP.value.ToString(), out retValue))
                     {
-                        ObjGetVCP = GetVCPCapability(monitorInfos[i], 0xAA).Result;
-                        count++;
-                    } while (ObjGetVCP.result != true && count < 3);
-                    if (ObjGetVCP.result == true)
-                    {
-                        uint retValue;
-                        if (uint.TryParse(ObjGetVCP.value.ToString(), out retValue))
+                        if (_DisplayPropertiesPlugin != null)
                         {
-                            if (_DisplayPropertiesPlugin != null)
+                            DisplayOrientation currentOrientation = _DisplayPropertiesPlugin.GetCurrentDisplayOrientation(monitorInfos[i].DisplayName).Result;
+                            DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
+                            if (!currentOrientation.Equals(orientation))
                             {
-                                DisplayOrientation currentOrientation = _DisplayPropertiesPlugin.GetCurrentDisplayOrientation(monitorInfos[i].DisplayName).Result;
-                                DisplayOrientation orientation = (DisplayOrientation)(retValue - 1);
-                                if (!currentOrientation.Equals(orientation))
-                                {
-                                    Properties properties = new Properties();
-                                    bools[i] = SetDisplayPropertiest(monitorInfos[i], properties, orientation).Result;
-                                }
+                                Properties properties = new Properties();
+                                bools[i] = SetDisplayPropertiest(monitorInfos[i], properties, orientation).Result;
                             }
                         }
                     }
@@ -2006,7 +2005,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
         {
-            if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
+            if (!isLockOrientation && IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
             {
                 for (int i = 1; i < OrientationString.Length; i++)
                 {
@@ -2562,6 +2561,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         bool GamingChangeEventByPass = false;
         public Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo)
         {
+            _logs.DebugMsg(nameof(GetGamingProperties) + " start");
             GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
             GetCurrentGamingParam(monitorInfo, ref gamingDisplayPropertiesInfo);
             gamingDisplayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
@@ -2581,21 +2581,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         switch ((uint)(u & 0xf0))
                         {
                             case (uint)Gaming_Supported.GameEnhancementMode:
+                                gamingDisplayPropertiesInfo.IsSupported_GameEnhancementMode = true;
                                 gamingDisplayPropertiesInfo.Supported_GameEnhancementMode.Add((Gaming_GameEnhancementMode)(u & 0x0f));
                                 break;
                             case (uint)Gaming_Supported.ResponseTime:
+                                gamingDisplayPropertiesInfo.IsSupported_ResponseTime = true;
                                 gamingDisplayPropertiesInfo.Supported_ResponseTime.Add((Gaming_ResponseTime)(u & 0x0f));
                                 break;
                             case (uint)Gaming_Supported.DarkStabilizer:
+                                gamingDisplayPropertiesInfo.IsSupported_DarkStabilizer = true;
                                 gamingDisplayPropertiesInfo.Supported_DarkStabilizer.Add((Gaming_DarkStabilizer)(u & 0x0f));
                                 break;
                             case (uint)Gaming_Supported.HDRType:
+                                gamingDisplayPropertiesInfo.IsSupported_HDRType = true;
                                 gamingDisplayPropertiesInfo.Supported_HDRType.Add((Gaming_HDRType)(u & 0x0f));
                                 break;
                         }
                     }
                 }
             }
+            //string abc = ("EA(F800 F801 F810 F811 )");
             ss = monitorInfo.CapabilityString.Split("EA(");
             if (ss.Length == 2)
             {
@@ -2608,107 +2613,183 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         uint u = Convert.ToUInt32(temps, 16);
                         if (Enum.IsDefined(typeof(Gaming_DualResolutionType), u))
                         {
+                            gamingDisplayPropertiesInfo.IsSupported_DualResolutionType = true;
                             gamingDisplayPropertiesInfo.Supported_DualResolutionType.Add((Gaming_DualResolutionType)u);
                         }
                     }
                 }
             }
+            if (monitorInfo.modelName.Contains("G"))
+            {
+                ss = monitorInfo.CapabilityString.Split("EC(");
+                if (ss.Length == 2)
+                {
+                    ss = ss[1].Split(")");
+                    ss = ss[0].Split(" ");
+                    foreach (string temps in ss)
+                    {
+                        if (!string.IsNullOrEmpty(temps))
+                        {
+                            uint u = Convert.ToUInt32(temps, 16);
+                            if (Enum.IsDefined(typeof(Gaming_VisionEngineType), u))
+                            {
+                                gamingDisplayPropertiesInfo.IsSupported_VisionEngineType = true;
+                                gamingDisplayPropertiesInfo.Supported_VisionEngineType.Add((Gaming_VisionEngineType)u);
+                            }
+                        }
+                    }
+                }
+            }
+            _logs.DebugMsg(nameof(GetGamingProperties) + " done");
             return Task.FromResult(gamingDisplayPropertiesInfo);
         }
         public Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode)
         {
+            _logs.DebugMsg(nameof(SetGameEnhancementMode) + " start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
             {
                 uint title = (uint)Gaming_Supported.GameEnhancementMode;
                 uint param = (uint)GameEnhancementMode;
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + title + param);
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
-            catch
+            catch (Exception ex)
             {
-
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " Error:" + ex.ToString());
             }
             GamingChangeEventByPass = false;
+            _logs.DebugMsg(nameof(SetGameEnhancementMode) + " done:Result" + ret);
             return Task.FromResult(ret);
         }
         public Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime)
         {
+            _logs.DebugMsg(nameof(SetGaming_ResponseTime) + " start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
             {
                 uint title = (uint)Gaming_Supported.ResponseTime;
                 uint param = (uint)ResponseTime;
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + title + param);
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
-            catch
+            catch (Exception ex)
             {
-
+                _logs.DebugMsg(nameof(SetGaming_ResponseTime) + " Error:" + ex.ToString());
             }
+            _logs.DebugMsg(nameof(SetGaming_ResponseTime) + " done:Result" + ret);
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
         public Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer)
         {
+            _logs.DebugMsg(nameof(SetGaming_DarkStabilizer) + " start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
             {
                 uint title = (uint)Gaming_Supported.DarkStabilizer;
                 uint param = (uint)DarkStabilizer;
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + title + param);
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
-            catch
+            catch (Exception ex)
             {
-
+                _logs.DebugMsg(nameof(SetGaming_DarkStabilizer) + " Error:" + ex.ToString());
             }
+            _logs.DebugMsg(nameof(SetGaming_DarkStabilizer) + " done:Result" + ret);
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
         public Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType)
         {
+            _logs.DebugMsg(nameof(SetGaming_HDRType) + " start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
             {
                 uint title = (uint)Gaming_Supported.HDRType;
                 uint param = (uint)HDRType;
+                _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + title + param);
                 ret = SetVCPCapability(monitorInfo, VcpCodeList.VCPctr["Gaming"], title + param).Result;
             }
-            catch
+            catch (Exception ex)
             {
-
+                _logs.DebugMsg(nameof(SetGaming_HDRType) + " Error:" + ex.ToString());
             }
+            _logs.DebugMsg(nameof(SetGaming_HDRType) + " done:Result" + ret);
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
-        public Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfos, Gaming_DualResolutionType DualResolutionType)
+        public Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType)
         {
+            _logs.DebugMsg(nameof(SetGaming_DualResolutionType) + " start");
+            bool ret = false;
             try
             {
                 if (DualResolutionType != Gaming_DualResolutionType.Unknow)
                 {
                     string setParam = "USB-C Prioritization";
                     string PrioritizationType = DualResolutionType == Gaming_DualResolutionType._4K ? "4K" : "FHD";
-                    if (!SetVCPCapability(monitorInfos, setParam, PrioritizationType).Result)
-                    {
-                        return Task.FromResult(false);
-                    }
-                    return Task.FromResult(true);
-                }
-                else
-                {
-                    return Task.FromResult(false);
+                    _logs.DebugMsg(nameof(SetGameEnhancementMode) + " value:" + PrioritizationType);
+                    ret = SetVCPCapability(monitorInfo, setParam, PrioritizationType).Result;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return Task.FromResult(false);
+                _logs.DebugMsg(nameof(SetGaming_DualResolutionType) + " Error:" + ex.ToString());
             }
+            _logs.DebugMsg(nameof(SetGaming_DualResolutionType) + " done:Result" + ret);
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType)
+        {
+            _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " start");
+            bool ret = false;
+            try
+            {
+                if (VisionEngineEnableType != null)
+                {
+                    string command = "";
+                    for (int i = 0; i < VisionEngineEnableType.Length; i++)
+                    {
+                        //需啟用的引擎增加1字串
+                        if (VisionEngineEnableType[i])
+                        {
+                            command += "1";
+                        }
+                        else
+                        {
+                            command += "0";
+                        }
+                    }
+                    //1.將字串反向，因韌體是右到左，修改回韌體順序
+                    //2.反向後先往右邊補0，補齊b8-b15共7位
+                    //3.再往左邊補0，共補16位b0-17
+                    command = Algorithm.ReverseString(command).PadLeft(8, '0').PadRight(16, '0');
+                    //轉成16進制
+                    command = Algorithm.BinaryToHex(command);
+                    var hexStyle = System.Globalization.NumberStyles.HexNumber;
+                    int number;
+                    _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " value:" + command);
+                    if (int.TryParse(command, hexStyle, CultureInfo.CurrentCulture, out number))
+                    {
+                        ret = SetVCPCapability(monitorInfo, 0xEC, (uint)number).Result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " Error:" + ex.ToString());
+            }
+            _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " done:Result" + ret);
+            return Task.FromResult(ret);
         }
         private bool GetCurrentGamingParam(MonitorInfo monitorInfo, ref GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
         {
+            _logs.DebugMsg(nameof(GetCurrentGamingParam) + " start");
             GamingChangeEventByPass = true;
             bool ret = false;
             try
@@ -2739,13 +2820,45 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     gamingDisplayPropertiesInfo.Current_DualResolutionType = ObjGetVCP.value.ToString() == "4K" ? Gaming_DualResolutionType._4K : Gaming_DualResolutionType._FHD; ;
                 }
+                if (monitorInfo.modelName.Contains("G"))
+                {
+                    ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
+                    if (ObjGetVCP.result == true)
+                    {
+                        // 右移8位，將後半段不要的曲調
+                        uint ea_Ret = ((uint)ObjGetVCP.value >> 8);
+                        //轉成二進制
+                        string binaryString = Convert.ToString(ea_Ret, 2).PadLeft(8, '0');
+                        // 反向字串，使得順向
+                        string reversedBinaryString = Algorithm.ReverseString(binaryString);
+
+                        for (int i = 0; i < gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length; i++)
+                        {
+                            //字串中為1的代表啟用該引擎
+                            if (reversedBinaryString[i] == ('1'))
+                            {
+                                gamingDisplayPropertiesInfo.IsEnable_VisionEngineType[i] = true;
+                            }
+                        }
+                        string command = "";
+                        for (int i = 0; i < gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length; i++)
+                        {
+                            //需啟用的引擎增加1字串
+                            if (gamingDisplayPropertiesInfo.IsEnable_VisionEngineType[i])
+                            {
+                                command += "1";
+                            }
+                        }
+                    }
+                }
                 ret = true;
             }
-            catch
+            catch (Exception ex)
             {
-                ret = false;
+                _logs.DebugMsg(nameof(GetCurrentGamingParam) + " Error:" + ex.ToString());
             }
             GamingChangeEventByPass = false;
+            _logs.DebugMsg(nameof(GetCurrentGamingParam) + " done:Result" + ret);
             return ret;
         }
         private void GamingChangeEventHandle(VCPchangedEventArgs vcpchangedEventArgs)
