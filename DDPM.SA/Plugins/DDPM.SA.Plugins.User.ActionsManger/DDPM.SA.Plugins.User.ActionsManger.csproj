@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+    <ProjectReference Include="..\..\Common\Win32Lib\DDPM.Win32Lib.csproj" />
   </ItemGroup>
 
 </Project>

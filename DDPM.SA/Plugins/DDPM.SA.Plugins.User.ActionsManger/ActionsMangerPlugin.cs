@@ -18,6 +18,7 @@ using Task = System.Threading.Tasks.Task;
 using Dell.Client.Framework.Security.Interfaces;
 using Dell.Client.Framework.Security;
 using DDPM.SA.Common.Settings;
+using DDPM.Win32Lib;
 
 namespace DDPM.SA.Plugins.User.ActionsManger
 {
@@ -35,46 +36,6 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private const string publisherCompany = "Wistron";
         private const string publisherWebsite = "https://www.wistron.com";
         private const string publisherSupport = "This plugin implements Actions Manger Plugin.";
-
-        // Import keybd_event function
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
-
-        // Import mouse_event function 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
-
-        // Constants for keybd events
-        private const uint KEYEVENTF_KEYDOWN = 0x0000;
-        private const uint KEYEVENTF_KEYUP = 0x0002;
-
-        // Constants for mouse events
-        private const uint MOUSEEVENTF_MIDDLEDOWN = 0x0020;
-        private const uint MOUSEEVENTF_MIDDLEUP = 0x0040;
-
-        private const uint MOUSEEVENTF_WHEEL = 0x0800;
-        private const uint WHEEL_DELTA = 120;
-
-        private const int VK_LWIN = 0x5B;
-        private const int VK_SHIFT = 0x10;
-        private const int VK_S = 0x53;
-        private const int VK_A = 0x41;
-        private const int VK_TAB = 0x09;
-        private const int VK_L = 0x4C;
-        private const int VK_E = 0x45;
-        private const int VK_D = 0x44;
-        private const int VK_M = 0x4D;
-
-        private const byte VK_CONTROL = 0x11;
-        private const byte VK_ALT = 0x12;
-        private const byte VK_F5 = 0x74;
-        private const byte VK_F6 = 0x75;
-        private const byte VK_F7 = 0x76;
-        private const byte VK_F8 = 0x77;
-        private const byte VK_F9 = 0x78;
-        private const byte VK_F12 = 0x7B;
-        private const byte VK_INSERT = 0x2D;
-        private const byte VK_DELETE = 0x2E;
 
         private IAgent _agent;
         public const string PluginLogId = "ActionsManger";
@@ -935,17 +896,17 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void WindowsAction_DoCopilot()
         {
             // Send Win + C (Open Copilot)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("c");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoDevices()
         {
             // Open "Devices" settings page (Open settings with Win + I and select Devices)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("i");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
             // Assuming Devices is the default option, press Enter
             SendKeys.SendWait("{ENTER}");
         }
@@ -953,52 +914,52 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void WindowsAction_DoLock()
         {
             // Send Win + L (Lock screen)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("l");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoNotificationCenter()
         {
             // Send Win + A (Open Notification Center)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("a");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoScreenSnip()
         {
             // Send Win + Shift + S (Start Screen Snip tool)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
-            keybd_event(VK_SHIFT, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
-            keybd_event(VK_S, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
-            keybd_event(VK_S, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
-            keybd_event(VK_SHIFT, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_SHIFT, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_S, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_S, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_SHIFT, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoSearch()
         {
             // Send Win + S (Open Search)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("s");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoSettings()
         {
             // Send Win + I (Open Settings)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("i");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoShowHideDesktop()
         {
             // Send Win + D (Show/Hide Desktop)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("d");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoShutdown()
@@ -1019,9 +980,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void WindowsAction_DoSleep()
         {
             // Send Win + X and select Sleep mode (Assuming it's an option in the dropdown menu)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("x");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
             // Navigate to "Sleep" option (Might need to press arrow keys several times)
             SendKeys.SendWait("{DOWN 4}"); // Adjust number as needed
             SendKeys.SendWait("{ENTER}");
@@ -1036,9 +997,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void WindowsAction_DoTaskView()
         {
             // Send Win + Tab (Open Task View)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("{TAB}");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void ProductivityAction_AssignKeystroke()
@@ -1055,9 +1016,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void ProductivityAction_DoCalculator()
         {
             // Send Win + R and run calc.exe
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("r");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
             SendKeys.SendWait("calc{ENTER}");
         }
 
@@ -1082,9 +1043,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void ProductivityAction_DoDocuments()
         {
             // Send Win + E and open Documents folder
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("e");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
             SendKeys.SendWait("%d{ENTER}");
         }
 
@@ -1097,25 +1058,25 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void ProductivityAction_DoMaximizeWindow()
         {
             // Send Win + Up Arrow (Maximize window)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("{UP}");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void ProductivityAction_DoMinimizeWindow()
         {
             // Send Win + Down Arrow (Minimize window)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("{DOWN}");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void ProductivityAction_DoMyHome()
         {
             // Send Win + E (Open File Explorer)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("e");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void ProductivityAction_DoOpenFile()
@@ -1194,9 +1155,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void MultimediaAction_DoPictures()
         {
             // Open default pictures folder
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("e");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
             SendKeys.SendWait("^{P}");
         }
 
@@ -1293,9 +1254,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void ProductivityAction_DoOpenRun()
         {
             // Send Win + R (Open Run dialog)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("r");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void ProductivityAction_DoPenPageDown()
@@ -1343,9 +1304,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void WindowsAction_DoEMail()
         {
             // Send Win + E (Open email client)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("e");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
             // Navigate to email client
             SendKeys.SendWait("%m");
         }
@@ -1353,9 +1314,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void WindowsAction_DoOneNote()
         {
             // Send Win + N (Open OneNote)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("n");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoOpenNewBrowserTab()
@@ -1373,17 +1334,17 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private static void WindowsAction_DoWidgets()
         {
             // Send Win + W (Open Widgets)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("w");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void WindowsAction_DoWindowsSearch()
         {
             // Send Win + S (Open Windows Search)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("s");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private static void MultimediaAction_NextTrack()
@@ -1399,12 +1360,12 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private void WordAction_Autoscroll()
         {
             // Autoscroll: Ctrl + Alt + Middle mouse button
-            keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
-            keybd_event(VK_ALT, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_CONTROL, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_ALT, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             // Simulate middle mouse button click
             MouseClickMiddleButton();
-            keybd_event(VK_ALT, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
-            keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_ALT, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_CONTROL, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private void WordAction_Find()
@@ -1879,50 +1840,50 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private void MouseClickMiddleButton()
         {
             // Simulate middle mouse button down
-            mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, UIntPtr.Zero);
+            Win32._mouse_event(Win32.MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, UIntPtr.Zero);
 
             // Simulate middle mouse button up
-            mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, UIntPtr.Zero);
+            Win32._mouse_event(Win32.MOUSEEVENTF_MIDDLEUP, 0, 0, 0, UIntPtr.Zero);
         }
 
         private void MouseClickAndHoldMiddleButton()
         {
             // Implement logic to click and hold the middle mouse button
             // Simulate middle mouse button down (click and hold)
-            mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, UIntPtr.Zero);
+            Win32._mouse_event(Win32.MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, UIntPtr.Zero);
         }
 
         private void MouseReleaseMiddleButton()
         {
             // Implement logic to release the middle mouse button
             // Simulate middle mouse button up (release)
-            mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, UIntPtr.Zero);
+            Win32._mouse_event(Win32.MOUSEEVENTF_MIDDLEUP, 0, 0, 0, UIntPtr.Zero);
         }
 
         private void CtrlMouseWheelUp()
         {
             // Implement logic for Ctrl + Mouse Wheel Up
             // Simulate pressing the Ctrl key
-            keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_CONTROL, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
 
             // Simulate mouse wheel scroll up
-            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, WHEEL_DELTA, UIntPtr.Zero);
+            Win32._mouse_event(Win32.MOUSEEVENTF_WHEEL, 0, 0, Win32.WHEEL_DELTA, UIntPtr.Zero);
 
             // Simulate releasing the Ctrl key
-            keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_CONTROL, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         private void CtrlMouseWheelDown()
         {
             // Implement logic for Ctrl + Mouse Wheel Down
             // Simulate pressing the Ctrl key
-            keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_CONTROL, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
 
             // Simulate mouse wheel scroll down (negative delta)
-            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, unchecked((uint)-WHEEL_DELTA), UIntPtr.Zero);
+            Win32._mouse_event(Win32.MOUSEEVENTF_WHEEL, 0, 0, unchecked((uint)-Win32.WHEEL_DELTA), UIntPtr.Zero);
 
             // Simulate releasing the Ctrl key
-            keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_CONTROL, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         #endregion
@@ -1986,11 +1947,11 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private void WindowsAction_DoQuickNote()
         {
             // Simulate opening a Quick Note (e.g., Win + Alt + N in OneNote)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
-            keybd_event(VK_ALT, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_ALT, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("n");
-            keybd_event(VK_ALT, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_ALT, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         //private void WindowsAction_DoScreenSnip()
@@ -2006,9 +1967,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         private void WindowsAction_DoStickyNotes()
         {
             // Simulate opening Sticky Notes (e.g., Win + S, type "Sticky Notes" and Enter)
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYDOWN, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYDOWN, UIntPtr.Zero);
             SendKeys.SendWait("s");
-            keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            Win32._keybd_event(Win32.VK_LWIN, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
             SendKeys.SendWait("Sticky Notes{ENTER}");
         }
 

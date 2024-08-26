@@ -363,5 +363,55 @@ namespace DDPM.Win32Lib
             return GetPrivateProfileString(section, key, def, retVal, size, filePath);
         }
         #endregion Read/Write INI file
+
+        #region Actions (Wayn)
+        // Import keybd_event function
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+        public static void _keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo)
+        {
+            keybd_event(bVk, bScan, dwFlags, dwExtraInfo);
+        }
+
+        // Import mouse_event function 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
+        public static void _mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo)
+        {
+            mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo);
+        }
+
+        // Constants for keybd events
+        public const uint KEYEVENTF_KEYDOWN = 0x0000;
+        public const uint KEYEVENTF_KEYUP = 0x0002;
+
+        // Constants for mouse events
+        public const uint MOUSEEVENTF_MIDDLEDOWN = 0x0020;
+        public const uint MOUSEEVENTF_MIDDLEUP = 0x0040;
+
+        public const uint MOUSEEVENTF_WHEEL = 0x0800;
+        public const uint WHEEL_DELTA = 120;
+
+        public const int VK_LWIN = 0x5B;
+        public const int VK_SHIFT = 0x10;
+        public const int VK_S = 0x53;
+        public const int VK_A = 0x41;
+        public const int VK_TAB = 0x09;
+        public const int VK_L = 0x4C;
+        public const int VK_E = 0x45;
+        public const int VK_D = 0x44;
+        public const int VK_M = 0x4D;
+
+        public const byte VK_CONTROL = 0x11;
+        public const byte VK_ALT = 0x12;
+        public const byte VK_F5 = 0x74;
+        public const byte VK_F6 = 0x75;
+        public const byte VK_F7 = 0x76;
+        public const byte VK_F8 = 0x77;
+        public const byte VK_F9 = 0x78;
+        public const byte VK_F12 = 0x7B;
+        public const byte VK_INSERT = 0x2D;
+        public const byte VK_DELETE = 0x2E;
+        #endregion
     }
 }
