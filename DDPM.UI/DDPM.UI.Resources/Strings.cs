@@ -390,5 +390,26 @@ namespace DDPM.UI.Common {
     public static readonly string OK = GetString("OK");
     public static readonly string LearnMore = GetString("LearnMore");
     public static readonly string Collaboration = GetString("Collaboration");
-    }
+
+    //Collaboration
+    public static readonly string CollabsCaption = "Collaboration";
+    public static readonly string CollaborationToolTip = "Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.";
+    public static readonly string CollaborationBlinkEffectText = "Enable blink effect when there is a new chat message in conference\ncall";
+    public static readonly string CollaborationDoubleTapText = "Activate icons on the keyboard by double tapping instead of single\ntapping";
+    public static readonly string LearnMoreCaption = "Learn More";
+    public static readonly string LearnMoreText1 = "To use Collaboration Keyboard with Microsoft Teams:\r\n1. Open Teams and go to privacy settings.\n\n2. Select Third-party app API and ensure that Dell Display and Peripheral Manager is not on the blocked list.\n\n3. Pair Microsoft Teams with Dell Display and Peripheral Manager by launching a Microsoft Teams conference call.";
+    public static readonly string LearnMoreText2 = "If you are still having trouble, contact your IT department (if applicable) as they may have policies in place that are prohibiting Collaboration Keyboard from connecting to Microsoft Teams.";
+    public static readonly string Alert1 = "To use Collaboration Keyboard you need the latest version of Zoom or Microsoft Teams";
+    public static readonly string Alert2 = "Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request";
+    public static readonly string Alert3 = "Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \"Learn more\" for instructions on how to re-connect.";
+    public static readonly string Alert4 = "To use Collaboration Keyboard with Zoom, install Zoom’s latest desktop version";
+    public static readonly string Alert5 = "To use Collaboration Keyboard with Microsoft Teams, ensure you are signed into Microsoft Teams, using the latest version, and have the Third-party app API enabled";
+    public static readonly string LearnMoreLink = "Learn more";
+    public static readonly string VideoCaption = "Video";
+    public static readonly string ShareCaption = "Share";
+    public static readonly string ChatCaption = "Chat";
+    public static readonly string MicCaption = "Mic";
+    public static readonly string OKCaption = "OK";
+
+  }
 }
