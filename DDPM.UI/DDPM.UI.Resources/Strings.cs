@@ -4,19 +4,22 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Devices.HumanInterfaceDevice;
-using ResourceManager=System.Resources.ResourceManager;
+using ResourceManager = System.Resources.ResourceManager;
 
-namespace DDPM.UI.Common {
-    [Obsolete("please use DDPM.UI.Resources.Helper.LangHelper if static text",false)]//gavin 2024/08/02
-    public static class Strings {
-    private static ResourceManager resManager = Resources.Resources.ResourceManager;
-    private static string GetString(string key) {
+namespace DDPM.UI.Common
+{
+    [Obsolete("please use DDPM.UI.Resources.Helper.LangHelper if static text", false)]//gavin 2024/08/02
+    public static class Strings
+    {
+        private static ResourceManager resManager = Resources.Resources.ResourceManager;
+        private static string GetString(string key)
+        {
 
             //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pl-PL");
-           // string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            // string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
             string str = resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
             return System.Text.RegularExpressions.Regex.Unescape(str);
-    }
+        }
 
         public static readonly string AdaptiveLight = GetString("AdaptiveLight");
         public static readonly string Manual = GetString("Manual");
@@ -169,15 +172,15 @@ namespace DDPM.UI.Common {
         public static readonly string _5thClick = GetString("5thClick");//"5th Click";
         public static readonly string Erase = GetString("Erase");//"Erase";
         public static readonly string LeftClick = GetString("LeftClick");// "Left Click";
-        public static readonly string MiddleClick = "Middle Click";
-        public static readonly string OpenRun = "Open/Run";
-        public static readonly string OpenRun2 = "Open Run";
-        public static readonly string PenPageDown = "Page Down";
-        public static readonly string PenPageUp = "Page Up";
-        public static readonly string RadialMenu = "Radial Menu";
-        public static readonly string Redo = "Redo";
-        public static readonly string RightClick = "Right Click";
-        public static readonly string Undo = "Undo";
+        public static readonly string MiddleClick = GetString("MiddleClick");// "Middle Click";
+        public static readonly string OpenRun = GetString("OpenRun");// "Open/Run";
+        public static readonly string OpenRun2 = GetString("OpenRun2");// "Open Run";
+        public static readonly string PenPageDown = GetString("PenPageDown");// "Page Down";
+        public static readonly string PenPageUp = GetString("PenPageUp");// "Page Up";
+        public static readonly string RadialMenu = GetString("RadialMenu");//"Radial Menu";
+        public static readonly string Redo = GetString("Redo");// "Redo";
+        public static readonly string RightClick = GetString("RightClick");//"Right Click";
+        public static readonly string Undo = GetString("Undo");//"Undo";
 
         //Multimedia Actions
         public static readonly string MediaNextTrack = "Media Next Track";
@@ -330,86 +333,84 @@ namespace DDPM.UI.Common {
         public static readonly string Clear = "Clear";
         public static readonly string Cancel = "Cancel";
 
-    //Dialog
-    public static readonly string OpenRunDesc = "Choose the app from a list of apps";
-    public static readonly string SelectAFile = "Select a file";
-    public static readonly string SelectedFile = "Selected file";
+        //Dialog
+        public static readonly string OpenRunDesc = "Choose the app from a list of apps";
+        public static readonly string SelectAFile = "Select a file";
+        public static readonly string SelectedFile = "Selected file";
 
-    //Pen settings
-    public static readonly string PenSettings = GetString("PenSettings.0");
-    public static readonly string TipSensitivity = GetString("PenSettings.1");
-    public static readonly string TipTooltip = GetString("PenSettings.2");
-    public static readonly string TiltSensitivity = GetString("PenSettings.3");
-    public static readonly string TiltTooltip = GetString("PenSettings.4");
-    public static readonly string PairWithTile = GetString("PenSettings.5");
-    public static readonly string PairTooltip = GetString("PenSettings.6");
-    public static readonly string GetStarted2 = GetString("PenSettings.7");
-    public static readonly string PairTile1 = "Enable Bluetooth on your device.";
-    public static readonly string PairTile2 = "Scan the QR Code to download Tile on to your mobile device.";
-    public static readonly string PairTile3 = "Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.";
-    public static readonly string DownloadTile = "Download tile";
-    public static readonly string USB_C_DP_14 = "USB-C (DP 1.4)";
-    public static readonly string Dual_USB__C_DP_14 = "Dual USB-C (DP 1.4)";
-    public static readonly string DUSB__C_TB_4 = "USB-C (TB 4)";
-    public static readonly string DUSB__C_TB_5 = "USB-C (TB 5)";
+        //Pen settings
+        public static readonly string PenSettings = GetString("PenSettings.0");
+        public static readonly string TipSensitivity = GetString("PenSettings.1");
+        public static readonly string TipTooltip = GetString("PenSettings.2");
+        public static readonly string TiltSensitivity = GetString("PenSettings.3");
+        public static readonly string TiltTooltip = GetString("PenSettings.4");
+        public static readonly string PairWithTile = GetString("PenSettings.5");
+        public static readonly string PairTooltip = GetString("PenSettings.6");
+        public static readonly string GetStarted2 = GetString("PenSettings.7");
+        public static readonly string PairTile1 = "Enable Bluetooth on your device.";
+        public static readonly string PairTile2 = "Scan the QR Code to download Tile on to your mobile device.";
+        public static readonly string PairTile3 = "Press and hold the two side buttons on the pen for 3 seconds to pair it to Tile.";
+        public static readonly string DownloadTile = "Download tile";
+        public static readonly string USB_C_DP_14 = "USB-C (DP 1.4)";
+        public static readonly string Dual_USB__C_DP_14 = "Dual USB-C (DP 1.4)";
+        public static readonly string DUSB__C_TB_4 = "USB-C (TB 4)";
+        public static readonly string DUSB__C_TB_5 = "USB-C (TB 5)";
 
-    // add device 
-    public static readonly string AddDevice = GetString("AddDevice");
-    public static readonly string AddDevice_Display = GetString("AddDevice.Display");
-    public static readonly string AddDevice_Webcam = GetString("AddDevice.Webcam");
-    public static readonly string AddDevice_KnM = GetString("AddDevice.KnM");
-    public static readonly string AddDevice_Pen = GetString("AddDevice.Pen");
-    public static readonly string AddDevice_Headset = GetString("AddDevice.Headset");
-    public static readonly string AddDevice_Speaker = GetString("AddDevice.Speaker");
-    public static readonly string AddDevice_Dock = GetString("AddDevice.Dock");
-    public static readonly string AddDeviceTypeBluetooth = GetString("AddDevice.Type.Bluetooth");
-    public static readonly string AddDeviceTypeWireless = GetString("AddDevice.Type.Wireless");
-    public static readonly string AddDeviceTypeWired = GetString("AddDevice.Type.Wired");
-    public static readonly string AddDeviceTypeOther = GetString("AddDevice.Type.Other");
-    public static readonly string AddDeviceMsgCancelBtn = GetString("AddDevice.Msg.CancelBtn");
-    public static readonly string AddDeviceMsgWaitingCap = GetString("AddDevice.Msg.WaitingCap");
-    public static readonly string AddDeviceMsgWaitingMsg = GetString("AddDevice.Msg.WaitingMsg");
-    public static readonly string AddDeviceMsgWaitingAlert = GetString("AddDevice.Msg.WaitingAlert");
-    public static readonly string AddDeviceKnMmultiDongleAlert = GetString("AddDevice.KnM.10");
-    public static readonly string AddDeviceKnMnoDongleAlertKnM = GetString("AddDevice.KnM.11");
-    public static readonly string AddDeviceKnMnoDongleAlertHeadset = GetString("AddDevice.KnM.12");
-    public static readonly string DockDongle0 = GetString("Dock.0");
-    public static readonly string DockDongle1 = GetString("Dock.1");
-    public static readonly string HeadsetAudioSettings = GetString("AudioSettings");
-    public static readonly string HeadsetAutomatedActions = GetString("AutomatedActions");
-    public static readonly string HeadsetDeviceSettings = GetString("DeviceSettings");
-    public static readonly string SoundBarAudioPreset = GetString("Soundbar.0");
-    public static readonly string SoundBarInteractions = GetString("Soundbar.1");
-    public static readonly string SoundBarAudioSettings = GetString("AudioSettings");
-    public static readonly string CameraControl = GetString("Camera.0");
-    public static readonly string ColorandImage = GetString("Camera.1");
-    public static readonly string PresenceDetection = GetString("Camera.2");
-    public static readonly string Capture = GetString("Camera.3");
-    public static readonly string Microphone = GetString("Camera.4");
-    public static readonly string BrightnessErrorMsg0 = GetString("Brightness.0");
-    public static readonly string OK = GetString("OK");
-    public static readonly string LearnMore = GetString("LearnMore");
-    public static readonly string Collaboration = GetString("Collaboration");
-
-    //Collaboration
-    public static readonly string CollabsCaption = "Collaboration";
-    public static readonly string CollaborationToolTip = "Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.";
-    public static readonly string CollaborationBlinkEffectText = "Enable blink effect when there is a new chat message in conference\ncall";
-    public static readonly string CollaborationDoubleTapText = "Activate icons on the keyboard by double tapping instead of single\ntapping";
-    public static readonly string LearnMoreCaption = "Learn More";
-    public static readonly string LearnMoreText1 = "To use Collaboration Keyboard with Microsoft Teams:\r\n1. Open Teams and go to privacy settings.\n\n2. Select Third-party app API and ensure that Dell Display and Peripheral Manager is not on the blocked list.\n\n3. Pair Microsoft Teams with Dell Display and Peripheral Manager by launching a Microsoft Teams conference call.";
-    public static readonly string LearnMoreText2 = "If you are still having trouble, contact your IT department (if applicable) as they may have policies in place that are prohibiting Collaboration Keyboard from connecting to Microsoft Teams.";
-    public static readonly string Alert1 = "To use Collaboration Keyboard you need the latest version of Zoom or Microsoft Teams";
-    public static readonly string Alert2 = "Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request";
-    public static readonly string Alert3 = "Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \"Learn more\" for instructions on how to re-connect.";
-    public static readonly string Alert4 = "To use Collaboration Keyboard with Zoom, install Zoom’s latest desktop version";
-    public static readonly string Alert5 = "To use Collaboration Keyboard with Microsoft Teams, ensure you are signed into Microsoft Teams, using the latest version, and have the Third-party app API enabled";
-    public static readonly string LearnMoreLink = "Learn more";
-    public static readonly string VideoCaption = "Video";
-    public static readonly string ShareCaption = "Share";
-    public static readonly string ChatCaption = "Chat";
-    public static readonly string MicCaption = "Mic";
-    public static readonly string OKCaption = "OK";
-
-  }
+        // add device 
+        public static readonly string AddDevice = GetString("AddDevice");
+        public static readonly string AddDevice_Display = GetString("AddDevice.Display");
+        public static readonly string AddDevice_Webcam = GetString("AddDevice.Webcam");
+        public static readonly string AddDevice_KnM = GetString("AddDevice.KnM");
+        public static readonly string AddDevice_Pen = GetString("AddDevice.Pen");
+        public static readonly string AddDevice_Headset = GetString("AddDevice.Headset");
+        public static readonly string AddDevice_Speaker = GetString("AddDevice.Speaker");
+        public static readonly string AddDevice_Dock = GetString("AddDevice.Dock");
+        public static readonly string AddDeviceTypeBluetooth = GetString("AddDevice.Type.Bluetooth");
+        public static readonly string AddDeviceTypeWireless = GetString("AddDevice.Type.Wireless");
+        public static readonly string AddDeviceTypeWired = GetString("AddDevice.Type.Wired");
+        public static readonly string AddDeviceTypeOther = GetString("AddDevice.Type.Other");
+        public static readonly string AddDeviceMsgCancelBtn = GetString("AddDevice.Msg.CancelBtn");
+        public static readonly string AddDeviceMsgWaitingCap = GetString("AddDevice.Msg.WaitingCap");
+        public static readonly string AddDeviceMsgWaitingMsg = GetString("AddDevice.Msg.WaitingMsg");
+        public static readonly string AddDeviceMsgWaitingAlert = GetString("AddDevice.Msg.WaitingAlert");
+        public static readonly string AddDeviceKnMmultiDongleAlert = GetString("AddDevice.KnM.10");
+        public static readonly string AddDeviceKnMnoDongleAlertKnM = GetString("AddDevice.KnM.11");
+        public static readonly string AddDeviceKnMnoDongleAlertHeadset = GetString("AddDevice.KnM.12");
+        public static readonly string DockDongle0 = GetString("Dock.0");
+        public static readonly string DockDongle1 = GetString("Dock.1");
+        public static readonly string HeadsetAudioSettings = GetString("AudioSettings");
+        public static readonly string HeadsetAutomatedActions = GetString("AutomatedActions");
+        public static readonly string HeadsetDeviceSettings = GetString("DeviceSettings");
+        public static readonly string SoundBarAudioPreset = GetString("Soundbar.0");
+        public static readonly string SoundBarInteractions = GetString("Soundbar.1");
+        public static readonly string SoundBarAudioSettings = GetString("AudioSettings");
+        public static readonly string CameraControl = GetString("Camera.0");
+        public static readonly string ColorandImage = GetString("Camera.1");
+        public static readonly string PresenceDetection = GetString("Camera.2");
+        public static readonly string Capture = GetString("Camera.3");
+        public static readonly string Microphone = GetString("Camera.4");
+        public static readonly string BrightnessErrorMsg0 = GetString("Brightness.0");
+        public static readonly string OK = GetString("OK");
+        public static readonly string LearnMore = GetString("LearnMore");
+        public static readonly string Collaboration = GetString("Collaboration");
+        //Collaboration
+        public static readonly string CollabsCaption = "Collaboration";
+        public static readonly string CollaborationToolTip = "Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.";
+        public static readonly string CollaborationBlinkEffectText = "Enable blink effect when there is a new chat message in conference\ncall";
+        public static readonly string CollaborationDoubleTapText = "Activate icons on the keyboard by double tapping instead of single\ntapping";
+        public static readonly string LearnMoreCaption = "Learn More";
+        public static readonly string LearnMoreText1 = "To use Collaboration Keyboard with Microsoft Teams:\r\n1. Open Teams and go to privacy settings.\n\n2. Select Third-party app API and ensure that Dell Display and Peripheral Manager is not on the blocked list.\n\n3. Pair Microsoft Teams with Dell Display and Peripheral Manager by launching a Microsoft Teams conference call.";
+        public static readonly string LearnMoreText2 = "If you are still having trouble, contact your IT department (if applicable) as they may have policies in place that are prohibiting Collaboration Keyboard from connecting to Microsoft Teams.";
+        public static readonly string Alert1 = "To use Collaboration Keyboard you need the latest version of Zoom or Microsoft Teams";
+        public static readonly string Alert2 = "Connect Collaboration Keyboard with Microsoft Teams by starting a conference call and accepting the connection request";
+        public static readonly string Alert3 = "Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \"Learn more\" for instructions on how to re-connect.";
+        public static readonly string Alert4 = "To use Collaboration Keyboard with Zoom, install Zoom’s latest desktop version";
+        public static readonly string Alert5 = "To use Collaboration Keyboard with Microsoft Teams, ensure you are signed into Microsoft Teams, using the latest version, and have the Third-party app API enabled";
+        public static readonly string LearnMoreLink = "Learn more";
+        public static readonly string VideoCaption = "Video";
+        public static readonly string ShareCaption = "Share";
+        public static readonly string ChatCaption = "Chat";
+        public static readonly string MicCaption = "Mic";
+        public static readonly string OKCaption = "OK";
+    }
 }

@@ -81,6 +81,8 @@ namespace DDPM.SA.Common.Display
         ChangePIPPosition,
         KvmSwitchInputSource,
         KvmSwitchKbMsKey,
-        KvmChangePIPPosition
+        KvmChangePIPPosition,
+        DarkStabilizerToggle,
+        DualResolutionToggle
     }
 }
