@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VcpCore.Common;
 
-namespace DDPM.SA.Common {
-  public enum DeviceChangedType {
+namespace DDPM.SA.Common
+{
+  public enum DeviceChangedType
+  {
     Display_SettingsChange = 0,
     Display_PlugIn = 1,
     Display_UnPlug = 2,
@@ -19,7 +21,8 @@ namespace DDPM.SA.Common {
     NotifyOnly = 6
   }
 
-  public class DeviceChangedEventArgs : EventArgs {
+  public class DeviceChangedEventArgs : EventArgs
+  {
     public string deviceID { get; set; } //for display point to serial number, for peripherals point to Guid
     public DeviceChangedType type { get; set; }
     public MonitorInfo device_display { get; set; }
@@ -27,7 +30,8 @@ namespace DDPM.SA.Common {
     public string changedProperty { get; set; }
   }
 
-  public class UpdateUINotify : EventArgs {
+  public class UpdateUINotify : EventArgs
+  {
     public string UI_Field_Name { get; set; } = string.Empty;
   }
 
@@ -426,9 +430,9 @@ namespace DDPM.SA.Common {
 
     Task<bool> isNKVMSupportMonitor(MonitorInfo monitorInfo);
 
-        Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+    Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
 
-        #endregion for NKVM
+    #endregion for NKVM
 
     #region public for SW Update
 
@@ -438,25 +442,25 @@ namespace DDPM.SA.Common {
 
     #endregion public for SW Update
 
-        #region public for ImpExpSettings
-        Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
-        #endregion
-        //public for GUI to get the changes of display and peripherals
-        event EventHandler<DeviceChangedEventArgs> DeviceChanged;
-        
-        #region public for IT lock event
-        //IT lock
-        event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
-        #endregion
-        #region Gaming
-        event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
-        Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
-        Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
-        Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
-        Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
-        Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
-        Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
-        Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
+    #region public for ImpExpSettings
+    Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
+    #endregion
+    //public for GUI to get the changes of display and peripherals
+    event EventHandler<DeviceChangedEventArgs> DeviceChanged;
+
+    #region public for IT lock event
+    //IT lock
+    event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+    #endregion
+    #region Gaming
+    event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+    Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
+    Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
+    Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
+    Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
+    Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
+    Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
+    Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
     #endregion
 
 

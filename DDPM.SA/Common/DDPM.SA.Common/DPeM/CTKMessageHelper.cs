@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using IndiLogic.DPeM.Broker;
 
-namespace DDPM.SA.Common {
-  public class CTKMessageHelper {
+namespace DDPM.SA.Common
+{
+  public class CTKMessageHelper
+  {
     public string CollaborationMsg;
     public bool IsCollabMultipleCallsDetected;
     public bool IsZoomCallbacksRegistered;

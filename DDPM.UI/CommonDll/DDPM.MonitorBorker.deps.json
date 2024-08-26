@@ -85,92 +85,6 @@
           }
         }
       },
-      "DDPM.Peripherals.interface/2.0.0.1-beta": {
-        "dependencies": {
-          "Dell.DTM.Client.Sdk": "3.1.0-209b7a-beta",
-          "Dell.DTM.Platinum.Sdk": "3.1.0-209b7a-beta",
-          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Exceptions": "3.0.0.602-8d8739-beta",
-          "DellClientFramework": "6.4.5.1",
-          "Newtonsoft.Json": "13.0.3",
-          "System.Reflection.DispatchProxy": "4.7.1"
-        },
-        "runtime": {
-          "lib/net8.0/DDPM.Peripherals.interface.dll": {
-            "assemblyVersion": "2.0.0.2",
-            "fileVersion": "2.0.0.2"
-          }
-        }
-      },
-      "Dell.DTM.Client.Sdk/3.1.0-209b7a-beta": {
-        "dependencies": {
-          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta"
-        },
-        "runtime": {
-          "lib/net8.0/Dell.DTM.ClientSdk.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.DTM.TransmissionData.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.TechHub.AnalyticsDatatypes.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.TechHub.Commodity.Interfaces.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.TechHub.Datatypes.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.TechHub.Exceptions.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.TechHub.Metadata.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.TechHub.Platform.Common(NET).dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.TechHub.Platform.Common.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/net8.0/Dell.TechHub.Platform.Versioning.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          }
-        }
-      },
-      "Dell.DTM.Platinum.Sdk/3.1.0-209b7a-beta": {
-        "dependencies": {
-          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Exceptions": "3.0.0.602-8d8739-beta",
-          "DellClientFramework": "6.4.5.1",
-          "System.Reflection.DispatchProxy": "4.7.1"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Dell.DTM.Platinum.ClientRequestHandler.Interfaces.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/netstandard2.0/Dell.DTM.PlatinumClient.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          },
-          "lib/netstandard2.0/Dell.DTM.TransmissionData.dll": {
-            "assemblyVersion": "3.1.0.8148",
-            "fileVersion": "3.1.0.8148"
-          }
-        }
-      },
       "Dell.RPC.Transport/1.5.1": {
         "dependencies": {
           "DCF.Security": "2.4.1",
@@ -180,17 +94,6 @@
           "lib/net8.0/Dell.RPC.Transport.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.5.1.0"
-          }
-        }
-      },
-      "Dell.TechHub.Sdk.Common.Identifiers/3.0.0.602-8d8739-beta": {
-        "dependencies": {
-          "Newtonsoft.Json": "13.0.3"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Dell.TechHub.Sdk.Common.Identifiers.dll": {
-            "assemblyVersion": "3.0.0.602",
-            "fileVersion": "3.0.0.602"
           }
         }
       },
@@ -206,17 +109,6 @@
           "lib/net8.0/Dell.TechHub.Sdk.Common_NET.dll": {
             "assemblyVersion": "3.0.0.606",
             "fileVersion": "3.0.0.606"
-          }
-        }
-      },
-      "Dell.TechHub.Sdk.Exceptions/3.0.0.602-8d8739-beta": {
-        "dependencies": {
-          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Dell.TechHub.Sdk.Exceptions.dll": {
-            "assemblyVersion": "3.0.0.602",
-            "fileVersion": "3.0.0.602"
           }
         }
       },
@@ -574,7 +466,6 @@
         }
       },
       "System.Numerics.Vectors/4.5.0": {},
-      "System.Reflection.DispatchProxy/4.7.1": {},
       "System.Reflection.Emit/4.7.0": {},
       "System.Reflection.Metadata/8.0.0": {
         "dependencies": {
@@ -708,14 +599,16 @@
           "WinCopies.WindowsAPICodePack.Shell": "2.12.0.2"
         },
         "runtime": {
-          "DDPM.ColorApp.dll": {}
+          "DDPM.ColorApp.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DDPM.SA.Common/2.0.0.5": {
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
           "DCF.UX.WPF": "2.2.4.1",
-          "DDPM.Peripherals.interface": "2.0.0.1-beta",
           "Dell.RPC.Transport": "1.5.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "DellClientFramework": "6.4.5.1",
@@ -724,7 +617,10 @@
           "WinCopies.Util": "3.21.0"
         },
         "runtime": {
-          "DDPM.SA.Common.dll": {}
+          "DDPM.SA.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DDPM.ShowOsd/2.0.0.5": {
@@ -733,12 +629,18 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "DDPM.ShowOsd.dll": {}
+          "DDPM.ShowOsd.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DDPM.Win32Lib/2.0.0.5": {
         "runtime": {
-          "DDPM.Win32Lib.dll": {}
+          "DDPM.Win32Lib.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "VcpCore.Common/2.0.0.5": {
@@ -746,7 +648,10 @@
           "DellClientFramework": "6.4.5.1"
         },
         "runtime": {
-          "VcpCore.Common.dll": {}
+          "VcpCore.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
@@ -755,7 +660,10 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {}
+          "VcpCore.Interfaces.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DPeMPublic.Common/0.0.0.0": {
@@ -807,27 +715,6 @@
       "path": "dcf.ux.wpf/2.2.4.1",
       "hashPath": "dcf.ux.wpf.2.2.4.1.nupkg.sha512"
     },
-    "DDPM.Peripherals.interface/2.0.0.1-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-c0/GQlJ1yJE0Ss9NDMmvx5KjATwlo12fYxLLTEDed4Y3TOfB4wcR3oQmtmqRwwdwZtPMJRmzr0gA2hadeFOirA==",
-      "path": "ddpm.peripherals.interface/2.0.0.1-beta",
-      "hashPath": "ddpm.peripherals.interface.2.0.0.1-beta.nupkg.sha512"
-    },
-    "Dell.DTM.Client.Sdk/3.1.0-209b7a-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-Fr4WglRKRAoR9npaeXk+lVkPNrp7mNE+s/ym4CCSvTyI+rucSvLBZQ5vam3O93iuCl5iUNVBdidtdzXul1bYTw==",
-      "path": "dell.dtm.client.sdk/3.1.0-209b7a-beta",
-      "hashPath": "dell.dtm.client.sdk.3.1.0-209b7a-beta.nupkg.sha512"
-    },
-    "Dell.DTM.Platinum.Sdk/3.1.0-209b7a-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-hvAQqmbjk3/Emmw6WgF6DsRpVFml60wHRYfRTMZP/OvPnASeUpNHUzBceAdILh0onJqpMEN2SC1z3dfiiOl/dA==",
-      "path": "dell.dtm.platinum.sdk/3.1.0-209b7a-beta",
-      "hashPath": "dell.dtm.platinum.sdk.3.1.0-209b7a-beta.nupkg.sha512"
-    },
     "Dell.RPC.Transport/1.5.1": {
       "type": "package",
       "serviceable": true,
@@ -835,26 +722,12 @@
       "path": "dell.rpc.transport/1.5.1",
       "hashPath": "dell.rpc.transport.1.5.1.nupkg.sha512"
     },
-    "Dell.TechHub.Sdk.Common.Identifiers/3.0.0.602-8d8739-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-xEy76NHEF6THMrnadI459l4k/BsKFhLkUbkvzLma64bcP7Ci5O9FlwwpgrFOA/rGsEFad4CRym7wSlefRI74qA==",
-      "path": "dell.techhub.sdk.common.identifiers/3.0.0.602-8d8739-beta",
-      "hashPath": "dell.techhub.sdk.common.identifiers.3.0.0.602-8d8739-beta.nupkg.sha512"
-    },
     "Dell.TechHub.Sdk.Common_NET/3.0.0.606-2e2db9-beta": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-PYpPlg+b4WTygJK7CLoaH9KCCnEc7jcmwc4TOfIMdrorNxf5CmZD/F0TL2KwxijXZT6lq1p0pZSDjEbXu/nh4g==",
       "path": "dell.techhub.sdk.common_net/3.0.0.606-2e2db9-beta",
       "hashPath": "dell.techhub.sdk.common_net.3.0.0.606-2e2db9-beta.nupkg.sha512"
-    },
-    "Dell.TechHub.Sdk.Exceptions/3.0.0.602-8d8739-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-D3dWuDUUffBKiftyfXxdWkPCkCgAzd/MNNiaehw2ixTgtMCCQ+vxSKv8qbMkdC1QwsYg/bvv6q8cn3H9CZPxFA==",
-      "path": "dell.techhub.sdk.exceptions/3.0.0.602-8d8739-beta",
-      "hashPath": "dell.techhub.sdk.exceptions.3.0.0.602-8d8739-beta.nupkg.sha512"
     },
     "DellClientFramework/6.4.5.1": {
       "type": "package",
@@ -1093,13 +966,6 @@
       "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
       "path": "system.numerics.vectors/4.5.0",
       "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
-    },
-    "System.Reflection.DispatchProxy/4.7.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-C1sMLwIG6ILQ2bmOT4gh62V6oJlyF4BlHcVMrOoor49p0Ji2tA8QAoqyMcIhAdH6OHKJ8m7BU+r4LK2CUEOKqw==",
-      "path": "system.reflection.dispatchproxy/4.7.1",
-      "hashPath": "system.reflection.dispatchproxy.4.7.1.nupkg.sha512"
     },
     "System.Reflection.Emit/4.7.0": {
       "type": "package",

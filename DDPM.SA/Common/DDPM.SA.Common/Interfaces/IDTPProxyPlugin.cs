@@ -14,8 +14,10 @@ using System;
 using System.Threading.Tasks;
 using Dell.Client.Framework.Common;
 
-namespace DDPM.SA.Common {
-  public interface IDTPProxyPlugin : IFrameworkPlugin {
+namespace DDPM.SA.Common
+{
+  public interface IDTPProxyPlugin : IFrameworkPlugin
+  {
 
     Task<int> GetDpiValue(string itemID);
 
