@@ -18,10 +18,12 @@ using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
@@ -796,6 +798,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
                 // >>
 
+                if(device.Type == DeviceType.PhysicalPen)
+                {
+                    _deviceHelper.IsdDriverVersion = ((IPhysicalPenDevice)device).IsdServiceVersion;
+                }
+
                 foreach (var item in device.Devices)
                 {
                     DeviceInfo info = new()
@@ -844,9 +851,20 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     {
                         if (item.ParentPhysicalDevice is IPhysicalPenDevice physicalDevicePen)
                         {
+                            var pen = (ILogicalDevicePen)item;
                             info.IsdDriverVersion = physicalDevicePen.IsdDriverVersion;
                             info.IsdServiceVersion = physicalDevicePen.IsdServiceVersion;
+                            info.TiltSensitivity = pen.TiltSensitivity;
+                            info.TipSensitivity = pen.TipSensitivity;
+                            var EraserDoublePressSetting = Encoding.UTF8.GetString(pen.EraserDoublePressSetting);
                             physicalDevicePen.IsdVersionChanged += IPhysicalDevicePen_IsdVersionChanged;
+                            var EraserDoublePressValues = Encoding.UTF8.GetString(pen.EraserDoublePressValues);
+                            var EraserLongPressValues = Encoding.UTF8.GetString(pen.EraserLongPressValues);
+                            var EraserSinglePressValues = Encoding.UTF8.GetString(pen.EraserSinglePressValues);
+                            var MenuSinglePressValues = Encoding.UTF8.GetString(pen.MenuSinglePressValues);
+                            var SideSwitchSinglePressValues = Encoding.UTF8.GetString(pen.SideSwitchSinglePressValues);
+                            var MenuSinglePressSetting = Encoding.UTF8.GetString(pen.MenuSinglePressSetting);
+                            var LaunchableAppValues = Encoding.UTF8.GetString(pen.LaunchableAppValues);
                         }
                     }
 

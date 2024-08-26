@@ -171,6 +171,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
             }
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
+            var a = CurrentDeviceInfo.IsdDriverVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
             //ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString() == "PhysicalDongle" ? "Dongle" : "Bluetooth";
