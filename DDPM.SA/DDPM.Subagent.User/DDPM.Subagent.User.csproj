@@ -34,6 +34,7 @@
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DeviceManager\DDPM.SA.Plugins.User.DeviceManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayManager\DDPM.SA.Plugins.User.DisplayManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayProperties\DDPM.SA.Plugins.User.DisplayProperties.csproj" />
+    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DTPProxy\DDPM.SA.Plugins.User.DTPProxy.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.EasyArrange\DDPM.SA.Plugins.User.EasyArrange.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Hotkey\DDPM.SA.Plugins.User.Hotkey.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.NetworkKVM\DDPM.SA.Plugins.User.NetworkKVM.csproj" />
