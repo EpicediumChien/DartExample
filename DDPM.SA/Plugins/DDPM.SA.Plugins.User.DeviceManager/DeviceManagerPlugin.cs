@@ -32,6 +32,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
@@ -440,7 +441,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //if (r)
             //{
             //write VCP over display manager
-            r = await Task.Run(()=>SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
+            r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
 
             //}
             return r;
@@ -693,7 +694,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <param name="mo"></param> 螢幕資訊
         /// <param name="on_off"></param> 啟用/關閉 自動根據App name 去設定 color preset
         //public void AutoSetColorPresetForMonitorConfig(string index_monitor, string on_off, bool Islock = false)
-        public void AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false)        
+        public void AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false)
         {
             writelog("ColorPresetPlugin received AutoSetColorPresetForMonitorConfig requested ...");
 
@@ -3483,7 +3484,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //load hotkeysetting
                             ReloadHotkeyConfigData();
                             ToNKVM_SupportedMonitorList();
-                            ToNKVM_initHotKeys();                            
+                            ToNKVM_initHotKeys();
                         }
                     }
                     else
@@ -3932,7 +3933,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //after PxP etc. operation and immediately trigger hotkey then _AllInfoMonitors could be empty
                 return Task.FromResult(false);
             }
-
+            Debug.WriteLine($"job: {job}");
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
@@ -4034,10 +4035,96 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.KvmChangePIPPosition:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Kvm_ChangePIPPosition));
                     break;
+                case HotkeyType.DarkStabilizerToggle:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DarkStabilizerToggle));
+                    break;
+                case HotkeyType.DualResolutionToggle:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DualResolutionToggle));
+                    break;
             }
             return Task.FromResult(true);
         }
+        private void Gaming_DualResolutionToggle(MonitorInfo monitorInfo, Object[] param)
+        {
+            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
+            if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_DualResolutionType)
+            {
+                List<Gaming_DualResolutionType> supported_DualResolutionType = gamingDisplayProperties.Supported_DualResolutionType;
+                if (supported_DualResolutionType != null && supported_DualResolutionType.Count > 0)
+                {
+                    Gaming_DualResolutionType current_DualResolutionType = gamingDisplayProperties.Current_DualResolutionType;
+                    Gaming_DualResolutionType nextDualResolutionType = Gaming_DualResolutionType.Unknow;
 
+                    for (int i = 0; i < supported_DualResolutionType.Count; i++)
+                    {
+                        if (supported_DualResolutionType[i].Equals(current_DualResolutionType))
+                        {
+                            if (i < (supported_DualResolutionType.Count - 1))
+                            {
+                                nextDualResolutionType = supported_DualResolutionType[i + 1];
+                            }
+                            else
+                            {
+                                nextDualResolutionType = supported_DualResolutionType[0];
+                            }
+                        }
+                    }
+                    Debug.WriteLine($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DualResolutionType}] to [{nextDualResolutionType}]");
+                    bool result = SetGaming_DualResolutionType(monitorInfo, nextDualResolutionType).Result;
+                    writelog($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DualResolutionType}] to [{nextDualResolutionType}]" + (result ? "success" : "fail"));
+                }
+                else
+                {
+                    writelog($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Gaming DualResolution is empty");
+                }
+            }
+            else
+            {
+                writelog($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not support Gaming DualResolution");
+            }
+        }
+        private void Gaming_DarkStabilizerToggle(MonitorInfo monitorInfo, Object[] param)
+        {
+            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
+            if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_DarkStabilizer)
+            {
+                List<Gaming_DarkStabilizer> supported_DarkStabilizer = gamingDisplayProperties.Supported_DarkStabilizer;
+                if (supported_DarkStabilizer != null && supported_DarkStabilizer.Count > 0)
+                {
+
+                    Gaming_DarkStabilizer current_DarkStabilizer = gamingDisplayProperties.Current_DarkStabilizer;
+                    Gaming_DarkStabilizer nextDarkStabilizer = Gaming_DarkStabilizer.Disable;
+
+                    for (int i = 0; i < supported_DarkStabilizer.Count; i++)
+                    {
+                        if (supported_DarkStabilizer[i].Equals(current_DarkStabilizer))
+                        {
+                            if (i < (supported_DarkStabilizer.Count - 1))
+                            {
+                                nextDarkStabilizer = supported_DarkStabilizer[i + 1];
+                            }
+                            else
+                            {
+                                nextDarkStabilizer = supported_DarkStabilizer[0];
+                            }
+                        }
+                    }
+                    Debug.WriteLine($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DarkStabilizer}] to [{nextDarkStabilizer}]");
+                    bool result = SetGaming_DarkStabilizer(monitorInfo, nextDarkStabilizer).Result;
+                    writelog($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DarkStabilizer}] to [{nextDarkStabilizer}]" + (result ? "success" : "fail"));
+                }
+                else
+                {
+                    writelog($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Gaming DarkStabilizer is empty");
+                }
+            }
+            else
+            {
+                writelog($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not support Gaming DarkStabilizer");
+            }
+
+
+        }
         private void Kvm_SwitchInputSource(MonitorInfo monitorInfo, Object[] param)
         {
             HotkeyInfo hotkey = (HotkeyInfo)param[0];
@@ -4391,7 +4478,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (obLuminance.result && obLuminanceMax.result)
             {
                 uint luminanceValue = ((uint)obLuminance.value) + 1 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 1;
-                bool ret =  SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
+                bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
                 writelog($"Increase_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
             }
         }
@@ -4498,7 +4585,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool cs = (bool)param[0];
             if (cs)
             {
-                bool ret =  SetVCPCapability(monitorInfo, 0xE0, 1).Result;
+                bool ret = SetVCPCapability(monitorInfo, 0xE0, 1).Result;
                 writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
             }
             else
@@ -4515,12 +4602,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool cs = (bool)param[0];
             if (cs)
             {
-              bool ret =  SetVCPCapability(monitorInfo, 0xE1, 1).Result;
-              writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
+                bool ret = SetVCPCapability(monitorInfo, 0xE1, 1).Result;
+                writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
             }
             else
             {
-                bool ret =  SetVCPCapability(monitorInfo, 0xE1, 0).Result;
+                bool ret = SetVCPCapability(monitorInfo, 0xE1, 0).Result;
                 writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
             }
         }
@@ -4812,7 +4899,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //Bruce 08 - 09 Add a new event to determine whether it is a display signal event or a setting event.
                     Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
                     //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
-                    if(_SettingsPlugin != null)
+                    if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;
                 }
 
