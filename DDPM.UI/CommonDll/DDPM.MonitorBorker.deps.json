@@ -85,6 +85,92 @@
           }
         }
       },
+      "DDPM.Peripherals.interface/2.0.0.1-beta": {
+        "dependencies": {
+          "Dell.DTM.Client.Sdk": "3.1.0-209b7a-beta",
+          "Dell.DTM.Platinum.Sdk": "3.1.0-209b7a-beta",
+          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta",
+          "Dell.TechHub.Sdk.Exceptions": "3.0.0.602-8d8739-beta",
+          "DellClientFramework": "6.4.5.1",
+          "Newtonsoft.Json": "13.0.3",
+          "System.Reflection.DispatchProxy": "4.7.1"
+        },
+        "runtime": {
+          "lib/net8.0/DDPM.Peripherals.interface.dll": {
+            "assemblyVersion": "2.0.0.2",
+            "fileVersion": "2.0.0.2"
+          }
+        }
+      },
+      "Dell.DTM.Client.Sdk/3.1.0-209b7a-beta": {
+        "dependencies": {
+          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta"
+        },
+        "runtime": {
+          "lib/net8.0/Dell.DTM.ClientSdk.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.DTM.TransmissionData.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.TechHub.AnalyticsDatatypes.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.TechHub.Commodity.Interfaces.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.TechHub.Datatypes.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.TechHub.Exceptions.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.TechHub.Metadata.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.TechHub.Platform.Common(NET).dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.TechHub.Platform.Common.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/net8.0/Dell.TechHub.Platform.Versioning.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          }
+        }
+      },
+      "Dell.DTM.Platinum.Sdk/3.1.0-209b7a-beta": {
+        "dependencies": {
+          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta",
+          "Dell.TechHub.Sdk.Exceptions": "3.0.0.602-8d8739-beta",
+          "DellClientFramework": "6.4.5.1",
+          "System.Reflection.DispatchProxy": "4.7.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Dell.DTM.Platinum.ClientRequestHandler.Interfaces.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/netstandard2.0/Dell.DTM.PlatinumClient.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          },
+          "lib/netstandard2.0/Dell.DTM.TransmissionData.dll": {
+            "assemblyVersion": "3.1.0.8148",
+            "fileVersion": "3.1.0.8148"
+          }
+        }
+      },
       "Dell.RPC.Transport/1.5.1": {
         "dependencies": {
           "DCF.Security": "2.4.1",
@@ -94,116 +180,6 @@
           "lib/net8.0/Dell.RPC.Transport.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.5.1.0"
-          }
-        }
-      },
-      "Dell.Serdes/1.0.0.57": {
-        "dependencies": {
-          "Google.Protobuf": "3.26.1",
-          "Google.Protobuf.Tools": "3.21.7"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Dell.Serdes.dll": {
-            "assemblyVersion": "1.0.0.57",
-            "fileVersion": "1.0.0.57"
-          }
-        }
-      },
-      "Dell.TechHub.Commodity.Sdk/3.1.0-bfb389-beta": {
-        "dependencies": {
-          "Dell.Serdes": "1.0.0.57",
-          "Dell.TechHub.Sdk.BaseClientSdk": "3.0.0.602-8d8739-beta"
-        },
-        "runtime": {
-          "lib/net8.0/Dell.TechHub.AnalyticsDatatypes.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Commodity.ClientRequestHandler.Interfaces.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Commodity.Interfaces.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          },
-          "lib/net8.0/Dell.TechHub.Commodity.Sdk.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Datatypes.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Exceptions.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Metadata.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Platform.Common(NET).dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Platform.Common.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Platform.Versioning.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          },
-          "lib/net8.0/Dell.TechHub.Plugins.AudioCommodity.dll": {
-            "assemblyVersion": "3.1.0.8170",
-            "fileVersion": "3.1.0.8170"
-          }
-        }
-      },
-      "Dell.TechHub.Sdk.BaseClientSdk/3.0.0.602-8d8739-beta": {
-        "dependencies": {
-          "Dell.TechHub.Sdk.ClientCoreExtensions": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Common": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Exceptions": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Metadata": "3.0.0.602-8d8739-beta",
-          "Dell.UnifiedAgent.Client": "1.4.3.1",
-          "DellClientFramework": "6.4.5.1"
-        },
-        "runtime": {
-          "lib/net8.0/Dell.TechHub.Sdk.BaseClientSdk.dll": {
-            "assemblyVersion": "3.0.0.602",
-            "fileVersion": "3.0.0.602"
-          }
-        }
-      },
-      "Dell.TechHub.Sdk.ClientCoreExtensions/3.0.0.602-8d8739-beta": {
-        "dependencies": {
-          "Dell.UnifiedAgent.Client": "1.4.3.1",
-          "DellClientFramework": "6.4.5.1"
-        },
-        "runtime": {
-          "lib/net8.0/Dell.TechHub.Sdk.ClientCoreExtensions.dll": {
-            "assemblyVersion": "3.0.0.602",
-            "fileVersion": "3.0.0.602"
-          }
-        }
-      },
-      "Dell.TechHub.Sdk.Common/3.0.0.602-8d8739-beta": {
-        "dependencies": {
-          "Dell.TechHub.Sdk.ClientCoreExtensions": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Metadata": "3.0.0.602-8d8739-beta",
-          "DellClientFramework": "6.4.5.1",
-          "Google.Protobuf": "3.26.1",
-          "Newtonsoft.Json": "13.0.3",
-          "System.Linq.Async": "6.0.1"
-        },
-        "runtime": {
-          "lib/net8.0/Dell.TechHub.Sdk.Common.dll": {
-            "assemblyVersion": "3.0.0.602",
-            "fileVersion": "3.0.0.602"
           }
         }
       },
@@ -244,45 +220,6 @@
           }
         }
       },
-      "Dell.TechHub.Sdk.Metadata/3.0.0.602-8d8739-beta": {
-        "dependencies": {
-          "Dell.TechHub.Sdk.Common.Identifiers": "3.0.0.602-8d8739-beta",
-          "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
-          "Dell.TechHub.Sdk.Exceptions": "3.0.0.602-8d8739-beta",
-          "Newtonsoft.Json": "13.0.3"
-        },
-        "runtime": {
-          "lib/net8.0/Dell.TechHub.Sdk.Metadata.dll": {
-            "assemblyVersion": "3.0.0.602",
-            "fileVersion": "3.0.0.602"
-          }
-        }
-      },
-      "Dell.UnifiedAgent.Client/1.4.3.1": {
-        "dependencies": {
-          "Dell.RPC.Transport": "1.5.1",
-          "DellClientFramework": "6.4.5.1",
-          "Microsoft.VisualStudio.Threading": "17.3.44",
-          "StreamJsonRpc": "2.13.33",
-          "System.Reflection.MetadataLoadContext": "8.0.0",
-          "System.Threading.AccessControl": "8.0.0",
-          "stateless": "5.10.1"
-        },
-        "runtime": {
-          "lib/net8.0/Dell.UnifiedAgent.Common.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.4.3.1"
-          },
-          "lib/net8.0/Dell.UnifiedAgent.RemotePlugin.Interfaces.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.4.3.1"
-          },
-          "lib/net8.0/Dell.UnifiedAgent.SubAgentControl.Interfaces.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.4.3.1"
-          }
-        }
-      },
       "DellClientFramework/6.4.5.1": {
         "dependencies": {
           "DCF.Security": "2.4.1",
@@ -307,15 +244,6 @@
           }
         }
       },
-      "Google.Protobuf/3.26.1": {
-        "runtime": {
-          "lib/net5.0/Google.Protobuf.dll": {
-            "assemblyVersion": "3.26.1.0",
-            "fileVersion": "3.26.1.0"
-          }
-        }
-      },
-      "Google.Protobuf.Tools/3.21.7": {},
       "H.Formatters/2.0.59": {
         "runtime": {
           "lib/net8.0/H.Formatters.dll": {
@@ -488,63 +416,6 @@
           }
         }
       },
-      "Microsoft.VisualStudio.Threading/17.3.44": {
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
-          "Microsoft.VisualStudio.Threading.Analyzers": "17.3.44",
-          "Microsoft.VisualStudio.Validation": "17.6.11",
-          "Microsoft.Win32.Registry": "5.0.0",
-          "System.Threading.Tasks.Extensions": "4.5.4"
-        },
-        "runtime": {
-          "lib/net6.0-windows7.0/Microsoft.VisualStudio.Threading.dll": {
-            "assemblyVersion": "17.3.0.0",
-            "fileVersion": "17.3.44.61447"
-          }
-        },
-        "resources": {
-          "lib/net6.0-windows7.0/cs/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "cs"
-          },
-          "lib/net6.0-windows7.0/de/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "de"
-          },
-          "lib/net6.0-windows7.0/es/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "es"
-          },
-          "lib/net6.0-windows7.0/fr/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "fr"
-          },
-          "lib/net6.0-windows7.0/it/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "it"
-          },
-          "lib/net6.0-windows7.0/ja/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "ja"
-          },
-          "lib/net6.0-windows7.0/ko/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "ko"
-          },
-          "lib/net6.0-windows7.0/pl/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "pl"
-          },
-          "lib/net6.0-windows7.0/pt-BR/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "pt-BR"
-          },
-          "lib/net6.0-windows7.0/ru/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "ru"
-          },
-          "lib/net6.0-windows7.0/tr/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "tr"
-          },
-          "lib/net6.0-windows7.0/zh-Hans/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "zh-Hans"
-          },
-          "lib/net6.0-windows7.0/zh-Hant/Microsoft.VisualStudio.Threading.resources.dll": {
-            "locale": "zh-Hant"
-          }
-        }
-      },
-      "Microsoft.VisualStudio.Threading.Analyzers/17.3.44": {},
       "Microsoft.VisualStudio.Validation/17.6.11": {
         "runtime": {
           "lib/net6.0/Microsoft.VisualStudio.Validation.dll": {
@@ -642,21 +513,6 @@
           }
         }
       },
-      "Nerdbank.Streams/2.9.109": {
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
-          "Microsoft.VisualStudio.Threading": "17.3.44",
-          "Microsoft.VisualStudio.Validation": "17.6.11",
-          "System.IO.Pipelines": "6.0.3",
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        },
-        "runtime": {
-          "lib/netstandard2.1/Nerdbank.Streams.dll": {
-            "assemblyVersion": "2.9.0.0",
-            "fileVersion": "2.9.109.36077"
-          }
-        }
-      },
       "Newtonsoft.Json/13.0.3": {
         "runtime": {
           "lib/net6.0/Newtonsoft.Json.dll": {
@@ -665,81 +521,8 @@
           }
         }
       },
-      "stateless/5.10.1": {
-        "runtime": {
-          "lib/net5.0/stateless.dll": {
-            "assemblyVersion": "4.0.0.0",
-            "fileVersion": "5.10.1.0"
-          }
-        }
-      },
-      "StreamJsonRpc/2.13.33": {
-        "dependencies": {
-          "MessagePack": "2.5.129",
-          "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
-          "Microsoft.VisualStudio.Threading": "17.3.44",
-          "Nerdbank.Streams": "2.9.109",
-          "Newtonsoft.Json": "13.0.3",
-          "System.Collections.Immutable": "8.0.0",
-          "System.Diagnostics.DiagnosticSource": "6.0.0",
-          "System.IO.Pipelines": "6.0.3",
-          "System.Threading.Tasks.Dataflow": "6.0.0"
-        },
-        "runtime": {
-          "lib/netstandard2.1/StreamJsonRpc.dll": {
-            "assemblyVersion": "2.13.0.0",
-            "fileVersion": "2.13.33.24114"
-          }
-        },
-        "resources": {
-          "lib/netstandard2.1/cs/StreamJsonRpc.resources.dll": {
-            "locale": "cs"
-          },
-          "lib/netstandard2.1/de/StreamJsonRpc.resources.dll": {
-            "locale": "de"
-          },
-          "lib/netstandard2.1/es/StreamJsonRpc.resources.dll": {
-            "locale": "es"
-          },
-          "lib/netstandard2.1/fr/StreamJsonRpc.resources.dll": {
-            "locale": "fr"
-          },
-          "lib/netstandard2.1/it/StreamJsonRpc.resources.dll": {
-            "locale": "it"
-          },
-          "lib/netstandard2.1/ja/StreamJsonRpc.resources.dll": {
-            "locale": "ja"
-          },
-          "lib/netstandard2.1/ko/StreamJsonRpc.resources.dll": {
-            "locale": "ko"
-          },
-          "lib/netstandard2.1/pl/StreamJsonRpc.resources.dll": {
-            "locale": "pl"
-          },
-          "lib/netstandard2.1/pt-BR/StreamJsonRpc.resources.dll": {
-            "locale": "pt-BR"
-          },
-          "lib/netstandard2.1/ru/StreamJsonRpc.resources.dll": {
-            "locale": "ru"
-          },
-          "lib/netstandard2.1/tr/StreamJsonRpc.resources.dll": {
-            "locale": "tr"
-          },
-          "lib/netstandard2.1/zh-Hans/StreamJsonRpc.resources.dll": {
-            "locale": "zh-Hans"
-          },
-          "lib/netstandard2.1/zh-Hant/StreamJsonRpc.resources.dll": {
-            "locale": "zh-Hant"
-          }
-        }
-      },
       "System.CodeDom/8.0.0": {},
       "System.Collections.Immutable/8.0.0": {},
-      "System.Diagnostics.DiagnosticSource/6.0.0": {
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        }
-      },
       "System.Diagnostics.EventLog/8.0.0": {},
       "System.DirectoryServices/8.0.0": {},
       "System.Drawing.Common/8.0.7": {
@@ -758,14 +541,6 @@
         "dependencies": {
           "System.Security.AccessControl": "5.0.0",
           "System.Security.Principal.Windows": "5.0.0"
-        }
-      },
-      "System.IO.Pipelines/6.0.3": {
-        "runtime": {
-          "lib/net6.0/System.IO.Pipelines.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.522.21309"
-          }
         }
       },
       "System.Linq.Async/6.0.1": {
@@ -799,6 +574,7 @@
         }
       },
       "System.Numerics.Vectors/4.5.0": {},
+      "System.Reflection.DispatchProxy/4.7.1": {},
       "System.Reflection.Emit/4.7.0": {},
       "System.Reflection.Metadata/8.0.0": {
         "dependencies": {
@@ -860,9 +636,6 @@
           }
         }
       },
-      "System.Threading.AccessControl/8.0.0": {},
-      "System.Threading.Tasks.Dataflow/6.0.0": {},
-      "System.Threading.Tasks.Extensions/4.5.4": {},
       "System.ValueTuple/4.5.0": {},
       "WinCopies.Util/3.21.0": {
         "runtime": {
@@ -945,8 +718,8 @@
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
           "DCF.UX.WPF": "2.2.4.1",
+          "DDPM.Peripherals.interface": "2.0.0.1-beta",
           "Dell.RPC.Transport": "1.5.1",
-          "Dell.TechHub.Commodity.Sdk": "3.1.0-bfb389-beta",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "DellClientFramework": "6.4.5.1",
           "Microsoft-WindowsAPICodePack-Shell": "1.1.5",
@@ -1052,47 +825,33 @@
       "path": "dcf.ux.wpf/2.2.4.1",
       "hashPath": "dcf.ux.wpf.2.2.4.1.nupkg.sha512"
     },
+    "DDPM.Peripherals.interface/2.0.0.1-beta": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-c0/GQlJ1yJE0Ss9NDMmvx5KjATwlo12fYxLLTEDed4Y3TOfB4wcR3oQmtmqRwwdwZtPMJRmzr0gA2hadeFOirA==",
+      "path": "ddpm.peripherals.interface/2.0.0.1-beta",
+      "hashPath": "ddpm.peripherals.interface.2.0.0.1-beta.nupkg.sha512"
+    },
+    "Dell.DTM.Client.Sdk/3.1.0-209b7a-beta": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Fr4WglRKRAoR9npaeXk+lVkPNrp7mNE+s/ym4CCSvTyI+rucSvLBZQ5vam3O93iuCl5iUNVBdidtdzXul1bYTw==",
+      "path": "dell.dtm.client.sdk/3.1.0-209b7a-beta",
+      "hashPath": "dell.dtm.client.sdk.3.1.0-209b7a-beta.nupkg.sha512"
+    },
+    "Dell.DTM.Platinum.Sdk/3.1.0-209b7a-beta": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hvAQqmbjk3/Emmw6WgF6DsRpVFml60wHRYfRTMZP/OvPnASeUpNHUzBceAdILh0onJqpMEN2SC1z3dfiiOl/dA==",
+      "path": "dell.dtm.platinum.sdk/3.1.0-209b7a-beta",
+      "hashPath": "dell.dtm.platinum.sdk.3.1.0-209b7a-beta.nupkg.sha512"
+    },
     "Dell.RPC.Transport/1.5.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-OKqt8Kd3H/6a7BQ5WUsPRW7DKE4U5utvqBbgPCVHooLJo3yqJUkBkQ7Puy0byVMfnm7J+UH4Or04x0TbrMsi1Q==",
       "path": "dell.rpc.transport/1.5.1",
       "hashPath": "dell.rpc.transport.1.5.1.nupkg.sha512"
-    },
-    "Dell.Serdes/1.0.0.57": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-Uiob6TUk/O0gFy2Dzfn8B07OmnOSvkiB8VWfG925GcCnsS5J5T9Q+syCAFc52zWbT+3Xsq/7KbIC10MHLVhd+Q==",
-      "path": "dell.serdes/1.0.0.57",
-      "hashPath": "dell.serdes.1.0.0.57.nupkg.sha512"
-    },
-    "Dell.TechHub.Commodity.Sdk/3.1.0-bfb389-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-kGqU1QfY3QbebEbps2Ck6Dy9xJurhyZHVRQUAm2c42Hn3c89aEsz6qXbU1XBHGtSJ37tfURHhGWv1vQ0XweTBw==",
-      "path": "dell.techhub.commodity.sdk/3.1.0-bfb389-beta",
-      "hashPath": "dell.techhub.commodity.sdk.3.1.0-bfb389-beta.nupkg.sha512"
-    },
-    "Dell.TechHub.Sdk.BaseClientSdk/3.0.0.602-8d8739-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-r6yTI3Bjv8ATaW4BCV9YxKUr7DwFuL4wq18ujbsgk6D9Gdc6J7t2TaltdYqwvpbWW1EZMZss7FR9UlBIynBB4Q==",
-      "path": "dell.techhub.sdk.baseclientsdk/3.0.0.602-8d8739-beta",
-      "hashPath": "dell.techhub.sdk.baseclientsdk.3.0.0.602-8d8739-beta.nupkg.sha512"
-    },
-    "Dell.TechHub.Sdk.ClientCoreExtensions/3.0.0.602-8d8739-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-0oGi2M0mZ3m1HdXlHYAZsuFcd7TS3DKK2WYsWp9fIx2gZkEISfudLF3SFTr0dUo+m0Bk6hphM9Hj113HKy86wQ==",
-      "path": "dell.techhub.sdk.clientcoreextensions/3.0.0.602-8d8739-beta",
-      "hashPath": "dell.techhub.sdk.clientcoreextensions.3.0.0.602-8d8739-beta.nupkg.sha512"
-    },
-    "Dell.TechHub.Sdk.Common/3.0.0.602-8d8739-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-/IhS48QxjNzRXhllQwrJesJ7u4ys+ILXbUctENk1qPUnjfwZg4nynB6Bk+Pwi/O4y9lf5zNcvtiMsaBfyWpLog==",
-      "path": "dell.techhub.sdk.common/3.0.0.602-8d8739-beta",
-      "hashPath": "dell.techhub.sdk.common.3.0.0.602-8d8739-beta.nupkg.sha512"
     },
     "Dell.TechHub.Sdk.Common.Identifiers/3.0.0.602-8d8739-beta": {
       "type": "package",
@@ -1115,40 +874,12 @@
       "path": "dell.techhub.sdk.exceptions/3.0.0.602-8d8739-beta",
       "hashPath": "dell.techhub.sdk.exceptions.3.0.0.602-8d8739-beta.nupkg.sha512"
     },
-    "Dell.TechHub.Sdk.Metadata/3.0.0.602-8d8739-beta": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-qnh1jhNGDa4eB3bFdlBGBeMJX1iWIyTVf8AE/qOgrT0m8OSA+LIT9KN788V/iRtR+k5d1Q2607rc7jpqHA8w4g==",
-      "path": "dell.techhub.sdk.metadata/3.0.0.602-8d8739-beta",
-      "hashPath": "dell.techhub.sdk.metadata.3.0.0.602-8d8739-beta.nupkg.sha512"
-    },
-    "Dell.UnifiedAgent.Client/1.4.3.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-RQdN1G1M2Xbs8oYM9s4hRrkvZo+Z2phPuqCIOsXxbRkF4acjNCqFSvETlxr3sKaJLC2gayzBkQZh5FAztW0Jpg==",
-      "path": "dell.unifiedagent.client/1.4.3.1",
-      "hashPath": "dell.unifiedagent.client.1.4.3.1.nupkg.sha512"
-    },
     "DellClientFramework/6.4.5.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-+nuGtRnJObWyjYNBiHoRwwHqQr/LSzVI19X5teJBVNuXaBvoNxnYqqTCGv02UzJiLC42v8qf5SwgUJa7epkusg==",
       "path": "dellclientframework/6.4.5.1",
       "hashPath": "dellclientframework.6.4.5.1.nupkg.sha512"
-    },
-    "Google.Protobuf/3.26.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-CHZX8zXqhF/fdUtd+AYzew8T2HFkAoe5c7lbGxZY/qryAlQXckDvM5BfOJjXlMS7kyICqQTMszj4w1bX5uBJ/w==",
-      "path": "google.protobuf/3.26.1",
-      "hashPath": "google.protobuf.3.26.1.nupkg.sha512"
-    },
-    "Google.Protobuf.Tools/3.21.7": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-INl5EZVJAUz5nuPKwX85GHSFeTgKBlN+mL7hKcN7tLjHGhiJCUaWgpUcQ9GBXKJ3LsXdB169euS4aN2KW10wnA==",
-      "path": "google.protobuf.tools/3.21.7",
-      "hashPath": "google.protobuf.tools.3.21.7.nupkg.sha512"
     },
     "H.Formatters/2.0.59": {
       "type": "package",
@@ -1269,20 +1000,6 @@
       "path": "microsoft.toolkit.uwp.notifications/7.1.2",
       "hashPath": "microsoft.toolkit.uwp.notifications.7.1.2.nupkg.sha512"
     },
-    "Microsoft.VisualStudio.Threading/17.3.44": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-AAkUP5ARO1Bf/IffkCmbR5uJTcYR4VXojhigqekMicwhJeDQkSx8ThBE3EiSi0AOhgEpuZVLPNIcY1Flwck6+Q==",
-      "path": "microsoft.visualstudio.threading/17.3.44",
-      "hashPath": "microsoft.visualstudio.threading.17.3.44.nupkg.sha512"
-    },
-    "Microsoft.VisualStudio.Threading.Analyzers/17.3.44": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-96TPV4lH1a8iXNoq6sQxSTAXXCewyt2bE7luIZd3kS7Zzs1fs6Uwd9bFg2AxBt1WNPU1ozb3D1olpsoRmLKleA==",
-      "path": "microsoft.visualstudio.threading.analyzers/17.3.44",
-      "hashPath": "microsoft.visualstudio.threading.analyzers.17.3.44.nupkg.sha512"
-    },
     "Microsoft.VisualStudio.Validation/17.6.11": {
       "type": "package",
       "serviceable": true,
@@ -1318,33 +1035,12 @@
       "path": "namedpipeserverstream.netframeworkversion/1.1.13",
       "hashPath": "namedpipeserverstream.netframeworkversion.1.1.13.nupkg.sha512"
     },
-    "Nerdbank.Streams/2.9.109": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-OAJNQiOKZwgPpX9gwN25oOIRg8KP4olBNHZqTAH2mDwnfd4u5gHBrJlZyBBTsqQmM8b1EPSyz+v5499CINM0rg==",
-      "path": "nerdbank.streams/2.9.109",
-      "hashPath": "nerdbank.streams.2.9.109.nupkg.sha512"
-    },
     "Newtonsoft.Json/13.0.3": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
       "path": "newtonsoft.json/13.0.3",
       "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
-    },
-    "stateless/5.10.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-8E3IohnxfKNL0YZRqd5yu9uxwF/oAWONYVQzrPoHSO58Wr4U9OIISTAhYggqB7nyuwTZzbVSgrRAuhgAO2X08Q==",
-      "path": "stateless/5.10.1",
-      "hashPath": "stateless.5.10.1.nupkg.sha512"
-    },
-    "StreamJsonRpc/2.13.33": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-r9HSeCslF4Tn1+sd6leTrga07VK6vZkIUuFaD5RrkJaVi5orQfDLY+8UkA+x2Foe4WM44VHoJeGElfKlssexmA==",
-      "path": "streamjsonrpc/2.13.33",
-      "hashPath": "streamjsonrpc.2.13.33.nupkg.sha512"
     },
     "System.CodeDom/8.0.0": {
       "type": "package",
@@ -1359,13 +1055,6 @@
       "sha512": "sha512-AurL6Y5BA1WotzlEvVaIDpqzpIPvYnnldxru8oXJU2yFxFUy3+pNXjXd1ymO+RA0rq0+590Q8gaz2l3Sr7fmqg==",
       "path": "system.collections.immutable/8.0.0",
       "hashPath": "system.collections.immutable.8.0.0.nupkg.sha512"
-    },
-    "System.Diagnostics.DiagnosticSource/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-frQDfv0rl209cKm1lnwTgFPzNigy2EKk1BS3uAvHvlBVKe5cymGyHO+Sj+NLv5VF/AhHsqPIUUwya5oV4CHMUw==",
-      "path": "system.diagnostics.diagnosticsource/6.0.0",
-      "hashPath": "system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512"
     },
     "System.Diagnostics.EventLog/8.0.0": {
       "type": "package",
@@ -1402,13 +1091,6 @@
       "path": "system.io.filesystem.accesscontrol/5.0.0",
       "hashPath": "system.io.filesystem.accesscontrol.5.0.0.nupkg.sha512"
     },
-    "System.IO.Pipelines/6.0.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-ryTgF+iFkpGZY1vRQhfCzX0xTdlV3pyaTTqRu2ETbEv+HlV7O6y7hyQURnghNIXvctl5DuZ//Dpks6HdL/Txgw==",
-      "path": "system.io.pipelines/6.0.3",
-      "hashPath": "system.io.pipelines.6.0.3.nupkg.sha512"
-    },
     "System.Linq.Async/6.0.1": {
       "type": "package",
       "serviceable": true,
@@ -1429,6 +1111,13 @@
       "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
       "path": "system.numerics.vectors/4.5.0",
       "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
+    },
+    "System.Reflection.DispatchProxy/4.7.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C1sMLwIG6ILQ2bmOT4gh62V6oJlyF4BlHcVMrOoor49p0Ji2tA8QAoqyMcIhAdH6OHKJ8m7BU+r4LK2CUEOKqw==",
+      "path": "system.reflection.dispatchproxy/4.7.1",
+      "hashPath": "system.reflection.dispatchproxy.4.7.1.nupkg.sha512"
     },
     "System.Reflection.Emit/4.7.0": {
       "type": "package",
@@ -1506,27 +1195,6 @@
       "sha512": "sha512-jtYVG3bpw2n/NvNnP2g/JLri0D4UtfusTvLeH6cZPNAEjJXJVGspS3wLgVvjNbm+wjaYkFgsXejMTocV1T5DIQ==",
       "path": "system.serviceprocess.servicecontroller/8.0.0",
       "hashPath": "system.serviceprocess.servicecontroller.8.0.0.nupkg.sha512"
-    },
-    "System.Threading.AccessControl/8.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-cIed5+HuYz+eV9yu9TH95zPkqmm1J9Qps9wxjB335sU8tsqc2kGdlTEH9FZzZeCS8a7mNSEsN8ZkyhQp1gfdEw==",
-      "path": "system.threading.accesscontrol/8.0.0",
-      "hashPath": "system.threading.accesscontrol.8.0.0.nupkg.sha512"
-    },
-    "System.Threading.Tasks.Dataflow/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-+tyDCU3/B1lDdOOAJywHQoFwyXIUghIaP2BxG79uvhfTnO+D9qIgjVlL/JV2NTliYbMHpd6eKDmHp2VHpij7MA==",
-      "path": "system.threading.tasks.dataflow/6.0.0",
-      "hashPath": "system.threading.tasks.dataflow.6.0.0.nupkg.sha512"
-    },
-    "System.Threading.Tasks.Extensions/4.5.4": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg==",
-      "path": "system.threading.tasks.extensions/4.5.4",
-      "hashPath": "system.threading.tasks.extensions.4.5.4.nupkg.sha512"
     },
     "System.ValueTuple/4.5.0": {
       "type": "package",
