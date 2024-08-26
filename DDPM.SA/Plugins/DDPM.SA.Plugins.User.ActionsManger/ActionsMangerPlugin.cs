@@ -15,6 +15,9 @@ using System.Windows.Media.Animation;
 using Microsoft.VisualBasic;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using Task = System.Threading.Tasks.Task;
+using Dell.Client.Framework.Security.Interfaces;
+using Dell.Client.Framework.Security;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.SA.Plugins.User.ActionsManger
 {
@@ -125,7 +128,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         {
             GetCurrentPeripheralsPluginCondition();
         }
-        public void GetType(DeviceInfo devinfo)
+        public SWUErrorCode GetType(DeviceInfo devinfo)
         {
             //Necessary to handle the notification is coming from which device and model name.
             //。。。。。。。。。。。。。。。。。。
@@ -133,6 +136,14 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions");
             if (!Directory.Exists(fileFolder))
                 Directory.CreateDirectory(fileFolder);
+
+            // Perform Input Validation: check file path
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(fileFolder, out FileInfo))//Add Security
+            {
+                writelog($"{nameof(GetType)} - Actions Manager Plugin GetType IsFilePathValid " + FileInfo);
+                return SWUErrorCode.FileIsNoSafe;
+            }
 
             //Need to process modele name to file name
             //。。。。。。。。。。。。。。。。。。
@@ -170,6 +181,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                     writelog($"{notify} is not a valid KeyName.");
                 }
             }
+            return SWUErrorCode.NoError;
         }
 
         private void DoKeyboardAction(int id)//AllActions
