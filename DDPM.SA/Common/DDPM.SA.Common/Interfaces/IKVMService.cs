@@ -38,5 +38,9 @@ namespace DDPM.SA.Common
         Task<bool> SetHotkey(HotkeyInfo info);
 
         Task NKVM_ChangeLimitedSW(MonitorInfo monitorInfo, bool isON);
+
+        Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+
+        //Task ChangeNKVMState(bool state);
     }
 }

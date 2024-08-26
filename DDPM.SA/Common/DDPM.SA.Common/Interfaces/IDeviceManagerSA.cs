@@ -428,6 +428,8 @@ namespace DDPM.SA.Common
 
         Task<bool> isNKVMSupportMonitor(MonitorInfo monitorInfo);
 
+        Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+
         #endregion for NKVM
 
         #region public for SW Update
@@ -455,7 +457,8 @@ namespace DDPM.SA.Common
         Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
         Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
         Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
-        Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfos, Gaming_DualResolutionType DualResolutionType);
+        Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
+        Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
         #endregion
     }
 }

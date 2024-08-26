@@ -464,15 +464,6 @@ namespace DDPM.UI.Common.Models
 
             string assemblyName = "DDPM.UI.Resources";
             string model = DeviceInfo.ModelNumber;
-            //1 For Dock
-            //0613 Bruce 目前IL的dock還沒有回型號回來，先固定使用同張產品圖，待更改。 0614新增註解紀錄
-            if (model.ToUpper().Contains("DOCK"))
-            {
-                //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/WD22TB4.png";
-                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/WD22TB4.png", assemblyName);
-                return;
-            }
-
             //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
             DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{model}.png", assemblyName);
         }
@@ -1003,9 +994,26 @@ namespace DDPM.UI.Common.Models
                 case DeviceType.PhysicalPen:
                     return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "");
 
-                //0617 Bruce 新增Dock連線方式的濾字串的方式
+                //0823 Bruce 新增Dock連線方式的濾字串的方式
                 case DeviceType.PhysicalWiredDock:
-                    return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "").Replace("Dock", "");
+                    string s = "";
+                    if (deviceInfo.ModelNumber.Contains("TB5"))
+                    {
+                        s = "USB-C (TB 5)";
+                    }
+                    else if (deviceInfo.ModelNumber.Contains("TB4"))
+                    {
+                        s = "USB-C (TB 4)";
+                    }
+                    else if (deviceInfo.ModelNumber.Contains("DCS"))
+                    {
+                        s = "Dual USB-C (DP 1.4)";
+                    }
+                    else
+                    {
+                        s = "USB-C (DP 1.4)";
+                    }
+                    return s;
 
                 default:
                     return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "");
@@ -1165,7 +1173,7 @@ namespace DDPM.UI.Common.Models
             {
                 if (MonitorInfo != null)
                 {
-                    if (MonitorInfo.CapabilityDic != null)
+                    if (MonitorInfo.CapabilityDic != null&& MonitorInfo.modelName.ToUpper().StartsWith("G"))
                         return MonitorInfo.CapabilityDic.ContainsKey("EC");
                 }
                 return false;

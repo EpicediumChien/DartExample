@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using static VcpCore.Common.User32;
 
 namespace DDPM.UI.Common
 {
@@ -8,19 +9,39 @@ namespace DDPM.UI.Common
     {
         private const int MonitorinfofPrimary = 0x00000001;
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [ResourceExposure(ResourceScope.None)]
-        public static extern bool GetMonitorInfo(HandleRef hmonitor, [In, Out] MonitorInfoEx info);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool GetMonitorInfo(HandleRef hmonitor, [In, Out] MonitorInfoEx info);
+        public static bool _GetMonitorInfo(HandleRef hmonitor, [In, Out] MonitorInfoEx info)
+        {
+            return GetMonitorInfo(hmonitor, info);
+        }
 
         [DllImport("user32", SetLastError = true)]
-        public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lpRect, MonitorEnumProc callback, int dwData);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lpRect, MonitorEnumProc callback, int dwData);
+        public static bool _EnumDisplayMonitors(IntPtr hdc, IntPtr lpRect, MonitorEnumProc callback, int dwData)
+        {
+            return EnumDisplayMonitors(hdc, lpRect, callback, dwData);
+        }
 
-        [DllImport("user32.dll", CharSet = CharSet.Ansi)]
+        [DllImport("user32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode);
+        public static bool _EnumDisplaySettings(string lpszDeviceName, int iModeNum, ref DEVMODE lpDevMode)
+        {
+            return EnumDisplaySettings(lpszDeviceName, iModeNum, ref lpDevMode);
+        }
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags);
+        public static bool _EnumDisplayDevices(string lpDevice, uint iDevNum, ref DISPLAY_DEVICE lpDisplayDevice, uint dwFlags)
+        {
+            return EnumDisplayDevices(lpDevice, iDevNum, ref lpDisplayDevice, dwFlags);
+        }
 
         [Flags]
         public enum DisplayDeviceStateFlags

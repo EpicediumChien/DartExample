@@ -408,12 +408,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //{
             //write VCP over display manager
             r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
+
+            Trace.Write($"ColorPreset_Name = {ColorPreset_Name}");
             //}
             return Task.FromResult(r);
         }
 
         // 20240619 jim modify
-        public Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name)
+        public async Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name)
         {
             writelog("ColorPresetPlugin received WriteColorPreset_AUTO requested ...");
 
@@ -421,7 +423,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_ColorPresetPlugin == null)
             {
                 writelog("null _ColorPresetPlugin in [WriteColorPreset_AUTO]");
-                return Task.FromResult(r);
+                return r;
             }
 
             //data process
@@ -438,10 +440,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //if (r)
             //{
             //write VCP over display manager
-            r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
+            r = await Task.Run(()=>SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
 
             //}
-            return Task.FromResult(r);
+            return r;
         }
 
         // jim add 20240607
@@ -2410,6 +2412,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        public Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo)
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.NKVM_ChangeMonitorIndex(monitorInfo);
+            }
+            return Task.CompletedTask;
+        }
         #endregion
 
         #region EasyArrage
@@ -2663,6 +2673,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_DisplayManagerPlugin != null)
             {
                 return Task.FromResult(_DisplayManagerPlugin.SetGaming_DualResolutionType(monitorInfo, DualResolutionType).Result);
+            }
+            return Task.FromResult(false);
+        }
+        public Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SetGaming_VisionEngineEnableType(monitorInfo, VisionEngineEnableType).Result);
             }
             return Task.FromResult(false);
         }
@@ -4062,7 +4080,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void Kvm_SwitchKbMsKey(MonitorInfo monitorInfo, Object[] param)
         {
             bool usbSwitch = UsbSwitch1(monitorInfo).Result;
-            writelog($"Kvm_SwitchKbMsKey::[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
+            writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
         }
 
         private void Kvm_ChangePIPPosition(MonitorInfo monitorInfo, Object[] param)
@@ -4096,6 +4114,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
             {
                 bool changePip = TogglePipPosition(monitorInfo).Result;
+                writelog($"Change_PIPPosition:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] " + (changePip ? "success" : "fail"));
             }
         }
 
@@ -4316,7 +4335,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (obBrightness.result)
             {
                 uint brightnessValue = ((uint)obBrightness.value) <= 1 ? 0 : (uint)obBrightness.value - 1;
-                SetVCPCapability(monitorInfo, 0x10, brightnessValue);
+                bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
+                writelog($"Reduce_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
             }
         }
 
@@ -4326,7 +4346,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (obBrightness.result)
             {
                 uint brightnessValue = ((uint)obBrightness.value) + 1 >= 100 ? 100 : (uint)obBrightness.value + 1;
-                SetVCPCapability(monitorInfo, 0x10, brightnessValue);
+                bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
+                writelog($"Increase_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
             }
         }
 
@@ -4335,8 +4356,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
             if (obContrast.result)
             {
-                uint brightnessValue = ((uint)obContrast.value) <= 1 ? 0 : (uint)obContrast.value - 1;
-                SetVCPCapability(monitorInfo, 0x12, brightnessValue);
+                uint contrastValue = ((uint)obContrast.value) <= 1 ? 0 : (uint)obContrast.value - 1;
+                bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
+                writelog($"Reduce_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
             }
         }
 
@@ -4345,8 +4367,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
             if (obContrast.result)
             {
-                uint brightnessValue = ((uint)obContrast.value) + 1 >= 100 ? 100 : (uint)obContrast.value + 1;
-                SetVCPCapability(monitorInfo, 0x12, brightnessValue);
+                uint contrastValue = ((uint)obContrast.value) + 1 >= 100 ? 100 : (uint)obContrast.value + 1;
+                bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
+                writelog($"Increase_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
             }
         }
 
@@ -4355,8 +4378,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
             if (obLuminance.result)
             {
-                uint brightnessValue = ((uint)obLuminance.value) <= 1 ? 0 : (uint)obLuminance.value - 1;
-                SetVCPCapability(monitorInfo, 0x10, brightnessValue);
+                uint luminanceValue = ((uint)obLuminance.value) <= 1 ? 0 : (uint)obLuminance.value - 1;
+                bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
+                writelog($"Reduce_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
             }
         }
 
@@ -4366,8 +4390,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ObjGetVCP obLuminanceMax = GetVCPCapability(monitorInfo, 0x10, 1).Result;
             if (obLuminance.result && obLuminanceMax.result)
             {
-                uint brightnessValue = ((uint)obLuminance.value) + 1 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 1;
-                SetVCPCapability(monitorInfo, 0x10, brightnessValue);
+                uint luminanceValue = ((uint)obLuminance.value) + 1 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 1;
+                bool ret =  SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
+                writelog($"Increase_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
             }
         }
 
@@ -4380,6 +4405,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (!_screenSaver)
                 {
+                    writelog($"powerNap screenSaver Status {screenSaverStatus}");
                     List<PowerNapSetting> read = ReadPowerNapSettings().Result;
                     List<JobInfo> allJobs = new List<JobInfo>();
                     foreach (PowerNapSetting setting in read)
@@ -4394,15 +4420,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     case PowerNapType.ReduceBrightness:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
-                                        Debug.WriteLine($"{setting.ModelName} ReduceBrightness - Enqueue:true");
-                                        writelog($"powerNap [{setting.ModelName}] ReduceBrightness - Enqueue:true");
+                                        Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:true");
+                                        writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:true");
                                         break;
 
                                     case PowerNapType.SleepIfRunning:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
-                                        Debug.WriteLine($"{setting.ModelName} SleepIfRunning - Enqueue:true");
-                                        writelog($"powerNap [{setting.ModelName}] SleepIfRunning - Enqueue:true");
+                                        Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:true");
+                                        writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:true");
                                         break;
 
                                     case PowerNapType.Off:
@@ -4423,6 +4449,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (_screenSaver)
                 {
+                    writelog($"powerNap screenSaver Status {screenSaverStatus}");
                     List<PowerNapSetting> read = ReadPowerNapSettings().Result;
                     List<JobInfo> allJobs = new List<JobInfo>();
                     foreach (PowerNapSetting setting in read)
@@ -4437,15 +4464,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     case PowerNapType.ReduceBrightness:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
-                                        Debug.WriteLine($"{setting.ModelName} ReduceBrightness - Enqueue:false");
-                                        writelog($"powerNap [{setting.ModelName}] ReduceBrightness - Enqueue:false");
+                                        Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:false");
+                                        writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:false");
                                         break;
 
                                     case PowerNapType.SleepIfRunning:
                                         allJobs.Add(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
                                         //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
-                                        Debug.WriteLine($"{setting.ModelName} SleepIfRunning - Enqueue:false");
-                                        writelog($"powerNap [{setting.ModelName}] SleepIfRunning - Enqueue:false");
+                                        Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:false");
+                                        writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:false");
                                         break;
 
                                     case PowerNapType.Off:
@@ -4471,11 +4498,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool cs = (bool)param[0];
             if (cs)
             {
-                SetVCPCapability(monitorInfo, 0xE0, 1);
+                bool ret =  SetVCPCapability(monitorInfo, 0xE0, 1).Result;
+                writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
             }
             else
             {
-                SetVCPCapability(monitorInfo, 0xE0, 0);
+                bool ret = SetVCPCapability(monitorInfo, 0xE0, 0).Result;
+                writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
             }
         }
 
@@ -4486,11 +4515,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool cs = (bool)param[0];
             if (cs)
             {
-                SetVCPCapability(monitorInfo, 0xE1, 1);
+              bool ret =  SetVCPCapability(monitorInfo, 0xE1, 1).Result;
+              writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
             }
             else
             {
-                SetVCPCapability(monitorInfo, 0xE1, 0);
+                bool ret =  SetVCPCapability(monitorInfo, 0xE1, 0).Result;
+                writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
             }
         }
 
