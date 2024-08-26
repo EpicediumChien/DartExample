@@ -1115,5 +1115,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 ActionList.ExportActionList(KeyboardAction, Model);
             }
         }
-    }
+
+    public CTKMessageHelper CTKMessageHelper { get; set; } = new();
+  }
 }
