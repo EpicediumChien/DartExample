@@ -252,7 +252,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             _SWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
             //暫時直接Return
             return Task.FromResult(new List<SWUpdateInfo>());
-            SWUpdateHelper swUpdateHelper = DownloadMetadata();
+            SWUpdateHelper swUpdateHelper = GetSWMetadata();
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
             {
                 for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
@@ -278,14 +278,14 @@ namespace DDPM.SA.Plugins.SWUpdate
             return Task.FromResult(new List<SWUpdateInfo>());
         }
 
-        private SWUpdateHelper DownloadMetadata()
+        private SWUpdateHelper GetSWMetadata()
         {
-            //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
-            HttpClientHandler handler = new HttpClientHandler();
-            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
-                                                                                                                //Should enable server certificate validation on this SSL/TLS connection before formal release
-
-            using (HttpClient client = new HttpClient(handler))
+            CertificateCheck certificateCheck = new CertificateCheck();
+            if (!certificateCheck.CheckURLCACertificate(URL))
+            {
+                return new SWUpdateHelper();
+            }
+            using (HttpClient client = new HttpClient())
             {
                 try
                 {

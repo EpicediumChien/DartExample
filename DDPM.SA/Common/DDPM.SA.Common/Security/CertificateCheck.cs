@@ -8,6 +8,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace DDPM.SA.Common.Security
 {
@@ -41,11 +43,20 @@ namespace DDPM.SA.Common.Security
                 try
                 {
                     HttpClientHandler handler = new HttpClientHandler();
+                    ////測試Proxy使用
+                    //var proxy = new WebProxy("http://192.168.137.31:808/", true)
+                    //{
+                    //    Credentials = new NetworkCredential("user-001", "user")
+                    //};
+                    //handler = new HttpClientHandler
+                    //{
+                    //    Proxy = proxy,
+                    //    UseProxy = true
+                    //};
                     handler.ServerCertificateCustomValidationCallback = PinPublicKey;
                     using (HttpClient client = new HttpClient(handler))
                     {
                         HttpResponseMessage response = client.GetAsync(URL).Result;
-
                     }
                     flag = true;
                 }
@@ -56,6 +67,8 @@ namespace DDPM.SA.Common.Security
                     Console.WriteLine(string.Format("[CheckURLCACertificate] error, retry:" + num));
                     Thread.Sleep(1000);
                 }
+
+
                 num--;
             }
             Console.WriteLine(string.Format("[CheckURLCACertificate] res:" + flag));
@@ -122,8 +135,8 @@ namespace DDPM.SA.Common.Security
                 Console.WriteLine("[PinPublicKey] certificate null.");
                 return false;
             }
-            HttpWebRequest httpWebRequest = sender as HttpWebRequest;
-            if (httpWebRequest == null)
+            HttpClient httpClient = sender as HttpClient;
+            if (httpClient == null)
             {
                 Console.WriteLine("[PinPublicKey] request null.");
             }
@@ -179,19 +192,32 @@ namespace DDPM.SA.Common.Security
         {
             try
             {
-                X509Store x509Store = new X509Store(StoreName.TrustedPublisher, StoreLocation.LocalMachine);
-                x509Store.Open(OpenFlags.ReadOnly);
-                foreach (X509Certificate2 certificate in x509Store.Certificates)
+                X509Store x509Store_LocalMachine = new X509Store(StoreName.TrustedPublisher, StoreLocation.LocalMachine);
+                X509Store x509Store_CurrentUser = new X509Store(StoreName.TrustedPublisher, StoreLocation.CurrentUser);
+                x509Store_LocalMachine.Open(OpenFlags.ReadOnly);
+                foreach (X509Certificate2 certificate in x509Store_LocalMachine.Certificates)
                 {
                     TrustedPublisher.Add(certificate);
                 }
-                x509Store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-                x509Store.Open(OpenFlags.ReadOnly);
-                foreach (X509Certificate2 certificate2 in x509Store.Certificates)
+                x509Store_CurrentUser.Open(OpenFlags.ReadOnly);
+                foreach (X509Certificate2 certificate in x509Store_CurrentUser.Certificates)
+                {
+                    TrustedPublisher.Add(certificate);
+                }
+                x509Store_LocalMachine = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+                x509Store_CurrentUser = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+                x509Store_LocalMachine.Open(OpenFlags.ReadOnly);
+                foreach (X509Certificate2 certificate2 in x509Store_LocalMachine.Certificates)
                 {
                     TrustedRoot.Add(certificate2);
                 }
-                x509Store.Close();
+                x509Store_LocalMachine.Close();
+                x509Store_CurrentUser.Open(OpenFlags.ReadOnly);
+                foreach (X509Certificate2 certificate2 in x509Store_CurrentUser.Certificates)
+                {
+                    TrustedRoot.Add(certificate2);
+                }
+                x509Store_CurrentUser.Close();
             }
             catch (Exception ex)
             {
@@ -224,12 +250,12 @@ namespace DDPM.SA.Common.Security
                 Console.WriteLine("--------------CheckIssuerAndSubject------------------");
                 Console.WriteLine($"Issuer:{certificate.Issuer.ToString()}");
                 Console.WriteLine($"Subject:{certificate.Subject.ToString()}");
-                Console.WriteLine($"SubjectName:{certificate.SubjectName.ToString()}");
-                Console.WriteLine($"IssuerName:{certificate.IssuerName.ToString()}");
-                Console.WriteLine($"PublicKey:{certificate.PublicKey.ToString()}");
+                Console.WriteLine($"SubjectName-Name:{certificate.SubjectName.Name}");
+                Console.WriteLine($"IssuerName:{certificate.GetIssuerName()}");
                 Console.WriteLine($"NotAfter:{certificate.NotAfter.ToString()}");
                 Console.WriteLine($"NotBefore:{certificate.NotBefore.ToString()}");
-                Console.WriteLine($"PublicKey:{certificate.PublicKey?.ToString()}");
+                Console.WriteLine($"PublicKey:{certificate.PublicKey}");
+                //Console.WriteLine($"PublicKey:{certificate.GetPublicKeyString()}");
                 Console.WriteLine($"PrivateKey:{certificate.PrivateKey?.ToString()}");
                 foreach (string sub in Subject)
                 {
@@ -238,6 +264,24 @@ namespace DDPM.SA.Common.Security
                         isCNMatch = true;
                     }
                 }
+                var sanList = GetSubjectAlternativeNames(certificate);
+                Console.WriteLine("Subject Alternative Names:");
+                Console.WriteLine("---SAN---");
+                foreach (var san in sanList)
+                {
+                    Console.WriteLine(san);
+                    bool containsAny = ContainsAny(san, Subject);
+                    if (containsAny)
+                    {
+                        Console.WriteLine("[CheckIssuerAndSubject] Subject is included in the SAN.");
+                        isCNMatch = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("[CheckIssuerAndSubject] Subject is NOT included in the SAN.");
+                    }
+                }
+                Console.WriteLine("---SAN END---");
                 if (isCNMatch)
                 {
                     Console.WriteLine("[CheckIssuerAndSubject] Is match.");
@@ -280,6 +324,17 @@ namespace DDPM.SA.Common.Security
                 Console.WriteLine("Expiration Date: " + cert.NotAfter);
                 Console.WriteLine("--------------------------------");
             }
+            foreach (X509Certificate2 cert in TrustedPublisher)
+            {
+                Console.WriteLine("-------------Trusted Publisher-------------------");
+                Console.WriteLine("CN: " + ExtractCN(cert.Subject));
+                Console.WriteLine("Subject: " + cert.Subject);
+                Console.WriteLine("Issuer: " + cert.Issuer);
+                Console.WriteLine("Thumbprint: " + cert.Thumbprint);
+                Console.WriteLine("Effective Date: " + cert.NotBefore);
+                Console.WriteLine("Expiration Date: " + cert.NotAfter);
+                Console.WriteLine("--------------------------------");
+            }
             Console.WriteLine("Proxy check end");
             return true; // Assuming the proxy certificate is valid
         }
@@ -307,5 +362,44 @@ namespace DDPM.SA.Common.Security
             // CN not found
             return null;
         }
+        public static string[] GetSubjectAlternativeNames(X509Certificate2 certificate)
+        {
+            var sanList = new System.Collections.Generic.List<string>();
+
+            foreach (var extension in certificate.Extensions)
+            {
+                if (extension is X509Extension x509Extension)
+                {
+                    // Subject Alternative Name (SAN) extension OID: 2.5.29.17
+                    if (x509Extension.Oid.Value == "2.5.29.17")
+                    {
+                        var sanExtension = new AsnEncodedData(x509Extension.Oid, x509Extension.RawData);
+                        var sanString = sanExtension.Format(true);
+
+                        // 解析 SAN 字符串
+                        var regex = new Regex(@"DNS Name=(?<san>[^,]+)");
+                        var matches = regex.Matches(sanString);
+                        foreach (Match match in matches)
+                        {
+                            sanList.Add(match.Groups["san"].Value);
+                        }
+                    }
+                }
+            }
+
+            return sanList.ToArray();
+        }
+        static bool ContainsAny(string mainString, string[] searchArray)
+        {
+            foreach (string searchTerm in searchArray)
+            {
+                if (mainString.Contains(searchTerm))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }
