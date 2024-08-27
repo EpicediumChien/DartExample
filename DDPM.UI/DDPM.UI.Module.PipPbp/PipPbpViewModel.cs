@@ -122,13 +122,13 @@ namespace DDPM.UI.Module.PipPbp
                 }
 
                 //Get current monitor's Pxp mode
-                Log?.Info("Query CurrentPxpMode...");
+                LogInfo("@ Query CurrentPxpMode...");
                 ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mi).Result;
                 if (ret.result)
                 {
                     //UInt64 u64 = (UInt64)ret.result;
                     _curPxpMode = Convert.ToUInt16(ret.value);
-                    Log?.Info($"=> CurrentPxpMode=0x{_curPxpMode:X02}");
+                    LogInfo($"  => CurrentPxpMode=0x{_curPxpMode:X02}");
 
                     //Determine which SplitItem is the selected item, base on current monitor setting
                     //Move to UI
@@ -145,14 +145,14 @@ namespace DDPM.UI.Module.PipPbp
                 }
                 else
                 {
-                    Log?.Info("=> CurrentPxpMode error");
+                    Log?.Info("  => CurrentPxpMode error");
                 }
 
                 //Get inputSourceList
-                Log?.Info("Query InputSourceList...");
+                LogInfo("@ Query InputSourceList...");
                 Dictionary<string, InputInfo> inputList = null;
                 inputList = DdpmCommonHelper.DeviceManagerSA.GetInputSourcelist(mi).Result;
-                Log?.Info($"=> InputSourceList.Count={inputList.Count}");
+                Log?.Info($"  => InputSourceList.Count={inputList.Count}");
 
                 //Convert to the type of my ViewModel
                 List<InputSourceObj> inputSourceList = new List<InputSourceObj>();
@@ -467,23 +467,30 @@ namespace DDPM.UI.Module.PipPbp
         /// <param name="capabilityString"></param>
         private bool GetPipPbpCapsFromCapabilityString(string capabilityString)
         {
+            LogInfo("@ PibPbpViewModel.GetPipPbpCapsFromCapabilityString()");
+            LogInfo($"  * capabilityString: {capabilityString}");
+
             //Find the start index of "E9("
             string signature = "E9(";
             int idxSignature = capabilityString.IndexOf(signature);
             if (idxSignature < 0) //Not found, no update to _pipPbpCaps[]
             {
+                LogInfo($"  => Failed, cannot find signature \"{signature}\"");
                 return false;
             }
+            LogInfo($"  * Found signature \"{signature}\" at [{idxSignature}]");
             int idxPipPbpCapsStart = idxSignature + signature.Length;
             //Find the index of next ')' char
             int idxEnd = capabilityString.IndexOf(')', idxPipPbpCapsStart);
             if (idxEnd < 0)
             {
+                LogInfo($"  => Failed, cannot find END of signature \')\'");
                 return false;
             }
             int pipPbpCapsLen = idxEnd - idxPipPbpCapsStart;
             //Extract the sub string contains PIP/PBP capabilities
             string pxpCapString = capabilityString.Substring(idxPipPbpCapsStart, pipPbpCapsLen);
+            LogInfo($"  * PxpCapabilitise={pxpCapString}");
             _pipPbpCaps = DdpmCommonHelper.ParsingHexStringToWords(pxpCapString);
             return true;
         }

@@ -7,7 +7,7 @@ namespace DDPM.SA.Common.Display
     /// To identify a monitor unit can use {MonitorModel}+{SerialNumber}
     /// For example, the settings filename may be "{EA-{MonitorModel}_{SerialNum}.json"
     /// </summary>
-    public class EAMonitorSettings
+    public class EAMonitorSettings_Unused //It has been replaced with DDPM.SA.Common/Settings/EAMonitorSettins class
     {
         //Monitor ID, can be used to verify if the filename has been modilfied.
         public string MonitorModel { get; set; } = "(NOMODEL)";
@@ -17,7 +17,7 @@ namespace DDPM.SA.Common.Display
         //Settings in DDPM.UI
         public SplitJson SelectedSplit { get; set; }
 
-        public bool IsWidthoutGsp { get; set; }
+        public bool IsWidthoutGap { get; set; }
         public bool IsOnlyAllowWhenShiftKeyPressed { get; set; }
         public bool IsSpanAcrossMultiMonitors { get; set; }
         public List<SplitJson> CustomList { get; set; }

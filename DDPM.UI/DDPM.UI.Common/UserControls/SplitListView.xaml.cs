@@ -2,6 +2,7 @@
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.ViewModels;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -54,6 +55,40 @@ namespace DDPM.UI.Common.UserControls
         public void ClearList()
         {
             vm.ClearList();
+        }
+
+        public ObservableCollection<SplitItem> SplitList
+        {
+            get { return vm.SplitList; }
+        }
+
+        public void MoveSelectedItemToSecondPosition()
+        {
+            int idxSelected = FindIndexOfSelectedItem();
+            if (idxSelected <= 0)
+                return;
+
+            //Unbinding
+            DataContext = null;
+            //Move the new recent item [idx] to [2]
+            vm.SplitList.Move(idxSelected, 1);
+            //Restore binding
+            DataContext = vm;
+
+            //Move to first page
+            vm.GotoFirstPage();
+        }
+
+        public int FindIndexOfSelectedItem()
+        {
+            int idx = 0;
+            foreach(SplitItem spItem in vm.SplitList)
+            {
+                if (spItem.IsSelected)
+                    return idx;
+                idx++;
+            }
+            return -1;
         }
 
         #region Click and Item Selection
@@ -150,5 +185,12 @@ namespace DDPM.UI.Common.UserControls
             DependencyProperty.Register("ItemEditCommand", typeof(ICommand), typeof(SplitListView));
 
         #endregion SplitItem Edit Command
+
+        #region Find
+        public SplitItem? FindSplitItem(int cellCount, char splitKey)
+        {
+            return vm.FindSplitCtrl(cellCount, splitKey);
+        }
+        #endregion
     }
 }

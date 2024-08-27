@@ -97,7 +97,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
-        private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscapeflipped", "Portraitflipped" };//OSD orientation
+        private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
 
         #endregion
 
@@ -2005,11 +2005,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
         {
-            if (!isLockOrientation && IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
+            if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString))
             {
                 for (int i = 1; i < OrientationString.Length; i++)
                 {
-                    if (orientation.Equals(OrientationString[i]))
+                    if (orientation.Equals(OrientationString[i].ToUpper()))
                     {
                         return Task.FromResult<bool?>(SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result);
                     }

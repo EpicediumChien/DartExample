@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.PenButtonSettings
         private UserControl _rightView;
         private readonly PenViewModel _vm;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public PenButtonSettingsModule(PenViewModel vm)
         {
             _rightView = new PenButtonSettingsRightView(vm);
@@ -38,11 +41,28 @@ namespace DDPM.UI.Module.PenButtonSettings
 
         public void OnSelectedHomeDeviceChanged()
         {
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             ((PenButtonSettingsRightView)_rightView).Initialize();
+
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

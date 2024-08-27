@@ -32,5 +32,8 @@ namespace DDPM.UI.Interfaces
 
         //Robert_Lin, 2024-5-30
         // public IDdpmModule
+
+        //0827 for active check to perform UI refresh via display selection change
+        public bool IsModuleActive { get; set; }
     }
 }

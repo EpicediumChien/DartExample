@@ -171,11 +171,18 @@ namespace DDPM.UI.Common.ViewModels
                         return;
                     //Selection changed => unselection origial item
                     _selectedSplitItem.IsSelected = false;
+                    if (_selectedSplitItem.Buddy != null)
+                    {
+                        _selectedSplitItem.Buddy.IsSelected = false;
+                    }
                 }
                 if (value != null)
                 {
                     SetProperty(ref _selectedSplitItem, value);
                     _selectedSplitItem.IsSelected = true;
+                    if (_selectedSplitItem.Buddy != null)
+                        _selectedSplitItem.Buddy.IsSelected = true;
+
                     //OnPropertyChanged("IsPipItemSelected");
                 }
                 else

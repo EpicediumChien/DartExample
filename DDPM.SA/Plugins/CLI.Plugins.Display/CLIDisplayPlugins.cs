@@ -89,7 +89,7 @@ namespace DDPM.CLI.Plugins.Display
                 result.ExitCode = (int)CLI_ExitCode.no_monitor_connected;
                 return false;
             }
-            if (commandLineInput != null || commandLineInput.DeviceIndex.Count > 0)
+            if (commandLineInput != null && commandLineInput.DeviceIndex.Count > 0) // 20240827 SAST, to fix null at one path.
             {
                 foreach (string idx in commandLineInput.DeviceIndex)
                 {
@@ -306,6 +306,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "CURRENTRESOLUTIONREFRESHRATE"://"CURRENTDISPLAYPROPERTIES":
                 case "ALLRESOLUTIONREFRESHRATE":
                 case "LOCKROTATE":
+                case "ROTATEOSDMENU":
                     var value = SetDisplayProperties(_devMgr, commandLineInput);
                     result.serialize_Json_response = value.result;
                     result.ExitCode = value.code;
@@ -5304,14 +5305,17 @@ namespace DDPM.CLI.Plugins.Display
             }
             if (ret > 0)
             {
+                writelog(output);
                 return ((int)CLI_ExitCode.fail_configHDR_settingfail, output);
             }
+            writelog(output);
             return ((int)CLI_ExitCode.success, output);
         }
 
         private (int code, string result) PropertiesFunc(IDeviceManagerSA devMgr, MonitorInfo monitorInfo, CommandLineInput commandLineInput, CLI_RESPONSE cLI_RESPONSE)
         {
             bool? ret = false;
+            bool? ret_osd = false;
             DisplayPropertiesInfo displayPropertiesInfo = _devMgr.GetDisplayPropertiesInfo(monitorInfo).Result;
             Properties displayProperties;
             CLI_Get_Properties_HDR_RESPONSE HDR_RESPONSE = null;
@@ -5320,6 +5324,7 @@ namespace DDPM.CLI.Plugins.Display
             CLI_Get_Properties_CurrentResolutionRefreshRate_RESPONSE CurrentResolutionRefreshRate_RESPONSE = null;
             CLI_Get_Properties_SupportedResolutionRefreshRate_RESPONSE SupportedResolutionRefreshRate_RESPONSE = null;
             string output = string.Empty;
+            string output_osd = string.Empty;
 
             switch (commandLineInput.TargetFeature.ToUpper())
             {
@@ -5568,11 +5573,11 @@ namespace DDPM.CLI.Plugins.Display
                                             displayOrientation = DisplayOrientation.Angle90;
                                             break;
 
-                                        case "LANDSCAPE(FLIPPED)":
+                                        case "LANDSCAPE_FLIPPED":
                                             displayOrientation = DisplayOrientation.Angle180;
                                             break;
 
-                                        case "PORTRAIT(FLIPPED)":
+                                        case "PORTRAIT_FLIPPED":
                                             displayOrientation = DisplayOrientation.Angle270;
                                             break;
 
@@ -5693,15 +5698,62 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         break;
                     }
-                    for (int i = 0; i < commandLineInput.Options.Count; i++)
+
+                    if (commandLineInput.Command.Equals("SET"))
                     {
-                        if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                        for (int i = 0; i < commandLineInput.Options.Count; i++)
                         {
-                            cLI_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                            ret = devMgr.LockRotate(commandLineInput.Options[i].Option_Value == "ON" ? true : false).Result;
+                            if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                            {
+                                cLI_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
+                                ret = devMgr.LockRotate(commandLineInput.Options[i].Option_Value == "ON" ? true : false).Result;
+                            }
                         }
+                        cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
                     }
-                    cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
+                    else if (commandLineInput.Command.Equals("GET"))
+                    {
+                        for (int i = 0; i <= commandLineInput.Options.Count; i++)
+                        {
+                            ret_osd = devMgr.GetLockRotateStatus().Result;
+
+                        }
+                        cLI_RESPONSE.Value = ret_osd == true ? "ON" : "OFF";
+                    }
+                    break;
+                case "ROTATEOSDMENU":
+                    if (commandLineInput.Options.Count > 1)
+                    {
+                        cLI_RESPONSE.Result = "FAIL";
+                        cLI_RESPONSE.Message = "Bring in extra strings:";
+                        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                        {
+                            cLI_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}";
+                        }
+                        break;
+                    }
+
+                    if (commandLineInput.Command.Equals("SET"))
+                    {
+                        for (int i = 0; i < commandLineInput.Options.Count; i++)
+                        {
+                            if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
+                            {
+                                cLI_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
+                                ret = devMgr.SetOSDOrientation(monitorInfo, commandLineInput.Options[i].Option_Value).Result;
+                            }
+                        }
+                        cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
+                    }
+                    else if (commandLineInput.Command.Equals("GET"))
+                    {
+                        for (int i = 0; i <= commandLineInput.Options.Count; i++)
+                        {
+                            output_osd = devMgr.GetOSDOrientation(monitorInfo).Result;
+
+                        }
+                        cLI_RESPONSE.Value = output_osd;
+                    }
                     break;
 
                 default:
@@ -5709,6 +5761,7 @@ namespace DDPM.CLI.Plugins.Display
                     cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
                     cLI_RESPONSE.Result = "Un-supported feature";
                     cLI_RESPONSE.Message = "Un-supported feature";
+                    writelog(JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
                     return ((int)CLI_ExitCode.fail_configHDR_inputfail, JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
             }
             if (HDR_RESPONSE != null)
@@ -5743,14 +5796,17 @@ namespace DDPM.CLI.Plugins.Display
             }
             if (ret == true)
             {
+                writelog(output);
                 return ((int)CLI_ExitCode.success, output);
             }
             else if (ret == false)
             {
+                writelog(output);
                 return ((int)CLI_ExitCode.fail_configHDR_settingfail, output);
             }
             else
             {
+                writelog(output);
                 return ((int)CLI_ExitCode.fail_NotSupport, output);
             }
         }
@@ -7149,7 +7205,7 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.SpeakerVolume = ((getvalue & 0x8000) == 0x8000) ? "lock," : "unlock,";
                     get_DeviceData.SpeakerVolume += ((getvalue & 0x4000) == 0x4000) ? "enable" : "disable";
                 }
-                else 
+                else
                     get_DeviceData.SpeakerMicrophone = "N/A";
 
                 if (monitor.CapabilityDic.ContainsKey("62"))
@@ -8144,6 +8200,7 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
                 cli_Response.Message = "Invalid command line syntax.";
+                writelog(cli_Response.ToJson());
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
             else
@@ -8222,6 +8279,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                 }
             }
+            writelog(output);
             return ((int)CLI_ExitCode.success, output);
         }
 
@@ -8315,7 +8373,7 @@ namespace DDPM.CLI.Plugins.Display
                 else ApplyConfiguration.ScreenOrientation = devicedata.ScreenOrientation;
                 writelog($"ScreenOrientation={ApplyConfiguration.ScreenOrientation}");
 
-               retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(devicedata.ActiveInputSource).ToString()).Result;
+                retcode = SetVCPCode(devMgr, monitor, "0x60", get_InputSource_code(devicedata.ActiveInputSource).ToString()).Result;
                 if (!retcode) ispass = false;
                 else ApplyConfiguration.ActiveInputSource = devicedata.ActiveInputSource;
                 writelog($"ActiveInputSource={ApplyConfiguration.ActiveInputSource}");
@@ -8397,7 +8455,7 @@ namespace DDPM.CLI.Plugins.Display
                     rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                     int getvalue2 = Convert.ToInt32(rc.value);
                     bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(devicedata.SpeakerMicrophone, getvalue2)).Result;
-                    
+
                     if (!retcode && !retcode2) ispass = false;
                     else ApplyConfiguration.SpeakerMicrophone = devicedata.SpeakerMicrophone;
                     writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
@@ -8480,8 +8538,8 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "Landscape": return "1";
                 case "Portrait": return "2";
-                case "Landscape(flipped)": return "3";
-                case "Portrait(flipped)": return "4";
+                case "Landscape_flipped": return "3";
+                case "Portrait_flipped": return "4";
                 default: return "1";
             }
         }
@@ -8734,16 +8792,16 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else if (commandLineInput.Command == "GET")
                     {
-						retcode = true;
+                        retcode = true;
                         rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
                         int getcode_e0 = Convert.ToInt32(rc.value);
                         rc = GetVCPCode(devMgr, monitor, "0xE1").Result;
                         int getcode_e1 = Convert.ToInt32(rc.value);
 
-                        if ((getcode_e0 == 0x00)||(getcode_e1 == 0x00))
+                        if ((getcode_e0 == 0x00) || (getcode_e1 == 0x00))
                             cli_Response.Value = "OFF";
                         else if ((getcode_e0 == 0x01) || (getcode_e1 == 0x00))
-                                cli_Response.Value = "ON";
+                            cli_Response.Value = "ON";
                         else if ((getcode_e0 == 0x00) || (getcode_e1 == 0x01))
                             cli_Response.Value = "STANDBY";
                     }

@@ -31,6 +31,7 @@ namespace DDPM.UI.Common.UserControls
             {
                 _log = DdpmCommonHelper.MyConsole.CreateLog("BasePage");
                 _log.Info("DeviceBasePage ctor");
+                viewModel.InitLog();
                 _stopwatch.Restart();
             }
 

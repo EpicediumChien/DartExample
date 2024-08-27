@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.Gaming
         private UserControl _rightView = new GamingRightView();
         private GamingViewModel vm = new GamingViewModel();
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         //Robert_Lin 20240530-remove argument on ctor
         //public GamingModule(HomeDevice? SelectedHomeDevice)
         public GamingModule(IModuleOwner? moduleOwner = null)
@@ -52,6 +55,17 @@ namespace DDPM.UI.Module.Gaming
         #region Event Handlers
 
         public void OnSelectedHomeDeviceChanged()
+        {            
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
         {
             vm.Invoke_RefreshData();
         }
@@ -59,6 +73,11 @@ namespace DDPM.UI.Module.Gaming
         public void OnActivated()
         {
             DdpmCommonHelper.DeviceManagerSA.GamingChangeEvent += vm.GamingParamChang;
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                //InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()
