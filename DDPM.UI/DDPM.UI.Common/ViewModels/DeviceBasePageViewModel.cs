@@ -596,6 +596,8 @@ namespace DDPM.UI.Common.ViewModels
 
         public void HandleSelectedHomeDeviceChanged()
         {
+            RefreshGroupManagerUIByModuleCapabilities();
+
             foreach (ModuleGroup group in ModuleGroups)
             {
                 foreach (RightViewHeader header in group.Headers)
@@ -634,6 +636,7 @@ namespace DDPM.UI.Common.ViewModels
         #endregion Handle Module Activated/Deactivated
 
         #region Module Capabilities
+        public event EventHandler ModuleHeaderChanged;
 
         public void RefreshGroupManagerUIByModuleCapabilities()
         {
@@ -699,6 +702,11 @@ namespace DDPM.UI.Common.ViewModels
                         rightHeader.IsShown = homeDev.HasCapability_VisionEngine;
                     }
                 }
+            }
+
+            if (RightViewHeaderChanged != null)
+            {
+                RightViewHeaderChanged(this, new RoutedEventArgs());
             }
         }
 

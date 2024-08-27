@@ -44,6 +44,17 @@ namespace DDPM.UI.Common.UserControls
         private void OnRightViewHeaderChanged(object sender, RoutedEventArgs e)
         {
             rightViewHeaderCtrl.SetHeaders(viewModel.RightViewHeaders.ToArray());
+
+            //Check if new selected header is not show (IsShown==false), then change the selection
+            if (viewModel.RightViewHeaders.Count > 0)
+            {
+                if (!viewModel.RightViewHeaders[viewModel.RightViewHeaderSelectedIndex].IsShown)
+                {
+                    //Try to select [0]
+                    if (viewModel.RightViewHeaders[0].IsShown)
+                        viewModel.RightViewHeaderSelectedIndex = 0;
+                }
+            }
             rightViewHeaderCtrl.SelectedIndex = viewModel.RightViewHeaderSelectedIndex;
         }
 

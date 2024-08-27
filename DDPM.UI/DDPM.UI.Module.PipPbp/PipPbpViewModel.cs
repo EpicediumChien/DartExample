@@ -16,7 +16,7 @@ namespace DDPM.UI.Module.PipPbp
 {
     public class PipPbpViewModel : ObservableObject
     {
-        //Workaround
+        //
         public HomeDevice SelectedHomeDevice;
 
         public IDeviceManagerSA DeviceManagerSA;
@@ -70,6 +70,12 @@ namespace DDPM.UI.Module.PipPbp
             //Please set below data (once) before calling to RefreshData
             if ((SplitItem_Off == null) || (SplitItem_PipSmall == null) || (SplitItem_PipLarge == null))
                 throw new InvalidOperationException("SplitItem_Off,SplitItem_PipSmall, and SplitItem_PipLarge must be set before calling RefreshData()");
+
+            //Update SelectedHomeDevices
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            }
 
             BackgroundWorker bw = new BackgroundWorker
             {
