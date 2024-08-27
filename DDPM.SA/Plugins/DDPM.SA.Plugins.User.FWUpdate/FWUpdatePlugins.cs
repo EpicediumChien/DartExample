@@ -977,6 +977,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 //foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
                 string _namedPipeName = Guid.NewGuid().ToString("D"); // 生成唯一的管道名稱
                 _namedPipeServer = new NamedPipeStreamServer(_namedPipeName); // 創建命名管道伺服器
+                if (!_namedPipeServer.CreateNamedPipe())
+                {
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " CreateNamedPipe fail.");
+                    return FWUErrorCode.NamedPipeServerIsNoSafe;
+                }
                 _namedPipeServer.MessageReceived += _namedPipeServer_MessageReceived;
                 _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
                 _namedPipeServer.ClientDisconnectedEvent += _namedPipeServer_ClientDisconnectedEvent;

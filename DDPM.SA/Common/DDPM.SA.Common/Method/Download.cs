@@ -29,24 +29,16 @@ namespace DDPM.SA.Common.Method
             {
                 _logs.DebugMsg_1(nameof(DownloadFile) + " start");
                 CertificateCheck caCheck = new CertificateCheck();
-
                 {
-                    /*暫時註解 因現在使用測試伺服器故先將檢查CA註解
                     if (!caCheck.CheckURLCACertificate(URLPath))//0815 Bruce Add Security
                     {
                         FailInfo = "CA check fail";
                         _logs.DebugMsg_1(FailInfo);
                         return false;
-                    }*/
+                    }
                     string url = URLPath;
                     string savePath = SavePath;
-
-                    //測試用，因現在使用測試伺服器，故先使用以下兩行繞過SSL檢查
-                    HttpClientHandler handler = new HttpClientHandler();
-                    handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true; //Dean 0626 SAST vulnerability
-                                                                                                                        //Should enable server certificate validation on this SSL/TLS connection before formal release
-
-                    HttpClient client = new HttpClient(handler);
+                    HttpClient client = new HttpClient();
                     client.Timeout = TimeSpan.FromMinutes(1);
                     // 發送 HTTP GET 請求到指定的 URL
                     HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
