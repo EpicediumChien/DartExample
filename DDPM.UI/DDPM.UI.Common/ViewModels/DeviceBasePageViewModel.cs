@@ -2,10 +2,13 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -617,8 +620,13 @@ namespace DDPM.UI.Common.ViewModels
                 if (_activeModule == value)
                     return;
                 if (_activeModule != null)
+                {
+                    _activeModule.IsModuleActive = false;
                     _activeModule.OnDeactivated();
+
+                }
                 SetProperty(ref _activeModule, value);
+                _activeModule.IsModuleActive = true;
                 _activeModule?.OnActivated();
             }
         }
@@ -631,12 +639,17 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (SelectedHomeDevice == null)
             {
+                LogInfo("@ RefreshGroupManagerUIByModuleCapabilities => SelectedHomeDevice is null.");
                 return;
             }
+            LogInfo("@ RefreshGroupManagerUIByModuleCapabilities");
 
             HomeDevice homeDev = SelectedHomeDevice as HomeDevice;
+            LogInfo($"  * HomeDevice: {homeDev.DisplayName}");
 
             //PIP/PBP capability
+            LogInfo($"  * Has PIP/PBP Capability={homeDev.HasCapability_PipPbp}");
+
             foreach (ModuleGroup mg in ModuleGroups)
             {
                 RightViewHeader? rightHeader = mg.FindRightViewHeaderByModuleName("PipPbpModule");
@@ -648,6 +661,7 @@ namespace DDPM.UI.Common.ViewModels
 
             //KVM Capability
             bool hasCapability_KVM = homeDev.HasCapability_KVM;
+            LogInfo($"  * Has KVM Capability={hasCapability_KVM}");
 
             //Search for ModuleGroup which ModuleName is "KVM"
             ModuleGroup? mgKvm = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals("KVM"));
@@ -663,6 +677,7 @@ namespace DDPM.UI.Common.ViewModels
             //Gaming & VisionEngine
             // Gaming is basic, VisionEngine is additional
             //If there is no Gaming, then hide the Gaming Group
+            LogInfo($"  * Has Gaming Capability={homeDev.HasCapability_Gaming}");
             ModuleGroup? mgGaming = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals("Gaming"));
             if (mgGaming != null)
             {
@@ -736,5 +751,22 @@ namespace DDPM.UI.Common.ViewModels
         }
 
         #endregion Handler when DDC/CI off
+
+        #region Log
+        private ILog? _log;
+        public void InitLog()
+        {
+            IConsole console = DdpmCommonHelper.MyConsole;
+            if (console != null)
+            {
+                _log = console.CreateLog("BasePageViewModel");
+            }
+        }
+        public void LogInfo(string msg)
+        {
+            if (_log != null)
+                _log.Info(msg);
+        }
+        #endregion
     }
 }

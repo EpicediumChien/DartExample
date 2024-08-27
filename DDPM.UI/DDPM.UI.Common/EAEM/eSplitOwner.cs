@@ -7,6 +7,7 @@
     ///
     public enum eSplitOwner
     {
-        None = 0, PxpOff, PipList, PbpList
+        None = 0, PxpOff, PipList, PbpList,
+        EaWin, EaRecent, EaCustom
     }
 }

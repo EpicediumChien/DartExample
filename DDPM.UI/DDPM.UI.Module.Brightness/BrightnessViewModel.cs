@@ -618,6 +618,8 @@ namespace DDPM.UI.Module.Brightness
 
             Invoke_RefreshHotkeySettings();
             Invoke_RefreshManualValue();
+
+            UpdateHDRStatus();
         }
 
         public void Invoke_RefreshManualValue()

@@ -68,7 +68,10 @@ namespace NGA.ThickClient
             var logCreator = formBuilder.GetSubsystem<ILogFactory>();
 
             if (logCreator != null)
+            {
                 _log = logCreator.CreateLogger("MAINWIN", typeof(MainWindow));
+                _log.Info("DDPM MainWindow ctor");
+            }
 
             InitializeComponent();
             DataContext = this;

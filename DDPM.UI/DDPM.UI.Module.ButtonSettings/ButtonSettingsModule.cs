@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.ButtonSettings
         private UserControl _rightView;
         private readonly MouseViewModel _vm;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public ButtonSettingsModule(MouseViewModel vm)
         {
             _rightView = new ButtonSettingsRightView(vm);
@@ -48,11 +51,28 @@ namespace DDPM.UI.Module.ButtonSettings
 
         public void OnSelectedHomeDeviceChanged()
         {
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             ((ButtonSettingsRightView)_rightView).Initialize();
+
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

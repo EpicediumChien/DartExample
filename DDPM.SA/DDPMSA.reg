@@ -9,7 +9,7 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\AgentRegistration]
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\AgentRegistration\{9bbe5845-8c58-45b3-baea-c2c061cd8465}]
-"ExecutablePath"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.exe"
+"ExecutablePath"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.exe"
 "RecoveryAction"=dword:00000002
 "ExecutionContext"=dword:00000001
 "StartupGroup"=dword:00000001
@@ -17,7 +17,7 @@ Windows Registry Editor Version 5.00
 "MaxRecovery"=dword:00000003
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\AgentRegistration\{2E365D80-A333-42E9-B855-F326DFEF2C34}]
-"ExecutablePath"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.User.exe"
+"ExecutablePath"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.User.exe"
 "RecoveryAction"=dword:00000002
 "ExecutionContext"=dword:00000002
 "StartupGroup"=dword:00000001
@@ -29,35 +29,36 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration]
  
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{9bbe5845-8c58-45b3-baea-c2c061cd8465}]
-"ExecutablePath"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.exe"
+"ExecutablePath"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.exe"
  
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{9bbe5845-8c58-45b3-baea-c2c061cd8465}\PublishingAssemblies]
  
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{9bbe5845-8c58-45b3-baea-c2c061cd8465}\PublishingAssemblies]
-"{F6909D0F-C70B-4B84-8EC3-9E506550A998}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.SettingsManager.dll"
-"{2B76DC4B-39E7-4DBE-946E-5112CDAF37EA}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.CLIManager.dll"
-"{F716E8C1-1F8D-4BC6-83DA-51CD26031335}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.SWUpdate.dll"
-"{7D53B92E-5648-4ADB-9E33-4C74FFE7BE8C}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.FWUpdate.dll"
+"{F6909D0F-C70B-4B84-8EC3-9E506550A998}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.SettingsManager.dll"
+"{2B76DC4B-39E7-4DBE-946E-5112CDAF37EA}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.CLIManager.dll"
+"{F716E8C1-1F8D-4BC6-83DA-51CD26031335}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.SWUpdate.dll"
+"{7D53B92E-5648-4ADB-9E33-4C74FFE7BE8C}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.FWUpdate.dll"
  
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{2E365D80-A333-42E9-B855-F326DFEF2C34}]
-"ExecutablePath"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.User.exe"
+"ExecutablePath"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.User.exe"
  
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{2E365D80-A333-42E9-B855-F326DFEF2C34}\PublishingAssemblies]
  
 [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{2E365D80-A333-42E9-B855-F326DFEF2C34}\PublishingAssemblies]
-"{A409E0AF-E2C3-4568-A194-B2D173DA26D4}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\VcpCore.Plugins.dll"
-"{39A9CF54-2EC0-434E-A0BF-49FF43F8C824}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DisplayManager.dll"
-"{9829A9C5-E129-488A-A522-B8FF705051EE}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DeviceManager.dll"
-"{CF223214-FAF4-4595-8ED4-C6C1F65FA02C}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.Peripherals.dll"
-"{67A0D126-10BE-4EDB-95DC-8A4162AA3F6B}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DisplayProperties.dll"
-"{AC2BD6A8-0678-482A-8274-3B8E80E12A81}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.ColorPreset.dll"
-"{AFF8831F-5BEB-49F0-9098-DD59D313CB28}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.PipPbpManager.dll"
-"{633ED971-086A-49E7-91E1-F6EB6E15CC13}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.USBKVM.dll"
-"{149EF7F9-BF22-4E00-86B1-44CAC25CCA7E}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.NetworkKVM.dll"
-"{C01C5C25-B7F8-4F08-8CD8-4E16928CC254}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.Hotkey.dll"
-"{998CE5F9-19FE-4EDF-841A-2497F39623BF}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.EasyArrange.dll"
-"{99DB213B-220B-41C7-8B3A-0131CA7A4DD1}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.SettingsManager.dll"
-"{EEE0AA91-11EE-46BD-B1FD-88D590C3052C}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.SchedulerManager.dll"
-"{E993A925-BAF0-42DF-B878-7EC075D5B941}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Display.dll"
-"{FE361209-1BEB-4B52-AC1A-D0227B7641CB}"="E:\\DDPM\\src\\src0822\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Peripherals.dll"
+"{A409E0AF-E2C3-4568-A194-B2D173DA26D4}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\VcpCore.Plugins.dll"
+"{39A9CF54-2EC0-434E-A0BF-49FF43F8C824}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DisplayManager.dll"
+"{9829A9C5-E129-488A-A522-B8FF705051EE}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DeviceManager.dll"
+"{CF223214-FAF4-4595-8ED4-C6C1F65FA02C}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.Peripherals.dll"
+"{67A0D126-10BE-4EDB-95DC-8A4162AA3F6B}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DisplayProperties.dll"
+"{AC2BD6A8-0678-482A-8274-3B8E80E12A81}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.ColorPreset.dll"
+"{AFF8831F-5BEB-49F0-9098-DD59D313CB28}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.PipPbpManager.dll"
+"{633ED971-086A-49E7-91E1-F6EB6E15CC13}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.USBKVM.dll"
+"{149EF7F9-BF22-4E00-86B1-44CAC25CCA7E}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.NetworkKVM.dll"
+"{C01C5C25-B7F8-4F08-8CD8-4E16928CC254}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.Hotkey.dll"
+"{998CE5F9-19FE-4EDF-841A-2497F39623BF}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.EasyArrange.dll"
+"{99DB213B-220B-41C7-8B3A-0131CA7A4DD1}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.SettingsManager.dll"
+"{EEE0AA91-11EE-46BD-B1FD-88D590C3052C}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.SchedulerManager.dll"
+"{E993A925-BAF0-42DF-B878-7EC075D5B941}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Display.dll"
+"{FE361209-1BEB-4B52-AC1A-D0227B7641CB}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Peripherals.dll"
+"{E5DA6004-21DC-4058-917F-A0ECF838EA03}"="E:\\DDPM\\src\\src0827\\DDPM\\DDPM.SA\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.ActionsManger.dll"
 
