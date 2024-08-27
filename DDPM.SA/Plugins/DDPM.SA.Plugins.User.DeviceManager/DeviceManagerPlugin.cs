@@ -77,19 +77,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private INKVMService _NKVMPlugin;
         private IHotkey _HotkeyPlugin;
         private ISWUpdateService _SWUpdatePlugin;
-    private ISchedulerManager _ScheduleManagerPlugin;
-    private IDTPProxyPlugin _DTPProxyPlugin;
+        private ISchedulerManager _ScheduleManagerPlugin;
+        private IDTPProxyPlugin _DTPProxyPlugin;
 
-    private readonly object _PluginConditionLock = new object();
+        private readonly object _PluginConditionLock = new object();
         private readonly object _PluginConditionLock_Display = new object();
         private readonly object _PluginConditionLock_Peripherals = new object();
         private readonly object _PluginConditionLock_Settings = new object();
         private readonly object _PluginConditionLock_ColorPreset = new object();
         private readonly object _PluginConditionLock_NKVM = new object();
         private readonly object _PluginConditionLock_Hotkey = new object();
-    private readonly object _PluginConditionLock_ScheduleManager = new object();
-    private readonly object _PluginConditionLock_DTPProxy = new object();
-    DisplayChange displayChange;
+        private readonly object _PluginConditionLock_ScheduleManager = new object();
+        private readonly object _PluginConditionLock_DTPProxy = new object();
+        DisplayChange displayChange;
 
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
@@ -180,10 +180,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             InitializeNKVMPlugin();
             InitializeHotkeyPlugin();
             InitializeSWUpdatePlugin();
-      InitializeSchedulerManagerPlugin();
-      InitializeDTPProxyPlugin();
+            InitializeSchedulerManagerPlugin();
+            InitializeDTPProxyPlugin();
 
-      PluginCondition = new PluginStartedCondition();
+            PluginCondition = new PluginStartedCondition();
             writelog("DeviceManager plugin started");
 
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
@@ -1168,21 +1168,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
-    #endregion
+        #endregion
 
-    #endregion
+        #endregion
 
-    #region Peripherals implementation
+        #region Peripherals implementation
 
-    public async Task<DeviceHelper> GetDevices() {
-      return await Task.Run(() => _PeripheralsPlugin.GetDevices());
-    }
+        public async Task<DeviceHelper> GetDevices()
+        {
+            return await Task.Run(() => _PeripheralsPlugin.GetDevices());
+        }
 
-    public async Task<CTKMessageHelper> GetCTKMessageHelper() {
-      return await Task.Run(() => _PeripheralsPlugin.GetCTKMessageHelper());
-    }
+        public async Task<CTKMessageHelper> GetCTKMessageHelper()
+        {
+            return await Task.Run(() => _PeripheralsPlugin.GetCTKMessageHelper());
+        }
 
-    public async Task<RFDeviceHelper> GetRFDongleDevices()
+        public async Task<RFDeviceHelper> GetRFDongleDevices()
         {
             return await Task.Run(() => _PeripheralsPlugin.GetRFDongleDevices());
         }
@@ -2684,36 +2686,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
-    public Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType) {
-      if(_DisplayManagerPlugin != null) {
-        return Task.FromResult(_DisplayManagerPlugin.SetGaming_VisionEngineEnableType(monitorInfo, VisionEngineEnableType).Result);
-      }
-      return Task.FromResult(false);
-    }
-    #endregion
+        public Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SetGaming_VisionEngineEnableType(monitorInfo, VisionEngineEnableType).Result);
+            }
+            return Task.FromResult(false);
+        }
+        #endregion
 
-    #region DTPProxy implementation
+        #region DTPProxy implementation
 
-    public async Task<int> GetDpiValueByDTP(string itemID) {
-      return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(itemID));
-    }
+        public async Task<int> GetDpiValueByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(itemID));
+        }
 
-    public Task SetDPIValueByDTP(string itemID, int newValue) {
-      writelog("DeviceMangerPlugin received SetDPIValueByDTP requested ...");
-      writelog($"Target DeviceID is {itemID}");
-      writelog($"Target DPI Value is {newValue}");
-      _DTPProxyPlugin.SetDPIValue(itemID, newValue);
-      return Task.FromResult(true);
-    }
+        public Task SetDPIValueByDTP(string itemID, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetDPIValueByDTP requested ...");
+            writelog($"Target DeviceID is {itemID}");
+            writelog($"Target DPI Value is {newValue}");
+            _DTPProxyPlugin.SetDPIValue(itemID, newValue);
+            return Task.FromResult(true);
+        }
 
-    #endregion
+        #endregion
 
-    #endregion
+        #endregion
 
 
-    #region Private Methods
+        #region Private Methods
 
-    private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
             if (displayInOut)
             {
@@ -3279,31 +3285,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-    private void InitializeSchedulerManagerPlugin() {
-      if(_ScheduleManagerPlugin != null)
-        return;
+        private void InitializeSchedulerManagerPlugin()
+        {
+            if (_ScheduleManagerPlugin != null)
+                return;
 
-      _ScheduleManagerPlugin = _agent.PluginManager.FindPluginByType<ISchedulerManager>(PluginResolution.Dynamic);
+            _ScheduleManagerPlugin = _agent.PluginManager.FindPluginByType<ISchedulerManager>(PluginResolution.Dynamic);
 
-      if(_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition) {
-        pluginCondition.PluginConditionChangeHandler += OnScheduleManagerPluginConditionChangeHandler;
-        GetCurrentScheduleManagerCondition();
-      }
-    }
+            if (_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnScheduleManagerPluginConditionChangeHandler;
+                GetCurrentScheduleManagerCondition();
+            }
+        }
 
-    private void InitializeDTPProxyPlugin() {
-      if(_DTPProxyPlugin != null)
-        return;
+        private void InitializeDTPProxyPlugin()
+        {
+            if (_DTPProxyPlugin != null)
+                return;
 
-      _DTPProxyPlugin = _agent.PluginManager.FindPluginByType<IDTPProxyPlugin>(PluginResolution.Dynamic);
+            _DTPProxyPlugin = _agent.PluginManager.FindPluginByType<IDTPProxyPlugin>(PluginResolution.Dynamic);
 
-      if(_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition) {
-        pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
-        GetCurrentDTPProxyPluginCondition();
-      }
-    }
+            if (_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
+                GetCurrentDTPProxyPluginCondition();
+            }
+        }
 
-    private void InitializeSWUpdatePlugin()
+        private void InitializeSWUpdatePlugin()
         {
             if (_SWUpdatePlugin != null)
                 return;
@@ -4096,8 +4106,58 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.DualResolutionToggle:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DualResolutionToggle));
                     break;
+                case HotkeyType.VisionEngineToggle:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_VisionEngineToggle));
+                    break;
             }
             return Task.FromResult(true);
+        }
+
+        private void Gaming_VisionEngineToggle(MonitorInfo monitorInfo, Object[] param)
+        {
+            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
+            if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_VisionEngineType)
+            {
+                /*List< Gaming_VisionEngineType>enabledList= new List< Gaming_VisionEngineType>();
+                for (int i = 0; i < gamingDisplayProperties.Supported_VisionEngineType.Count; i++)
+                {
+                    if (gamingDisplayProperties.IsEnable_VisionEngineType[i])
+                        enabledList.Add(gamingDisplayProperties.Supported_VisionEngineType[i]);
+                }*/
+
+                /*List<Gaming_VisionEngineType> supported_VisionEngineType = gamingDisplayProperties.Supported_VisionEngineType;
+                if (supported_VisionEngineType != null && supported_VisionEngineType.Count > 0)
+                {
+                    Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.current_VisionEngineTyp;
+                    Gaming_VisionEngineType nextVisionEngineType = Gaming_VisionEngineType.Night_Vision;
+
+                    for (int i = 0; i < supported_VisionEngineType.Count; i++)
+                    {
+                        if (supported_VisionEngineType[i].Equals(current_VisionEngineType))
+                        {
+                            if (i < (supported_VisionEngineType.Count - 1))
+                            {
+                                nextVisionEngineType = supported_VisionEngineType[i + 1];
+                            }
+                            else
+                            {
+                                nextVisionEngineType = supported_VisionEngineType[0];
+                            }
+                        }
+                    }
+                    Debug.WriteLine($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]");
+                    bool result = SetGaming_VisionEngineType(monitorInfo, nextVisionEngineType).Result;
+                    writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]" + (result ? "success" : "fail"));
+                }
+                else
+                {
+                    writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Gaming VisionEngine is empty");
+                }*/
+            }
+            else
+            {
+                writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not support Gaming VisionEngine");
+            }
         }
         private void Gaming_DualResolutionToggle(MonitorInfo monitorInfo, Object[] param)
         {
@@ -5014,7 +5074,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
         {
-      GetCurrentDTPProxyPluginCondition();
+            GetCurrentDTPProxyPluginCondition();
         }
 
         //Bruce, 2024-08-09 add new event
@@ -5058,10 +5118,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (e.ChangedPlugins.OfType<ISWUpdateService>().Any())
                 InitializeSWUpdatePlugin();
 
-      if(e.ChangedPlugins.OfType<IDTPProxyPlugin>().Any())
-        InitializeDTPProxyPlugin();
-    }
+            if (e.ChangedPlugins.OfType<IDTPProxyPlugin>().Any())
+                InitializeDTPProxyPlugin();
+        }
 
-    #endregion
-  }
+        #endregion
+    }
 }
