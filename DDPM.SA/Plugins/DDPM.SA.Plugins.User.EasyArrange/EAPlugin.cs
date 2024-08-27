@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Interfaces;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -447,8 +448,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// True: EAPlugin accept the command, caller must wait for EditStarted or EditCompleted event</returns>
         public Task<bool> EditCommand(MonitorInfo monitorInfo, EAArgs args)
         {
-            //To avoid reenter Edit mode. If we are in Edit mode already, then return false
-            if (_editWindow != null)
+            //If InitEditWindow() not been called or failed.
+            if (_editWindow == null)
             {
                 return Task.FromResult(false);
             }
@@ -566,7 +567,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 
             }
 
-
+            //Robert_Lin, 2024-8-26, cannot calling to _editWindow.Show()
+            // _editWindow.SetInputArg( ) will call Show() inside _editWindow itself.
             //_editWindow.Show();
             //_editWindow = editWin;
 
@@ -791,10 +793,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     idxMonitor++;
                 }
 
+                MonitorInfo miWork = attachedMonitors[0];
+
                 //Create a WorkWindow work for it
                 //
                 Thread thread = new Thread(() =>
                 {
+                    //Read settings for this monitor
+                    EAMonitorSettings eaSettings = _deviceManagerPlugin.ReadEAMonitorSettings(miWork).Result;
+                    cellCount = eaSettings.SelectedSplit.CellCount;
+                    splitKey = eaSettings.SelectedSplit.SplitKey;
+                    settings = eaSettings.SelectedSplit.Settings;
+
+
                     EAWorkWindow workWin = new EAWorkWindow(_vmArrange, scr, attachedMonitors);
 
                     workWin.Left = left;

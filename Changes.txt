@@ -1,5 +1,0 @@
-2024-8-22
-
-1 Homepage, 'Please wait' UI, will display the reason of waiting. It can be: DTH service is not running. IDeviceManagerSA is not ready.
-2 Restore most functions which are failed after upgrade to .NET 8, Edit fuctions are not functional.
-3 Display fadeout animation when set working layout.

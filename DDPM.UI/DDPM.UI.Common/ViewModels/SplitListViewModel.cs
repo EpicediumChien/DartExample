@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common.EAEM;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.UserControls;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
@@ -37,6 +38,23 @@ namespace DDPM.UI.Common.ViewModels
         public void ClearList()
         {
             SplitList = new ObservableCollection<SplitItem>();
+        }
+
+        public SplitItem? FindSplitCtrl(int cellCount, char splitKey)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.ISplitCtrl != null)
+                {
+                    if ((spItem.ISplitCtrl.CellCount == cellCount) &&
+                        (spItem.ISplitCtrl.SplitKey == splitKey))
+                        return spItem;
+                }
+            }
+            return null;
         }
 
         #endregion ItemsSource
@@ -202,6 +220,13 @@ namespace DDPM.UI.Common.ViewModels
                 return true;
             }
             return false;
+        }
+
+        public void GotoFirstPage()
+        {
+            IndexToItem0 = 0;
+            RefreshDisplayItems();
+            RefreshPrevNextButtons();
         }
 
         #endregion Page Navigation
