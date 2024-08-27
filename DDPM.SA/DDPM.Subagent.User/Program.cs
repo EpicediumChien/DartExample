@@ -94,14 +94,21 @@ namespace DDPM.Subagent.User
                  * Populate the service name
                  */
                 ServiceName = ServiceName,
-                /*
-                 * Populate any plugin wildcards. If you do not provides wildcards that match your plugin naming schema DCF will not load the plugins
-                 */
-                PluginWildcards = new[] { "VcpCore.Plugins.dll", "DDPM.SA.Plugins.User.*.dll", "CLI.Plugins.*.dll" },
-                /*
-                 * Populate your user process mutex guid so it does not collide with any existing DCF products on the machine
-                 */
-                UserProcessMutexGuid = UserProcessMutexGuid,
+              /*
+               * Populate any plugin wildcards. If you do not provides wildcards that match your plugin naming schema DCF will not load the plugins
+               */
+              PluginWildcards = new[] { "VcpCore.Plugins.dll", "DDPM.SA.Plugins.User.*.dll",
+                  "Dell.Client.Framework.Plugin.*.dll", // Required DCF plugin loading
+                  "Dell.UnifiedAgent.*.dll",            // Required UA plugin loading
+                  "DtpInstrumentationUtil.Plugin.dll",
+                  "Dell.TechHub.Commodity.Sdk.dll",
+                  "Dell.TechHub.Instrumentation.Sdk.dll",
+
+                  "CLI.Plugins.*.dll" },
+              /*
+               * Populate your user process mutex guid so it does not collide with any existing DCF products on the machine
+               */
+              UserProcessMutexGuid = UserProcessMutexGuid,
                 /*
                  * The list of all of the plugins you wish to publish in the Dell TechHub ecosystem
                  */
@@ -123,6 +130,8 @@ namespace DDPM.Subagent.User
                     new Guid(IDs.DDPM_CLI_Proxy_Plugin),
                     new Guid(IDs.CLI_Plugin_Display),
                     new Guid(IDs.CLI_Plugin_Peripherals),
+                    new Guid(IDs.DDPM_DTP_Proxy_Plugin),
+                    new Guid(IDs.DDPM_ACTIONS_MANGER_PLUGIN_ID),
                 },
                 /*
                  * This is the name used in the log file

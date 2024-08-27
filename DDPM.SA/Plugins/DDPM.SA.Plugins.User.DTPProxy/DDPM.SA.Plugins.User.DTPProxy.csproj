@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <BaseOutputPath></BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.1.0-bfb389-beta" />
+    <PackageReference Include="Dell.TechHub.Sdk.Common.Identifiers" Version="3.0.0.606-2e2db9-beta" />
+    <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\Wistronits.1302085-NB\.nuget\packages\dell.techhub.commodity.sdk\3.1.0-bfb389-beta\build\net8.0\debug\Dell.TechHub.AnalyticsDatatypes.pdb" />
+  </ItemGroup>
+
+</Project>

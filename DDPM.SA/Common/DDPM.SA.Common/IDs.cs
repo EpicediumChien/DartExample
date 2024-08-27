@@ -74,11 +74,14 @@
 
         //User.SettingsManager
         public const string DDPM_SETTINGSMANAGER_SA_PLUGIN_ID = "{99DB213B-220B-41C7-8B3A-0131CA7A4DD1}";
-
+        //Actions Manger
+        public const string DDPM_ACTIONS_MANGER_PLUGIN_ID = "{E5DA6004-21DC-4058-917F-A0ECF838EA03}";
         /// <summary>
         /// UniqueId for the thick client (NGA)
         /// </summary>
         public const string ThickClientUniqueGuid = "{5AB199D2-F7BF-4021-8741-A0FDE397B8D5}";
 
-    }
+    //DTPProxy
+    public const string DDPM_DTP_Proxy_Plugin = "{d034ee8f-7c8a-4296-8b5b-33b4e978c6b5}";
+  }
 }

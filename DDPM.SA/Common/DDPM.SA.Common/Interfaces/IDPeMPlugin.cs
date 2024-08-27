@@ -13,6 +13,7 @@
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.PluginConditions;
 using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using System;
 using System.Threading.Tasks;
 
@@ -38,9 +39,11 @@ namespace DDPM.SA.Common
 
         void NotifyNow();
 
-        Task<DeviceHelper> GetDevices();
+    Task<DeviceHelper> GetDevices();
 
-        Task<RFDeviceHelper> GetRFDongleDevices();
+    Task<CTKMessageHelper> GetCTKMessageHelper();
+
+    Task<RFDeviceHelper> GetRFDongleDevices();
 
         Task<ClientInfo> GetDPeMClientInfo();
 
