@@ -402,7 +402,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public override bool SetCurrentDevice(string deviceID)
         {
-            deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
+            //deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(deviceID))
                 return false;
@@ -596,7 +596,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private void DoWork_PleaseWait(string model)
         {
             // Simulate time-consuming operation
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
 
             // Call DetectPageShow
             DetectPageShow(model);

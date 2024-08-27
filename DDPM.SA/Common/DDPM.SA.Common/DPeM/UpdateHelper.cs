@@ -35,7 +35,17 @@ namespace DDPM.SA.Common
                     }
                     else
                     {
-                        drr["NewVersion"] = Regex.Replace(Convert.ToInt32(item.NewVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(item.NewVersion).ToString("D4").Length * 2) - 1);
+                        if (item.NewVersion.Length >= 4)
+                        {
+                            drr["NewVersion"] = Regex.Replace(item.NewVersion.ToString(), ".{1}", "$0.").Substring(0, (item.NewVersion.ToString().Length * 2) - 1);
+                        }
+                        else
+                        {
+                            string version = item.NewVersion.ToString().PadLeft(4, '0');
+                            drr["NewVersion"] = Regex.Replace(version.ToString(), ".{1}", "$0.").Substring(0, (version.ToString().Length * 2) - 1);
+
+                        }
+                        //int Version = int.Parse(item.NewVersion, System.Globalization.NumberStyles.HexNumber);
                     }
                     dt.Rows.Add(drr);
                 }

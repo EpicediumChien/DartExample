@@ -81,5 +81,7 @@
         /// </summary>
         public const string ThickClientUniqueGuid = "{5AB199D2-F7BF-4021-8741-A0FDE397B8D5}";
 
-    }
+    //DTPProxy
+    public const string DDPM_DTP_Proxy_Plugin = "{d034ee8f-7c8a-4296-8b5b-33b4e978c6b5}";
+  }
 }

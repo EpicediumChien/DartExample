@@ -656,6 +656,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         {
                             GetALSAll(als, ref als_param);
                         }
+                        als_param.ModelName = als.modelName;
                         als_param.serialNumber = als.edid.SerialNumber;
                         als_param.DisplayName = als.DisplayName;
                         AllALSConfig.Add(als_param);
@@ -2600,8 +2601,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                 }
             }
-            //string abc = ("EA(F800 F801 F810 F811 )");
-            ss = monitorInfo.CapabilityString.Split("EA(");
+            //0826 Bruce Hard code, Let AW2725QF supported dual resolution.
+            string tempCapabilityString = monitorInfo.CapabilityString;
+            if (monitorInfo.modelName.ToUpper().Contains("AW2725QF"))
+            {
+                tempCapabilityString = "EA(F810 F811 )";
+            }
+            ss = tempCapabilityString.Split("EA(");
             if (ss.Length == 2)
             {
                 ss = ss[1].Split(")");
