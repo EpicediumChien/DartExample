@@ -20,7 +20,7 @@ namespace DDPM.UI.Module.Color
         //  Jim remove 20240604
         //private List<string> _Support_DeviceName  = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW" , "UP2720Q" , "UP3221Q" };
 
-        
+        bool IsAutoColorPreset_Lock;
 
         public ColorRightView()
         {
@@ -35,9 +35,10 @@ namespace DDPM.UI.Module.Color
             vm.WatchForProcessStart();
             vm.WatchForProcessEnd();
 
+
             DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
 
-            vm.IsAutoColorPreset_Lock = setting.UserSettings.IsAutoColorPreset_Lock;
+            IsAutoColorPreset_Lock = setting.UserSettings.IsAutoColorPreset_Lock;
 
             if (setting.UserSettings.IsAutoColorPreset_Lock)
             {
@@ -53,17 +54,18 @@ namespace DDPM.UI.Module.Color
                 ((UXButton)(this.FindName("btn_AddApp"))).IsEnabled = true;
 
             }
+
         }
 
         //  Jim add 20240606
         private void UserControl_UnLoaded(object sender, RoutedEventArgs e)
         {
-            ColorViewModel vm = (ColorViewModel)DataContext;
-
-            //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF" , vm.IsAutoColorPreset_Lock);
+            DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF" , IsAutoColorPreset_Lock);
 
             //Jim remove 20240621
-            //Thread.Sleep(200);           
+            //Thread.Sleep(200);
+
+            ColorViewModel vm = (ColorViewModel)DataContext;
 
             vm.WatchForProcessStart_Stop();
             vm.WatchForProcessEnd_Stop();
@@ -212,8 +214,6 @@ namespace DDPM.UI.Module.Color
 
         private void expanderHasExpanded(object sender, RoutedEventArgs args)
         {
-            ColorViewModel vm = (ColorViewModel)DataContext;
-
             Expander expander_sender = (Expander)sender;
 
             if (expander_sender.Name == "Expander_Manual")
@@ -223,7 +223,7 @@ namespace DDPM.UI.Module.Color
                 this.Dispatcher.Invoke((Action)(() =>
                 {
                     //ColorViewModel vm = (ColorViewModel)DataContext;
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.IsAutoColorPreset_Lock);
+                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
                 }));
             }
@@ -233,7 +233,7 @@ namespace DDPM.UI.Module.Color
 
                 this.Dispatcher.Invoke((Action)(() =>
                 {
-                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
+                    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
                 })); 
             

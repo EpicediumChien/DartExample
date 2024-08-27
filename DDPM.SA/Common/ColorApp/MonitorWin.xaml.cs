@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using VcpCore.Common;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.ColorApp
 {
@@ -19,17 +20,20 @@ namespace DDPM.ColorApp
         private MonitorInfo Mi;//Dean 0626 fix SAST issue, remove static as recommend and set as private
         private string Pre_reqKey = string.Empty;//Dean 0626 fix SAST issue, remove static as recommend and set as private
 
-        // 20240619 jim add - declare log variable
+        // 20240823 jim add - declare log variable
         private Logs _logs;
 
         // jim add 20240605
-        private bool b_AUTO_ColorPresetConfig = true;//Dean 0626 fix SAST issue, remove static as recommend and set as private
+        private bool b_AUTO_ColorPresetConfig = false;//Dean 0626 fix SAST issue, remove static as recommend and set as private
 
         #region data region
 
         private List<AppCollectionData> _apps = new List<AppCollectionData>();
         private AppStatusQuery? appStatus = null;//Dean 0626 fix SAST issue, remove static as recommend
         private List<ColorPresetSettings>? appconfigs = null;
+        //private List<ColorPresetSettings>? appconfigs = new List<ColorPresetSettings>();
+
+        ILog Log { get; set; }
 
         #endregion data region
 
@@ -54,14 +58,27 @@ namespace DDPM.ColorApp
 
             reload_color_settings_to_config();
 
-            appStatus = AppStatusQuery.GetInstance();
-            AppStatusQuery.SendValue += EventAppStatus_SendValue;
+            appStatus = AppStatusQuery.GetInstance(Log);
+            //AppStatusQuery.SendValue += EventAppStatus_SendValue;
         }
 
         // jim add 20240605
         public void Set_AUTO_ColorPresetConfig(bool blAUTO)
         {
             b_AUTO_ColorPresetConfig = blAUTO;
+
+            if (b_AUTO_ColorPresetConfig)
+            {
+                writelog("Set_AUTO_ColorPresetConfig = " + blAUTO);
+                AppStatusQuery.SendValue += EventAppStatus_SendValue;
+                AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_AUTO");
+            }
+            else
+            {
+                writelog("Set_AUTO_ColorPresetConfig = " + blAUTO);
+                AppStatusQuery.SendValue -= EventAppStatus_SendValue;
+                AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_MANUAL");
+            }
         }
 
         // jim add 20240620
@@ -164,8 +181,16 @@ namespace DDPM.ColorApp
 
         private void writelog(string? text, log_type log_type = log_type.info)
         {
-            text = "[ColorApp  ] " + text;
-            Console.WriteLine(text);
+            text = "[ColorApp] " + text;
+            Console.WriteLine(text);      
+
+            if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private void EventAppStatus_SendValue(object? sender, EventArgs e)
@@ -192,7 +217,7 @@ namespace DDPM.ColorApp
                 if (sender != null)
                 {
                     //Get window data from active window's event
-                    ActiveWindowData data = null;
+                    ActiveWindowData data = null;                    
                     Screen screen = null;
                     data = sender as ActiveWindowData;
                     //tbWndName.Text = data.ActiveWindowTitle;
@@ -279,7 +304,7 @@ namespace DDPM.ColorApp
 
                     appconfigs = ddmLib.ReadColorPresetSettings().Result;
 
-                    //Trace.WriteLine("appconfigs.Count = " + appconfigs.Count.ToString());
+                    Trace.WriteLine("appconfigs.Count = " + appconfigs.Count.ToString());
                     writelog("appconfigs.Count = " + appconfigs.Count.ToString());
 
                     foreach (var config in appconfigs)
@@ -352,9 +377,11 @@ namespace DDPM.ColorApp
                                     if (config.AppInfo.ContainsKey("Desktop Application"))
                                     {
                                         reqKey = config.AppInfo["Desktop Application"].ColorPresetName.Trim();
+                                        writelog("[Desktop Application] ColorPresetName = " + reqKey);
                                     }
                                     else
                                     {
+                                        writelog(" return  - Desktop Application");
                                         return;
                                     }
                                 }
@@ -363,9 +390,11 @@ namespace DDPM.ColorApp
                                     if (config.AppInfo.ContainsKey("UWP Application"))
                                     {
                                         reqKey = config.AppInfo["UWP Application"].ColorPresetName.Trim();
+                                        writelog("[UWP Application] ColorPresetName = " + reqKey);
                                     }
                                     else
                                     {
+                                        writelog(" return  - UWP Application");
                                         return;
                                     }
                                 }
@@ -373,18 +402,22 @@ namespace DDPM.ColorApp
                             else
                             {
                                 reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
-                                writelog("reqKey [ColorPresetName] = " + reqKey);
+                                writelog("reqAppName = " + reqAppName + "," +  "reqKey [ColorPresetName] = " + reqKey);
                             }
 
                             if (string.IsNullOrEmpty(reqKey))
                             {
-                                writelog("reqKey [ColorPresetName] is string.IsNullOrEmpty");
+                                writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] is string.IsNullOrEmpty");
                                 //Trace.WriteLine("reqKey is string.IsNullOrEmpty");
                                 return;
                             }
 
                             if (!Pre_reqKey.Equals(reqKey,StringComparison.OrdinalIgnoreCase))
                             {
+
+                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
+                                writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey);
+
                                 Pre_reqKey = reqKey;
                                 //
                                 //Set request key to update color preset and draw OSD
@@ -395,7 +428,10 @@ namespace DDPM.ColorApp
                             }
                             else
                             {
-                                writelog("Pre_reqKey and reqKey is the same");
+                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
+                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey);
+                                writelog("Pre_reqKey and reqKey is the same");                               
+                                
                                 //Trace.WriteLine("Pre_reqKey and reqKey is the same");
                             }
                         }
