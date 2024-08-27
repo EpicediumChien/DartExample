@@ -1183,7 +1183,21 @@ namespace DDPM.SA.Common
 
         #region Pen Properties
 
-        public byte[] EraserDoublePressSetting { get; set; } 
+        public byte[] EraserDoublePressSetting { get; set; }
+        public byte[] EraserDoublePressValues { get; set; }
+        public byte[] EraserLongPressSetting { get; set; }
+        public byte[] EraserLongPressValues { get; set; }
+        public byte[] EraserSinglePressSetting { get; set; }
+        public byte[] EraserSinglePressValues { get; set; }
+        public bool IsSideBottomButtonHoverClick { get; set; }
+        public bool IsSideTopButtonHoverClick { get; set; }
+        public byte[] LaunchableAppValues { get; set; }
+        public bool MenuCenterRightClickSetting { get; set; }
+        public byte[] MenuSinglePressSetting { get; set; }
+        public byte[] MenuSinglePressValues { get; set; }
+        public byte[] SideBottomSwitchSinglePressSetting { get; set; }
+        public byte[] SideSwitchSinglePressValues { get; set; }
+        public byte[] SideTopSwitchSinglePressSetting { get; set; }
 
         public bool IsBLE
         {

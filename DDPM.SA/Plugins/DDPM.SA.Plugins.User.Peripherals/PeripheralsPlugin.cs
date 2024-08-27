@@ -856,15 +856,23 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             info.IsdServiceVersion = physicalDevicePen.IsdServiceVersion;
                             info.TiltSensitivity = pen.TiltSensitivity;
                             info.TipSensitivity = pen.TipSensitivity;
-                            var EraserDoublePressSetting = Encoding.UTF8.GetString(pen.EraserDoublePressSetting);
+                            info.EraserDoublePressSetting = pen.EraserDoublePressSetting;
+                            info.EraserDoublePressValues = pen.EraserDoublePressValues;
+                            info.EraserLongPressSetting = pen.EraserLongPressSetting;
+                            info.EraserLongPressValues = pen.EraserLongPressValues;
+                            info.EraserSinglePressSetting = pen.EraserSinglePressSetting;
+                            info.EraserSinglePressValues = pen.EraserSinglePressValues;
+                            info.IsBLE = pen.IsBLE;
+                            info.IsSideBottomButtonHoverClick = pen.IsSideBottomButtonHoverClick;
+                            info.IsSideTopButtonHoverClick = pen.IsSideTopButtonHoverClick;
+                            info.LaunchableAppValues = pen.LaunchableAppValues;
+                            info.MenuSinglePressSetting = pen.MenuSinglePressSetting;
+                            info.MenuSinglePressValues = pen.MenuSinglePressValues;
+                            info.MenuCenterRightClickSetting = pen.MenuCenterRightClickSetting;
+                            info.SideBottomSwitchSinglePressSetting = pen.SideBottomSwitchSinglePressSetting;
+                            info.SideSwitchSinglePressValues = pen.SideSwitchSinglePressValues;
+                            info.SideTopSwitchSinglePressSetting = pen.SideTopSwitchSinglePressSetting;
                             physicalDevicePen.IsdVersionChanged += IPhysicalDevicePen_IsdVersionChanged;
-                            var EraserDoublePressValues = Encoding.UTF8.GetString(pen.EraserDoublePressValues);
-                            var EraserLongPressValues = Encoding.UTF8.GetString(pen.EraserLongPressValues);
-                            var EraserSinglePressValues = Encoding.UTF8.GetString(pen.EraserSinglePressValues);
-                            var MenuSinglePressValues = Encoding.UTF8.GetString(pen.MenuSinglePressValues);
-                            var SideSwitchSinglePressValues = Encoding.UTF8.GetString(pen.SideSwitchSinglePressValues);
-                            var MenuSinglePressSetting = Encoding.UTF8.GetString(pen.MenuSinglePressSetting);
-                            var LaunchableAppValues = Encoding.UTF8.GetString(pen.LaunchableAppValues);
                         }
                     }
 
@@ -1007,11 +1015,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalDeviceHeadset.AncModeChanged += _logicalDeviceHeadset_AncModeChanged;
                         _logicalDeviceHeadset.AncGainChanged += _logicalDeviceHeadset_AncGainChanged;
                         _logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
-                    }
-
-                    if (item is ILogicalDevicePen _logicalDevicePen)
-                    {
-                        info.IsBLE = _logicalDevicePen.IsBLE;
                     }
 
                     if (item is ILogicalDeviceDock _logicalDeviceDock)
