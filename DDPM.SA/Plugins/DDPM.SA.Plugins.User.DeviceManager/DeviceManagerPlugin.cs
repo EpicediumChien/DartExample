@@ -4107,8 +4107,58 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.DualResolutionToggle:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DualResolutionToggle));
                     break;
+                case HotkeyType.VisionEngineToggle:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_VisionEngineToggle));
+                    break;
             }
             return Task.FromResult(true);
+        }
+
+        private void Gaming_VisionEngineToggle(MonitorInfo monitorInfo, Object[] param)
+        {
+            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
+            if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_VisionEngineType)
+            {
+                /*List< Gaming_VisionEngineType>enabledList= new List< Gaming_VisionEngineType>();
+                for (int i = 0; i < gamingDisplayProperties.Supported_VisionEngineType.Count; i++)
+                {
+                    if (gamingDisplayProperties.IsEnable_VisionEngineType[i])
+                        enabledList.Add(gamingDisplayProperties.Supported_VisionEngineType[i]);
+                }*/
+
+                /*List<Gaming_VisionEngineType> supported_VisionEngineType = gamingDisplayProperties.Supported_VisionEngineType;
+                if (supported_VisionEngineType != null && supported_VisionEngineType.Count > 0)
+                {
+                    Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.current_VisionEngineTyp;
+                    Gaming_VisionEngineType nextVisionEngineType = Gaming_VisionEngineType.Night_Vision;
+
+                    for (int i = 0; i < supported_VisionEngineType.Count; i++)
+                    {
+                        if (supported_VisionEngineType[i].Equals(current_VisionEngineType))
+                        {
+                            if (i < (supported_VisionEngineType.Count - 1))
+                            {
+                                nextVisionEngineType = supported_VisionEngineType[i + 1];
+                            }
+                            else
+                            {
+                                nextVisionEngineType = supported_VisionEngineType[0];
+                            }
+                        }
+                    }
+                    Debug.WriteLine($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]");
+                    bool result = SetGaming_VisionEngineType(monitorInfo, nextVisionEngineType).Result;
+                    writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]" + (result ? "success" : "fail"));
+                }
+                else
+                {
+                    writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Gaming VisionEngine is empty");
+                }*/
+            }
+            else
+            {
+                writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not support Gaming VisionEngine");
+            }
         }
         private void Gaming_DualResolutionToggle(MonitorInfo monitorInfo, Object[] param)
         {
