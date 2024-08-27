@@ -1,4 +1,6 @@
-﻿using Dell.Client.Framework.Security;
+﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Security;
 using Dell.RPC.Transport;
 using System;
 using System.Diagnostics;
@@ -49,19 +51,23 @@ namespace DDPM.SA.Common.Security
             pipeSecurity.AddAccessRule(accessRule);
             return pipeSecurity;
         }
-        public static bool NamedPipeClientSecurity(NamedPipeServerStream pipeServer)
+
+        public static bool NamedPipeClientSecurity(NamedPipeServerStream pipeServer, out string info)
         {
+            info = "success";
             IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
             if (GetNamedPipeClientProcessId(hPipe, out uint pid))
             {
-                Console.WriteLine("pid: " + pid);
-                Process process = Process.GetProcessById((int)pid);
-                string filePath = process.MainModule.FileName;
-                Console.WriteLine("File path: " + filePath);
-                //check file path security
+                info = "[GetNamedPipeClientProcessId] failed";
+                return false;
             }
-            return true; // temporarily
-            //return false;
+            Console.WriteLine("pid: " + pid);
+            Process process = Process.GetProcessById((int)pid);
+            string filePath = process.MainModule.FileName;
+            Console.WriteLine("File path: " + filePath);
+
+            //check file path security                
+            return DDPMFileSecurity.IsFilePathValid(filePath, out info);
         }
     }
 }
