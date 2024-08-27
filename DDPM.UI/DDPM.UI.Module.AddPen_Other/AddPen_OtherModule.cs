@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.AddPen_Other
         private readonly UserControl? _leftView;
         private readonly UserControl? _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public AddPen_OtherModule()
         { }
 
@@ -39,17 +42,33 @@ namespace DDPM.UI.Module.AddPen_Other
 
         public void OnSelectedHomeDeviceChanged()
         {
-            Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+            Trace.WriteLine("AddPen_OtherModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
-            Trace.WriteLine("BrightnessModule.OnActivated");
+            Trace.WriteLine("AddPen_OtherModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()
         {
-            Trace.WriteLine("BrightnessModule.OnDeactivated");
+            Trace.WriteLine("AddPen_OtherModule.OnDeactivated");
         }
 
         #endregion Event Handlers

@@ -13,6 +13,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
         private UserControl _rightView /*= new DisplayHotkeysRightView()*/;
         private DisplayHotkeysViewModel vm = new DisplayHotkeysViewModel();
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public DisplayHotkeysModule(IModuleOwner? moduleOwner = null)
         {
             //_rightView.DataContext = vm;
@@ -54,11 +57,27 @@ namespace DDPM.UI.Module.DisplayHotkeys
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("DisplayHotkeys.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("DisplayHotkeys.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

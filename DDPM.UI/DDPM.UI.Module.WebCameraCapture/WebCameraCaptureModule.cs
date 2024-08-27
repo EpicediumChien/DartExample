@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.WebCameraCapture
         private UserControl? _leftView = null;
         private UserControl _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public WebCameraCaptureModule(WebCameraViewModel vm)
         {
             _rightView = new WebCameraCaptureRightView(vm);
@@ -37,11 +40,27 @@ namespace DDPM.UI.Module.WebCameraCapture
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("BrightnessModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

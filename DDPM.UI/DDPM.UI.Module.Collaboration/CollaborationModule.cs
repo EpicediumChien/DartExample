@@ -11,6 +11,9 @@ namespace DDPM.UI.Module.Collaboration
         private UserControl? _leftView = null;
         private UserControl _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public CollaborationModule(KeyboardViewModel vm)
         {
             _rightView = new CollaborationRightView(vm);
@@ -46,10 +49,26 @@ namespace DDPM.UI.Module.Collaboration
 
         public void OnSelectedHomeDeviceChanged()
         {
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()
