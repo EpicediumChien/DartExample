@@ -82,6 +82,12 @@ namespace DDPM.UI.Module.PipPbp
         //Handle new device coming
         private void InitNewViewModel()
         {
+            //Update SelectedHomeDevices
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                vm.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+                vm.RefreshData();
+            }
         }
 
         public void OnActivated()
