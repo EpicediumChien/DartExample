@@ -2695,6 +2695,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+        private Task<bool> SwitchGaming_VisionEngineType(MonitorInfo monitorInfo, Gaming_VisionEngineType VisionEngineType)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SwitchGaming_VisionEngineType(monitorInfo, VisionEngineType).Result);
+            }
+            return Task.FromResult(false);
+        }
         #endregion
 
         #region DTPProxy implementation
@@ -4119,17 +4127,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
             if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_VisionEngineType)
             {
-                /*List< Gaming_VisionEngineType>enabledList= new List< Gaming_VisionEngineType>();
-                for (int i = 0; i < gamingDisplayProperties.Supported_VisionEngineType.Count; i++)
-                {
-                    if (gamingDisplayProperties.IsEnable_VisionEngineType[i])
-                        enabledList.Add(gamingDisplayProperties.Supported_VisionEngineType[i]);
-                }*/
-
-                /*List<Gaming_VisionEngineType> supported_VisionEngineType = gamingDisplayProperties.Supported_VisionEngineType;
+                List<Gaming_VisionEngineType> supported_VisionEngineType = gamingDisplayProperties.Supported_VisionEngineType;
+                supported_VisionEngineType.Insert(0, Gaming_VisionEngineType.off);
                 if (supported_VisionEngineType != null && supported_VisionEngineType.Count > 0)
                 {
-                    Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.current_VisionEngineTyp;
+                    Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.Current_VisionEngineType;
                     Gaming_VisionEngineType nextVisionEngineType = Gaming_VisionEngineType.Night_Vision;
 
                     for (int i = 0; i < supported_VisionEngineType.Count; i++)
@@ -4147,13 +4149,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                     Debug.WriteLine($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]");
-                    bool result = SetGaming_VisionEngineType(monitorInfo, nextVisionEngineType).Result;
+                    bool result = SwitchGaming_VisionEngineType(monitorInfo, nextVisionEngineType).Result;
                     writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]" + (result ? "success" : "fail"));
                 }
                 else
                 {
                     writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Gaming VisionEngine is empty");
-                }*/
+                }
             }
             else
             {
@@ -4187,6 +4189,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     Debug.WriteLine($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DualResolutionType}] to [{nextDualResolutionType}]");
                     bool result = SetGaming_DualResolutionType(monitorInfo, nextDualResolutionType).Result;
+                    //Bruce ,Evente back UI
+                    if (result)
+                    {
+                        gamingDisplayProperties.Current_DualResolutionType = nextDualResolutionType;
+                        OnGamingParamChangeHandler(this, gamingDisplayProperties);
+                    }
                     writelog($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DualResolutionType}] to [{nextDualResolutionType}]" + (result ? "success" : "fail"));
                 }
                 else
@@ -4227,6 +4235,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     Debug.WriteLine($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DarkStabilizer}] to [{nextDarkStabilizer}]");
                     bool result = SetGaming_DarkStabilizer(monitorInfo, nextDarkStabilizer).Result;
+                    //Bruce ,Evente back UI
+                    if (result)
+                    {
+                        gamingDisplayProperties.Current_DarkStabilizer = nextDarkStabilizer;
+                        OnGamingParamChangeHandler(this, gamingDisplayProperties);
+                    }
                     writelog($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DarkStabilizer}] to [{nextDarkStabilizer}]" + (result ? "success" : "fail"));
                 }
                 else
