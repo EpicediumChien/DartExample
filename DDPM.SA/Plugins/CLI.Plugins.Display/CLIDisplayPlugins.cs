@@ -89,7 +89,7 @@ namespace DDPM.CLI.Plugins.Display
                 result.ExitCode = (int)CLI_ExitCode.no_monitor_connected;
                 return false;
             }
-            if (commandLineInput != null || commandLineInput.DeviceIndex.Count > 0)
+            if (commandLineInput != null && commandLineInput.DeviceIndex.Count > 0) // 20240827 SAST, to fix null at one path.
             {
                 foreach (string idx in commandLineInput.DeviceIndex)
                 {
