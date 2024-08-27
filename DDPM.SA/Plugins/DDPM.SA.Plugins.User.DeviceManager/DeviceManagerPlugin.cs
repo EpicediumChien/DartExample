@@ -839,7 +839,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 foreach (MonitorInfo m in _AllInfoMonitors)
                 {
                     monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName).Result;
-                    if (monitorSettingsList == null || monitorSettingsList.Count == 0)
+                    if (monitorSettingsList == null)
+                    {
+                        monitorSettingsList = new List<DDPMMonitorSettings>();
+                    }
+                    if(monitorSettingsList.Count == 0)
                     {
                         DDPMMonitorSettings settings = new DDPMMonitorSettings();
                         settings.Model = m.modelName;
