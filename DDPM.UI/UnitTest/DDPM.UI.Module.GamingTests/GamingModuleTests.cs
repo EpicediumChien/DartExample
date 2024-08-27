@@ -33,6 +33,7 @@ namespace DDPM.UI.Module.Gaming.Tests
             deviceManagerSA= deviceManagerSAMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             selectedHomeDevice = new HomeDevice();
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(selectedHomeDevice);
             myModule = new GamingModule();
             GamingViewModel gamingViewModel = new GamingViewModel();
             gamingViewModel.MyModule = myModule;
@@ -41,6 +42,15 @@ namespace DDPM.UI.Module.Gaming.Tests
             gamingModule = new GamingModule();
             gamingModule.SelectedHomeDevice=selectedHomeDevice;
             privateObject = new PrivateObject(gamingModule);
+        }
+
+        [Test]
+        public void TestTestConstructor_GamingModule()
+        {
+            // Assert
+            Assert.That(gamingModule, Is.Not.Null);
+            UserControl _rightView =(UserControl)privateObject.GetFieldOrProperty("_rightView");
+            Assert.That(_rightView.DataContext, Is.EqualTo(privateObject.GetFieldOrProperty("vm")));
         }
 
         [Test]
