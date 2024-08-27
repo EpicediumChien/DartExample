@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.AddHeadset_BL
         private readonly UserControl? _leftView = null;
         private readonly UserControl _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public AddHeadset_BLModule(AddDeviceViewModel vm)
         {
             _rightView = new AddHeadset_BLRightView(vm);
@@ -37,11 +40,26 @@ namespace DDPM.UI.Module.AddHeadset_BL
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("BrightnessModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

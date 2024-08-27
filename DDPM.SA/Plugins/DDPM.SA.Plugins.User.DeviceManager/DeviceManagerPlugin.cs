@@ -839,7 +839,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 foreach (MonitorInfo m in _AllInfoMonitors)
                 {
                     monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName).Result;
-                    if (monitorSettingsList == null || monitorSettingsList.Count == 0)
+                    if (monitorSettingsList == null)
+                    {
+                        monitorSettingsList = new List<DDPMMonitorSettings>();
+                    }
+                    if(monitorSettingsList.Count == 0)
                     {
                         DDPMMonitorSettings settings = new DDPMMonitorSettings();
                         settings.Model = m.modelName;
@@ -2534,7 +2538,83 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        #endregion
+        public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ WriteEAMonitorSettings: _SettingsPlugin is null.");
+                return Task.FromResult(false);
+            }
+
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
+
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null)
+            {
+                writelog($"@ WriteEAMonitorSettings: ReloadMonitorSettings(model={monitorInfo.AliasDeviceName}) return null.");
+                return Task.FromResult(false);
+            }
+
+            //Find the previous saved device settings
+            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
+            //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
+            if (monitorSettings == null)
+            {
+                writelog($"@ WriteEAMonitorSettings: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
+                return Task.FromResult(false);
+            }
+
+            monitorSettings.EA = eaSettings;
+
+            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+            {
+                writelog($"@ WriteEAMonitorSettings(model={model}, serviceTage={serviceTag}) OK.");
+                return Task.FromResult(true);
+            }
+            writelog($"@ WriteEAMonitorSettings: WriteMonitorSettings(model={model}, serviceTage={serviceTag}) failed.");
+            return Task.FromResult(false);
+        }
+
+        public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo)
+        {
+            //Create a default output
+            EAMonitorSettings defaultOutput = new EAMonitorSettings();
+
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ ReadEAMonitorSettings: _SettingsPlugin is null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
+
+            //Read all settings for this model
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null) //never, but check for safe
+            {
+                writelog($"@ ReadEAMonitorSettings: ReloadMonitorSettings(model={model}) is null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Find the settings for the specified device
+            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+            //There is no settings found for this device
+            if (monitorSetting == null)
+            {
+                writelog($"@ ReadEAMonitorSettings: Settings for (model={model}, serviceTag={serviceTag}) is not found (never be saved before).");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Return the EA settings from the settings file
+            return Task.FromResult(monitorSetting.EA);
+
+        }
+
+        #endregion EasyArrage
 
         #region SW Update implementation
 

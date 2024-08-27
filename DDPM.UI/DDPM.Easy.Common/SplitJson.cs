@@ -1,6 +1,6 @@
 ﻿namespace DDPM.Easy.Common
 {
-    public class SplitJson
+    public class SplitJson_Unused
     {
         #region Native Properties
 
@@ -13,14 +13,14 @@
 
         #endregion Native Properties
 
-        public static SplitJson CreateFromSplitItem(ISplitCtrl spCtrl)
-        {
-            SplitJson obj = new SplitJson();
-            obj.CellCount = spCtrl.CellCount;
-            obj.SplitKey = spCtrl.SplitKey;
-            obj.Settings = spCtrl.Settings;
-            obj.FriendlyName = spCtrl.FriendlyName;
-            return obj;
-        }
+        //public static SplitJson CreateFromSplitItem(ISplitCtrl spCtrl)
+        //{
+        //    SplitJson obj = new SplitJson();
+        //    obj.CellCount = spCtrl.CellCount;
+        //    obj.SplitKey = spCtrl.SplitKey;
+        //    obj.Settings = spCtrl.Settings;
+        //    obj.FriendlyName = spCtrl.FriendlyName;
+        //    return obj;
+        //}
     }
 }

@@ -1544,8 +1544,8 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.Value = "N/A";
                                 G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Luminus_RESPONSE.Result = "PASS";
-                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
-                                output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
+                                System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
                             }
                         }
                     }
@@ -6229,7 +6229,6 @@ namespace DDPM.CLI.Plugins.Display
 
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
-                    return ((int)CLI_ExitCode.success, output);
                 }
                 else if (index.Count != 0)
                 {
@@ -6322,7 +6321,6 @@ namespace DDPM.CLI.Plugins.Display
 
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
-                    return ((int)CLI_ExitCode.success, output);
                 }
                 else if (serviceTag.Count != 0)
                 {
@@ -6417,15 +6415,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
-                        return ((int)CLI_ExitCode.success, output);
                     }
-                    S_PowerNap_RESPONSE = new CLI_RESPONSE();
-                    S_PowerNap_RESPONSE.Command = "SET";
-                    S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
-                    S_PowerNap_RESPONSE.Result = "FAIL";
-                    S_PowerNap_RESPONSE.Message = "Invalid Service Tag";
-                    output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
-                    return ((int)CLI_ExitCode.unknow_command, output);
                 }
                 return ((int)CLI_ExitCode.success, output);
             }
@@ -6471,7 +6461,6 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
-                    return ((int)CLI_ExitCode.success, output);
                 }
                 else if (index.Count != 0)
                 {
@@ -6514,7 +6503,6 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
-                    return ((int)CLI_ExitCode.success, output);
                 }
                 else if (serviceTag.Count != 0)
                 {
@@ -6558,17 +6546,9 @@ namespace DDPM.CLI.Plugins.Display
                                     S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                             }
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
-                            return ((int)CLI_ExitCode.success, output);
                         }
                     }
-                    S_PowerNap_RESPONSE = new CLI_RESPONSE();
-                    S_PowerNap_RESPONSE.Command = "GET";
-                    S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
-                    S_PowerNap_RESPONSE.Result = "FAIL";
-                    S_PowerNap_RESPONSE.Message = "Invalid Service Tag";
-                    output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                 }
-                return ((int)CLI_ExitCode.unknow_command, output);
             }
             return ((int)CLI_ExitCode.success, output);
         }

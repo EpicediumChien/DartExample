@@ -2,6 +2,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
+using System.Diagnostics;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.GamingVisionEngine
@@ -11,6 +12,9 @@ namespace DDPM.UI.Module.GamingVisionEngine
         private UserControl? _leftView = null;
         private UserControl _rightView = new VisionEngineRightView();
         private VisionEngineViewModel vm = new VisionEngineViewModel();
+
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
 
         public VisionEngineModule(IModuleOwner? moduleOwner = null)
         {
@@ -50,10 +54,28 @@ namespace DDPM.UI.Module.GamingVisionEngine
         public void OnSelectedHomeDeviceChanged()
         {
             vm.Invoke_RefreshData();
+
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
+            Trace.WriteLine("VisionEngineModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()
