@@ -842,7 +842,8 @@ namespace NetworkKVM.Plugins
             CallNKVMConnent(NamedpipeName);
             await pipeServer.WaitForConnectionAsync(cancellationTokenSource.Token);
             _logs.DebugMsg("[NetworkKVM] Client Connect....");
-            if (NPipeSecurity.NamedPipeClientSecurity(pipeServer))
+            string info;
+            if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
             {
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
                 //command = OnNetworkKVM().Result;
@@ -853,7 +854,7 @@ namespace NetworkKVM.Plugins
             }
             else
             {
-                _logs.DebugMsg("[NetworkKVM] Client Security Fail....");
+                _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
                 Disconnect();
                 CreateNamedPipe();
             }
