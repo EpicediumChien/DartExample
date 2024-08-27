@@ -564,10 +564,13 @@ namespace DDPM.UI.Module.Brightness
                     alsSynchronizeList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
                 }
                 int _isMutliAlsMonitorCount = 0;
+                bool _isAlSON = true;
                 foreach (var al in alsSynchronizeList)//ALS monitor count
                 {
                     if (al.isSupportALS == 2)
                         _isMutliAlsMonitorCount++;
+                    if (al.isAutoBrightness == true || al.isAutoColorTemp == true)
+                        _isAlSON = true;
                 }
                 if (_isMutliAlsMonitorCount < 2)//It is mean only 1 ALS monitors.
                 {
