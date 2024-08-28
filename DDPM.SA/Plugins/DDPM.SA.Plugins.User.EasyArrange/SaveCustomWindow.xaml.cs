@@ -38,6 +38,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //Determine the selection
                 cbNames.SelectedIndex = CustomNames.IndexOf(CustomName);
             }
+            //Hide window from Alt+tab
+            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
         }
         #endregion Init
 
