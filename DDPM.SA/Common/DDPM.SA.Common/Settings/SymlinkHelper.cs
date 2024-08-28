@@ -15,6 +15,7 @@ namespace DDPM.SA.Common.Settings
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern uint GetFinalPathNameByHandle(IntPtr hFile, StringBuilder lpszFilePath, uint cchFilePath, uint dwFlags);
+
         private static uint _GetFinalPathNameByHandle(IntPtr hFile, StringBuilder lpszFilePath, uint cchFilePath, uint dwFlags)
         {
             return GetFinalPathNameByHandle(hFile, lpszFilePath, cchFilePath, dwFlags);
@@ -24,9 +25,10 @@ namespace DDPM.SA.Common.Settings
         [return: MarshalAs(UnmanagedType.Bool)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool CloseHandle(IntPtr hObject);
+
         private static bool _CloseHandle(IntPtr hObject)
         {
-            return CloseHandle(hObject); 
+            return CloseHandle(hObject);
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]

@@ -1,35 +1,26 @@
 ﻿using DDPM.SA.Common;
-using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Common;
-using Dell.Client.Framework.Interfaces;
-using System.Windows.Forms;
-using Dell.Client.Framework.Common.PluginConditions;
-using Microsoft;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using Newtonsoft.Json;
-using System.IO;
-using System.Security.Cryptography.Xml;
-using System.Windows.Media.Animation;
-using Microsoft.VisualBasic;
-using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
-using Task = System.Threading.Tasks.Task;
-using Dell.Client.Framework.Security.Interfaces;
-using Dell.Client.Framework.Security;
 using DDPM.SA.Common.Settings;
 using DDPM.Win32Lib;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.PluginConditions;
+using Dell.Client.Framework.Interfaces;
+using Microsoft;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
+using Task = System.Threading.Tasks.Task;
 
 namespace DDPM.SA.Plugins.User.ActionsManger
 {
     [Plugin(Common.IDs.DDPM_ACTIONS_MANGER_PLUGIN_ID, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
-    //[PublishedUnelevatedInterface(new[] { typeof(IActionsMangerSA) })]
-    //[PluginRequires(Id = DDPM.SA.Common.IDs.DDPM_ACTIONS_MANGER_PLUGIN_ID, Version = "1.0.0", AllowDynamicResolving = true)]
     public class ActionsMangerPlugin : BaseAgentPlugin, IDisposableObservable
     {
         #region Private Members
+
         private const string pluginName = "ActionsMangerPlugin";
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements Actions Manger Plugin.";
@@ -42,7 +33,9 @@ namespace DDPM.SA.Plugins.User.ActionsManger
 
         private IDPeMPlugin _PeripheralsPlugin;
         private readonly object _PluginConditionLock_Peripherals = new object();
-        #endregion
+
+        #endregion Private Members
+
         private void InitializePeripheralsPlugin()
         {
             if (_PeripheralsPlugin != null)
@@ -56,6 +49,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 GetCurrentPeripheralsPluginCondition();
             }
         }
+
         private void GetCurrentPeripheralsPluginCondition()
         {
             _ = Task.Run(async () =>
@@ -89,6 +83,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         {
             GetCurrentPeripheralsPluginCondition();
         }
+
         public SWUErrorCode GetType(DeviceInfo devinfo)
         {
             //Necessary to handle the notification is coming from which device and model name.
@@ -152,207 +147,275 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 case 0:
                     //No action
                     break;
+
                 case 1:
                     WindowsAction_DoCopilot();
                     break;
+
                 case 2:
                     WindowsAction_DoDevices();
                     break;
+
                 case 3:
                     WindowsAction_DoLock();
                     break;
+
                 case 4:
                     WindowsAction_DoNotificationCenter();
                     break;
+
                 case 5:
                     WindowsAction_DoScreenSnip();
                     break;
+
                 case 6:
                     WindowsAction_DoSearch();
                     break;
+
                 case 7:
                     WindowsAction_DoSettings();
                     break;
+
                 case 8:
                     WindowsAction_DoShowHideDesktop();
                     break;
+
                 case 9:
                     WindowsAction_DoShutdown();
                     break;
+
                 case 10:
                     WindowsAction_DoSignOut();
                     break;
+
                 case 11:
                     WindowsAction_DoSleep();
                     break;
+
                 case 12:
                     WindowsAction_DoSwitchApplications();
                     break;
+
                 case 13:
                     WindowsAction_DoTaskView();
                     break;
+
                 case 14:
                     ProductivityAction_AssignKeystroke();
                     break;
+
                 case 15:
                     ProductivityAction_DoBack();
                     break;
+
                 case 16:
                     ProductivityAction_DoCalculator();
                     break;
+
                 case 17:
                     ProductivityAction_DoCloseWindow();
                     break;
+
                 case 18:
                     ProductivityAction_DoCopy();
                     break;
+
                 case 19:
                     ProductivityAction_DoCut();
                     break;
+
                 case 20:
                     ProductivityAction_DoDocuments();
                     break;
+
                 case 21:
                     ProductivityAction_DoForward();
                     break;
+
                 case 22:
                     ProductivityAction_DoMaximizeWindow();
                     break;
+
                 case 23:
                     ProductivityAction_DoMinimizeWindow();
                     break;
+
                 case 24:
                     ProductivityAction_DoMyHome();
                     break;
+
                 case 25:
                     ProductivityAction_DoOpenFile();
                     break;
+
                 case 26:
                     ProductivityAction_DoOpenFolder();
                     break;
+
                 case 27:
                     ProductivityAction_DoOpenNewBrowserTab();
                     break;
+
                 case 28:
                     ProductivityAction_DoOpenWebPage();
                     break;
+
                 case 29:
                     ProductivityAction_DoPaste();
                     break;
+
                 case 30:
                     ProductivityAction_DoZoomIn();
                     break;
+
                 case 31:
                     ProductivityAction_DoZoomOut();
                     break;
+
                 case 32:
                     ProductivityAction_DoZoomReset();
                     break;
+
                 case 33:
                     MultimediaAction_MediaNextTrack();
                     break;
+
                 case 34:
                     MultimediaAction_MediaPlayPause();
                     break;
+
                 case 35:
                     MultimediaAction_MediaPreviousTrack();
                     break;
+
                 case 36:
                     MultimediaAction_DoMusic();
                     break;
+
                 case 37:
                     MultimediaAction_DoPictures();
                     break;
+
                 case 38:
                     MultimediaAction_VolumeDown();
                     break;
+
                 case 39:
                     MultimediaAction_VolumeMute();
                     break;
+
                 case 40:
                     MultimediaAction_VolumeUp();
                     break;
+
                 case 41:
                     NoneAction_DoPrtSc();
                     break;
+
                 case 42:
                     NoneAction_DoScrollLock();
                     break;
+
                 case 43:
                     NoneAction_DoPauseBreak();
                     break;
+
                 case 44:
                     NoneAction_DoHome();
                     break;
+
                 case 45:
                     NoneAction_DoEnd();
                     break;
+
                 case 46:
                     NoneAction_DoPageUp();
                     break;
+
                 case 47:
                     NoneAction_DoPageDown();
                     break;
+
                 case 48:
                     ProductivityAction_Do4thClick();
                     break;
+
                 case 49:
                     ProductivityAction_Do5thClick();
                     break;
+
                 case 50:
                     ProductivityAction_DoErase();
                     break;
+
                 case 51:
                     ProductivityAction_DoLeftClick();
                     break;
+
                 case 52:
                     ProductivityAction_DoMiddleClick();
                     break;
+
                 case 53:
                     ProductivityAction_DoOpenRun();
                     break;
+
                 case 54:
                     ProductivityAction_DoPenPageDown();
                     break;
+
                 case 55:
                     ProductivityAction_DoPenPageUp();
                     break;
+
                 case 56:
                     ProductivityAction_DoRadialMenu();
                     break;
+
                 case 57:
                     ProductivityAction_DoRedo();
                     break;
+
                 case 58:
                     ProductivityAction_DoRightClick();
                     break;
+
                 case 59:
                     ProductivityAction_DoUndo();
                     break;
+
                 case 60:
                     WindowsAction_DoBarrelButton();
                     break;
+
                 case 61:
                     WindowsAction_DoEMail();
                     break;
+
                 case 62:
                     WindowsAction_DoOneNote();
                     break;
+
                 case 63:
                     WindowsAction_DoOpenNewBrowserTab();
                     break;
+
                 case 64:
                     WindowsAction_DoSwitchApplication();
                     break;
+
                 case 65:
                     WindowsAction_DoWidgets();
                     break;
+
                 case 66:
                     WindowsAction_DoWindowsSearch();
                     break;
+
                 case 67:
                     MultimediaAction_NextTrack();
                     break;
+
                 default:
                     // Handle any cases that aren't explicitly covered
                     break;
@@ -367,66 +430,87 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 case 101:
                     WordAction_Autoscroll();
                     break;
+
                 case 102:
                     WordAction_Find();
                     break;
+
                 case 103:
                     WordAction_IncreaseIndent();
                     break;
+
                 case 104:
                     WordAction_NewComment();
                     break;
+
                 case 105:
                     WordAction_NextChange();
                     break;
+
                 case 106:
                     WordAction_NextComment();
                     break;
+
                 case 107:
                     WordAction_PasteAndKeepSourceFormatting();
                     break;
+
                 case 108:
                     WordAction_PasteAndKeepTextOnly();
                     break;
+
                 case 109:
                     WordAction_PasteAndMatchFormatting();
                     break;
+
                 case 110:
                     WordAction_PasteAndMergeFormatting();
                     break;
+
                 case 111:
                     WordAction_PreviousChange();
                     break;
+
                 case 112:
                     WordAction_PreviousComment();
                     break;
+
                 case 113:
                     WordAction_Print();
                     break;
+
                 case 114:
                     WordAction_Save();
                     break;
+
                 case 115:
                     WordAction_Strikethrough();
                     break;
+
                 case 116:
                     WordAction_TextSizeMinus();
                     break;
+
                 case 117:
                     WordAction_TextSizePlus();
                     break;
+
                 case 118:
                     WordAction_TranslateSelectedText();
                     break;
+
                 case 119:
                     WordAction_ViewOnePage();
                     break;
+
                 case 120:
                     WordAction_ViewPageWidth();
                     break;
+
                 case 121:
                     WordAction_ZoomIn();
                     break;
+
                 case 122:
                     WordAction_ZoomOut();
                     break;
@@ -434,63 +518,83 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 case 201:
                     ExcelAction_AlignCenter();
                     break;
+
                 case 202:
                     ExcelAction_AlignLeft();
                     break;
+
                 case 203:
                     ExcelAction_AlignRight();
                     break;
+
                 case 204:
                     ExcelAction_DecreaseIndent();
                     break;
+
                 case 205:
                     ExcelAction_GotoBottomOfDataRegion();
                     break;
+
                 case 206:
                     ExcelAction_GotoTopOfDataRegion();
                     break;
+
                 case 207:
                     ExcelAction_IncreaseIndent();
                     break;
+
                 case 208:
                     ExcelAction_InsertChart();
                     break;
+
                 case 209:
                     ExcelAction_InsertRowAbove();
                     break;
+
                 case 210:
                     ExcelAction_NewComment();
                     break;
+
                 case 211:
                     ExcelAction_NextComment();
                     break;
+
                 case 212:
                     ExcelAction_PanHoldAndMoveMouse();
                     break;
+
                 case 213:
                     ExcelAction_PasteFormatOnly();
                     break;
+
                 case 214:
                     ExcelAction_PasteFormulas();
                     break;
+
                 case 215:
                     ExcelAction_PasteValueOnly();
                     break;
+
                 case 216:
                     ExcelAction_PreviousComment();
                     break;
+
                 case 217:
                     ExcelAction_PreviousSheet();
                     break;
+
                 case 218:
                     ExcelAction_Save();
                     break;
+
                 case 219:
                     ExcelAction_SortAtoZ();
                     break;
+
                 case 220:
                     ExcelAction_ZoomIn();
                     break;
+
                 case 221:
                     ExcelAction_ZoomOut();
                     break;
@@ -498,60 +602,79 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 case 301:
                     PowerPointAction_ArrangeAlignCenter();
                     break;
+
                 case 302:
                     PowerPointAction_ArrangeAlignLeft();
                     break;
+
                 case 303:
                     PowerPointAction_ArrangeAlignRight();
                     break;
+
                 case 304:
                     PowerPointAction_BringToFront();
                     break;
+
                 case 305:
                     PowerPointAction_DecreaseListLevel();
                     break;
+
                 case 306:
                     PowerPointAction_DuplicateSelectedSlides();
                     break;
+
                 case 307:
                     PowerPointAction_IncreaseListLevel();
                     break;
+
                 case 308:
                     PowerPointAction_NewComment();
                     break;
+
                 case 309:
                     PowerPointAction_NextComment();
                     break;
+
                 case 310:
                     PowerPointAction_PanHoldAndMoveMouse();
                     break;
+
                 case 311:
                     PowerPointAction_PlayFromCurrentSlide();
                     break;
+
                 case 312:
                     PowerPointAction_PreviousComment();
                     break;
+
                 case 313:
                     PowerPointAction_PreviousSlide();
                     break;
+
                 case 314:
                     PowerPointAction_Save();
                     break;
+
                 case 315:
                     PowerPointAction_SendToBack();
                     break;
+
                 case 316:
                     PowerPointAction_Strikethrough();
                     break;
+
                 case 317:
                     PowerPointAction_TextSizeMinus();
                     break;
+
                 case 318:
                     PowerPointAction_TextSizePlus();
                     break;
+
                 case 319:
                     PowerPointAction_ZoomIn();
                     break;
+
                 case 320:
                     PowerPointAction_ZoomOut();
                     break;
@@ -559,27 +682,35 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 case 401:
                     OutlookAction_AttachFile();
                     break;
+
                 case 402:
                     OutlookAction_DecreaseIndent();
                     break;
+
                 case 403:
                     OutlookAction_ForwardEmail();
                     break;
+
                 case 404:
                     OutlookAction_IncreaseIndent();
                     break;
+
                 case 405:
                     OutlookAction_NewEmail();
                     break;
+
                 case 406:
                     OutlookAction_NewMeeting();
                     break;
+
                 case 407:
                     OutlookAction_Reply();
                     break;
+
                 case 408:
                     OutlookAction_ReplyToAll();
                     break;
+
                 default:
                     // Handle any cases that aren't explicitly covered
                     break;
@@ -594,57 +725,75 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 case 0:
                     // No action
                     break;
+
                 case 14:
                     ProductivityAction_AssignKeystroke();
                     break;
+
                 case 53:
                     ProductivityAction_DoOpenRun();
                     break;
+
                 case 54:
                     ProductivityAction_DoPenPageDown();
                     break;
+
                 case 55:
                     ProductivityAction_DoPenPageUp();
                     break;
+
                 case 91:
                     WindowsAction_DefineBySystem();
                     break;
+
                 case 62:
                     WindowsAction_DoOneNote();
                     break;
+
                 case 92:
                     WindowsAction_DoPenMenu();
                     break;
+
                 case 93:
                     WindowsAction_DoQuickNote();
                     break;
+
                 case 94:
                     WindowsAction_DoScreenSnip();
                     break;
+
                 case 95:
                     WindowsAction_DoStickyNotes();
                     break;
+
                 case 66:
                     WindowsAction_DoWindowsSearch();
                     break;
+
                 case 34:
                     MultimediaAction_MediaPlayPause();
                     break;
+
                 case 35:
                     MultimediaAction_MediaPreviousTrack();
                     break;
+
                 case 67:
                     MultimediaAction_NextTrack();
                     break;
+
                 case 38:
                     MultimediaAction_VolumeDown();
                     break;
+
                 case 39:
                     MultimediaAction_VolumeMute();
                     break;
+
                 case 40:
                     MultimediaAction_VolumeUp();
                     break;
+
                 default:
                     // Handle any cases that aren't explicitly covered
                     break;
@@ -658,149 +807,197 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 case 1:
                     OpenApplication("explorer.exe");
                     break;
+
                 case 2:
                     OpenApplication("calc.exe");
                     break;
+
                 case 3:
                     OpenApplication("outlookcal:");
                     break;
+
                 case 4:
                     OpenApplication("microsoft.windows.camera:");
                     break;
+
                 case 5:
                     OpenApplication("ms-clock:");
                     break;
+
                 case 6:
                     OpenApplication("ms-cortana:");
                     break;
+
                 case 7:
                     OpenApplication("DellCommandUpdate.exe");
                     break;
+
                 case 8:
                     OpenApplication("DellDigitalDelivery.exe");
                     break;
+
                 case 9:
                     OpenApplication("DellOptimizer.exe");
                     break;
+
                 case 10:
                     OpenApplication("ms-family:");
                     break;
+
                 case 11:
                     OpenApplication("feedback-hub:");
                     break;
+
                 case 12:
                     OpenApplication("ms-gamingoverlay:");
                     break;
+
                 case 13:
                     OpenApplication("ms-contact-support:");
                     break;
+
                 case 14:
                     OpenApplication("ms-get-started:");
                     break;
+
                 case 15:
                     OpenApplication("imssvc.exe");
                     break;
+
                 case 16:
                     OpenApplication("igfxCUIService.exe");
                     break;
+
                 case 17:
                     OpenApplication("IntelOptaneMemory.exe");
                     break;
+
                 case 18:
                     OpenApplication("ms-mail:");
                     break;
+
                 case 19:
                     OpenApplication("ms-drive-to:");
                     break;
+
                 case 20:
                     OpenApplication("mswindowsmusic:");
                     break;
+
                 case 21:
                     OpenApplication("ms-officehub:");
                     break;
+
                 case 22:
                     OpenApplication("clipchamp:");
                     break;
+
                 case 23:
                     OpenApplication("windowsdefender:");
                     break;
+
                 case 24:
                     OpenApplication("ms-windows-store:");
                     break;
+
                 case 25:
                     OpenApplication("msteams:");
                     break;
+
                 case 26:
                     OpenApplication("msteams://");
                     break;
+
                 case 27:
                     OpenApplication("todo:");
                     break;
+
                 case 28:
                     OpenApplication("mswindowsvideo:");
                     break;
+
                 case 29:
                     OpenApplication("bingnews:");
                     break;
+
                 case 30:
                     OpenApplication("notepad.exe");
                     break;
+
                 case 31:
                     OpenApplication("mspaint.exe");
                     break;
+
                 case 32:
                     OpenApplication("ms-phone:");
                     break;
+
                 case 33:
                     OpenApplication("ms-photos:");
                     break;
+
                 case 34:
                     OpenApplication("ms-powerautomate:");
                     break;
+
                 case 35:
                     OpenApplication("ms-settings:");
                     break;
+
                 case 36:
                     OpenApplication("SnippingTool.exe");
                     break;
+
                 case 37:
                     OpenApplication("xboxliveapp-1297287741://");
                     break;
+
                 case 38:
                     OpenApplication("ms-soundrecorder:");
                     break;
+
                 case 39:
                     OpenApplication("spotify:");
                     break;
+
                 case 40:
                     OpenApplication("ms-stickynotes:");
                     break;
+
                 case 41:
                     OpenApplication("SupportAssist.exe");
                     break;
+
                 case 42:
                     OpenApplication("wt.exe");
                     break;
+
                 case 43:
                     OpenApplication("ms-get-started:");
                     break;
+
                 case 44:
                     OpenApplication("msnweather:");
                     break;
+
                 case 45:
                     OpenApplication("ms-settings:windowsbackup");
                     break;
+
                 case 46:
                     OpenApplication("windowsdefender:");
                     break;
+
                 case 47:
                     OpenApplication("xbox:");
                     break;
+
                 default:
                     MessageBox.Show("Invalid ID. Please provide a valid action ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
             }
         }
+
         private void OpenApplication(string command)
         {
             try
@@ -812,6 +1009,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 MessageBox.Show($"Failed to open application: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void RadialMenuActions(int id)
         {
             switch (id)
@@ -819,80 +1017,105 @@ namespace DDPM.SA.Plugins.User.ActionsManger
                 case 1:
                     // Disabled, no action
                     break;
+
                 case 2:
                     ProductivityAction_AssignKeystroke();
                     break;
+
                 case 3:
                     OpenRunActions(3); // Assuming OpenRun2 is equivalent to OpenRun with ID 3
                     break;
+
                 case 4:
                     ProductivityAction_DoBack();
                     break;
+
                 case 5:
                     ProductivityAction_DoForward();
                     break;
+
                 case 6:
                     WindowsAction_DoSwitchApplication();
                     break;
+
                 case 7:
                     ProductivityAction_DoCopy();
                     break;
+
                 case 8:
                     ProductivityAction_DoPaste();
                     break;
+
                 case 9:
                     ProductivityAction_DoUndo();
                     break;
+
                 case 10:
                     ProductivityAction_DoRedo();
                     break;
+
                 case 11:
                     NoneAction_DoPageUp();
                     break;
+
                 case 12:
                     NoneAction_DoPageDown();
                     break;
+
                 case 13:
                     WindowsAction_DoOneNote();
                     break;
+
                 case 14:
                     ProductivityAction_OpenWebBrowser();
                     break;
+
                 case 15:
                     WindowsAction_DoEMail();
                     break;
+
                 case 16:
                     MultimediaAction_MediaPlayPause();
                     break;
+
                 case 17:
                     MultimediaAction_MediaNextTrack();
                     break;
+
                 case 18:
                     MultimediaAction_MediaPreviousTrack();
                     break;
+
                 case 19:
                     MultimediaAction_VolumeUp();
                     break;
+
                 case 20:
                     MultimediaAction_VolumeDown();
                     break;
+
                 case 21:
                     MultimediaAction_VolumeMute();
                     break;
+
                 case 22:
                     WindowsAction_DoWindowsSearch();
                     break;
+
                 default:
                     MessageBox.Show("Invalid ID. Please provide a valid action ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
             }
         }
+
         private void ProductivityAction_OpenWebBrowser()
         {
             // Simulate opening the default web browser
             Process.Start("http://www.example.com");
         }
+
         #region AllActions Event
+
         private static void WindowsAction_DoCopilot()
         {
             // Send Win + C (Open Copilot)
@@ -1353,7 +1576,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             SendKeys.SendWait("{MEDIA_NEXT_TRACK}");
         }
 
-        #endregion
+        #endregion AllActions Event
 
         #region Word Actions
 
@@ -1502,7 +1725,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             SendKeys.SendWait("80{ENTER}");
         }
 
-        #endregion
+        #endregion Word Actions
 
         #region Excel Actions
 
@@ -1647,7 +1870,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             CtrlMouseWheelDown();
         }
 
-        #endregion
+        #endregion Excel Actions
 
         #region PowerPoint Actions
 
@@ -1780,7 +2003,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             SendKeys.SendWait("80{ENTER}");
         }
 
-        #endregion
+        #endregion PowerPoint Actions
 
         #region Outlook Actions
 
@@ -1833,7 +2056,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             SendKeys.SendWait("^{+}{R}");
         }
 
-        #endregion
+        #endregion Outlook Actions
 
         #region Helper Methods
 
@@ -1886,7 +2109,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             Win32._keybd_event(Win32.VK_CONTROL, 0, Win32.KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
-        #endregion
+        #endregion Helper Methods
 
         #region Productivity Actions
 
@@ -1920,7 +2143,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         //    SendKeys.SendWait("{PGUP}");
         //}
 
-        #endregion
+        #endregion Productivity Actions
 
         #region Windows Actions
 
@@ -1981,7 +2204,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         //    keybd_event(VK_LWIN, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
         //}
 
-        #endregion
+        #endregion Windows Actions
 
         #region Multimedia Actions
 
@@ -2021,7 +2244,8 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         //    SendKeys.SendWait("{VOLUME_UP}");
         //}
 
-        #endregion
+        #endregion Multimedia Actions
+
         private enum log_type
         {
             info = 0,
@@ -2029,14 +2253,17 @@ namespace DDPM.SA.Plugins.User.ActionsManger
         }
 
         #region Constructor
+
         public ActionsMangerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
             writelog("ActionsMangerPlugin constructor ...");
         }
-        #endregion
+
+        #endregion Constructor
 
         #region IDisposableObservable
+
         /// <summary>
         /// unhook
         /// </summary>
@@ -2056,7 +2283,8 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             }
             base.Dispose(disposing);
         }
-        #endregion
+
+        #endregion IDisposableObservable
 
         #region Private Methods
 
@@ -2074,9 +2302,11 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             else
                 Log.Error(text);
         }
-        #endregion
+
+        #endregion Private Methods
 
         #region Overriding methods
+
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
@@ -2084,8 +2314,11 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             PluginCondition = new PluginStartedCondition();
             writelog("Actions Manger plugin started");
         }
-        #endregion
+
+        #endregion Overriding methods
+
         #region Event Handler
+
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
             if (e == null)
@@ -2097,6 +2330,7 @@ namespace DDPM.SA.Plugins.User.ActionsManger
             if (e.ChangedPlugins.OfType<IDPeMPlugin>().Any())
                 InitializePeripheralsPlugin();
         }
-        #endregion
+
+        #endregion Event Handler
     }
 }

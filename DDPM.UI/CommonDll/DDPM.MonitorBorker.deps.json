@@ -648,11 +648,11 @@
           "VcpCore.Interfaces.dll": {}
         }
       },
-      "DPeMPublic.Common/0.0.0.0": {
+      "DPeMPublic.Common/1.0.0.0": {
         "runtime": {
           "DPeMPublic.Common.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       }
@@ -1105,7 +1105,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "DPeMPublic.Common/0.0.0.0": {
+    "DPeMPublic.Common/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

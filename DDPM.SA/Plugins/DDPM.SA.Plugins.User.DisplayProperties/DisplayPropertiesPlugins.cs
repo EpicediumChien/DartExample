@@ -69,6 +69,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return Task.FromResult(new DisplayPropertiesInfo());
         }
+
         public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
         {
             try
@@ -99,6 +100,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 return Task.FromResult(new DisplaySupportedProperties());
             }
         }
+
         /// <summary>
         /// 取得螢幕方向
         /// </summary>
@@ -113,6 +115,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             }
             return Task.FromResult(DisplayOrientation.Unknow);
         }
+
         private bool RefreshDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType)
         {
             //Bruce 0605 修改註記:因讀取時間過長(約5000mS)，故修改軟體目前降至(約2800mS)

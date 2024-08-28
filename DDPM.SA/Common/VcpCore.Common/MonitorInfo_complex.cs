@@ -32,5 +32,6 @@ namespace VcpCore.Common
         public List<string> SmartHDRSupportList { get; set; }
         public string modelName { get; set; }
         public string series { get; set; }
+        public string MarketingName { get; set; }
     }
 }

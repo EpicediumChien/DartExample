@@ -220,7 +220,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             }
             catch (Exception e)
             {
-
             }
         }
 

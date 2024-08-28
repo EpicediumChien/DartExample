@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +8,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using VcpCore.Common;
-using Dell.Client.Framework.Common;
 
 namespace DDPM.ColorApp
 {
@@ -33,7 +33,7 @@ namespace DDPM.ColorApp
         private List<ColorPresetSettings>? appconfigs = null;
         //private List<ColorPresetSettings>? appconfigs = new List<ColorPresetSettings>();
 
-        ILog Log { get; set; }
+        private ILog Log { get; set; }
 
         #endregion data region
 
@@ -182,7 +182,7 @@ namespace DDPM.ColorApp
         private void writelog(string? text, log_type log_type = log_type.info)
         {
             text = "[ColorApp] " + text;
-            Console.WriteLine(text);      
+            Console.WriteLine(text);
 
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {
@@ -217,13 +217,13 @@ namespace DDPM.ColorApp
                 if (sender != null)
                 {
                     //Get window data from active window's event
-                    ActiveWindowData data = null;                    
+                    ActiveWindowData data = null;
                     Screen screen = null;
                     data = sender as ActiveWindowData;
                     //tbWndName.Text = data.ActiveWindowTitle;
                     //tbWndPID.Text = data.ActiveWindowProcessId.ToString();
                     //tbWndModule.Text = data.ActiveWindowProcessModuleName;
-                  
+
                     screen = Screen.FromHandle(data.ActiveWindowHandle);
 
                     System.Windows.Forms.Screen? s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Mi.DisplayName);
@@ -233,7 +233,6 @@ namespace DDPM.ColorApp
 
                     if ((screen.WorkingArea.Height != s.WorkingArea.Height) || (screen.WorkingArea.Width != s.WorkingArea.Width) || (screen.WorkingArea.Left != s.WorkingArea.Left))
                         return;
-
 
                     string strFilePath = data.ActiveWindowFilePath;
 
@@ -402,7 +401,7 @@ namespace DDPM.ColorApp
                             else
                             {
                                 reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
-                                writelog("reqAppName = " + reqAppName + "," +  "reqKey [ColorPresetName] = " + reqKey);
+                                writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] = " + reqKey);
                             }
 
                             if (string.IsNullOrEmpty(reqKey))
@@ -412,9 +411,8 @@ namespace DDPM.ColorApp
                                 return;
                             }
 
-                            if (!Pre_reqKey.Equals(reqKey,StringComparison.OrdinalIgnoreCase))
+                            if (!Pre_reqKey.Equals(reqKey, StringComparison.OrdinalIgnoreCase))
                             {
-
                                 writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
                                 writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey);
 
@@ -430,8 +428,8 @@ namespace DDPM.ColorApp
                             {
                                 writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
                                 writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey);
-                                writelog("Pre_reqKey and reqKey is the same");                               
-                                
+                                writelog("Pre_reqKey and reqKey is the same");
+
                                 //Trace.WriteLine("Pre_reqKey and reqKey is the same");
                             }
                         }
