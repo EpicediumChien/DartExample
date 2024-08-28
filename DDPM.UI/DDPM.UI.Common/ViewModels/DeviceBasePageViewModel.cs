@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
@@ -18,6 +19,13 @@ namespace DDPM.UI.Common.ViewModels
 {
     public class DeviceBasePageViewModel : ObservableObject, IModuleOwner
     {
+        #region ctor
+        public DeviceBasePageViewModel()
+        {
+            
+        }
+        #endregion ctor
+
         #region ModuleGroups
 
         private List<ModuleGroup> _moduleGroups = new List<ModuleGroup>();
@@ -123,6 +131,18 @@ namespace DDPM.UI.Common.ViewModels
         }
 
         public bool IsLandingMode { get => (GroupSelectedIndex < 0); }
+
+        private int FindGroupIndexByGroupName(string groupName)
+        {
+            int idx = 0;
+            foreach (ModuleGroup mg in ModuleGroups)
+            {
+                if (mg.GroupName.Equals(groupName))
+                    return idx;
+                idx++;
+            }
+            return -1;
+        }
 
         #endregion ModuleGroups
 
@@ -508,6 +528,8 @@ namespace DDPM.UI.Common.ViewModels
                 {
                     if (!isOrgNull)
                     {
+                        //Refresh BatteryIndicator
+                        //_selectedHomeDevice.UpdateBatteryIndicator();
                         //Selection changed
                         HandleSelectedHomeDeviceChanged();
                     }
@@ -550,6 +572,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
+        public event EventHandler SelectedHomeDeviceChanged;
         #endregion HomeDevices
 
         #region LeftFrameWidth
@@ -596,6 +619,11 @@ namespace DDPM.UI.Common.ViewModels
 
         public void HandleSelectedHomeDeviceChanged()
         {
+            RefreshGroupManagerUIByModuleCapabilities();
+
+            if (SelectedHomeDeviceChanged != null)
+                SelectedHomeDeviceChanged(this, EventArgs.Empty);
+
             foreach (ModuleGroup group in ModuleGroups)
             {
                 foreach (RightViewHeader header in group.Headers)
@@ -634,6 +662,7 @@ namespace DDPM.UI.Common.ViewModels
         #endregion Handle Module Activated/Deactivated
 
         #region Module Capabilities
+        public event EventHandler ModuleHeaderChanged;
 
         public void RefreshGroupManagerUIByModuleCapabilities()
         {
@@ -646,6 +675,8 @@ namespace DDPM.UI.Common.ViewModels
 
             HomeDevice homeDev = SelectedHomeDevice as HomeDevice;
             LogInfo($"  * HomeDevice: {homeDev.DisplayName}");
+
+            
 
             //PIP/PBP capability
             LogInfo($"  * Has PIP/PBP Capability={homeDev.HasCapability_PipPbp}");
@@ -671,6 +702,20 @@ namespace DDPM.UI.Common.ViewModels
                 if (vbarItem != null)
                 {
                     vbarItem.Visibility = (hasCapability_KVM ? Visibility.Visible : Visibility.Collapsed);
+
+                    //Robert_Lin, 2024-8-28, If "KVM" vbar item become Collapsed, and it's current selected Group
+                    //Then we will change the selected Group to another visible vbarItem
+                    if ((!hasCapability_KVM) && (SelectedGroup != null))
+                    {
+                        if (SelectedGroup.GroupName.Equals("KVM"))
+                        {
+                            //Change to EasyArrange
+                            int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                            if (idxEaGroup < 0)
+                                idxEaGroup = 0;
+                            GroupSelectedIndex = idxEaGroup;
+                        }
+                    }
                 }
             }
 
@@ -685,6 +730,20 @@ namespace DDPM.UI.Common.ViewModels
                 if (vbarItem != null)
                 {
                     vbarItem.Visibility = (homeDev.HasCapability_Gaming ? Visibility.Visible : Visibility.Collapsed);
+
+                    //Robert_Lin, 2024-8-28, If "KVM" vbar item become Collapsed, and it's current selected Group
+                    //Then we will change the selected Group to another visible vbarItem
+                    if ((!homeDev.HasCapability_Gaming) && (SelectedGroup != null))
+                    {
+                        if (SelectedGroup.GroupName.Equals("Gaming"))
+                        {
+                            //Change to EasyArrange
+                            int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                            if (idxEaGroup < 0)
+                                idxEaGroup = 0;
+                            GroupSelectedIndex = idxEaGroup;
+                        }
+                    }
                 }
             }
 
@@ -699,6 +758,29 @@ namespace DDPM.UI.Common.ViewModels
                         rightHeader.IsShown = homeDev.HasCapability_VisionEngine;
                     }
                 }
+            }
+
+            //DisplayProperties capability
+            //
+            //Determine if need to show/hide DisplayProperties header
+            //Rule: If has Gaming capability then hide DisplayProperties
+            //      Else show DisplayProperies
+
+            //Looking for "DisplayPropertiesModule" module
+            foreach (ModuleGroup mg in ModuleGroups)
+            {
+                RightViewHeader? rightHeader = mg.FindRightViewHeaderByModuleName("DisplayPropertiesModule");
+                if (rightHeader != null)
+                {
+                    rightHeader.IsShown = !homeDev.HasCapability_Gaming;
+                    LogInfo($"  * DisplayProperties page isShown={rightHeader.IsShown}");
+                }
+            }
+
+            //Notify DeviceBasePage.xaml.cs to change selected Group/Header
+            if (RightViewHeaderChanged != null)
+            {
+                RightViewHeaderChanged(this, new RoutedEventArgs());
             }
         }
 

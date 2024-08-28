@@ -52,6 +52,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             WinEventHook_Start();
 
+            //Hide window from Alt+tab
+            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
             //Test if a open window can create another window in a Dispatcher
             //Result: OK
             //this.Dispatcher.Invoke(() =>

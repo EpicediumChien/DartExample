@@ -16,7 +16,6 @@ namespace DDPM.UI.Module.PipPbp
 {
     public class PipPbpViewModel : ObservableObject
     {
-        //Workaround
         public HomeDevice SelectedHomeDevice;
 
         public IDeviceManagerSA DeviceManagerSA;
@@ -41,7 +40,6 @@ namespace DDPM.UI.Module.PipPbp
         #endregion ctor
 
         #region Log
-
         public ILog? Log { get; set; }
 
         private void LogInfo(string msg)
@@ -51,7 +49,6 @@ namespace DDPM.UI.Module.PipPbp
                 Log.Info(msg);
             }
         }
-
         #endregion Log
 
         #region Special SplitItems - need View assign it before calling RefreshData()
@@ -71,6 +68,12 @@ namespace DDPM.UI.Module.PipPbp
             if ((SplitItem_Off == null) || (SplitItem_PipSmall == null) || (SplitItem_PipLarge == null))
                 throw new InvalidOperationException("SplitItem_Off,SplitItem_PipSmall, and SplitItem_PipLarge must be set before calling RefreshData()");
 
+            //Update SelectedHomeDevices
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            }
+
             BackgroundWorker bw = new BackgroundWorker
             {
                 WorkerReportsProgress = false,
@@ -81,6 +84,7 @@ namespace DDPM.UI.Module.PipPbp
 
             LogInfo("RefresData start...");
             IsBusy = true;
+            //_mainInputSource = null;
             bw.RunWorkerAsync();
         }
 
@@ -96,7 +100,6 @@ namespace DDPM.UI.Module.PipPbp
                 }
 
                 MonitorInfo mi = selHomeDevice.MonitorInfo;
-
                 LogInfo($"Monitor.AliasDeviceName={mi.AliasDeviceName}");
 
                 //Get the Pxp Capabilities
@@ -129,19 +132,6 @@ namespace DDPM.UI.Module.PipPbp
                     //UInt64 u64 = (UInt64)ret.result;
                     _curPxpMode = Convert.ToUInt16(ret.value);
                     LogInfo($"  => CurrentPxpMode=0x{_curPxpMode:X02}");
-
-                    //Determine which SplitItem is the selected item, base on current monitor setting
-                    //Move to UI
-                    //if (_curPxpMode == PipMode_Off)
-                    //    SelectedSplitItem = SplitItem_Off;
-                    //else if (_curPxpMode == PipMode_Small)
-                    //    SelectedSplitItem = SplitItem_PipSmall;
-                    //else if (_curPxpMode == PipMode_Large)
-                    //    SelectedSplitItem = SplitItem_PipLarge;
-                    //else
-                    //{
-                    //    //Current is PBP mode, will be selected from View
-                    //}
                 }
                 else
                 {
@@ -170,7 +160,7 @@ namespace DDPM.UI.Module.PipPbp
                 InputSourceList = inputSourceList;
                 str1 = str1.TrimEnd(' ');
                 str1 = str1.TrimEnd(',');
-                Log?.Info($"  InputSourceList={str1}");
+                LogInfo($"  InputSourceList={str1}");
 
                 //Debug
                 //if ((InputSourceList == null) || (InputSourceList.Count <= 0))
@@ -179,34 +169,79 @@ namespace DDPM.UI.Module.PipPbp
                 //Get current Main InputSource from MonitorInfo
                 //
                 string currentInput = mi.inputSource;
-                MainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
+                LogInfo($"  MonitorInfo.InputSource={currentInput}");
+                //MainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
+                _mainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
+                OnPropertyChanged("MainInputSource");
+                if ( _mainInputSource == null ) 
+                {
+                    LogInfo("  Set MainInputSource=null}");
+                }
+                else
+                {
+                    LogInfo($"  Set MainInputSource={_mainInputSource.Name}");
+                }
 
                 //Get Sub inputs
-                Log?.Info("Query SubInputSources...");
+                Log?.Info("@ Query SubInputSources...");
                 //List<UInt16> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputList(mi).Result;
                 List<InputSourceObj> subInputs = DdpmCommonHelper.DeviceManagerSA.GetSubInputs(mi).Result;
 
                 if (subInputs != null)
                 {
-                    Log?.Info($"=> SubInputSources.Count={subInputs.Count}");
+                    Log?.Info($"  * SubInputSources.Count={subInputs.Count}");
                     SubInputs = subInputs;
 
                     //Build SubInputs
                     if (subInputs.Count > 0)
                     {
-                        Sub1InputSource = InputSourceList.Find(x => x.Code == subInputs[0].Code);
+                        //Sub1InputSource = InputSourceList.Find(x => x.Code == subInputs[0].Code);
+                        _sub1InputSource = InputSourceList.Find(x => x.Code == subInputs[0].Code);
+                        OnPropertyChanged("Sub1InputSource");
+                        if (_sub1InputSource == null)
+                        {
+                            LogInfo("  Set Sub1InputSource=null}");
+                        }
+                        else
+                        {
+                            LogInfo($"  Set Sub1InputSource={_sub1InputSource.Name}");
+                        }
 
                         if (subInputs.Count > 1)
-                            Sub2InputSource = InputSourceList.Find(x => x.Code == subInputs[1].Code);
+                        {
+                            //Sub2InputSource = InputSourceList.Find(x => x.Code == subInputs[1].Code);
+                            _sub2InputSource = InputSourceList.Find(x => x.Code == subInputs[1].Code);
+                            OnPropertyChanged("Sub2InputSource");
+                            if (_sub2InputSource == null)
+                            {
+                                LogInfo("  Set Sub2InputSource=null}");
+                            }
+                            else
+                            {
+                                LogInfo($"  Set Sub2InputSource={_sub2InputSource.Name}");
+                            }
+                        }
 
                         if (subInputs.Count > 2)
-                            Sub3InputSource = InputSourceList.Find(x => x.Code == subInputs[2].Code);
+                        {
+                            //Sub3InputSource = InputSourceList.Find(x => x.Code == subInputs[2].Code);
+                            _sub3InputSource = InputSourceList.Find(x => x.Code == subInputs[2].Code);
+                            OnPropertyChanged("Sub3InputSource");
+                            if (_sub3InputSource == null)
+                            {
+                                LogInfo("  Set Sub3InputSource=null}");
+                            }
+                            else
+                            {
+                                LogInfo($"  Set Sub3InputSource={_sub3InputSource.Name}");
+                            }
+                        }
                     }
                 }
                 else
                 {
                     //Not support SubInput or fail to query
-                    Log?.Info("=> SubInputSources error");
+                    LogInfo("=> SubInputSources error");
                 }
                 e.Result = "OK";
             }
@@ -445,6 +480,48 @@ namespace DDPM.UI.Module.PipPbp
         public const UInt16 PipMode_SizeToggle = 0x01;
         public const UInt16 PipMode_PositionToggle = 0x02;
 
+        /// <summary>
+        /// Return the split count by the specified PxpMode
+        /// </summary>
+        /// <param name="pxpMode"></param>
+        /// <returns></returns>
+        private int SplitCountFromPxpMode(UInt16 pxpMode)
+        {
+            switch(pxpMode)
+            {
+                case PipMode_Off: 
+                    return 1;
+                case PipMode_Small:
+                case PipMode_Large:
+                case 0x23:
+                case 0x24:
+                case 0x25:
+                case 0x26:
+                case 0x27:
+                case 0x28:
+                case 0x29:
+                case 0x2A:
+                case 0x2B:
+                case 0x2C:
+                case 0x2D:
+                case 0x2E:
+                case 0x2F:
+                    return 2;
+                case 0x31:
+                case 0x32:
+                case 0x33:
+                case 0x34:
+                case 0x35:
+                    return 3;
+                case 0x41:
+                case 0x42:
+                    return 4;
+                default:
+                    break;
+            }
+            return 0;
+        }
+
         #endregion Pxp VCP Code
 
         #region PIP/PBP Capabilities
@@ -500,7 +577,15 @@ namespace DDPM.UI.Module.PipPbp
         #region Current PxpMode
 
         private UInt16 _curPxpMode = 0;
-        public UInt16 CurPxpMode => _curPxpMode;
+        public UInt16 CurPxpMode
+        {
+            get => _curPxpMode;
+            set
+            {
+                SetProperty(ref _curPxpMode, value);
+                OnPropertyChanged("SplitCount");
+            }
+        }
 
         //Call only from UI thread
         private void UI_SetSelectedSplitItemByCurPxpMode()
@@ -528,6 +613,14 @@ namespace DDPM.UI.Module.PipPbp
             }
         }
 
+        //The count of split windows for CurPxpMode
+        public int SplitCount
+        {
+            get
+            {
+                return SplitCountFromPxpMode(CurPxpMode);
+            }
+        }
         #endregion Current PxpMode
 
         #region Selected SplitItems
@@ -553,6 +646,12 @@ namespace DDPM.UI.Module.PipPbp
                     SetProperty(ref _selectedSplitItem, value);
                     _selectedSplitItem.IsSelected = true;
                     OnPropertyChanged("IsPipItemSelected");
+
+                    if (_selectedSplitItem.ISplit != null)
+                    {
+                        ISplit isp = _selectedSplitItem.ISplit;
+                        CurPxpMode = isp.PbpCapabilityCode;
+                    }
                 }
                 else
                 {
@@ -560,6 +659,7 @@ namespace DDPM.UI.Module.PipPbp
                     SetProperty(ref _selectedSplitItem, value);
                     OnPropertyChanged("IsPipItemSelected");
                 }
+
                 OnPropertyChanged("IsFullscreenItemSelected");
                 OnPropertyChanged("IsVideoSwapComboBoxesVisible");
                 OnPropertyChanged("IsVideoSwapButtonEnabled");
@@ -693,14 +793,17 @@ namespace DDPM.UI.Module.PipPbp
                     };
                     bw.DoWork += delegate
                     {
-                        bool res = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(
-                            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                            "Input Select", _mainInputSource.Name).Result;
-                        if (res)
+                        if (_mainInputSource != null)
                         {
-                            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.inputSource =
-                            _mainInputSource.Name;
-                            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.UpdateBatteryIndicator();
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(
+                                 DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                                 "Input Select", _mainInputSource.Name).Result;
+                            if (res)
+                            {
+                                DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.inputSource =
+                                _mainInputSource.Name;
+                                DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.UpdateBatteryIndicator();
+                            }
                         }
                     };
                     bw.RunWorkerCompleted += delegate
@@ -871,6 +974,7 @@ namespace DDPM.UI.Module.PipPbp
                 return;
 
             SplitListView_Pbp.ClearList();
+            bool isSelectedItemInList = false;
             foreach (ISplit isp in ISplit.PipClasses)
             {
                 //Check if SelectedHomeDevice have the capability
@@ -878,9 +982,18 @@ namespace DDPM.UI.Module.PipPbp
                 {
                     SplitItem spItem = SplitListView_Pbp.AddSplitToList(isp);
                     if (CurPxpMode == isp.PbpCapabilityCode)
+                    {
                         SelectedSplitItem = spItem;
+                        isSelectedItemInList = true;
+
+                    }
                 }
             }
+            if (isSelectedItemInList)
+            {
+                SplitListView_Pbp.GotoFirstSelectedItemPage();
+            }
+
         }
 
         #endregion Add SplitItems into SplitListView
@@ -893,8 +1006,10 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
+                //Robert_Lin, 2024-8-28 update rule:
+                //If SplitCount >= 3 then IsVideoSwapComboBoxesVisible is true
                 //Return true when: (InputSource.Count >= 3)
-                return (InputSourceCount >= 3);
+                return (SplitCountFromPxpMode(CurPxpMode) >= 3);
             }
         }
 
@@ -902,7 +1017,9 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
-                return (InputSourceCount == 2) && (!IsFullscreenItemSelected);
+                //Robert_Lin, 2024-8-28 update rule:
+                //If SplitCount == 2 then IsVideoSwapButtonVisible is true
+                return (SplitCountFromPxpMode(CurPxpMode) == 2);
             }
         }
 
@@ -910,12 +1027,11 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
-                return (InputSourceCount == 2) && (!IsFullscreenItemSelected);
-                //return _isVideoSwapButtonEnabled;
+                return (SplitCountFromPxpMode(CurPxpMode) == 2);
             }
         }
 
-        public bool ExecuteVideoSwpa()
+        public bool ExecuteVideoSwap()
         {
             if (DeviceManagerSA != null)
             {
@@ -926,6 +1042,7 @@ namespace DDPM.UI.Module.PipPbp
             }
             return false;
         }
+
 
         #endregion Video Swap
 

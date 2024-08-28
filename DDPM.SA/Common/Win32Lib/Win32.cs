@@ -367,6 +367,7 @@ namespace DDPM.Win32Lib
         #region Actions (Wayn)
         // Import keybd_event function
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
         public static void _keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo)
         {
@@ -375,6 +376,7 @@ namespace DDPM.Win32Lib
 
         // Import mouse_event function 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
         public static void _mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo)
         {

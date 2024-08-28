@@ -39,6 +39,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _log = EAPlugin.PluginIoc?.GetService<ILog>();
             _log?.Info($"EAEditWindow_Loaded, Input: {inputSplitCtrl.CellCount}{inputSplitCtrl.SplitKey}, [{inputSplitCtrl.SettingsString}]");
 
+            //Hide window from Alt+tab
+            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
             //saveCustomWindow = new SaveCustomWindow();
             //saveCustomWindow.Owner = this;
             //saveCustomWindow.Left = this.Left;

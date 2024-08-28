@@ -71,29 +71,36 @@ namespace DDPM.UI.Module.PipPbp
         {
             Trace.WriteLine("PipPbpModule.OnSelectedHomeDeviceChanged");
        
-            isSelectChanged = true;
             if (IsModuleActive)
             {
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            else
+                isSelectChanged = true;
         }
 
         //Handle new device coming
         private void InitNewViewModel()
         {
+            //Update SelectedHomeDevices
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                vm.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+                vm.RefreshData();
+            }
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("PipPbpModule.OnActivated");
-            vm.OnActivated();
 
             if (isSelectChanged)
             {
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            vm.OnActivated();
         }
 
         public void OnDeactivated()

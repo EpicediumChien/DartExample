@@ -72,6 +72,7 @@ namespace DDPM.SA.Common
     }
     public enum Gaming_VisionEngineType : uint
     {
+        off = 0x00,
         Night_Vision = 0x01,
         Clear_Vision = 0x02,
         Bino_Vision = 0x03,
@@ -96,6 +97,7 @@ namespace DDPM.SA.Common
         public Gaming_DarkStabilizer Current_DarkStabilizer;
         public Gaming_HDRType Current_HDRType;
         public Gaming_DualResolutionType Current_DualResolutionType;
+        public Gaming_VisionEngineType Current_VisionEngineType;
         public bool[] IsEnable_VisionEngineType;
         public List<Gaming_GameEnhancementMode> Supported_GameEnhancementMode;
         public List<Gaming_ResponseTime> Supported_ResponseTime;
