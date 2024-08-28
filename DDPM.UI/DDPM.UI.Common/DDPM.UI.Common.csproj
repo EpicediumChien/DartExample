@@ -395,6 +395,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
   </ItemGroup>
 

@@ -585,6 +585,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void ShowAddDevicePlugin(object sender, EventManagerArgs e)
         {
+            ShowAllMastheadIcons(); //PIMS-293574
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
             if (_iconAddDevice != null)
                 _iconAddDevice.Visibility = Visibility.Collapsed;
@@ -593,6 +594,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void ShowSettingsPlugin(object sender, EventManagerArgs e)
         {
+            ShowAllMastheadIcons(); //PIMS-293574
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
             if (_iconGear != null)
                 _iconGear.Visibility = Visibility.Collapsed;
@@ -616,6 +618,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _iconGear.GlowEffect_Stop();
         }
 
+        //Robert_Lin 2024-8-23 added for PIMS-293574
+        // When exit from AddDevicePlugin and GlobalSettingsPlugin, we should reshow the Masthead icons
+        private void ShowAllMastheadIcons()
+        {
+            if (_iconGear != null)
+                _iconGear.Visibility = Visibility.Visible;
+            if (_iconAddDevice != null)
+                _iconAddDevice.Visibility = Visibility.Visible;
+        }
         #endregion Icons on Masthead
 
         #region IDispose
@@ -635,6 +646,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             if (_disposed)
                 return;
+
+            if (_log != null)
+                _log.Info("DdpmHomePlugin Dispose.");
 
             if (disposing && _deviceManager != null)
             {

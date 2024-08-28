@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.AddKnM_Dongle
         private readonly UserControl? _leftView = null;
         private readonly UserControl? _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public AddKnM_DongleModule()
         { }
 
@@ -39,12 +42,28 @@ namespace DDPM.UI.Module.AddKnM_Dongle
 
         public void OnSelectedHomeDeviceChanged()
         {
-            Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+            Trace.WriteLine("AddKnM_DongleModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
-            Trace.WriteLine("BrightnessModule.OnActivated");
+            Trace.WriteLine("AddKnM_DongleModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

@@ -2,6 +2,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
+using System.Diagnostics;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.DisplayProperties
@@ -11,6 +12,9 @@ namespace DDPM.UI.Module.DisplayProperties
         private UserControl? _leftView = null;
         private UserControl _rightView = new DisplayPropertiesRightView();
         private DisplayPropertiesViewModel vm = new DisplayPropertiesViewModel();
+
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
 
         //Robert_Lin 20240530-remove argument on ctor
         //public DisplayPropertiesModule(HomeDevice? SelectedHomeDevice)
@@ -53,12 +57,28 @@ namespace DDPM.UI.Module.DisplayProperties
 
         public void OnSelectedHomeDeviceChanged()
         {
-            vm.Invoke_RefreshData();
+            Trace.WriteLine("DisplayPropertiesModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
-            vm.UpdateHDRStatus();
+            Trace.WriteLine("DisplayPropertiesModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

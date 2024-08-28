@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.UI.Common.ViewModels;
+using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
 using System.Net;
 using System.Windows.Media;
@@ -1227,5 +1228,19 @@ namespace DDPM.UI.Common.Models
             return true;
         }
         #endregion Monitor Equals
+
+        #region Dump Info to Log
+        public void DumpInfoToLog(ILog? log)
+        {
+            if (log == null) return;
+
+            log.Info($"HomeDevice, DeviceCategory=[{DeviceCategory}], DisplayName=[{DisplayName}]");
+            if (MonitorInfo != null)
+            {
+                log.Info($"  * CapabilityString={MonitorInfo.CapabilityString}");
+                log.Info($"  * AliasDeviceName=[{MonitorInfo.AliasDeviceName}]");
+            }
+        }
+        #endregion Dump Info to Log
     }
 }

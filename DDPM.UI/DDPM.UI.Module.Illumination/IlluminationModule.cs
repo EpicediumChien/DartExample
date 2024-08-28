@@ -11,6 +11,9 @@ namespace DDPM.UI.Module.Illumination
         private UserControl? _leftView = null;
         private UserControl _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public IlluminationModule(KeyboardViewModel vm)
         {
             _rightView = new IlluminationRightView(vm);
@@ -45,10 +48,26 @@ namespace DDPM.UI.Module.Illumination
 
         public void OnSelectedHomeDeviceChanged()
         {
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

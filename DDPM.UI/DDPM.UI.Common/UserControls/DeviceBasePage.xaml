@@ -73,7 +73,9 @@
                                                 ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                                 SelectionChanged="rightViewHeaderCtrl_SelectionChanged" />
 
-                    <!-- RightFrame: will inject DdpmModule's LeftView -->
+                    <!-- RightFrame: will inject DdpmModule's RightView -->
+                    <!-- Robert_Lin, 2024-8-23, change Mode back to OneWay due to the RightView property in ViewModel
+                         is Get only, no Setter -->
                     <!-- Robert_Lin, 2024-6-26, chage Mode to OneWay from TwoWay -->
                     <ContentControl Grid.Row="1" Name="RightFrame"
                                     Content="{Binding RightView, Mode=OneWay}" />
