@@ -450,14 +450,12 @@ namespace DDPM.SA.Common
 
         #endregion public for SW Update
 
-        #region public for ImpExpSettings
-
-        Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
-
-        #endregion public for ImpExpSettings
-
-        //public for GUI to get the changes of display and peripherals
-        event EventHandler<DeviceChangedEventArgs> DeviceChanged;
+    #region public for ImpExpSettings
+    Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
+    Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, string path);
+    #endregion
+    //public for GUI to get the changes of display and peripherals
+    event EventHandler<DeviceChangedEventArgs> DeviceChanged;
 
         #region public for IT lock event
 

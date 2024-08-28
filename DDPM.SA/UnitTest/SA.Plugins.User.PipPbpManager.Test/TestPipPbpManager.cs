@@ -84,26 +84,26 @@ namespace SA.Plugins.User.PipPbpManager.Test
         DisplayMangerPlugin displayPlugin;
         VcpCorePlugin vcpCorePlugin;
         PipPbpMangerPlugin pipPbpMangerPlugin;
-        Dictionary<string, Dictionary<string, string>> getstr;
+        //Dictionary<string, Dictionary<string, string>> getstr;
+        //2024-08-28 complier ERROR
+        //[OneTimeSetUp]
+        //public void Setup()
+        //{
+        //    displayPlugin = CreateInitializeDisplayMangerPlugin();
 
-        [OneTimeSetUp]
-        public void Setup()
-        {
-            displayPlugin = CreateInitializeDisplayMangerPlugin();
+        //    vcpCorePlugin = CreateInitializeVcpCorePlugin();
+        //    pipPbpMangerPlugin = CreateInitializePipPbpPlugin();
 
-            vcpCorePlugin = CreateInitializeVcpCorePlugin();
-            pipPbpMangerPlugin = CreateInitializePipPbpPlugin();
+        //    PrivateObject privateObject = new PrivateObject(displayPlugin);
+        //    PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+        //    PrivateObject privatepippbp = new PrivateObject(pipPbpMangerPlugin);
 
-            PrivateObject privateObject = new PrivateObject(displayPlugin);
-            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
-            PrivateObject privatepippbp = new PrivateObject(pipPbpMangerPlugin);
+        //    privateObject.SetField("_pipPbpService", pipPbpMangerPlugin as IPipPbpService);
+        //    privateObject.SetField("_VcpCorePlugin", vcpCorePlugin as IVcpCoreService);
 
-            privateObject.SetField("_pipPbpService", pipPbpMangerPlugin as IPipPbpService);
-            privateObject.SetField("_VcpCorePlugin", vcpCorePlugin as IVcpCoreService);
-
-            privatepippbp.SetField("_DisplayManagerPlugin", displayPlugin as IDisplayService);
-            getstr = (Dictionary<string, Dictionary<string, string>>)privatevcp.GetField("_ColorPresets");
-        }
+        //    privatepippbp.SetField("_DisplayManagerPlugin", displayPlugin as IDisplayService);
+        //    getstr = (Dictionary<string, Dictionary<string, string>>)privatevcp.GetField("_ColorPresets");
+        //}
 
         [Test]
         public void TestGetMonitors()

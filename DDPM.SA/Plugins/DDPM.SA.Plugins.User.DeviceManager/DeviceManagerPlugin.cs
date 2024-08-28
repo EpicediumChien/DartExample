@@ -2291,7 +2291,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (settings != null)
             {
                 DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (monitorSetting == null)
+                if (monitorSetting != null)
                 {
                     return Task.FromResult(monitorSetting.KVM.isOnUSBKVM);
                 }
@@ -2382,7 +2382,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (settings != null)
             {
                 DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (monitorSetting == null)
+                if (monitorSetting != null)
                 {
                     return Task.FromResult(monitorSetting.KVM.isOnNKVM);
                 }
@@ -2719,7 +2719,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
-
+        public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, string path)
+        {
+            ImportVCP importVCP = new ImportVCP();
+            if (_SettingsPlugin.DisplayImportSettings(path, out List<VCP> vcps).Result)
+            {
+                //set ImportVCPSequence
+                SetVCPSequence(monitorInfo, vcps);
+                foreach (VCP code in vcps)
+                {
+                    if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                        importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                    {
+                        //set vcp code
+                        bool b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                    }
+                }
+            }
+            return Task.FromResult(false);
+        }
         #endregion
 
         #region Gaming
@@ -5133,7 +5151,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return vcps;
         }
-
+        private void SetVCPSequence(MonitorInfo monitorInfo, List<VCP> vcps)
+        {
+            ImportVCP importVCP = new ImportVCP();
+            foreach (int code in importVCP.ImportVCPSequence) 
+            {
+                VCP vcp = vcps.Find(x => x.Code == code);
+                //if (code == 16 || code == 18)
+                //{
+                    Task<bool> b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]);
+                //}
+            }
+        }
         #endregion
 
         #endregion
