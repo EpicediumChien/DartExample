@@ -3,6 +3,9 @@
 using CommunityToolkit.Mvvm.Input;
 using DDPM.Easy.Common;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.Common.ViewModels;
@@ -11,6 +14,7 @@ using Dell.Client.Framework.UX.WPF;
 using Microsoft;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace DDPM.UI.Module.EzArrange
 {
@@ -54,7 +58,7 @@ namespace DDPM.UI.Module.EzArrange
             splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
             splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
 
-            InitRecentListView();
+            //InitRecentListView();
             InitListViewItems();
         }
 
@@ -65,6 +69,8 @@ namespace DDPM.UI.Module.EzArrange
 
         private void InitSplitListViews()
         {
+            //A Build WindowLists
+            //
             foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
             {
             }
@@ -88,15 +94,33 @@ namespace DDPM.UI.Module.EzArrange
         {
             ISplitCtrl? sp0A = ISplitCtrl.Create(0, 'A');
             if (sp0A != null)
-                splitListView_Recent.AddItemToList(sp0A.UC);
+            {
+                sp0A.SplitMode = eSplitModes.Icon;
+                SplitItem spItem0A = splitListView_Recent.AddItemToList(sp0A.UC);
+                spItem0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+            }
+
+
         }
 
         private void InitListViewItems()
         {
+            //0. Prepare
+            //
+            if (_deviceManagerSA == null) return;
+
+            EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_homeDevice.MonitorInfo).Result;
+
+            //A Build WindowLists
+            //
             foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
             {
                 SplitItem? spItem = null;
                 ISplitCtrl newSplit = spCtrl.New();
+                if (newSplit == null)
+                    continue;
+                newSplit.SplitMode = eSplitModes.Icon;
+
                 switch (newSplit.CellCount)
                 {
                     case 2:
@@ -113,8 +137,161 @@ namespace DDPM.UI.Module.EzArrange
                 if (spItem != null)
                 {
                     spItem.IsEditEnabled = true;
+                    spItem.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+                }
+            } //foreach(ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
+
+            //B Load CustomList from settings file
+            //
+            if (eaSettings != null)
+            {
+                if (eaSettings.CustomList != null)
+                {
+                    //Add saved custom list to custom list view
+                    foreach (SplitJson spj in eaSettings.CustomList)
+                    {
+                        ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                        if (spCtrl == null)
+                            continue;
+                        spCtrl.Settings = spj.Settings;
+                        spCtrl.SplitMode = eSplitModes.Icon;
+                        spCtrl.FriendlyName = spj.CustomName;
+
+                        SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
+                        itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+                        itemCustom.CustomId = (int)spj.CustomId;
+                    }
+                }
+            } //if (eaSettings != null)
+
+            //C Load & Build Recent List
+            //
+            //C01. Add "Off" SplitCtrl0A as the first item of RecentList
+            ISplitCtrl? sp0A = ISplitCtrl.Create(0, 'A');
+            SplitItem item0A;
+
+            if (sp0A != null)
+            {
+                sp0A.SplitMode = eSplitModes.Icon;
+                item0A = splitListView_Recent.AddItemToList(sp0A.UC);
+                item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+
+                if (eaSettings.SelectedSplit.CellCount == 0)
+                {
+                    item0A.IsSelected = true;
+                    _vm.SelectedSplitItem = item0A;
                 }
             }
+            //C02. If saved recent list is not empty, then add them into Recent listview
+            if (eaSettings?.RecentList != null)
+            {
+                foreach (DDPM.SA.Common.Display.SplitJson spj in eaSettings.RecentList)
+                {
+                    ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                    if (spCtrl == null)
+                        continue;
+                    spCtrl.Settings = spj.Settings;
+                    spCtrl.SplitMode = eSplitModes.Icon;
+                    spCtrl.FriendlyName = spj.CustomName;
+
+                    SplitItem itemRecent = splitListView_Recent.AddItemToList(spCtrl.UC);
+                    itemRecent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+                    itemRecent.CustomId = (int)spj.CustomId;
+
+                    bool isSelected = (eaSettings.SelectedSplit.CellCount == spj.CellCount) &&
+                        (eaSettings.SelectedSplit.SplitKey == spj.SplitKey);
+
+                    //If it's a Window item
+                    if (spj.CustomId == 0)
+                    {
+                        SplitItem? itemWin = FindSplitItemFromWindowLists(spj.CellCount, spj.SplitKey);
+                        if (itemWin != null)
+                        {
+                            itemRecent.Buddy = itemWin;
+                            itemWin.Buddy = itemRecent;
+
+                            itemRecent.IsSelected = isSelected;
+                            itemWin.IsSelected = isSelected;
+
+                            // SplitItem itemRecent = splitListView_Recent.AddItemToList(itemRecent);
+                            if (isSelected)
+                                _vm.SelectedSplitItem = itemWin;
+                        }
+                    }
+                    else //itemRecent is a custom item
+                    {
+                        SplitItem? itemCustom = splitListView_Custom.FindSplitItem(spj.CellCount, spj.SplitKey);
+                        if (itemCustom != null)
+                        {
+                            itemRecent.Buddy = itemCustom;
+                            itemCustom.Buddy = itemRecent;
+
+                            itemRecent.IsSelected = isSelected;
+                            itemCustom.IsSelected = isSelected;
+                            if (isSelected)
+                                _vm.SelectedSplitItem = itemCustom;
+                        }
+                    }
+                }
+            } //if (eaSettings?.CustomList != null)
+
+            //D Add all custom items which has no Buddy into Recent list
+            //
+            foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
+            {
+                if (itemCustom.Buddy == null)
+                {
+                    //Duplicate a new SplitItem as item Buddy and add to ListRecent
+                    ISplitCtrl? ispCustom = itemCustom.ISplitCtrl;
+                    ISplitCtrl? ispRecent = ispCustom.New();
+                    ispRecent.Settings = ispCustom.Settings;
+                    ispRecent.FriendlyName = ispCustom.FriendlyName;
+                    ispRecent.SplitMode = eSplitModes.Icon;
+
+                    SplitItem itemRecent = splitListView_Recent.AddItemToList(ispRecent.UC);
+                    itemRecent.Buddy = itemCustom;
+                    itemCustom.Buddy = itemRecent;
+                    itemRecent.CustomId = itemCustom.CustomId;
+                }
+            }
+
+            //E Add all Window items which has no buddy into recent list
+            foreach (SplitItem itemWin in splitListView_2w.SplitList)
+            {
+                if (itemWin.Buddy == null)
+                {
+                    //Duplicate a new SplitItem as item Buddy and add to ListRecent
+                    ISplitCtrl? ispWin = itemWin.ISplitCtrl;
+                    ISplitCtrl? ispRecent = ispWin.New();
+                    ispRecent.Settings = ispWin.Settings;
+                    ispRecent.FriendlyName = ispWin.FriendlyName;
+                    ispRecent.SplitMode = eSplitModes.Icon;
+
+                    SplitItem itemRecent = splitListView_Recent.AddItemToList(ispRecent.UC);
+                    itemRecent.Buddy = itemWin;
+                    itemWin.Buddy = itemRecent;
+                    itemRecent.CustomId = itemWin.CustomId;
+                }
+            }
+            foreach (SplitItem itemWin in splitListView_4w.SplitList)
+            {
+                if (itemWin.Buddy == null)
+                {
+                    //Duplicate a new SplitItem as item Buddy and add to ListRecent
+                    ISplitCtrl? ispWin = itemWin.ISplitCtrl;
+                    ISplitCtrl? ispRecent = ispWin.New();
+                    ispRecent.Settings = ispWin.Settings;
+                    ispRecent.FriendlyName = ispWin.FriendlyName;
+                    ispRecent.SplitMode = eSplitModes.Icon;
+
+                    SplitItem itemRecent = splitListView_Recent.AddItemToList(ispRecent.UC);
+                    itemRecent.Buddy = itemWin;
+                    itemWin.Buddy = itemRecent;
+                    itemRecent.CustomId = itemWin.CustomId;
+                }
+            }
+
+
         }
 
         private void OnListViewItemClicked(SplitItem spItem)
@@ -125,8 +302,41 @@ namespace DDPM.UI.Module.EzArrange
                 _vm.SelectedSplitItem = spItem;
                 _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey);
 
+                splitListView_Recent.MoveSelectedItemToSecondPosition();
+                SaveEaSettings();
                 //_deviceManagerSA.WriteEasyArrangeSettings()
             }
+        }
+
+        private bool SaveEaSettings()
+        {
+            EAMonitorSettings eaSettings = new EAMonitorSettings();
+            eaSettings.SelectedSplit = _vm.SelectedSplitItem.ToSplitJson;
+            eaSettings.CustomList = new List<SA.Common.Display.SplitJson>();
+            foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
+            {
+                eaSettings.CustomList.Add(itemCustom.ToSplitJson);
+            }
+            eaSettings.RecentList = new List<SA.Common.Display.SplitJson>();
+            foreach (SplitItem itemRecent in splitListView_Recent.SplitList.Skip(1))
+            {
+                eaSettings.RecentList.Add(itemRecent.ToSplitJson);
+            }
+
+            bool res = false;
+            if (_deviceManagerSA != null)
+            {
+                res = _deviceManagerSA.WriteEAMonitorSettings(_homeDevice.MonitorInfo, eaSettings).Result;
+            }
+            return res;
+        }
+
+        private void CleanUpListViewItems()
+        {
+            splitListView_Recent.ClearList();
+            splitListView_Custom.ClearList();
+            splitListView_2w.ClearList();
+            splitListView_4w.ClearList();
         }
 
         /// <summary>
@@ -298,6 +508,45 @@ namespace DDPM.UI.Module.EzArrange
                 }));
             }
 #endif
+        }
+
+
+
+        private SplitItem? FindSplitItemFromWindowLists(int cellCount, char splitKey)
+        {
+            switch (cellCount)
+            {
+                case 2:
+                    return splitListView_2w.FindSplitItem(cellCount, splitKey);
+                case 3:
+                    return splitListView_3w.FindSplitItem(cellCount, splitKey);
+                case 4:
+                    return splitListView_4w.FindSplitItem(cellCount, splitKey);
+                case 5:
+                    return splitListView_5w.FindSplitItem(cellCount, splitKey);
+                case 6:
+                    return splitListView_6w.FindSplitItem(cellCount, splitKey);
+                case 7:
+                    return splitListView_7w.FindSplitItem(cellCount, splitKey);
+                default: return null;
+            }
+        }
+
+        public void HandleSelectedHomeDeviceChanged()
+        {
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+                if (_homeDevice.vmEzArrange == null)
+                {
+                    _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
+                }
+                _vm = _homeDevice.vmEzArrange;
+                DataContext = _homeDevice.vmEzArrange;
+
+            }
+            CleanUpListViewItems();
+            InitListViewItems();
         }
     }
 }

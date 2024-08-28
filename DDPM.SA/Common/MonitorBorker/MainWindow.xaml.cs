@@ -34,6 +34,15 @@ namespace DDPM.MonitorBorker
             this.ShowInTaskbar = false;
 
             this.Hide();
+
+            // jim modify 20240605
+            if (ColorPresetWin == null)
+            {
+                ColorPresetWin = new MonitorWin(ddmLib, Mi);
+                ColorPresetWin.Owner = this;
+
+                ColorPresetWin.Show();
+            }
         }
 
         private void WindowRendered(object sender, EventArgs e)

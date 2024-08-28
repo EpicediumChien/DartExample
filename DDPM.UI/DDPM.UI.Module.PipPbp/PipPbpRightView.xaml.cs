@@ -154,7 +154,7 @@ namespace DDPM.UI.Module.PipPbp
 
         private void videoSwapButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            vm.ExecuteUsbSwitch();
+            vm.ExecuteVideoSwap();
         }
     }
 }

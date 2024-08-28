@@ -3,6 +3,7 @@
     using DDPM.SA.Common.Security;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO.Pipes;
     using System.Text;
 
@@ -13,21 +14,14 @@
         public event EventHandler? ClientConnectedEvent;
 
         public event EventHandler? ClientDisconnectedEvent;
+        public bool IsNamedPipeServerIsNoSafe = false;
 
         public NamedPipeStreamServer(string pipeName) : base(pipeName)
-        {
-        }
-        public bool CreateNamedPipe()
         {
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
             this._Connections = new List<NamedPipeStreamConnection>();
             NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
-            if (!NPipeSecurity.NamedPipeClientSecurity(state))
-            {
-                return false;
-            }
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
-            return true;
         }
 
         private void ClientConnected(IAsyncResult result)
@@ -39,6 +33,14 @@
                 asyncState.EndWaitForConnection(result);
                 if (asyncState.IsConnected)
                 {
+                    string info;
+                    if (!NPipeSecurity.NamedPipeClientSecurity(asyncState, out info))
+                    {
+                        Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
+                        IsNamedPipeServerIsNoSafe = true;
+                        asyncState.Disconnect();
+                        return;
+                    }
                     NamedPipeStreamConnection item = new NamedPipeStreamConnection(asyncState, base.PipeName);
                     item.MessageReceived += new MessageEventHandler(this.Connection_MessageReceived);
                     item.DisconnectedEvent += Connection_DisconnectedEvent;

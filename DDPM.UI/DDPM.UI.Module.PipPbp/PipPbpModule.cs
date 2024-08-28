@@ -14,6 +14,9 @@ namespace DDPM.UI.Module.PipPbp
         private UserControl _rightView;
         private PipPbpViewModel vm = new PipPbpViewModel();
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public PipPbpModule(IModuleOwner? moduleOwner = null)
         {
             if (DdpmCommonHelper.MyConsole != null)
@@ -67,12 +70,36 @@ namespace DDPM.UI.Module.PipPbp
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("PipPbpModule.OnSelectedHomeDeviceChanged");
-            //vm.RefreshData();
+       
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+            else
+                isSelectChanged = true;
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
+            //Update SelectedHomeDevices
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                vm.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+                vm.RefreshData();
+            }
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("PipPbpModule.OnActivated");
+
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
             vm.OnActivated();
         }
 

@@ -26,11 +26,13 @@ namespace DDPM.UI.Common.UserControls
             DataContext = viewModel;
             viewModel.LeaveLandingMode += OnLeaveLandingMode;
             viewModel.RightViewHeaderChanged += OnRightViewHeaderChanged;
+            viewModel.SelectedHomeDeviceChanged += OnSelectedHomeDeviceChanged;
 
             if (DdpmCommonHelper.MyConsole != null)
             {
                 _log = DdpmCommonHelper.MyConsole.CreateLog("BasePage");
                 _log.Info("DeviceBasePage ctor");
+                viewModel.InitLog();
                 _stopwatch.Restart();
             }
 
@@ -43,6 +45,17 @@ namespace DDPM.UI.Common.UserControls
         private void OnRightViewHeaderChanged(object sender, RoutedEventArgs e)
         {
             rightViewHeaderCtrl.SetHeaders(viewModel.RightViewHeaders.ToArray());
+
+            //Check if new selected header is not show (IsShown==false), then change the selection
+            if (viewModel.RightViewHeaders.Count > 0)
+            {
+                if (!viewModel.RightViewHeaders[viewModel.RightViewHeaderSelectedIndex].IsShown)
+                {
+                    //Try to select [0] (NOTE. It's assume that the Headers[0] will be always isShown)
+                    if (viewModel.RightViewHeaders[0].IsShown)
+                        viewModel.RightViewHeaderSelectedIndex = 0;
+                }
+            }
             rightViewHeaderCtrl.SelectedIndex = viewModel.RightViewHeaderSelectedIndex;
         }
 
@@ -63,6 +76,15 @@ namespace DDPM.UI.Common.UserControls
             //    //_ivm.RightViewHeaderSelectedIndex = 0;
 
             //    RightFrame.Visibility = Visibility.Visible;
+        }
+
+        private void OnSelectedHomeDeviceChanged(object sender, EventArgs e)
+        {
+            if (viewModel.DefaultLeftView != null)
+            {
+                viewModel.DefaultLeftView.DataContext = null;
+                viewModel.DefaultLeftView.DataContext = viewModel.SelectedHomeDevice;
+            }
         }
 
         private void InvokeGotoTwoViewModeAnimation()

@@ -66,7 +66,7 @@
             </Grid.Style>
             <ContentControl Name="fadeOutCtrl"/>
         </Grid>
-        <WrapPanel>
+        <WrapPanel Visibility="Collapsed">
             <TextBlock Text="IsFading = " Foreground="Blue"/>
             <TextBlock Text="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}}"
                        Foreground="Blue"/>

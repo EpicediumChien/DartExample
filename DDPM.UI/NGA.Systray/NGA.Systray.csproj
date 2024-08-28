@@ -7,7 +7,6 @@
 		<SignAssembly>false</SignAssembly>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
-		<ApplicationIcon>Resources\Icons\MyDell_Blue.ico</ApplicationIcon>
 		<AssemblyName>Dell.UCA.Systray</AssemblyName>
 	</PropertyGroup>
 
@@ -15,10 +14,6 @@
 	  <PackageReference Include="DCF.Security" Version="2.4.1" />
 	  <PackageReference Include="Dell.UCA.Systray.Interfaces" Version="4.2.27.1" />
 	  <PackageReference Include="Dell.UCA.SystrayCore" Version="4.2.27.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Resource Include="Resources\Icons\MyDell_Blue.ico" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -523,7 +523,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             int timeoutMsec = 10000;
             while (HomeDeviceCount == 0)
             {
-                PleaseWaitMessage = "Do device detected";
+                PleaseWaitMessage = "No device detected";
                 Thread.Sleep(500);
                 if (sw.ElapsedMilliseconds > timeoutMsec)
                     break;
@@ -550,5 +550,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             set => SetProperty(ref _isDeviceManagerReady, value);
         }
         #endregion Please Wait
+
+        #region Dump Devices to log
+        public void DumpDevicesToLog()
+        {
+            if (_log != null)
+                _log?.Info("@ Dump HomeDevices:");
+            foreach (HomeDevice homeDev in HomeDevices)
+            {
+                homeDev.DumpInfoToLog(_log);
+            }
+        }
+        #endregion
     }
 }
