@@ -843,7 +843,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         monitorSettingsList = new List<DDPMMonitorSettings>();
                     }
-                    if(monitorSettingsList.Count == 0)
+                    if (monitorSettingsList.Count == 0)
                     {
                         DDPMMonitorSettings settings = new DDPMMonitorSettings();
                         settings.Model = m.modelName;
@@ -4208,11 +4208,45 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_VisionEngineType)
             {
                 List<Gaming_VisionEngineType> supported_VisionEngineType = gamingDisplayProperties.Supported_VisionEngineType;
-                supported_VisionEngineType.Insert(0, Gaming_VisionEngineType.off);
+                //supported_VisionEngineType.Insert(0, Gaming_VisionEngineType.off);
                 if (supported_VisionEngineType != null && supported_VisionEngineType.Count > 0)
                 {
-                    Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.Current_VisionEngineType;
-                    Gaming_VisionEngineType nextVisionEngineType = Gaming_VisionEngineType.Night_Vision;
+                    List<Gaming_VisionEngineType> enabledList = new List<Gaming_VisionEngineType>();
+                    for (int i = 0; i < gamingDisplayProperties.Supported_VisionEngineType.Count; i++)
+                    {
+                        if (gamingDisplayProperties.IsEnable_VisionEngineType[i])
+                            enabledList.Add(gamingDisplayProperties.Supported_VisionEngineType[i]);
+                    }
+
+                    if (enabledList.Count > 0)
+                    {
+                        Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.Current_VisionEngineType;
+                        Gaming_VisionEngineType nextVisionEngineType = Gaming_VisionEngineType.off;
+
+                        for (int i = 0; i < enabledList.Count; i++)
+                        {
+                            if (enabledList[i].Equals(current_VisionEngineType))
+                            {
+                                if (i < (enabledList.Count - 1))
+                                {
+                                    nextVisionEngineType = enabledList[i + 1];
+                                }
+                                else
+                                {
+                                    nextVisionEngineType = enabledList[0];
+                                }
+                            }
+                        }
+                        Debug.WriteLine($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]");
+                        bool result = SwitchGaming_VisionEngineType(monitorInfo, nextVisionEngineType).Result;
+                        writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]" + (result ? "success" : "fail"));
+                    }
+                    else
+                    {
+                        writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not Gaming VisionEngine checked");
+                    }
+                    /*Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.Current_VisionEngineType;
+                    Gaming_VisionEngineType nextVisionEngineType = Gaming_VisionEngineType.off;
 
                     for (int i = 0; i < supported_VisionEngineType.Count; i++)
                     {
@@ -4230,7 +4264,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     Debug.WriteLine($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]");
                     bool result = SwitchGaming_VisionEngineType(monitorInfo, nextVisionEngineType).Result;
-                    writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]" + (result ? "success" : "fail"));
+                    writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]" + (result ? "success" : "fail"));*/
                 }
                 else
                 {
