@@ -2172,7 +2172,7 @@ namespace VcpCore.Plugins
                     Trace.Write($" presetName = {presetName}");                
 
                     /*
-                    if (myresources.ContainsKey(presetName.))
+                    if (myresources.ContainsKey(presetName))
                     {
                         GetResourceName = ResourceName;
                         GetPresetValue = myresources[presetName].ToString();

@@ -18,6 +18,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.PortableDevices.ResourceSystem;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -64,7 +65,7 @@ namespace ColorPreset.Plugins
         private List<string> ColorPresetSupportList = new List<string>();
 
         //20240802 jim add
-        public List<string> Support_ICC_DeviceName { get; set; } = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW", "UP2720Q", "UP3221Q" };
+        //public List<string> Support_ICC_DeviceName { get; set; } = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW", "UP2720Q", "UP3221Q" };
 
         private List<X509Certificate2> TrustedPublisher = new List<X509Certificate2>();
         private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
@@ -610,6 +611,8 @@ namespace ColorPreset.Plugins
 
                 retList._support_ICC_DeviceName = JsonConvert.DeserializeObject<Dictionary<string, List<ICC_SupportDeviceName>>>(value);
 
+                //retList._support_ICC_DeviceName = JsonConvert.DeserializeObject<List<Dictionary<string, List<ICC_SupportDeviceName>>>>(value);
+
                 //retList._supportDeviceName
 
                 //retList = JsonConvert.DeserializeObject<IIC_Metadata>(value);
@@ -838,7 +841,7 @@ namespace ColorPreset.Plugins
 
                 _ICC_Metadata.Is_Support_ICC_DeviceName = false;
 
-                int index_Support_ICC_DeviceName = -1;
+                /*int index_Support_ICC_DeviceName = -1;
 
                 foreach (string strDeviceName in Support_ICC_DeviceName)
                 {
@@ -849,10 +852,10 @@ namespace ColorPreset.Plugins
                         _ICC_Metadata.Is_Support_ICC_DeviceName = true;
                         break;
                     }
-                }
+                }*/
 
-                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
-                {
+                //if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                //{
                     string strICC_Folder;
                     if (string.IsNullOrEmpty(savelPath))
                     {
@@ -905,8 +908,9 @@ namespace ColorPreset.Plugins
                         string str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
                         str_url_prefix += str_IncludeTestPath;
                         str_url_prefix += @"/Windows/Display/ICC/";
-                        str_url_prefix += m.modelName;
-                        str_url_prefix += @"/ICC.json";
+                        //str_url_prefix += m.modelName;
+                        //str_url_prefix += @"/ICC.json";
+                        str_url_prefix += @"icc_profile_sha256_new.json";
 
                         url = str_url_prefix;
 
@@ -951,7 +955,7 @@ namespace ColorPreset.Plugins
 
                                         _ICC_Metadata = RunDeserializeObject(strReadJson);
                                         _ICC_Metadata.strICC_Folder = strICC_Folder;
-                                        _ICC_Metadata.Is_Support_ICC_DeviceName = true;
+                                        _ICC_Metadata.Is_Support_ICC_DeviceName = false;
                                     }
                                     catch (System.Exception ex)
                                     {
@@ -960,7 +964,21 @@ namespace ColorPreset.Plugins
                                     }
                                 }
 
-                                int count = _ICC_Metadata._support_ICC_DeviceName[m.modelName].Count;
+                                var lookup = _ICC_Metadata._support_ICC_DeviceName.FirstOrDefault(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
+
+                                if (lookup.Key != null)
+                                {
+                                    _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
+                                    _ICC_Metadata.Is_Support_ICC_DeviceName = true;
+                                }
+                                else
+                                {
+                                    _ICC_Metadata._match_ICC_DeviceName.Clear();
+                                    _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+                                }
+
+                                //int count = _ICC_Metadata._support_ICC_DeviceName[m.modelName].Count;
+                                int count = _ICC_Metadata._match_ICC_DeviceName.Count;
 
                                 // 20240725 jim add
 
@@ -975,7 +993,9 @@ namespace ColorPreset.Plugins
                                 for (int i = 0; i < count; i++)
                                 {
                                     url = string.Empty;
-                                    url = str_url_prefix + _ICC_Metadata._support_ICC_DeviceName[m.modelName][i].File;
+
+                                    //url = str_url_prefix + _ICC_Metadata._support_ICC_DeviceName[m.modelName][i].File;
+                                    url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
 
                                     // 向遠端伺服器發送請求
                                     if (CheckCA(url))
@@ -995,16 +1015,16 @@ namespace ColorPreset.Plugins
 
                                         string txtSha256 = BytesToString(GetHashSha256(strFilePath));
 
-                                        if (!string.Equals(txtSha256, _ICC_Metadata._support_ICC_DeviceName[m.modelName][i].SHA256, StringComparison.OrdinalIgnoreCase))
+                                        if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
                                         {
-                                            writelog($"[DownloadICCData] {_ICC_Metadata._support_ICC_DeviceName[m.modelName][i]} SHA256 error:{txtSha256} , {_ICC_Metadata._support_ICC_DeviceName[m.modelName][i].SHA256}");
+                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} SHA256 error: icc profile sha256 download = {txtSha256} , icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256}");
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
+                //}
 
                 return Task.FromResult(_ICC_Metadata);
             }

@@ -55,6 +55,7 @@ namespace DDPM.UI.Module.Color
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("ColorModule.OnSelectedHomeDeviceChanged");
+            vm.Invoke_RefreshData();
         }
 
         public void OnActivated()

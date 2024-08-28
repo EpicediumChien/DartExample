@@ -71,7 +71,7 @@ namespace DDPM.SA.Common.Settings
         public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }
 
         //20240820 Jim add Lock(Unlock) for Auto Color Preset
-        public bool IsAutoColorPreset_Lock { get; set; } = false;
+        //public bool IsAutoColorPreset_Lock { get; set; } = false;
 
         //20240820 Jim add for Color Management
         public bool ColorManagement_off { get; set; } = false;

@@ -704,9 +704,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
 
-            DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
-            setting.UserSettings.IsAutoColorPreset_Lock = Islock;
-            _SettingsPlugin.SetAppConfigData(setting);
+            //DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
+            //setting.UserSettings.IsAutoColorPreset_Lock = Islock;
+            //_SettingsPlugin.SetAppConfigData(setting);
 
             if (on_off.Equals("ON", StringComparison.OrdinalIgnoreCase))
             {
