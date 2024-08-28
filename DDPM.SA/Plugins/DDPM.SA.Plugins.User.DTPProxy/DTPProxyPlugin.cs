@@ -160,7 +160,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_penInterfaceType, commodity, "TiltSensitivity ", newValue);
+                SetPropertyValue(_penInterfaceType, commodity, "TiltSensitivity", newValue);
             }
             else
             {
@@ -174,7 +174,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_penInterfaceType, commodity, "TipSensitivity ", newValue);
+                SetPropertyValue(_penInterfaceType, commodity, "TipSensitivity", newValue);
             }
             else
             {
@@ -369,6 +369,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             try
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                Debug.Write($"Set property {interfaceType}.{property} on item \"{_itemID}\" value={value}");
+                writelog($"Set property {interfaceType}.{property} on item \"{_itemID}\" value={value}");
             }
             catch(Exception ex)
             {
@@ -384,6 +386,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch(Exception ex)
             {
+                Debug.Write($"Set property {interfaceType}.{property} on item \"{_itemID}\" value={value}");
+                writelog($"Set property {interfaceType}.{property} on item \"{_itemID}\" value={value}");
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
             }
         }

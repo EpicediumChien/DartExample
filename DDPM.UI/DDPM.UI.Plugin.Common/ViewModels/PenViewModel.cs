@@ -63,7 +63,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if(!base.SetCurrentDevice(deviceID))
                 return false;
 
-            TiltSensitivity = CurrentDeviceInfo.TiltSensitivity <= -90 ? -90 : (CurrentDeviceInfo.TiltSensitivity >= 90 ? 90 : 0);
+            TiltSensitivity = CurrentDeviceInfo!.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo.TiltSensitivity >= 2 ? 2 : 1);
             TipSensitivity = CurrentDeviceInfo.TipSensitivity;
             PrepareAction();
             InitializeButton();
@@ -278,9 +278,18 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(_tiltSensitivity != value)
                 {
                     _tiltSensitivity = value;
+                    if(!IsSliderDragging)
+                    {
+                        SetTiltSensitivity();
+                    }
                     OnPropertyChanged();
                 }
             }
+        }
+        public void SetTiltSensitivity()
+        {
+            if(_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
+                _deviceManager.SetTiltSensitivity(itemID, _tiltSensitivity);
         }
 
         public string SelectedButton

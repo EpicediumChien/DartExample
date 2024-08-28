@@ -62,8 +62,8 @@
               </StackPanel>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,23,0,0">
                 <UXControls:UXTextBlock Text="0" FontSize="14" Foreground="#A4B8CD" Margin="42,1,7,0" FontFamily="Roboto" />
-                <UXControls:UXSlider x:Name="TiltSlider" TickFrequency="90"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TiltSensitivity}"  
-                                         Minimum="-90" Maximum="90" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TiltSlider_DragCompleted" />
+                <UXControls:UXSlider x:Name="TiltSlider" TickFrequency="1"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TiltSensitivity}"  
+                                         Minimum="0" Maximum="2" Width="375" Thumb.DragStarted="Slider_DragStarted" Thumb.DragCompleted="TiltSlider_DragCompleted" />
                 <UXControls:UXTextBlock Text="100" FontSize="14" Foreground="#A4B8CD" Margin="16,1,0,0" FontFamily="Roboto"/>
               </StackPanel>
             </StackPanel>
