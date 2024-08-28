@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common.EAEM;
+using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.UserControls;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
@@ -37,6 +38,23 @@ namespace DDPM.UI.Common.ViewModels
         public void ClearList()
         {
             SplitList = new ObservableCollection<SplitItem>();
+        }
+
+        public SplitItem? FindSplitCtrl(int cellCount, char splitKey)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.ISplitCtrl != null)
+                {
+                    if ((spItem.ISplitCtrl.CellCount == cellCount) &&
+                        (spItem.ISplitCtrl.SplitKey == splitKey))
+                        return spItem;
+                }
+            }
+            return null;
         }
 
         #endregion ItemsSource
@@ -204,6 +222,41 @@ namespace DDPM.UI.Common.ViewModels
             return false;
         }
 
+        public void GotoFirstPage()
+        {
+            IndexToItem0 = 0;
+            RefreshDisplayItems();
+            RefreshPrevNextButtons();
+        }
+
+        /// <summary>
+        /// Navigate to the page which contains the first IsSelected item
+        /// Return: true if a IsSelected item found and page navigated
+        /// </summary>
+        public bool GotoFirstSelectedItemPage()
+        {
+            //Find the index of SplitItem which is IsSelected
+            int idx = 0;
+            foreach (SplitItem spItem in SplitList)
+            {
+                if (spItem.IsSelected)
+                {
+                    //Calculate the IndexToItem0
+                    // idx      IndexToItem0   (ItemsPerPage=5)
+                    // 0~4      0         = (idx/ItemsPerPage)*ItemsPerPage
+                    // 5~9      5
+                    // 10~14    10
+                    // 15~19    15
+                    int pageNo = (idx / ItemsPerPage);
+                    IndexToItem0 = pageNo * ItemsPerPage;
+                    RefreshDisplayItems();
+                    RefreshPrevNextButtons();
+                    break;
+                }
+                idx++;
+            }
+            return false;
+        }
         #endregion Page Navigation
 
         //private ICommand? _itemEditCommand;

@@ -264,6 +264,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
 
         [DllImport("Wtsapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
         private static bool _WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
         {
@@ -271,6 +272,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
 
         [DllImport("Wtsapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void WTSFreeMemory(IntPtr pointer);
         private static void _WTSFreeMemory(IntPtr pointer)
         {

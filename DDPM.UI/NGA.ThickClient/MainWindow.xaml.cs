@@ -68,7 +68,10 @@ namespace NGA.ThickClient
             var logCreator = formBuilder.GetSubsystem<ILogFactory>();
 
             if (logCreator != null)
+            {
                 _log = logCreator.CreateLogger("MAINWIN", typeof(MainWindow));
+                _log.Info("DDPM MainWindow ctor");
+            }
 
             InitializeComponent();
             DataContext = this;
@@ -312,8 +315,9 @@ namespace NGA.ThickClient
 
         private void RegisterEvents(IConsole console)
         {
-            console.RegisterForEvent("MainWindow.SetToBottomWindow", SetToBottomWindow);
-            console.RegisterForEvent("MainWindow.Activate", MainWindowActivate);
+            console.RegisterForEvent(ConsoleEventNames.MainWindow_SetToBottomWindow, SetToBottomWindow);
+            console.RegisterForEvent(ConsoleEventNames.MainWindow_Activate, MainWindowActivate);
+
             console.RegisterForEvent("MainWindow.Hide", MainWindowHide);
             console.RegisterForEvent("MainWindow.Show", MainWindowShow);
             console.RegisterForEvent("MainWindow.Minimize", MainWindowMinimize);

@@ -119,6 +119,8 @@ namespace DDPM.UI.Module.Color
             }
         }
 
+        public bool IsAutoColorPreset_Lock { get; set; }
+
         //
         //Dean 0612 add for ALS syncup
         //
@@ -1134,18 +1136,19 @@ namespace DDPM.UI.Module.Color
             if (runtype == (int)ColorPresetRunType.Auto)
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
-                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = true;              
-         
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = true;
+                DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", IsAutoColorPreset_Lock);
+
             }
             else
             {
 
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = true;
-                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;            
-        
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
+                DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
             }
 
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            /*DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
 
             if (setting.UserSettings.IsAutoColorPreset_Lock)
             {
@@ -1153,7 +1156,7 @@ namespace DDPM.UI.Module.Color
                 ((ListBox)(MyModule.GetRightView().FindName("lb_AppList"))).IsEnabled = false;
                 ((UXButton)(MyModule.GetRightView().FindName("btn_AddApp"))).IsEnabled = false;
                 
-            }
+            }*/
 
         }
 

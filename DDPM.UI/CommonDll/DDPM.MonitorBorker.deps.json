@@ -18,21 +18,21 @@
           "Newtonsoft.Json": "13.0.3",
           "System.Drawing.Common": "8.0.7",
           "System.Management": "8.0.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
         },
         "runtime": {
           "DDPM.MonitorBorker.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.31"
+            "fileVersion": "10.0.19041.34"
           },
           "WinRT.Runtime.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.4.44211"
+            "fileVersion": "2.0.8.46841"
           }
         }
       },
@@ -599,7 +599,10 @@
           "WinCopies.WindowsAPICodePack.Shell": "2.12.0.2"
         },
         "runtime": {
-          "DDPM.ColorApp.dll": {}
+          "DDPM.ColorApp.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DDPM.SA.Common/2.0.0.5": {
@@ -614,7 +617,10 @@
           "WinCopies.Util": "3.21.0"
         },
         "runtime": {
-          "DDPM.SA.Common.dll": {}
+          "DDPM.SA.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DDPM.ShowOsd/2.0.0.5": {
@@ -623,12 +629,18 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "DDPM.ShowOsd.dll": {}
+          "DDPM.ShowOsd.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DDPM.Win32Lib/2.0.0.5": {
         "runtime": {
-          "DDPM.Win32Lib.dll": {}
+          "DDPM.Win32Lib.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "VcpCore.Common/2.0.0.5": {
@@ -636,7 +648,10 @@
           "DellClientFramework": "6.4.5.1"
         },
         "runtime": {
-          "VcpCore.Common.dll": {}
+          "VcpCore.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
@@ -645,7 +660,10 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {}
+          "VcpCore.Interfaces.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DPeMPublic.Common/1.0.0.0": {
@@ -664,7 +682,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
