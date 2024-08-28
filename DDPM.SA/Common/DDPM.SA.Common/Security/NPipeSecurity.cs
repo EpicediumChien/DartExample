@@ -14,7 +14,12 @@ namespace DDPM.SA.Common.Security
     public class NPipeSecurity
     {
         [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
+        private static bool _GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId)
+        {
+            return GetNamedPipeClientProcessId(Pipe, out ClientProcessId);
+        }
         /// <summary>
         /// For buildin user please make your decision for PipeAccessRights.ReadWrite or PipeAccessRights.FullControl
         /// </summary>
@@ -56,7 +61,7 @@ namespace DDPM.SA.Common.Security
         {
             info = "success";
             IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
-            if (GetNamedPipeClientProcessId(hPipe, out uint pid))
+            if (_GetNamedPipeClientProcessId(hPipe, out uint pid))
             {
                 info = "[GetNamedPipeClientProcessId] failed";
                 return false;
