@@ -132,6 +132,7 @@ namespace DDPM.SA.Common
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern UInt32 EnumDisplayDevices(string s, UInt32 iDevNum, ref DISPLAY_DEVICE displayDevice, UInt32 dwFlags);
+
         private static UInt32 _EnumDisplayDevices(string s, UInt32 iDevNum, ref DISPLAY_DEVICE displayDevice, UInt32 dwFlags)
         {
             return EnumDisplayDevices(s, iDevNum, ref displayDevice, dwFlags);
@@ -143,6 +144,7 @@ namespace DDPM.SA.Common
         IntPtr pMachineName,
         string pProfileName,
         string pDeviceName);
+
         private static bool _AssociateColorProfileWithDevice(
         IntPtr pMachineName,
         string pProfileName,
@@ -154,6 +156,7 @@ namespace DDPM.SA.Common
         [DllImport("mscms.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool InstallColorProfile(IntPtr pMachineName, string pProfileName);
+
         private static bool _InstallColorProfile(IntPtr pMachineName, string pProfileName)
         {
             return InstallColorProfile(pMachineName, pProfileName);
@@ -172,6 +175,7 @@ namespace DDPM.SA.Common
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern UInt32 WcsGetUsePerUserProfiles(string deviceName, DeviceClassFlags deviceClass, out UInt32 usePerUserProfiles);
+
         private static UInt32 _WcsGetUsePerUserProfiles(string deviceName, DeviceClassFlags deviceClass, out UInt32 usePerUserProfiles)
         {
             return WcsGetUsePerUserProfiles(deviceName, deviceClass, out usePerUserProfiles);
@@ -199,6 +203,7 @@ namespace DDPM.SA.Common
             COLORPROFILESUBTYPE colorProfileSubType,
             UInt32 dwProfileID,
             out UInt32 cbProfileName);
+
         private static UInt32 _WcsGetDefaultColorProfileSize(WCS_PROFILE_MANAGEMENT_SCOPE scope,
             string deviceName,
             COLORPROFILETYPE colorProfileType,
@@ -232,6 +237,7 @@ namespace DDPM.SA.Common
             UInt32 dwProfileID,
             UInt32 cbProfileName,
             StringBuilder profileName);
+
         private static UInt32 _WcsGetDefaultColorProfile(WCS_PROFILE_MANAGEMENT_SCOPE scope,
             string deviceName,
             COLORPROFILETYPE colorProfileType,
@@ -251,6 +257,7 @@ namespace DDPM.SA.Common
            COLORPROFILESUBTYPE colorProfileSubType,
            UInt32 dwProfileID,
            StringBuilder profileName);
+
         private static bool _WcsSetDefaultColorProfile(WCS_PROFILE_MANAGEMENT_SCOPE scope,
            string deviceName,
            COLORPROFILETYPE colorProfileType,
@@ -258,7 +265,7 @@ namespace DDPM.SA.Common
            UInt32 dwProfileID,
            StringBuilder profileName)
         {
-            return WcsSetDefaultColorProfile(scope,deviceName,colorProfileType,colorProfileSubType, dwProfileID, profileName);
+            return WcsSetDefaultColorProfile(scope, deviceName, colorProfileType, colorProfileSubType, dwProfileID, profileName);
         }
 
         public static string GetMonitorProfile(string strDisplayName)
@@ -456,6 +463,7 @@ namespace DDPM.SA.Common
         [DllImport("Mscms.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool GetColorDirectory(IntPtr pMachineName, StringBuilder pBuffer, ref uint pdwSize);
+
         private static bool _GetColorDirectory(IntPtr pMachineName, StringBuilder pBuffer, ref uint pdwSize)
         {
             return GetColorDirectory(pMachineName, pBuffer, ref pdwSize);

@@ -120,27 +120,30 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             throw new NotImplementedException();
         }
 
-    public async Task<DeviceHelper> GetDevices() {
-      if(_deviceHelper != null) {
-        return await Task.Run(() => _deviceHelper);
-      }
-      return new DeviceHelper();
-    }
+        public async Task<DeviceHelper> GetDevices()
+        {
+            if (_deviceHelper != null)
+            {
+                return await Task.Run(() => _deviceHelper);
+            }
+            return new DeviceHelper();
+        }
 
-    public async Task<CTKMessageHelper> GetCTKMessageHelper() {
-      var CTKMessageHelper = new CTKMessageHelper();
-      CTKMessageHelper.CollaborationMsg = _iCTKMessageHelper.CollaborationMsg.ToString();
-      CTKMessageHelper.IsCollabMultipleCallsDetected = _iCTKMessageHelper.IsCollabMultipleCallsDetected;
-      CTKMessageHelper.IsZoomCallbacksRegistered = _iCTKMessageHelper.IsZoomCallbacksRegistered;
-      CTKMessageHelper.IsZoomClientInstalled = _iCTKMessageHelper.IsZoomClientInstalled;
-      CTKMessageHelper.IsZoomMultipleCallsDetected = _iCTKMessageHelper.IsZoomMultipleCallsDetected;
-      CTKMessageHelper.IsZoomVersionSupported = _iCTKMessageHelper.IsZoomVersionSupported;
-      CTKMessageHelper.TeamsSDKState = _iCTKMessageHelper.TeamsSDKState.ToString();
+        public async Task<CTKMessageHelper> GetCTKMessageHelper()
+        {
+            var CTKMessageHelper = new CTKMessageHelper();
+            CTKMessageHelper.CollaborationMsg = _iCTKMessageHelper.CollaborationMsg.ToString();
+            CTKMessageHelper.IsCollabMultipleCallsDetected = _iCTKMessageHelper.IsCollabMultipleCallsDetected;
+            CTKMessageHelper.IsZoomCallbacksRegistered = _iCTKMessageHelper.IsZoomCallbacksRegistered;
+            CTKMessageHelper.IsZoomClientInstalled = _iCTKMessageHelper.IsZoomClientInstalled;
+            CTKMessageHelper.IsZoomMultipleCallsDetected = _iCTKMessageHelper.IsZoomMultipleCallsDetected;
+            CTKMessageHelper.IsZoomVersionSupported = _iCTKMessageHelper.IsZoomVersionSupported;
+            CTKMessageHelper.TeamsSDKState = _iCTKMessageHelper.TeamsSDKState.ToString();
 
-      return await Task.Run(() => CTKMessageHelper);
-    }
+            return await Task.Run(() => CTKMessageHelper);
+        }
 
-    public async Task<RFDeviceHelper> GetRFDongleDevices()
+        public async Task<RFDeviceHelper> GetRFDongleDevices()
         {
             if (_rfDeviceHelper != null)
             {
@@ -1024,7 +1027,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                         catch
                         {
-
                         }
                     }
                     _deviceHelper.deviceInfo.Add(info);
@@ -1935,12 +1937,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-    private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue) {
+        private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue)
+        {
+        }
 
-
-    }
-
-    private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
+        private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
         {
             Console.WriteLine(newValue.ToString());
 

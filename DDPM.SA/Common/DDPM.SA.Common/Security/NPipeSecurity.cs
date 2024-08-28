@@ -1,5 +1,4 @@
 ﻿using DDPM.SA.Common.Settings;
-using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.RPC.Transport;
 using System;
@@ -16,10 +15,12 @@ namespace DDPM.SA.Common.Security
         [DllImport("kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
+
         private static bool _GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId)
         {
             return GetNamedPipeClientProcessId(Pipe, out ClientProcessId);
         }
+
         /// <summary>
         /// For buildin user please make your decision for PipeAccessRights.ReadWrite or PipeAccessRights.FullControl
         /// </summary>
@@ -71,7 +72,7 @@ namespace DDPM.SA.Common.Security
             string filePath = process.MainModule.FileName;
             Console.WriteLine("File path: " + filePath);
 
-            //check file path security                
+            //check file path security
             return DDPMFileSecurity.IsFilePathValid(filePath, out info);
         }
     }

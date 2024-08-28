@@ -1388,24 +1388,27 @@ namespace DDPM.SA.Common.Settings
         }
 
         [DllImport("Kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)] 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int WTSGetActiveConsoleSessionId();
+
         private int WTSGetActiveConsoleSessionId_Public()
         {
             return WTSGetActiveConsoleSessionId();
         }
 
         [DllImport("Wtsapi32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)] 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+
         private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
         {
             return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
         }
 
         [DllImport("Wtsapi32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)] 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void WTSFreeMemory(IntPtr pointer);
+
         private void WTSFreeMemory_Public(IntPtr pointer)
         {
             WTSFreeMemory(pointer);

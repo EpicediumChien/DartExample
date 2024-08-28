@@ -22,12 +22,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         private Mock<IAgent> DisplayPropertiesAgent { get; } = new();
         private Mock<IAgent> EAPluginAgent { get; } = new();
 
-        MonitorInfo monitorInfo = new MonitorInfo();
+        private MonitorInfo monitorInfo = new MonitorInfo();
         private Mock<IVcpCoreService> VcpCoreService { get; } = new();
         private Mock<IPipPbpService> PipPbpService { get; } = new();
         private Mock<IEasyArrangeService> EasyArrangeService { get; } = new();
         private Mock<IDisplayProperties> DisplayPropertiesService { get; } = new();
-        MonitorInfo monitorInfo1 = new MonitorInfo()
+
+        private MonitorInfo monitorInfo1 = new MonitorInfo()
         {
             AliasDeviceName = "Dell U2724DE(HDMI)",
             IsDellMonitor = true,
@@ -43,7 +44,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             //CapabilityDic = capabilityDic;
         };
 
-        ALSConfig aconfig = new ALSConfig()
+        private ALSConfig aconfig = new ALSConfig()
         {
             DisplayName = "DISPLAY7",
             serialNumber = "808597589",
@@ -93,12 +94,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             return new EAPlugin(EAPluginAgent.Object);
         }
 
-        DisplayMangerPlugin displayPlugin;
-        VcpCorePlugin vcpCorePlugin;
-        PipPbpMangerPlugin pipPbpMangerPlugin;
-        Dictionary<string, Dictionary<string, string>> getstr;
-        DisplayPropertiesPlugins displayPropertiesPlugin;
-        EAPlugin EasyArrangeplugin;
+        private DisplayMangerPlugin displayPlugin;
+        private VcpCorePlugin vcpCorePlugin;
+        private PipPbpMangerPlugin pipPbpMangerPlugin;
+        private Dictionary<string, Dictionary<string, string>> getstr;
+        private DisplayPropertiesPlugins displayPropertiesPlugin;
+        private EAPlugin EasyArrangeplugin;
+
         [OneTimeSetUp]
         public void Setup()
         {

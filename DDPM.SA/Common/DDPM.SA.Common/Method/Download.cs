@@ -1,15 +1,8 @@
 ﻿using DDPM.SA.Common.Security;
-using DDPM.SA.Common.Settings;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using VcpCore.Common;
-using Windows.Media.Playback;
 
 namespace DDPM.SA.Common.Method
 {
@@ -23,6 +16,7 @@ namespace DDPM.SA.Common.Method
         {
             _logs = logs;
         }
+
         public bool DownloadFile(string URLPath, string SavePath, out string FailInfo)
         {
             try
