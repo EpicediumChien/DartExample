@@ -4,6 +4,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using static DDPM.ColorApp.WindowFocusWatcher;
+using Dell.Client.Framework.Common;
+using WinCopies;
+using Windows.System.Diagnostics;
+using System.Threading;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.ColorApp
 {
@@ -24,13 +29,13 @@ namespace DDPM.ColorApp
     {
         #region Native Win32 APIs
 
-        /*[DllImport("USER32.DLL", CharSet = CharSet.Auto)]
+        [DllImport("USER32.DLL", CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
         public static int _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
         {
             return GetWindowThreadProcessId(hWnd, out nProcessId);
-        }*/
+        }
 
         [DllImport("USER32.DLL", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -70,11 +75,17 @@ namespace DDPM.ColorApp
         private static string _LastLocatedScreen = string.Empty;
 
         public static event EventHandler? SendValue;
-
+       
         //////private static Logger logger = new Logger("ColorApp");
 
-        public AppStatusQuery()
+        // 20240823 jim add - declare log variable
+        static ILog Log { get; set; }
+
+        public AppStatusQuery(ILog log)
         {
+            Log = log;
+            writelog("AppStatusQuery()");
+
             ///////logger.SetLogModule("ColorApp");
         }
 
@@ -82,11 +93,11 @@ namespace DDPM.ColorApp
         {
         }
 
-        public static AppStatusQuery GetInstance()
+        public static AppStatusQuery GetInstance(ILog log)
         {
             if (INSTANCE == null)
             {
-                INSTANCE = new AppStatusQuery();
+                INSTANCE = new AppStatusQuery(log);
             }
             return INSTANCE;
         }
@@ -116,46 +127,106 @@ namespace DDPM.ColorApp
         }
 
         private static bool ChildWindowCallback(IntPtr hwnd, IntPtr lparam)
-        {
+        {            
             uint pid = 0;
             Native._GetWindowThreadProcessId(hwnd, out pid);
-            var process = Process.GetProcessById((int)pid);
+
+            string strlog;
+
+            var process = Process.GetProcessById((int)pid);           
+
             if (process.ProcessName != "ApplicationFrameHost")
             {
-                _realProcess = process;
+                 _realProcess = process;
+
                 //logger.WriteLog($"[Watcher-callback] real process: ProcessName[{_realProcess.ProcessName}]ModuleName[{_realProcess.MainModule.ModuleName}]Title[{_realProcess.MainWindowTitle}]");
-                return true;
+
+                //string strlog;
+                strlog = String.Format($"[Watcher-callback] real process: ProcessName[{_realProcess.ProcessName}]ModuleName[{_realProcess.MainModule.ModuleName}]Title[{_realProcess.MainWindowTitle}]");
+                writelog(strlog);
+
+                //return false;
             }
+
+            //string strlog;
+            strlog = String.Format($"[Watcher-callback] process: ProcessName[{process.ProcessName}]ModuleName[{process.MainModule.ModuleName}]Title[{process.MainWindowTitle}]");
+            writelog(strlog);
+
             return true;
+            
         }
 
+
+
         #endregion get real process id for uwp kind app
+
+        public static int GetWindowProcessId(IntPtr hwnd)
+        {
+            uint pid;
+            GetWindowThreadProcessId(hwnd, out pid);
+            return (int)pid;
+        }
 
         private static void pass_process_info_to_callback(uint pid, IntPtr hWnd, string forgroundTitle)
         {
             Process? forgroundProcess;
             string strProcessName = "";
             string strFilePath = "";
+            string strlog;
 
             try
             {
                 forgroundProcess = Process.GetProcessById((int)pid);
+
                 if (forgroundProcess.ProcessName == "ApplicationFrameHost")
-                {
+                {         
+
                     ///////logger.WriteLog($"[Watcher-callback] Got sandbox app, retrieve process info by process id");
-                    forgroundProcess = GetRealProcess(forgroundProcess);
+                    ///
+
+                    //string strlog;
+                    strlog = String.Format($"[Watcher-callback] Got sandbox app, retrieve process info by process id");
+                    writelog(strlog);
+
+                    for (int i = 0; i < 10; i++)
+                    {
+                        Thread.Sleep(1000);
+                        forgroundProcess = Process.GetProcessById(GetWindowProcessId(Native._GetForegroundWindow()));
+                        forgroundProcess = GetRealProcess(forgroundProcess);
+
+                        if (forgroundProcess.ProcessName != "ApplicationFrameHost")
+                            break;
+                    }
+
+                    //forgroundProcess = GetRealProcess(forgroundProcess);
+
+                    //forgroundProcess = _realProcess;
                 }
+
+                strlog = String.Format($"[Watcher-callback] foregroundProcess.ProcessName = {forgroundProcess.ProcessName} process id({pid}) Title({forgroundTitle}) ");
+                writelog(strlog);
+
                 //check process content
                 if (forgroundProcess == null || forgroundProcess.MainModule == null ||
                     forgroundProcess.MainModule.ModuleName == null || forgroundProcess.MainModule.FileName == null)
                 {
                     ///////logger.WriteLog($"[Watcher-callback] process id({pid}) Title({forgroundTitle}) to Process object got null content, drop it");
+
+                    //string strlog;
+                    strlog = String.Format($"[Watcher-callback] process id({pid}) Title({forgroundTitle}) to Process object got null content, drop it");
+                    writelog(strlog);
+
                     return;
                 }
                 strProcessName = forgroundProcess.MainModule.ModuleName;
                 strFilePath = forgroundProcess.MainModule.FileName;
 
                 ///////logger.WriteLog($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd}):Path({strFilePath})");
+
+                //string strlog;
+                strlog = String.Format($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd}):Path({strFilePath})");
+                writelog(strlog);
+
 
                 if (SendValue != null)
                 {
@@ -180,80 +251,131 @@ namespace DDPM.ColorApp
         {
             //uint uid = 0;
             //_GetWindowThreadProcessId(hwnd, out uid);
-            string activeTitle = GetAWindowTitle(hwnd);
-            var hWnd = Native._GetForegroundWindow();
+            //string activeTitle = GetAWindowTitle(hwnd);
+            //var hWnd = Native._GetForegroundWindow();
             uint pid;
-            Native._GetWindowThreadProcessId(hWnd, out pid);
+            //Native._GetWindowThreadProcessId(hWnd, out pid);
+            Native._GetWindowThreadProcessId(hwnd, out pid);
 
             if (pid == 0)
                 return;
 
-            string forgroundTitle = GetAWindowTitle(hWnd);
+            //string forgroundTitle = GetAWindowTitle(hWnd);
+            string forgroundTitle = GetAWindowTitle(hwnd);
+
             if (string.IsNullOrEmpty(forgroundTitle))
                 return;
 
             ///////logger.WriteLog($"[Watcher-Focus] found:{forgroundTitle}");
+            ///
+            string strlog;
+            strlog = String.Format($"[Watcher-Focus] found:{forgroundTitle}");
+            writelog(strlog);
 
-            Screen screen = Screen.FromHandle(hWnd);
+            //Screen screen = Screen.FromHandle(hWnd);
+            Screen screen = Screen.FromHandle(hwnd);           
 
-            /* Jim remove 20240816
             if (!string.IsNullOrEmpty(_LastforgroundTitle) && String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
+                //string strlog;
+                strlog = String.Format($"[Watcher-Focus]  Same as last app, drop event");
+                writelog(strlog);
+
                 ///////logger.WriteLog($"[Watcher-Focus]  Same as last app, drop event");
                 return;
-            }
-            */
+            }            
 
             _LastforgroundTitle = forgroundTitle;
             _LastLocatedScreen = screen.DeviceName;
 
-            pass_process_info_to_callback(pid, hWnd, forgroundTitle);
+            //pass_process_info_to_callback(pid, hWnd, forgroundTitle);
+            pass_process_info_to_callback(pid, hwnd, forgroundTitle);
         }
 
         private static void WindowMoveResizeWatcherEvent(IntPtr hwnd)
         {
             //uint uid = 0;
             //GetWindowThreadProcessId(hwnd, out uid);
-            string activeTitle = GetAWindowTitle(hwnd);
-            var hWnd = Native._GetForegroundWindow();
+            //string activeTitle = GetAWindowTitle(hwnd);
+            //var hWnd = Native._GetForegroundWindow();
             uint pid;
-            Native._GetWindowThreadProcessId(hWnd, out pid);
+            //Native._GetWindowThreadProcessId(hWnd, out pid);
+            Native._GetWindowThreadProcessId(hwnd, out pid);
 
             if (pid == 0)
                 return;
 
-            string forgroundTitle = GetAWindowTitle(hWnd);
+            //string forgroundTitle = GetAWindowTitle(hWnd);
+            string forgroundTitle = GetAWindowTitle(hwnd);
+
             if (string.IsNullOrEmpty(forgroundTitle))
                 return;
 
             ///////logger.WriteLog($"[Watcher-Move] found:{forgroundTitle}");
 
-            Screen screen = Screen.FromHandle(hWnd);
+            string strlog;
+            strlog = String.Format($"[Watcher-Move] found:{forgroundTitle}");
+            writelog(strlog);
 
-            /* Jim remove 20240816
+            //Screen screen = Screen.FromHandle(hWnd);
+            Screen screen = Screen.FromHandle(hwnd);
+            
             if (String.Compare(_LastforgroundTitle, forgroundTitle) == 0)
             {
+
+                //string strlog;
+                strlog = String.Format($"[Watcher-Move]  Same as last app, check screen location");
+                writelog(strlog);
+
                 ///////logger.WriteLog($"[Watcher-Move]  Same as last app, check screen location");
 
                 //check if differenct screen
                 if (String.Compare(_LastLocatedScreen, screen.DeviceName) == 0)
                 {
+                    //string strlog;
+                    strlog = String.Format($"[Watcher-Move]  Same as last monitor, drop move event");
+                    writelog(strlog);
+
                     ///////logger.WriteLog($"[Watcher-Move]  Same as last monitor, drop move event");
                     return;
                 }
-            }
-            */
+            }            
 
             _LastforgroundTitle = forgroundTitle;
             _LastLocatedScreen = screen.DeviceName;
 
-            pass_process_info_to_callback(pid, hWnd, forgroundTitle);
+            //pass_process_info_to_callback(pid, hWnd, forgroundTitle);
+            pass_process_info_to_callback(pid, hwnd, forgroundTitle);
         }
 
         public void ClearLastAppRecord(string requestor)
         {
             _LastforgroundTitle = string.Empty;
             //logger.WriteLog($"[{requestor}]  Clear app record by requestor");
+
+            string strlog;
+            strlog = String.Format($"[{requestor}]  Clear app record by requestor");
+            writelog(strlog);
+        }
+
+        private enum log_type
+        {
+            info = 0,
+            error
+        }
+
+        private static void writelog(string? text, log_type log_type = log_type.info)
+        {
+            text = "[AppStatusQuery] " + text;
+            System.Console.WriteLine(text);
+
+            if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
     }
 }

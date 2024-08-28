@@ -16,6 +16,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Dell.Client.Framework.Security;
 using Microsoft;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -26,8 +27,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -261,6 +264,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
 
         [DllImport("Wtsapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
         private static bool _WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
         {
@@ -268,6 +272,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
 
         [DllImport("Wtsapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void WTSFreeMemory(IntPtr pointer);
         private static void _WTSFreeMemory(IntPtr pointer)
         {
@@ -371,9 +376,54 @@ namespace DDPM.SA.Plugins.SettingsManager
                 _settings = null;
                 return null;
             }
+            //check if setting file contain illegal privilege
+            //if yes, delete file and then apply right ACL
+            if (Directory.Exists(folder))
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(folder);
+                if(directoryInfo == null)
+                {
+                    WriteLog("System config: retrieve Directory got null return");
+                    Directory.Delete(folder, true);
+                    directoryInfo = System.IO.Directory.CreateDirectory(folder);
+                    WriteLog($"re-create system settings folder success");
+                }
+                AclChecker aclChecker = new AclChecker();
+                if (aclChecker.ContainsUnprivilegedWriteAccess(directoryInfo))
+                {
+                    WriteLog("Directory ACLs for system setting contained unprivileged write access for one or more identity");
+                    Directory.Delete(folder, true);
+                    WriteLog("Exist folder deleted.");
+                    directoryInfo = System.IO.Directory.CreateDirectory(folder);
+                    WriteLog($"re-create system settings folder success");
+                }
+            }
             _settings_path = folder + "\\" + filename_appsettings_IT;
-            WriteLog($"_settings_path is {_settings_path}.");
+            //WriteLog($"_settings_path is {_settings_path}."); //SDL to remove (not allow path in log)
 
+            //check if setting file contain illegal privilege
+            //if yes, delete file and then apply right ACL
+            if (File.Exists(_settings_path))
+            {                
+                FileInfo fileInfo = new FileInfo(_settings_path);
+                if (fileInfo == null)
+                {
+                    WriteLog("System config: retrieve FileInfo got null return");
+                    File.Delete(_settings_path);
+                    WriteLog("Exist file deleted.");
+                }
+                else
+                {
+                    AclChecker aclChecker = new AclChecker();
+                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
+                    {
+                        WriteLog("File ACLs for system setting contained unprivileged write access for one or more identity");
+                        File.Delete(_settings_path);
+                        WriteLog("Exist file deleted.");
+                    }
+                }
+            }
+            
             DDPMITConfig ddpm_it = new DDPMITConfig();
             string info;
             if (File.Exists(_settings_path))
@@ -412,8 +462,8 @@ namespace DDPM.SA.Plugins.SettingsManager
                 }
             }
             //ACL apply
-            //string info;
-            if (!DDPMFileSecurity.ApplyFileACLNormalUser(_settings_path, out info))
+            //string info;            
+            if (!DDPMFileSecurity.ApplyFileACLUserReadOnly(_settings_path, out info))
                 WriteLog($"[InitDDPMUserConfigFile] {info}");
 
             return _settings;

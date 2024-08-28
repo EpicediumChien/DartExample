@@ -310,6 +310,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.ToggleInputSource;
                 hotkeyInfo.Hotkey = ToggleInputSourceNewKeys.Distinct().ToList();
+                hotkeyInfo.Description = "ToggleInputSource";
                 doLostFocus(hotkeyInfo, _strTbToggleInputSourcePreviousKey, vm.ToggleInputSourceKey, ref ToggleInputSourceNewKeys);
                 ToggleInputSourceNewKeys.Clear();
             }
@@ -334,6 +335,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 hotkeyInfo.Job = HotkeyType.FavoriteInputSource;
                 hotkeyInfo.Hotkey = FavoriteInputSourceNewKeys.Distinct().ToList();
                 hotkeyInfo.InputSource.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputDisplayText));
+                hotkeyInfo.Description = "FavoriteInputSource";
                 doLostFocus(hotkeyInfo, _strTbFavoriteInputSourcePreviousKey, vm.FavoriteInputSourceKey, ref FavoriteInputSourceNewKeys);
                 FavoriteInputSourceNewKeys.Clear();
             }
@@ -359,6 +361,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 hotkeyInfo.Hotkey = SwitchInputSourceNewKeys.Distinct().ToList();
                 hotkeyInfo.InputSource.Add(new InputSourceObj(vm.SwitchInput1_Selected.inputDisplayText));
                 hotkeyInfo.InputSource.Add(new InputSourceObj(vm.SwitchInput2_Selected.inputDisplayText));
+                hotkeyInfo.Description = "SwitchInputSource";
                 doLostFocus(hotkeyInfo, _strTbSwitchInputSourcePreviousKey, vm.SwitchInputSourceKey, ref SwitchInputSourceNewKeys);
                 SwitchInputSourceNewKeys.Clear();
             }
@@ -382,6 +385,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.SwapIputPIPPBP;
                 hotkeyInfo.Hotkey = SwapPIPPBPInputSourceNewKeys.Distinct().ToList();
+                hotkeyInfo.Description = "SwapPIPPBPInputSource";
                 doLostFocus(hotkeyInfo, _strTbSwapPIPPBPInputSourcePreviousKey, vm.SwapPIPPBPInputSourceKey, ref SwapPIPPBPInputSourceNewKeys);
                 SwapPIPPBPInputSourceNewKeys.Clear();
             }
@@ -405,6 +409,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.ChangePIPPosition;
                 hotkeyInfo.Hotkey = ChangePIPPositionNewKeys.Distinct().ToList();
+                hotkeyInfo.Description = "ChangePIPPosition";
                 doLostFocus(hotkeyInfo, _strTbChangePIPPositionPreviousKey, vm.ChangePIPPositionKey, ref ChangePIPPositionNewKeys);
                 ChangePIPPositionNewKeys.Clear();
             }

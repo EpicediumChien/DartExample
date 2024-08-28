@@ -99,6 +99,14 @@ namespace DDPM.SA.Common
             {
                 AppendWebcamDeviceLine(sb, item);
             }
+            else if (item.LogicalDeviceType == DeviceType.LogicalPen.ToString())
+            {
+                AppendPenDeviceLine(sb, item);
+            }
+            else if (item.LogicalDeviceType == DeviceType.LogicalDock.ToString())
+            {
+                AppendDockDeviceLine(sb, item);
+            }
             else
             {
                 AppendCommonDeviceLine(sb, item);
@@ -183,7 +191,14 @@ namespace DDPM.SA.Common
                 sb.AppendLine($"PairHostName{i + 1}(get)                                     : {item.PairedHostNames[0]}");
             }
 
-            sb.AppendLine($"{nameof(item.MousePrimaryButton)} (get,set)                   : {item.MousePrimaryButton}");
+ 
+            if (item.TotalNumberOfPairedHostName > 0)
+                sb.AppendLine($"{nameof(item.PairedHostName1)}(get)                         : {item.PairedHostName1}");
+            if (item.TotalNumberOfPairedHostName > 1)  
+                sb.AppendLine($"{nameof(item.PairedHostName2)} (get)                        : {item.PairedHostName2}");
+            if (item.TotalNumberOfPairedHostName > 2)                                
+            sb.AppendLine($"{nameof(item.PairedHostName3)} (get)                          : {item.PairedHostName3}");
+            sb.AppendLine($"{nameof(item.MousePrimaryButton)} (get,set)                         : {item.MousePrimaryButton}");
 
             sb.AppendLine($"{nameof(item.IsDPILevelSupported)} (get)                      : {item.IsDPILevelSupported}");
 
@@ -282,5 +297,45 @@ namespace DDPM.SA.Common
             sb.AppendLine($"{nameof(item.Band5Gain)} (get, set)                         : {item.Band5Gain}");
             sb.AppendLine("----------");
         }
+
+        private static void AppendPenDeviceLine(StringBuilder sb, DeviceInfo item)
+        {
+            AppendCommonDeviceLine(sb, item);
+            sb.AppendLine($"{nameof(item.IsBatteryLevelSupported)} (get)                  : {item.IsBatteryLevelSupported}");
+            if (item.IsBatteryLevelSupported)
+            {
+                sb.AppendLine($"{nameof(item.BatteryLevel)} (get)                           : {item.BatteryLevel}%");
+                sb.AppendLine($"{nameof(item.BatteryStatus)} (get)                          : {item.BatteryStatus}");
+            }
+            sb.AppendLine($"{nameof(item.IsBLE)} (get)                                    : {item.IsBLE}");
+            sb.AppendLine($"{nameof(item.IsdDriverVersion)} (get)                         : {item.IsdDriverVersion}");
+            sb.AppendLine($"{nameof(item.IsdServiceVersion)} (get)                        : {item.IsdServiceVersion}");
+            sb.AppendLine("----------");
+        }
+
+        private static void AppendDockDeviceLine(StringBuilder sb, DeviceInfo item)
+        {
+            AppendCommonDeviceLine(sb, item);
+
+            sb.AppendLine($"{nameof(item.MonitorCount)} (get)                            : {item.MonitorCount}");
+
+            sb.AppendLine($"{nameof(item.DockData)} (get)                                : {item.DockData}");
+
+            sb.AppendLine($"{nameof(item.DockInfo)} (get)                                : {item.DockInfo}");
+
+            sb.AppendLine($"{nameof(item.DockType)} (get)                                : {item.DockType}");
+
+            sb.AppendLine($"{nameof(item.DockServiceTag)} (get)                             : {item.DockServiceTag}");
+
+            sb.AppendLine($"{nameof(item.DockPackageFwVersion)} (get)                    : {item.DockPackageFwVersion}");
+
+            sb.AppendLine($"{nameof(item.DockFwUpdateStatus)} (get)                      : {item.DockFwUpdateStatus}");
+
+            sb.AppendLine($"{nameof(item.DockTBTConnectionStatus)} (get)                 : {item.DockTBTConnectionStatus}");
+
+            sb.AppendLine("----------");
+
+        }
+
     }
 }

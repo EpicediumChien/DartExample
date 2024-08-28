@@ -239,6 +239,9 @@
     <None Remove="Resources\Images\WD19S_180W.png" />
     <None Remove="Resources\Images\WD22TB4.png" />
     <None Remove="Resources\Images\WD25.png" />
+    <None Remove="Resources\Images\WD25TB4.png" />
+    <None Remove="Resources\Images\WD25TB5.png" />
+    <None Remove="Resources\Images\WD25Z.png" />
     <None Remove="Resources\Images\WebCamera.png" />
     <None Remove="Resources\Images\WebCamModel_P2424HEB_Large.png" />
     <None Remove="Resources\Images\WebCamModel_P2424HEB_Small.png" />
@@ -429,6 +432,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\WD25.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\WD25TB4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\WD25TB5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\WD25Z.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\WH3024.png">

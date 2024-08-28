@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
         private UserControl? _leftView = null;
         private UserControl _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public HeadsetAudioSettingsModule(HeadsetViewModel vm)
         {
             _rightView = new HeadsetAudioSettingsRightView(vm);
@@ -37,11 +40,27 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("HeadsetAudioSettingsModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("HeadsetAudioSettingsModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

@@ -1,12 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using VcpCore.Common;
+using Windows.System;
 using static DDPM.UI.Module.Gaming.UI_HDRType;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
@@ -147,6 +150,77 @@ namespace DDPM.UI.Module.Gaming
                 return "0.5";
             }
         }
+        #region hotkey
+        private string _darkStabilizerToggleKey = "None";
+
+        public string DarkStabilizerToggleKey
+        {
+            get => _darkStabilizerToggleKey;
+            set
+            {
+                SetProperty(ref _darkStabilizerToggleKey, value);
+                OnPropertyChanged("DarkStabilizerToggleKey");
+                //NotifyPropertyChanged("DarkStabilizerToggleKey");
+            }
+        }
+
+        private string _dualResolutionToggleKey = "None";
+
+        public string DualResolutionToggleKey
+        {
+            get => _dualResolutionToggleKey;
+            set
+            {
+                SetProperty(ref _dualResolutionToggleKey, value);
+                OnPropertyChanged("DualResolutionToggleKey");
+                //NotifyPropertyChanged("DualResolutionToggleKey");
+            }
+        }
+
+        public void Invoke_RefreshHotkeySettings()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += DoWork_RefreshHotkeyData;
+            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
+            bw.RunWorkerAsync(ApartmentState.STA);
+        }
+        private void DoWork_RefreshHotkeyData(object sender, DoWorkEventArgs e)
+        {
+            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+            string swHortcutText = string.Empty;
+
+            if (curHotkey.HotkeyInfo.Count > 0)
+            {
+                foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
+                {
+                    List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
+                    switch (hotkeyInfo.Job)
+                    {
+                        case HotkeyType.DarkStabilizerToggle:
+                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                            hotkeys.Clear();
+                            DarkStabilizerToggleKey = swHortcutText;
+                            break;
+
+                        case HotkeyType.DualResolutionToggle:
+                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                            hotkeys.Clear();
+                            DualResolutionToggleKey = swHortcutText;
+                            break;
+                    }
+                }
+            }
+        }
+        private void RunWorkerCompleted_RefreshHotkeyData(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Handling the result and final process
+            Debug.WriteLine("RefreshHotkeySettings done");
+        }
+        #endregion
         public Visibility IsSupported_GameEnhanceMode { get; set; } = Visibility.Collapsed;
         public Visibility IsSupported_ResponseTime { get; set; } = Visibility.Collapsed;
         public Visibility IsSupported_DarkStabilizer { get; set; } = Visibility.Collapsed;
@@ -224,7 +298,7 @@ namespace DDPM.UI.Module.Gaming
                 IsSupported_ResponseTime = displayPropertiesInfo.IsSupported_ResponseTime ? Visibility.Visible : Visibility.Collapsed;
                 IsSupported_DarkStabilizer = displayPropertiesInfo.IsSupported_DarkStabilizer ? Visibility.Visible : Visibility.Collapsed;
                 IsSupported_DualResolution = displayPropertiesInfo.IsSupported_DualResolutionType ? Visibility.Visible : Visibility.Collapsed;
-                
+
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
@@ -296,6 +370,7 @@ namespace DDPM.UI.Module.Gaming
                 _selectedDarkStabilizer = DarkStabilizer_ItemsCollection.Find(x => (x.DarkStabilizer.Equals(displayPropertiesInfo.Current_DarkStabilizer)));
                 _selectedHDRType = HDRType_ItemsCollection.Find(x => (x.HDRType.Equals(displayPropertiesInfo.Current_HDRType)));
                 _selectedDualResolution = DualResolution_ItemsCollection.Find(x => (x.DualResolutionType.Equals(displayPropertiesInfo.Current_DualResolutionType)));
+                Invoke_RefreshHotkeySettings();
                 RefreshUI();
             }
             catch (Exception)

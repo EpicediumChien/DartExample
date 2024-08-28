@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.SpeakerInteractions
         private UserControl? _leftView = null;
         private UserControl _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public SpeakerInteractionsModule(SoundBarViewModel vm)
         {
             _rightView = new SpeakerInteractionsRightView(vm);
@@ -37,11 +40,27 @@ namespace DDPM.UI.Module.SpeakerInteractions
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("SpeakerInteractionsModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("SpeakerInteractionsModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

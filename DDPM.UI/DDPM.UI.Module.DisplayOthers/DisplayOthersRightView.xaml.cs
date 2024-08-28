@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.UI.Module.DisplayOthers
@@ -22,9 +23,8 @@ namespace DDPM.UI.Module.DisplayOthers
         private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
         {
             var psi = new System.Diagnostics.ProcessStartInfo();
-
-            psi.FileName = @"C:\Windows\System32\rundll32.exe";
-            psi.Arguments = "shell32.dll,Control_RunDLL desk.cpl,,1";
+            psi.FileName = Environment.SystemDirectory + Path.DirectorySeparatorChar + @"rundll32.exe";
+            psi.Arguments = @"shell32.dll,Control_RunDLL desk.cpl,,1";
             psi.UseShellExecute = true;
 
             System.Diagnostics.Process.Start(psi);

@@ -21,4 +21,10 @@
     <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="DDPM.SA.Common">
+      <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

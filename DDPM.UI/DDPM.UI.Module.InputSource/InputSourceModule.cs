@@ -13,6 +13,9 @@ namespace DDPM.UI.Module.InputSource
         private UserControl _rightView/* = new InputSourceRightView()*/;
         private InputSourceViewModel vm = new InputSourceViewModel();
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         //Robert_Lin 20240530-remove argument on ctor
         //public InputSourceModule(HomeDevice? SelectedHomeDevice)
         public InputSourceModule(IModuleOwner? moduleOwner = null)
@@ -55,11 +58,27 @@ namespace DDPM.UI.Module.InputSource
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("InputSourceModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("InputSourceModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

@@ -123,6 +123,13 @@ namespace CLI.Subagent
                 return;
             }
 
+            // [0824_CASPER]: return HELP function
+            if (commandLineInput.Command.Equals("HELP"))
+            {
+                _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInput); 
+                return;
+            }
+
             if (commandLineInput.DeviceIndex.Contains("-1"))
             {
                 _exitcode = ICLICommandTable.Response_WrongIndex(commandLineInput);

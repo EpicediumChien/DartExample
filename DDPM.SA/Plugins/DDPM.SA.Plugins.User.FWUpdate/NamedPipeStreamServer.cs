@@ -3,6 +3,7 @@
     using DDPM.SA.Common.Security;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO.Pipes;
     using System.Text;
 
@@ -13,6 +14,7 @@
         public event EventHandler? ClientConnectedEvent;
 
         public event EventHandler? ClientDisconnectedEvent;
+        public bool IsNamedPipeServerIsNoSafe = false;
 
         public NamedPipeStreamServer(string pipeName) : base(pipeName)
         {
@@ -31,6 +33,14 @@
                 asyncState.EndWaitForConnection(result);
                 if (asyncState.IsConnected)
                 {
+                    string info;
+                    if (!NPipeSecurity.NamedPipeClientSecurity(asyncState, out info))
+                    {
+                        Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
+                        IsNamedPipeServerIsNoSafe = true;
+                        asyncState.Disconnect();
+                        return;
+                    }
                     NamedPipeStreamConnection item = new NamedPipeStreamConnection(asyncState, base.PipeName);
                     item.MessageReceived += new MessageEventHandler(this.Connection_MessageReceived);
                     item.DisconnectedEvent += Connection_DisconnectedEvent;

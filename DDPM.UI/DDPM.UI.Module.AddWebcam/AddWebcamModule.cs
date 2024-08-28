@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.AddWebcam
         private UserControl? _leftView = null;
         private UserControl _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public AddWebcamModule(AddDeviceViewModel vm)
         {
             _rightView = new AddWebcamRightView(vm);
@@ -36,17 +39,33 @@ namespace DDPM.UI.Module.AddWebcam
 
         public void OnSelectedHomeDeviceChanged()
         {
-            Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+            Trace.WriteLine("AddWebcamModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
-            Trace.WriteLine("BrightnessModule.OnActivated");
+            Trace.WriteLine("AddWebcamModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()
         {
-            Trace.WriteLine("BrightnessModule.OnDeactivated");
+            Trace.WriteLine("AddWebcamModule.OnDeactivated");
         }
 
         #endregion Event Handlers
