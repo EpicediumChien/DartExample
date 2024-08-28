@@ -235,3 +235,4 @@ testcoverage/
 /DDPM.UI/CommonDll/Dell.UnifiedAgent.SubAgentControl.Common.xml
 /DDPM.UI/CommonDll/Dell.UnifiedAgent.SubAgentControl.Interfaces.dll
 /DDPM.UI/CommonDll/Dell.UnifiedAgent.SubAgentControl.Interfaces.xml
+/DDPM.SA/DDPMSA.reg

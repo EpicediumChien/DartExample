@@ -1,8 +1,11 @@
-:: GenerateReg.bat v3 by Robert_Lin
+:: GenerateReg.bat v4 by Elie_Liao
 :: -------------------------------------------------
 :: This batch program will generate DDPMSA.reg file base on current directory.
 :: You should run this batch program when you change the base dir of the source code.
 :: And then import the "DDPMSA.reg" into your Windows Registry.
+:: [v4] 2024-8-28 Elie_Liao
+:: fixed wrong name (DDPM.SA.Plugins.User.ActionsManger.)
+:: Add DDPM.SA.Plugins.User.DTPProxy.dll to SubAgent.Uer
 :: [v3] 2024-6-27 Robert_Lin
 :: Add EasyArrangeService plugin to SubAgent.User registry
 :: [v2] 2024-5-23 Robert_Lin
@@ -79,7 +82,8 @@ echo "{99DB213B-220B-41C7-8B3A-0131CA7A4DD1}"="%BaseDir%\\bin\\DDPM.Subagent.Use
 echo "{EEE0AA91-11EE-46BD-B1FD-88D590C3052C}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.SchedulerManager.dll">>%OutFile%
 echo "{E993A925-BAF0-42DF-B878-7EC075D5B941}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Display.dll">>%OutFile%
 echo "{FE361209-1BEB-4B52-AC1A-D0227B7641CB}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.Peripherals.dll">>%OutFile%
-echo "{E5DA6004-21DC-4058-917F-A0ECF838EA03}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\CLI.Plugins.ActionsManger.dll">>%OutFile%
+echo "{E5DA6004-21DC-4058-917F-A0ECF838EA03}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.ActionsManger.dll">>%OutFile%
+echo "{D034EE8F-7C8A-4296-8B5B-33B4E978C6B5}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DTPProxy.dll">>%OutFile%
 echo.>>%OutFile%
 
 
