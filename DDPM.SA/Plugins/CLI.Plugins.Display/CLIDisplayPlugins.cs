@@ -473,6 +473,12 @@ namespace DDPM.CLI.Plugins.Display
                     break;
 
                 case "OSDACCESS":
+                    if (commandLineInput.Command.Equals("GET"))
+                    {
+                        var ret = OSD(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
                     if (commandLineInput.Command.Equals("SET"))
                     {
                         int exitcode = 0;
@@ -5140,6 +5146,108 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 return (exit, output);
             }
+            else if (type == "GET") //Dean 0726 should check if type matched as well
+            {
+                // jim add 20240608
+                CLI_RESPONSE _Get_CLI_RESPONSE_RESPONSE = new CLI_RESPONSE();
+
+                ObjGetVCP rc = new ObjGetVCP();
+                bool retcode = true;
+
+                if (index.Count == 0 && serviceTag.Count == 0)
+                {
+                    foreach (var monitor in _AllInfoMonitors)
+                    {
+                        rc = GetVCPCode(devMgr, monitor, "0xCA").Result;
+
+                        // jim modify 20240608
+                        _Get_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        _Get_CLI_RESPONSE_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
+                        _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
+                        _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
+                        _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
+                        retcode = true;
+
+                        if (retcode)
+                        {
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                        }
+                    }
+
+                }
+                // 20240614 jim modify
+                if (index.Count != 0)
+                {
+                    foreach (string idx in index)
+                    {
+                        rc = devMgr.GetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA).Result;
+
+                        // jim modify 20240608
+                        _Get_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base(idx);
+                        _Get_CLI_RESPONSE_RESPONSE.ServiceTag = "";
+                        _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
+                        _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
+                        _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
+                        retcode = true;
+
+                        if (retcode)
+                        {
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                        }
+                        else
+                        {
+                            _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
+                            System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                        }
+                    }
+
+                }
+                // 20240614 jim modify
+                if (serviceTag.Count != 0)
+                {
+                    foreach (string tag in serviceTag)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        foreach (MonitorInfo mo in tmp)
+                        {
+                            rc = GetVCPCode(devMgr, mo, "0xCA").Result;
+
+                            // jim modify 20240608
+                            _Get_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
+                            _Get_CLI_RESPONSE_RESPONSE.ServiceTag = tag;
+                            _Get_CLI_RESPONSE_RESPONSE.Command = "GET";
+                            _Get_CLI_RESPONSE_RESPONSE.TargetFeature = "OSDACCESS";
+                            _Get_CLI_RESPONSE_RESPONSE.Value = get_osd(rc.value.ToString());
+                            retcode = true;
+
+                            if (retcode)
+                            {
+                                _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            }
+                            else
+                            {
+                                _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
+                                System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            }
+                        }
+                    }
+                }
+                return ((int)CLI_ExitCode.success, output);
+            }
             else
             {
                 CLI_RESPONSE ret = new CLI_RESPONSE()
@@ -7316,6 +7424,16 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
+        private static string get_osd(string index)
+        {
+            //Trace.WriteLine($"language = {(int.Parse(index)).ToString("x2")}");
+            switch ((int.Parse(index)).ToString("x2"))
+            {
+                case "01": return "OSDLock";
+                case "02": return "OSDUnlock";
+                default: return "Unknown";
+            }
+        }
         private static ulong GCD(ulong a, ulong b)
         {
             while (a != 0 && b != 0)
