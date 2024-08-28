@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.Kvm
         private UserControl _rightView;
         private KvmViewModel vm = new KvmViewModel();
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public bool isUSBKVM { get; set; } = false;
 
         public KvmModule(IModuleOwner? moduleOwner)
@@ -61,10 +64,26 @@ namespace DDPM.UI.Module.Kvm
 
         public void OnSelectedHomeDeviceChanged()
         {
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

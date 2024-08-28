@@ -13,6 +13,9 @@ namespace DDPM.UI.Module.DisplayOthers
         private UserControl _rightView/* = new DisplayOthersRightView()*/;
         private DisplayOthersViewModel vm = new DisplayOthersViewModel();
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public DisplayOthersModule(IModuleOwner moduleOwner = null)
         {
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
@@ -51,11 +54,27 @@ namespace DDPM.UI.Module.DisplayOthers
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("DisplayOthersModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("DisplayOthersModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

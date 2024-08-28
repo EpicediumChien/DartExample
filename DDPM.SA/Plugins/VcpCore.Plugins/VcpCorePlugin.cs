@@ -10,6 +10,7 @@
 
 #endregion
 
+using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -20,6 +21,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -33,8 +35,6 @@ using VcpCore.Interfaces;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
 using IDs = VcpCore.Common.IDs;
-using DDPM.SA.Common;
-using System.Diagnostics;
 
 namespace VcpCore.Plugins
 {
@@ -85,6 +85,8 @@ namespace VcpCore.Plugins
         private static string privateKey = @"<RSAKeyValue><Modulus>tNMQHhw9frzoI/qHNUdkzYyTRUVbLL3aouurIXPd0cd4MzfUus/OS3IHQTolb8zAec3iuIYEK7tMXTg5rzfRfnMAACGFHeWwC/HPdj32FE2eGNdi33cuWsxSrKlPd3GvlMww2Z7NRQsNJ+tpSMXZ9DrxQuwBwQaWgXLdUQMjKzk=</Modulus><Exponent>AQAB</Exponent><P>49VK8O6kRncB4wQoWmQEznt2L+G9JabusLPiWJmdV4NSI4h7UTdr0loPP2P1Hayq/8bp1LWNsZbBDUIvL4Dsrw==</P><Q>yy39CjdZPTXA1r0fCFOrboOtQD3gMkuL0ZWuJI9soWFRu/kWH0vpavS3+uSsFAR59nx2ULTIT6C7pEyBguVwlw==</Q><DP>SNLghWqCL9PSUpH9pAbcUnO8L0nkf6iAGxMkglV3qYVcN+dkI22nlTEcNpLowndyoRcfntH5XI5nXqmNE44OGQ==</DP><DQ>nl2oH7BohEdDmZ0rdQgSVT+ZaLtR5qHvx1qNs71/BIKgfI136sj2lQFN7ecTIT8j+TWl2t4uS7KSz0s6n1ZK3Q==</DQ><InverseQ>sohCLNyTq38pSF8908WBFNHQUwXwlOs9HSe9+dk7dHB3R6TV7LP/md8MiX4dLlItNtM4BzzcmeYOlZ4Szp6JDg==</InverseQ><D>Pc3mNGRyoF7w+Vsn244LZjYmIAcUorZBhG4Ij+aKaqlC7D6o9zEP0bmnwSOeqBfTsc4tL+SeiFP8ReBx1vG9KGfUeRykZu0ZMm12a42ERa9opXgmBPOoA4FKm9Z7S+99bdt4DbPEkbJA38uq3ZxGVpGi3WADYRD06SspNKJj5gE=</D></RSAKeyValue>";
         private static readonly string targetFile = "SupportEncrypted.txt";
 
+        private static Dictionary<EDID, Dictionary<object, object>> _CacheTable;
+
         #endregion
 
         #region For engineer debug purpose
@@ -96,10 +98,12 @@ namespace VcpCore.Plugins
         [DllImport("kernel32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
+
         private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
         {
             return GetPrivateProfileInt(section, key, def, filePath);
         }
+
         private static bool IsOnlyDellMonitorForDebug()
         {
             const string iniPathName = @"C:\temp\DDPMDebug.txt";
@@ -140,6 +144,7 @@ namespace VcpCore.Plugins
             _TaskQueueResult ??= new ResultLockPool();
             _AllInfoMonitors ??= new List<MonitorInfo_complex>();
             _AllInfoMonitors_Mix ??= new List<(MonitorInfo_complex, MonitorInfo)>();
+            _CacheTable ??= new Dictionary<EDID, Dictionary<object, object>>();
             _ColorPresets ??= new Dictionary<string, Dictionary<string, string>>();
             _TaskQueue ??= new TaskLockQueue<ParameterType>();
             _TaskQueueExecutor ??= new BackgroundWorker();
@@ -924,7 +929,13 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCode is " + BitConverter.ToString(new byte[] { code }));
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] opt is " + opt.ToString());
 
-                var r = Get_VCPCapability(monitorInfoX, code, opt, true);
+                object r = new object();
+                if (opt == 0)
+                    r = GetFromCacheTable(monitorInfoX, code);
+
+                if (opt != 0 || r == null)
+                    r = Get_VCPCapability(monitorInfoX, code, opt, true);
+
                 return r;
             }
             else
@@ -959,25 +970,35 @@ namespace VcpCore.Plugins
 
                     case "colorpreset":
                         {
-                            ro = GetCurrentColorPreset(monitorInfoX);
+                            ro = GetFromCacheTable(monitorInfoX, func);
+                            if (ro == null)
+                                ro = GetCurrentColorPreset(monitorInfoX);
                         }
                         break;
+
                     case nameof(Gaming_GameEnhancementMode):
                         ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x1F) & 0x0f);
                         break;
+
                     case nameof(Gaming_ResponseTime):
                         ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x2F) & 0x0f);
                         break;
+
                     case nameof(Gaming_DarkStabilizer):
                         ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x3F) & 0x0f);
                         break;
+
                     case nameof(Gaming_HDRType):
                         ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x4F) & 0x0f);
                         break;
+
                     default:
                         {
                             byte fucCode = TranslatorVCPctrCode(func);
-                            ro = Get_VCPCapability(monitorInfoX, fucCode, opt, true);
+
+                            ro = GetFromCacheTable(monitorInfoX, fucCode);
+                            if (ro == null)
+                                ro = Get_VCPCapability(monitorInfoX, fucCode, opt, true);
                         }
                         break;
                 }
@@ -1004,6 +1025,10 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] val is " + val.ToString());
 
                 bool rc = Set_VCPCapability(monitorInfoX, code, val, true);
+
+                if (rc)
+                    SetToCacheTable(monitorInfoX, code, val);
+
                 return rc;  //Task.CompletedTask;
             }
             else
@@ -1032,6 +1057,31 @@ namespace VcpCore.Plugins
                     case "colorpreset":
                         {
                             rc = SetColorPreset(monitorInfoX, val);
+
+                            if (rc)
+                            {
+                                SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
+
+                                VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
+                                _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
+                                _VCPchangedEventArgs.value = val;
+                                _VCPchangedEventArgs.monitor = new MonitorInfo()
+                                {
+                                    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                    Index = monitorInfoX.Index,
+                                    CapabilityString = monitorInfoX.CapabilityString,
+                                    DDCisON = monitorInfoX.DDCisON,
+                                    DisplayName = monitorInfoX.DisplayName,
+                                    edid = monitorInfoX.edid,
+                                    FwVersion = monitorInfoX.FwVersion,
+                                    inputSource = monitorInfoX.inputSource,
+                                    CapabilityDic = monitorInfoX.CapabilityDic,
+                                    modelName = monitorInfoX.modelName,
+                                    series = monitorInfoX.series,
+                                };
+                                OnVCPchanged(_VCPchangedEventArgs);
+                            }
                         }
                         break;
 
@@ -1043,6 +1093,8 @@ namespace VcpCore.Plugins
 
                             if (rc)
                             {
+                                SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
+
                                 foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
                                 {
                                     if (x.Equals(monitorInfoX))
@@ -1057,7 +1109,7 @@ namespace VcpCore.Plugins
                                 Initialize2TypesMonitorInfo(false);
 
                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
-                                _VCPchangedEventArgs.vcpcode = "60";
+                                _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
                                 _VCPchangedEventArgs.value = val;
                                 _VCPchangedEventArgs.monitor = new MonitorInfo()
                                 {
@@ -1084,6 +1136,31 @@ namespace VcpCore.Plugins
                             byte fuc = TranslatorVCPctrCode(FunctionName);
                             uint value = TranslatorVCPcategory(FunctionName, val);
                             rc = SetVCPCapability_(monitorInfoX, fuc, value);
+
+                            if (rc)
+                            {
+                                SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
+
+                                VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
+                                _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
+                                _VCPchangedEventArgs.value = val;
+                                _VCPchangedEventArgs.monitor = new MonitorInfo()
+                                {
+                                    AliasDeviceName = monitorInfoX.AliasDeviceName,
+                                    IsDellMonitor = monitorInfoX.IsDellMonitor,
+                                    Index = monitorInfoX.Index,
+                                    CapabilityString = monitorInfoX.CapabilityString,
+                                    DDCisON = monitorInfoX.DDCisON,
+                                    DisplayName = monitorInfoX.DisplayName,
+                                    edid = monitorInfoX.edid,
+                                    FwVersion = monitorInfoX.FwVersion,
+                                    inputSource = monitorInfoX.inputSource,
+                                    CapabilityDic = monitorInfoX.CapabilityDic,
+                                    modelName = monitorInfoX.modelName,
+                                    series = monitorInfoX.series,
+                                };
+                                OnVCPchanged(_VCPchangedEventArgs);
+                            }
                         }
                         break;
                 }
@@ -1198,6 +1275,8 @@ namespace VcpCore.Plugins
 
                                         if (!string.IsNullOrWhiteSpace(rc_str))
                                         {
+                                            SetToCacheTable(monitorInfoX, Convert.ToByte(object_0x52), val);
+
                                             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                             _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
                                             _VCPchangedEventArgs.value = NodeFormatter.FormatVCP_E2(rc_str.ToLower());
@@ -1228,6 +1307,8 @@ namespace VcpCore.Plugins
 
                                         if (!string.IsNullOrWhiteSpace(rc_str))
                                         {
+                                            SetToCacheTable(monitorInfoX, Convert.ToByte(object_0x52), val);
+
                                             foreach ((MonitorInfo_complex x, MonitorInfo o) in _AllInfoMonitors_Mix)
                                             {
                                                 if (x.Equals(monitorInfoX))
@@ -1263,6 +1344,8 @@ namespace VcpCore.Plugins
                                     }
                                     else
                                     {
+                                        SetToCacheTable(monitorInfoX, Convert.ToByte(object_0x52), (Convert.ToUInt32(tmp)));
+
                                         VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                         _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
                                         _VCPchangedEventArgs.value = ((uint)tmp).ToString();
@@ -1466,6 +1549,7 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier Monitors.count is " + mos.Count);
                                         _AllInfoMonitors = mos.ToList();
                                         Initialize2TypesMonitorInfo(true);
+                                        InitializeCacheTable();
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
                                         Initialize0x52toEmpty();
 
@@ -1506,6 +1590,7 @@ namespace VcpCore.Plugins
                         {
                             _AllInfoMonitors = monitors.ToList();
                             Initialize2TypesMonitorInfo(true);
+                            InitializeCacheTable();
                             _logs.DebugMsg("[VcpCorePlugin] InitializeMonitorsList AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
                             Initialize0x52toEmpty();
                         }
@@ -1605,6 +1690,108 @@ namespace VcpCore.Plugins
                 }
             }
             _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo finishi : count => " + _AllInfoMonitors_Mix.Count);
+        }
+
+        private void InitializeCacheTable()
+        {
+            _logs.DebugMsg("[VcpCorePlugin] InitializeCacheTable Let's go ...");
+
+            if (_AllInfoMonitors.Count > 0)
+            {
+                foreach (var MonitorInfo in _AllInfoMonitors)
+                {
+                    bool IsExist = false;
+                    var Keys = _CacheTable.Keys.ToList();
+                    foreach (var Key in Keys)
+                    {
+                        if (Key.Equals(MonitorInfo.edid))
+                        {
+                            IsExist = true;
+                            break;
+                        }
+                    }
+                    if (!IsExist)
+                        _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString } });
+                }
+            }
+
+            foreach (var item in _CacheTable)
+            {
+                var Keys = (item.Value).Keys.ToList();
+                foreach (var Key in Keys)
+                {
+                    if ((Key is string) && (Key.ToString().Equals("CapibilityString")))
+                        continue;
+                    else
+                        item.Value.Remove(Key);
+                }
+            }
+
+            _logs.DebugMsg("[VcpCorePlugin] InitializeCacheTable finish : CacheTable count => " + _CacheTable.Count);
+        }
+
+        private object GetFromCacheTable(MonitorInfo_complex MonitorInfo, object key)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable Let's go ...");
+            _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
+            _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToUInt32(key).ToString("X")));
+
+            if (_CacheTable.Count > 0)
+            {
+                var Keys = _CacheTable.Keys.ToList();
+                foreach (var Key in Keys)
+                {
+                    if (Key.Equals(MonitorInfo.edid))
+                    {
+                        if (_CacheTable[Key].ContainsKey(key))
+                        {
+                            bool rc = false;
+                            var result = new object();
+                            rc = _CacheTable[Key].TryGetValue(key, out result);
+
+                            _logs.DebugMsg("[VcpCorePlugin] Is GetFromCacheTable success?? : result => " + rc.ToString());
+                            return (rc ? result : null);
+                        }
+                    }
+                }
+            }
+
+            _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable finish : result => null");
+
+            return null;
+        }
+
+        private void SetToCacheTable(MonitorInfo_complex MonitorInfo, object key, object value)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Let's go ...");
+            _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
+            _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToUInt32(key).ToString("X")));
+            _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable value is " + ((value is string) ? value.ToString() : Convert.ToUInt32(value).ToString("X")));
+
+            if (_CacheTable.Count > 0)
+            {
+                bool IsExist = false;
+                var Keys = _CacheTable.Keys.ToList();
+                foreach (var Key in Keys)
+                {
+                    if (Key.Equals(MonitorInfo.edid))
+                    {
+                        if (_CacheTable[Key].ContainsKey(key))
+                            (_CacheTable[Key])[key] = value;
+                        else
+                            (_CacheTable[Key]).Add(key, value);
+
+                        IsExist = true;
+                        break;
+                    }
+                }
+                if (!IsExist)
+                    _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString }, { key, value } });
+            }
+            else
+                _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString }, { key, value } });
+
+            _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable finish");
         }
 
         //---------------------------------------------------
@@ -1824,6 +2011,15 @@ namespace VcpCore.Plugins
                                     _TargetMonitor.CapabilityString = GetCapabilities_String(_TargetMonitor.hPhysicalMonitor);
                                     if (!string.IsNullOrWhiteSpace(_TargetMonitor.CapabilityString))
                                         break;
+                                    else
+                                    {
+                                        var ro = GetFromCacheTable(new MonitorInfo_complex() { edid = _TargetMonitor.edid, AliasDeviceName = _TargetMonitor.AliasDeviceName }, "CapibilityString");
+                                        if (ro != null)
+                                        {
+                                            _TargetMonitor.CapabilityString = ro.ToString();
+                                            break;
+                                        }
+                                    }
 
                                     nRetryCount++;
                                 } while (_TargetMonitor.IsDellMonitor && (nRetryCount <= 3));
@@ -2101,7 +2297,7 @@ namespace VcpCore.Plugins
                 {
                     VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                     _VCPchangedEventArgs.vcpcode = code.ToString("X");
-                    _VCPchangedEventArgs.value = ((uint)val).ToString();
+                    _VCPchangedEventArgs.value = val.ToString();
                     _VCPchangedEventArgs.monitor = new MonitorInfo()
                     {
                         AliasDeviceName = monitorInfoX.AliasDeviceName,
@@ -2169,7 +2365,7 @@ namespace VcpCore.Plugins
                 bool TF_Boolean = ColorPresetHash.TryGetValue(ResourceName, out myresources);
                 if (TF_Boolean)
                 {
-                    Trace.Write($" presetName = {presetName}");                
+                    Trace.Write($" presetName = {presetName}");
 
                     /*
                     if (myresources.ContainsKey(presetName.))
@@ -2182,7 +2378,7 @@ namespace VcpCore.Plugins
                     */
 
                     var lookup = myresources.FirstOrDefault(x => x.Key.Equals(presetName, StringComparison.OrdinalIgnoreCase));
-                     
+
                     if (lookup.Key != null)
                     {
                         GetResourceName = ResourceName;
@@ -2250,7 +2446,11 @@ namespace VcpCore.Plugins
             int count = 0;
             do
             {
-                var value = Get_VCPCapability(monitor, 0xE2, 0, true);
+                object value = new object();
+                value = GetFromCacheTable(monitor, Convert.ToByte(0xE2));
+                if (value == null)
+                    value = Get_VCPCapability(monitor, 0xE2, 0, true);
+
                 if (value != null)
                 {
                     uint val = (Convert.ToUInt32(value) & 0XFFFF);
@@ -2316,6 +2516,7 @@ namespace VcpCore.Plugins
 
                     if (capabilitiesStringLength)
                     {
+                        num = 3;
                         var sb = new StringBuilder((int)length);
                         while (!_CapabilitiesRequestAndCapabilitiesReply(hPhysicalMonitor, sb, (uint)sb.Capacity) && num > 0)
                         {

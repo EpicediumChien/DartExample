@@ -660,6 +660,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         MonitorBorkerWin = new MainWindow(this, m);
 
                         MonitorBorkerWin.Show();
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
                     }
                     else
                     {
@@ -838,7 +839,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 foreach(MonitorInfo m in _AllInfoMonitors)
                 {
                     monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName).Result;
-                    if(monitorSettingsList == null || monitorSettingsList.Count == 0)
+                    if (monitorSettingsList == null)
+                    {
+                        monitorSettingsList = new List<DDPMMonitorSettings>();
+                    }
+                    if (monitorSettingsList.Count == 0)
                     {
                         DDPMMonitorSettings settings = new DDPMMonitorSettings();
                         settings.Model = m.modelName;
@@ -2533,7 +2538,83 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        #endregion
+        public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ WriteEAMonitorSettings: _SettingsPlugin is null.");
+                return Task.FromResult(false);
+            }
+
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
+
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null)
+            {
+                writelog($"@ WriteEAMonitorSettings: ReloadMonitorSettings(model={monitorInfo.AliasDeviceName}) return null.");
+                return Task.FromResult(false);
+            }
+
+            //Find the previous saved device settings
+            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
+            //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
+            if (monitorSettings == null)
+            {
+                writelog($"@ WriteEAMonitorSettings: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
+                return Task.FromResult(false);
+            }
+
+            monitorSettings.EA = eaSettings;
+
+            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+            {
+                writelog($"@ WriteEAMonitorSettings(model={model}, serviceTage={serviceTag}) OK.");
+                return Task.FromResult(true);
+            }
+            writelog($"@ WriteEAMonitorSettings: WriteMonitorSettings(model={model}, serviceTage={serviceTag}) failed.");
+            return Task.FromResult(false);
+        }
+
+        public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo)
+        {
+            //Create a default output
+            EAMonitorSettings defaultOutput = new EAMonitorSettings();
+
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ ReadEAMonitorSettings: _SettingsPlugin is null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
+
+            //Read all settings for this model
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null) //never, but check for safe
+            {
+                writelog($"@ ReadEAMonitorSettings: ReloadMonitorSettings(model={model}) is null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Find the settings for the specified device
+            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+            //There is no settings found for this device
+            if (monitorSetting == null)
+            {
+                writelog($"@ ReadEAMonitorSettings: Settings for (model={model}, serviceTag={serviceTag}) is not found (never be saved before).");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Return the EA settings from the settings file
+            return Task.FromResult(monitorSetting.EA);
+
+        }
+
+        #endregion EasyArrage
 
         #region SW Update implementation
 
@@ -2688,9 +2769,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         public Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType)
         {
-            if(_DisplayManagerPlugin != null)
+            if (_DisplayManagerPlugin != null)
             {
                 return Task.FromResult(_DisplayManagerPlugin.SetGaming_VisionEngineEnableType(monitorInfo, VisionEngineEnableType).Result);
+            }
+            return Task.FromResult(false);
+        }
+        private Task<bool> SwitchGaming_VisionEngineType(MonitorInfo monitorInfo, Gaming_VisionEngineType VisionEngineType)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.SwitchGaming_VisionEngineType(monitorInfo, VisionEngineType).Result);
             }
             return Task.FromResult(false);
         }
@@ -3375,12 +3464,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void InitializeSchedulerManagerPlugin()
         {
-            if(_ScheduleManagerPlugin != null)
+            if (_ScheduleManagerPlugin != null)
                 return;
 
             _ScheduleManagerPlugin = _agent.PluginManager.FindPluginByType<ISchedulerManager>(PluginResolution.Dynamic);
 
-            if(_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            if (_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
             {
                 pluginCondition.PluginConditionChangeHandler += OnScheduleManagerPluginConditionChangeHandler;
                 GetCurrentScheduleManagerCondition();
@@ -3389,12 +3478,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void InitializeDTPProxyPlugin()
         {
-            if(_DTPProxyPlugin != null)
+            if (_DTPProxyPlugin != null)
                 return;
 
             _DTPProxyPlugin = _agent.PluginManager.FindPluginByType<IDTPProxyPlugin>(PluginResolution.Dynamic);
 
-            if(_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            if (_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
             {
                 pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                 GetCurrentDTPProxyPluginCondition();
@@ -4195,8 +4284,86 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.DualResolutionToggle:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DualResolutionToggle));
                     break;
+                case HotkeyType.VisionEngineToggle:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_VisionEngineToggle));
+                    break;
             }
             return Task.FromResult(true);
+        }
+
+        private void Gaming_VisionEngineToggle(MonitorInfo monitorInfo, Object[] param)
+        {
+            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
+            if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_VisionEngineType)
+            {
+                List<Gaming_VisionEngineType> supported_VisionEngineType = gamingDisplayProperties.Supported_VisionEngineType;
+                //supported_VisionEngineType.Insert(0, Gaming_VisionEngineType.off);
+                if (supported_VisionEngineType != null && supported_VisionEngineType.Count > 0)
+                {
+                    List<Gaming_VisionEngineType> enabledList = new List<Gaming_VisionEngineType>();
+                    for (int i = 0; i < gamingDisplayProperties.Supported_VisionEngineType.Count; i++)
+                    {
+                        if (gamingDisplayProperties.IsEnable_VisionEngineType[i])
+                            enabledList.Add(gamingDisplayProperties.Supported_VisionEngineType[i]);
+                    }
+
+                    if (enabledList.Count > 0)
+                    {
+                        Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.Current_VisionEngineType;
+                        Gaming_VisionEngineType nextVisionEngineType = Gaming_VisionEngineType.off;
+
+                        for (int i = 0; i < enabledList.Count; i++)
+                        {
+                            if (enabledList[i].Equals(current_VisionEngineType))
+                            {
+                                if (i < (enabledList.Count - 1))
+                                {
+                                    nextVisionEngineType = enabledList[i + 1];
+                                }
+                                else
+                                {
+                                    nextVisionEngineType = enabledList[0];
+                                }
+                            }
+                        }
+                        Debug.WriteLine($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]");
+                        bool result = SwitchGaming_VisionEngineType(monitorInfo, nextVisionEngineType).Result;
+                        writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]" + (result ? "success" : "fail"));
+                    }
+                    else
+                    {
+                        writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not Gaming VisionEngine checked");
+                    }
+                    /*Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.Current_VisionEngineType;
+                    Gaming_VisionEngineType nextVisionEngineType = Gaming_VisionEngineType.off;
+
+                    for (int i = 0; i < supported_VisionEngineType.Count; i++)
+                    {
+                        if (supported_VisionEngineType[i].Equals(current_VisionEngineType))
+                        {
+                            if (i < (supported_VisionEngineType.Count - 1))
+                            {
+                                nextVisionEngineType = supported_VisionEngineType[i + 1];
+                            }
+                            else
+                            {
+                                nextVisionEngineType = supported_VisionEngineType[0];
+                            }
+                        }
+                    }
+                    Debug.WriteLine($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]");
+                    bool result = SwitchGaming_VisionEngineType(monitorInfo, nextVisionEngineType).Result;
+                    writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_VisionEngineType}] to [{nextVisionEngineType}]" + (result ? "success" : "fail"));*/
+                }
+                else
+                {
+                    writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Gaming VisionEngine is empty");
+                }
+            }
+            else
+            {
+                writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not support Gaming VisionEngine");
+            }
         }
         private void Gaming_DualResolutionToggle(MonitorInfo monitorInfo, Object[] param)
         {
@@ -4225,6 +4392,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     Debug.WriteLine($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DualResolutionType}] to [{nextDualResolutionType}]");
                     bool result = SetGaming_DualResolutionType(monitorInfo, nextDualResolutionType).Result;
+                    //Bruce ,Evente back UI
+                    if (result)
+                    {
+                        gamingDisplayProperties.Current_DualResolutionType = nextDualResolutionType;
+                        OnGamingParamChangeHandler(this, gamingDisplayProperties);
+                    }
                     writelog($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DualResolutionType}] to [{nextDualResolutionType}]" + (result ? "success" : "fail"));
                 }
                 else
@@ -4265,6 +4438,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     Debug.WriteLine($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DarkStabilizer}] to [{nextDarkStabilizer}]");
                     bool result = SetGaming_DarkStabilizer(monitorInfo, nextDarkStabilizer).Result;
+                    //Bruce ,Evente back UI
+                    if (result)
+                    {
+                        gamingDisplayProperties.Current_DarkStabilizer = nextDarkStabilizer;
+                        OnGamingParamChangeHandler(this, gamingDisplayProperties);
+                    }
                     writelog($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DarkStabilizer}] to [{nextDarkStabilizer}]" + (result ? "success" : "fail"));
                 }
                 else
@@ -5234,7 +5413,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if(e.ChangedPlugins.OfType<ISWUpdateService>().Any())
                 InitializeSWUpdatePlugin();
 
-            if(e.ChangedPlugins.OfType<IDTPProxyPlugin>().Any())
+            if (e.ChangedPlugins.OfType<IDTPProxyPlugin>().Any())
                 InitializeDTPProxyPlugin();
         }
 

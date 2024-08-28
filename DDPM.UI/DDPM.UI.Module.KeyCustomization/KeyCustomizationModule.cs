@@ -13,6 +13,9 @@ namespace DDPM.UI.Module.KeyCustomization
         private UserControl _rightView;
         private readonly KeyboardViewModel _vm;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public KeyCustomizationModule(KeyboardViewModel vm)
         {
             _rightView = new KeyCustomizationRightView(vm);
@@ -48,11 +51,28 @@ namespace DDPM.UI.Module.KeyCustomization
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("KeyCustomization.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             ((KeyCustomizationRightView)_rightView).Initialize();
+
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

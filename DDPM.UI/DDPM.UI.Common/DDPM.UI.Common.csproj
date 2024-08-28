@@ -141,6 +141,9 @@
     <None Remove="Resources\WD19S_180W.png" />
     <None Remove="Resources\WD22TB4.png" />
     <None Remove="Resources\WD25.png" />
+    <None Remove="Resources\WD25TB4.png" />
+    <None Remove="Resources\WD25TB5.png" />
+    <None Remove="Resources\WD25Z.png" />
     <None Remove="Resources\WebCamModel_P2424HEB_Large.png" />
     <None Remove="Resources\WebCamModel_P2424HEB_Small.png" />
     <None Remove="Resources\WebCamModel_U3223QZ_Large.png" />
@@ -263,6 +266,15 @@
     <Resource Include="Resources\WD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\WD25TB4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WD25TB5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WD25Z.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\WebCamModel_WB5023_Small.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -383,6 +395,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
   </ItemGroup>
 

@@ -25,7 +25,16 @@
                         </StackPanel>
                         <Grid>
                             <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Toggle Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
-                            <UXControls:UXTextBox Width="260" Height="40" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14" Foreground="#FFA4B8CD" Text="{Binding VisionEngineToggle_Text}" />
+                            <UXControls:UXTextBox Width="260" Height="40" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14" Foreground="#FFA4B8CD" 
+                                                  Name="tbVisionEngineToggle"
+                                                  AcceptsReturn="True"
+                                                  PreviewKeyDown="tbVisionEngineToggle_PreviewKeyDown"
+                                                  PreviewKeyUp="tbVisionEngineToggle_PreviewKeyUp"
+                                                  GotFocus="tbVisionEngineToggle_GotFocus"
+                                                  LostFocus="tbVisionEngineToggle_LostFocus"
+                                                  ContextMenuOpening="tbVisionEngineToggle_ContextMenuOpening"
+                                                  ContextMenu="{x:Null}"
+                                                  Text="{Binding VisionEngineToggleKey,Mode=TwoWay}" />
                         </Grid>
                     </StackPanel>
                 </Border>

@@ -1033,7 +1033,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                     });
                 }
-
+                if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
+                {
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
+                    return FWUErrorCode.NamedPipeServerIsNoSafe;
+                }
                 if (fwUpdateInfo.IsUOD)
                 {
                     string ret = "";
@@ -1148,6 +1152,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private void _timerTimeOut_Tick(object sender, EventArgs e)
         {
             _timeOutCount--;
+            if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
+            {
+                resetState();
+            }
             if (_timeOutCount == 0)
             {
                 resetState();

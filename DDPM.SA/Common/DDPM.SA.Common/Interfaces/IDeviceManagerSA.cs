@@ -219,6 +219,8 @@ namespace DDPM.SA.Common
 
         public event EventHandler<EAArgs> EAEditReturn;
 
+        public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
+        public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo);
         #endregion EasyArrange
 
         #endregion public for Displays

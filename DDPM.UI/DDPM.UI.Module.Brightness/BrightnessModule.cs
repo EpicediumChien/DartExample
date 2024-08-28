@@ -15,6 +15,9 @@ namespace DDPM.UI.Module.Brightness
         private BrightnessViewModel? vm;
         private DDPMSettings? _settings;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         //Robert_Lin 2024-5-30, remove argument from all Module's ctor
         //public BrightnessModule(HomeDevice? homeDevice)
         public BrightnessModule(IModuleOwner? moduleOwner = null)
@@ -62,15 +65,38 @@ namespace DDPM.UI.Module.Brightness
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
+
+            isSelectChanged = true;
+            if(IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();                
+            }
+        }
+
+        private void InitNewViewModel()
+        {
+            vm = new BrightnessViewModel();
+
             if (vm != null && _rightView != null)
             {
-                //vm.Invoke_RefreshBrightnessPage();
+                vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
+                vm.SelectedHomeDevice = SelectedHomeDevice = vm.ModuleOwner.SelectedHomeDevice;
+                vm.MyModule = this;
+                _rightView.DataContext = vm;
+                vm.Invoke_RefreshBrightnessPage();
             }
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("BrightnessModule.OnActivated");
+            if(isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();                
+            }
+
             vm.UpdateHDRStatus();
             if (_rightView == null)
                 return;

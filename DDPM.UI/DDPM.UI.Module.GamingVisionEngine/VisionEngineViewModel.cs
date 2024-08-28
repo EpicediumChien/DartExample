@@ -8,6 +8,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using VcpCore.Common;
+using DDPM.SA.Common.Display;
+using System.Diagnostics;
+using Windows.System;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
 
@@ -59,6 +62,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
                         VisionEngineList.Add(new UI_VisionEngine(displayPropertiesInfo.IsEnable_VisionEngineType[i], displayPropertiesInfo.Supported_VisionEngineType[i]));
                     }
                 }));
+                Invoke_RefreshHotkeySettings();
                 RefreshUI();
             }
             catch (Exception)
@@ -83,6 +87,58 @@ namespace DDPM.UI.Module.GamingVisionEngine
             }
             bool ret = DdpmCommonHelper.DeviceManagerSA.SetGaming_VisionEngineEnableType(MyModule.SelectedHomeDevice.MonitorInfo, b).Result;
         }
+        #region hotkey
+        private string _visionEngineToggleKey = "None";
+
+        public string VisionEngineToggleKey
+        {
+            get => _visionEngineToggleKey;
+            set
+            {
+                SetProperty(ref _visionEngineToggleKey, value);
+                OnPropertyChanged("VisionEngineToggleKey");
+                //NotifyPropertyChanged("VisionEngineToggleKey");
+            }
+        }
+
+        public void Invoke_RefreshHotkeySettings()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += DoWork_RefreshHotkeyData;
+            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
+            bw.RunWorkerAsync(ApartmentState.STA);
+        }
+        private void DoWork_RefreshHotkeyData(object sender, DoWorkEventArgs e)
+        {
+            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+            string swHortcutText = string.Empty;
+
+            if (curHotkey.HotkeyInfo.Count > 0)
+            {
+                foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
+                {
+                    List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
+                    switch (hotkeyInfo.Job)
+                    {
+                        case HotkeyType.VisionEngineToggle:
+                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                            hotkeys.Clear();
+                            VisionEngineToggleKey = swHortcutText;
+                            break;
+                    }
+                }
+            }
+        }
+        private void RunWorkerCompleted_RefreshHotkeyData(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Handling the result and final process
+            Debug.WriteLine("RefreshHotkeySettings done");
+        }
+        #endregion
 
         public void RefreshUI()
         {
