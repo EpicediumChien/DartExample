@@ -154,7 +154,7 @@ namespace DDPM.SA.Common.CLI
                         result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
                         return result;
                     }
-                    continue;
+                    // continue; // 20240827 Refactor the containing loop
                 }
                 bool status = false;
                 if (_SettingsPluginIT != null)

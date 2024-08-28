@@ -421,18 +421,49 @@ namespace VcpCore.Plugins.Test
             //var reGetVcpCoreColor = getstr["14"].Where(x => x.Value.Equals(regetMointorColorToStr)).FirstOrDefault().Value;
             //Assert.That(actual: reGetVcpCoreColor, Is.EqualTo(regetMointorColorToStr));
 
-            monitorInfoComplex1.ColorPresentDescription = getstr;
+            MonitorInfo_complex monitorInfoComplex2 = new MonitorInfo_complex()
+            {
+                //UnDefinedColorPreset,
+                //ColorPresentDescription,
+                //CapabilityDic,
+                AliasDeviceName = "Dell U2725DE (HDMI)",
+                Handle = 0x0000000000000000,
+                IsDellMonitor = true,
+                Index = 0,
+                CapabilityString = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) 66(0F02) 67 68 87 AA(00 01 02 04 )",
+                //hMonitor = 0x0000000000e315fe,
+                //hPhysicalMonitor = 0x0000000000000000,
+                hMonitor = 0x0000000000e415ab,
+                hPhysicalMonitor = 0x0000000000000123,
+                szPhysicalMonitorDescription = "Dell U2725DE (HDMI)",
+                DisplayName = "\\\\.\\DISPLAY2",
+                DDCisON = true,
+                DDCCIFail = 0,
+                edid = new EDID() { SerialNumber = "808597599", ModelName = "DELLU2725DE" },
+                //DISPLAY_DEVICE displaydevice,
+                //pMonitorInfoEx,
+                //pDevmode,
+                //ColorPresetSupportList,
+                FwVersion = "M3T101",
+                inputSource = "HDMI-1",
+                //pathInfoTarget,
+                //SmartHDRSupportList,
+                modelName = "U2725DE",
+                series = "Dell UltraSharp (U) Series Monitors",
+            };
+
+            monitorInfoComplex2.ColorPresentDescription = getstr;
             List<MonitorInfo_complex> _allInfoMonitors = new List<MonitorInfo_complex>();
-            _allInfoMonitors.Add(monitorInfoComplex1);
+            _allInfoMonitors.Add(monitorInfoComplex2);
             PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
             privatevcp.SetFieldOrProperty("_AllInfoMonitors", _allInfoMonitors);
 
-            _AllInfoMonitors_mix.Add((monitorInfoComplex1, monitorInfo1));
+            _AllInfoMonitors_mix.Add((monitorInfoComplex2, monitorInfo1));
             privatevcp.SetFieldOrProperty("_AllInfoMonitors_Mix", _AllInfoMonitors_mix);
 
             Dictionary<string, string> VCPE2 = new Dictionary<string, string>();
 
-            bool setColor = vcpCorePlugin.SetColorPreset(monitorInfoComplex1, "Warm"); //SetVCPFeature call dxva2.dll need get real monitorinfo,or get false
+            bool setColor = vcpCorePlugin.SetColorPreset(monitorInfoComplex2, "Warm"); //SetVCPFeature call dxva2.dll
             Assert.IsFalse(setColor);
         }
     }

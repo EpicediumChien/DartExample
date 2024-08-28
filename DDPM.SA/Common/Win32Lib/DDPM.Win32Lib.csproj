@@ -7,6 +7,7 @@
 	  <Version>2.0.0.5</Version>
 	  <Platforms>AnyCPU;x64;ARM64</Platforms>
 	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
+	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
 </Project>

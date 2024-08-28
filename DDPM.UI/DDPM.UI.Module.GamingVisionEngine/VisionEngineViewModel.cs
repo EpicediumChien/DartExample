@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.UI.Common;
+using DDPM.UI.Common.Method;
 using DDPM.UI.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using VcpCore.Common;
+using DDPM.SA.Common.Display;
+using System.Diagnostics;
+using Windows.System;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
 
@@ -16,23 +20,8 @@ namespace DDPM.UI.Module.GamingVisionEngine
     {
         public IModuleOwner? ModuleOwner { get; set; }
         public VisionEngineModule MyModule { get; set; }
-
-        /// <summary>
-        /// Array contents[Night, Clear, Bino, Chroma, Crosshair]
-        /// </summary>
-        private bool[] _isCheck_VisionEngine = new bool[5];
-        /// <summary>
-        /// Array contents[Night, Clear, Bino, Chroma, Crosshair]
-        /// </summary>
-        public bool[] IsCheck_VisionEngine
-        {
-            get => _isCheck_VisionEngine;
-            set
-            {
-                SetProperty(ref _isCheck_VisionEngine, value);
-            }
-        }
-
+        public List<UI_VisionEngine> VisionEngineList { get; set; }
+        public Debouncer VisionEngine_Debouncer;
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -47,6 +36,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
 
         public void Invoke_RefreshData()
         {
+            VisionEngine_Debouncer = new Debouncer(1000, Set_VisionEngine);
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -62,14 +52,17 @@ namespace DDPM.UI.Module.GamingVisionEngine
         {
             try
             {
-
+                VisionEngineList = new List<UI_VisionEngine>();
                 GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties(MyModule.SelectedHomeDevice.MonitorInfo).Result;
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
-
+                    for (int i = 0; i < displayPropertiesInfo.Supported_VisionEngineType.Count; i++)
+                    {
+                        VisionEngineList.Add(new UI_VisionEngine(displayPropertiesInfo.IsEnable_VisionEngineType[i], displayPropertiesInfo.Supported_VisionEngineType[i]));
+                    }
                 }));
-
+                Invoke_RefreshHotkeySettings();
                 RefreshUI();
             }
             catch (Exception)
@@ -82,71 +75,92 @@ namespace DDPM.UI.Module.GamingVisionEngine
             IsBusy = false;
             //Handling the result and final process
         }
+        private void Set_VisionEngine(object o)
+        {
+            bool[] b = new bool[VisionEngineList.Count];
+            for (int i = 0; i < VisionEngineList.Count; i++)
+            {
+                if (VisionEngineList[i].VisionEngine_Enable)
+                {
+                    b[i] = true;
+                }
+            }
+            bool ret = DdpmCommonHelper.DeviceManagerSA.SetGaming_VisionEngineEnableType(MyModule.SelectedHomeDevice.MonitorInfo, b).Result;
+        }
+        #region hotkey
+        private string _visionEngineToggleKey = "None";
+
+        public string VisionEngineToggleKey
+        {
+            get => _visionEngineToggleKey;
+            set
+            {
+                SetProperty(ref _visionEngineToggleKey, value);
+                OnPropertyChanged("VisionEngineToggleKey");
+                //NotifyPropertyChanged("VisionEngineToggleKey");
+            }
+        }
+
+        public void Invoke_RefreshHotkeySettings()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += DoWork_RefreshHotkeyData;
+            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
+            bw.RunWorkerAsync(ApartmentState.STA);
+        }
+        private void DoWork_RefreshHotkeyData(object sender, DoWorkEventArgs e)
+        {
+            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.MyModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+            string swHortcutText = string.Empty;
+
+            if (curHotkey.HotkeyInfo.Count > 0)
+            {
+                foreach (var hotkeyInfo in curHotkey.HotkeyInfo)
+                {
+                    List<VirtualKey> hotkeys = hotkeyInfo.Hotkey;
+                    switch (hotkeyInfo.Job)
+                    {
+                        case HotkeyType.VisionEngineToggle:
+                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                            hotkeys.Clear();
+                            VisionEngineToggleKey = swHortcutText;
+                            break;
+                    }
+                }
+            }
+        }
+        private void RunWorkerCompleted_RefreshHotkeyData(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //Handling the result and final process
+            Debug.WriteLine("RefreshHotkeySettings done");
+        }
+        #endregion
 
         public void RefreshUI()
         {
-
+            OnPropertyChanged("VisionEngineList");
         }
     }
-
-    internal class UI_Properties
+    internal class UI_VisionEngine
     {
-        public Properties Properties { get; set; }
+        public bool VisionEngine_Enable { get; set; }
+        public Gaming_VisionEngineType VisionEngineType { get; set; }
 
         public string DisplayText
         {
             get
             {
-                return $"{Properties.Resolutions_Width}x{Properties.Resolutions_High}, {Properties.Frequency}Hz {(Properties.isRecommended ? "(Recommended)" : "")}";
+                return $"{VisionEngineType.ToString().Replace("__", "/").Replace("_", " ")}";
             }
         }
-    }
-    internal class UI_GameEnhancementMode
-    {
-        public Gaming_GameEnhancementMode GameEnhancementMode { get; set; }
-
-        public string DisplayText
+        public UI_VisionEngine(bool isEnable, Gaming_VisionEngineType type)
         {
-            get
-            {
-                return $"{GameEnhancementMode.ToString().Replace("__", "/").Replace("_", " ")}";
-            }
-        }
-    }
-    internal class UI_ResponseTime
-    {
-        public Gaming_ResponseTime ResponseTime { get; set; }
-
-        public string DisplayText
-        {
-            get
-            {
-                return $"{ResponseTime.ToString().Replace("__", "/").Replace("_", " ")}";
-            }
-        }
-    }
-    internal class UI_DarkStabilizer
-    {
-        public Gaming_DarkStabilizer DarkStabilizer { get; set; }
-
-        public string DisplayText
-        {
-            get
-            {
-                return $"{DarkStabilizer.ToString().Replace("__", "/").Replace("_", " ")}";
-            }
-        }
-    }
-    internal class UI_HDRType
-    {
-        public Gaming_HDRType HDRType { get; set; }
-
-        public string DisplayText
-        {
-            get
-            {
-                return $"{HDRType.ToString().Replace("__", "/").Replace("_", " ")}";
-            }
+            VisionEngine_Enable = isEnable;
+            VisionEngineType = type;
         }
     }
 }

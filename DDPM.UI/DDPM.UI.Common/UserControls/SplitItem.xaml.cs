@@ -1,4 +1,7 @@
-﻿using DDPM.UI.Common.EAEM;
+﻿using DDPM.Easy.Common;
+using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.ViewModels;
 using System.Windows;
@@ -38,6 +41,8 @@ namespace DDPM.UI.Common.UserControls
                 SetValue(InnerContentProperty, value);
                 if (value is ISplit)
                     vm.Split = (ISplit)value;
+                if (value is ISplitCtrl)
+                    vm.SplitCtrl = (ISplitCtrl)value;
             }
         }
 
@@ -46,6 +51,8 @@ namespace DDPM.UI.Common.UserControls
             DependencyProperty.Register("InnerContent", typeof(object), typeof(SplitItem));
 
         public ISplit? ISplit => vm.Split;
+
+        public ISplitCtrl? ISplitCtrl => vm.SplitCtrl;
 
         //public Type ISplitType
         //{
@@ -198,6 +205,67 @@ namespace DDPM.UI.Common.UserControls
         #region For Easy Arrange
 
         public int CustomId;
+        public SplitItem? Buddy { get; set; } = null;
+
+        public int CellCount
+        {
+            get
+            {
+                if (ISplitCtrl != null)
+                {
+                    return ISplitCtrl.CellCount;
+                }
+                return 0;
+            }
+        }
+        public char SplitKey
+        {
+            get
+            {
+                if (ISplitCtrl != null)
+                {
+                    return ISplitCtrl.SplitKey;
+                }
+                return 'A';
+            }
+        }
+        public List<double> Settings
+        {
+            get
+            {
+                if (ISplitCtrl != null)
+                {
+                    return ISplitCtrl.Settings;
+                }
+                return new List<double>();
+            }
+        }
+        public string CustomName
+        {
+            get
+            {
+                if (ISplitCtrl != null)
+                {
+                    return ISplitCtrl.FriendlyName;
+                }
+                return "";
+            }
+        }
+
+        public SplitJson ToSplitJson
+        {
+            get
+            {
+                return new SA.Common.Display.SplitJson()
+                {
+                    CellCount = CellCount,
+                    SplitKey = SplitKey,
+                    Settings = Settings,
+                    CustomId = CustomId,
+                    CustomName = CustomName
+                };
+            }
+        }
 
         #endregion For Easy Arrange
     }

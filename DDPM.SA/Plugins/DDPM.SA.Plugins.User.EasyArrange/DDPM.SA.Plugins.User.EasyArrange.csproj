@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
 	<ImplicitUsings>enable</ImplicitUsings>
+	<Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

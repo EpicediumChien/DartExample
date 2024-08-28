@@ -19,8 +19,10 @@ using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 
@@ -118,16 +120,27 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             throw new NotImplementedException();
         }
 
-        public async Task<DeviceHelper> GetDevices()
-        {
-            if (_deviceHelper != null)
-            {
-                return await Task.Run(() => _deviceHelper);
-            }
-            return new DeviceHelper();
-        }
+    public async Task<DeviceHelper> GetDevices() {
+      if(_deviceHelper != null) {
+        return await Task.Run(() => _deviceHelper);
+      }
+      return new DeviceHelper();
+    }
 
-        public async Task<RFDeviceHelper> GetRFDongleDevices()
+    public async Task<CTKMessageHelper> GetCTKMessageHelper() {
+      var CTKMessageHelper = new CTKMessageHelper();
+      CTKMessageHelper.CollaborationMsg = _iCTKMessageHelper.CollaborationMsg.ToString();
+      CTKMessageHelper.IsCollabMultipleCallsDetected = _iCTKMessageHelper.IsCollabMultipleCallsDetected;
+      CTKMessageHelper.IsZoomCallbacksRegistered = _iCTKMessageHelper.IsZoomCallbacksRegistered;
+      CTKMessageHelper.IsZoomClientInstalled = _iCTKMessageHelper.IsZoomClientInstalled;
+      CTKMessageHelper.IsZoomMultipleCallsDetected = _iCTKMessageHelper.IsZoomMultipleCallsDetected;
+      CTKMessageHelper.IsZoomVersionSupported = _iCTKMessageHelper.IsZoomVersionSupported;
+      CTKMessageHelper.TeamsSDKState = _iCTKMessageHelper.TeamsSDKState.ToString();
+
+      return await Task.Run(() => CTKMessageHelper);
+    }
+
+    public async Task<RFDeviceHelper> GetRFDongleDevices()
         {
             if (_rfDeviceHelper != null)
             {
@@ -922,7 +935,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
                         info.HasWindowsHelloPowerConstraint = _iLogicalDeviceWebcam.HasWindowsHelloPowerConstraint;
                         info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
-                        //_iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
+                        _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
                     }
 
                     if (item is ILogicalDeviceHeadset _logicalDeviceHeadset)
@@ -978,6 +991,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
                     }
 
+                    if (item is ILogicalDevicePen _logicalDevicePen)
+                    {
+                        info.IsBLE = _logicalDevicePen.IsBLE;
+                    }
+
                     if (item is ILogicalDeviceDock _logicalDeviceDock)
                     {
                         info.MonitorCount = _logicalDeviceDock.MonitorCount;
@@ -985,9 +1003,29 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.DockInfo = _logicalDeviceDock.DockInfo;
                         info.DockType = _logicalDeviceDock.DockType;
                         info.DockServiceTag = _logicalDeviceDock.DockServiceTag;
-                        //info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
+                        info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
                         info.DockFwUpdateStatus = _logicalDeviceDock.DockFwUpdateStatus;
                         info.DockTBTConnectionStatus = _logicalDeviceDock.DockTBTConnectionStatus;
+                        try
+                        {
+                            string textString = System.Text.Encoding.UTF8.GetString(_logicalDeviceDock.DockData);
+                            Debug.WriteLine(textString);
+                            DockData dockData = JsonSerializer.Deserialize<DockData>(textString);
+                            info.ModelNumber = dockData.MarketingName;
+                            info.Name = $"Dell Dock {dockData.MarketingName}";
+                            if (string.IsNullOrEmpty(info.DockServiceTag))
+                            {
+                                info.DockServiceTag = dockData.ServiceTag;
+                            }
+                            if (string.IsNullOrEmpty(info.FirmwareVersion))
+                            {
+                                info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
+                            }
+                        }
+                        catch
+                        {
+
+                        }
                     }
                     _deviceHelper.deviceInfo.Add(info);
 
@@ -1002,10 +1040,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
             Console.WriteLine(_deviceHelper.ToString());
         }
-
-        /*private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue)
-        {
-        }*/
 
         private void FillRFDeviceInfo(IPhysicalDevice device)
         {
@@ -1901,7 +1935,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
+    private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue) {
+
+
+    }
+
+    private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
         {
             Console.WriteLine(newValue.ToString());
 

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DDPM.Easy.Common;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 
@@ -65,5 +66,18 @@ namespace DDPM.UI.Common.ViewModels
         //}
 
         #endregion Edit and Delete Icon
+
+        #region ISplitCtrl (EasyArrange)
+        private ISplitCtrl? _splitCtrl;
+        public ISplitCtrl? SplitCtrl
+        {
+            get => _splitCtrl;
+            set
+            {
+                SetProperty(ref _splitCtrl, value);
+                OnPropertyChanged("TooltipText");
+            }
+        }
+        #endregion ISplitCtrl (EasyArrange)
     }
 }

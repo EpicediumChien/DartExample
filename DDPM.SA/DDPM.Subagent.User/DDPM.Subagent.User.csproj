@@ -1,11 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<OutputType>WinExe</OutputType>
+	</PropertyGroup>
+	
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+  
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-	  <Version>2.0.0.36</Version>
+	  <Version>2.0.0.37</Version>
+	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -21,11 +29,13 @@
     <ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
     <ProjectReference Include="..\Plugins\CLI.Plugins.Display\CLI.Plugins.Display.csproj" />
     <ProjectReference Include="..\Plugins\CLI.Plugins.Peripherals\CLI.Plugins.Peripherals.csproj" />
+    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.ActionsManger\DDPM.SA.Plugins.User.ActionsManger.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.CLIProxy\DDPM.SA.Plugins.User.CLIProxy.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.ColorPreset\DDPM.SA.Plugins.User.ColorPreset.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DeviceManager\DDPM.SA.Plugins.User.DeviceManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayManager\DDPM.SA.Plugins.User.DisplayManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayProperties\DDPM.SA.Plugins.User.DisplayProperties.csproj" />
+    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DTPProxy\DDPM.SA.Plugins.User.DTPProxy.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.EasyArrange\DDPM.SA.Plugins.User.EasyArrange.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Hotkey\DDPM.SA.Plugins.User.Hotkey.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.NetworkKVM\DDPM.SA.Plugins.User.NetworkKVM.csproj" />

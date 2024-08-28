@@ -309,36 +309,35 @@ namespace DDPM.SA.Common
 
     public class Get_DeviceData : CLI_RESPONSE
     {
-        public string Manufacturer { get; set; }
-        public string ManufacturingYear { get; set; }
-        public string ManufacturingWeek { get; set; }
-        public string FirmwareVersion { get; set; }
-        public string MonitorActiveHour { get; set; }
-        public string DisplayTechnologyType { get; set; }
-        public string ScreenSize { get; set; }
-        public string OptimalResolution { get; set; }
-        public string Resolution { get; set; }
-        public string ActiveInputSource { get; set; }
-        public string ColorPreset { get; set; }
-        public string ScreenOrientation { get; set; }
-        public string BrightnessLevel { get; set; }
-        public string ContrastLevel { get; set; }
-        public string LuminanceLevel { get; set; }
-        public string AutoBrightness { get; set; }
-        public string AutoBrightnessRangeLevel { get; set; }
-        public string AutoColorTemp { get; set; }
-        public string PrimaryMonitorForSync { get; set; }
-        public string AspectRatio { get; set; }
-        public string USB_CPrioritization { get; set; }
-        public string ColorManagement { get; set; }
-        public string SpeakerMicrophone_enable { get; set; }
-        public string SpeakerMicrophone_lock { get; set; }
-        public string SpeakerVolume { get; set; }
-        public string MicrophoneControl { get; set; }
-        public string Uniformity { get; set; }
-        public string PowerNap { get; set; }
-        public string OSD_language { get; set; }
-        public string PID { get; set; }
+        public string Manufacturer { get; set; } = "N/A";
+        public string ManufacturingYear { get; set; } = "N/A";
+        public string ManufacturingWeek { get; set; } = "N/A";
+        public string FirmwareVersion { get; set; } = "N/A";
+        public string MonitorActiveHour { get; set; } = "N/A";
+        public string DisplayTechnologyType { get; set; } = "N/A";
+        public string ScreenSize { get; set; } = "N/A";
+        public string OptimalResolution { get; set; } = "N/A";
+        public string Resolution { get; set; } = "N/A";
+        public string ActiveInputSource { get; set; } = "N/A";
+        public string ColorPreset { get; set; } = "N/A";
+        public string ScreenOrientation { get; set; } = "N/A";
+        public string BrightnessLevel { get; set; } = "N/A";
+        public string ContrastLevel { get; set; } = "N/A";
+        public string LuminanceLevel { get; set; } = "N/A";
+        public string AutoBrightness { get; set; } = "N/A";
+        public string AutoBrightnessRangeLevel { get; set; } = "N/A";
+        public string AutoColorTemp { get; set; } = "N/A";
+        public string PrimaryMonitorForSync { get; set; } = "N/A";
+        public string AspectRatio { get; set; } = "N/A";
+        public string USB_CPrioritization { get; set; } = "N/A";
+        public string ColorManagement { get; set; } = "N/A";
+        public string SpeakerMicrophone { get; set; } = "N/A";
+        public string SpeakerVolume { get; set; } = "N/A";
+        public string MicrophoneControl { get; set; } = "N/A";
+        public string Uniformity { get; set; } = "N/A";
+        public string PowerNap { get; set; } = "N/A";
+        public string OSD_language { get; set; } = "N/A";
+        public string PID { get; set; } = "N/A";
     }
 
     public class Get_Capabilitystring : CLI_RESPONSE
@@ -348,30 +347,26 @@ namespace DDPM.SA.Common
 
     public class Apply_Configuration : CLI_RESPONSE
     {
-        public string OptimalResolution { get; set; }
-        public string Resolution { get; set; }
-        public string ActiveInputSource { get; set; }
-        public string ColorPreset { get; set; }
-        public string ScreenOrientation { get; set; }
-        public string BrightnessLevel { get; set; }
-        public string ContrastLevel { get; set; }
-        public string LuminanceLevel { get; set; }
-        public string AutoBrightness { get; set; }
-        public string AutoBrightnessRangeLevel { get; set; }
-        public string AutoColorTemp { get; set; }
-        public string PrimaryMonitorForSync { get; set; }
-        public string AspectRatio { get; set; }
-        public string USB_CPrioritization { get; set; }
-        public string ColorManagement { get; set; }
-
-        //public string SpeakerMicrophone_enable { get; set; }
-        //public string SpeakerMicrophone_lock { get; set; }
-        public string SpeakerMicrophone { get; set; }
-
-        public string SpeakerVolume { get; set; }
-        public string MicrophoneControl { get; set; }
-        public string Uniformity { get; set; }
-        public string PowerNap { get; set; }
-        public string OSD_language { get; set; }
+        public string OptimalResolution { get; set; } = "N/A";
+        public string Resolution { get; set; } = "N/A";
+        public string ActiveInputSource { get; set; } = "N/A";
+        public string ColorPreset { get; set; } = "N/A";
+        public string ScreenOrientation { get; set; } = "N/A";
+        public string BrightnessLevel { get; set; } = "N/A";
+        public string ContrastLevel { get; set; } = "N/A";
+        public string LuminanceLevel { get; set; } = "N/A";
+        public string AutoBrightness { get; set; } = "N/A";
+        public string AutoBrightnessRangeLevel { get; set; } = "N/A";
+        public string AutoColorTemp { get; set; } = "N/A";
+        public string PrimaryMonitorForSync { get; set; } = "N/A";
+        public string AspectRatio { get; set; } = "N/A";
+        public string USB_CPrioritization { get; set; } = "N/A";
+        public string ColorManagement { get; set; } = "N/A";
+        public string SpeakerMicrophone { get; set; } = "N/A";
+        public string SpeakerVolume { get; set; } = "N/A";
+        public string MicrophoneControl { get; set; } = "N/A";
+        public string Uniformity { get; set; } = "N/A";
+        public string PowerNap { get; set; } = "N/A";
+        public string OSD_language { get; set; } = "N/A";
     }
 }

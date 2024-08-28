@@ -129,6 +129,7 @@ namespace DDPM.SA.Common
         FolderIsNotSafe = 10,
         FileIsNoSafe = 11,
         CAFail = 12,
+        NamedPipeServerIsNoSafe = 13,
         Unknow = 99
     }
 }

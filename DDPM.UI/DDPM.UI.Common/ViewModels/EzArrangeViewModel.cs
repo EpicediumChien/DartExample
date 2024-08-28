@@ -1,4 +1,5 @@
-﻿//#define ENABLE_CALL_SA
+﻿#define ENABLE_CALL_SA
+//Robert_Lin, 2024-8-14, comment out the #define line if you would like to disable calling to Subagent EAPlugin
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -9,6 +10,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.ComponentModel;
 using System.Windows.Input;
+using VcpCore.Common;
 
 namespace DDPM.UI.Common.ViewModels
 {
@@ -169,11 +171,18 @@ namespace DDPM.UI.Common.ViewModels
                         return;
                     //Selection changed => unselection origial item
                     _selectedSplitItem.IsSelected = false;
+                    if (_selectedSplitItem.Buddy != null)
+                    {
+                        _selectedSplitItem.Buddy.IsSelected = false;
+                    }
                 }
                 if (value != null)
                 {
                     SetProperty(ref _selectedSplitItem, value);
                     _selectedSplitItem.IsSelected = true;
+                    if (_selectedSplitItem.Buddy != null)
+                        _selectedSplitItem.Buddy.IsSelected = true;
+
                     //OnPropertyChanged("IsPipItemSelected");
                 }
                 else

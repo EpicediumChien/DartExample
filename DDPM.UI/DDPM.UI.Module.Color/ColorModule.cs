@@ -13,6 +13,9 @@ namespace DDPM.UI.Module.Color
         private UserControl _rightView = new ColorRightView();
         private ColorViewModel vm;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         //Robert_Lin 2024-5-30, remove argument from ctor
         //public ColorModule(HomeDevice? SelectedHomeDevice)
         public ColorModule(IModuleOwner? moduleOwner = null)
@@ -55,12 +58,28 @@ namespace DDPM.UI.Module.Color
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("ColorModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
             vm.Invoke_RefreshData();
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("ColorModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

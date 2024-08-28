@@ -8,6 +8,7 @@
              xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:eaem="clr-namespace:DDPM.UI.Common.EAEM;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="800"
              Loaded="UserControl_Loaded"
@@ -50,123 +51,46 @@
                     <Border Style="{StaticResource RightGroupBorderStyle}">
                         <StackPanel>
                             <!-- PipPbpSectionHeader -->
-                            <UXControls:UXTextBlock Text="PIP/PBP" Foreground="White"
+                            <UXControls:UXTextBlock Text="{Binding [PIPorPBP], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"
                                                     FontSize="20" />
 
                             <!-- FullScreen divTitle-->
-                            <UXControls:UXTextBlock Text="Fullscreen" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [Fullscreen], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
                                                     FontSize="14" />
-
+                            <!-- Fullscreen SplitItem List -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <!-- -->
                                 <commonCtrl:SplitItem Name="pipOff" Width="88" Height="68"
-                                                      ClickCommand="{Binding FullScreenClickCommand}">
-                                    <!--
-                                    <commonCtrl:SplitItem.ToolTip>
-                                    <ToolTip>
-                                    <Border Background="{StaticResource ToolipBkColor}"
-                                    BorderBrush="{StaticResource ToolipBdColor}"
-                                    CornerRadius="4" Padding="8,12">
-                                    <Border.Resources>
-                                    <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
-                                    <Setter Property="FontSize" Value="12" />
-                                    </Style>
-                                    </Border.Resources>
-
-                                    <StackPanel>
-                                    <TextBlock Text="Full screen" />
-                                    </StackPanel>
-                                    </Border>
-                                    </ToolTip>
-                                    </commonCtrl:SplitItem.ToolTip>
-                                    <eaem:SplitCtrl0A  Description="Full" />
-                                    -->
-                                </commonCtrl:SplitItem>
-
-                                <!--
-                                <commonCtrl:SplitItem Name="pipOff" Width="88" Height="68">
-                                <Image Source="/DDPM.UI.Common;component/Resources/SplitIcon_Off.png" />
-                                </commonCtrl:SplitItem>-->
-                            </StackPanel>
+                                                      ClickCommand="{Binding FullScreenClickCommand}"/>
+                             </StackPanel>
 
                             <!-- PIP divTitle-->
-                            <UXControls:UXTextBlock Text="PIP" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [PipPbp.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
                                                     FontSize="14" />
-
+                            <!-- PIP SplitItem List -->
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <!-- -->
                                 <commonCtrl:SplitItem Width="88" Height="68" Name="pipSmall"
-                                                      ClickCommand="{Binding PipSmallClickCommand}">
-                                    <!--
-                                    <commonCtrl:SplitItem.ToolTip>
-                                    <ToolTip>
-                                    <Border Background="{StaticResource ToolipBkColor}"
-                                    BorderBrush="{StaticResource ToolipBdColor}"
-                                    CornerRadius="4" Padding="8,12">
-                                    <Border.Resources>
-                                    <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
-                                    <Setter Property="FontSize" Value="12" />
-                                    </Style>
-                                    </Border.Resources>
-
-                                    <StackPanel>
-                                    <TextBlock Text="PIP small" />
-                                    </StackPanel>
-                                    </Border>
-                                    </ToolTip>
-                                    </commonCtrl:SplitItem.ToolTip>
-                                    <eaem:SplitCtrl1A />
-                                    -->
-                                </commonCtrl:SplitItem>
-
-                                <!--
-                                <commonCtrl:SplitItem Name="pipSmall" Width="88" Height="68">
-                                <Grid>
-                                <Border CornerRadius="6" BorderThickness="1"
-                                BorderBrush="#FFF2F2F2">
-                                <Grid>
-                                <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <Border Grid.Row="0" Grid.Column="1"
-                                Background="White" CornerRadius="6" />
-                                </Grid>
-                                </Border>
-                                </Grid>
-                                </commonCtrl:SplitItem>
-                                -->
+                                                      ClickCommand="{Binding PipSmallClickCommand}"/>
 
                                 <commonCtrl:SplitItem Width="88" Height="68" Margin="8,0" Name="pipLarge"
-                                                      ClickCommand="{Binding PipLargeClickCommand}">
-                                    <!--
-                                    <eaem:SplitCtrl1B />
-                                    -->
-                                </commonCtrl:SplitItem>
+                                                      ClickCommand="{Binding PipLargeClickCommand}"/>
 
-                                <UXControls:UXButton Content="Toggle between positions" Height="40" CornerRadius="2" Padding="12,8"
+                                <!-- Toggle between positions button -->
+                                <UXControls:UXButton Content="{Binding [PipPbp.7], Source={x:Static lang:LangHelper.Instance}}" Height="40" CornerRadius="2" Padding="12,8"
                                                      Margin="4,0" IsEnabled="{Binding IsPipItemSelected}"
                                                      ButtonType="Secondary" ButtonSemanticColorType="Neutral" Foreground="Gray"
                                                      Command="{Binding PipTogglePositionClickCommand}" />
                             </StackPanel>
 
                             <!-- PBP divTitle-->
-                            <UXControls:UXTextBlock Text="PBP" Foreground="White" Margin="0,12"
+                            <UXControls:UXTextBlock Text="{Binding [PipPbp.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" Margin="0,12"
                                                     FontSize="14" />
-
+                            <!-- PBP SplitItem List -->
                             <commonCtrl:SplitListView Name="spliListView_Pbp" Margin="0,4"
                                                       ItemClickCommand="{Binding PbpItemClickCommand}" />
                         </StackPanel>
                     </Border>
 
-                    <!-- Video Swap ComboBoxes area -->
+                    <!-- Video Swap ComboBoxes Border -->
                     <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0"
                             Visibility="{Binding IsVideoSwapComboBoxesVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                         <StackPanel>
@@ -179,7 +103,7 @@
                                 </Style>
                             </StackPanel.Resources>
 
-                            <UXControls:UXTextBlock Text="Video Swap" FontSize="20" Margin="4,16,0,20" />
+                            <UXControls:UXTextBlock Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Margin="4,16,0,20" />
 
                             <!-- Main Input -->
                             <Grid Height="50">
@@ -189,15 +113,7 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Input 1 (Main)" Grid.Column="0" />
-                                <!--
-                                <UXControls:UXComboBox Grid.Column="2"
-                                Width="184" Height="40" Margin="0,8"
-                                BorderThickness="1" Foreground="White"
-                                Background="#FF293B4D" BorderBrush="#FF40586D"
-                                DisplayMemberPath="InputName"
-                                ItemsSource="{Binding InputSourceList}" />
-                                -->
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.2], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                           Width="184" Margin="0,8" DisplayMemberPath="Name"
                                           ItemsSource="{Binding InputSourceList}"
@@ -206,6 +122,8 @@
 
                             <!-- Sub1 Input, visible only when have Sub1 -->
                             <Grid Height="50">
+                                <!-- Robert_Lin, 2024-8-28 always visible with VideoSwapComboBoxes Border -->
+                                <!-- 
                                 <Grid.Style>
                                     <Style TargetType="Grid">
                                         <Setter Property="Visibility" Value="Collapsed" />
@@ -216,21 +134,14 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
+                                -->
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Input 2 (Sub)" Grid.Column="0" />
-                                <!--
-                                <UXControls:UXComboBox Grid.Column="2"
-                                Width="184" Height="40" Margin="0,8"
-                                BorderThickness="1" Foreground="White"
-                                Background="#FF293B4D" BorderBrush="#FF40586D"
-                                DisplayMemberPath="InputName"
-                                ItemsSource="{Binding InputSourceList}" />
-                                -->
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                           Width="184" Margin="0,8" DisplayMemberPath="Name"
                                           ItemsSource="{Binding InputSourceList}"
@@ -239,6 +150,8 @@
 
                             <!-- Sub2 Input, visible only when have Sub2 -->
                             <Grid Height="50">
+                                <!-- Robert_Lin, 2024-8-28 always visible with VideoSwapComboBoxes Border -->
+                                <!-- 
                                 <Grid.Style>
                                     <Style TargetType="Grid">
                                         <Setter Property="Visibility" Value="Collapsed" />
@@ -249,21 +162,14 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
+                                -->
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Input 3 (Sub)" Grid.Column="0" />
-                                <!--
-                                <UXControls:UXComboBox Grid.Column="2"
-                                Width="184" Height="40" Margin="0,8"
-                                BorderThickness="1" Foreground="White"
-                                Background="#FF293B4D" BorderBrush="#FF40586D"
-                                DisplayMemberPath="InputName"
-                                ItemsSource="{Binding InputSourceList}" />
-                                -->
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                           Width="184" Margin="0,8" DisplayMemberPath="Name"
                                           ItemsSource="{Binding InputSourceList}"
@@ -272,11 +178,12 @@
 
                             <!-- Sub3 Input, visible only when have Sub2 -->
                             <Grid Height="50">
+                                <!-- Robert_Lin, 2024-8-28, Visible only when SplitCount==4 -->
                                 <Grid.Style>
                                     <Style TargetType="Grid">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding HasSub3Input}" Value="True">
+                                            <DataTrigger Binding="{Binding SplitCount}" Value="4">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -288,15 +195,7 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Input 4 (Sub)" Grid.Column="0" />
-                                <!--
-                                <UXControls:UXComboBox Grid.Column="2"
-                                Width="184" Height="40" Margin="0,8"
-                                BorderThickness="1" Foreground="White"
-                                Background="#FF293B4D" BorderBrush="#FF40586D"
-                                DisplayMemberPath="InputName"
-                                ItemsSource="{Binding InputSourceList}" />
-                                -->
+                                <UXControls:UXTextBlock Text="{Binding [PipPbp.5], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
                                 <ComboBox Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                           Width="184"  Margin="0,8" DisplayMemberPath="Name"
                                           ItemsSource="{Binding InputSourceList}"
@@ -315,9 +214,10 @@
                         <Border Name="VideoSwapButton" Style="{StaticResource BlackButtonBorder}"
                                 Width="132" Margin="0,0,4,0"
                                 IsEnabled="{Binding IsVideoSwapButtonEnabled, Mode=OneWay}"
-                                Visibility="{Binding IsVideoSwapButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" MouseLeftButtonDown="videoSwapButton_MouseLeftButtonDown">
+                                Visibility="{Binding IsVideoSwapButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                MouseLeftButtonDown="videoSwapButton_MouseLeftButtonDown">
 
-                            <UXControls:UXTextBlock Name="VideoSwapButtonText" Text="Video Swap"
+                            <UXControls:UXTextBlock Name="VideoSwapButtonText" Text="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}"
                                                     Foreground="#FFFFFF" FontSize="14"
                                                     VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>
@@ -330,7 +230,7 @@
                                 Visibility="{Binding IsUsbSwitchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                                 MouseLeftButtonDown="usbSwitchButton_MouseLeftButtonDown">
                             <UXControls:UXTextBlock Style="{StaticResource BlackButtonText}"
-                                                    Name="UsbSwitchButtonText" Text="USB Switch" />
+                                                    Name="UsbSwitchButtonText" Text="{Binding [PipPbp.6], Source={x:Static lang:LangHelper.Instance}}" />
                         </Border>
                     </StackPanel>
                 </StackPanel>

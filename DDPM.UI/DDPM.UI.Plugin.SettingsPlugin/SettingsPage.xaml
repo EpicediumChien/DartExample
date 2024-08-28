@@ -54,7 +54,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <!--0614 Bruce 將按鈕改成UXTextBlock，事件也變更，讓風格更像figma，不影響功能作動-->
-                    <Border Margin="4" Grid.Row="0" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="GeneralButton_Click">
+                    <Border Margin="0,4,4,4" Grid.Row="0" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="GeneralButton_Click">
                         <Border.Style>
                             <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
                                 <Style.Triggers>
@@ -69,7 +69,7 @@
                             <UXControls:UXTextBlock Grid.Row="0" FontSize="14" Margin="8,25,145,25" Foreground="White" Text="{Binding [General], Source={x:Static lang:LangHelper.Instance}}" AutomationProperties.Name="Primary1" />
                         </Grid>
                     </Border>
-                    <Border Margin="4" Grid.Row="1" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="UpdatesButton_Click">
+                    <Border Margin="0,4,4,4" Grid.Row="1" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="UpdatesButton_Click">
                         <Border.Style>
                             <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
                                 <Style.Triggers>
@@ -91,7 +91,7 @@
                             </Grid>
                         </Grid>
                     </Border>
-                    <Border Margin="4" Grid.Row="2" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="AnalyticsButton_Click">
+                    <Border Margin="0,4,4,4" Grid.Row="2" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="AnalyticsButton_Click">
                         <Border.Style>
                             <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
                                 <Style.Triggers>
@@ -106,7 +106,7 @@
                             <UXControls:UXTextBlock Grid.Row="2" Width="212" FontSize="14" Margin="8,25,145,25" Foreground="White" Text="{Binding [Analytics], Source={x:Static lang:LangHelper.Instance}}" AutomationProperties.Name="Primary1" />
                         </Grid>
                     </Border>
-                    <Border Margin="4" Grid.Row="3" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="QuickSettingsButton_Click">
+                    <Border Margin="0,4,4,4" Grid.Row="3" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="QuickSettingsButton_Click">
                         <Border.Style>
                             <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
                                 <Style.Triggers>
@@ -121,7 +121,7 @@
                             <UXControls:UXTextBlock Width="212" FontSize="14" Margin="8,25,-12,25" Foreground="White" Text="{Binding [QuickSettings], Source={x:Static lang:LangHelper.Instance}}" AutomationProperties.Name="Primary1" />
                         </Grid>
                     </Border>
-                    <Border Margin="4" Grid.Row="4" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="AboutButton_Click">
+                    <Border Margin="0,4,4,4" Grid.Row="4" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="AboutButton_Click">
                         <Border.Style>
                             <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
                                 <Style.Triggers>

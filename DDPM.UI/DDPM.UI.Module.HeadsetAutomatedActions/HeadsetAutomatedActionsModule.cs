@@ -12,6 +12,9 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
         private UserControl? _leftView = null;
         private UserControl _rightView;
 
+        private bool isSelectChanged = false;
+        public bool IsModuleActive { get; set; } = false;
+
         public HeadsetAutomatedActionsModule(HeadsetViewModel vm)
         {
             _rightView = new HeadsetAutomatedActionsRightView(vm);
@@ -38,11 +41,27 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("HeadsetAutomatedActionsModule.OnSelectedHomeDeviceChanged");
+            isSelectChanged = true;
+            if (IsModuleActive)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
+        }
+
+        //Handle new device coming
+        private void InitNewViewModel()
+        {
         }
 
         public void OnActivated()
         {
             Trace.WriteLine("HeadsetAutomatedActionsModule.OnActivated");
+            if (isSelectChanged)
+            {
+                isSelectChanged = false;
+                InitNewViewModel();
+            }
         }
 
         public void OnDeactivated()

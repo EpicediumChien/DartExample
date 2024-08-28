@@ -1,9 +1,12 @@
+using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Moq;
 using NGA.UnitTest.PrivateObject;
+using System.Reflection;
 using System.Windows.Controls;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.Gaming.Tests
 {
@@ -14,6 +17,11 @@ namespace DDPM.UI.Module.Gaming.Tests
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
+        private Mock<IDeviceManagerSA>? deviceManagerSAMock;
+        private IDeviceManagerSA? deviceManagerSA;
+        private HomeDevice? selectedHomeDevice;
+        private GamingViewModel? gamingViewModel;
+        private GamingModule? myModule;
 
         [SetUp]
         public void Setup()
@@ -21,8 +29,28 @@ namespace DDPM.UI.Module.Gaming.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
+            deviceManagerSAMock= new Mock<IDeviceManagerSA>();
+            deviceManagerSA= deviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+            selectedHomeDevice = new HomeDevice();
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(selectedHomeDevice);
+            myModule = new GamingModule();
+            GamingViewModel gamingViewModel = new GamingViewModel();
+            gamingViewModel.MyModule = myModule;
+            gamingViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
+            gamingViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo() { modelName="gx" };
             gamingModule = new GamingModule();
+            gamingModule.SelectedHomeDevice=selectedHomeDevice;
             privateObject = new PrivateObject(gamingModule);
+        }
+
+        [Test]
+        public void TestTestConstructor_GamingModule()
+        {
+            // Assert
+            Assert.That(gamingModule, Is.Not.Null);
+            UserControl _rightView =(UserControl)privateObject.GetFieldOrProperty("_rightView");
+            Assert.That(_rightView.DataContext, Is.EqualTo(privateObject.GetFieldOrProperty("vm")));
         }
 
         [Test]
@@ -105,6 +133,8 @@ namespace DDPM.UI.Module.Gaming.Tests
         [Test]
         public void TestOnActivated()
         {
+            
+            deviceManagerSAMock.Setup(x => x.GetGamingProperties(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new GamingDisplayPropertiesInfo()));
             try
             {
                 gamingModule.OnActivated();

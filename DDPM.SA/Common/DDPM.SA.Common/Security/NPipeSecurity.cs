@@ -1,6 +1,11 @@
-﻿using Dell.Client.Framework.Security;
+﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Security;
 using Dell.RPC.Transport;
+using System;
+using System.Diagnostics;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 
@@ -8,6 +13,13 @@ namespace DDPM.SA.Common.Security
 {
     public class NPipeSecurity
     {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
+        private static bool _GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId)
+        {
+            return GetNamedPipeClientProcessId(Pipe, out ClientProcessId);
+        }
         /// <summary>
         /// For buildin user please make your decision for PipeAccessRights.ReadWrite or PipeAccessRights.FullControl
         /// </summary>
@@ -43,6 +55,24 @@ namespace DDPM.SA.Common.Security
             accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);
             pipeSecurity.AddAccessRule(accessRule);
             return pipeSecurity;
+        }
+
+        public static bool NamedPipeClientSecurity(NamedPipeServerStream pipeServer, out string info)
+        {
+            info = "success";
+            IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
+            if (_GetNamedPipeClientProcessId(hPipe, out uint pid))
+            {
+                info = "[GetNamedPipeClientProcessId] failed";
+                return false;
+            }
+            Console.WriteLine("pid: " + pid);
+            Process process = Process.GetProcessById((int)pid);
+            string filePath = process.MainModule.FileName;
+            Console.WriteLine("File path: " + filePath);
+
+            //check file path security                
+            return DDPMFileSecurity.IsFilePathValid(filePath, out info);
         }
     }
 }

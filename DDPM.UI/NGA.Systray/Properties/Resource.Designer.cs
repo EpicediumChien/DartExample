@@ -59,15 +59,5 @@ namespace NGA.Systray.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon MyDell_Blue {
-            get {
-                object obj = ResourceManager.GetObject("MyDell_Blue", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
     }
 }
