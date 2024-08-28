@@ -523,7 +523,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             int timeoutMsec = 10000;
             while (HomeDeviceCount == 0)
             {
-                PleaseWaitMessage = "Do device detected";
+                PleaseWaitMessage = "No device detected";
                 Thread.Sleep(500);
                 if (sw.ElapsedMilliseconds > timeoutMsec)
                     break;

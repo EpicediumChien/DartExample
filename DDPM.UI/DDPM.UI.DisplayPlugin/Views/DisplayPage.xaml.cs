@@ -137,6 +137,14 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             List<ModuleGroup> groups = new List<ModuleGroup>();
             ModuleGroup moduleGroup = new();
 
+            // --------- Robert_Lin 2024-8-28 -----
+            // The support capability check in BuildModuleGroup() is removed.
+            // All Groups and Modules (headers) will be added into ModuleGroups.
+            // When entering LandingPage and when monitor device changed from ComboBox
+            // ModuleOwner (DeviceBasePageViewModel) will show/hide the Groups/Headers 
+            // depended on the capabilities of the selected monitor.
+            // ------------------------------------------------------------
+            /*
             // Debug to show selected modules only
             // Robert_Lin 2024-5-27 use isDebugModule flag to switch the release|debug capabilities
             bool isDebugModule = false; //Please set to false in release build
@@ -213,6 +221,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     DisplayOthers = true,
                 };
             }
+            */
 
             //Robert_Lin, 2024-7-26, for ModuleGroup:
             //  GroupName is the Id used to identify a ModuelGroup
@@ -229,8 +238,9 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 IconTemplate = (ControlTemplate)this.TryFindResource("iconTemplate_DisplaySettings"),
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Settings.png")
             };
+            bool? support_contrast = _ivm.SelectedHomeDevice.HasCapability_Contrast;
             //If the monitor has Brightness/Contrast capability
-            if (moduleCapabilities.BrightnessContrast)
+            //if (moduleCapabilities.BrightnessContrast)
             {
                 string title_str = string.Empty;
                 sw.Restart();
@@ -249,7 +259,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //If the monitor has Color capability
-            if (moduleCapabilities.Color)
+            //if (moduleCapabilities.Color)
             {
                 sw.Restart();
                 //Robert_Lin, 2024-5-30
@@ -262,7 +272,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //If the monitor has Display Properties capability
-            if (moduleCapabilities.DisplayProperties && !moduleCapabilities.Gaming)
+            //if (moduleCapabilities.DisplayProperties && !moduleCapabilities.Gaming)
             {
                 sw.Restart();
 
@@ -280,7 +290,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //If this ModuleGroup has any item, then add into moduleGroups
-            if (moduleGroup.HeaderCount > 0)
+            if (moduleGroup.HeaderCount > 0) 
             {
                 groups.Add(moduleGroup);
             }
@@ -296,7 +306,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.InputSource.png")
             };
             //If the monitor has InputSource capability
-            if (moduleCapabilities.InputSource)
+            //if (moduleCapabilities.InputSource)
             {
                 sw.Restart();
                 //Option_A, Construct module on BuldModuleList
@@ -312,7 +322,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //If the monitor has PIP/PBP capability
-            if (moduleCapabilities.PipPbp)
+            //if (moduleCapabilities.PipPbp)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("PIP/PBP", typeof(PipPbpModule));
@@ -321,7 +331,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 _log?.Info($"* PipPbpModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
 
-            if (moduleCapabilities.DisplayHotkeys)
+            //if (moduleCapabilities.DisplayHotkeys)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Hotkeys", typeof(DisplayHotkeysModule));
@@ -348,7 +358,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.EA.png")
             };
             //If the monitor has EasyArrange capability
-            if (moduleCapabilities.EzArrange)
+            //if (moduleCapabilities.EzArrange)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Layout", new EzArrangeModule(_vmDisplay));
@@ -359,7 +369,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //If the monitor has EasyMemory capability
-            if (moduleCapabilities.EzMemeory)
+            //if (moduleCapabilities.EzMemeory)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Easy Memory", new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
@@ -369,7 +379,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //If the monitor has Easy Arrange Settings capability
-            if (moduleCapabilities.EzSettings)
+            //if (moduleCapabilities.EzSettings)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Settings", new EzSettingsModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
@@ -396,7 +406,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             };
 
             //If the monitor has Gaming capability
-            if (moduleCapabilities.Gaming)
+            //if (moduleCapabilities.Gaming)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("General", typeof(GamingModule));
@@ -405,7 +415,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 _log?.Info($"* GamingModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
             //If the monitor has VisionEngine capability
-            if (moduleCapabilities.VisionEngine)
+            //if (moduleCapabilities.VisionEngine)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Vision Engine", typeof(VisionEngineModule));
@@ -430,7 +440,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.KVM.png")
             };
             //If the monitor has KVM capability
-            if (moduleCapabilities.Kvm)
+            //if (moduleCapabilities.Kvm)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("KVM", typeof(KvmModule));
@@ -455,7 +465,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Vbar.Display.Others.png")
             };
             //If the monitor has DisplayOthers capability
-            if (moduleCapabilities.DisplayOthers)
+            //if (moduleCapabilities.DisplayOthers)
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Others", new DisplayOthersModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
