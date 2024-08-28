@@ -1326,6 +1326,12 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
+        public static X509Certificate2 LoadCertificate(string filePath)
+        {
+            byte[] certBytes = File.ReadAllBytes(filePath);
+            return new X509Certificate2(certBytes);
+        }
+
         //private void testcode()
         //{
         //    Security.JsonSigningVerifier verifier = new Security.JsonSigningVerifier();
