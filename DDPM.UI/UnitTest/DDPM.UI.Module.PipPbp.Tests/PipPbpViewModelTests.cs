@@ -372,17 +372,17 @@ namespace DDPM.UI.Module.PipPbp.Tests
         [Test]
         public void TestExecuteVideoSwpa()
         {
-            bool result = pipPbpViewModel.ExecuteVideoSwpa();
+            bool result = pipPbpViewModel.ExecuteVideoSwap();
             Assert.That(result, Is.EqualTo(false));
 
             pipPbpViewModel.SelectedHomeDevice = new HomeDevice();
-            result = pipPbpViewModel.ExecuteVideoSwpa();
+            result = pipPbpViewModel.ExecuteVideoSwap();
             Assert.That(result, Is.EqualTo(false));
 
             pipPbpViewModel.SelectedHomeDevice = new HomeDevice() { };
             pipPbpViewModel.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
             deviceManagerSAMock.Setup(x => x.VideoSwap(It.IsAny<MonitorInfo>(), It.IsAny<UInt16>(), It.IsAny<UInt16>())).Returns(Task.FromResult(true));
-            result = pipPbpViewModel.ExecuteVideoSwpa();
+            result = pipPbpViewModel.ExecuteVideoSwap();
             Assert.That(result, Is.EqualTo(true));
         }
 
