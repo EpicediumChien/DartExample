@@ -14,6 +14,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         //Setup before calling Show()
         public EventHandler<string>? SaveButtonClick;
+
         public EventHandler<string>? CancelButtonClick;
         public string CustomName;
         public List<string> CustomNames;
@@ -21,6 +22,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion Input/Output
 
         #region Init
+
         public SaveCustomWindow()
         {
             InitializeComponent();
@@ -38,7 +40,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //Determine the selection
                 cbNames.SelectedIndex = CustomNames.IndexOf(CustomName);
             }
+            //Hide window from Alt+tab
+            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
         }
+
         #endregion Init
 
         public void SetInputArg(EAArgs arg, Screen scr)
@@ -74,6 +80,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 Topmost = true;
             });
         }
+
         private void rootGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if ((e.ChangedButton == MouseButton.Left) && (e.ClickCount == 1))
@@ -98,6 +105,5 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 SaveButtonClick(this, CustomName);
             }
         }
-
-     }
+    }
 }

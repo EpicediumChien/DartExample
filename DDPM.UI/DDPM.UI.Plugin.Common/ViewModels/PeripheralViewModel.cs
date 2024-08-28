@@ -126,7 +126,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 var di = DeviceInfos[CurrentDeviceID];
                 CurrentInstanceID = di.InstanceId;
-                if (di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalDongle)
+                if (di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalDongle || di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalAudioDongle)
                 {
                     foreach (var info in DeviceInfos.Values)
                     {

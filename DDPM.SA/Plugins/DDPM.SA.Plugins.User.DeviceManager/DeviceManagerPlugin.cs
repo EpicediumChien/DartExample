@@ -23,7 +23,6 @@ using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
-using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Newtonsoft.Json;
 using System;
@@ -33,13 +32,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
 using WinCopies.Util;
 using Windows.System;
-using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -54,7 +51,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
     [PluginRequires(Id = IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.CLI_Manager_Plugin, AllowDynamicResolving = true)]
     [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService) })]
-
     public class DeviceMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDeviceManagerSA
     {
         #region Private Members
@@ -89,10 +85,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private readonly object _PluginConditionLock_Hotkey = new object();
         private readonly object _PluginConditionLock_ScheduleManager = new object();
         private readonly object _PluginConditionLock_DTPProxy = new object();
-        DisplayChange displayChange;
+        private DisplayChange displayChange;
 
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
+
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _SupportedColorPreset = new List<string>();
 
@@ -248,6 +245,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// HDR status change event，return HDR status
         /// </summary>
         public event EventHandler<bool> HDRChangeEvent;
+
         /// <summary>
         /// gaming parameter changes event，return gaming parameter
         /// </summary>
@@ -785,9 +783,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             _ColorPresetPlugin.ShowOSD_ColoPreset(m, strMsg);
         }
+
         #endregion
 
         #region Schedule Manger implementation
+
         public Task StartSchedulerManger(int millisecond)
         {
             writelog("DeviceMangerPlugin received StartSchedulerManger: " + millisecond.ToString() + " requested ...");
@@ -795,6 +795,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _ScheduleManagerPlugin.StartSchedulerManger(60000);
             return Task.FromResult(Task.CompletedTask);
         }
+
         public Task StopSchedulerManger()
         {
             writelog("DeviceMangerPlugin received StopSchedulerManger requested ...");
@@ -802,6 +803,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _ScheduleManagerPlugin.StopSchedulerManger();
             return Task.FromResult(Task.CompletedTask);
         }
+
         #endregion
 
         #region Display Service implementation
@@ -1678,6 +1680,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[UIUpdateNotify] be Invoked");
             }
         }
+
         #endregion
 
         #region Bruce display properties implementation
@@ -2435,6 +2438,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.CompletedTask;
         }
+
         #endregion
 
         #region EasyArrage
@@ -2611,7 +2615,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
-
         }
 
         #endregion EasyArrage
@@ -2672,13 +2675,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     writelog("[SW_SetDelaySWUpdateInfoPackage], ReloadAppConfigData is null.");
                 }
-
             }
         }
 
         #endregion
 
         #region ImpExpSettings
+
         public Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path)
         {
             //need test, but need other function
@@ -2736,7 +2739,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
         #endregion
+
         #region Gaming
+
         public Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo)
         {
             if (_DisplayManagerPlugin != null)
@@ -2745,6 +2750,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(new GamingDisplayPropertiesInfo());
         }
+
         public Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode)
         {
             if (_DisplayManagerPlugin != null)
@@ -2754,6 +2760,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             return Task.FromResult(false);
         }
+
         public Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime)
         {
             if (_DisplayManagerPlugin != null)
@@ -2762,6 +2769,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+
         public Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer)
         {
             if (_DisplayManagerPlugin != null)
@@ -2770,6 +2778,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+
         public Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType)
         {
             if (_DisplayManagerPlugin != null)
@@ -2778,6 +2787,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+
         public Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType)
         {
             if (_DisplayManagerPlugin != null)
@@ -2786,6 +2796,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+
         public Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType)
         {
             if (_DisplayManagerPlugin != null)
@@ -2794,6 +2805,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+
         private Task<bool> SwitchGaming_VisionEngineType(MonitorInfo monitorInfo, Gaming_VisionEngineType VisionEngineType)
         {
             if (_DisplayManagerPlugin != null)
@@ -2802,6 +2814,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(false);
         }
+
         #endregion
 
         #region DTPProxy implementation
@@ -2823,7 +2836,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #endregion
-
 
         #region Private Methods
 
@@ -3610,7 +3622,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _ = Task.Run(async () =>
             {
                 var pluginCondition = await (_SettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _SettingsPluginCondition; 
+                //PluginCondition _SettingsPluginCondition;
                 lock (_PluginConditionLock_Settings)
                 {
                     if (pluginCondition is PluginErrorCondition)
@@ -4208,12 +4220,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.KvmChangePIPPosition:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Kvm_ChangePIPPosition));
                     break;
+
                 case HotkeyType.DarkStabilizerToggle:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DarkStabilizerToggle));
                     break;
+
                 case HotkeyType.DualResolutionToggle:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_DualResolutionToggle));
                     break;
+
                 case HotkeyType.VisionEngineToggle:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_VisionEngineToggle));
                     break;
@@ -4295,6 +4310,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Gaming_VisionEngineToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not support Gaming VisionEngine");
             }
         }
+
         private void Gaming_DualResolutionToggle(MonitorInfo monitorInfo, Object[] param)
         {
             GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
@@ -4340,6 +4356,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not support Gaming DualResolution");
             }
         }
+
         private void Gaming_DarkStabilizerToggle(MonitorInfo monitorInfo, Object[] param)
         {
             GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
@@ -4348,7 +4365,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 List<Gaming_DarkStabilizer> supported_DarkStabilizer = gamingDisplayProperties.Supported_DarkStabilizer;
                 if (supported_DarkStabilizer != null && supported_DarkStabilizer.Count > 0)
                 {
-
                     Gaming_DarkStabilizer current_DarkStabilizer = gamingDisplayProperties.Current_DarkStabilizer;
                     Gaming_DarkStabilizer nextDarkStabilizer = Gaming_DarkStabilizer.Disable;
 
@@ -4385,9 +4401,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] not support Gaming DarkStabilizer");
             }
-
-
         }
+
         private void Kvm_SwitchInputSource(MonitorInfo monitorInfo, Object[] param)
         {
             HotkeyInfo hotkey = (HotkeyInfo)param[0];
@@ -5125,6 +5140,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region Settings
+
         private List<VCP> GetAllVCPcode(MonitorInfo monitorInfo)
         {
             List<VCP> vcps = new List<VCP>();
@@ -5148,6 +5164,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
         #endregion
+
         #endregion
 
         #region IDisposableObservable Support
@@ -5242,6 +5259,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             HDRChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
         }
+
         //Bruce, 2024-08-09 add new event
         private void OnGamingParamChangeHandler(object sender, GamingDisplayPropertiesInfo e)
         {

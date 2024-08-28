@@ -60,6 +60,7 @@ namespace DDPM.SA.Common.Display
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SystemParametersInfo(uint uAction, uint uParam, ref bool lpvParam, int fWinIni);
+
         public static bool _SystemParametersInfo(uint uAction, uint uParam, ref bool lpvParam, int fWinIni)
         {
             return SystemParametersInfo(uAction, uParam, ref lpvParam, fWinIni);

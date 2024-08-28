@@ -4,8 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Common.CLI
@@ -107,7 +105,7 @@ namespace DDPM.SA.Common.CLI
                     result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                     return result;
                 }
-                
+
                 op.Option_Value.Replace(".", ",");
                 List<string> values = op.Option_Value.Split(",").ToList();
 
@@ -159,12 +157,12 @@ namespace DDPM.SA.Common.CLI
                 bool status = false;
                 if (_SettingsPluginIT != null)
                 {
-                    if(data_IT != null)
+                    if (data_IT != null)
                         status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_TelemetryConsent" }).Result;
                 }
-                if(_DeviceManagerPlugin != null)
+                if (_DeviceManagerPlugin != null)
                 {
-                    if(data_user != null)
+                    if (data_user != null)
                         status = _DeviceManagerPlugin.SetAppConfigData(data_user).Result;
                 }
 

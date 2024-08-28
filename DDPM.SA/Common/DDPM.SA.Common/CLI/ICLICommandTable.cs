@@ -1,13 +1,9 @@
 ﻿using Dell.Client.Framework.Common;
-using Microsoft.VisualBasic.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ObjectiveC;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json;
+using System.Linq;
 
 namespace DDPM.SA.Common
 {
@@ -29,64 +25,72 @@ namespace DDPM.SA.Common
         }
     }*/
 
-    //get -Display=BrightnessLevel 
+    //get -Display=BrightnessLevel
     //set -Display=BrightnessLevel -option=value
     public class ICLICommandTable
     {
         //IT feature table
         private readonly List<string> Supported_IT_Feature = new List<string>()//ex: /get -app="telemetryconsent"
         {
-            "TELEMETRYCONSENT", 
+            "TELEMETRYCONSENT",
             "ENGERSAVER"
         };
+
         //IT value table of IT feature
         private readonly List<string> Supported_IT_Value_Keyword = new List<string>()//ex: /set -app=telemetryconsent -value=on,"lock"
         {
             "UNLOCK",
             "LOCK"
         };
+
         //---
-        private readonly List<string> commands = new List<string>() 
-        { 
-            "GET", 
-            "SET", 
+        private readonly List<string> commands = new List<string>()
+        {
+            "GET",
+            "SET",
             "CONFIGURE",
             "HELP"
         };
+
         //a part of input Type: target feature, ex: -Display=BrightnessLevel
         private readonly List<string> pluginType = new List<string>()
-        { 
-            "DISPLAY", 
-            "COLOR", 
-            "MOUSE", 
-            "KEYBOARD", 
-            "APP", 
+        {
+            "DISPLAY",
+            "COLOR",
+            "MOUSE",
+            "KEYBOARD",
+            "APP",
             "DOCK",
             "HEADSET",
             "AUDIO"
         };
 
         private ILog _Log;
+
         public ICLICommandTable(ILog Log)
         {
             _Log = Log;
         }
+
         public class CommandType_Option
         {
             /// <summary>
             /// 呼叫的方法
             /// </summary>
             public string Option_Name { get; set; }
+
             /// <summary>
             /// 設定的數值，如果不是設定(set)，為空值
             /// </summary>
             public string Option_Value { get; set; }
+
             public CommandType_Option(string Model, string Value = "")
             {
                 this.Option_Name = Model;
                 this.Option_Value = Value;
             }
         }
+
         public class CommandType_Name
         {
             public string target { get; set; }
@@ -98,6 +102,7 @@ namespace DDPM.SA.Common
                 this.feature = Value;
             }
         }
+
         public class CommandLineInput
         {
             //Used to judge target command support or not (please everyone refer to your own JIRA story)
@@ -110,14 +115,17 @@ namespace DDPM.SA.Common
 
             public string TargetType { get; set; }//name, log, applyconfig; ex: -Display=BrightnessLevel
             public string TargetFeature { get; set; }
+
             /// <summary>
             /// 要呼叫的插件
             /// </summary>
             public string PluginsType { get; set; }
+
             /// <summary>
             /// 呼叫的方法
             /// </summary>
             public List<CommandType_Option> Options { get; set; }//use to store options to get/set device features
+
             public List<string> ServiceTag { get; set; }//for display with servicetag
             public List<string> DeviceIndex { get; set; }//for display with index
             public List<string> GuidString { get; set; }//for peripherals
@@ -129,6 +137,7 @@ namespace DDPM.SA.Common
             // 3.both IT and normal commands in one request (process cli at CLIManager and then bypass command to CLIProxy)
             // It's not possible that both isITCommands and isNormalCommands are false.
             public bool isITCommands { get; set; } = false;
+
             public bool isNormalCommands { get; set; } = false;
 
             public CommandLineInput()
@@ -140,6 +149,7 @@ namespace DDPM.SA.Common
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
             }
         }
+
         public CommandLineInput StringProcessing(string[] args)
         {
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
@@ -342,14 +352,14 @@ namespace DDPM.SA.Common
                         CommandType_Option option = commandInput.Options[i];
                         try
                         {
-                            if(option.Option_Value.Length <= 0)
+                            if (option.Option_Value.Length <= 0)
                             {
                                 commandInput.isNormalCommands = true;//recognized as normal command -> CLIProxy
                                 return;
                             }
                             option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
                             List<string> parse = option.Option_Value.Split(",").ToList();
-                            foreach(string value in parse)
+                            foreach (string value in parse)
                             {
                                 //currently only "LOCK" and "UNLOCK" be recognized as IT global settings
                                 //other new global setting should be add to below
@@ -583,7 +593,7 @@ namespace DDPM.SA.Common
             public static readonly List<Dictionary<string, object>> FeatureList = new List<Dictionary<string, object>>
             {
                 // Display | Basic Device Feature
-                // - GET 
+                // - GET
                 new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "ActiveHours" },               { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AutoBrightness" },            { "Value", "N/A" }, { "Type", 0 }},
@@ -666,14 +676,14 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DeviceConnected" },               { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
                 new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }}, 
+                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }},
 
                 // === CLI apply to all devices ===
                 new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "ConnectedDevices" },              { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DeviceData" },                    { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DeviceConfiguration" },           { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DiagnosticsReport" },             { "Value", "N/A" }, { "Type", 0 }}, 
-                
+                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DiagnosticsReport" },             { "Value", "N/A" }, { "Type", 0 }},
+
                 // ==== Client Peripherals (CP) and Docks CLI ===
                 // - WEBCAM
                 new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "FWVersion" },                  { "Value", "N/A" }, { "Type", 0 }},
@@ -712,7 +722,7 @@ namespace DDPM.SA.Common
                 // - MOUSE
                 new Dictionary<string, object> {{ "Feature", "MOUSE" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "Feature", "MOUSE" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
-                                                
+
                 // - PEN
                 new Dictionary<string, object> {{ "Feature", "PEN" }, { "TargetFeature", "FWVersion" },                     { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "Feature", "PEN" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }},
@@ -721,7 +731,6 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "Feature", "DOCK" }, { "TargetFeature", "FWVersion" },                    { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "Feature", "DOCK" }, { "TargetFeature", "RestoreFactoryDefaults" },       { "Value", "N/A" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "Feature", "DOCK" }, { "TargetFeature", "SilentFWUpdate" },               { "Value", "N/A" }, { "Type", 1 }},
-
             };
 
             public static void PrintFormattedJson()
@@ -744,7 +753,7 @@ namespace DDPM.SA.Common
                     .Select(f => f["TargetFeature"].ToString())
                     .Distinct()
                     .ToList();
-             
+
                 var result = new Dictionary<string, List<string>>
         {
             { feature, targetFeatures }
@@ -756,10 +765,12 @@ namespace DDPM.SA.Common
 
         public static int Response_HelpCommand(CommandLineInput commandLineInput)
         {
-            if (null == commandLineInput.TargetType) {
-                // no argument for help function. dump all targetFeature 
+            if (null == commandLineInput.TargetType)
+            {
+                // no argument for help function. dump all targetFeature
                 CLIHelpCommandStructure.PrintFormattedJson();
-            } else if (commandLineInput.TargetType.Equals("VALUE"))
+            }
+            else if (commandLineInput.TargetType.Equals("VALUE"))
             {
                 switch (commandLineInput.TargetFeature)
                 {
@@ -779,13 +790,14 @@ namespace DDPM.SA.Common
                         Response_FormatError();
                         return (int)CLI_ExitCode.fail_FormantError;
                 }
-            } else {
-                // delivered wrong argument for help function, return error  
+            }
+            else
+            {
+                // delivered wrong argument for help function, return error
                 Response_FormatError();
                 return (int)CLI_ExitCode.fail_FormantError;
             }
             return (int)CLI_ExitCode.success;
-
         }
     }
 }

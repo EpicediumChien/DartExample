@@ -22,7 +22,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ISettingsManagerDev) })]
-
     public class SettingsManagerSA : BaseAgentPlugin, IDisposableObservable, ISettingsManagerDev
     {
         public const string PluginLogId = "User.SettingsManager";
@@ -295,7 +294,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     WriteLog("[From IT Settings event] Got Empty LockSettings of _settings!");
                     return;
                 }
-            
+
                 foreach (string feature in e.IT_Feature_TriggerList)
                 {
                     PropertyInfo propertyOrigin = _settings.LockSettings.GetType().GetProperty(feature);
@@ -323,6 +322,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         #endregion Private methods
 
         #region ISettingManagerDev implementation
+
         public event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
 
         //Event from SettingsManagerPlugin.cs and bypass to subscriber
@@ -428,7 +428,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                     _settings = new DDPMSettings(ddpm_app, ddpm_user, ddpm_it);
 
-                if(_settings != null)
+                if (_settings != null)
                 {
                     //0819 get IT config and apply it
                     if (_SysSettingsPlugin != null)
@@ -724,6 +724,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         #endregion powerNap settings
 
         #region EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
+
         public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
         {
             ////Dir: C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
@@ -798,11 +799,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //    WriteLog($"ReadEasyArrangeSettings({monitorModel},{serialNumber}) Deserialize return null.");
             //    return Task.FromResult<EAMonitorSettings>(null);
             //}
-                return Task.FromResult<EAMonitorSettings>(null);
+            return Task.FromResult<EAMonitorSettings>(null);
         }
+
         #endregion EasyArrange Settings - 2024-8-26 unused, use DeviceManager instead
 
         #region DisplayImpExpSettings
+
         public Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path)
         {
             DDPMImpExpSettings impexpSettings = new DDPMImpExpSettings();
@@ -891,8 +894,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             vcps = new List<VCP>();
             return Task.FromResult<bool>(false);
         }
-        #endregion
-        #endregion
+
+        #endregion DisplayImpExpSettings
+
+        #endregion ISettingManagerDev implementation
 
         private string GetActiveUserLocalAppDataPath()
         {
@@ -1134,6 +1139,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         #endregion Monitor Settings
 
         #region ImpExpSettings
+
         private string RunSerializeObject(string path, DDPMImpExpSettings impExpSettings)
         {
             string jsonString = string.Empty;
@@ -1145,6 +1151,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return jsonString;
         }
+
         private DDPMImpExpSettings RunImpExpDeserializeObject(string value)
         {
             DDPMImpExpSettings impexpSettings = new DDPMImpExpSettings();
@@ -1160,6 +1167,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return impexpSettings;
         }
+
         private bool WriteImpExpSettings(string path, DDPMImpExpSettings impexpSettings)
         {
             if (impexpSettings == null)
@@ -1247,8 +1255,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 else
                 {
                     WriteLog("[InitDDPMUserConfigFile] GetSerializedJsonString: " + info);
-                    _settings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig());                    
-                    if(_settings != null)
+                    _settings = new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig());
+                    if (_settings != null)
                     {
                         WriteLog("[InitDDPMUserConfigFile] *** Init cache from file fail, re-create default settings to file");
                         if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))

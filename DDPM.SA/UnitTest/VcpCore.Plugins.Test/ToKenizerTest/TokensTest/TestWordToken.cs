@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VcpCore.Plugins.Test.ToKenizerTest.TokensTest
+﻿namespace VcpCore.Plugins.Test.ToKenizerTest.TokensTest
 {
     public class TestWordToken
     {

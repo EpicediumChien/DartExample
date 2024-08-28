@@ -1,10 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace DDPM.SA.Common.Settings
+﻿namespace DDPM.SA.Common.Settings
 {
     public class DDPMSettings
     {

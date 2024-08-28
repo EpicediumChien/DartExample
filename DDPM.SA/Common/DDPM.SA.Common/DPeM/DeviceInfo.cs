@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DPeMPublic.Common.Enums;
-using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -1291,7 +1290,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion
+        #endregion Pen Properties
 
         #endregion Properties
 
@@ -1318,6 +1317,7 @@ namespace DDPM.SA.Common
 
         #endregion Methods
     }
+
     public class DockData
     {
         public int BoardId { get; set; }

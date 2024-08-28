@@ -19,6 +19,7 @@ namespace DDPM.SA.Common.Settings
         public bool isOnUSBKVM { get; set; } = false;
         public bool isOnNKVM { get; set; } = false;
     }
+
     public class VCP
     {
         public int Code { get; set; }

@@ -16,10 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -505,6 +503,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 return Task.FromResult(swUpdateInfos);
             }
         }
+
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>

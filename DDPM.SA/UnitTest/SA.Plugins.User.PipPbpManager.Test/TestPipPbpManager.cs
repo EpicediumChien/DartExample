@@ -217,5 +217,295 @@ namespace SA.Plugins.User.PipPbpManager.Test
                 Assert.That(pipPbpCapsStringToWords2, Is.EqualTo(ParsingHexStringToWordsResult2));
             }
         }
+
+        [Test]
+        public void TestSetPipModeOff()
+        {
+            bool SetPipModeOff1 = false;
+            bool SetPipModeOff2 = true;
+            string _DisplayManagerPlugin2 = "E9(";
+            UInt16[] pipPbpCapsStrushorts = new UInt16[0];
+            string _DisplayManagerPlugin1 = string.Empty;
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var SetPipModeOffResult1 = pipPbpMangerPlugin.SetPipModeOff(monitorInfo1).Result;
+                Assert.That(SetPipModeOff1, Is.EqualTo(SetPipModeOffResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var SetPipModeOffResult2 = pipPbpMangerPlugin.SetPipModeOff(monitorInfo1).Result;
+                Assert.That(SetPipModeOff2, Is.EqualTo(SetPipModeOffResult2));
+            }
+        }
+
+        [Test]
+        public void TestSetPipModeSmall()
+        {
+            bool SetPipModeSmall1 = false;
+            bool SetPipModeSmall2 = true;
+
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var SetPipModeSmallResult1 = pipPbpMangerPlugin.SetPipModeSmall(monitorInfo1).Result;
+                Assert.That(SetPipModeSmall1, Is.EqualTo(SetPipModeSmallResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var SetPipModeSmallResult2 = pipPbpMangerPlugin.SetPipModeSmall(monitorInfo1).Result;
+                Assert.That(SetPipModeSmall2, Is.EqualTo(SetPipModeSmallResult2));
+            }
+        }
+
+        [Test]
+        public void TestSetPipModeLarge()
+        {
+            bool SetPipModeLarge1 = false;
+            bool SetPipModeLarge2 = true;
+
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var SetPipModeLargeResult1 = pipPbpMangerPlugin.SetPipModeLarge(monitorInfo1).Result;
+                Assert.That(SetPipModeLarge1, Is.EqualTo(SetPipModeLargeResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var SetPipModeLargeResult2 = pipPbpMangerPlugin.SetPipModeLarge(monitorInfo1).Result;
+                Assert.That(SetPipModeLarge2, Is.EqualTo(SetPipModeLargeResult2));
+            }
+        }
+
+        [Test]
+        public void TestTogglePipSize()
+        {
+            bool TogglePipSize1 = false;
+            bool TogglePipSize2 = true;
+
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var TogglePipSizeResult1 = pipPbpMangerPlugin.TogglePipSize(monitorInfo1).Result;
+                Assert.That(TogglePipSize1, Is.EqualTo(TogglePipSizeResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var TogglePipSizeResult2 = pipPbpMangerPlugin.TogglePipSize(monitorInfo1).Result;
+                Assert.That(TogglePipSize2, Is.EqualTo(TogglePipSizeResult2));
+            }
+        }
+
+        [Test]
+        public void TestTogglePipPosition()
+        {
+            bool TogglePipPosition1 = false;
+            bool TogglePipPosition2 = true;
+
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var TogglePipPositionResult1 = pipPbpMangerPlugin.TogglePipPosition(monitorInfo1).Result;
+                Assert.That(TogglePipPosition1, Is.EqualTo(TogglePipPositionResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var TogglePipPositionResult2 = pipPbpMangerPlugin.TogglePipPosition(monitorInfo1).Result;
+                Assert.That(TogglePipPosition2, Is.EqualTo(TogglePipPositionResult2));
+            }
+        }
+
+        [Test]
+        public void TestSetPbpMode()
+        {
+            bool TogglePipPosition1 = false;
+            bool TogglePipPosition2 = true;
+            UInt16 modeCode = 0x60;
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var SetPbpModeResult1 = pipPbpMangerPlugin.SetPbpMode(monitorInfo1, modeCode).Result;
+                Assert.That(TogglePipPosition1, Is.EqualTo(SetPbpModeResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var SetPbpModeResult2 = pipPbpMangerPlugin.SetPbpMode(monitorInfo1, modeCode).Result;
+                Assert.That(TogglePipPosition2, Is.EqualTo(SetPbpModeResult2));
+            }
+        }
+
+        [Test]
+        public void TestVideoSwap()
+        {
+            bool VideoSwap1 = false;
+            bool VideoSwap2 = true;
+            UInt16 x = 2;
+            UInt16 y = 3;  //x 0-3, y 0-3
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var VideoSwapResult1 = pipPbpMangerPlugin.VideoSwap(monitorInfo1, x, y).Result;
+                Assert.That(VideoSwap1, Is.EqualTo(VideoSwapResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var VideoSwapResult2 = pipPbpMangerPlugin.VideoSwap(monitorInfo1, x, y).Result;
+                Assert.That(VideoSwap2, Is.EqualTo(VideoSwapResult2));
+            }
+        }
+
+        [Test]
+        public void TestGetPxpMode()
+        {
+            ObjGetVCP GetPxpMode1 = new ObjGetVCP() { result = false, value = 255 };
+            ObjGetVCP GetPxpMode2 = new ObjGetVCP() { result = true, value = 0x6f }; ;
+
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var GetPxpModeResult1 = pipPbpMangerPlugin.GetPxpMode(monitorInfo1).Result;
+                Assert.That(GetPxpMode1.result, Is.EqualTo(GetPxpModeResult1.result));
+                Assert.That(GetPxpMode1.value, Is.EqualTo(GetPxpModeResult1.value));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(GetPxpMode2));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var GetPxpModeResult2 = pipPbpMangerPlugin.GetPxpMode(monitorInfo1).Result;
+                Assert.That(GetPxpMode2.result, Is.EqualTo(GetPxpModeResult2.result));
+                Assert.That(GetPxpMode2.value, Is.EqualTo(GetPxpModeResult2.value));
+            }
+        }
+
+        [Test]
+        public void TestGetSubInputList()
+        {
+            ObjGetVCP SubInputList1 = new ObjGetVCP() { result = false, value = 255 };
+            ObjGetVCP SubInputList2 = new ObjGetVCP() { result = true, value = 57151 };
+            List<UInt16> GetSubInputList1 = new List<UInt16>() { };
+            List<UInt16> GetSubInputList2 = new List<UInt16>() { 31, 25, 23 };
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (_DisplayManagerPlugin1 == "")
+            {
+                //GetSubInputList1.Clear();
+                GetSubInputList1 = null;
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var GetSubInputListResult1 = pipPbpMangerPlugin.GetSubInputList(monitorInfo1).Result;
+                Assert.That(GetSubInputList1, Is.EqualTo(GetSubInputListResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != "")
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList2));
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
+                var GetSubInputListResult2 = pipPbpMangerPlugin.GetSubInputList(monitorInfo1).Result;
+                Assert.That(GetSubInputList2, Is.EqualTo(GetSubInputListResult2));
+            }
+        }
+
+        [Test]
+        public void TestGetSubInputs()
+        {
+            ObjGetVCP SubInputList1 = new ObjGetVCP() { result = false, value = 255 };
+            ObjGetVCP SubInputList2 = new ObjGetVCP() { result = true, value = 57151 };
+            List<InputSourceObj> GetSubInputs1 = new List<InputSourceObj>() { };
+            GetSubInputs1 = null;
+            List<InputSourceObj> GetSubInputs2 = new List<InputSourceObj>();
+            GetSubInputs2.Add(new InputSourceObj(31, ""));
+            GetSubInputs2.Add(new InputSourceObj(25, "Thunderbolt-1"));
+            GetSubInputs2.Add(new InputSourceObj(23, "DisplayPort-3")); //Code=15,Name="DisplayPort-1";
+
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (GetSubInputs1 == null)
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var GetSubInputsResult1 = pipPbpMangerPlugin.GetSubInputs(monitorInfo1).Result;
+                Assert.That(GetSubInputs1, Is.EqualTo(GetSubInputsResult1));
+            }
+
+            if (GetSubInputs2 != null)
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList2));
+                var DisplayManagerService2Object = DisplayManagerService2.Object;
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2Object);   //GetVCPCapability 0x8E :value 15 ,true
+
+                var GetSubInputsResult2 = pipPbpMangerPlugin.GetSubInputs(monitorInfo1).Result;
+                Assert.That(GetSubInputs2[0].Code, Is.EqualTo(GetSubInputsResult2[0].Code));
+                Assert.That(GetSubInputs2[0].Name, Is.EqualTo(GetSubInputsResult2[0].Name));
+                Assert.That(GetSubInputs2[1].Code, Is.EqualTo(GetSubInputsResult2[1].Code));
+                Assert.That(GetSubInputs2[1].Name, Is.EqualTo(GetSubInputsResult2[1].Name));
+                Assert.That(GetSubInputs2[2].Code, Is.EqualTo(GetSubInputsResult2[2].Code));
+                Assert.That(GetSubInputs2[2].Name, Is.EqualTo(GetSubInputsResult2[2].Name));
+            }
+        }
+
     }
 }

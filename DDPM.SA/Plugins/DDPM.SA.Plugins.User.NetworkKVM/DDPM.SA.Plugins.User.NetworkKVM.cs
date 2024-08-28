@@ -14,12 +14,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Interop;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using WinCopies.Util;
@@ -559,7 +556,7 @@ namespace NetworkKVM.Plugins
                     WriteAsync(change_MONITOR_ID.ToJson()).Wait();
                 }
             }
-            catch 
+            catch
             {
                 ;
             }
@@ -638,6 +635,7 @@ namespace NetworkKVM.Plugins
         //    }
         //    return Task.CompletedTask;
         //}
+
         #endregion INKVM implementation
 
         #region Private Methods
@@ -935,9 +933,11 @@ namespace NetworkKVM.Plugins
                     case "IS_HOTKEY_AVAILABLE":
                         reStr = isHotkeyAvailable(jsonstring).Result;
                         break;
+
                     case "DISCONNECT":
                         Disconnect();
                         break;
+
                     case "UPDATE_SUPPORTED_MONITOR_LIST_RESPONSE":
                         if (!ResponseSucces(json).Result)
                         {
@@ -1357,7 +1357,8 @@ namespace NetworkKVM.Plugins
                 Thread.Sleep(1000);
             }
         }
-#endregion
+
+        #endregion Private Methods
 
         #region Event Handler
 
