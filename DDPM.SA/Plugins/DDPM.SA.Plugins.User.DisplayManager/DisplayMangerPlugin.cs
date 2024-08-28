@@ -690,6 +690,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     {
                         GetALSAll(monitorInfos, ref aconfig);
                     }
+                    aconfig.ModelName = monitorInfos.modelName;
                     aconfig.serialNumber = monitorInfos.edid.SerialNumber;
                     aconfig.DisplayName = monitorInfos.DisplayName;
                     AllALSConfig.Add(aconfig);
@@ -779,6 +780,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     foreach (MonitorInfo mon in monitorALS)//copy to als_connected first
                     {
                         ALSConfig als_nowtemp = new ALSConfig();
+                        als_nowtemp.ModelName = mon.modelName;
                         als_nowtemp.DisplayName = mon.DisplayName;
                         als_nowtemp.serialNumber = mon.edid.SerialNumber;
                         als_connected.Add(als_nowtemp);
@@ -859,6 +861,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             foreach (MonitorInfo monitorInfo in monitorALS)
             {
                 ALSConfig tempALSConfig = new ALSConfig();
+                tempALSConfig.ModelName = monitorInfo.modelName;
                 tempALSConfig.DisplayName = monitorInfo.DisplayName;
                 tempALSConfig.serialNumber = monitorInfo.edid.SerialNumber;
                 als_connecte.Add(tempALSConfig);
@@ -955,6 +958,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     _logs.DebugMsg("[DisplayMangerPlugin] UpdateALSFeatureValue GetALSAll False...");
                     return Task.FromResult(false);
                 }
+                aconfig.ModelName = monitorInfos.modelName;
                 aconfig.DisplayName = monitorInfos.DisplayName;
                 aconfig.serialNumber = monitorInfos.edid.SerialNumber;//Dean 0624
                 AllALSConfig.Add(aconfig);
@@ -979,6 +983,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (alsConfig == null)
                 {
                     GetALSupport(monitorInfos, ref alsTemp);
+                    alsTemp.ModelName = monitorInfos.modelName;
                     alsTemp.serialNumber = monitorInfos.edid.SerialNumber;
                     alsTemp.DisplayName = monitorInfos.DisplayName;
                     AllALSConfig.Add(alsTemp);
