@@ -7,69 +7,68 @@
         mc:Ignorable="d"
         Title="EAWorkWindow" Height="450" Width="800"
         AllowsTransparency="True" Topmost="True"
-        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False" 
-        Loaded="Window_Loaded" Activated="Window_Activated" 
-        ContentRendered="Window_ContentRendered" IsVisibleChanged="Window_IsVisibleChanged"
-        >
+        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False"
+        Loaded="Window_Loaded" Activated="Window_Activated"
+        ContentRendered="Window_ContentRendered" IsVisibleChanged="Window_IsVisibleChanged">
     <Window.Resources>
         <Storyboard x:Key="FadeOut">
             <DoubleAnimation Storyboard.TargetName="fadeOutCtrl" Storyboard.TargetProperty="Opacity"
-                             BeginTime="0:0:0.5" Duration="0:0:3"                             
-                             From="1.0" To="0" FillBehavior="HoldEnd"/>
+                             BeginTime="0:0:0.5" Duration="0:0:3"
+                             From="1.0" To="0" FillBehavior="HoldEnd" />
         </Storyboard>
     </Window.Resources>
-    
+
     <Grid Name="rootGrid2">
-        <!-- 
+        <!--
         <Grid.Style>
-            <Style TargetType="Grid">
-                <Setter Property="Visibility" Value="Hidden" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsWorkUIShowing}" Value="True">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Setter Property="Window.Topmost" Value="True"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}}"
-                                 Value="True">
-                        <Setter Property="Visibility" Value="Visible"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
+        <Style TargetType="Grid">
+        <Setter Property="Visibility" Value="Hidden" />
+        <Style.Triggers>
+        <DataTrigger Binding="{Binding IsWorkUIShowing}" Value="True">
+        <Setter Property="Visibility" Value="Visible" />
+        <Setter Property="Window.Topmost" Value="True" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}}"
+        Value="True">
+        <Setter Property="Visibility" Value="Visible" />
+        </DataTrigger>
+        </Style.Triggers>
+        </Style>
         </Grid.Style>
         -->
 
         <Grid Name="splitGrid">
             <Grid.Style>
                 <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsWorkUIShowing}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Setter Property="Window.Topmost" Value="True"/>
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="Window.Topmost" Value="True" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            <ContentControl Name="splitCtrl"/>
+            <ContentControl Name="splitCtrl" />
         </Grid>
         <Grid Name="fadeOutGrid">
             <Grid.Style>
                 <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="Visibility" Value="Hidden" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}}"
-                                Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
+                                     Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
-            <ContentControl Name="fadeOutCtrl"/>
+            <ContentControl Name="fadeOutCtrl" />
         </Grid>
         <WrapPanel Visibility="Collapsed">
-            <TextBlock Text="IsFading = " Foreground="Blue"/>
+            <TextBlock Text="IsFading = " Foreground="Blue" />
             <TextBlock Text="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}}"
-                       Foreground="Blue"/>
+                       Foreground="Blue" />
         </WrapPanel>
     </Grid>
 </Window>

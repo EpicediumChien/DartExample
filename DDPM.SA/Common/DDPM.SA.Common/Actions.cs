@@ -1,12 +1,4 @@
-﻿using Dell.Client.Framework.Common;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace DDPM.SA.Common
 {
@@ -24,6 +16,7 @@ namespace DDPM.SA.Common
         public KeyboardActionsSA()
         { }
     }
+
     public class MouseActionsSA
     {
         public Dictionary<MouseButtonNameSA, SelectedMouseActionSA> ButtonActions = new();

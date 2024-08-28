@@ -14,6 +14,7 @@
         public event EventHandler? ClientConnectedEvent;
 
         public event EventHandler? ClientDisconnectedEvent;
+
         public bool IsNamedPipeServerIsNoSafe = false;
 
         public NamedPipeStreamServer(string pipeName) : base(pipeName)

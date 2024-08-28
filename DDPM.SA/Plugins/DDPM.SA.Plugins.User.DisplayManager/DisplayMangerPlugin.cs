@@ -29,8 +29,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -2585,14 +2583,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 gamingDisplayPropertiesInfo.IsSupported_GameEnhancementMode = true;
                                 gamingDisplayPropertiesInfo.Supported_GameEnhancementMode.Add((Gaming_GameEnhancementMode)(u & 0x0f));
                                 break;
+
                             case (uint)Gaming_Supported.ResponseTime:
                                 gamingDisplayPropertiesInfo.IsSupported_ResponseTime = true;
                                 gamingDisplayPropertiesInfo.Supported_ResponseTime.Add((Gaming_ResponseTime)(u & 0x0f));
                                 break;
+
                             case (uint)Gaming_Supported.DarkStabilizer:
                                 gamingDisplayPropertiesInfo.IsSupported_DarkStabilizer = true;
                                 gamingDisplayPropertiesInfo.Supported_DarkStabilizer.Add((Gaming_DarkStabilizer)(u & 0x0f));
                                 break;
+
                             case (uint)Gaming_Supported.HDRType:
                                 gamingDisplayPropertiesInfo.IsSupported_HDRType = true;
                                 gamingDisplayPropertiesInfo.Supported_HDRType.Add((Gaming_HDRType)(u & 0x0f));

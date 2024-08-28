@@ -43,7 +43,6 @@ namespace DDPM.SA.Common
                         {
                             string version = item.NewVersion.ToString().PadLeft(4, '0');
                             drr["NewVersion"] = Regex.Replace(version.ToString(), ".{1}", "$0.").Substring(0, (version.ToString().Length * 2) - 1);
-
                         }
                         //int Version = int.Parse(item.NewVersion, System.Globalization.NumberStyles.HexNumber);
                     }

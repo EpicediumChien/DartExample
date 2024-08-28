@@ -1,9 +1,4 @@
 ﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VcpCore.Plugins.Test.ParserTest.NodesTest
 {
@@ -33,7 +28,7 @@ namespace VcpCore.Plugins.Test.ParserTest.NodesTest
         [Test]
         public void ParentTest()
         {
-            INode parent=null;
+            INode parent = null;
             GroupValueNode groupValueNode = new GroupValueNode();
             groupValueNode.Parent = parent;
             var ParentResult = groupValueNode.Parent;
@@ -56,6 +51,5 @@ namespace VcpCore.Plugins.Test.ParserTest.NodesTest
             string actual = groupValueNode.ToString();
             Assert.That(expected, Is.EqualTo(actual));
         }
-
     }
 }

@@ -13,20 +13,24 @@ namespace DDPM.SA.Common.Alert
     {
         public static readonly DependencyProperty AlertTypeProperty = DependencyProperty.Register("AlertType", typeof(AlertType), typeof(AlertBase), new PropertyMetadata(AlertType.Default, OnAlertTypeChanged));
         public static readonly DependencyProperty MessageProperty = DependencyProperty.Register("Message", typeof(string), typeof(AlertBase), new PropertyMetadata(string.Empty));
+
         public AlertType AlertType
         {
             get { return (AlertType)GetValue(AlertTypeProperty); }
             set { SetValue(AlertTypeProperty, value); }
         }
+
         public string Message
         {
             get { return (string)GetValue(MessageProperty); }
             set { SetValue(MessageProperty, value); }
         }
+
         public AlertBase()
         {
             InitializeComponent();
         }
+
         private static void OnAlertTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = d as AlertBase;
@@ -55,6 +59,7 @@ namespace DDPM.SA.Common.Alert
             }
         }
     }
+
     public enum AlertType
     {
         Info,

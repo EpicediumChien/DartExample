@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Input;
-using VcpCore.Common;
-using static VcpCore.Plugins.EDIDReader;
+﻿using static VcpCore.Plugins.EDIDReader;
 using static VcpCore.Plugins.EDIDReader.Monitor_Range_Limit;
 
 namespace VcpCore.Plugins.Test.ParserTest
@@ -28,7 +19,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             int expected = 5;
             int actual = EDIDReader.MaximumCommonDivisor(num4, num5);
             Assert.That(expected, Is.EqualTo(actual));
-
         }
 
         [Test]
@@ -66,7 +56,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             string Information1 = "2023年22周; DEL; 68.1(寸)(960 mm,1440 mm); 133:271;\r\n";
             var result = EDIDReader.Information(validEdid);
             Assert.That(Information1, Is.EqualTo(result));
-
         }
 
         [Test]
@@ -88,7 +77,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             char result = EDIDReader.ToCharByASCIIShort(a); //66 B
             Assert.That(ch1, Is.EqualTo(result));
         }
-
 
         [Test]
         public void TestContains()
@@ -163,14 +151,12 @@ namespace VcpCore.Plugins.Test.ParserTest
         [Test]
         public void TestManufacturer_Name_()
         {
-
             byte byte8 = 0x10;
             byte byte9 = 0xAC;
             string Manufacturer_Name2 = "DEL";
 
             var result = Vendor_Product_Identification.Manufacturer_Name(byte8, byte9);
             Assert.That(Manufacturer_Name2, Is.EqualTo(result));
-
         }
 
         [Test]
@@ -419,7 +405,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 {
                     var result = Display_Parameters.Video_White_and_Sync_Levels(validEdid);
                     Assert.That(Video_White_and_Sync_Levels2, Is.EqualTo(result));
-
                 }
                 else if ((validEdid[20] & 0x60) == 0x60)//11
                 {
@@ -616,7 +601,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestVSync_Pulse_Must_Be_Serrated()
         {
@@ -739,7 +723,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestMax_Display_Size()
         {
@@ -787,7 +770,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 Assert.That(Max_Display_Size_CH2, Is.EqualTo(result));
             }
         }
-
     }
 
     public class TestPower_Management_and_Features
@@ -815,7 +797,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 var result = Power_Management_and_Features.Standby(InvalidEdid);
                 Assert.That(StandbyNosupport, Is.EqualTo(result));
             }
-
         }
 
         [Test]
@@ -841,7 +822,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 var result = Power_Management_and_Features.Suspend(InvalidEdid);
                 Assert.That(SuspendNosupport, Is.EqualTo(result));
             }
-
         }
 
         [Test]
@@ -867,7 +847,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 var result = Power_Management_and_Features.ActiveOff(InvalidEdid);
                 Assert.That(ActiveOffNosupport, Is.EqualTo(result));
             }
-
         }
 
         [Test]
@@ -916,7 +895,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestsRGB_Default_ColorSpace()
         {
@@ -940,7 +918,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 var result = Power_Management_and_Features.sRGB_Default_ColorSpace(InvalidEdid);
                 Assert.That(sRGB_Default_ColorSpace2, Is.EqualTo(result));
             }
-
         }
 
         [Test]
@@ -965,9 +942,7 @@ namespace VcpCore.Plugins.Test.ParserTest
                 var result = Power_Management_and_Features.Default_GTF(InvalidEdid);
                 Assert.That(Default_GTF1, Is.EqualTo(result));
             }
-
         }
-
 
         [Test]
         public void TestPrefered_Timing_Mode()
@@ -991,9 +966,7 @@ namespace VcpCore.Plugins.Test.ParserTest
                 var result = Power_Management_and_Features.Prefered_Timing_Mode(InvalidEdid);
                 Assert.That(Prefered_Timing_Mode2, Is.EqualTo(result));
             }
-
         }
-
     }
 
     public class TestGamma_Color_and_Etablished_Timings
@@ -1269,8 +1242,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
-
         [Test]
         public void TestDisplay_Type_()
         {
@@ -1374,7 +1345,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 }
             }
         }
-
     }
 
     public class TestPreferred_Detailed_Timing
@@ -1505,7 +1475,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestHorizontal_Sync_Pulse_Width()
         {
@@ -1538,7 +1507,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             string Horizontal_Border2 = "200 pixels";
             var result = Preferred_Detailed_Timing.Horizontal_Border(validEdid);
             Assert.That(Horizontal_Border2, Is.EqualTo(result));
-
         }
 
         [Test]
@@ -1613,7 +1581,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             }
         }
 
-
         [Test]
         public void TestVertical_Sync_Offset()
         {
@@ -1671,7 +1638,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             var result = Preferred_Detailed_Timing.Vertical_Border(validEdid);
             Assert.That(Vertical_Border1, Is.EqualTo(result));
         }
-
 
         [Test]
         public void TestVertical_Size()
@@ -1940,7 +1906,6 @@ namespace VcpCore.Plugins.Test.ParserTest
             var result = Detailed_Timing_Sharp2.Horizontal_Size(validEdid); // 	344 mm
             Assert.That(Horizontal_Size1, Is.EqualTo(result));
         }
-
 
         [Test]
         public void TestVertical_Active_()
@@ -2256,7 +2221,6 @@ namespace VcpCore.Plugins.Test.ParserTest
                 }
             }
         }
-
 
         [Test]
         public void TestGTF_C()

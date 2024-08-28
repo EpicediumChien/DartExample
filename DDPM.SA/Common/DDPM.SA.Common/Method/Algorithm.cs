@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.Method
 {
@@ -14,6 +10,7 @@ namespace DDPM.SA.Common.Method
             Array.Reverse(array);
             return new string(array);
         }
+
         public static string BinaryToHex(string binaryString)
         {
             int length = binaryString.Length;

@@ -10,15 +10,13 @@
 
 #endregion
 
+using DDPM.SA.Common;
+using Dell.Client.Framework.Agent;
+using Dell.UnifiedAgent.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using DDPM.SA.Common;
-using Dell.Client.Framework.Agent;
-using Dell.UnifiedAgent.Common;
-using DDPM.Common;
 
 namespace DDPM.Subagent
 {
@@ -57,7 +55,6 @@ namespace DDPM.Subagent
         ///     application. This should be unique to your product.
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_MUTEX_ID);
-
 
         private static void Main(string[] args)
         {

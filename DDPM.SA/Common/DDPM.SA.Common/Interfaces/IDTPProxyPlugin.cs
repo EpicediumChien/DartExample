@@ -10,17 +10,15 @@
 
 #endregion
 
-using System;
-using System.Threading.Tasks;
 using Dell.Client.Framework.Common;
+using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
 {
-  public interface IDTPProxyPlugin : IFrameworkPlugin
-  {
+    public interface IDTPProxyPlugin : IFrameworkPlugin
+    {
+        Task<int> GetDpiValue(string itemID);
 
-    Task<int> GetDpiValue(string itemID);
-
-    Task SetDPIValue(string itemID, int newValue);
-  }
+        Task SetDPIValue(string itemID, int newValue);
+    }
 }
