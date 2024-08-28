@@ -90,6 +90,15 @@ namespace NetworkKVM.Plugins
         #endregion Overriding methods
 
         #region INKVM implementation
+        public Task RunNamedpipe()
+        {
+            return Task.Run(async () => await NamedPipeServer());
+        }
+
+        public Task<bool> IsNamedpipeConnected()
+        {
+            return Task.FromResult(pipeServer.IsConnected);
+        }
 
         /// <summary>
         /// This function is used to distinc the monitor add or remove
@@ -126,6 +135,7 @@ namespace NetworkKVM.Plugins
                     {
                         Disconnect();
                         CreateNamedPipe();
+                        //RunNamedpipe();
                         if (pipeServer.IsConnected)
                         {
                             WriteAsync(ResponseSupportedMonitor().Result).Wait();
@@ -811,6 +821,7 @@ namespace NetworkKVM.Plugins
                 }
             }
             _agent.StopAgent();
+            //return Task.CompletedTask;
         }
 
         private void CreateNamedPipe()
