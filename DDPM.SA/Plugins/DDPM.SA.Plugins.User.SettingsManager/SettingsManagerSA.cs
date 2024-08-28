@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -841,29 +842,55 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
             }
 
-
             return Task.FromResult<bool>(false);
         }
-        //public Task<bool> DisplayImportSettings(string path)
-        //{
-        //    DDPMMonitorSettings monitorSettings = ReadMonitorSettingsFile(path).Result;
-        //    List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-        //    if (monitorSettings != null)
-        //    {
-        //        string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
-        //        if (File.Exists(monitorSettings_path))
-        //        {
-        //            monitorSettingsList = ReloadMonitorSettings(monitorSettings_path).Result;
-        //            foreach (DDPMMonitorSettings settings in monitorSettingsList)
-        //            {
-        //                if (settings.ServiceTag == monitorSettings.ServiceTag)
-        //                {
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return Task.FromResult<bool>(false);
-        //}
+        public Task<bool> DisplayImportSettings(string path, out List<VCP> vcps)
+        {
+            WriteLog("[DisplayImportSettings] path :" + path);
+            List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
+            DDPMImpExpSettings ImpExpSettings = ReadImportSettingsFile(path);
+            if (ImpExpSettings != null)
+            {
+                DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+                monitorSettings = ImpExpSettings.MonitorSettings;
+                WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
+                string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
+                WriteLog("[DisplayImportSettings] monitorSettings_path :" + monitorSettings_path);
+                if (File.Exists(monitorSettings_path))
+                {
+                    monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
+                    foreach (DDPMMonitorSettings settings in monitorSettingsList)
+                    {
+                        if (settings.ServiceTag == monitorSettings.ServiceTag)
+                        {
+                            settings.Input = monitorSettings.Input;
+                            settings.KVM = monitorSettings.KVM;
+                            settings.VCPs = monitorSettings.VCPs;
+                            if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                            {
+                                vcps = monitorSettings.VCPs;
+                                return Task.FromResult<bool>(true);
+                            }
+                            else 
+                            {
+                                WriteLog("[DisplayImportSettings] Import settings File...");
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    WriteLog("[DisplayImportSettings] Not Find File...");
+                }
+            }
+            else
+            {
+                WriteLog("[DisplayImportSettings] Settings is null...");
+            }
+            vcps = new List<VCP>();
+            return Task.FromResult<bool>(false);
+        }
         #endregion
         #endregion
 
@@ -1086,20 +1113,22 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return monitorSettingsList;
         }
 
-        private DDPMMonitorSettings RunMonitorDeserializeObject(string value)
+        private DDPMImpExpSettings RunImpExpSettingsDeserializeObject(string value)
         {
-            DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+            DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
 
             try
             {
-                monitorSettings = JsonConvert.DeserializeObject<DDPMMonitorSettings>(value);
+                ImpSettings = JsonConvert.DeserializeObject<DDPMImpExpSettings>(value);
+                WriteLog($"Model: " + ImpSettings.MonitorSettings.Model);
+                WriteLog($"ServiceTag: " + ImpSettings.MonitorSettings.ServiceTag);
             }
             catch (Exception)
             {
                 ;
             }
 
-            return monitorSettings;
+            return ImpSettings;
         }
 
         #endregion Monitor Settings
@@ -1153,9 +1182,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return true;
         }
-        private Task<DDPMMonitorSettings> ReadMonitorSettingsFile(string path)
+        private DDPMImpExpSettings ReadImportSettingsFile(string path)
         {
-            DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+            DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
             if (!string.IsNullOrEmpty(path))
             {
                 if (File.Exists(path))
@@ -1167,12 +1196,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     }
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
-                        return Task.FromResult(monitorSettings);
+                        return ImpSettings;
                     try
                     {
                         //string info;
                         //string output = DDPMFileSecurity.GetSerializedJsonString(monitorSettings_path, out info);//, false);
-                        monitorSettings = RunMonitorDeserializeObject(strReadJson);
+                        WriteLog($"strReadJson: " + strReadJson);
+                        ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
                     catch (Exception)
                     {
@@ -1180,7 +1210,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     }
                 }
             }
-            return Task.FromResult(monitorSettings);
+            return ImpSettings;
         }
         #endregion
 
