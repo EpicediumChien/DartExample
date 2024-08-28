@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
 namespace DDPM.SA.Common.Security
@@ -65,6 +66,17 @@ namespace DDPM.SA.Common.Security
             Process process = Process.GetProcessById((int)pid);
             string filePath = process.MainModule.FileName;
             Console.WriteLine("File path: " + filePath);
+
+            //Need to check dll/exe thumbprint
+            X509Certificate2 cert = DDPMFileSecurity.LoadCertificate(filePath);
+            if(cert == null)
+            {
+                info = "Can't retrieve cert from file.";
+                return false;
+            }
+            //compare thumbprint 
+            //source array DDPM.Common.ThumbprintHash.certificateHash
+            //Target cert.Thumbprint
 
             //check file path security                
             return DDPMFileSecurity.IsFilePathValid(filePath, out info);
