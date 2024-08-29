@@ -280,7 +280,7 @@
                                             Height="16"
                                             Margin="4,0"
                                             Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png"
-                                            Stretch="Uniform">
+                                            Stretch="Uniform" Cursor="Hand">
                                             <Image.ToolTip>
                                                 <ToolTip>
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
