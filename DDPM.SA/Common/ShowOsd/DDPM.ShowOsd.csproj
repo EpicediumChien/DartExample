@@ -11,10 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Common\VcpCore.Common\VcpCore.Common.csproj" />
     <ProjectReference Include="..\Win32Lib\DDPM.Win32Lib.csproj" />
   </ItemGroup>

@@ -8,8 +8,7 @@
 	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />
+  <ItemGroup>   
     <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
   </ItemGroup>
 
