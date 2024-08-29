@@ -458,7 +458,8 @@ namespace DDPM.ColorApp
 
             // 20240619 jim modify
             //bool bi = ddmLib.WriteColorPreset_AUTO("0", actived_mi, reqKey).Result;
-            bool bi = ddmLib.WriteColorPreset_AUTO(actived_mi, reqKey).Result;
+            //bool bi = ddmLib.WriteColorPreset_AUTO(actived_mi, reqKey).Result;
+            bool bi = ddmLib.WriteColorPreset(actived_mi, reqKey, 1).Result;
 
             return true;
         }

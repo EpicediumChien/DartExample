@@ -55,7 +55,7 @@ namespace DDPM.SA.Common
         // 20240619 jim modify
         //Task<bool> WriteColorPreset(string monitor_index, MonitorInfo m, string ColorPreset_Name);
         //Task<bool> WriteColorPreset_AUTO(string monitor_index, MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name,int ColorPresetRunType = 0);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -65,7 +65,7 @@ namespace DDPM.SA.Common
 
         void DeleteColorPresetForMonitorConfig(string index_monitor, string AppName);
 
-        void AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false);
+        Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false);
 
         Task<string> GetMonitorProfile(MonitorInfo m);
 

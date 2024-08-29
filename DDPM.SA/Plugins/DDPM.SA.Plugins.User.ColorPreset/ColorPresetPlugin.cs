@@ -10,6 +10,7 @@
 
 #endregion
 
+using DDPM.MonitorBorker;
 using DDPM.SA.Common;
 using DDPM.ShowOSD;
 using Dell.Client.Framework.Common;
@@ -77,6 +78,12 @@ namespace ColorPreset.Plugins
 
         private string[] Issuers;
         private string[] Subjects;
+
+        //20240829 Jim move to here 20240829
+        private ISettingsManagerDev _SettingsPlugin;
+
+        private MainWindow? MonitorBorkerWin = null; //Dean 0626 fix SAST issue, remove static
+        private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
 
         private enum log_type
         {
@@ -289,8 +296,46 @@ namespace ColorPreset.Plugins
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
-        public Task<List<ColorPresetSettings>> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, List<ColorPresetSettings> config)
+        /// <summary>
+        /// 啟動 MonitorBorker 執行抓前景active app name
+        /// </summary>
+        /// <param name="m"></param>
+        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin)
         {
+            Log.Info($"Launch_MonitorBorker requested ...");
+            writelog("DeviceManagerPlugin Launch_MonitorBorker requested ...");
+
+            if (m != null)
+            {
+                var v = (MonitorInfo)m;
+
+                System.Windows.Forms.Screen s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == v.DisplayName);
+
+                if (s != null)
+                {
+                    // jim modify 20240605
+                    if (MonitorBorkerWin == null)
+                    {
+                        MonitorBorkerWin = new MainWindow(_DeviceManagerPlugin, m);
+
+                        MonitorBorkerWin.Show();
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
+                    }
+                    else
+                    {
+                        //MonitorBorkerWin.Close();
+                    }
+                }
+            }
+
+            return;
+        }
+
+        //public Task<List<ColorPresetSettings>> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, List<ColorPresetSettings> config)
+        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin)
+        {
+            List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
+
             if (on_off.Equals("ON", StringComparison.OrdinalIgnoreCase))
             {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
@@ -300,6 +345,40 @@ namespace ColorPreset.Plugins
                 if (index >= 0)
                 {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
+                }
+
+                _SettingsPlugin.WriteColorPresetSettings(config);
+                Thread.Sleep(100);
+
+                if (newWindowThread_AutoSetColorPresetForMonitorConfig == null)
+                {
+                    // create a thread
+                    newWindowThread_AutoSetColorPresetForMonitorConfig = new Thread(new ThreadStart(() =>
+                    {
+                        // create and show the window
+                        Launch_MonitorBorker(mo, _DeviceManagerPlugin);
+
+                        // start the Dispatcher processing
+                        // 啟動消息循環
+                        System.Windows.Threading.Dispatcher.Run();
+                    }));
+
+                    // set the apartment state
+                    // 設定為單線程單元（STA），WPF需要STA模式
+                    newWindowThread_AutoSetColorPresetForMonitorConfig.SetApartmentState(ApartmentState.STA);
+
+                    // make the thread a background thread
+                    newWindowThread_AutoSetColorPresetForMonitorConfig.IsBackground = true;
+
+                    // start the thread
+                    // 啟動執行緒
+                    newWindowThread_AutoSetColorPresetForMonitorConfig.Start();
+                }
+                else
+                {
+                    // jim add 20240605
+                    if (MonitorBorkerWin != null) // jim add 20240809
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
                 }
             }
             else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
@@ -312,9 +391,22 @@ namespace ColorPreset.Plugins
                 {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Manual;
                 }
+
+                _SettingsPlugin.WriteColorPresetSettings(config);
+                Thread.Sleep(100);
+
+                // jim modify 20240605
+                if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
+                {
+                    if (MonitorBorkerWin != null) // jim add 20240809
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false);
+                }
+
             }
 
-            return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+            return Task.FromResult(true);
+
+            //return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
         public void ShowOSD_ColoPreset(MonitorInfo m, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)

@@ -970,7 +970,7 @@ namespace VcpCore.Plugins
 
                     case "colorpreset":
                         {
-                            ro = GetFromCacheTable(monitorInfoX, func);
+                            //ro = GetFromCacheTable(monitorInfoX, func);
                             if (ro == null)
                                 ro = GetCurrentColorPreset(monitorInfoX);
                         }
@@ -1775,7 +1775,7 @@ namespace VcpCore.Plugins
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToUInt32(key).ToString("X")));
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable value is " + ((value is string) ? value.ToString() : Convert.ToUInt32(value).ToString("X")));
-
+            
             if (_CacheTable.Count > 0)
             {
                 bool IsExist = false;
@@ -1798,7 +1798,7 @@ namespace VcpCore.Plugins
             }
             else
                 _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString }, { key, value } });
-
+            
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable finish");
         }
 
