@@ -229,6 +229,34 @@ namespace DDPM.UI.Common.ViewModels
             RefreshPrevNextButtons();
         }
 
+        /// <summary>
+        /// Navigate to the page which contains the first IsSelected item
+        /// Return: true if a IsSelected item found and page navigated
+        /// </summary>
+        public bool GotoFirstSelectedItemPage()
+        {
+            //Find the index of SplitItem which is IsSelected
+            int idx = 0;
+            foreach (SplitItem spItem in SplitList)
+            {
+                if (spItem.IsSelected)
+                {
+                    //Calculate the IndexToItem0
+                    // idx      IndexToItem0   (ItemsPerPage=5)
+                    // 0~4      0         = (idx/ItemsPerPage)*ItemsPerPage
+                    // 5~9      5
+                    // 10~14    10
+                    // 15~19    15
+                    int pageNo = (idx / ItemsPerPage);
+                    IndexToItem0 = pageNo * ItemsPerPage;
+                    RefreshDisplayItems();
+                    RefreshPrevNextButtons();
+                    break;
+                }
+                idx++;
+            }
+            return false;
+        }
         #endregion Page Navigation
 
         //private ICommand? _itemEditCommand;

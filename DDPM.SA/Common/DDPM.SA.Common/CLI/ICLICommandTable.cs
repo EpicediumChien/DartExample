@@ -1,13 +1,9 @@
 ﻿using Dell.Client.Framework.Common;
-using Microsoft.VisualBasic.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ObjectiveC;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using Newtonsoft.Json;
+using System.Linq;
 
 namespace DDPM.SA.Common
 {
@@ -29,64 +25,73 @@ namespace DDPM.SA.Common
         }
     }*/
 
-    //get -Display=BrightnessLevel 
+    //get -Display=BrightnessLevel
     //set -Display=BrightnessLevel -option=value
     public class ICLICommandTable
     {
         //IT feature table
         private readonly List<string> Supported_IT_Feature = new List<string>()//ex: /get -app="telemetryconsent"
         {
-            "TELEMETRYCONSENT", 
+            "TELEMETRYCONSENT",
             "ENGERSAVER"
         };
+
         //IT value table of IT feature
         private readonly List<string> Supported_IT_Value_Keyword = new List<string>()//ex: /set -app=telemetryconsent -value=on,"lock"
         {
             "UNLOCK",
             "LOCK"
         };
+
         //---
-        private readonly List<string> commands = new List<string>() 
-        { 
-            "GET", 
-            "SET", 
+        private readonly List<string> commands = new List<string>()
+        {
+            "GET",
+            "SET",
             "CONFIGURE",
             "HELP"
         };
+
         //a part of input Type: target feature, ex: -Display=BrightnessLevel
         private readonly List<string> pluginType = new List<string>()
-        { 
-            "DISPLAY", 
-            "COLOR", 
-            "MOUSE", 
-            "KEYBOARD", 
-            "APP", 
+        {
+            "DISPLAY",
+            "COLOR",
+            "MOUSE",
+            "KEYBOARD",
+            "APP",
             "DOCK",
             "HEADSET",
-            "AUDIO"
+            "AUDIO",
+            "VALUE"
         };
 
         private ILog _Log;
+
         public ICLICommandTable(ILog Log)
         {
             _Log = Log;
         }
+
         public class CommandType_Option
         {
             /// <summary>
             /// 呼叫的方法
             /// </summary>
             public string Option_Name { get; set; }
+
             /// <summary>
             /// 設定的數值，如果不是設定(set)，為空值
             /// </summary>
             public string Option_Value { get; set; }
+
             public CommandType_Option(string Model, string Value = "")
             {
                 this.Option_Name = Model;
                 this.Option_Value = Value;
             }
         }
+
         public class CommandType_Name
         {
             public string target { get; set; }
@@ -98,6 +103,7 @@ namespace DDPM.SA.Common
                 this.feature = Value;
             }
         }
+
         public class CommandLineInput
         {
             //Used to judge target command support or not (please everyone refer to your own JIRA story)
@@ -110,14 +116,17 @@ namespace DDPM.SA.Common
 
             public string TargetType { get; set; }//name, log, applyconfig; ex: -Display=BrightnessLevel
             public string TargetFeature { get; set; }
+
             /// <summary>
             /// 要呼叫的插件
             /// </summary>
             public string PluginsType { get; set; }
+
             /// <summary>
             /// 呼叫的方法
             /// </summary>
             public List<CommandType_Option> Options { get; set; }//use to store options to get/set device features
+
             public List<string> ServiceTag { get; set; }//for display with servicetag
             public List<string> DeviceIndex { get; set; }//for display with index
             public List<string> GuidString { get; set; }//for peripherals
@@ -129,7 +138,12 @@ namespace DDPM.SA.Common
             // 3.both IT and normal commands in one request (process cli at CLIManager and then bypass command to CLIProxy)
             // It's not possible that both isITCommands and isNormalCommands are false.
             public bool isITCommands { get; set; } = false;
+
             public bool isNormalCommands { get; set; } = false;
+
+            //2024-08-28 Casper: Add isCliCommandsProcessCompleted for CLIAgent to judge more situation
+            // rather than null commandLineInput
+            public bool isCliCommandsProcessCompleted { get; set; } = false;
 
             public CommandLineInput()
             {
@@ -140,9 +154,12 @@ namespace DDPM.SA.Common
                 LogPath = Path.GetFullPath("CLI_Log\\" + DateTime.Now.ToString("yyyy - MM - dd - HH - mm - ss") + ".txt");
             }
         }
+
         public CommandLineInput StringProcessing(string[] args)
         {
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
+            CommandLineInput commandInput = new CommandLineInput();
+            commandInput.isCliCommandsProcessCompleted = false;
 
             // [0824_CASPER]: marked for HELP function parsing
             //if (args.Length < 2)
@@ -163,23 +180,27 @@ namespace DDPM.SA.Common
                     return null;
                 }
             }
-            CommandLineInput commandInput = new CommandLineInput();
             var command = args[0].Replace("/", "").Replace("-", "").ToUpper();
 
             //parse command code
             if (commands.Exists(v => v == command))
             {
                 commandInput.Command = command;
+            } else
+            {
+                _Log.Error("[CLI] input unknown command");
+                return commandInput;
             }
 
             if ((args.Length < 2))
             {
                 if (commandInput.Command.Equals("HELP"))
-                {
+                {                    
+                    commandInput.isCliCommandsProcessCompleted = true;
                     return commandInput;
                 }
                 _Log.Error("[CLI] command length is too small");
-                return null;
+                return commandInput;
             }
 
             var in_type = args[1].Trim().ToUpper();
@@ -187,8 +208,8 @@ namespace DDPM.SA.Common
             string[] str = in_type.Split('=');
             if (str.Length < 2)
             {
-                _Log.Error("[CLI] 2nd code should be the format like -Display=Feature");
-                return null;
+                _Log.Error("[CLI] 2nd code should be the format like -Display=targetFeature ");
+                return commandInput;
             }
             /*string[] str2 = str[1].Split(".");
             if (str.Length < 2)
@@ -198,11 +219,17 @@ namespace DDPM.SA.Common
             }*/
             commandInput.TargetType = str[0].Replace("-", "");
             commandInput.TargetFeature = str[1];
+            // 08-24 Casper: fine tune the string parser process 
+            //   check if no input value for targetFeature .\CLI.Subagent.exe /get -Display=
+            if (string.IsNullOrEmpty(commandInput.TargetFeature))
+            {
+                return commandInput;
+            }
             commandInput.PluginsType = "";
             //parse target plugin
             foreach (string plugin in pluginType)
             {
-                if (str[0].Replace("-", "").ToUpper().Trim().Equals(plugin))
+                if (commandInput.TargetType.ToUpper().Trim().Equals(plugin))
                 {
                     commandInput.PluginsType = plugin;
                     break;
@@ -211,7 +238,7 @@ namespace DDPM.SA.Common
             if (string.IsNullOrEmpty(commandInput.PluginsType))
             {
                 _Log.Error("[CLI] no target be found");
-                return null;
+                return commandInput;
             }
             try
             {
@@ -316,6 +343,7 @@ namespace DDPM.SA.Common
 
             //Dean 0816 check the command is belong to IT/normal or both
             CheckCommandRoutePath(commandInput);
+            commandInput.isCliCommandsProcessCompleted = true;
 
             return commandInput;
         }
@@ -342,14 +370,14 @@ namespace DDPM.SA.Common
                         CommandType_Option option = commandInput.Options[i];
                         try
                         {
-                            if(option.Option_Value.Length <= 0)
+                            if (option.Option_Value.Length <= 0)
                             {
                                 commandInput.isNormalCommands = true;//recognized as normal command -> CLIProxy
                                 return;
                             }
                             option.Option_Value.Trim().Replace(".", ",");//maybe user type wrong sep symbol from , to be .
                             List<string> parse = option.Option_Value.Split(",").ToList();
-                            foreach(string value in parse)
+                            foreach (string value in parse)
                             {
                                 //currently only "LOCK" and "UNLOCK" be recognized as IT global settings
                                 //other new global setting should be add to below
@@ -579,155 +607,156 @@ namespace DDPM.SA.Common
             //    CLI_COMMAND_TYPE_GET_SET = 3,
             //    CLI_COMMAND_TYPE_MAX
             //}
-
+            // [HELP]: Store all the command set
             public static readonly List<Dictionary<string, object>> FeatureList = new List<Dictionary<string, object>>
-            {
+{
                 // Display | Basic Device Feature
                 // - GET 
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "ActiveHours" },               { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AutoBrightness" },            { "Value", "N/A" }, { "Type", 0 }},
-
-                // - SET
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "SwapVideo" },                 { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "SwapUSB" },                   { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "UniformityCompensation" },    { "Value", "N/A" }, { "Type", 1 }}, // TO DROP
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ActiveHours" },               { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoBrightness" },            { "Value", "N/A" }, { "Type", 0 }},
+                                                   
+                // - SET                           
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "SwapVideo" },                 { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "SwapUSB" },                   { "Value", "N/A" }, { "Type", 1 }},
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "UniformityCompensation" },    { "Value", "N/A" }, { "Type", 1 }}, // TO DROP
 
                 // - GET/SET
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "BrightnessLevel" },           { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "ContrastLevel" },             { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "ColorPreset" },               { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "ActiveInputSource" },         { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "PxP" },                       { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "SubInput" },                  { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AudioProfile" },              { "Value", "N/A" }, { "Type", 3 }}, //TO DROP
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "PxPZoom" },                   { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "PowerSetting" },              { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "OSDLanguage" },               { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "OSDAccess" },                 { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AutoBrightness" },            { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AutoBrightnessRangeLevel" },  { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AutoTemp" },                  { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "PrimaryMonitorSync" },        { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "USBCPrioritization" },        { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "EnergySaver" },               { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "ExportSettings" },            { "Value", "N/A" }, { "Type", 3 }}, // TO DROP
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "PowerNap" },                  { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "ColorManagement" },           { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "RestoreColorDefaults" },      { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "BrightnessLevel" },           { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ContrastLevel" },             { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },               { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ActiveInputSource" },         { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "PxP" },                       { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "SubInput" },                  { "Value", "N/A" }, { "Type", 3 }},
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AudioProfile" },              { "Value", "N/A" }, { "Type", 3 }}, //TO DROP
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "PxPZoom" },                   { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "PowerSetting" },              { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "OSDLanguage" },               { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "OSDAccess" },                 { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoBrightness" },            { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoBrightnessRangeLevel" },  { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoTemp" },                  { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "PrimaryMonitorSync" },        { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "USBCPrioritization" },        { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "EnergySaver" },               { "Value", "N/A" }, { "Type", 3 }},
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ExportSettings" },            { "Value", "N/A" }, { "Type", 3 }}, // TO DROP
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "PowerNap" },                  { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ColorManagement" },           { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "RestoreColorDefaults" },      { "Value", "N/A" }, { "Type", 3 }},
 
                 // Display | Application or OS set
                 // - GET
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "Value", "N/A" }, { "Type", 0 }}, // TODO: EasyArrangeLayout also lands in Config
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AllResolutionRefreshRate" },  { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "CurrentResolutionRefreshRate" }, { "Value", "N/A" }, { "Type", 0 }},
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "Value", "N/A" }, { "Type", 0 }}, // TODO: EasyArrangeLayout also lands in Config
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AllResolutionRefreshRate" },  { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "CurrentResolutionRefreshRate" }, { "Value", "N/A" }, { "Type", 0 }},
 
                 // - CONFIG
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "Value", "N/A" }, { "Type", 2 }},
 
                 // Display | Advanced Feature
                 // - GET
-                new Dictionary<string, object> {{ "Feature", "ADVANCED" }, { "TargetFeature", "Display.Control" },          { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AdvancedControl" },           { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "EDID" },                      { "Value", "N/A" }, { "Type", 0 }}, // TO CHECK
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "DecodedEDID" },               { "Value", "N/A" }, { "Type", 0 }}, // TO CHECK
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "CapabilitiesString" },        { "Value", "N/A" }, { "Type", 0 }}, // TO CHECK
+                //new Dictionary<string, object> {{ "TargetType", "ADVANCED" }, { "TargetFeature", "Display.Control" },          { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AdvancedControl" },           { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "EDID" },                      { "Value", "N/A" }, { "Type", 0 }}, // TO CHECK
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "DecodedEDID" },               { "Value", "N/A" }, { "Type", 0 }}, // TO CHECK
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "CapabilitiesString" },        { "Value", "N/A" }, { "Type", 0 }}, // TO CHECK
 
                 // - SET
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "AdvancedControl" },           { "Value", "N/A" }, { "Type", 1 }}, // TO DROP
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AdvancedControl" },           { "Value", "N/A" }, { "Type", 1 }}, // TO DROP
 
                 // - GET/SET
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "Orientation" },               { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "LockRotate" },                { "Value", "N/A" }, { "Type", 3 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "RotateOSDMenu" },             { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Orientation" },               { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "LockRotate" },                { "Value", "N/A" }, { "Type", 3 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "RotateOSDMenu" },             { "Value", "N/A" }, { "Type", 3 }},
 
                 // - CONFIG
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "MonitorPower" },              { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "MonitorPower" },              { "Value", "N/A" }, { "Type", 2 }},
 
                 // === Application Level CLI ===
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "Update" },                        { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "Update" },                        { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "UpdateSourceLocation" },          { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "UpdateSourceLocation" },          { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "DISPLAY" }, { "TargetFeature", "FirmwareUpdate" },            { "Value", "N/A" }, { "Type", 2 }}, // TO DROP
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "FirmwareUpdate" },                { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "UpdateAccess" },                  { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "UpdateAccess" },                  { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "TelemetryConsent" },              { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "TelemetryConsent" },              { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "ScreenNotification" },            { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "ScreenNotification" },            { "Value", "N/A" }, { "Type", 2 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DeviceConnected" },               { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }}, 
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "Update" },                        { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "Update" },                        { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateSourceLocation" },          { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateSourceLocation" },          { "Value", "N/A" }, { "Type", 2 }},
+                //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "FirmwareUpdate" },            { "Value", "N/A" }, { "Type", 2 }}, // TO DROP
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "FirmwareUpdate" },                { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateAccess" },                  { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "UpdateAccess" },                  { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "TelemetryConsent" },              { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "TelemetryConsent" },              { "Value", "N/A" }, { "Type", 2 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ScreenNotification" },            { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ScreenNotification" },            { "Value", "N/A" }, { "Type", 2 }},
+                //new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DeviceConnected" },               { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }}, 
 
                 // === CLI apply to all devices ===
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "ConnectedDevices" },              { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DeviceData" },                    { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DeviceConfiguration" },           { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "APP" }, { "TargetFeature", "DiagnosticsReport" },             { "Value", "N/A" }, { "Type", 0 }}, 
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ConnectedDevices" },              { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DeviceData" },                    { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DeviceConfiguration" },           { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DiagnosticsReport" },             { "Value", "N/A" }, { "Type", 0 }}, 
                 
                 // ==== Client Peripherals (CP) and Docks CLI ===
                 // - WEBCAM
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "FWVersion" },                  { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "RestoreFactoryDefaults" },     { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "FieldOfView" },                { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "hdr" },                        { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "hdr" },                        { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "AntiFlicker" },                { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "AntiFlicker" },                { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "MicSwitch" },                  { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "MicSwitch" },                  { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "AIAutoFraming" },              { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "AIAutoFraming" },              { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "PresenceDetection" },          { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "WEBCAM" }, { "TargetFeature", "PresenceDetection" },          { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "FWVersion" },                  { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "RestoreFactoryDefaults" },     { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "FieldOfView" },                { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "hdr" },                        { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "hdr" },                        { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "AntiFlicker" },                { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "AntiFlicker" },                { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "MicSwitch" },                  { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "MicSwitch" },                  { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "AIAutoFraming" },              { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "AIAutoFraming" },              { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "PresenceDetection" },          { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "PresenceDetection" },          { "Value", "N/A" }, { "Type", 1 }},
 
                 // - HEADSET
-                new Dictionary<string, object> {{ "Feature", "AUDIO" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "AUDIO" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "AUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "AUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "AUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "AUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 1 }},
 
                 // - KEYBOARD
-                new Dictionary<string, object> {{ "Feature", "KEYBOARD" }, { "TargetFeature", "FWVersion" },                { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "KEYBOARD" }, { "TargetFeature", "RestoreFactoryDefaults" },   { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "KEYBOARD" }, { "TargetFeature", "CollabCameraEnable" },       { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "KEYBOARD" }, { "TargetFeature", "CollabMicMute" },            { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "KEYBOARD" }, { "TargetFeature", "CallabScreenShare" },        { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "KEYBOARD" }, { "TargetFeature", "CallabScreenShare" },        { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "KEYBOARD" }, { "TargetFeature", "CollabChatEnable" },         { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "FWVersion" },                { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "RestoreFactoryDefaults" },   { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "CollabCameraEnable" },       { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "CollabMicMute" },            { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "CallabScreenShare" },        { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "CallabScreenShare" },        { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "CollabChatEnable" },         { "Value", "N/A" }, { "Type", 0 }},
 
                 // - MOUSE
-                new Dictionary<string, object> {{ "Feature", "MOUSE" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "MOUSE" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "MOUSE" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "MOUSE" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
                                                 
                 // - PEN
-                new Dictionary<string, object> {{ "Feature", "PEN" }, { "TargetFeature", "FWVersion" },                     { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "PEN" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "PEN" }, { "TargetFeature", "FWVersion" },                     { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "PEN" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }},
 
                 // - DOCK
-                new Dictionary<string, object> {{ "Feature", "DOCK" }, { "TargetFeature", "FWVersion" },                    { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "Feature", "DOCK" }, { "TargetFeature", "RestoreFactoryDefaults" },       { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "Feature", "DOCK" }, { "TargetFeature", "SilentFWUpdate" },               { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "DOCK" }, { "TargetFeature", "FWVersion" },                    { "Value", "N/A" }, { "Type", 0 }},
+                //new Dictionary<string, object> {{ "TargetType", "DOCK" }, { "TargetFeature", "RestoreFactoryDefaults" },       { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "DOCK" }, { "TargetFeature", "SilentFWUpdate" },               { "Value", "N/A" }, { "Type", 1 }},
 
             };
 
+            // [HELP]: Print all the data in the command set
             public static void PrintFormattedJson()
             {
                 var groupedFeatures = FeatureList
-                    .GroupBy(f => f["Feature"].ToString())
+                    .GroupBy(f => f["TargetType"].ToString())
                     .ToDictionary(
                         g => g.Key,
                         g => g.Select(f => f["TargetFeature"].ToString()).Distinct().ToList()
@@ -737,29 +766,45 @@ namespace DDPM.SA.Common
                 Console.WriteLine(json);
             }
 
-            public static void PrintFormattedJsonTargetFeature(string feature)
+ // [HELP]: Print the command according to the feature in list<pluginType> aka. targetFeature
+            public static void PrintFormattedJsonTargetFeature(string targetType)
             {
                 var targetFeatures = FeatureList
-                    .Where(f => f["Feature"].ToString().Equals(feature, StringComparison.OrdinalIgnoreCase))
+                    .Where(f => f["TargetType"].ToString().Equals(targetType, StringComparison.OrdinalIgnoreCase))
                     .Select(f => f["TargetFeature"].ToString())
                     .Distinct()
                     .ToList();
-             
+
                 var result = new Dictionary<string, List<string>>
-        {
-            { feature, targetFeatures }
-        };
+                {
+                    { targetType, targetFeatures }
+                };
                 string json = JsonConvert.SerializeObject(result, Formatting.Indented);
                 Console.WriteLine(json);
+            }
+
+            public static bool IsTargetFeatureAndPluginsTypeExists(CommandLineInput commandLineInput)
+            {
+                return FeatureList.Any(f =>
+                    f["TargetType"].ToString().Equals(commandLineInput.TargetFeature, StringComparison.OrdinalIgnoreCase) &&
+                    f["TargetFeature"].ToString().Equals(commandLineInput.PluginsType, StringComparison.OrdinalIgnoreCase));
+            }
+
+            public static bool IsTargetTypeExists(CommandLineInput commandLineInput)
+            {
+                return FeatureList.Any(f =>
+                    f["TargetType"].ToString().Equals(commandLineInput.TargetType, StringComparison.OrdinalIgnoreCase));
             }
         }
 
         public static int Response_HelpCommand(CommandLineInput commandLineInput)
         {
-            if (null == commandLineInput.TargetType) {
-                // no argument for help function. dump all targetFeature 
+            if (null == commandLineInput.TargetType)
+            {
+                // no argument for help function. dump all targetFeature
                 CLIHelpCommandStructure.PrintFormattedJson();
-            } else if (commandLineInput.TargetType.Equals("VALUE"))
+            }
+            else if (commandLineInput.TargetType.Equals("VALUE"))
             {
                 switch (commandLineInput.TargetFeature)
                 {
@@ -779,13 +824,40 @@ namespace DDPM.SA.Common
                         Response_FormatError();
                         return (int)CLI_ExitCode.fail_FormantError;
                 }
-            } else {
-                // delivered wrong argument for help function, return error  
+            }
+            else
+            {
+                // delivered wrong argument for help function, return error
                 Response_FormatError();
                 return (int)CLI_ExitCode.fail_FormantError;
             }
             return (int)CLI_ExitCode.success;
 
+        }
+
+        public static int Response_FormatErrorRecommendation(CommandLineInput commandLineInput)
+        {
+            if (true == CLIHelpCommandStructure.IsTargetTypeExists(commandLineInput)) {
+                CLIHelpCommandStructure.PrintFormattedJsonTargetFeature(commandLineInput.TargetType);
+
+            }
+
+            // Nothing I can help
+            CLI_RESPONSE result = new CLI_RESPONSE()
+            {
+                Model = "N/A",
+                SerialNumber = "N/A",
+                Command = "N/A",
+                TargetFeature = "N/A",
+                Result = "Format error",
+                Index = "N/A",
+                ServiceTag = "N/A",
+                Value = "N/A",
+                Message = "Command line format error"
+            };
+
+            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            return (int)CLI_ExitCode.fail_FormantError;
         }
     }
 }

@@ -102,6 +102,5 @@ namespace DDPM.SA.Common.Display
         }
 
         #endregion Table
-
     }
 }

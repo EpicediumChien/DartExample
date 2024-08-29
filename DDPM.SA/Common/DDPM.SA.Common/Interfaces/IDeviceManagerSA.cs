@@ -2,7 +2,6 @@
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
-using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -85,7 +84,9 @@ namespace DDPM.SA.Common
 
         //Jim add 20240820
         Task<bool> ColorManagement_Off(MonitorInfo mo);
+
         Task<bool> ColorManagement_Bymonitor(MonitorInfo mo);
+
         Task<bool> ColorManagement_Byhost(MonitorInfo mo);
 
         #endregion public for ColorPreset
@@ -220,7 +221,9 @@ namespace DDPM.SA.Common
         public event EventHandler<EAArgs> EAEditReturn;
 
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
+
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo);
+
         #endregion EasyArrange
 
         #endregion public for Displays
@@ -228,6 +231,7 @@ namespace DDPM.SA.Common
         #region public for Peripherals
 
         Task<DeviceHelper> GetDevices();
+
         Task<CTKMessageHelper> GetCTKMessageHelper();
 
         Task<RFDeviceHelper> GetRFDongleDevices();
@@ -306,7 +310,9 @@ namespace DDPM.SA.Common
         //Task<List<CommandResult>> listConnectedDeviceInfo();
 
         event EventHandler<UpdateUINotify> UIUpdateNotify;
+
         void OnUIUpdateNotify(UpdateUINotify e);
+
         #endregion public for CMA/CLI
 
         #region public for display properties
@@ -444,27 +450,39 @@ namespace DDPM.SA.Common
 
         #endregion public for SW Update
 
-        #region public for ImpExpSettings
-        Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
-        #endregion
-        //public for GUI to get the changes of display and peripherals
-        event EventHandler<DeviceChangedEventArgs> DeviceChanged;
+    #region public for ImpExpSettings
+    Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
+    Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, string path);
+    #endregion
+    //public for GUI to get the changes of display and peripherals
+    event EventHandler<DeviceChangedEventArgs> DeviceChanged;
 
         #region public for IT lock event
+
         //IT lock
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
-        #endregion
-        #region Gaming
-        event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
-        Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
-        Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
-        Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
-        Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
-        Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
-        Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
-        Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
-        #endregion
 
+        #endregion public for IT lock event
+
+        #region Gaming
+
+        event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+
+        Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
+
+        Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
+
+        Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
+
+        Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
+
+        Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
+
+        Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
+
+        Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
+
+        #endregion Gaming
 
         #region public for DTPProxy
 
@@ -482,6 +500,6 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
         Task SetTipSensitivity(string itemID, int newValue);
 
-        #endregion
+        #endregion public for DTPProxy
     }
 }

@@ -126,7 +126,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         public async Task<DeviceHelper> GetDevices()
         {
             ScanDevices();
-            if(_deviceHelper != null)
+            if (_deviceHelper != null)
             {
                 return await Task.Run(() => _deviceHelper);
             }
@@ -1056,7 +1056,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                         catch
                         {
-
                         }
                     }
                     _deviceHelper.deviceInfo.Add(info);
@@ -1987,8 +1986,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue)
         {
-
-
         }
 
         private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)

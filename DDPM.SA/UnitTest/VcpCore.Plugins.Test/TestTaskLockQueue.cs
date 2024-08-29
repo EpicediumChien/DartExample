@@ -1,12 +1,4 @@
 ﻿using Dell.Client.Framework.UnitTestShared.Tests;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Markup;
 
 namespace VcpCore.Plugins.Test
 {
@@ -33,11 +25,10 @@ namespace VcpCore.Plugins.Test
                 Assert.That(node3, Is.EqualTo(node2.Next));
                 Assert.IsNull(node3.Next);
             }
-
         }
+
         public class TestLinkedListQueue
         {
-
             [Test]
             public void TestEnqueue()
             {
@@ -60,7 +51,6 @@ namespace VcpCore.Plugins.Test
                 Assert.That(count1, Is.EqualTo(getcount1));
                 Assert.That(node1.Data, Is.EqualTo(getnode1.Data));
 
-
                 linkedListQueue.Enqueue(2);
                 var getcount2 = privateObject.GetFieldOrProperty("_count");
                 var getnode2 = (LinkedNode<int>)privateObject.GetFieldOrProperty("_node");
@@ -77,7 +67,6 @@ namespace VcpCore.Plugins.Test
                 Assert.That(node1.Data, Is.EqualTo(getnode2.Data));
                 Assert.That(node2.Data, Is.EqualTo(getnode2.Next.Data));
                 Assert.That(node3.Data, Is.EqualTo(getnode2.Next.Next.Data));
-
             }
 
             [Test]
@@ -126,7 +115,6 @@ namespace VcpCore.Plugins.Test
                 Assert.That(node2.Data, Is.EqualTo(result2));
                 Assert.That(count2, Is.EqualTo(getcount2));
                 Assert.IsNull(getnode2);
-
             }
 
             [Test]
@@ -154,7 +142,6 @@ namespace VcpCore.Plugins.Test
                 Assert.IsTrue(result2);
                 Assert.That(count2, Is.EqualTo(getcount2));
                 Assert.IsNull(getnode2);
-
             }
         }
 

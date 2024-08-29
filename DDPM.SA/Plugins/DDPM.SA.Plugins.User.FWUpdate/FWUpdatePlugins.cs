@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Net.Http;
 
 #if WINDOWS
 
@@ -21,8 +20,6 @@ using Dell.Client.Framework.Interfaces;
 using Timer = System.Timers.Timer;
 using IDs = DDPM.SA.Common.IDs;
 using System.Text.RegularExpressions;
-using System.IO.Compression;
-using FileStream = System.IO.FileStream;
 using VcpCore.Common;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
@@ -40,10 +37,7 @@ using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Security.Interfaces;
 using Dell.Client.Framework.Security;
 using System.Security;
-using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Method;
-using System.Dynamic;
-using WinCopies.DotNetFix;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -59,6 +53,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
         private static bool _ShowWindow(IntPtr hWnd, int nCmdShow)
         {
             return ShowWindow(hWnd, nCmdShow);
@@ -67,6 +62,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         private static bool _SetForegroundWindow(IntPtr hWnd)
         {
             return SetForegroundWindow(hWnd);
@@ -669,6 +665,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 return Task.FromResult(fwUpdateInfos);
             }
         }
+
         /// <summary>
         /// 下載進度回傳事件
         /// </summary>
