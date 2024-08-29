@@ -1,5 +1,4 @@
 ﻿using DDPM.SA.Common.Settings;
-using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.RPC.Transport;
 using System;
@@ -7,6 +6,7 @@ using System.Diagnostics;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
 namespace DDPM.SA.Common.Security
@@ -14,7 +14,14 @@ namespace DDPM.SA.Common.Security
     public class NPipeSecurity
     {
         [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
+
+        private static bool _GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId)
+        {
+            return GetNamedPipeClientProcessId(Pipe, out ClientProcessId);
+        }
+
         /// <summary>
         /// For buildin user please make your decision for PipeAccessRights.ReadWrite or PipeAccessRights.FullControl
         /// </summary>
@@ -56,7 +63,7 @@ namespace DDPM.SA.Common.Security
         {
             info = "success";
             IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
-            if (GetNamedPipeClientProcessId(hPipe, out uint pid))
+            if (_GetNamedPipeClientProcessId(hPipe, out uint pid))
             {
                 info = "[GetNamedPipeClientProcessId] failed";
                 return false;
@@ -65,6 +72,17 @@ namespace DDPM.SA.Common.Security
             Process process = Process.GetProcessById((int)pid);
             string filePath = process.MainModule.FileName;
             Console.WriteLine("File path: " + filePath);
+
+            //Need to check dll/exe thumbprint
+            X509Certificate2 cert = DDPMFileSecurity.LoadCertificate(filePath);
+            if(cert == null)
+            {
+                info = "Can't retrieve cert from file.";
+                return false;
+            }
+            //compare thumbprint 
+            //source array DDPM.Common.ThumbprintHash.certificateHash
+            //Target cert.Thumbprint
 
             //check file path security                
             return DDPMFileSecurity.IsFilePathValid(filePath, out info);

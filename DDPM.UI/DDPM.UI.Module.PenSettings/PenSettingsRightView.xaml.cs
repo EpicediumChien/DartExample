@@ -39,13 +39,13 @@ namespace DDPM.UI.Module.PenSettings
         private void TipSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
-            //_vm.SetDPIValue();
+            _vm.SetTipSensitivity();
         }
 
         private void TiltSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
-            //_vm.SetTouchScrollSensitivityLevel();
+            _vm.SetTiltSensitivity();
         }
 
     private void btnGetStart_Click(object sender, RoutedEventArgs e) {

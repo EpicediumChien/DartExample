@@ -32,6 +32,7 @@ namespace DDPM.UI.Module.DisplayOthers
 
         private void import_Click(object sender, RoutedEventArgs e)
         {
+            vm.ImportSettings();
         }
 
         private void export_Click(object sender, RoutedEventArgs e)

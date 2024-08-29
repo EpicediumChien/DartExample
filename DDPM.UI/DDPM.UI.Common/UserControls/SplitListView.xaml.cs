@@ -161,6 +161,11 @@ namespace DDPM.UI.Common.UserControls
         {
             vm.GoToNextPage();
         }
+
+        public bool GotoFirstSelectedItemPage()
+        {
+            return vm.GotoFirstSelectedItemPage();
+        }
         #endregion Page Navigation
 
         #region SplitItem Edit Command

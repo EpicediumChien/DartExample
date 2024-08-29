@@ -1,4 +1,5 @@
 using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
@@ -86,6 +87,25 @@ namespace DDPM.UI.Module.EzArrange
         //Handle new device coming
         private void InitNewViewModel()
         {
+            //Update SelectedHomeDevice
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                ModuleOwner = DdpmCommonHelper.ModuleOwner;
+                _selHomeDevice = ModuleOwner.SelectedHomeDevice;
+                if (_selHomeDevice != null)
+                {
+                    if (_selHomeDevice.vmEzArrange == null)
+                    {
+                        _selHomeDevice.vmEzArrange = new Common.ViewModels.EzArrangeViewModel(_selHomeDevice);
+                    }
+                }
+            }
+            if (_rightView != null)
+            {
+                EzArrangeRightVierw ezRightView = _rightView as EzArrangeRightVierw;
+                ezRightView.HandleSelectedHomeDeviceChanged();
+            }
+
         }
 
         public void OnActivated()

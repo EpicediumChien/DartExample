@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VcpCore.Plugins.Test.ParserTest.NodesTest
+﻿namespace VcpCore.Plugins.Test.ParserTest.NodesTest
 {
     public class TestRootNode
     {
@@ -12,7 +6,7 @@ namespace VcpCore.Plugins.Test.ParserTest.NodesTest
         public void ValueTest()
         {
             string Value = "value1";
-            RootNode rootNode=new RootNode();
+            RootNode rootNode = new RootNode();
             rootNode.Value = Value;
             var ValueResult = rootNode.Value;
             Assert.That(Value, Is.EqualTo(ValueResult));
@@ -45,7 +39,7 @@ namespace VcpCore.Plugins.Test.ParserTest.NodesTest
             RootNode rootNode = new RootNode()
             {
                 Value = "Child"
-            }; 
+            };
             string expected = string.Empty;
             string actual = rootNode.ToString();
             Assert.That(expected, Is.EqualTo(actual));

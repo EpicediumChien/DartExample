@@ -1,22 +1,8 @@
 ﻿using DDPM.Easy.Common;
 using nsWinEventHook;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
-using System.Windows.Shapes;
 using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
@@ -29,6 +15,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private WinEventHook _winEventHook = new WinEventHook();
 
         #region Init
+
         public InfoWindow()
         {
             InitializeComponent();
@@ -52,6 +39,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             WinEventHook_Start();
 
+            //Hide window from Alt+tab
+            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
             //Test if a open window can create another window in a Dispatcher
             //Result: OK
             //this.Dispatcher.Invoke(() =>
@@ -59,18 +50,21 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //    SaveCustomWindow w = new SaveCustomWindow();
             //    w.Show();
             //});
-
         }
-        #endregion
+
+        #endregion Init
 
         #region Exit
+
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             WinEventHook_Stop();
         }
-        #endregion
+
+        #endregion Exit
 
         #region ViewModel
+
         private ArrangeVM _vmArrange
         {
             get
@@ -78,9 +72,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 return (ArrangeVM)DataContext;
             }
         }
-        #endregion
+
+        #endregion ViewModel
 
         #region Window Event Hook
+
         private void WinEventHook_Start()
         {
             _winEventHook.OnStartMoving += OnWindowStartMovingProc;
@@ -98,9 +94,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _winEventHook.OnLocationChanged -= OnLocationChangedProc;
             _winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
         }
-        #endregion
+
+        #endregion Window Event Hook
 
         #region Window Event Handlers
+
         private void OnForegroundWindowChangedProc(IntPtr hWndNew, IntPtr hWndOld)
         {
             //Noting to do in this project
@@ -108,6 +106,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         private bool _isDebuggingOnWindowStartMoving = true;
+
         private void OnWindowStartMovingProc(IntPtr hWnd)
         {
             //if (_isDebuggingOnWindowStartMoving)
@@ -169,7 +168,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _vmArrange.StartMovingMsg = "OK";
 
             _vmArrange.RefreshCellRects();
-
         }
 
         private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
@@ -191,7 +189,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Check if user cancel the window moving by pressing [Esc] key
             //Assumption:
             // When user moving window, the mouse [LeftButton] is pressed and hold.
-            // When user canceling the moving, he/she press [Esc] key and the 
+            // When user canceling the moving, he/she press [Esc] key and the
             //     mouse [LeftButton] is strll pressed and hold.
             //
             if (WinEventHook.IsUserCancelMoving())
@@ -202,7 +200,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             rcArrange.Inflate(6, 6);
             WinEventHook.SetWindowPosition(hWnd, rcArrange);
-
         }
 
         private void OnLocationChangedProc(int x, int y)
@@ -243,7 +240,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Set WorkWins to topmost
         }
-        #endregion
+
+        #endregion Window Event Handlers
 
         public void RefreshWorkWindows()
         {
@@ -268,7 +266,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 var varX = (int)dpiXProperty.GetValue(null, null);
                 double dpiX = (double)varX / (double)96;
                 _vmArrange.LogInfo($"  * dpiX={dpiX}");
-
 
                 //Refresh with new AllScreens
                 _vmArrange.LogInfo($"  * Refreshing WorkWindows... AllScreens.Count={System.Windows.Forms.Screen.AllScreens.Length}");
@@ -331,7 +328,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         addedWorkWin.SetWorkingSplit(cellCount, splitKey, settings);
                         addedWorkWin.Show();
                         tempWorkWindows.Add(scr.DeviceName, addedWorkWin);
-
                     }
                     idxScr++;
                 } //foreach (Screen scr)
@@ -347,8 +343,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 _vmArrange.WorkWindows = tempWorkWindows;
             });
-
-
         }
 
         private void chkIsFading_Click(object sender, RoutedEventArgs e)
@@ -368,7 +362,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         }
                     }
                 }
-
             }
         }
     }

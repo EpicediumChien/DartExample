@@ -10,13 +10,9 @@
         Topmost="True" ShowInTaskbar="False" AllowsTransparency="True"
         Loaded="Window_Loaded">
     <Window.Resources>
-
-
     </Window.Resources>
-    
+
     <Grid>
-        <ContentControl Name="splitCtrl"/>
-
-
+        <ContentControl Name="splitCtrl" />
     </Grid>
 </Window>

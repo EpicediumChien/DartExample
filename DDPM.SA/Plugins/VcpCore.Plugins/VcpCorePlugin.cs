@@ -1079,6 +1079,7 @@ namespace VcpCore.Plugins
                                     CapabilityDic = monitorInfoX.CapabilityDic,
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
+                                    MarketingName = monitorInfoX.MarketingName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1125,6 +1126,7 @@ namespace VcpCore.Plugins
                                     CapabilityDic = monitorInfoX.CapabilityDic,
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
+                                    MarketingName = monitorInfoX.MarketingName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1158,6 +1160,7 @@ namespace VcpCore.Plugins
                                     CapabilityDic = monitorInfoX.CapabilityDic,
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
+                                    MarketingName = monitorInfoX.MarketingName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1293,7 +1296,8 @@ namespace VcpCore.Plugins
                                                 inputSource = monitorInfoX.inputSource,
                                                 CapabilityDic = monitorInfoX.CapabilityDic,
                                                 modelName = monitorInfoX.modelName,
-                                                series = monitorInfoX.series
+                                                series = monitorInfoX.series,
+                                                MarketingName = monitorInfoX.MarketingName,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgs);
                                         }
@@ -1337,7 +1341,8 @@ namespace VcpCore.Plugins
                                                 inputSource = NodeFormatter.FormatVCP_60(rc_str.ToLower()),
                                                 CapabilityDic = monitorInfoX.CapabilityDic,
                                                 modelName = monitorInfoX.modelName,
-                                                series = monitorInfoX.series
+                                                series = monitorInfoX.series,
+                                                MarketingName = monitorInfoX.MarketingName,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgIIs);
                                         }
@@ -1362,7 +1367,8 @@ namespace VcpCore.Plugins
                                             inputSource = monitorInfoX.inputSource,
                                             CapabilityDic = monitorInfoX.CapabilityDic,
                                             modelName = monitorInfoX.modelName,
-                                            series = monitorInfoX.series
+                                            series = monitorInfoX.series,
+                                            MarketingName = monitorInfoX.MarketingName,
                                         };
                                         OnVCPchanged(_VCPchangedEventArgs);
                                     }
@@ -1571,7 +1577,8 @@ namespace VcpCore.Plugins
                                                 inputSource = m.inputSource,
                                                 CapabilityDic = m.CapabilityDic,
                                                 modelName = m.modelName,
-                                                series = m.series
+                                                series = m.series,
+                                                MarketingName = m.MarketingName,
                                             };
                                             _tmp.Add(minfo);
                                         }
@@ -1672,6 +1679,7 @@ namespace VcpCore.Plugins
                         monitorInfo.CapabilityDic = MonitorInfoX.CapabilityDic;
                         monitorInfo.modelName = MonitorInfoX.modelName;
                         monitorInfo.series = MonitorInfoX.series;
+                        monitorInfo.MarketingName = MonitorInfoX.MarketingName;
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
                     }
                 }
@@ -2035,7 +2043,10 @@ namespace VcpCore.Plugins
                                 {
                                     var modelNode = node.Nodes.RecursiveSelect(n => n.Nodes).Single(n => n.Value == "model");
                                     foreach (var _node in modelNode.Nodes)
+                                    {
                                         _TargetMonitor.modelName = _node.Value;
+                                        _TargetMonitor.MarketingName = WhichMarketingName(_TargetMonitor.modelName);
+                                    }
 
                                     _TargetMonitor.series = string.Empty;
                                     foreach (KeyValuePair<string, List<string>> kv in _supportDictionary)
@@ -2148,10 +2159,9 @@ namespace VcpCore.Plugins
                                 }
                             }
                             _TargetMonitor.Index = MoIndexCounter;
-                            _TargetMonitor.FwVersion = FwVersion(_TargetMonitor.hPhysicalMonitor);
+                            _TargetMonitor.FwVersion = FwVersion(_TargetMonitor.hPhysicalMonitor, _TargetMonitor.modelName);
                             _TargetMonitor.inputSource = GetInputSource(_TargetMonitor.hPhysicalMonitor);
-                            if (!string.IsNullOrWhiteSpace(_TargetMonitor.series))
-                                monitors.Add(_TargetMonitor);
+                            if (!string.IsNullOrWhiteSpace(_TargetMonitor.series)) monitors.Add(_TargetMonitor);
                             MoIndexCounter++;
                         }
                         watch.Stop();
@@ -2311,7 +2321,8 @@ namespace VcpCore.Plugins
                         inputSource = monitorInfoX.inputSource,
                         CapabilityDic = monitorInfoX.CapabilityDic,
                         modelName = monitorInfoX.modelName,
-                        series = monitorInfoX.series
+                        series = monitorInfoX.series,
+                        MarketingName = monitorInfoX.MarketingName,
                     };
                     OnVCPchanged(_VCPchangedEventArgs);
 
@@ -3029,7 +3040,7 @@ namespace VcpCore.Plugins
             return ColorPresetDescriptions;
         }
 
-        private string FwVersion(IntPtr hPhyMonitor)
+        private string FwVersion(IntPtr hPhyMonitor, string modelName)
         {
             int count = 0;
             string Version = string.Empty;
@@ -3047,10 +3058,16 @@ namespace VcpCore.Plugins
 
                 if ((OFWstring != null) && (ScalarICID != null) && (OEMID != null))
                 {
-                    Version = FormatFwVersion((uint)OFWstring, (uint)ScalarICID, (uint)OEMID);
+                    Version = FormatFwVersion(Convert.ToUInt32(OFWstring), Convert.ToUInt32(ScalarICID), Convert.ToUInt32(OEMID), WhichCase(modelName));
 
                     if (!string.IsNullOrWhiteSpace(Version))
+                    {
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XC8 : 0X" + Convert.ToUInt32(ScalarICID).ToString("X"));
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XC9 : 0X" + Convert.ToUInt32(OFWstring).ToString("X"));
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XFD : 0X" + Convert.ToUInt32(OEMID).ToString("X"));
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion : " + Version);
                         return Version;
+                    }
                 }
 
                 count++;
@@ -3062,11 +3079,73 @@ namespace VcpCore.Plugins
             return Version;
         }
 
-        private string FormatFwVersion(uint fwVersion, uint ScalarICID, uint OEMID)
+        private string FormatFwVersion(uint fwVersion, uint ScalarICID, uint OEMID, int _Case)
         {
-            string str_fwVersion = fwVersion.ToString("X");
+            string str_fwVersion = string.Empty;
             string str_ScalarICID = (ScalarICID & 0xff).ToString("X2");
-            string str_OEMID = OEMID.ToString("X");
+            string str_OEMID = Encoding.ASCII.GetString(new byte[] { Convert.ToByte(OEMID) }).ToUpper();
+
+            switch (_Case)
+            {
+                case 1:
+                    {
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion into Case 01 [BCD BCD]");
+                        str_fwVersion = fwVersion.ToString("X4");
+                    }
+                    break;
+
+                case 2:
+                    {
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion into Case 02 [HEX HEX]");
+                        uint tempI = (fwVersion & 0xff00) >> 8;
+                        uint tempII = (fwVersion & 0xff);
+                        string strI = tempI.ToString("X2");
+                        string strII = tempII.ToString("X2");
+                        int valI = Convert.ToInt32(strI, 16);
+                        int valII = Convert.ToInt32(strII, 16);
+                        strI = valI.ToString().PadLeft(2, '0');
+                        strII = valII.ToString().PadLeft(2, '0');
+                        str_fwVersion = strI + strII;
+                    }
+                    break;
+
+                case 3:
+                    {
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion into Case 03 [HEX BCD]");
+                        uint tempI = (fwVersion & 0xff00) >> 8;
+                        uint tempII = (fwVersion & 0xff);
+                        string strI = tempI.ToString("X2");
+                        string strII = tempII.ToString("X2");
+                        int valI = Convert.ToInt32(strI, 16);
+                        strI = valI.ToString().PadLeft(2, '0');
+                        str_fwVersion = strI + strII;
+                    }
+                    break;
+
+                case 4:
+                    {
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion into Case 04 [BCD HEX]");
+                        uint tempI = (fwVersion & 0xff00) >> 8;
+                        uint tempII = (fwVersion & 0xff);
+                        string strI = tempI.ToString("X2");
+                        string strII = tempII.ToString("X2");
+                        int valII = Convert.ToInt32(strII, 16);
+                        strII = valII.ToString().PadLeft(2, '0');
+                        str_fwVersion = strI + strII;
+                    }
+                    break;
+
+                default:
+                    {
+                        _logs.DebugMsg("[VcpCorePlugin] FwVersion into Case default");
+                        str_fwVersion = fwVersion.ToString("X4");
+                    }
+                    break;
+            }
+
+            _logs.DebugMsg("[VcpCorePlugin] FwVersion str_fwVersion is " + str_fwVersion);
+            _logs.DebugMsg("[VcpCorePlugin] FwVersion str_ScalarICID is " + str_ScalarICID);
+            _logs.DebugMsg("[VcpCorePlugin] FwVersion str_OEMID is " + str_OEMID);
 
             string hexValue = str_ScalarICID;
             int nLen = hexValue.Length;
@@ -3094,65 +3173,311 @@ namespace VcpCore.Plugins
                         str_ScalarICID = "0";
                         break;
 
+                    case "00":
+                        str_ScalarICID = "0";
+                        break;
+
                     default:
                         str_ScalarICID = "3";
                         break;
                 }
             }
 
-            hexValue = str_OEMID;
-            nLen = hexValue.Length;
-            if (nLen > 0)
-            {
-                switch (hexValue.ToLower())
-                {
-                    case "62":
-                        str_OEMID = "B";
-                        break;
-
-                    case "63":
-                        str_OEMID = "C";
-                        break;
-
-                    case "66":
-                        str_OEMID = "F";
-                        break;
-
-                    case "74":
-                        str_OEMID = "T";
-                        break;
-
-                    default:
-                        str_OEMID = "O";
-                        break;
-                }
-            }
-
             hexValue = str_fwVersion;
             nLen = hexValue.Length;
-
             if (nLen > 1)
             {
                 string strFirst = hexValue.Substring(0, 1);
                 switch (strFirst)
                 {
                     case "1":
+                        {
+                            strFirst = strFirst + str_ScalarICID + str_OEMID;
+                            string strSecond = hexValue.Substring(1);
+                            str_fwVersion = strFirst + strSecond;
+                        }
+                        break;
+
                     case "2":
+                        {
+                            strFirst = strFirst + str_ScalarICID + str_OEMID;
+                            string strSecond = hexValue.Substring(1);
+                            str_fwVersion = strFirst + strSecond;
+                        }
+                        break;
+
                     case "3":
-                        strFirst = strFirst + str_ScalarICID + str_OEMID;
+                        {
+                            strFirst = strFirst + str_ScalarICID + str_OEMID;
+                            string strSecond = hexValue.Substring(1);
+                            str_fwVersion = strFirst + strSecond;
+                        }
                         break;
 
                     case "4":
-                        strFirst = "M" + str_ScalarICID + str_OEMID;
+                        {
+                            strFirst = "M" + str_ScalarICID + str_OEMID;
+                            string strSecond = hexValue.Substring(1);
+                            str_fwVersion = strFirst + strSecond;
+                        }
                         break;
 
                     default:
                         break;
                 }
-                string strSecond = hexValue.Substring(1);
-                str_fwVersion = strFirst + strSecond;
             }
+
             return str_fwVersion;
+        }
+
+        private int WhichCase(string Model)
+        {
+            switch (Model)
+            {
+                case "AW2724DM": return 1;
+                case "AW2723DF": return 4;
+                case "AW2523HF": return 5;
+                case "AW3423DWF": return 4;
+                case "AW2521HF": return 4;
+                case "AW2521HFA": return 4;
+                case "AW2521HFL": return 4;
+                case "AW2521HFLA": return 4;
+                case "AW2720HF": return 4;
+                case "AW2720HFA": return 4;
+                case "AW5520QF": return 4;
+                case "C2422HE": return 1;
+                case "C2722DE": return 1;
+                case "C3422WE": return 2;
+                case "C5519Q": return 1;
+                case "C5519QA": return 1;
+                case "C5522QT": return 5;
+                case "C6522QT": return 5;
+                case "C7520QT": return 5;
+                case "C8621QT": return 5;
+                case "C2423H": return 4;
+                case "C2424HE": return 1;
+                case "C2724DE": return 1;
+                case "C2723H": return 4;
+                case "C3424WE": return 1;
+                case "G2722HS": return 1;
+                case "G2422HS": return 4;
+                case "S2422HG": return 5;
+                case "S2422HGA": return 5;
+                case "S2522HG": return 4;
+                case "S2722DGM": return 1;
+                case "S3422DWG": return 1;
+                case "S3222HG": return 1;
+                case "S3222DGM": return 1;
+                case "S2421HGF": return 4;
+                case "S2721HGF": return 4;
+                case "S2721HGFA": return 4;
+                case "S2721DGFA": return 5;
+                case "S2721DGF": return 5;
+                case "S2719DGF": return 1;
+                case "S3220DGF": return 1;
+                case "S2419HGF": return 1;
+                case "G2723H": return 1;
+                case "G2723HN": return 1;
+                case "G3223D": return 1;
+                case "G3223Q": return 1;
+                case "E1715S": return 1;
+                case "E1916HV": return 5;
+                case "E1920H": return 2;
+                case "E2016HV": return 5;
+                case "E2020H": return 4;
+                case "E2219HN": return 5;
+                case "E2220H": return 2;
+                case "E2221HN": return 2;
+                case "E2222H": return 2;
+                case "E2222HS": return 2;
+                case "E2420H": return 2;
+                case "E2420HS": return 2;
+                case "E2421HN": return 2;
+                case "E2422H": return 2;
+                case "E2422HN": return 2;
+                case "E2422HS": return 2;
+                case "E2720H": return 4;
+                case "E2720HS": return 4;
+                case "E2722H": return 1;
+                case "E2722HS": return 1;
+                case "E2223HN": return 2;
+                case "E2223HV": return 2;
+                case "E2423H": return 1;
+                case "E2424HS": return 2;
+                case "E2423HN": return 1;
+                case "E2723H": return 2;
+                case "E2723HN": return 1;
+                case "E2724HN": return 2;
+                case "P1917S": return 1;
+                case "P2219H": return 2;
+                case "P2219HC": return 4;
+                case "P2222H": return 1;
+                case "P2319H": return 1;
+                case "P2418HT": return 5;
+                case "P2419H": return 1;
+                case "P2419HC": return 4;
+                case "P2421": return 2;
+                case "P2421D": return 1;
+                case "P2421DC": return 1;
+                case "P2422H": return 2;
+                case "P2422HE": return 1;
+                case "P2719H": return 2;
+                case "P2719HC": return 2;
+                case "P2720D": return 1;
+                case "P2720DC": return 1;
+                case "P2721Q": return 5;
+                case "P2722H": return 1;
+                case "P2722HE": return 1;
+                case "P3221D": return 2;
+                case "P3222QE": return 1;
+                case "P3421W": return 4;
+                case "E2724HS": return 2;
+                case "P2223HC": return 1;
+                case "P2423": return 1;
+                case "P2423D": return 1;
+                case "P2423DE": return 2;
+                case "P2723D": return 1;
+                case "P2723DE": return 1;
+                case "P2723QE": return 5;
+                case "P3223DE": return 1;
+                case "P3223QE": return 1;
+                case "S3423DWC": return 1;
+                case "S2723HC": return 1;
+                case "S2422HZ": return 1;
+                case "S2722DC": return 4;
+                case "S2722DZ": return 1;
+                case "S2722QC": return 4;
+                case "S3222HN": return 1;
+                case "S3222HS": return 1;
+                case "S3422DW": return 1;
+                case "S2421H": return 1;
+                case "S2421HN": return 1;
+                case "S2421HS": return 1;
+                case "S2421HSX": return 1;
+                case "S2421NX": return 1;
+                case "S2721D": return 4;
+                case "S2721DS": return 4;
+                case "S2721H": return 1;
+                case "S2721HN": return 1;
+                case "S2721HS": return 1;
+                case "S2721HSX": return 1;
+                case "S2721NX": return 1;
+                case "S2721Q": return 4;
+                case "S2721QS": return 4;
+                case "S2721QSA": return 4;
+                case "S3221QS": return 1;
+                case "S3221QSA": return 1;
+                case "S2319H": return 1;
+                case "S2319HN": return 1;
+                case "S2319HS": return 2;
+                case "S2319NX": return 1;
+                case "S2419H": return 1;
+                case "S2419HM": return 2;
+                case "S2419HN": return 1;
+                case "S2419NX": return 1;
+                case "S2719DC": return 2;
+                case "S2719DM": return 2;
+                case "S2719H": return 1;
+                case "S2719HN": return 1;
+                case "S2719HS": return 2;
+                case "S2719NX": return 1;
+                case "S3219D": return 1;
+                case "SE3223Q": return 1;
+                case "SE2723DS": return 1;
+                case "SE2423DS": return 1;
+                case "SE2222H": return 2;
+                case "SE2222HV": return 2;
+                case "SE2422H": return 2;
+                case "SE2422HM": return 2;
+                case "SE2422HR": return 2;
+                case "SE2422HX": return 2;
+                case "SE2722H": return 1;
+                case "SE2722HR": return 1;
+                case "SE2722HX": return 1;
+                case "SE2219H": return 2;
+                case "SE2219HX": return 2;
+                case "SE2419H": return 2;
+                case "SE2419HX": return 2;
+                case "SE2419HR": return 2;
+                case "SE2719H": return 2;
+                case "SE2719HX": return 2;
+                case "SE2719HR": return 2;
+                case "U3224KZ": return 1;
+                case "U3223QZ": return 1;
+                case "U4924DW": return 1;
+                case "U3824DW": return 1;
+                case "U3423WE": return 1;
+                case "U4323QE": return 1;
+                case "U3223QE": return 5;
+                case "U2723QE": return 5;
+                case "U3023E": return 1;
+                case "U2422H": return 4;
+                case "U2422HE": return 4;
+                case "U2422HX": return 4;
+                case "U2722D": return 1;
+                case "U2722DE": return 1;
+                case "U2722DX": return 1;
+                case "U2421E": return 1;
+                case "U2421HE": return 4;
+                case "U2721DE": return 4;
+                case "U3421WE": return 4;
+                case "U3821DW": return 4;
+                case "U4021QW": return 5;
+                case "UP3221Q": return 4;
+                case "U2520D": return 4;
+                case "U2520DR": return 4;
+                case "U2720Q": return 4;
+                case "U2720QM": return 4;
+                case "U4320Q": return 2;
+                case "UP2720Q": return 4;
+                case "UP2720QA": return 4;
+                case "U2419H": return 5;
+                case "U2419HC": return 4;
+                case "U2419HS": return 4;
+                case "U2419HX": return 4;
+                case "U2719D": return 4;
+                case "U2719DC": return 4;
+                case "U2719DS": return 4;
+                case "U2719DX": return 4;
+                case "U3219Q": return 4;
+                case "U3419W": return 4;
+                case "U4919DW": return 4;
+                case "U4919DWA": return 4;
+                case "UP3218K": return 5;
+                case "UP3218KA": return 5;
+                case "U2723QX": return 5;
+                default: return 1;
+            }
+        }
+
+        private string WhichMarketingName(string Model)
+        {
+            switch (Model)
+            {
+                case "U3225QE": return "Dell UltraSharp 32 4K Thunderbolt™ Hub Monitor";
+                case "U2725QE": return "Dell UltraSharp 27 4K Thunderbolt™ Hub Monitor";
+                case "P7525QT": return "Dell Pro 75 Plus 4K Touch Monitor";
+                case "P2425D": return "Dell Pro 24 Plus QHD Monitor";
+                case "P2425DE": return "Dell Pro 24 Plus QHD USB-C® Hub Monitor";
+                case "P2725D": return "Dell Pro 27 Plus QHD Monitor";
+                case "P2725DE": return "Dell Pro 27 Plus QHD USB-C® Hub Monitor";
+                case "P3225DE": return "Dell Pro 32 Plus QHD USB-C® Hub Monitor";
+                case "P2725QE": return "Dell Pro 27 Plus 4K USB-C® Hub monitor";
+                case "P3225QE": return "Dell Pro 32 Plus 4K USB-C® Hub Monitor";
+                case "P3425WE": return "Dell Pro 34 Plus USB-C® Hub Monitor";
+                case "P1425": return "Dell Pro 14 Plus Portable Monitor";
+                case "S2725QC": return "Dell 27 Plus 4K USB-C® Monitor";
+                case "S2725QS": return "Dell 27 Plus 4K Monitor";
+                case "S3225QC": return "Dell 32 Plus 4K QD-OLED Monitor";
+                case "S3225QS": return "Dell 32 Plus 4K Monitor";
+                case "S3425DW": return "Dell 34 Plus USB-C® Monitor";
+                case "E2725HM": return "Dell Pro 27 Monitor";
+                case "E2425HM": return "Dell Pro 24 Monitor";
+                case "E2425HSM": return "Dell Pro 24 Adjustable Stand Monitor";
+                case "E2225HM": return "Dell Pro 22 Monitor";
+                case "E2225HSM": return "Dell Pro 22 Adjustable Stand Monitor";
+                default: return Model;
+            }
         }
 
         private void DecryptSupportListFile()

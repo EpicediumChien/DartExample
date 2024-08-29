@@ -681,8 +681,6 @@ namespace VcpCore.Plugins
 
         #endregion Gamma/Color and Etablished Timings：
 
-
-
         #region Preferred Detailed Timing：
 
         public class Preferred_Detailed_Timing

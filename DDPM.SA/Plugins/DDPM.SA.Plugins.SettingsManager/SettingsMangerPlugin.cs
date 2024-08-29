@@ -27,10 +27,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -163,6 +161,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             return Task.FromResult(true);
         }
+
         #endregion
 
         #region Overriding methods
@@ -257,21 +256,25 @@ namespace DDPM.SA.Plugins.SettingsManager
         [DllImport("Kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int WTSGetActiveConsoleSessionId();
+
         private static int _WTSGetActiveConsoleSessionId()
         {
             return WTSGetActiveConsoleSessionId();
         }
 
-
         [DllImport("Wtsapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+
         private static bool _WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
         {
             return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
         }
 
         [DllImport("Wtsapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void WTSFreeMemory(IntPtr pointer);
+
         private static void _WTSFreeMemory(IntPtr pointer)
         {
             WTSFreeMemory(pointer);
@@ -379,7 +382,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             if (Directory.Exists(folder))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(folder);
-                if(directoryInfo == null)
+                if (directoryInfo == null)
                 {
                     WriteLog("System config: retrieve Directory got null return");
                     Directory.Delete(folder, true);
@@ -402,7 +405,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             //check if setting file contain illegal privilege
             //if yes, delete file and then apply right ACL
             if (File.Exists(_settings_path))
-            {                
+            {
                 FileInfo fileInfo = new FileInfo(_settings_path);
                 if (fileInfo == null)
                 {
@@ -421,7 +424,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                     }
                 }
             }
-            
+
             DDPMITConfig ddpm_it = new DDPMITConfig();
             string info;
             if (File.Exists(_settings_path))
@@ -460,7 +463,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                 }
             }
             //ACL apply
-            //string info;            
+            //string info;
             if (!DDPMFileSecurity.ApplyFileACLUserReadOnly(_settings_path, out info))
                 WriteLog($"[InitDDPMUserConfigFile] {info}");
 
