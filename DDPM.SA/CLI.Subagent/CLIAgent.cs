@@ -109,18 +109,19 @@ namespace CLI.Subagent
         //If runMode = true, means run as elevated mode
         private void RunManagement(string[] args, bool runMode)
         {
-            InitializeCliManagerPlugin();
-
+            // 2024-08-28 Casper: move upper to let command parser work earlier
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(args);
+
             // 2024-06-07 Elie, we have to check if it's null before using it.
-            if (commandLineInput == null)
+            if (true != commandLineInput.isCliCommandsProcessCompleted)
             {
-                _exitcode = ICLICommandTable.Response_FormatError();//parsing fail
+                _exitcode = ICLICommandTable.Response_FormatErrorRecommendation(commandLineInput); //parsing fail
+                //_exitcode = ICLICommandTable.Response_FormatError();
                 return;
             }
 
-            // [0824_CASPER]: return HELP function
+            // 2024-08-24 Casper: Add Help command
             if (commandLineInput.Command.Equals("HELP"))
             {
                 _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInput);
@@ -132,6 +133,8 @@ namespace CLI.Subagent
                 _exitcode = ICLICommandTable.Response_WrongIndex(commandLineInput);
                 return;
             }
+
+            InitializeCliManagerPlugin();
 
             commandLineInput.isCliRunAdmin = runMode;
             if (!runMode)//0724 only allow elevated privilege to perform action
