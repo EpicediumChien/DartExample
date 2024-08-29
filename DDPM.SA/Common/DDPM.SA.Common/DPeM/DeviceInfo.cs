@@ -1243,6 +1243,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public int TiltSensitivity
         {
             get => _tiltSensitivity;
@@ -1252,6 +1253,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public int TipSensitivity
         {
             get => _tipSensitivity;
@@ -1346,7 +1348,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion Pen Properties
+        #endregion Other Properties
 
         #endregion Properties
 

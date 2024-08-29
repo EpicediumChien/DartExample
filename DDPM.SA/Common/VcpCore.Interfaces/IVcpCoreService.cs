@@ -14,6 +14,8 @@ namespace VcpCore.Interfaces
 
         Task<List<MonitorInfo>> Re_GetMonitors();
 
+        Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable();
+
         Task<string> GetCapabilitiesString(MonitorInfo monitorInfo);
 
         Task<string> GetVCPCapabilities(MonitorInfo monitorInfo);

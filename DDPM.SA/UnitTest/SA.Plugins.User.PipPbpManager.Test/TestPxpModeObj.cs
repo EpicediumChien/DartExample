@@ -1,11 +1,5 @@
 ﻿using DDPM.SA.Common.Display;
-using DDPM.SA.Plugins.User.DisplayProperties;
 using Dell.Client.Framework.UnitTestShared.Tests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SA.Plugins.User.PipPbpManager.Test
 {
@@ -31,7 +25,6 @@ namespace SA.Plugins.User.PipPbpManager.Test
             Assert.That(arg, Is.EqualTo(get_pxpMode_arg));
             Assert.That(modeMode, Is.EqualTo(get_pxpMode_modeMode));
             Assert.That(desc, Is.EqualTo(get_pxpMode_description));
-
         }
 
         [Test]
@@ -76,8 +69,6 @@ namespace SA.Plugins.User.PipPbpManager.Test
             Assert.That(Table1[15].Arg, Is.EqualTo(PxpModeObjTable[15].Arg));
             Assert.That(Table1[27].ModeCode, Is.EqualTo(PxpModeObjTable[27].ModeCode));
             Assert.That(Table1[27].Arg, Is.EqualTo(PxpModeObjTable[27].Arg));
-
         }
-
     }
 }

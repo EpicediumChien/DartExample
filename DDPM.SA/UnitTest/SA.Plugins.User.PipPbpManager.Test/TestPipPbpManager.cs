@@ -1,5 +1,5 @@
-﻿using DDPM.SA.Common.Interfaces;
-using DDPM.SA.Common;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Plugins.User.DisplayManager;
 using DDPM.SA.Plugins.User.PipPbpManger;
 using Dell.Client.Framework.Interfaces;
@@ -8,10 +8,6 @@ using Moq;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using Dell.Client.Framework.Agent;
-using System.Security.Cryptography.X509Certificates;
-using DDPM.SA.Common.Display;
-using static VcpCore.Common.User32;
 
 namespace SA.Plugins.User.PipPbpManager.Test
 {
@@ -85,7 +81,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
         VcpCorePlugin vcpCorePlugin;
         PipPbpMangerPlugin pipPbpMangerPlugin;
         Dictionary<string, Dictionary<string, string>> getstr;
-        
+
         [OneTimeSetUp]
         public void Setup()
         {
@@ -137,17 +133,16 @@ namespace SA.Plugins.User.PipPbpManager.Test
             Assert.That(error2, Is.EqualTo(LastErrorResult2));
         }
 
-
         [Test]
         public void TestGetCapabilitiesString()
         {
             string getcapabilitiesString1 = "";
             string signature = "E9(";
             string signature1 = "E8(";
-            if (getcapabilitiesString1=="")
-            { 
-            var GetCapabilitiesStringResult1 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
-            Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult1));
+            if (getcapabilitiesString1 == "")
+            {
+                var GetCapabilitiesStringResult1 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
+                Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult1));
             }
 
             if (signature1 != "E9(")
@@ -160,15 +155,15 @@ namespace SA.Plugins.User.PipPbpManager.Test
                 Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult2));
             }
 
-            if (signature== "E9(") 
-            { 
-            string capabilitiesString3 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) E9(00 01 02 21 22 24 ) mccs_ver(2.1))";
-            string getcapabilitiesString3 = "00 01 02 21 22 24 ";
-            PrivateObject privatepipPbp = new PrivateObject(pipPbpMangerPlugin);
-            DisplayManagerService.Setup(x=>x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString3));
-            privatepipPbp.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService.Object);
-            var GetCapabilitiesStringResult3 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
-            Assert.That(getcapabilitiesString3, Is.EqualTo(GetCapabilitiesStringResult3));
+            if (signature == "E9(")
+            {
+                string capabilitiesString3 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) E9(00 01 02 21 22 24 ) mccs_ver(2.1))";
+                string getcapabilitiesString3 = "00 01 02 21 22 24 ";
+                PrivateObject privatepipPbp = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString3));
+                privatepipPbp.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService.Object);
+                var GetCapabilitiesStringResult3 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
+                Assert.That(getcapabilitiesString3, Is.EqualTo(GetCapabilitiesStringResult3));
             }
         }
 
@@ -189,7 +184,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (pipPbpCapsStr2 != "")
             {
                 string capabilitiesString2 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) E9(00 01 02 21 22 24 ) mccs_ver(2.1))";
-                UInt16[] pipPbpCaps2=new UInt16[6] { 00 ,01 ,02 ,33 ,34, 36 };
+                UInt16[] pipPbpCaps2 = new UInt16[6] { 00, 01, 02, 33, 34, 36 };
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
                 DisplayManagerService2.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString2));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
@@ -204,7 +199,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             string inStr = "";
             string inStr2 = "02 04 05 08 10 12";
             UInt16[] pipPbpCapsStringToWords = new UInt16[0];
-            UInt16[] pipPbpCapsStringToWords2 = new UInt16[6] {02, 04, 05, 08, 16, 18 };
+            UInt16[] pipPbpCapsStringToWords2 = new UInt16[6] { 02, 04, 05, 08, 16, 18 };
             if (inStr == "")
             {
                 var ParsingHexStringToWordsResult1 = PipPbpMangerPlugin.ParsingHexStringToWords(inStr);
@@ -507,7 +502,6 @@ namespace SA.Plugins.User.PipPbpManager.Test
             }
         }
 
-
         [Test]
         public void TestSetSubInputs()
         {
@@ -550,7 +544,6 @@ namespace SA.Plugins.User.PipPbpManager.Test
                 Assert.That(SetSubInputs2, Is.EqualTo(SetSubInputsResult2));
             }
         }
-
 
         [Test]
         public void TestUsbSwitch()
@@ -609,7 +602,5 @@ namespace SA.Plugins.User.PipPbpManager.Test
             vcpCorePlugin.Dispose();
             pipPbpMangerPlugin.Dispose();  //fix 2024-08-28 complier ERROR
         }
-
-
     }
 }
