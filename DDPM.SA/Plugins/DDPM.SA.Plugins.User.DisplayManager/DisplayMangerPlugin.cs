@@ -114,6 +114,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// HDR status change event，return HDR status
         /// </summary>
         public event EventHandler<bool> HDRChangeEvent;
+
         /// <summary>
         /// gaming parameter changes event，return gaming parameter
         /// </summary>
@@ -160,6 +161,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region IDisplayService implementation
+
+        public Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable()
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCacheTable  ...");
+
+            var _CacheTable = _VcpCorePlugin.GetVCPCacheTable().Result;
+
+            return Task.FromResult(_CacheTable);
+        }
 
         public Task Reset0x52TimerTick(int millisecond)
         {
@@ -2563,7 +2573,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region Gaming
-        bool GamingChangeEventByPass = false;
+
+        private bool GamingChangeEventByPass = false;
+
         public Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo)
         {
             _logs.DebugMsg(nameof(GetGamingProperties) + " start");
@@ -2658,6 +2670,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(GetGamingProperties) + " done");
             return Task.FromResult(gamingDisplayPropertiesInfo);
         }
+
         public Task<bool> GetCurrentGameEnhancementMode(MonitorInfo monitorInfo, ref Gaming_GameEnhancementMode GameEnhancementMode)
         {
             _logs.DebugMsg(nameof(GetCurrentGameEnhancementMode) + " start");
@@ -2679,6 +2692,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(GetCurrentGameEnhancementMode) + " done:Result" + ret);
             return Task.FromResult(ret);
         }
+
         public Task<bool> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo, ref Gaming_ResponseTime ResponseTime)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_ResponseTime) + " start");
@@ -2700,6 +2714,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo, ref Gaming_DarkStabilizer DarkStabilizer)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_DarkStabilizer) + " start");
@@ -2721,6 +2736,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> GetCurrentGaming_HDRType(MonitorInfo monitorInfo, ref Gaming_HDRType HDRType)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_HDRType) + " start");
@@ -2742,6 +2758,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo, ref Gaming_DualResolutionType DualResolutionType)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_DualResolutionType) + " start");
@@ -2761,6 +2778,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(GetCurrentGaming_DualResolutionType) + " done:Result" + ret);
             return Task.FromResult(ret);
         }
+
         public Task<bool> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, ref GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineEnableType) + " start");
@@ -2799,6 +2817,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineEnableType) + " done:Result" + ret);
             return Task.FromResult(ret);
         }
+
         public Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode)
         {
             _logs.DebugMsg(nameof(SetGameEnhancementMode) + " start");
@@ -2819,6 +2838,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(SetGameEnhancementMode) + " done:Result" + ret);
             return Task.FromResult(ret);
         }
+
         public Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime)
         {
             _logs.DebugMsg(nameof(SetGaming_ResponseTime) + " start");
@@ -2839,6 +2859,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer)
         {
             _logs.DebugMsg(nameof(SetGaming_DarkStabilizer) + " start");
@@ -2859,6 +2880,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType)
         {
             _logs.DebugMsg(nameof(SetGaming_HDRType) + " start");
@@ -2879,6 +2901,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             GamingChangeEventByPass = false;
             return Task.FromResult(ret);
         }
+
         public Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType)
         {
             _logs.DebugMsg(nameof(SetGaming_DualResolutionType) + " start");
@@ -2900,6 +2923,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(SetGaming_DualResolutionType) + " done:Result" + ret);
             return Task.FromResult(ret);
         }
+
         public Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType)
         {
             _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " start");
@@ -2943,6 +2967,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " done:Result" + ret);
             return Task.FromResult(ret);
         }
+
         public Task<bool> SwitchGaming_VisionEngineType(MonitorInfo monitorInfo, Gaming_VisionEngineType VisionEngineType)
         {
             _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " start");
@@ -2959,6 +2984,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " done:Result" + ret);
             return Task.FromResult(ret);
         }
+
         private bool GetCurrentGamingParam(MonitorInfo monitorInfo, ref GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
         {
             _logs.DebugMsg(nameof(GetCurrentGamingParam) + " start");
@@ -2981,6 +3007,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg(nameof(GetCurrentGamingParam) + " done:Result" + ret);
             return ret;
         }
+
         private void GamingChangeEventHandle(VCPchangedEventArgs vcpchangedEventArgs)
         {
             if (!GamingChangeEventByPass && vcpchangedEventArgs.vcpcode == "F4")
@@ -2992,6 +3019,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
         }
+
         #endregion
     }
 }

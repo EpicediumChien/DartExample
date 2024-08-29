@@ -87,6 +87,7 @@ namespace NetworkKVM.Plugins
         #endregion Overriding methods
 
         #region INKVM implementation
+
         public Task RunNamedpipe()
         {
             return Task.Run(async () => await NamedPipeServer());

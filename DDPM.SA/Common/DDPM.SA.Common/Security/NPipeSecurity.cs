@@ -75,16 +75,16 @@ namespace DDPM.SA.Common.Security
 
             //Need to check dll/exe thumbprint
             X509Certificate2 cert = DDPMFileSecurity.LoadCertificate(filePath);
-            if(cert == null)
+            if (cert == null)
             {
                 info = "Can't retrieve cert from file.";
                 return false;
             }
-            //compare thumbprint 
+            //compare thumbprint
             //source array DDPM.Common.ThumbprintHash.certificateHash
             //Target cert.Thumbprint
 
-            //check file path security                
+            //check file path security
             return DDPMFileSecurity.IsFilePathValid(filePath, out info);
         }
     }
