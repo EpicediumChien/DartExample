@@ -22,27 +22,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private string _strPrivacyUrl = "https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy";
         //private string _strCheckBtnText = "Help Dell improve its products and services automatically";
 
-        //public string strCheckBtnText
-        //{
-        //    get
-        //    { return _strCheckBtnText; }
-        //    set
-        //    {
-        //        _strCheckBtnText = value;
-        //        NotifyPropertyChanged("strCheckBtnText");
-        //    }
-        //}
-
-        //public string strUrlBtnContent
-        //{
-        //    get
-        //    { return _strUrlBtnContent; }
-        //    set
-        //    {
-        //        _strUrlBtnContent = value;
-        //        NotifyPropertyChanged("strUrlBtnContent");
-        //    }
-        //}
 
         public string strPrivacyUrl
         {
@@ -51,41 +30,43 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             set
             {
                 _strPrivacyUrl = value;
-                //NotifyPropertyChanged("strPrivacyUrl");
             }
         }
 
-        //public string strTitle
-        //{
-        //    get
-        //    { return _strTitle; }
-        //    set
-        //    {
-        //        _strTitle = value;
-        //        NotifyPropertyChanged("strTitle");
-        //    }
-        //}
+        private bool showLockMask = false;
 
-        //public string strContent
-        //{
-        //    get
-        //    { return _strContent; }
-        //    set
-        //    {
-        //        _strContent = value;
-        //        NotifyPropertyChanged("strContent");
-        //    }
-        //}
-
-        private bool _isCheckEnable = true;
-
-        public bool isCheckEnable
+        public bool ShowLockMask
         {
-            get { return _isCheckEnable; }
+            get { return showLockMask; }
+            set 
+            { 
+                showLockMask = value;
+                LockMaskVisible = showLockMask ? Visibility.Visible : Visibility.Collapsed;
+                NotifyPropertyChanged("ShowLockMask");
+            }
+        }
+
+        private Visibility lockMaskVisible = Visibility.Collapsed;
+
+        public Visibility LockMaskVisible
+        {
+            get { return lockMaskVisible; }
             set
             {
-                _isCheckEnable = value;
-                NotifyPropertyChanged("isCheckEnable");
+                lockMaskVisible = value;
+                NotifyPropertyChanged("LockMaskVisible");
+            }
+        }
+
+        private bool _isTabStoppable = true;
+
+        public bool isTabStoppable
+        {
+            get { return _isTabStoppable; }
+            set
+            {
+                _isTabStoppable = value;
+                NotifyPropertyChanged("isTabStoppable");
             }
         }
 
@@ -136,7 +117,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (data.UserSettings == null)
                     return;
 
-                vm.isCheckEnable = !data.LockSettings.Lock_TelemetryConsent;
+                vm.ShowLockMask = data.LockSettings.Lock_TelemetryConsent;
+                vm.isTabStoppable = !data.LockSettings.Lock_TelemetryConsent;
                 vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -173,7 +155,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     AnalyticsViewModel vm = (AnalyticsViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
+                        vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;                        
                         Trace.WriteLine($"Apply TelemetryConsent(check) : {data.UserSettings.isTelemetryConsentOn}");
                     }
                 }));
@@ -199,7 +181,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     AnalyticsViewModel vm = (AnalyticsViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.isCheckEnable = !(bool)propertyInfo.GetValue(e.target_object);
+                        vm.isTabStoppable = !(bool)propertyInfo.GetValue(e.target_object);
+                        vm.ShowLockMask = (bool)propertyInfo.GetValue(e.target_object);
                         Trace.WriteLine($"Apply TelemetryConsent(Lock) : {propertyInfo.GetValue(e.target_object)}");
                         //vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
                         //Trace.WriteLine($"Apply TelemetryConsent(check) : {data.UserSettings.isTelemetryConsentOn}");
