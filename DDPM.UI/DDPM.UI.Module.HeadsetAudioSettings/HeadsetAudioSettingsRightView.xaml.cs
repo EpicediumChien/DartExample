@@ -34,7 +34,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             var converter = (CollaborationCheckedToVisibilityConverter)Resources["CollaborationCheckedToVisibilityConverter"];
             _vm = vm;
             converter.ViewModel = _vm;
-
+            _vm.Invoke_PleaseWait(_vm.Model);
             if (_vm.CurrentDeviceInfo!.IsPresetsSupported)
             {
                 if(_vm.CurrentDeviceInfo!.Band1Gain > 4 || _vm.CurrentDeviceInfo!.Band1Gain < -6)
@@ -62,7 +62,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                 else
                     SetNodeValue(Node5, _vm.CurrentDeviceInfo!.Band5Gain);
             }
-            _vm.Invoke_PleaseWait(_vm.Model);
+            //_vm.Invoke_PleaseWait(_vm.Model);
             //_vm.DetectPageShow(_vm.Model);
             //_vm.DetectPageShow("WL7024");
             //_vm.DetectPageShow("WL5024");

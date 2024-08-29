@@ -1,9 +1,4 @@
 ﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VcpCore.Plugins.Test.ParserTest.NodesTest
 {
@@ -46,7 +41,7 @@ namespace VcpCore.Plugins.Test.ParserTest.NodesTest
             var parentNode = new Mock<INode>();
             parentNode.Setup(p => p.ToString()).Returns("Parent1");
 
-            ValueNode valueNode = new ValueNode() 
+            ValueNode valueNode = new ValueNode()
             {
                 Value = "Child",
                 Parent = parentNode.Object

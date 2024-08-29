@@ -1,14 +1,9 @@
-﻿using DDPM.SA.Common.Settings;
+﻿using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
-using Dell.Client.Framework.Security;
 using System;
-using System.Collections.Generic;
-using System.IO.Compression;
 using System.IO;
-using System.Linq;
+using System.IO.Compression;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 using VcpCore.Common;
 
 namespace DDPM.SA.Common.Method
@@ -16,16 +11,18 @@ namespace DDPM.SA.Common.Method
     public class Unzip
     {
         private Logs _logs;
+
         public Unzip(Logs logs)
         {
             _logs = logs;
         }
+
         public bool ExecuteUnzip(string zipFilePath, string extractPath, out string exeFilePath)
         {
             try
             {
                 _logs.DebugMsg_1(nameof(Unzip) + " start");
-                
+
                 VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
                 SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
                 var constraints = new LeafCertConstraints(hashes)

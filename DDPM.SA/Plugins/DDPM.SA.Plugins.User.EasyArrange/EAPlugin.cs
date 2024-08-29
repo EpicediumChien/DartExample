@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using nsWinEventHook;
 using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Windows;
 using VcpCore.Common;
 using IDs = DDPM.SA.Common.IDs;
@@ -63,7 +62,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Private Members
 
-
         #region Constructor
 
         public EAPlugin(IAgent agent) : base(agent, PluginLogId)
@@ -74,8 +72,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _vmArrange.Log = Log;
             _log?.Info($"[{pluginName}] is constructed.");
         }
-        #endregion ctor
- 
+        #endregion Constructor
+
         #region Log/Debug messages
         private void LogInfo(string msg)
         {
@@ -250,7 +248,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             //Only after DisplayManager is ready to use, will start the EasyArrange service
                             EABroker_Start();
                         }
-
                     }
                 }
             });
@@ -300,8 +297,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 return true;
             }
         }
-        
-        #endregion
+
+        #endregion PluginManager related
 
         #region IEasyArrangeService Implementation
 
@@ -311,10 +308,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             set => _vmArrange.IsFunctionEnabled = value;
         }
 
-        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings=null)
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
         {
             EAWorkWindow? workWin = _vmArrange.FindWorkWindowByDisplayName(monitorInfo.DisplayName);
-                                    //FindWorkWindowByMonitorInfo(monitorInfo);
+            //FindWorkWindowByMonitorInfo(monitorInfo);
 
             if (workWin == null)
             {
@@ -353,7 +350,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Thread thread = new Thread(() =>
             {
                 Console.WriteLine("[EAPlugin] RequestEditSplit().");
-                UI_RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings); 
+                UI_RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
                 System.Windows.Threading.Dispatcher.Run();
             });
 
@@ -563,8 +560,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_saveCustomWindow != null)
             {
                 _saveCustomWindow.SetInputArg(args, scr);
-                
-                
             }
 
             //Robert_Lin, 2024-8-26, cannot calling to _editWindow.Show()
@@ -580,7 +575,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return true;
         }
-        #endregion
+        #endregion IEasyArrangeService Implementation
 
         #region EA Broker
 
@@ -599,7 +594,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public void EABroker_Start()
         {
-            lock (_eaBrokerLock) 
+            lock (_eaBrokerLock)
             {
                 if (!_isEaBrokerStarted)
                 {
@@ -609,8 +604,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 _vmArrange.DisplayManager = _displayManagerPlugin;
 
                 InitInfoWindow();
-                
-               // InitWorkWindows();
+
+                // InitWorkWindows();
                 //UI_RefreshWorkWindows();
 
                 InitEditWindow();
@@ -635,7 +630,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 _vmArrange.ClearWorkWindows();
 
                 System.Windows.Threading.Dispatcher.Run();
-
             });
 
             thread.SetApartmentState(ApartmentState.STA);
@@ -645,11 +639,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //    _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
             _agent.UnregisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
         }
-
-
-
-
-
 
         //It should be call once DeviceManagerSA & DisplayManager are loaded
         private void ConfigureServices()
@@ -667,10 +656,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 services.AddSingleton(_displayManagerPlugin);
 
             PluginIoc.ConfigureServices(services.BuildServiceProvider());
-
         }
 
-        #endregion
+        #endregion EA Broker
 
         #region Display Changed event
         //private void _displayManagerPlugin_Displaychanged(object? sender, DisplaychangedEventArgs e)
@@ -685,7 +673,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //UI_RefreshWorkWindows();
             InitWorkWindows();
         }
-        #endregion
+        #endregion Display Changed event
 
         #region InfoWindow
         private InfoWindow _infoWindow;
@@ -711,7 +699,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 thread.Start();
             }
         }
-        #endregion
+        #endregion InfoWindow
 
         #region WorkWindows
         private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
@@ -804,7 +792,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     cellCount = eaSettings.SelectedSplit.CellCount;
                     splitKey = eaSettings.SelectedSplit.SplitKey;
                     settings = eaSettings.SelectedSplit.Settings;
-
 
                     EAWorkWindow workWin = new EAWorkWindow(_vmArrange, scr, attachedMonitors);
 
@@ -1000,7 +987,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Case_3 Exist->NotExist, a display has been unplugged
             LogInfo($"  * Removing unplugged WorkWindows... Count={_vmArrange.WorkWindows.Count}");
-                _vmArrange.ClearWorkWindows();
+            _vmArrange.ClearWorkWindows();
 
             //foreach (KeyValuePair<string, EAWorkWindow> pair in _vmArrange.WorkWindows)
             //{
@@ -1014,12 +1001,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 Thread.Sleep(10);
             }
-                _vmArrange.WorkWindows = tempWorkWindows;
-
-
-            
+            _vmArrange.WorkWindows = tempWorkWindows;
         }
-        #endregion
+        #endregion WorkWindows
 
         #region EditWindow and SaveCustomWindow
         private void InitEditWindow()
@@ -1079,13 +1063,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //if (EditCompleted != null)
             //    EditCompleted(this, "");
 
-
             if (EditReturn != null)
             {
                 EAArgs retArgs = new EAArgs(_eaArgs);
                 retArgs.Result = true;
-
-
 
                 retArgs.Settings = _editWindow.GetSettings();
                 retArgs.CustomName = e;
@@ -1096,7 +1077,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _saveCustomWindow.Hide();
         }
 
-        #endregion
+        #endregion EditWindow and SaveCustomWindow
 
         #region Window Event Hook
 
@@ -1300,7 +1281,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
         }
-        #endregion
+        #endregion Helpers
 
         #region Debug Msg
 
@@ -1308,7 +1289,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + msg);
         }
-        #endregion
+        #endregion Debug Msg
 
         #region General DDPM.SA Plugins Methods
         private List<MonitorInfo>? GetMonitors()
@@ -1318,7 +1299,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return _displayManagerPlugin.GetMonitors().Result;
         }
-        #endregion
-
+        #endregion General DDPM.SA Plugins Methods
     }
 }

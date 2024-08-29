@@ -214,11 +214,11 @@ namespace DDPM.SA.Plugins.User.Hotkey
             text = "[Hotkey] " + text;
             Console.WriteLine(text);
             if (Log != null)
-            { 
+            {
                 if (log_type == log_type.info)
-                Log.Info(text);
+                    Log.Info(text);
                 else
-                Log.Error(text);
+                    Log.Error(text);
             }
         }
 
@@ -282,17 +282,17 @@ namespace DDPM.SA.Plugins.User.Hotkey
 
         public bool Hook()
         {
-            bool ok=false;
-           // ThreadPool.QueueUserWorkItem
-           _hookThread = new Thread(() =>
-            {
-               ok = hook();
-                Debug.WriteLine("Hook(); Start--------");
-                // 啟動消息循環
-                System.Windows.Threading.Dispatcher.Run();
-                Debug.WriteLine("System.Windows.Threading.Dispatcher.Run(); end--------");
-                writelog("Hook()...");
-            });
+            bool ok = false;
+            // ThreadPool.QueueUserWorkItem
+            _hookThread = new Thread(() =>
+             {
+                 ok = hook();
+                 Debug.WriteLine("Hook(); Start--------");
+                 // 啟動消息循環
+                 System.Windows.Threading.Dispatcher.Run();
+                 Debug.WriteLine("System.Windows.Threading.Dispatcher.Run(); end--------");
+                 writelog("Hook()...");
+             });
 
             // 設定為單線程單元（STA），WPF需要STA模式
             _hookThread.SetApartmentState(ApartmentState.STA);
@@ -350,9 +350,10 @@ namespace DDPM.SA.Plugins.User.Hotkey
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId);
-        public static  IntPtr _SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId)
+
+        public static IntPtr _SetWindowsHookEx(int idHook, keyboardHookProc callback, IntPtr hInstance, uint threadId)
         {
-            return SetWindowsHookEx(idHook,callback,hInstance,threadId);
+            return SetWindowsHookEx(idHook, callback, hInstance, threadId);
         }
 
         /// <summary>
@@ -363,7 +364,8 @@ namespace DDPM.SA.Plugins.User.Hotkey
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnhookWindowsHookEx(IntPtr hInstance);
-        public static  bool _UnhookWindowsHookEx(IntPtr hInstance)
+
+        public static bool _UnhookWindowsHookEx(IntPtr hInstance)
         {
             return UnhookWindowsHookEx(hInstance);
         }
@@ -379,9 +381,10 @@ namespace DDPM.SA.Plugins.User.Hotkey
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam);
-        public static  int _CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam)
+
+        public static int _CallNextHookEx(IntPtr idHook, int nCode, int wParam, ref keyboardHookStruct lParam)
         {
-            return CallNextHookEx(idHook,nCode,wParam,ref lParam);
+            return CallNextHookEx(idHook, nCode, wParam, ref lParam);
         }
 
         /// <summary>
@@ -392,7 +395,8 @@ namespace DDPM.SA.Plugins.User.Hotkey
         [DllImport("kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr LoadLibrary(string lpFileName);
-        public static  IntPtr _LoadLibrary(string lpFileName)
+
+        public static IntPtr _LoadLibrary(string lpFileName)
         {
             return LoadLibrary(lpFileName);
         }
@@ -400,27 +404,28 @@ namespace DDPM.SA.Plugins.User.Hotkey
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
+
         public static short _GetAsyncKeyState(System.Windows.Forms.Keys vKey)
         {
             return GetAsyncKeyState(vKey);
         }
 
-/*        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetModuleHandle(string lpFileName);
+        /*        [DllImport("kernel32.dll")]
+                private static extern IntPtr GetModuleHandle(string lpFileName);
 
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+                [DllImport("user32.dll")]
+                [return: MarshalAs(UnmanagedType.Bool)]
+                public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+                [DllImport("user32.dll")]
+                [return: MarshalAs(UnmanagedType.Bool)]
+                public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        [DllImport("kernel32.dll")]
-        public static extern ushort GlobalAddAtom(string lpString);
+                [DllImport("kernel32.dll")]
+                public static extern ushort GlobalAddAtom(string lpString);
 
-        [DllImport("kernel32.dll")]
-        public static extern ushort GlobalDeleteAtom(ushort nAtom);*/
+                [DllImport("kernel32.dll")]
+                public static extern ushort GlobalDeleteAtom(ushort nAtom);*/
 
         #endregion DLL imports
     }

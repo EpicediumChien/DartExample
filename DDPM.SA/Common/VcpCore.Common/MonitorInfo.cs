@@ -19,6 +19,7 @@ namespace VcpCore.Common
         public Dictionary<string, List<string>> CapabilityDic;
         public string modelName { get; set; }
         public string series { get; set; }
+        public string MarketingName { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -44,6 +45,8 @@ namespace VcpCore.Common
             //    return b0;
 
             return (other is not null) &&
+                   //(CapabilityDic.Count == other.CapabilityDic.Count) &&
+                   //(!CapabilityDic.Except(other.CapabilityDic).Any()) &&
                    (AliasDeviceName == other.AliasDeviceName) &&
                    (IsDellMonitor == other.IsDellMonitor) &&
                    (Index == other.Index) &&
@@ -52,10 +55,9 @@ namespace VcpCore.Common
                    (DDCisON == other.DDCisON) &&
                    (FwVersion == other.FwVersion) &&
                    (inputSource == other.inputSource) &&
-                   //(CapabilityDic.Count == other.CapabilityDic.Count) &&
-                   //(!CapabilityDic.Except(other.CapabilityDic).Any()) &&
                    (modelName == other.modelName) &&
                    (series == other.series) &&
+                   (MarketingName == other.MarketingName) &&
                    (EqualityComparer<EDID>.Default.Equals(edid, other.edid));
         }
 
