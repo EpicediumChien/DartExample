@@ -305,6 +305,22 @@ namespace DDPM.SA.Common
                     case "LogicalWiredAudio":
                         DeviceName = "Wired Audio Settings";
                         break;
+
+                    case "LogicalHeadset":
+                        DeviceName = "Headset Settings";
+                        break;
+
+                    case "LogicalPen":
+                        DeviceName = "Pen Settings";
+                        break;
+
+                    case "LogicalDock":
+                        DeviceName = "Dock Settings";
+                        break;
+
+                    case "LogicalWebcam":
+                        DeviceName = "Webcam Settings";
+                        break;
                 }
                 return _logicalDeviceType;
             }
