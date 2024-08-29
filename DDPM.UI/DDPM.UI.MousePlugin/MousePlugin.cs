@@ -225,8 +225,8 @@ namespace DDPM.UI.Plugin.MousePlugin
             GetPeripheralsAsync();
       Task<int> task = _deviceManagerPlugin!.GetDpiValueByDTP("DellPeripheral.Mouse.0");
       var DpiValue = task.Result;
-      //_deviceManagerPlugin.SetDPIValueByDTP("DellPeripheral.Mouse.0", 1350);
-      if(_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            _deviceManagerPlugin.SetDPIValueByDTP("DellPeripheral.Mouse.0", 1350);
+            if(_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
             Mouse.OverrideCursor = null;
         }
 

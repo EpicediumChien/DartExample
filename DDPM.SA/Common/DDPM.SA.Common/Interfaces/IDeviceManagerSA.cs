@@ -487,8 +487,18 @@ namespace DDPM.SA.Common
         #region public for DTPProxy
 
         Task<int> GetDpiValueByDTP(string itemID);
-
         Task SetDPIValueByDTP(string itemID, int newValue);
+        Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
+        Task SetEraserLongPressSetting(string itemID, byte[] newValue);
+        Task SetEraserSinglePressSetting(string itemID, byte[] newValue);
+        Task SetIsSideBottomButtonHoverClick(string itemID, bool newValue);
+        Task SetIsSideTopButtonHoverClick(string itemID, bool newValue);
+        Task SetMenuSinglePressSetting(string itemID, byte[] newValue);
+        Task SetMenuCenterRightClickSetting(string itemID, byte[] newValue);
+        Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
+        Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
+        Task SetTiltSensitivity(string itemID, int newValue);
+        Task SetTipSensitivity(string itemID, int newValue);
 
         #endregion public for DTPProxy
     }
