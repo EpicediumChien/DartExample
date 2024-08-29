@@ -535,6 +535,9 @@ namespace DDPM.UI.Module.Color
         {
             try //2024-06-19 Elie, add try catch to get exception.
             {
+                //OSD control back event
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
+
                 // -- begin add jim 20240604
                 SyncNightlightStatus();
 
@@ -720,9 +723,7 @@ namespace DDPM.UI.Module.Color
 
                     IsisAdvanced_Settings = vis_ad;               
                 }
-
-                //OSD control back event
-                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
+               
             }
             catch (System.Exception)
             {

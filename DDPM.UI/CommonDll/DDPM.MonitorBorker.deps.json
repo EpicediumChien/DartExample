@@ -11,6 +11,7 @@
           "DDPM.ColorApp": "2.0.0.5",
           "DDPM.SA.Common": "2.0.0.5",
           "DDPM.ShowOsd": "2.0.0.5",
+          "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "H.Formatters.Inferno": "2.0.59",
           "H.Formatters.Newtonsoft.Json": "13.0.59",
           "H.Pipes": "2.0.59",
@@ -595,14 +596,12 @@
       "DDPM.ColorApp/2.0.0.5": {
         "dependencies": {
           "DDPM.SA.Common": "2.0.0.5",
+          "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "Newtonsoft.Json": "13.0.3",
           "WinCopies.WindowsAPICodePack.Shell": "2.12.0.2"
         },
         "runtime": {
-          "DDPM.ColorApp.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.ColorApp.dll": {}
         }
       },
       "DDPM.SA.Common/2.0.0.5": {
@@ -617,53 +616,44 @@
           "WinCopies.Util": "3.21.0"
         },
         "runtime": {
-          "DDPM.SA.Common.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.SA.Common.dll": {}
         }
       },
       "DDPM.ShowOsd/2.0.0.5": {
         "dependencies": {
           "DDPM.Win32Lib": "2.0.0.5",
+          "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "DDPM.ShowOsd.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.ShowOsd.dll": {}
         }
       },
       "DDPM.Win32Lib/2.0.0.5": {
+        "dependencies": {
+          "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta"
+        },
         "runtime": {
-          "DDPM.Win32Lib.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.Win32Lib.dll": {}
         }
       },
       "VcpCore.Common/2.0.0.5": {
         "dependencies": {
+          "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "DellClientFramework": "6.4.5.1"
         },
         "runtime": {
-          "VcpCore.Common.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "VcpCore.Common.dll": {}
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
         "dependencies": {
+          "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "DellClientFramework": "6.4.5.1",
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "VcpCore.Interfaces.dll": {}
         }
       },
       "DPeMPublic.Common/0.0.0.0": {
