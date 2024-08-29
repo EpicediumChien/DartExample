@@ -7,20 +7,18 @@
 //
 // CLIManagerPlugin.cs created on 24/07/2024T08:04 PM
 //
+
 #endregion
 
-
-
 using DDPM.SA.Common;
+using DDPM.SA.Common.CLI;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
-using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
-using DDPM.SA.Common.CLI;
 
 namespace DDPM.SA.Plugin.User.CLIManager
 {
@@ -421,13 +419,14 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _DevManagerPlugin, commandLineInput, e.command_guid_string);
-                            if(cliEventResult.ExitCode == (int)CLI_ExitCode.success)
+                            if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
                             {
                                 UpdateUINotify no = new UpdateUINotify();
                                 no.UI_Field_Name = "TELEMETRYCONSENT";
                                 _DevManagerPlugin.OnUIUpdateNotify(no);
                             }
                             break;
+
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
                             return;
@@ -467,7 +466,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
             DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
             if (data == null)
-            {                
+            {
                 response.Message = "Fail to read application setting";
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.fail_read_settings;
@@ -478,7 +477,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 response.Message = "Got empty setting";
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.fail_read_settings;
-                return result;            
+                return result;
             }
 
             if (commandLineInput.Command.Equals("GET")) //ex: cli.exe /get -app=TelemetryConsent
@@ -498,7 +497,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.success;
 
-                return result;            
+                return result;
             }
             if (commandLineInput.Command.Equals("SET")) //ex: cli.exe /set -app=TelemetryConsent -value=on / off / on,lock / on,unlock / off,lock / off,unlock
             {
@@ -549,7 +548,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         data.LockSettings.Lock_TelemetryConsent = false;
                     }
                     else
-                    {                        
+                    {
                         response.Message = $"Telemetry Consent: value format error with {value}";
                         Console.WriteLine(response.Message);
                         response.Result += " FAILED";
@@ -577,6 +576,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
             result.ExitCode = (int)CLI_ExitCode.unknow_command;
             return result;
         }*/
+
         #endregion
 
         #region ICLIProxy implementation

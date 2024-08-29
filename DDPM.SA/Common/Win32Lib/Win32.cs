@@ -270,6 +270,7 @@ namespace DDPM.Win32Lib
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+
         public static IntPtr _GetWindowLong(IntPtr hWnd, int nIndex)
         {
             return GetWindowLong(hWnd, nIndex);
@@ -307,6 +308,7 @@ namespace DDPM.Win32Lib
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
         public static IntPtr _IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {
             return IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
@@ -315,6 +317,7 @@ namespace DDPM.Win32Lib
         [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern Int32 IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong);
+
         public static Int32 _IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong)
         {
             return IntSetWindowLong(hWnd, nIndex, dwNewLong);
@@ -328,6 +331,7 @@ namespace DDPM.Win32Lib
         [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void SetLastError(int dwErrorCode);
+
         public static void _SetLastError(int dwErrorCode)
         {
             SetLastError(dwErrorCode);
@@ -345,6 +349,7 @@ namespace DDPM.Win32Lib
         [DllImport("kernel32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
+
         private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
         {
             return GetPrivateProfileInt(section, key, def, filePath);
@@ -358,26 +363,31 @@ namespace DDPM.Win32Lib
         [DllImport("kernel32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+
         public static int _GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath)
         {
             return GetPrivateProfileString(section, key, def, retVal, size, filePath);
         }
+
         #endregion Read/Write INI file
 
         #region Actions (Wayn)
+
         // Import keybd_event function
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
         public static void _keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo)
         {
             keybd_event(bVk, bScan, dwFlags, dwExtraInfo);
         }
 
-        // Import mouse_event function 
+        // Import mouse_event function
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
+
         public static void _mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo)
         {
             mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo);
@@ -385,10 +395,12 @@ namespace DDPM.Win32Lib
 
         // Constants for keybd events
         public const uint KEYEVENTF_KEYDOWN = 0x0000;
+
         public const uint KEYEVENTF_KEYUP = 0x0002;
 
         // Constants for mouse events
         public const uint MOUSEEVENTF_MIDDLEDOWN = 0x0020;
+
         public const uint MOUSEEVENTF_MIDDLEUP = 0x0040;
 
         public const uint MOUSEEVENTF_WHEEL = 0x0800;
@@ -414,6 +426,7 @@ namespace DDPM.Win32Lib
         public const byte VK_F12 = 0x7B;
         public const byte VK_INSERT = 0x2D;
         public const byte VK_DELETE = 0x2E;
-        #endregion
+
+        #endregion Actions (Wayn)
     }
 }

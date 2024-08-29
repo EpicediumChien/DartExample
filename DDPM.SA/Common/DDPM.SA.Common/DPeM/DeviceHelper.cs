@@ -191,13 +191,12 @@ namespace DDPM.SA.Common
                 sb.AppendLine($"PairHostName{i + 1}(get)                                     : {item.PairedHostNames[0]}");
             }
 
- 
             if (item.TotalNumberOfPairedHostName > 0)
                 sb.AppendLine($"{nameof(item.PairedHostName1)}(get)                         : {item.PairedHostName1}");
-            if (item.TotalNumberOfPairedHostName > 1)  
+            if (item.TotalNumberOfPairedHostName > 1)
                 sb.AppendLine($"{nameof(item.PairedHostName2)} (get)                        : {item.PairedHostName2}");
-            if (item.TotalNumberOfPairedHostName > 2)                                
-            sb.AppendLine($"{nameof(item.PairedHostName3)} (get)                          : {item.PairedHostName3}");
+            if (item.TotalNumberOfPairedHostName > 2)
+                sb.AppendLine($"{nameof(item.PairedHostName3)} (get)                          : {item.PairedHostName3}");
             sb.AppendLine($"{nameof(item.MousePrimaryButton)} (get,set)                         : {item.MousePrimaryButton}");
 
             sb.AppendLine($"{nameof(item.IsDPILevelSupported)} (get)                      : {item.IsDPILevelSupported}");
@@ -334,8 +333,6 @@ namespace DDPM.SA.Common
             sb.AppendLine($"{nameof(item.DockTBTConnectionStatus)} (get)                 : {item.DockTBTConnectionStatus}");
 
             sb.AppendLine("----------");
-
         }
-
     }
 }

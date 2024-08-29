@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Security;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace DDPM.SA.Common.Security
 {
@@ -19,6 +15,7 @@ namespace DDPM.SA.Common.Security
         private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
         private string Issuer = "CN=Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US";
         private string[] Subject = new string[] { "content-cdn.dell.com", "*.dell.com" };
+
         public bool CheckFileCACertificate(string certificateFilePath)
         {
             // 讀取憑證檔案並創建 X509Certificate2 物件
@@ -33,6 +30,7 @@ namespace DDPM.SA.Common.Security
 
             return PinPublicKey(null, certificate, chain, sslPolicyErrors);
         }
+
         public bool CheckURLCACertificate(string URL)
         {
             bool flag = false;
@@ -68,7 +66,6 @@ namespace DDPM.SA.Common.Security
                     Thread.Sleep(1000);
                 }
 
-
                 num--;
             }
             Console.WriteLine(string.Format("[CheckURLCACertificate] res:" + flag));
@@ -82,6 +79,7 @@ namespace DDPM.SA.Common.Security
             }
             return flag;
         }
+
         private bool CheckCAHTTP(string URL)
         {
             try
@@ -102,6 +100,7 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
+
         private bool ValidateCertificate(HttpRequestMessage request, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             if (certificate == null)
@@ -127,6 +126,7 @@ namespace DDPM.SA.Common.Security
             }
             return CheckCertificateIsVaild(certificate) && CheckIssuerAndSubject(certificate);
         }
+
         private bool PinPublicKey(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             X509Certificate2 certificate2 = new X509Certificate2(certificate);
@@ -149,6 +149,7 @@ namespace DDPM.SA.Common.Security
             flag = CheckCertificateIsVaild(certificate2) && CheckIssuerAndSubject(certificate2);
             return flag;
         }
+
         private bool CheckHTTPAvailable(string URL)
         {
             try
@@ -164,6 +165,7 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
+
         private bool GetResponse(HttpClient client, string URL)
         {
             bool flag = false;
@@ -188,6 +190,7 @@ namespace DDPM.SA.Common.Security
             Console.WriteLine(string.Format("[GetResponse] result:" + flag));
             return flag;
         }
+
         private void GetLocalTrustedCert()
         {
             try
@@ -224,6 +227,7 @@ namespace DDPM.SA.Common.Security
                 Console.WriteLine("[GetLocalTrustedCert] error:" + ex.Message.ToString());
             }
         }
+
         private bool CheckCertificateIsVaild(X509Certificate2 certificate)
         {
             bool result = false;
@@ -242,6 +246,7 @@ namespace DDPM.SA.Common.Security
             }
             return result;
         }
+
         private bool CheckIssuerAndSubject(X509Certificate2 certificate)
         {
             try
@@ -307,6 +312,7 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
+
         private bool ValidateProxyCertificate(X509Certificate2 certificate)
         {
             // Implement custom validation logic for proxy certificates
@@ -338,6 +344,7 @@ namespace DDPM.SA.Common.Security
             Console.WriteLine("Proxy check end");
             return true; // Assuming the proxy certificate is valid
         }
+
         private string ExtractCN(string subject)
         {
             if (string.IsNullOrEmpty(subject))
@@ -362,6 +369,7 @@ namespace DDPM.SA.Common.Security
             // CN not found
             return null;
         }
+
         public static string[] GetSubjectAlternativeNames(X509Certificate2 certificate)
         {
             var sanList = new System.Collections.Generic.List<string>();
@@ -389,7 +397,8 @@ namespace DDPM.SA.Common.Security
 
             return sanList.ToArray();
         }
-        static bool ContainsAny(string mainString, string[] searchArray)
+
+        private static bool ContainsAny(string mainString, string[] searchArray)
         {
             foreach (string searchTerm in searchArray)
             {
@@ -400,6 +409,5 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
-
     }
 }

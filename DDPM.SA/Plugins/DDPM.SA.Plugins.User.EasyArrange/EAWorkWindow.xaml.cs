@@ -15,13 +15,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     public partial class EAWorkWindow : Window
     {
         #region Private members
+
         private ArrangeVM VM;
         private MonitorInfo _mi;
         private readonly Screen _scr;
         private readonly List<MonitorInfo> _monitors;
-        #endregion private members
+
+        #endregion Private members
 
         #region ctor
+
         public EAWorkWindow(ArrangeVM vm, Screen scr, List<MonitorInfo> monitors)
         {
             InitializeComponent();
@@ -35,6 +38,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private void VM_IsMovingChanged(object? sender, bool e)
         {
         }
+
         #endregion ctor
 
         #region Init
@@ -87,12 +91,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             });
 
             return true;
-
         }
 
-        #endregion
+        #endregion Working SplitCtrl
 
         #region WorkWindow Runtime Infos
+
         private string _displayName = ""; //Expected example: "DISPLAY3"
         private string _monitorNames = ""; //Expected example: "U2427QE,U3427E(2)"
 
@@ -122,7 +126,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     }
                 }
                 string splitClass = "";
-                if (_workingSplit != null) 
+                if (_workingSplit != null)
                 {
                     splitClass = _workingSplit.CtrlClass;
                 }
@@ -130,13 +134,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
         }
 
-        #endregion Working SplitCtrl
+        #endregion WorkWindow Runtime Infos
 
         #region ILog for EAPlugin
+
         public ILog Log { get; set; }
-        #endregion
+
+        #endregion ILog for EAPlugin
 
         #region Cell List
+
         /// <summary>
         /// Return the CellList infor with Json format, example:
         /// [{"cell1":(x1,y1)-(x2,y2)width*height},{"cell1":(x1,y1)-(x2,y2)width*height},...]
@@ -214,6 +221,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Trace.WriteLine($"ctrlActual={ctrl.ActualWidth}x{ctrl.ActualHeight}; Scale={VM.ScreenScale} => {w}x{h}");
             return new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
         }
+
         private void TraceCellRects()
         {
             if (_workingSplit == null) return;
@@ -222,9 +230,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
             }
         }
+
         #endregion Cell List
 
         #region DetermineHoveringCell
+
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
             if (_workingSplit == null)
@@ -244,9 +254,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _workingSplit.HoveringCell = "";
             return null;
         }
+
         #endregion DetermineHoveringCell
 
         #region Window Status Change
+
         private void Window_Activated(object sender, EventArgs e)
         {
             Trace.WriteLine($"WorkWin[{WindowName}] Activated");
@@ -267,9 +279,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             Trace.WriteLine($"WorkWin[{WindowName}] IsVisibleChanged => {newString}");
         }
+
         #endregion Window Status Change
 
         #region Dispatcher Invokes
+
         public void ChangeWindowPos(double left, double top, double width = 0, double height = 0)
         {
             this.Dispatcher.Invoke(() =>
@@ -282,6 +296,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     Height = height;
             });
         }
+
         public void DispatcherClose()
         {
             this.Dispatcher.Invoke(() =>
@@ -289,16 +304,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 Close();
             });
         }
+
         #endregion Dispatcher Invokes
 
-
         #region FadeOut Storyboard
+
         public bool IsFading
         {
             get { return (bool)GetValue(IsFadingProperty); }
-            set 
-            { 
-                SetValue(IsFadingProperty, value); 
+            set
+            {
+                SetValue(IsFadingProperty, value);
             }
         }
 
@@ -306,28 +322,26 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public static readonly DependencyProperty IsFadingProperty =
             DependencyProperty.Register("IsFading", typeof(bool), typeof(EAEditWindow), new PropertyMetadata(false));
 
-
         private void InvokeFadeOutAnimation()
         {
             //this.Dispatcher.Invoke(() =>
-           // {
-                Storyboard? sb = Resources["FadeOut"] as Storyboard;
-                if (sb == null)
-                    return;
+            // {
+            Storyboard? sb = Resources["FadeOut"] as Storyboard;
+            if (sb == null)
+                return;
 
-                sb.Completed += (o, s) =>
-                {
-                    VM.RefreshCellRects();
-                    this.IsFading = false;
-                    //Visibility = Visibility.Hidden;
-                    //gridSplitCtrl.Opacity = 1;
-                };
-
-                IsFading = true;
+            sb.Completed += (o, s) =>
+            {
+                VM.RefreshCellRects();
+                this.IsFading = false;
+                //Visibility = Visibility.Hidden;
                 //gridSplitCtrl.Opacity = 1;
-                sb.Begin();
-           // });
+            };
 
+            IsFading = true;
+            //gridSplitCtrl.Opacity = 1;
+            sb.Begin();
+            // });
         }
 
         public void StopFadeOutAnimation()
@@ -341,8 +355,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 IsFading = false;
                 //gridSplitCtrl.Opacity = 1;
             });
-
         }
+
         #endregion FadeOut Storyboard
     }
 }

@@ -2,9 +2,9 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Management;
+using System.Runtime.CompilerServices;
 using VcpCore.Common;
 using static VcpCore.Plugins.EDIDReader;
-using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("VcpCore.Plugins.Test")]
 

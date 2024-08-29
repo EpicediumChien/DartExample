@@ -12,8 +12,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     public partial class EAEditWindow : Window
     {
         private ILog? _log;
+
         //private SaveCustomWindow saveCustomWindow;
         private string _orgFriendlyName = string.Empty;
+
         private string _lastError = string.Empty;
 
         public EAEditWindow()
@@ -39,6 +41,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _log = EAPlugin.PluginIoc?.GetService<ILog>();
             _log?.Info($"EAEditWindow_Loaded, Input: {inputSplitCtrl.CellCount}{inputSplitCtrl.SplitKey}, [{inputSplitCtrl.SettingsString}]");
 
+            //Hide window from Alt+tab
+            System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
+
             //saveCustomWindow = new SaveCustomWindow();
             //saveCustomWindow.Owner = this;
             //saveCustomWindow.Left = this.Left;
@@ -63,6 +69,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion Call out events
 
         #region Input SplitCtrl
+
         private ISplitCtrl inputSplitCtrl = new SplitCtrl4A();
         private EAArgs _inputArgs;
 
@@ -105,7 +112,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             this.Dispatcher.Invoke(() =>
             {
-
                 //Try to create a ISplitCtrl to verify (cellCount,SplitKey) is valid
                 ISplitCtrl? ispCtrl = ISplitCtrl.Create(args.CellCount, args.SplitKey);
                 if (ispCtrl == null)
@@ -116,27 +122,25 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     return;// false;
                 }
-            inputSplitCtrl = ispCtrl;
-            inputSplitCtrl.IsEditable = true;
-            inputSplitCtrl.SplitMode = eSplitModes.Edit;
+                inputSplitCtrl = ispCtrl;
+                inputSplitCtrl.IsEditable = true;
+                inputSplitCtrl.SplitMode = eSplitModes.Edit;
 
-            if (args.Settings != null)
-            {
-                inputSplitCtrl.Settings = args.Settings;
-            }
+                if (args.Settings != null)
+                {
+                    inputSplitCtrl.Settings = args.Settings;
+                }
 
-            _orgFriendlyName = args.CustomName;
+                _orgFriendlyName = args.CustomName;
 
-            //Calculate the position/size of EditWindow
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
-
-
+                //Calculate the position/size of EditWindow
+                double dpiX = 1.000;
+                var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+                if (dpiXProperty != null)
+                {
+                    var varX = (int)dpiXProperty.GetValue(null, null);
+                    dpiX = (double)varX / (double)96;
+                }
 
                 splitCtrl.Content = inputSplitCtrl.UC;
                 //SplitContent = inputSplitCtrl.UC;
@@ -151,23 +155,23 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 Show();
             });
             return true;
-
-
         }
 
-        public string LastError { get {  return _lastError; } }
+        public string LastError
+        { get { return _lastError; } }
 
         public List<double> GetSettings()
         {
             return inputSplitCtrl.Settings;
         }
-        #endregion
+
+        #endregion Input SplitCtrl
 
         #region SaveDlg Button Clicks
+
         //Unused, move to EAPlugin
         private void saveCustomWidow_CancelButtonClick(object sender, EventArgs e)
         {
-
             //if (EditCompleted != null)
             //    EditCompleted(this, "");
 
@@ -180,6 +184,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 EditReturn(this, retArgs);
             }
         }
+
         //Unused, move to EAPlugin
         private void saveCustomWidow_SaveButtonClick(object sender, EventArgs e)
         {
@@ -196,7 +201,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 EditReturn(this, retArgs);
             }
         }
-        #endregion
+
+        #endregion SaveDlg Button Clicks
 
         public void InvokeClose()
         {
@@ -204,7 +210,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 Hide();
             });
-         }
-
+        }
     }
 }

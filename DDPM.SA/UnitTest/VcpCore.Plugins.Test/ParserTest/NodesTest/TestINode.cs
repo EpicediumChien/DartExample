@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VcpCore.Plugins.Test.ParserTest.NodesTest
+﻿namespace VcpCore.Plugins.Test.ParserTest.NodesTest
 {
     public class TestINode
     {
@@ -40,8 +34,8 @@ namespace VcpCore.Plugins.Test.ParserTest.NodesTest
         }
     }
 
-     class TestNode2 : INode
-     {
+    internal class TestNode2 : INode
+    {
         private IEnumerable<INode> _nodes;
         private INode _parent;
         private string _value;
@@ -63,8 +57,5 @@ namespace VcpCore.Plugins.Test.ParserTest.NodesTest
             get { return _value; }
             set { _value = value; }
         }
-
-     }
-
-
+    }
 }

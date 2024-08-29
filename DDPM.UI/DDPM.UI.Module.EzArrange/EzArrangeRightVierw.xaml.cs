@@ -5,6 +5,7 @@ using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.Common.ViewModels;
@@ -178,6 +179,7 @@ namespace DDPM.UI.Module.EzArrange
                 if (eaSettings.SelectedSplit.CellCount == 0)
                 {
                     item0A.IsSelected = true;
+                    _vm.SelectedSplitItem = item0A;
                 }
             }
             //C02. If saved recent list is not empty, then add them into Recent listview
@@ -212,6 +214,8 @@ namespace DDPM.UI.Module.EzArrange
                             itemWin.IsSelected = isSelected;
 
                             // SplitItem itemRecent = splitListView_Recent.AddItemToList(itemRecent);
+                            if (isSelected)
+                                _vm.SelectedSplitItem = itemWin;
                         }
                     }
                     else //itemRecent is a custom item
@@ -224,6 +228,8 @@ namespace DDPM.UI.Module.EzArrange
 
                             itemRecent.IsSelected = isSelected;
                             itemCustom.IsSelected = isSelected;
+                            if (isSelected)
+                                _vm.SelectedSplitItem = itemCustom;
                         }
                     }
                 }
@@ -323,6 +329,14 @@ namespace DDPM.UI.Module.EzArrange
                 res = _deviceManagerSA.WriteEAMonitorSettings(_homeDevice.MonitorInfo, eaSettings).Result;
             }
             return res;
+        }
+
+        private void CleanUpListViewItems()
+        {
+            splitListView_Recent.ClearList();
+            splitListView_Custom.ClearList();
+            splitListView_2w.ClearList();
+            splitListView_4w.ClearList();
         }
 
         /// <summary>
@@ -518,6 +532,21 @@ namespace DDPM.UI.Module.EzArrange
             }
         }
 
+        public void HandleSelectedHomeDeviceChanged()
+        {
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+                if (_homeDevice.vmEzArrange == null)
+                {
+                    _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
+                }
+                _vm = _homeDevice.vmEzArrange;
+                DataContext = _homeDevice.vmEzArrange;
 
+            }
+            CleanUpListViewItems();
+            InitListViewItems();
+        }
     }
 }

@@ -3,7 +3,6 @@ using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
 using VcpCore.Common;
-using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -48,7 +47,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public bool IsWorkUIEnabled
         {
             get => _isWorkUIEnabled;
-            set 
+            set
             {
                 SetProperty(ref _isWorkUIEnabled, value);
                 OnPropertyChanged("IsWorkUIShowing");
@@ -66,11 +65,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 bool isChanged = (value != _isMoving);
                 SetProperty(ref _isMoving, value);
                 OnPropertyChanged("IsWorkUIShowing");
-                if (isChanged) 
+                if (isChanged)
                 {
                     if (IsMovingChanged != null)
                         IsMovingChanged(this, IsMoving);
-
                 }
                 if (value)
                 {
@@ -80,7 +78,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         public event EventHandler<bool> IsMovingChanged;
-        
+
         #endregion Option flags
 
         #region Cursor position
@@ -157,6 +155,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             get { return _hoveringCell; }
             set => SetProperty(ref _hoveringCell, value);
         }
+
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
             foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
@@ -173,29 +172,35 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             HoveringCellObj = null;
             return null;
         }
-        #endregion
+
+        #endregion Hovering Cell
 
         #region HoveringScreen
+
         private string _hoveringScreen = "";
+
         public string HoveringScreen
         {
             get => _hoveringScreen;
             set => SetProperty(ref _hoveringScreen, value);
         }
-        #endregion
+
+        #endregion HoveringScreen
 
         #region WorkWindows
+
         private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
         private List<string> _workWinCellInfos = new List<string>();
 
         public Dictionary<string, EAWorkWindow> WorkWindows
-        { 
-            get => _workWindows; 
+        {
+            get => _workWindows;
             set
             {
                 SetProperty(ref _workWindows, value);
             }
         }
+
         public void AddWorkWindow(string key, EAWorkWindow workWin)
         {
             _workWindows.Add(key, workWin);
@@ -219,7 +224,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _workWindows.Clear();
             RefreshWorkWinInfos();
         }
-        
+
         public void RemoveWorkWindow(string key)
         {
             EAWorkWindow workWindow;
@@ -239,9 +244,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 SetProperty(ref _workWinCellInfos, value);
             }
         }
+
         public void RefreshWorkWinInfos()
         {
-            lock(_lockObject)
+            lock (_lockObject)
             {
                 List<string> newInfo = new List<string>();
                 foreach (KeyValuePair<string, EAWorkWindow> kv in _workWindows)
@@ -281,9 +287,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return null;
         }
 
-        #endregion
+        #endregion WorkWindows
 
         #region Foreground Window Info
+
         private IntPtr _hWndForeground = IntPtr.Zero;
 
         public IntPtr hWndForeground
@@ -293,6 +300,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         private string _pathNameForeground = "";
+
         public string PathNameForeground
         {
             get => _pathNameForeground;
@@ -300,6 +308,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         private string _startMovingMsg = "";
+
         public string StartMovingMsg
         {
             get => _startMovingMsg;
@@ -316,10 +325,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return true;
         }
-        #endregion
+
+        #endregion Foreground Window Info
 
         #region DCF Features
+
         public ILog Log { get; set; }
+
         public void LogInfo(string message)
         {
             if (Log != null)
@@ -327,21 +339,26 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 Log.Info(message);
             }
         }
-        #endregion
+
+        #endregion DCF Features
 
         #region Helper Functions
+
         public static string FormatRect(System.Windows.Rect rc)
         {
             return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
         }
-        #endregion
+
+        #endregion Helper Functions
 
         #region DDPM.SA Interfaces
+
         public IDisplayService? DisplayManager
         {
             get => _displayManagerPlugin;
             set => _displayManagerPlugin = value;
         }
+
         public List<MonitorInfo>? GetMonitors()
         {
             if (_displayManagerPlugin == null)
@@ -349,9 +366,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return _displayManagerPlugin.GetMonitors().Result;
         }
-        #endregion
+
+        #endregion DDPM.SA Interfaces
 
         #region WorkWindow FadeOut
+
         //private bool _isFading = false;
         //public bool IsFading
         //{
@@ -359,6 +378,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         //    set => SetProperty(ref _isFading, value);
         //}
 
-        #endregion Hovering Cell
+        #endregion WorkWindow FadeOut
     }
 }

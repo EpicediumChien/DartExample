@@ -23,6 +23,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr RegisterDeviceNotification(IntPtr hRecipient, IntPtr NotificationFilter, uint Flags);
+
         private static IntPtr _RegisterDeviceNotification(IntPtr hRecipient, IntPtr NotificationFilter, uint Flags)
         {
             return RegisterDeviceNotification(hRecipient, NotificationFilter, Flags);
@@ -31,6 +32,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnregisterDeviceNotification(IntPtr Handle);
+
         private static bool _UnregisterDeviceNotification(IntPtr Handle)
         {
             return UnregisterDeviceNotification(Handle);

@@ -22,7 +22,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using static DDPM.SA.Common.ICLICommandTable;
-using DDPM.Common;
 
 namespace CLI.Subagent
 {
@@ -48,8 +47,6 @@ namespace CLI.Subagent
 
         private const int TIMEOUT_IN_SECONDS = 30;
         private int _exitcode = (int)CLI_ExitCode.unknow_command;
-
-
 
         #endregion
 

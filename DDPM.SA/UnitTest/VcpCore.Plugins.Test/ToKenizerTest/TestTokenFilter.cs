@@ -1,6 +1,4 @@
-﻿using WinCopies;
-
-namespace VcpCore.Plugins.Test.ToKenizerTest
+﻿namespace VcpCore.Plugins.Test.ToKenizerTest
 {
     public class TestTokenFilter
     {

@@ -28,6 +28,7 @@ namespace DDPM.SA.Common
     /// </summary>
     public class ALSConfig
     {
+        public string ModelName { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
         public string serialNumber { get; set; } = string.Empty;
         public int isSupportALS { get; set; } = 0;
@@ -64,6 +65,7 @@ namespace DDPM.SA.Common
                         target.serialNumber = source.serialNumber;
                         target.AutoBrightnessRangeLevel = source.AutoBrightnessRangeLevel;
                         target.AllValue = source.AllValue;
+                        target.ModelName = source.ModelName;
                         break;
                     }
                 case ALSFeatureQueryType.no_SerialNumber:

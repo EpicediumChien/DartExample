@@ -1,17 +1,10 @@
-﻿using Dell.Client.Framework.Interfaces;
-using Dell.Client.Framework.UnitTestShared.Tests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VcpCore.Common;
+﻿using VcpCore.Common;
 
 namespace VcpCore.Plugins.Test
 {
     public class TestCommonFun
     {
-        EDID eDID = new EDID()
+        private EDID eDID = new EDID()
         {
             ManufactureID = "DELL",
             VendorID = "42DD",
@@ -25,19 +18,17 @@ namespace VcpCore.Plugins.Test
             ServiceTag = "CN073K0",
             SerialNumber = "808597688",
             Edid = "00FFFFFFFFFFFF0010ACDC425538323016210103803C2278EA62A5AD5046AB240E5054A54B00714F8180A940D1C081C0A9C001010101565E00A0A0A029503020350055502100001A000000FF00434E3037334B300A2020202020000000FC0044454C4C20553237323444450A000000FD0030781EB23C000A20202020202001ED"
-
         };
 
         [Test]
         public void TestgetEDID()
         {
-            bool getedid1=false;
+            bool getedid1 = false;
             string MontitorID1 = "MONITOR\\DEL42BC\\{6e4147b2-d553-535f-a3bb-9b018e8ab8f7}";  //"MONITOR\\DEL42DC\\{6e4147b2-d553-535f-a3bb-9b018e8ab8f6}"
             EDID edid1 = eDID;
             var getEDIDResult1 = CommonFun.getEDID(MontitorID1, ref edid1);
             Assert.That(getedid1, Is.EqualTo(getEDIDResult1));
             Assert.IsNotNull(edid1);
-
         }
 
         [Test]
@@ -48,11 +39,11 @@ namespace VcpCore.Plugins.Test
             {
                 var ManufacturerIDResult1 = CommonFun.ConvertManufacturerID(hexManufacturerID1);
                 Assert.That(string.IsNullOrEmpty(ManufacturerIDResult1));
-                Assert.That(hexManufacturerID1,Is.EqualTo(ManufacturerIDResult1));
+                Assert.That(hexManufacturerID1, Is.EqualTo(ManufacturerIDResult1));
             }
-                
+
             string hexManufacturerID2 = "AC10";
-            string ConvertManufacturerID="DEL";
+            string ConvertManufacturerID = "DEL";
             if (!string.IsNullOrEmpty(hexManufacturerID2) || hexManufacturerID2.Length >= 4)
             {
                 var ManufacturerIDResult2 = CommonFun.ConvertManufacturerID(hexManufacturerID2);
@@ -60,7 +51,6 @@ namespace VcpCore.Plugins.Test
                 Assert.That(ConvertManufacturerID, Is.EqualTo(ManufacturerIDResult2));
             }
         }
-
 
         [Test]
         public void Testint2charByASCII()
@@ -82,13 +72,12 @@ namespace VcpCore.Plugins.Test
         [Test]
         public void TestStringToByteArray()
         {
-            byte[] bytes = {1,255,255,4,5,6,7,8,9 };
+            byte[] bytes = { 1, 255, 255, 4, 5, 6, 7, 8, 9 };
             string hex = eDID.Edid;
             var result = CommonFun.StringToByteArray(hex);
-            Assert.Greater(result.Length, bytes.Length);    
+            Assert.Greater(result.Length, bytes.Length);
             Assert.That(result[1], Is.EqualTo(bytes[1]));
             Assert.That(result[2], Is.EqualTo(bytes[2]));
         }
-
     }
 }

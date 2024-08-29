@@ -2,7 +2,6 @@
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
-using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,467 +9,487 @@ using VcpCore.Common;
 
 namespace DDPM.SA.Common
 {
-  public enum DeviceChangedType
-  {
-    Display_SettingsChange = 0,
-    Display_PlugIn = 1,
-    Display_UnPlug = 2,
-    Peripherals_SettingsChange = 3,
-    Peripherals_PlugIn = 4,
-    Peripherals_UnPlug = 5,
-    NotifyOnly = 6
-  }
+    public enum DeviceChangedType
+    {
+        Display_SettingsChange = 0,
+        Display_PlugIn = 1,
+        Display_UnPlug = 2,
+        Peripherals_SettingsChange = 3,
+        Peripherals_PlugIn = 4,
+        Peripherals_UnPlug = 5,
+        NotifyOnly = 6
+    }
 
-  public class DeviceChangedEventArgs : EventArgs
-  {
-    public string deviceID { get; set; } //for display point to serial number, for peripherals point to Guid
-    public DeviceChangedType type { get; set; }
-    public MonitorInfo device_display { get; set; }
-    public DeviceInfo device_peripherals { get; set; }
-    public string changedProperty { get; set; }
-  }
+    public class DeviceChangedEventArgs : EventArgs
+    {
+        public string deviceID { get; set; } //for display point to serial number, for peripherals point to Guid
+        public DeviceChangedType type { get; set; }
+        public MonitorInfo device_display { get; set; }
+        public DeviceInfo device_peripherals { get; set; }
+        public string changedProperty { get; set; }
+    }
 
-  public class UpdateUINotify : EventArgs
-  {
-    public string UI_Field_Name { get; set; } = string.Empty;
-  }
+    public class UpdateUINotify : EventArgs
+    {
+        public string UI_Field_Name { get; set; } = string.Empty;
+    }
 
-  public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
-  {
-    #region public for SchedulerManger
+    public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
+    {
+        #region public for SchedulerManger
 
-    Task StartSchedulerManger(int millisecond);
+        Task StartSchedulerManger(int millisecond);
 
-    Task StopSchedulerManger();
+        Task StopSchedulerManger();
 
-    #endregion public for SchedulerManger
+        #endregion public for SchedulerManger
 
-    #region public for ColorPreset
+        #region public for ColorPreset
 
-    Task<Dictionary<string, InstalledAppInfo>> FindAppsbyShell(bool isReload = false);
+        Task<Dictionary<string, InstalledAppInfo>> FindAppsbyShell(bool isReload = false);
 
-    void ShowOSD_ColoPreset(MonitorInfo m, string strMsg);//, bool isMainUI = false);
+        void ShowOSD_ColoPreset(MonitorInfo m, string strMsg);//, bool isMainUI = false);
 
-    Task<List<string>> ReadColorPreset(MonitorInfo m);
+        Task<List<string>> ReadColorPreset(MonitorInfo m);
 
-    // 20240619 jim modify
-    //Task<bool> WriteColorPreset(string monitor_index, MonitorInfo m, string ColorPreset_Name);
-    //Task<bool> WriteColorPreset_AUTO(string monitor_index, MonitorInfo m, string ColorPreset_Name);
-    Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
+        // 20240619 jim modify
+        //Task<bool> WriteColorPreset(string monitor_index, MonitorInfo m, string ColorPreset_Name);
+        //Task<bool> WriteColorPreset_AUTO(string monitor_index, MonitorInfo m, string ColorPreset_Name);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
 
-    Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
+        Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
-    Task<bool> AddColorPresetForMonitorConfig(string index_monitor, string AppName, string ColorPreset_Name);
+        Task<bool> AddColorPresetForMonitorConfig(string index_monitor, string AppName, string ColorPreset_Name);
 
-    void ChangeColorPresetForMonitorConfig(string index_monitor, string AppName, string ColorPreset_Name);
+        void ChangeColorPresetForMonitorConfig(string index_monitor, string AppName, string ColorPreset_Name);
 
-    void DeleteColorPresetForMonitorConfig(string index_monitor, string AppName);
+        void DeleteColorPresetForMonitorConfig(string index_monitor, string AppName);
 
-    void AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false);
+        void AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false);
 
-    Task<string> GetMonitorProfile(MonitorInfo m);
+        Task<string> GetMonitorProfile(MonitorInfo m);
 
-    Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
+        Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
-    Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
+        Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
 
-    //Dean add 0612
-    public Task<string> ReadCurrentColorPreset(MonitorInfo m);
+        //Dean add 0612
+        public Task<string> ReadCurrentColorPreset(MonitorInfo m);
 
-    //Jim add 0621
-    Task<bool> Notify_refresh_app_list();
+        //Jim add 0621
+        Task<bool> Notify_refresh_app_list();
 
-    //Jim add 20240801
-    Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
+        //Jim add 20240801
+        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
 
-    //Jim add 20240820
-    Task<bool> ColorManagement_Off(MonitorInfo mo);
-    Task<bool> ColorManagement_Bymonitor(MonitorInfo mo);
-    Task<bool> ColorManagement_Byhost(MonitorInfo mo);
+        //Jim add 20240820
+        Task<bool> ColorManagement_Off(MonitorInfo mo);
 
-    #endregion public for ColorPreset
+        Task<bool> ColorManagement_Bymonitor(MonitorInfo mo);
 
-    #region public for Displays
+        Task<bool> ColorManagement_Byhost(MonitorInfo mo);
 
-    Task Reset0x52TimerTick(int millisecond);
+        #endregion public for ColorPreset
 
-    Task<List<MonitorInfo>> GetMonitors(bool reScan = false);
+        #region public for Displays
 
-    event EventHandler<VCPchangedEventArgs> VCPchanged;
+        Task Reset0x52TimerTick(int millisecond);
 
-    event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
+        Task<List<MonitorInfo>> GetMonitors(bool reScan = false);
 
-    event EventHandler<DisplaychangedEventArgs> Displaychanged;
+        event EventHandler<VCPchangedEventArgs> VCPchanged;
 
-    Task<string> GetCapabilitiesString(MonitorInfo monitorInfo);
+        event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
 
-    Task<string> GetVCPCapabilities(MonitorInfo monitorInfo);
+        event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
-    Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, int opt = 0);
+        Task<string> GetCapabilitiesString(MonitorInfo monitorInfo);
 
-    Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0);
+        Task<string> GetVCPCapabilities(MonitorInfo monitorInfo);
 
-    Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, byte code, int opt = 0);
 
-    Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val);
+        Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0);
 
-    //
-    //The idle state of DisplayService is used to block the handling of system display change event
-    void SetDisplayServiceIdle(bool isIdle);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val);
 
-    Task<bool> GetDisplayServiceIdleState();
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val);
 
-    //
+        //
+        //The idle state of DisplayService is used to block the handling of system display change event
+        void SetDisplayServiceIdle(bool isIdle);
 
-    #region public for InputSource
+        Task<bool> GetDisplayServiceIdleState();
 
-    Task<Dictionary<string, InputInfo>> GetInputSourcelist(MonitorInfo monitorInfo);
+        //
 
-    Task<bool> SetInputSourcelist(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputlist);
+        #region public for InputSource
 
-    //Task<string> GetCurrentInput(MonitorInfo monitorInfo, byte code, int opt = 0);
-    //Task<bool> SetCurrentInput(MonitorInfo monitorInfo, byte code, string input);
-    Task<string> GetInputName(MonitorInfo monitorInfo, string input);
+        Task<Dictionary<string, InputInfo>> GetInputSourcelist(MonitorInfo monitorInfo);
 
-    Task<bool> SetInputName(MonitorInfo monitorInfo, string input, string name);
+        Task<bool> SetInputSourcelist(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputlist);
 
-    Task<List<string>> GetUSBUpstreamList(MonitorInfo monitorInfo);
+        //Task<string> GetCurrentInput(MonitorInfo monitorInfo, byte code, int opt = 0);
+        //Task<bool> SetCurrentInput(MonitorInfo monitorInfo, byte code, string input);
+        Task<string> GetInputName(MonitorInfo monitorInfo, string input);
 
-    Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream);
+        Task<bool> SetInputName(MonitorInfo monitorInfo, string input, string name);
 
-    Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
+        Task<List<string>> GetUSBUpstreamList(MonitorInfo monitorInfo);
 
-    #endregion public for InputSource
+        Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream);
 
-    #region PIP/PBP
+        Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
 
-    //PIP/PBP
-    //
+        #endregion public for InputSource
 
-    Task<UInt16[]> GetPipPbpCapabilitiesWords(MonitorInfo monitorInfo);
+        #region PIP/PBP
 
-    public Task<bool> SetPipModeOff(MonitorInfo monitorInfo);
+        //PIP/PBP
+        //
 
-    public Task<bool> SetPipModeSmall(MonitorInfo monitorInfo);
+        Task<UInt16[]> GetPipPbpCapabilitiesWords(MonitorInfo monitorInfo);
 
-    public Task<bool> SetPipModeLarge(MonitorInfo monitorInfo);
+        public Task<bool> SetPipModeOff(MonitorInfo monitorInfo);
 
-    public Task<bool> TogglePipSize(MonitorInfo monitorInfo);
+        public Task<bool> SetPipModeSmall(MonitorInfo monitorInfo);
 
-    public Task<bool> TogglePipPosition(MonitorInfo monitorInfo);
+        public Task<bool> SetPipModeLarge(MonitorInfo monitorInfo);
 
-    public Task<bool> SetPbpMode(MonitorInfo monitorInfo, UInt16 modeCode);
+        public Task<bool> TogglePipSize(MonitorInfo monitorInfo);
 
-    public Task<bool> VideoSwap(MonitorInfo monitorInfo, UInt16 x, UInt16 y);
+        public Task<bool> TogglePipPosition(MonitorInfo monitorInfo);
 
-    public Task<ObjGetVCP> GetPxpMode(MonitorInfo monitorInfo);
+        public Task<bool> SetPbpMode(MonitorInfo monitorInfo, UInt16 modeCode);
 
-    public Task<List<UInt16>> GetSubInputList(MonitorInfo monitorInfo);
+        public Task<bool> VideoSwap(MonitorInfo monitorInfo, UInt16 x, UInt16 y);
 
-    public Task<List<InputSourceObj>> GetSubInputs(MonitorInfo monitorInfo);
+        public Task<ObjGetVCP> GetPxpMode(MonitorInfo monitorInfo);
 
-    public Task<bool> SetSubInputs(MonitorInfo monitorInfo, InputSourceObj? sub1, InputSourceObj? sub2, InputSourceObj? sub3);
+        public Task<List<UInt16>> GetSubInputList(MonitorInfo monitorInfo);
 
-    public Task<bool> UsbSwitch1(MonitorInfo monitorInfo, UInt16 target = 0);
+        public Task<List<InputSourceObj>> GetSubInputs(MonitorInfo monitorInfo);
 
-    #endregion PIP/PBP
+        public Task<bool> SetSubInputs(MonitorInfo monitorInfo, InputSourceObj? sub1, InputSourceObj? sub2, InputSourceObj? sub3);
 
-    #region public for USBKVM
+        public Task<bool> UsbSwitch1(MonitorInfo monitorInfo, UInt16 target = 0);
 
-    Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList);
+        #endregion PIP/PBP
 
-    Task<bool> SetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList);
+        #region public for USBKVM
 
-    Task<Dictionary<string, PCsInfo>> PCInfoSwap(Dictionary<string, PCsInfo> pcsList, string swapPC1, string swapPC2);
+        Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList);
 
-    Task<bool> GetOnUSBKVM(MonitorInfo monitorInfo);
+        Task<bool> SetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, PCsInfo> pcsList);
 
-    Task<bool> SetOnUSBKVM(MonitorInfo monitorInfo, bool isON);
+        Task<Dictionary<string, PCsInfo>> PCInfoSwap(Dictionary<string, PCsInfo> pcsList, string swapPC1, string swapPC2);
 
-    #endregion public for USBKVM
+        Task<bool> GetOnUSBKVM(MonitorInfo monitorInfo);
 
-    #region EasyArrange
+        Task<bool> SetOnUSBKVM(MonitorInfo monitorInfo, bool isON);
 
-    /// <summary>
-    /// Enable/Disable EasyArrange function for all monitors.
-    /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
-    /// but user can edit/setup in DDPM.UI and save their settings.
-    /// </summary>
-    /// <param name="isEnabled"></param>
-    /// <returns></returns>
-    public Task<bool> SetEAFunctionEnabled(bool isEnabled);
+        #endregion public for USBKVM
 
-    public Task<ObjGetVCP> GetEAFunctionEnabled();
+        #region EasyArrange
 
-    public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
+        /// <summary>
+        /// Enable/Disable EasyArrange function for all monitors.
+        /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
+        /// but user can edit/setup in DDPM.UI and save their settings.
+        /// </summary>
+        /// <param name="isEnabled"></param>
+        /// <returns></returns>
+        public Task<bool> SetEAFunctionEnabled(bool isEnabled);
 
-    public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
+        public Task<ObjGetVCP> GetEAFunctionEnabled();
 
-    public event EventHandler<string> EAEditCompleted;
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
-    public event EventHandler<string> EAEditStarted;
+        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
 
-    Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
+        public event EventHandler<string> EAEditCompleted;
 
-    public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
+        public event EventHandler<string> EAEditStarted;
 
-    //Robert_Lin, 2024-8-4 new added
-    public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args);
+        Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
 
-    public event EventHandler<EAArgs> EAEditReturn;
+        public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
+
+        //Robert_Lin, 2024-8-4 new added
+        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args);
+
+        public event EventHandler<EAArgs> EAEditReturn;
 
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
+
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo);
+
         #endregion EasyArrange
 
-    #endregion public for Displays
+        #endregion public for Displays
 
-    #region public for Peripherals
+        #region public for Peripherals
 
-    Task<DeviceHelper> GetDevices();
-    Task<CTKMessageHelper> GetCTKMessageHelper();
+        Task<DeviceHelper> GetDevices();
 
-    Task<RFDeviceHelper> GetRFDongleDevices();
+        Task<CTKMessageHelper> GetCTKMessageHelper();
 
-    //event EventHandler<DeviceChangedEventArgs> Peripherals_Notify;
-    event EventHandler<bool> Peripherals_UpdateNotify;
+        Task<RFDeviceHelper> GetRFDongleDevices();
 
-    Task SetBackLightingControls(int newValue, Guid deviceId);
+        //event EventHandler<DeviceChangedEventArgs> Peripherals_Notify;
+        event EventHandler<bool> Peripherals_UpdateNotify;
 
-    Task SetBackLightingLevel(int newValue, Guid deviceId);
+        Task SetBackLightingControls(int newValue, Guid deviceId);
 
-    Task SetCollaborationBlinkEffectEnable(bool newValue, Guid deviceId);
+        Task SetBackLightingLevel(int newValue, Guid deviceId);
 
-    Task SetCollaborationCameraEnable(bool newValue, Guid deviceId);
+        Task SetCollaborationBlinkEffectEnable(bool newValue, Guid deviceId);
 
-    Task SetCollaborationChatEnable(bool newValue, Guid deviceId);
+        Task SetCollaborationCameraEnable(bool newValue, Guid deviceId);
 
-    Task SetCollaborationDoubleTapEnable(bool newValue, Guid deviceId);
+        Task SetCollaborationChatEnable(bool newValue, Guid deviceId);
 
-    Task SetCollaborationKeyEnable(bool newValue, Guid deviceId);
+        Task SetCollaborationDoubleTapEnable(bool newValue, Guid deviceId);
 
-    Task SetCollaborationMicEnable(bool newValue, Guid deviceId);
+        Task SetCollaborationKeyEnable(bool newValue, Guid deviceId);
 
-    Task SetCollaborationScreenShareEnable(bool newValue, Guid deviceId);
+        Task SetCollaborationMicEnable(bool newValue, Guid deviceId);
 
-    Task SetDPILevel(int newValue, Guid deviceId);
+        Task SetCollaborationScreenShareEnable(bool newValue, Guid deviceId);
 
-    Task SetDPIValue(int newValue, Guid deviceId);
+        Task SetDPILevel(int newValue, Guid deviceId);
 
-    Task SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
+        Task SetDPIValue(int newValue, Guid deviceId);
 
-    Task SetTouchScrollSensitivityLevel(int newTouchScrollSensitivityLevel, Guid deviceId);
+        Task SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
 
-    Task UnPair(Guid deviceId);
+        Task SetTouchScrollSensitivityLevel(int newTouchScrollSensitivityLevel, Guid deviceId);
 
-    Task StartPairing(Guid deviceId);
+        Task UnPair(Guid deviceId);
 
-    Task StopPairing(Guid deviceId);
+        Task StartPairing(Guid deviceId);
 
-    Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
+        Task StopPairing(Guid deviceId);
 
-    Task SetWiredAudioMicMuteSoundEnable(bool newValue, Guid deviceId);
+        Task SetWiredAudioIMicNSEnable(bool newValue, Guid deviceId);
 
-    Task SetWiredAudioVolumeAdjustmentTone(int newValue, Guid deviceId);
+        Task SetWiredAudioMicMuteSoundEnable(bool newValue, Guid deviceId);
 
-    Task SetAncMode(int newValue, Guid deviceId);
+        Task SetWiredAudioVolumeAdjustmentTone(int newValue, Guid deviceId);
 
-    Task SetAncGain(int newValue, Guid deviceId);
+        Task SetAncMode(int newValue, Guid deviceId);
 
-    Task SetSelectedPreset(int newValue, Guid deviceId);
+        Task SetAncGain(int newValue, Guid deviceId);
 
-    Task SetBandsGain(int newValue, Guid deviceId, string bandGainNumber);
+        Task SetSelectedPreset(int newValue, Guid deviceId);
 
-    Task SetMicNoiseCancellation(bool newValue, Guid deviceId);
+        Task SetBandsGain(int newValue, Guid deviceId, string bandGainNumber);
 
-    Task SetSidetone(bool newValue, Guid deviceId);
+        Task SetMicNoiseCancellation(bool newValue, Guid deviceId);
 
-    Task SetSidetoneLevel(int newValue, Guid deviceId);
+        Task SetSidetone(bool newValue, Guid deviceId);
 
-    Task SetWearDetection(int newValue, Guid deviceId);
+        Task SetSidetoneLevel(int newValue, Guid deviceId);
 
-    Task SetBusyLight(bool newValue, Guid deviceId);
+        Task SetWearDetection(int newValue, Guid deviceId);
 
-    Task SetVoiceGuidance(bool newValue, Guid deviceId);
+        Task SetBusyLight(bool newValue, Guid deviceId);
 
-    Task SetMicNCIncoming(bool newValue, Guid deviceId);
+        Task SetVoiceGuidance(bool newValue, Guid deviceId);
 
-    //Task SetEqualizerValues(ILogicalDeviceHeadset logicalDeviceHeadset, DeviceInfo info);
-    Task SetIsMicEnumerationOn(bool newValue, Guid deviceId);
+        Task SetMicNCIncoming(bool newValue, Guid deviceId);
 
-    #endregion public for Peripherals
+        //Task SetEqualizerValues(ILogicalDeviceHeadset logicalDeviceHeadset, DeviceInfo info);
+        Task SetIsMicEnumerationOn(bool newValue, Guid deviceId);
 
-    #region public for CMA/CLI
+        #endregion public for Peripherals
 
-    //Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input);
-    //Task<List<CommandResult>> listConnectedDeviceInfo();
+        #region public for CMA/CLI
 
-    event EventHandler<UpdateUINotify> UIUpdateNotify;
-    void OnUIUpdateNotify(UpdateUINotify e);
-    #endregion public for CMA/CLI
+        //Task<CommandOutput_DeviceConnection> queryConnectedDeviceInfo(CommandInput_notifyDeviceConnection input);
+        //Task<List<CommandResult>> listConnectedDeviceInfo();
 
-    #region public for display properties
+        event EventHandler<UpdateUINotify> UIUpdateNotify;
 
-    /// <summary>
-    /// HDR change event，return HDR status
-    /// </summary>
-    event EventHandler<bool> HDRChangeEvent;
+        void OnUIUpdateNotify(UpdateUINotify e);
 
-    Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
+        #endregion public for CMA/CLI
 
-    Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation);//Bruce 08-09 Modify the incoming value
+        #region public for display properties
 
-    Task<bool> CallWindowsDisplaySetting();
+        /// <summary>
+        /// HDR change event，return HDR status
+        /// </summary>
+        event EventHandler<bool> HDRChangeEvent;
 
-    Task<bool> GetHDRStatus(MonitorInfo monitorInfos);
+        Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
 
-    Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff);
+        Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation);//Bruce 08-09 Modify the incoming value
 
-    Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type);
+        Task<bool> CallWindowsDisplaySetting();
 
-    //0606 Bruce 新增鎖定自動旋轉方向
-    Task<bool> LockRotate(bool onoff);
+        Task<bool> GetHDRStatus(MonitorInfo monitorInfos);
 
-    //0606 Bruce 新增鎖定自動旋轉方向
-    Task<bool> GetLockRotateStatus();
+        Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff);
 
-    Task<string> GetOSDOrientation(MonitorInfo monitorInfos);
+        Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type);
 
-    Task<bool?> SetOSDOrientation(MonitorInfo monitorInfos, string Orientation);
+        //0606 Bruce 新增鎖定自動旋轉方向
+        Task<bool> LockRotate(bool onoff);
 
-    #endregion public for display properties
+        //0606 Bruce 新增鎖定自動旋轉方向
+        Task<bool> GetLockRotateStatus();
 
-    #region public for settings
+        Task<string> GetOSDOrientation(MonitorInfo monitorInfos);
 
-    Task<DDPMSettings> ReloadAppConfigData(bool force_reload = false);
+        Task<bool?> SetOSDOrientation(MonitorInfo monitorInfos, string Orientation);
 
-    Task<bool> SetAppConfigData(DDPMSettings data);
+        #endregion public for display properties
 
-    Task<string> GetAppIconFolderPath();
+        #region public for settings
 
-    Task<List<ColorPresetSettings>> ReadColorPresetSettings();
+        Task<DDPMSettings> ReloadAppConfigData(bool force_reload = false);
 
-    Task<bool> WriteColorPresetSettings(List<ColorPresetSettings> colorPresetSettings);
+        Task<bool> SetAppConfigData(DDPMSettings data);
 
-    #endregion public for settings
+        Task<string> GetAppIconFolderPath();
 
-    #region public for hotkey
+        Task<List<ColorPresetSettings>> ReadColorPresetSettings();
 
-    Task<List<HotkeySettings>> ReadHotkeySettings();
+        Task<bool> WriteColorPresetSettings(List<ColorPresetSettings> colorPresetSettings);
 
-    Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings);
+        #endregion public for settings
 
-    public Task<HotkeySettings> ReadCurrentHotkey(EDID monitorEdid);
+        #region public for hotkey
 
-    public Task<bool> ReloadHotkeyConfigData();
+        Task<List<HotkeySettings>> ReadHotkeySettings();
 
-    public Task<HotkeyWarning> GetHotkeyConflicts(HotkeyInfo hotkeyInfo);
+        Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings);
 
-    public Task<bool> UnHook();
+        public Task<HotkeySettings> ReadCurrentHotkey(EDID monitorEdid);
 
-    public Task<bool> Hook();
+        public Task<bool> ReloadHotkeyConfigData();
 
-    public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
+        public Task<HotkeyWarning> GetHotkeyConflicts(HotkeyInfo hotkeyInfo);
 
-    public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
+        public Task<bool> UnHook();
 
-    #endregion public for hotkey
+        public Task<bool> Hook();
 
-    #region public for PowerNap
+        public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
 
-    public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSettings);
+        public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
 
-    public Task<List<PowerNapSetting>> ReadPowerNapSettings();
+        #endregion public for hotkey
 
-    #endregion public for PowerNap
+        #region public for PowerNap
 
-    #region public for FW Update by Bruce
+        public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSettings);
 
-    event EventHandler<FWUpdateInfo> ProgressUpdate_Notify;
+        public Task<List<PowerNapSetting>> ReadPowerNapSettings();
 
-    event EventHandler<bool> FWU_UILock_Notify;
+        #endregion public for PowerNap
 
-    /// <summary>
-    /// 供CLI使用
-    /// </summary>
-    event EventHandler<List<FWUpdateInfo>> DownloadAndInstall_Result_Notify;
+        #region public for FW Update by Bruce
 
-    Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
+        event EventHandler<FWUpdateInfo> ProgressUpdate_Notify;
 
-    //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
-    Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
+        event EventHandler<bool> FWU_UILock_Notify;
 
-    void SetUILockStatus(bool isLockFWU_UI);
+        /// <summary>
+        /// 供CLI使用
+        /// </summary>
+        event EventHandler<List<FWUpdateInfo>> DownloadAndInstall_Result_Notify;
 
-    Task<bool> GetUILockStatus();
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
-    #endregion public for FW Update by Bruce
+        //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
+        Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
 
-    #region public ALS functions
+        void SetUILockStatus(bool isLockFWU_UI);
 
-    Task<ALSConfig> GetALSFeatureValue(MonitorInfo monitorInfos, ALSFeatureQueryType type, int value);
+        Task<bool> GetUILockStatus();
 
-    Task<bool> SetALSFeatureValue(MonitorInfo monitorInfos, ALSConfig param, ALSFeatureQueryType type, string value);
+        #endregion public for FW Update by Bruce
 
-    Task<List<ALSConfig>> GetConnectedALSConfig();
+        #region public ALS functions
 
-    Task<List<ALSConfig>> GetAllExistAlsConfig();
+        Task<ALSConfig> GetALSFeatureValue(MonitorInfo monitorInfos, ALSFeatureQueryType type, int value);
 
-    Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
+        Task<bool> SetALSFeatureValue(MonitorInfo monitorInfos, ALSConfig param, ALSFeatureQueryType type, string value);
 
-    Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
+        Task<List<ALSConfig>> GetConnectedALSConfig();
 
-    #endregion public ALS functions
+        Task<List<ALSConfig>> GetAllExistAlsConfig();
 
-    #region for NKVM
+        Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain);
 
-    Task SupportedNKVMMonitors();
+        Task<bool> SynchronizeALSFeatureValue(ALSConfig monitorALS);
 
-    Task<bool> GetOnNKVM(MonitorInfo monitorInfo);
+        #endregion public ALS functions
 
-    Task SetOnNKVM(MonitorInfo monitorInfo, bool ison);
+        #region for NKVM
 
-    Task<bool> isNKVMSupportMonitor(MonitorInfo monitorInfo);
+        Task SupportedNKVMMonitors();
 
-    Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+        Task<bool> GetOnNKVM(MonitorInfo monitorInfo);
 
-    #endregion for NKVM
+        Task SetOnNKVM(MonitorInfo monitorInfo, bool ison);
 
-    #region public for SW Update
+        Task<bool> isNKVMSupportMonitor(MonitorInfo monitorInfo);
 
-    Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false);
+        Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
 
-    Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, string installPath = "");
+        #endregion for NKVM
 
-    #endregion public for SW Update
+        #region public for SW Update
+
+        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false);
+
+        Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, string installPath = "");
+
+        #endregion public for SW Update
 
     #region public for ImpExpSettings
     Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
+    Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, string path);
     #endregion
     //public for GUI to get the changes of display and peripherals
     event EventHandler<DeviceChangedEventArgs> DeviceChanged;
 
-    #region public for IT lock event
-    //IT lock
-    event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
-    #endregion
-    #region Gaming
-    event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
-    Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
-    Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
-    Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
-    Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
-    Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
-    Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
-    Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
-    #endregion
+        #region public for IT lock event
 
+        //IT lock
+        event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
 
-    #region public for DTPProxy
+        #endregion public for IT lock event
 
-    Task<int> GetDpiValueByDTP(string itemID);
-    Task SetDPIValueByDTP(string itemID, int newValue);
+        #region Gaming
 
-    #endregion
-  }
+        event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+
+        Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
+
+        Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
+
+        Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
+
+        Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
+
+        Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
+
+        Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
+
+        Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
+
+        #endregion Gaming
+
+        #region public for DTPProxy
+
+        Task<int> GetDpiValueByDTP(string itemID);
+
+        Task SetDPIValueByDTP(string itemID, int newValue);
+
+        #endregion public for DTPProxy
+    }
 }

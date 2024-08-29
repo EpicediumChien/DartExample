@@ -173,6 +173,11 @@ namespace DDPM.UI.Module.DisplayOthers
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
+                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, filename).Result;
+                if (b) 
+                {
+                    return true;
+                }
             }
             return false;
         }

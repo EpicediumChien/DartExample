@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using DDPM.Common;
 
 namespace DDPM.Subagent.User
 {
@@ -59,7 +58,6 @@ namespace DDPM.Subagent.User
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_USER_MUTEX_ID);
 
-
         private static void Main(string[] args)
         {
             //Dean 0626 remove to fix SAST issue
@@ -94,10 +92,10 @@ namespace DDPM.Subagent.User
                  * Populate the service name
                  */
                 ServiceName = ServiceName,
-              /*
-               * Populate any plugin wildcards. If you do not provides wildcards that match your plugin naming schema DCF will not load the plugins
-               */
-              PluginWildcards = new[] { "VcpCore.Plugins.dll", "DDPM.SA.Plugins.User.*.dll",
+                /*
+                 * Populate any plugin wildcards. If you do not provides wildcards that match your plugin naming schema DCF will not load the plugins
+                 */
+                PluginWildcards = new[] { "VcpCore.Plugins.dll", "DDPM.SA.Plugins.User.*.dll",
                   "Dell.Client.Framework.Plugin.*.dll", // Required DCF plugin loading
                   "Dell.UnifiedAgent.*.dll",            // Required UA plugin loading
                   "DtpInstrumentationUtil.Plugin.dll",
@@ -105,10 +103,10 @@ namespace DDPM.Subagent.User
                   "Dell.TechHub.Instrumentation.Sdk.dll",
 
                   "CLI.Plugins.*.dll" },
-              /*
-               * Populate your user process mutex guid so it does not collide with any existing DCF products on the machine
-               */
-              UserProcessMutexGuid = UserProcessMutexGuid,
+                /*
+                 * Populate your user process mutex guid so it does not collide with any existing DCF products on the machine
+                 */
+                UserProcessMutexGuid = UserProcessMutexGuid,
                 /*
                  * The list of all of the plugins you wish to publish in the Dell TechHub ecosystem
                  */
