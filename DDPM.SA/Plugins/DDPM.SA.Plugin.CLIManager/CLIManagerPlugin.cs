@@ -7,11 +7,11 @@
 //
 // CLIManagerPlugin.cs created on 24/07/2024T04:24 PM
 //
+
 #endregion
 
-
-
 using DDPM.SA.Common;
+using DDPM.SA.Common.CLI;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -20,7 +20,6 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
-using DDPM.SA.Common.CLI;
 
 namespace DDPM.SA.Plugin.CLIManager
 {
@@ -179,13 +178,13 @@ namespace DDPM.SA.Plugin.CLIManager
             WriteLog($"Got CLI request: ID:{arg.command_guid_string}, command: {arg.commandLineInput.Command}, target type: {arg.commandLineInput.TargetType}");
 
             //Dean 0816, check if IT admin command and do not relay to CLIProxy if it's IT lock command.
-            if(commandLineInput.isITCommands)
+            if (commandLineInput.isITCommands)
             {
                 CLIEventResult rst = HandleITCommands(commandLineInput, arg.command_guid_string);
-                if(!commandLineInput.isNormalCommands)//only IT command, return directly
+                if (!commandLineInput.isNormalCommands)//only IT command, return directly
                     return Task.FromResult(rst);
 
-                if(rst.ExitCode != (int)CLI_ExitCode.success)//IT command failed
+                if (rst.ExitCode != (int)CLI_ExitCode.success)//IT command failed
                     return Task.FromResult(rst);
             }
 
@@ -198,7 +197,7 @@ namespace DDPM.SA.Plugin.CLIManager
             while (true)
             {
                 Sleep(1000);
-                lock(_resultLock)
+                lock (_resultLock)
                 {
                     int idx = _result_list.FindIndex(x => x.command_guid_string.Trim().ToLower().Equals(arg.command_guid_string.ToLower().Trim()));
                     if (idx >= 0)//result found
@@ -251,20 +250,21 @@ namespace DDPM.SA.Plugin.CLIManager
             }
 
             if (commandLineInput.PluginsType.Equals("APP"))
-            {                
+            {
                 // !!!
                 // Implement this switch-case, should match the Support_Lock_Feature in ICLICommandTable.cs
                 // !!!
                 switch (commandLineInput.TargetFeature)
                 {
                     case "TELEMETRYCONSENT":
-                        //If return null means command isn't belong to IT, bypass to user SA(CLIProxy).                        
+                        //If return null means command isn't belong to IT, bypass to user SA(CLIProxy).
                         rst = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                         //rst = CLI_Analytics_Consent(commandLineInput, command_guid);
                         return rst;
 
                     case "ENERGESAVER":
                         break;
+
                     default:
                         response.Message = $"Feature {commandLineInput.TargetFeature} doesn't support as global setting";
                         response.Result = "FAIL";
@@ -285,7 +285,6 @@ namespace DDPM.SA.Plugin.CLIManager
             return rst;
         }
 
-        
         #endregion
 
         #region ICliManagerSA implementation
@@ -448,10 +447,10 @@ namespace DDPM.SA.Plugin.CLIManager
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 return result;
             }
-            
+
             result.ExitCode = (int)CLI_ExitCode.success;
-            
-            if (!op.Option_Name.ToUpper().Equals("VALUE"))            
+
+            if (!op.Option_Name.ToUpper().Equals("VALUE"))
             {
                 WriteLog($"Telemetry Consent: option name [{op.Option_Name}] not support");
                 response.Result = "Fail";
@@ -516,8 +515,9 @@ namespace DDPM.SA.Plugin.CLIManager
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
                 return result;
-            }       
+            }
         }*/
+
         #endregion
     }
 }

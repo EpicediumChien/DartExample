@@ -1,11 +1,4 @@
 ﻿using Moq;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using  VcpCore.Plugins;
 
 namespace VcpCore.Plugins.Test.ParserTest
 {
@@ -32,11 +25,10 @@ namespace VcpCore.Plugins.Test.ParserTest
             Assert.IsNotNull(rootNode);
         }
 
-        class TokenImplementation : IToken
+        private class TokenImplementation : IToken
         {
             public string Type { get; set; }
             public string Value { get; set; }
         }
-
     }
 }

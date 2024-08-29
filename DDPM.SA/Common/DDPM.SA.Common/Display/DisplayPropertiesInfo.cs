@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 
 namespace DDPM.SA.Common
 {
@@ -18,6 +17,7 @@ namespace DDPM.SA.Common
         HighDataSpeed = 0,
         HighResolution = 1
     }
+
     public enum Gaming_Supported
     {
         GameEnhancementMode = 0x10,
@@ -25,6 +25,7 @@ namespace DDPM.SA.Common
         DarkStabilizer = 0x30,
         HDRType = 0x40
     }
+
     public enum Gaming_GameEnhancementMode
     {
         Off = 0x00,
@@ -37,6 +38,7 @@ namespace DDPM.SA.Common
         Timer__90min = 0x07,
         Disable = 0x0E
     }
+
     public enum Gaming_ResponseTime
     {
         Extreme = 0x00,
@@ -45,6 +47,7 @@ namespace DDPM.SA.Common
         Normal = 0x03,
         Disable = 0x0E
     }
+
     public enum Gaming_DarkStabilizer
     {
         Level_0 = 0x00,
@@ -53,6 +56,7 @@ namespace DDPM.SA.Common
         Level_3 = 0x03,
         Disable = 0x0E
     }
+
     public enum Gaming_HDRType
     {
         Off = 0x00,
@@ -64,12 +68,14 @@ namespace DDPM.SA.Common
         HDRPeak1000 = 0x06,
         Disable = 0x0E
     }
+
     public enum Gaming_DualResolutionType : uint
     {
         _4K = 0xF811,
         _FHD = 0xF810,
         Unknow = 0x0000
     }
+
     public enum Gaming_VisionEngineType : uint
     {
         off = 0x00,
@@ -80,6 +86,7 @@ namespace DDPM.SA.Common
         Steady_Vision = 0x05,
         Crosshair = 0x06
     }
+
     /// <summary>
     /// Gaming螢幕屬性(解析度、HDR等)
     /// </summary>
@@ -106,6 +113,7 @@ namespace DDPM.SA.Common
         public List<Gaming_DualResolutionType> Supported_DualResolutionType;
         public List<Gaming_VisionEngineType> Supported_VisionEngineType;
         public DisplaySupportedProperties SupportedProperties;
+
         public GamingDisplayPropertiesInfo()
         {
             Current_GameEnhancementMode = Gaming_GameEnhancementMode.Disable;

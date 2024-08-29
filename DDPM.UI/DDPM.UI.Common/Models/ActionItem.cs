@@ -438,21 +438,21 @@ namespace DDPM.UI.Common
             }
         }
 
-        public static List<int> SuggestedActionsPenTopButton
-        {
-            get
-            {
-                return new() { 14, 0, 53, 92 };
-            }
-        }
+        //public static List<int> SuggestedActionsPenTopButton
+        //{
+        //    get
+        //    {
+        //        return new() { 8, 0, 23, 73 };
+        //    }
+        //}
 
-        public static List<int> SuggestedActionsPenBarrelButton
-        {
-            get
-            {
-                return new() { 14, 0, 34, 56 };
-            }
-        }
+        //public static List<int> SuggestedActionsPenBarrelButton
+        //{
+        //    get
+        //    {
+        //        return new() { 8, 0, 34, 56 };
+        //    }
+        //}
 
         //Robert_Lin, 2024-6-26, fix SAST issue: [Bug] Use an immutable collection or reduce the accessibiity of the non-private readonly field.
         //The same issue with AllActions, use solution_1, use a ImmutableList instead

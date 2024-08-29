@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DPeMPublic.Common.Enums;
-using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -100,6 +99,8 @@ namespace DDPM.SA.Common
         private bool _isBLE;
         private string _isdServiceVersion;
         private string _isdDriverVersion;
+        private int _tiltSensitivity;
+        private int _tipSensitivity;
         private int _monitorCount;
         private byte[] _dockData;
         private byte[] _dockInfo;
@@ -1181,6 +1182,22 @@ namespace DDPM.SA.Common
 
         #region Pen Properties
 
+        public byte[] EraserDoublePressSetting { get; set; }
+        public byte[] EraserDoublePressValues { get; set; }
+        public byte[] EraserLongPressSetting { get; set; }
+        public byte[] EraserLongPressValues { get; set; }
+        public byte[] EraserSinglePressSetting { get; set; }
+        public byte[] EraserSinglePressValues { get; set; }
+        public bool IsSideBottomButtonHoverClick { get; set; }
+        public bool IsSideTopButtonHoverClick { get; set; }
+        public byte[] LaunchableAppValues { get; set; }
+        public bool MenuCenterRightClickSetting { get; set; }
+        public byte[] MenuSinglePressSetting { get; set; }
+        public byte[] MenuSinglePressValues { get; set; }
+        public byte[] SideBottomSwitchSinglePressSetting { get; set; }
+        public byte[] SideSwitchSinglePressValues { get; set; }
+        public byte[] SideTopSwitchSinglePressSetting { get; set; }
+
         public bool IsBLE
         {
             get => _isBLE;
@@ -1210,6 +1227,28 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+        public int TiltSensitivity
+        {
+            get => _tiltSensitivity;
+            set
+            {
+                _tiltSensitivity = value;
+                OnPropertyChanged();
+            }
+        }
+        public int TipSensitivity
+        {
+            get => _tipSensitivity;
+            set
+            {
+                _tipSensitivity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion Pen Properties
+
+        #region Other Properties
 
         public int MonitorCount
         {
@@ -1291,7 +1330,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion
+        #endregion Pen Properties
 
         #endregion Properties
 
@@ -1318,6 +1357,7 @@ namespace DDPM.SA.Common
 
         #endregion Methods
     }
+
     public class DockData
     {
         public int BoardId { get; set; }
