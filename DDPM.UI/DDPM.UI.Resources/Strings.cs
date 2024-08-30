@@ -65,6 +65,7 @@ namespace DDPM.UI.Common
         public static readonly string AlreadyPaired = GetString("Tooltip.2");
         public static readonly string NotSupportedDevice = GetString("Tooltip.3");
         public static readonly string DongleSlotFull = GetString("Tooltip.4");
+        public static readonly string CopilotTooltip = GetString("Tooltip.5");
         public static readonly string PenSettingsCaption = GetString("Pen.0");
         public static readonly string MouseSettingsCaption = GetString("Mouse.6");
         public static readonly string KeyCustomizationCaption = GetString("Keyboard.2");
