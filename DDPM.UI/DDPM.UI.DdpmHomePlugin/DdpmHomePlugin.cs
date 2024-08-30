@@ -391,6 +391,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         else
                         {
                             viewModel.IsPleaseWaitVisible = false;
+                            viewModel.DumpDevicesToLog();
                         }
                     }
                 });
@@ -580,7 +581,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             EventManagerArgs args = new EventManagerArgs();
             if (_console != null)
                 _console.RaiseEvent("ShowAddDevicePlugin", this, args);
-            //_console.ShowPluginById(UI.Common.Constants.AddDevicePluginId);
         }
 
         private void ShowAddDevicePlugin(object sender, EventManagerArgs e)

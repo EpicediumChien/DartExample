@@ -49,7 +49,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- LeftFrame -->
-            <Viewbox Grid.Column="0">
+            <Viewbox Grid.Column="0" Name="viewBoxLeftFrame">
                 <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="12" />
             </Viewbox>
 
@@ -82,14 +82,28 @@
                 </Grid>
             </Border>
 
+            <!-- Dummy layer, MarketName use this grid to binding its MaxWidth, do not remove or rename -->
+            <Grid Name="markeyNameWidthGrid" Grid.Column="0">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Margin" Value="100,0,212,0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLandingMode}" Value="False">
+                                <Setter Property="Margin" Value="100,0,70,0"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
             <!-- Layer 2 : Nav and Vbar -->
-            <Grid Grid.Column="0">
+            <Grid Grid.Column="0" Name="gridNav" 
+                  >
 
                 <!-- Nav: Display Monitor market name, and LeftArrow back to DdpmHomePage -->
                 <Grid HorizontalAlignment="Left" VerticalAlignment="Top"
                       Margin="60,8,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="44" />
+                        <RowDefinition MaxHeight="90" />
                         <RowDefinition Height="AUto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -150,11 +164,29 @@
                     </Border>
 
                     <!-- Monitor Market Name -->
+                    <!-- Robert_Lin, 2024-8-29 Comment out for DDPMW-2094 
                     <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Display], Source={x:Static lang:LangHelper.Instance}}" Name="marketName"
                                             HorizontalAlignment="Left" TextBlockType="Header2"
                                             TextBlockSemanticColorType="DefaultHeader"
                                             Foreground="White"
                                             FontSize="24" />
+                    -->
+                    <!-- Robert_Lin, 2024-8-29 for DDPMW-2094, for NPI projects show MarketName else show "Display" 
+                    The binding Text will be HomeDevice.LandingMarketName
+                    Support text wrap, maxmum tow rows, ending with "..."
+                    --> 
+                    <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,12">
+                        <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Name="marketName"
+                                            Text="{Binding SelectedHomeDevice.LandingMarketName}"
+                                            HorizontalAlignment="Left" TextBlockType="Header2"
+                                            TextBlockSemanticColorType="DefaultHeader"
+                                            Foreground="White" TextWrapping="Wrap" TextTrimming="WordEllipsis"
+                                            FontSize="24"
+                                                MaxWidth="{Binding Path=ActualWidth, ElementName=markeyNameWidthGrid}"
+                                                MaxHeight="90"/>
+                    </Grid>
+
+
 
                     <!-- ComboBox to select Monitor -->
                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">

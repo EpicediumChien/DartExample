@@ -40,5 +40,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Interfaces
         public void Invoke_PleaseWait();
 
         public bool IsPleaseWaitVisible { get; set; }
+        public void DumpDevicesToLog();
     }
 }

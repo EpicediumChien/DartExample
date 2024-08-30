@@ -3483,7 +3483,7 @@ namespace VcpCore.Plugins
                 case "E2425HSM": return "Dell Pro 24 Adjustable Stand Monitor";
                 case "E2225HM": return "Dell Pro 22 Monitor";
                 case "E2225HSM": return "Dell Pro 22 Adjustable Stand Monitor";
-                default: return Model;
+                default: return String.Empty; //Robert_Lin 2024-0830, help Jarvis to fix.
             }
         }
 

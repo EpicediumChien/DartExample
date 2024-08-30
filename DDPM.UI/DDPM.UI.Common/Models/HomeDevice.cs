@@ -196,6 +196,9 @@ namespace DDPM.UI.Common.Models
             }
         }
 
+        /// <summary>
+        /// The tooltip text which showing on Homepage, device list tooltip when in hover state.
+        /// </summary>
         public string TooltipModelName
         {
             get
@@ -206,9 +209,18 @@ namespace DDPM.UI.Common.Models
                 }
                 else if (MonitorInfo != null)
                 {
+                    //Robert_Lin, 2024-8-29 comment out for DDPMW-2094
                     //Robert_Lin, 2024-6-20, change to DisplayName (with (instanceNo)
                     //return MonitorInfo.AliasDeviceName;
-                    return DisplayName;
+                    //return DisplayName;
+
+                    //Robert_Lin, 2024-8-29, for DDPMW-2094 Update DDPM 2.0 Display Frontend for NPI; Non-NPI TBD
+                    //For NPI models, MonitorInfo.MarketName will provide the name to show
+                    //Otherwise (Non-NPI), MonitorInfo.MarketName will be empty, will show DisplayName (Model + instanceNo)
+                    if (String.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
+                        return DisplayName;
+                    else
+                        return MonitorInfo.MarketingName;
                 }
                 return DeviceCategory.ToString();
             }
@@ -364,7 +376,10 @@ namespace DDPM.UI.Common.Models
                     //For peripherals, it will display ModelNumber
                     if (DeviceInfo != null)
                     {
+                        //Robert_Lin, 2024-8-29
+                        //Hess has added property 'Model2' to show ModelNumber + (InstanceNo).
                         return DeviceInfo.ModelNumber;
+                        //return DeviceInfo.Model2;
                     }
                 }
                 return "";
@@ -462,11 +477,17 @@ namespace DDPM.UI.Common.Models
                 return;
 
             //Copy from PeripheralViewModel.cs
-
             string assemblyName = "DDPM.UI.Resources";
+            string name = DeviceInfo.Name; //"Dell Mobile Wireless Mouse MS3320W"
+            var arr = name.Split(' ');
             string model = DeviceInfo.ModelNumber;
-            //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
-            DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{model}.png", assemblyName);
+            if (arr.Length > 0)
+            {
+                model = arr[arr.Length-1];
+            }
+            var colorCode = DeviceInfo.ColorCode == 0 ? "" : $"_{DeviceInfo.ColorCode}";
+
+            DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{model}{colorCode}.png", assemblyName);
         }
 
         #endregion DetermineDeviceImage - Robert_Lin 2024-6-20 added
@@ -1239,8 +1260,51 @@ namespace DDPM.UI.Common.Models
             {
                 log.Info($"  * CapabilityString={MonitorInfo.CapabilityString}");
                 log.Info($"  * AliasDeviceName=[{MonitorInfo.AliasDeviceName}]");
+                log.Info($"  * MarketName=[{MonitorInfo.MarketingName}]");
+            }
+            if (DeviceInfo != null)
+            {
+                log.Info($"  * Name=[{DeviceInfo.Name}], ModelNumber=[{DeviceInfo.ModelNumber}], ColorCode=[{DeviceInfo.ColorCode}]");
+                log.Info($"  * IsBatteryLevelSupported=[{DeviceInfo.IsBatteryLevelSupported}], BatteryLevel=[{DeviceInfo.BatteryLevel}], BatteryStatus=[{DeviceInfo.BatteryStatus}]");
+                log.Info($"  * FirmwareVersion=[{DeviceInfo.FirmwareVersion}]");
+                log.Info($"  * TotalNumberOfPairedHostName=[{DeviceInfo.TotalNumberOfPairedHostName}], PairedHostName1={DeviceInfo.PairedHostName1}], PairedHostName2={DeviceInfo.PairedHostName2}], PairedHostName3={DeviceInfo.PairedHostName3}]");
+                log.Info($"  * IsConnected=[{DeviceInfo.IsConnected}], Status=[{DeviceInfo.Status}]");
+                log.Info($"  * MaxPairingSlots=[{DeviceInfo.MaxPairingSlots}], PairingStatusName=[{DeviceInfo.PairingStatusName}], PairedDeviceCount=[{DeviceInfo.PairedDeviceCount}]");
+                log.Info($"  * IsPhysicalDeviceDongle=[{DeviceInfo.IsPhysicalDeviceDongle}], PhysicalDeviceFirmwareVersion=[{DeviceInfo.PhysicalDeviceFirmwareVersion}]");
             }
         }
         #endregion Dump Info to Log
+
+        #region LandingMarketName
+        /// <summary>
+        /// The market name displaying on Landing Page, after left arrow.
+        /// Base on DDPMW-2094, the NPI projects need to show the MarketName 
+        /// (provided by DDPM.SA.Plugins.User.VcpCorePlugin, and assign to MonitorInfo.MarketName)
+        /// But for Non-NPI projects, MonitorInfo.MarketName will be String.Empty.
+        /// We will need to display "Disaplay" and translate o multilingual text.
+        /// </summary>
+        public string LandingMarketName
+        {
+            get
+            {
+                if (MonitorInfo != null)
+                {
+                    if (String.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
+                        return Strings.Display;
+                        /* Debug text
+                        return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sem lorem, ornare at fringilla sed, eleifend ut nibh. Nullam a tincidunt sapien. Donec luctus felis eget facilisis sodales. Mauris nec ipsum elit. Curabitur sagittis mollis libero, id fringilla neque interdum at. Vivamus sit amet tortor consectetur enim egestas volutpat in id elit.";
+                        */
+                    else
+                        return MonitorInfo.MarketingName;
+                }
+                if (DeviceInfo != null)
+                {
+                    return DeviceInfo.Name;
+                }
+                return "(Noname)";
+            }
+        }
+        #endregion
+
     }
 }
