@@ -35,24 +35,24 @@ namespace DDPM.UI.Module.Color
             vm.WatchForProcessStart();
             vm.WatchForProcessEnd();
 
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            //DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
 
-            vm.IsAutoColorPreset_Lock = setting.UserSettings.IsAutoColorPreset_Lock;
+            //vm.IsAutoColorPreset_Lock = setting.UserSettings.IsAutoColorPreset_Lock;
 
-            if (setting.UserSettings.IsAutoColorPreset_Lock)
-            {
-                ((Expander)(this.FindName("Expander_Auto"))).IsEnabled = false;
-                ((ListBox)(this.FindName("lb_AppList"))).IsEnabled = false;
-                ((UXButton)(this.FindName("btn_AddApp"))).IsEnabled = false;
+            //if (setting.UserSettings.IsAutoColorPreset_Lock)
+            //{
+            //    ((Expander)(this.FindName("Expander_Auto"))).IsEnabled = false;
+            //    ((ListBox)(this.FindName("lb_AppList"))).IsEnabled = false;
+            //    ((UXButton)(this.FindName("btn_AddApp"))).IsEnabled = false;
 
-            }
-            else
-            {
-                ((Expander)(this.FindName("Expander_Auto"))).IsEnabled = true;
-                ((ListBox)(this.FindName("lb_AppList"))).IsEnabled = true;
-                ((UXButton)(this.FindName("btn_AddApp"))).IsEnabled = true;
+            //}
+            //else
+            //{
+            //    ((Expander)(this.FindName("Expander_Auto"))).IsEnabled = true;
+            //    ((ListBox)(this.FindName("lb_AppList"))).IsEnabled = true;
+            //    ((UXButton)(this.FindName("btn_AddApp"))).IsEnabled = true;
 
-            }
+            //}
         }
 
         //  Jim add 20240606
@@ -308,11 +308,11 @@ namespace DDPM.UI.Module.Color
                         vm.registryMonitor_ICC = null;
                     }
 
-                    int count = vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName].Count;
+                    int count = vm._ICC_Metadata._match_ICC_DeviceName.Count;
 
                     for (int i = 0; i < count; i++)
                     {
-                        RegistryUtils.MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                        RegistryUtils.MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._match_ICC_DeviceName[i].File);
                     }
                 }
             }
@@ -345,13 +345,13 @@ namespace DDPM.UI.Module.Color
             //NEW Code:
             if ((vm != null) && (vm._ICC_Metadata.Is_Support_ICC_DeviceName))
             {
-                if (vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName] != null)
+                if (vm._ICC_Metadata._match_ICC_DeviceName != null)
                 {
-                    int count = vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName].Count;
+                    int count = vm._ICC_Metadata._match_ICC_DeviceName.Count;
 
                     for (int i = 0; i < count; i++)
                     {
-                        RegistryUtils.MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._support_ICC_DeviceName[DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                        RegistryUtils.MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._match_ICC_DeviceName[i].File);
                     }
 
                     string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");

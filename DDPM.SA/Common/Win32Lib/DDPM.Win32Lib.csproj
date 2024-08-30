@@ -9,5 +9,6 @@
 	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
 	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
+ 
 
 </Project>
