@@ -1,5 +1,8 @@
 ﻿using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF;
+using System.Diagnostics;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -22,6 +25,39 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 vm.SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
                 vm.RefreshUI();
+
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        ~SettingsPage()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            if (e == null || e.IT_Feature_TriggerList == null || e.target_object == null)
+            {
+                Trace.WriteLine("Got [SettingsPage][DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
+                return;
+            }
+            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_TelemetryConsent"));
+            if (idx >= 0)
+            {
+                string feature = e.IT_Feature_TriggerList[idx];
+                PropertyInfo propertyInfo = e.target_object.GetType().GetProperty(feature);
+                Trace.WriteLine($"Got [SettingsPage][IT settings event] {feature} : {propertyInfo.GetValue(e.target_object)}");
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.LockMaskVisible = (bool)propertyInfo.GetValue(e.target_object) ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(Lock) : {propertyInfo.GetValue(e.target_object)}");
+                    }
+                }));
             }
         }
 

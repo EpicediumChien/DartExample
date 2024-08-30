@@ -74,11 +74,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         }
 
         [Test]
-        public void TestisCheckEnable()
+        public void TestisTabStoppable()
         {
             AnalyticsViewModel analyticsViewModel = new AnalyticsViewModel();
-            analyticsViewModel.isCheckEnable = false;
-            Assert.That(analyticsViewModel.isCheckEnable, Is.EqualTo(false));
+            analyticsViewModel.isTabStoppable = false;
+            Assert.That(analyticsViewModel.isTabStoppable, Is.EqualTo(false));
         }
 
         [Test]

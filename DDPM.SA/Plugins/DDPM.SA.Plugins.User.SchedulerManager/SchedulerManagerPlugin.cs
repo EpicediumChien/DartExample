@@ -126,56 +126,65 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
 
         private void InitializeScheduleInfo()
         {
-            _logs.DebugMsg_1("SchedulerManager InitializeScheduleInfo ...");
-
-            if (_ScheduleMaps != null) _ScheduleMaps.Clear();
-            else _ScheduleMaps = new List<scheduleInfo>();
-
-            var Count = 0;
-            do
+            if (_SettingsPlugin != null)
             {
-                _DDPMSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                Count++;
-            } while ((Count < 3) && (_DDPMSettings == null));
+                _logs.DebugMsg_1("SchedulerManager InitializeScheduleInfo ...");
 
-            var ScheduleMaps_string = _DDPMSettings.UserSettings.Schedule;
-
-            if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
-                _ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
-            else
-            {
                 if (_ScheduleMaps != null) _ScheduleMaps.Clear();
                 else _ScheduleMaps = new List<scheduleInfo>();
-            }
 
-            _logs.DebugMsg_1("_ScheduleMaps count : " + _ScheduleMaps.Count);
+                var Count = 0;
+                do
+                {
+                    _DDPMSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                    Count++;
+                } while ((Count < 3) && (_DDPMSettings == null));
+
+                var ScheduleMaps_string = _DDPMSettings.UserSettings.Schedule;
+
+                if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
+                    _ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
+                else
+                {
+                    if (_ScheduleMaps != null) _ScheduleMaps.Clear();
+                    else _ScheduleMaps = new List<scheduleInfo>();
+                }
+
+                _logs.DebugMsg_1("_ScheduleMaps count : " + _ScheduleMaps.Count);
+            }
         }
 
         private void InitializeMonitorInfo()
         {
-            _logs.DebugMsg_1("SchedulerManager InitializeMonitorInfo ...");
+            if (_DisplayManagerPlugin != null)
+            {
+                _logs.DebugMsg_1("SchedulerManager InitializeMonitorInfo ...");
 
-            if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
-            else _AllInfoMonitors = new List<MonitorInfo>();
+                if (_AllInfoMonitors != null) _AllInfoMonitors.Clear();
+                else _AllInfoMonitors = new List<MonitorInfo>();
 
-            _AllInfoMonitors.AddRange(_DisplayManagerPlugin.GetMonitors().Result);
+                _AllInfoMonitors.AddRange(_DisplayManagerPlugin.GetMonitors().Result);
 
-            _logs.DebugMsg_1("_AllInfoMonitors count : " + _AllInfoMonitors.Count);
+                _logs.DebugMsg_1("_AllInfoMonitors count : " + _AllInfoMonitors.Count);
+            }
         }
 
         private void OnSchedulerTimedRaise(Object source, System.Timers.ElapsedEventArgs e)
         {
             _logs.DebugMsg_1("[Hook] OnSchedulerTimedRaise");
 
-            InitializeMonitorInfo();
-            InitializeScheduleInfo();
-
-            if (_AllInfoMonitors.Count > 0)
+            if (_DisplayManagerPlugin != null && _SettingsPlugin != null)
             {
-                CalculateNowValue();
+                InitializeMonitorInfo();
+                InitializeScheduleInfo();
+
+                if (_AllInfoMonitors.Count > 0)
+                {
+                    CalculateNowValue();
+                }
+                else
+                    _logs.DebugMsg_1("[OnSchedulerTimedRaise] No monitors to service");
             }
-            else
-                _logs.DebugMsg_1("[OnSchedulerTimedRaise] No monitors to service");
         }
 
         private void CalculateNowValue()

@@ -398,7 +398,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         return;
                     }
                 }
-                else if (commandLineInput.PluginsType.Equals("MOUSE") || commandLineInput.PluginsType.Equals("KEYBOARD") || commandLineInput.PluginsType.Equals("DOCK") || commandLineInput.PluginsType.Equals("HEADSET"))
+                else if (commandLineInput.PluginsType.Equals("AUDIO") || commandLineInput.PluginsType.Equals("MOUSE") || commandLineInput.PluginsType.Equals("KEYBOARD") || commandLineInput.PluginsType.Equals("DOCK") || commandLineInput.PluginsType.Equals("HEADSET"))
                 {
                     if (_CLIPeripherals != null)
                     {

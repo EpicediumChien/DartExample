@@ -186,7 +186,8 @@ namespace DDPM.SA.Common
             if (commands.Exists(v => v == command))
             {
                 commandInput.Command = command;
-            } else
+            }
+            else
             {
                 _Log.Error("[CLI] input unknown command");
                 return commandInput;
@@ -195,7 +196,7 @@ namespace DDPM.SA.Common
             if ((args.Length < 2))
             {
                 if (commandInput.Command.Equals("HELP"))
-                {                    
+                {
                     commandInput.isCliCommandsProcessCompleted = true;
                     return commandInput;
                 }
@@ -219,7 +220,7 @@ namespace DDPM.SA.Common
             }*/
             commandInput.TargetType = str[0].Replace("-", "");
             commandInput.TargetFeature = str[1];
-            // 08-24 Casper: fine tune the string parser process 
+            // 08-24 Casper: fine tune the string parser process
             //   check if no input value for targetFeature .\CLI.Subagent.exe /get -Display=
             if (string.IsNullOrEmpty(commandInput.TargetFeature))
             {
@@ -611,12 +612,12 @@ namespace DDPM.SA.Common
             public static readonly List<Dictionary<string, object>> FeatureList = new List<Dictionary<string, object>>
 {
                 // Display | Basic Device Feature
-                // - GET 
+                // - GET
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "ActiveHours" },               { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AutoBrightness" },            { "Value", "N/A" }, { "Type", 0 }},
-                                                   
-                // - SET                           
+
+                // - SET
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "SwapVideo" },                 { "Value", "N/A" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "SwapUSB" },                   { "Value", "N/A" }, { "Type", 1 }},
                 //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "UniformityCompensation" },    { "Value", "N/A" }, { "Type", 1 }}, // TO DROP
@@ -694,14 +695,14 @@ namespace DDPM.SA.Common
                 //new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DeviceConnected" },               { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ExportSettings" },                { "Value", "N/A" }, { "Type", 1 }},
-                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }}, 
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }},
 
                 // === CLI apply to all devices ===
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "ConnectedDevices" },              { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DeviceData" },                    { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DeviceConfiguration" },           { "Value", "N/A" }, { "Type", 0 }},
-                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DiagnosticsReport" },             { "Value", "N/A" }, { "Type", 0 }}, 
-                
+                new Dictionary<string, object> {{ "TargetType", "APP" }, { "TargetFeature", "DiagnosticsReport" },             { "Value", "N/A" }, { "Type", 0 }},
+
                 // ==== Client Peripherals (CP) and Docks CLI ===
                 // - WEBCAM
                 new Dictionary<string, object> {{ "TargetType", "WEBCAM" }, { "TargetFeature", "FWVersion" },                  { "Value", "N/A" }, { "Type", 0 }},
@@ -740,7 +741,7 @@ namespace DDPM.SA.Common
                 // - MOUSE
                 new Dictionary<string, object> {{ "TargetType", "MOUSE" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "MOUSE" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
-                                                
+
                 // - PEN
                 new Dictionary<string, object> {{ "TargetType", "PEN" }, { "TargetFeature", "FWVersion" },                     { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "PEN" }, { "TargetFeature", "RestoreFactoryDefaults" },        { "Value", "N/A" }, { "Type", 1 }},
@@ -749,7 +750,6 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "TargetType", "DOCK" }, { "TargetFeature", "FWVersion" },                    { "Value", "N/A" }, { "Type", 0 }},
                 //new Dictionary<string, object> {{ "TargetType", "DOCK" }, { "TargetFeature", "RestoreFactoryDefaults" },       { "Value", "N/A" }, { "Type", 1 }},
                 new Dictionary<string, object> {{ "TargetType", "DOCK" }, { "TargetFeature", "SilentFWUpdate" },               { "Value", "N/A" }, { "Type", 1 }},
-
             };
 
             // [HELP]: Print all the data in the command set
@@ -766,7 +766,7 @@ namespace DDPM.SA.Common
                 Console.WriteLine(json);
             }
 
- // [HELP]: Print the command according to the feature in list<pluginType> aka. targetFeature
+            // [HELP]: Print the command according to the feature in list<pluginType> aka. targetFeature
             public static void PrintFormattedJsonTargetFeature(string targetType)
             {
                 var targetFeatures = FeatureList
@@ -832,14 +832,13 @@ namespace DDPM.SA.Common
                 return (int)CLI_ExitCode.fail_FormantError;
             }
             return (int)CLI_ExitCode.success;
-
         }
 
         public static int Response_FormatErrorRecommendation(CommandLineInput commandLineInput)
         {
-            if (true == CLIHelpCommandStructure.IsTargetTypeExists(commandLineInput)) {
+            if (true == CLIHelpCommandStructure.IsTargetTypeExists(commandLineInput))
+            {
                 CLIHelpCommandStructure.PrintFormattedJsonTargetFeature(commandLineInput.TargetType);
-
             }
 
             // Nothing I can help

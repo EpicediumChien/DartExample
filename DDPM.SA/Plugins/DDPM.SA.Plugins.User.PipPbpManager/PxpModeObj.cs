@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("SA.Plugins.User.PipPbpManager.Test")]
+
 namespace DDPM.SA.Plugins.User.PipPbpManager
 {
     internal class PxpModeObj
