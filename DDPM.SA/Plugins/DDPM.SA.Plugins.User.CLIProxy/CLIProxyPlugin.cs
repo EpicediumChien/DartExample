@@ -382,15 +382,6 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     return;
                 }
 
-                //please edit upper table "peripheral_DeviceType" if new device supported                
-                List<string> peripheral_DeviceType = new List<string>()
-                {
-                    "MOUSE",
-                    "KEYBOARD",
-                    "DOCK",
-                    "HEADSET",
-                };
-
                 //Do command line action
                 CLIEventResult? cliEventResult;
                 CommandLineInput commandLineInput = e.commandLineInput;
@@ -406,8 +397,8 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
                         return;
                     }
-                }                
-                else if (peripheral_DeviceType.FindIndex(x => x.Equals(commandLineInput.PluginsType)) >= 0)
+                }
+                else if (commandLineInput.PluginsType.Equals("MOUSE") || commandLineInput.PluginsType.Equals("KEYBOARD") || commandLineInput.PluginsType.Equals("DOCK") || commandLineInput.PluginsType.Equals("HEADSET"))
                 {
                     if (_CLIPeripherals != null)
                     {
