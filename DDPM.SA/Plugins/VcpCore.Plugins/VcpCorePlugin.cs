@@ -185,6 +185,13 @@ namespace VcpCore.Plugins
 
         #region IVcpCoreService implementation
 
+        public Task<Dictionary<EDID, Dictionary<object, object>>> GetVCPCacheTable()
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCacheTable  ...");
+
+            return Task.FromResult(_CacheTable);
+        }
+
         public Task Reset0x52TimerTick(int millisecond)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Reset0x52TimerTick: " + millisecond.ToString() + " requested ...");
@@ -970,9 +977,9 @@ namespace VcpCore.Plugins
 
                     case "colorpreset":
                         {
-                            ro = GetFromCacheTable(monitorInfoX, func);
-                            if (ro == null)
-                                ro = GetCurrentColorPreset(monitorInfoX);
+                            //ro = GetFromCacheTable(monitorInfoX, func);
+                            //if (ro == null)
+                            ro = GetCurrentColorPreset(monitorInfoX);
                         }
                         break;
 

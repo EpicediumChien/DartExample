@@ -14,7 +14,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -847,6 +846,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return Task.FromResult<bool>(false);
         }
+
         public Task<bool> DisplayImportSettings(string path, out List<VCP> vcps)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
@@ -874,7 +874,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                 vcps = monitorSettings.VCPs;
                                 return Task.FromResult<bool>(true);
                             }
-                            else 
+                            else
                             {
                                 WriteLog("[DisplayImportSettings] Import settings File...");
                                 break;
@@ -1190,6 +1190,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return true;
         }
+
         private DDPMImpExpSettings ReadImportSettingsFile(string path)
         {
             DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
@@ -1220,7 +1221,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             return ImpSettings;
         }
-        #endregion
+
+        #endregion ImpExpSettings
 
         private DDPMSettings InitDDPMUserConfigFile()
         {

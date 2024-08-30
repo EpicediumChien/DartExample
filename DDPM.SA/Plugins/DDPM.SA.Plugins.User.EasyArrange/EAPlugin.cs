@@ -28,8 +28,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     public class EAPlugin : BaseAgentPlugin, IDisposableObservable, IEasyArrangeService
     {
         #region Private Members
+
         //Plugin strings
         private const string pluginName = "EAPlugin";
+
         private const string pluginVersion = "1.0.0";
         private const string pluginDescription = "This plugin implements EasyArrange Plugin functions.";
         private const string publisherCompany = "Wistron";
@@ -72,17 +74,21 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _vmArrange.Log = Log;
             _log?.Info($"[{pluginName}] is constructed.");
         }
+
         #endregion Constructor
 
         #region Log/Debug messages
+
         private void LogInfo(string msg)
         {
             _log?.Info(msg);
         }
+
         private void ConsoleWriteLine(string msg)
         {
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + "[EAPlugin] " + msg);
         }
+
         #endregion Log/Debug messages
 
         #region IDisposableObservable Support
@@ -259,6 +265,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         private object _lockCheckIfReadyToStartEABorker = new object();
+
         /// <summary>
         /// Determine if all depended DDPM.SA plugins are ready to start EABroker, which will initiate
         /// EasyArrange subagent to run.
@@ -575,6 +582,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return true;
         }
+
         #endregion IEasyArrangeService Implementation
 
         #region EA Broker
@@ -661,6 +669,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion EA Broker
 
         #region Display Changed event
+
         //private void _displayManagerPlugin_Displaychanged(object? sender, DisplaychangedEventArgs e)
         //{
         //    _log?.Info($"@ OnDisplaychanged, ChangedCount={e.count}");
@@ -673,10 +682,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //UI_RefreshWorkWindows();
             InitWorkWindows();
         }
+
         #endregion Display Changed event
 
         #region InfoWindow
+
         private InfoWindow _infoWindow;
+
         private void InitInfoWindow()
         {
             if (_infoWindow == null)
@@ -699,9 +711,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 thread.Start();
             }
         }
+
         #endregion InfoWindow
 
         #region WorkWindows
+
         private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
         private EAWorkWindow _tempWorkWindow;
 
@@ -1003,9 +1017,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             _vmArrange.WorkWindows = tempWorkWindows;
         }
+
         #endregion WorkWindows
 
         #region EditWindow and SaveCustomWindow
+
         private void InitEditWindow()
         {
             if (_editWindow == null)
@@ -1042,6 +1058,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 thread.Start();
             }
         }
+
         private void saveCustomWidow_CancelButtonClick(object sender, string e)
         {
             //if (EditCompleted != null)
@@ -1058,6 +1075,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _editWindow.InvokeClose();
             _saveCustomWindow.Hide();
         }
+
         private void saveCustomWidow_SaveButtonClick(object sender, string e)
         {
             //if (EditCompleted != null)
@@ -1281,6 +1299,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
         }
+
         #endregion Helpers
 
         #region Debug Msg
@@ -1289,9 +1308,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + msg);
         }
+
         #endregion Debug Msg
 
         #region General DDPM.SA Plugins Methods
+
         private List<MonitorInfo>? GetMonitors()
         {
             if (_displayManagerPlugin == null)
@@ -1299,6 +1320,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             return _displayManagerPlugin.GetMonitors().Result;
         }
+
         #endregion General DDPM.SA Plugins Methods
     }
 }

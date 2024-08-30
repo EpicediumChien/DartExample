@@ -131,35 +131,44 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
         {
         }
+
         public async Task SetEraserLongPressSetting(string itemID, byte[] newValue)
         {
         }
+
         public async Task SetEraserSinglePressSetting(string itemID, byte[] newValue)
         {
         }
+
         public async Task SetIsSideBottomButtonHoverClick(string itemID, bool newValue)
         {
         }
+
         public async Task SetIsSideTopButtonHoverClick(string itemID, bool newValue)
         {
         }
+
         public async Task SetMenuSinglePressSetting(string itemID, byte[] newValue)
         {
         }
+
         public async Task SetMenuCenterRightClickSetting(string itemID, byte[] newValue)
         {
         }
+
         public async Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue)
         {
         }
+
         public async Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue)
         {
         }
+
         public async Task SetTiltSensitivity(string itemID, int newValue)
         {
             _itemID = new ItemId(itemID);
 
-            if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+            if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_penInterfaceType, commodity, "TiltSensitivity", newValue);
             }
@@ -169,11 +178,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
             }
         }
+
         public async Task SetTipSensitivity(string itemID, int newValue)
         {
             _itemID = new ItemId(itemID);
 
-            if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+            if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_penInterfaceType, commodity, "TipSensitivity", newValue);
             }

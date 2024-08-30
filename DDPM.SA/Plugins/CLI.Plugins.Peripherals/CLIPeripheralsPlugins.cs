@@ -6,10 +6,12 @@ using Microsoft;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static DDPM.SA.Common.ICLICommandTable;
 using Console = System.Console;
 
@@ -78,6 +80,9 @@ namespace DDPM.CLI.Plugins.Peripherals
             int exitcode = 0;
             if (commandLineInput != null)
             {
+                if (_commandLineInput.PluginsType.Equals("AUDIO"))
+                    _commandLineInput.PluginsType = "HEADSET";
+
                 if (commandLineInput.Command.Equals("SET"))
                 {
                     exitcode = SetPeripheralProperty();
@@ -173,13 +178,17 @@ namespace DDPM.CLI.Plugins.Peripherals
                 GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", "N/A", "N/A"));
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
-
+            Trace.WriteLine($"targetfeature: {_commandLineInput.TargetFeature}, pluginType: {_commandLineInput.PluginsType}");
+            
             if (_commandLineInput.GuidString.Count == 0)
             {
                 _deviceinfo.ForEach(x =>
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
+                        if (_commandLineInput.TargetFeature.Equals("FWVERSION"))
+                            _commandLineInput.TargetFeature = "FIRMWAREVERSION";
+                        Trace.WriteLine($"targetfeature: {_commandLineInput.TargetFeature}, pluginType: {_commandLineInput.PluginsType}");
                         GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                     }
                 });
@@ -197,6 +206,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         else
                         {
+                            if (_commandLineInput.TargetFeature.Equals("FWVERSION"))
+                                _commandLineInput.TargetFeature = "FIRMWAREVERSION";
                             GetResults.Add(new CLI_PeripheralRESPONSE(di, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                         }
                     }
@@ -526,18 +537,23 @@ namespace DDPM.CLI.Plugins.Peripherals
                         SetFailResults("Invalid setting value");
                         return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                     }
-                case "SETANCMODE":
-                    if (!int.TryParse(value, out val))
-                    {
-                        taskA = _devMgr.SetAncMode;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
-                    }
+                case "ANCMODE":
+                    //if (!int.TryParse(value, out val))
+                    if (value.Equals("ENABLE"))
+                        val = 1;
+                    else if (value.Equals("DISABLE"))
+                        val = 0;
                     else
                     {
                         SetFailResults("Invalid setting value");
                         return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                     }
+                        
+                    Trace.WriteLine($"set value int in CLI: {val} set value sting in CLI: {value}");
+                    taskA = _devMgr.SetAncMode;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
+
                 case "SETANCGAIN":
                     if (!int.TryParse(value, out val))
                     {
@@ -574,18 +590,21 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        SetFailResults("invalid setting value");
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
-                case "SETMICNOISECANCELLATION":
-                    if (!bool.TryParse(value, out bl))
-                    {
-                        taskB = _devMgr.SetMicNoiseCancellation;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
-                    }
+                case "MICNOISECANCELLATION":
+                    if (value.Equals("ENABLE"))
+                        bl = true;
+                    else if (value.Equals("DISABLE"))
+                        bl = false;
                     else
                     {
                         SetFailResults("Invalid setting value");
                         return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                     }
+                    //if (!bool.TryParse(value, out bl))
+                    taskB = _devMgr.SetMicNoiseCancellation;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
+
                 case "SETSIDETONE":
                     if (!bool.TryParse(value, out bl))
                     {
@@ -610,18 +629,21 @@ namespace DDPM.CLI.Plugins.Peripherals
                         SetFailResults("Invalid setting value");
                         return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                     }
-                case "SETWEARDETECTION":
-                    if (!int.TryParse(value, out val))
-                    {
-                        taskA = _devMgr.SetWearDetection;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
-                    }
+                case "WEARDETECTION":
+                    if (value.Equals("ENABLE"))
+                        val = 1;
+                    else if (value.Equals("DISABLE"))
+                        val = 0;
                     else
                     {
                         SetFailResults("Invalid setting value");
                         return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                     }
+
+                    taskA = _devMgr.SetWearDetection;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
+
                 case "SETBUSYLIGHT":
                     if (!bool.TryParse(value, out bl))
                     {
