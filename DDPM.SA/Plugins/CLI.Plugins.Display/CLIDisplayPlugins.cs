@@ -172,25 +172,7 @@ namespace DDPM.CLI.Plugins.Display
             CLIEventResult result = new CLIEventResult();
             result.command_guid_string = input.command_guid_string;
             result.ticket = DateTime.Now;
-            /*
-            if (_AllInfoMonitors == null)
-                _AllInfoMonitors = devMgr.GetMonitors().Result;
 
-            //check if no monitor connected, direct response no monitor
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
-            {
-                CLI_RESPONSE rsp = new CLI_RESPONSE()
-                {
-                    Command = commandLineInput.Command,
-                    TargetFeature = commandLineInput.TargetFeature,
-                    Result = "FAIL",
-                    Message = "No monitor connected",
-                };
-                result.serialize_Json_response = JsonConvert.SerializeObject(rsp, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.no_monitor_connected;
-                return result;
-            }
-			*/
             if (!input_param_validation(devMgr, commandLineInput, ref result))
                 return result;
 
