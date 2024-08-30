@@ -307,6 +307,22 @@ namespace DDPM.SA.Common
                     case "LogicalWiredAudio":
                         DeviceName = "Wired Audio Settings";
                         break;
+
+                    case "LogicalHeadset":
+                        DeviceName = "Headset Settings";
+                        break;
+
+                    case "LogicalPen":
+                        DeviceName = "Pen Settings";
+                        break;
+
+                    case "LogicalDock":
+                        DeviceName = "Dock Settings";
+                        break;
+
+                    case "LogicalWebcam":
+                        DeviceName = "Webcam Settings";
+                        break;
                 }
                 return _logicalDeviceType;
             }
@@ -1227,6 +1243,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public int TiltSensitivity
         {
             get => _tiltSensitivity;
@@ -1236,6 +1253,7 @@ namespace DDPM.SA.Common
                 OnPropertyChanged();
             }
         }
+
         public int TipSensitivity
         {
             get => _tipSensitivity;
@@ -1330,7 +1348,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        #endregion Pen Properties
+        #endregion Other Properties
 
         #endregion Properties
 

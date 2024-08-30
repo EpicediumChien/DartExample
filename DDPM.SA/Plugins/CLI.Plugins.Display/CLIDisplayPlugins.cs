@@ -5183,7 +5183,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 // 20240614 jim modify
                 if (index.Count != 0)
@@ -5213,7 +5212,6 @@ namespace DDPM.CLI.Plugins.Display
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                     }
-
                 }
                 // 20240614 jim modify
                 if (serviceTag.Count != 0)
@@ -7435,6 +7433,7 @@ namespace DDPM.CLI.Plugins.Display
                 default: return "Unknown";
             }
         }
+
         private static ulong GCD(ulong a, ulong b)
         {
             while (a != 0 && b != 0)
