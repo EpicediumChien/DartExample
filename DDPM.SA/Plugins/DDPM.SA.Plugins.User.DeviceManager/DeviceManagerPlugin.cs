@@ -24,6 +24,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -92,6 +93,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _SupportedColorPreset = new List<string>();
+
+        private readonly object _CheckAutoLock = new object();
 
         // Jim move to here 20240621
         private ShowOSDWin OsdWin = null;
@@ -872,7 +875,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                 }
 
-                CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                _ = Task.Run(async () =>
+                { 
+                    lock (_CheckAutoLock)
+                    {
+                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                    }
+                   
+                });
+
+                //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
                 return Task.FromResult(_AllInfoMonitors);
             }
@@ -3748,7 +3760,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _AllAppData = _ColorPresetPlugin.GetInstalledAppsList().Result;//_ColorPresetPlugin.FindAppsbyShell().Result;
                         }
 
-                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
                     }
                     /*
                     else if(pluginCondition is PluginStartedCondition)
@@ -3873,7 +3885,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             ToNKVM_initHotKeys();
                         }
 
-                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
 
                     }

@@ -612,6 +612,13 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
+                case "EASYARRANGELAYOUT":
+                    {
+                        var ret = EasyarrangeX(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
 
                 default:
                     CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -9650,6 +9657,133 @@ namespace DDPM.CLI.Plugins.Display
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
-        #endregion Malik
+        private (int code, string result) EasyarrangeX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+
+            if (commandLineInput.Command == "GET" || commandLineInput.Command == "CONFIGURE")
+            {
+                return Easyarrange(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+
+        }
+
+        private async Task<(int code, string result)> Easyarrange(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+
+            string output = string.Empty;
+            bool output_ea = true;
+            bool elable_ea = true;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    ObjGetVCP rc = new ObjGetVCP();
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    rc = devMgr.GetEAFunctionEnabled().Result;
+
+                    if (rc != null)
+                        retcode = true;
+
+                    if (retcode)
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                        if (rc.value.ToString() == "True")
+                            cli_Response.Value = "EANBLE";
+                        else
+                            cli_Response.Value = "DISABLE";
+                    }
+                    else
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Invalid command line syntax.";
+                    }
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "CONFIGURE")
+            {
+
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    ObjGetVCP rc = new ObjGetVCP();
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    if (commandLineInput.Options[0].Option_Value == "ENABLE")
+                        elable_ea = true;
+                    else
+                        elable_ea = false;
+
+                    output_ea = devMgr.SetEAFunctionEnabled(elable_ea).Result;
+                    if (output_ea != null)
+                        retcode = true;
+
+                    if (retcode)
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                        if (elable_ea)
+                            cli_Response.Value = "EANBLE";
+                        else
+                            cli_Response.Value = "DISABLE";
+                    }
+                    else
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Invalid command line syntax.";
+                    }
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"Output={output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+            #endregion Malik
+        }
+
     }
 }
