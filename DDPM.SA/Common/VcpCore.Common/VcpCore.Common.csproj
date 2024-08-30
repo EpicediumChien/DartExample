@@ -10,7 +10,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-	  <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+    <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
 	</ItemGroup>
 
 </Project>

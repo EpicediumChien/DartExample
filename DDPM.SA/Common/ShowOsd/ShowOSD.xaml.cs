@@ -44,7 +44,8 @@ namespace DDPM.ShowOSD
             this.Topmost = false;
             this.Topmost = true;
 
-            time = TimeSpan.FromMilliseconds(1800);
+            //time = TimeSpan.FromMilliseconds(1800);
+            time = TimeSpan.FromMilliseconds(1200);
             animationTimer = new DispatcherTimer();
             animationTimer.Interval = TimeSpan.FromMilliseconds(100);//.FromSeconds(1);
             animationTimer.Tick += RunTimerTick;
@@ -70,7 +71,8 @@ namespace DDPM.ShowOSD
             {
                 time = time.Add(TimeSpan.FromMilliseconds(-100));
 
-                if (time.TotalMilliseconds < 800)
+                //if (time.TotalMilliseconds < 800)
+                if (time.TotalMilliseconds < 500)
                 {
                     this.Dispatcher.Invoke(() =>
                     {
