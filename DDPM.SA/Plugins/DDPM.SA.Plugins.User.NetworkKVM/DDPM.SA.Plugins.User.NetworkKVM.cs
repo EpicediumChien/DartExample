@@ -825,11 +825,12 @@ namespace NetworkKVM.Plugins
 
         private void CreateNamedPipe()
         {
-#if Debug_NKVM
-            string namedPipeName = "VCPNamedPipe";
-#else
+            //#if Debug_NKVM
+            //            string namedPipeName = "VCPNamedPipe";
+            //#else
+            //            string namedPipeName = Guid.NewGuid().ToString("D");
+            //#endif
             string namedPipeName = Guid.NewGuid().ToString("D");
-#endif
             _logs.DebugMsg("[NetworkKVM] Name: " + namedPipeName);
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
 
