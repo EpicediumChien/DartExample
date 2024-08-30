@@ -98,7 +98,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 {
                     var cat = ActionCategory.None;
                     if (_vm.SelectedActionID != -1)
-                        cat = Actions.AllActions[_vm.SelectedActionID].Category!.Value;
+                        cat = Actions.KnMActions[_vm.SelectedActionID].Category!.Value;
                     if (cat == ActionCategory.None)
                     {
                         if (ActiveActionSection != "")
@@ -197,7 +197,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 searchText = txtSearchText.Text;
                 sourceList.ForEach(x =>
                 {
-                    if (x < 100 && Actions.AllActions[x].Caption.StartsWith(searchText, StringComparison.OrdinalIgnoreCase))
+                    if (x < 100 && Actions.KnMActions[x].Caption.StartsWith(searchText, StringComparison.OrdinalIgnoreCase))
                     {
                         filterdList.Add(x);
                     }
@@ -389,11 +389,11 @@ namespace DDPM.UI.Module.ButtonSettings
         {
             if (_vm.SuggestedActions.Contains(actionID))
             {
-                var section = Actions.AllActions[actionID].Category?.ToString().Replace("Action", "").Replace("None", "");
+                var section = Actions.KnMActions[actionID].Category?.ToString().Replace("Action", "").Replace("None", "");
                 return new string[] { "Suggested", section! };
             }
-            else if (Actions.AllActions.ContainsKey(actionID))
-                return new string[] { Actions.AllActions[actionID].Category?.ToString().Replace("Action", "").Replace("None", "") ?? "" };
+            else if (Actions.KnMActions.ContainsKey(actionID))
+                return new string[] { Actions.KnMActions[actionID].Category?.ToString().Replace("Action", "").Replace("None", "") ?? "" };
             else
                 return new string[] { "" };
         }
@@ -405,7 +405,7 @@ namespace DDPM.UI.Module.ButtonSettings
             {
                 id = (int)((UXRadioButton)sender).DataContext;
                 rb.Name = $"Radio{id}";
-                rb.Content = id > 100 ? Actions.OfficeActions[id].Caption : Actions.AllActions[id].Caption;
+                rb.Content = id > 100 ? Actions.OfficeActions[id].Caption : Actions.KnMActions[id].Caption;
                 if (rb.Tag.ToString() != "search")
                     rb.IsChecked = id == _vm.SelectedActionID;
             }
