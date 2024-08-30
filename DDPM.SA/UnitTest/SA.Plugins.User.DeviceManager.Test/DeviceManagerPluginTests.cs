@@ -404,7 +404,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             _SettingsPluginMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig())));
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
-            _ColorPresetPluginMock.Setup(x => x.AutoSetColorPresetForMonitorConfig(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>() { new ColorPresetSettings() { }, new ColorPresetSettings() { } }));
+            //_ColorPresetPluginMock.Setup(x => x.AutoSetColorPresetForMonitorConfig(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>() { new ColorPresetSettings() { }, new ColorPresetSettings() { } }));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             try

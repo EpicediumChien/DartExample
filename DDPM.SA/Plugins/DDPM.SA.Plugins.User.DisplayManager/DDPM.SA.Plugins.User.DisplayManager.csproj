@@ -7,8 +7,8 @@
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
 	</PropertyGroup>
 
-	<ItemGroup>
-	    <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
+	<ItemGroup>   
+	  <PackageReference Include="DellClientFramework" Version="6.4.5.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 

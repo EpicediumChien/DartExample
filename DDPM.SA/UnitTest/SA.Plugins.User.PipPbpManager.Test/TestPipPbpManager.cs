@@ -1,5 +1,5 @@
-﻿using DDPM.SA.Common.Interfaces;
-using DDPM.SA.Common;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Plugins.User.DisplayManager;
 using DDPM.SA.Plugins.User.PipPbpManger;
 using Dell.Client.Framework.Interfaces;
@@ -8,10 +8,6 @@ using Moq;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using Dell.Client.Framework.Agent;
-using System.Security.Cryptography.X509Certificates;
-using DDPM.SA.Common.Display;
-using static VcpCore.Common.User32;
 
 namespace SA.Plugins.User.PipPbpManager.Test
 {
@@ -84,26 +80,26 @@ namespace SA.Plugins.User.PipPbpManager.Test
         DisplayMangerPlugin displayPlugin;
         VcpCorePlugin vcpCorePlugin;
         PipPbpMangerPlugin pipPbpMangerPlugin;
-        //Dictionary<string, Dictionary<string, string>> getstr;
-        //2024-08-28 complier ERROR
-        //[OneTimeSetUp]
-        //public void Setup()
-        //{
-        //    displayPlugin = CreateInitializeDisplayMangerPlugin();
+        Dictionary<string, Dictionary<string, string>> getstr;
 
-        //    vcpCorePlugin = CreateInitializeVcpCorePlugin();
-        //    pipPbpMangerPlugin = CreateInitializePipPbpPlugin();
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            displayPlugin = CreateInitializeDisplayMangerPlugin();
 
-        //    PrivateObject privateObject = new PrivateObject(displayPlugin);
-        //    PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
-        //    PrivateObject privatepippbp = new PrivateObject(pipPbpMangerPlugin);
+            vcpCorePlugin = CreateInitializeVcpCorePlugin();
+            pipPbpMangerPlugin = CreateInitializePipPbpPlugin();
 
-        //    privateObject.SetField("_pipPbpService", pipPbpMangerPlugin as IPipPbpService);
-        //    privateObject.SetField("_VcpCorePlugin", vcpCorePlugin as IVcpCoreService);
+            PrivateObject privateObject = new PrivateObject(displayPlugin);
+            PrivateObject privatevcp = new PrivateObject(vcpCorePlugin);
+            PrivateObject privatepippbp = new PrivateObject(pipPbpMangerPlugin);
 
-        //    privatepippbp.SetField("_DisplayManagerPlugin", displayPlugin as IDisplayService);
-        //    getstr = (Dictionary<string, Dictionary<string, string>>)privatevcp.GetField("_ColorPresets");
-        //}
+            privateObject.SetField("_pipPbpService", pipPbpMangerPlugin as IPipPbpService);
+            privateObject.SetField("_VcpCorePlugin", vcpCorePlugin as IVcpCoreService);
+
+            privatepippbp.SetField("_DisplayManagerPlugin", displayPlugin as IDisplayService);
+            getstr = (Dictionary<string, Dictionary<string, string>>)privatevcp.GetField("_ColorPresets");
+        }
 
         [Test]
         public void TestGetMonitors()
@@ -137,17 +133,16 @@ namespace SA.Plugins.User.PipPbpManager.Test
             Assert.That(error2, Is.EqualTo(LastErrorResult2));
         }
 
-
         [Test]
         public void TestGetCapabilitiesString()
         {
             string getcapabilitiesString1 = "";
             string signature = "E9(";
             string signature1 = "E8(";
-            if (getcapabilitiesString1=="")
-            { 
-            var GetCapabilitiesStringResult1 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
-            Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult1));
+            if (getcapabilitiesString1 == "")
+            {
+                var GetCapabilitiesStringResult1 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
+                Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult1));
             }
 
             if (signature1 != "E9(")
@@ -160,15 +155,15 @@ namespace SA.Plugins.User.PipPbpManager.Test
                 Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult2));
             }
 
-            if (signature== "E9(") 
-            { 
-            string capabilitiesString3 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) E9(00 01 02 21 22 24 ) mccs_ver(2.1))";
-            string getcapabilitiesString3 = "00 01 02 21 22 24 ";
-            PrivateObject privatepipPbp = new PrivateObject(pipPbpMangerPlugin);
-            DisplayManagerService.Setup(x=>x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString3));
-            privatepipPbp.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService.Object);
-            var GetCapabilitiesStringResult3 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
-            Assert.That(getcapabilitiesString3, Is.EqualTo(GetCapabilitiesStringResult3));
+            if (signature == "E9(")
+            {
+                string capabilitiesString3 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) E9(00 01 02 21 22 24 ) mccs_ver(2.1))";
+                string getcapabilitiesString3 = "00 01 02 21 22 24 ";
+                PrivateObject privatepipPbp = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString3));
+                privatepipPbp.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService.Object);
+                var GetCapabilitiesStringResult3 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
+                Assert.That(getcapabilitiesString3, Is.EqualTo(GetCapabilitiesStringResult3));
             }
         }
 
@@ -189,7 +184,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             if (pipPbpCapsStr2 != "")
             {
                 string capabilitiesString2 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) E9(00 01 02 21 22 24 ) mccs_ver(2.1))";
-                UInt16[] pipPbpCaps2=new UInt16[6] { 00 ,01 ,02 ,33 ,34, 36 };
+                UInt16[] pipPbpCaps2 = new UInt16[6] { 00, 01, 02, 33, 34, 36 };
                 PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
                 DisplayManagerService2.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString2));
                 privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
@@ -204,7 +199,7 @@ namespace SA.Plugins.User.PipPbpManager.Test
             string inStr = "";
             string inStr2 = "02 04 05 08 10 12";
             UInt16[] pipPbpCapsStringToWords = new UInt16[0];
-            UInt16[] pipPbpCapsStringToWords2 = new UInt16[6] {02, 04, 05, 08, 16, 18 };
+            UInt16[] pipPbpCapsStringToWords2 = new UInt16[6] { 02, 04, 05, 08, 16, 18 };
             if (inStr == "")
             {
                 var ParsingHexStringToWordsResult1 = PipPbpMangerPlugin.ParsingHexStringToWords(inStr);
@@ -507,5 +502,105 @@ namespace SA.Plugins.User.PipPbpManager.Test
             }
         }
 
+        [Test]
+        public void TestSetSubInputs()
+        {
+            ObjGetVCP SubInputList1 = new ObjGetVCP() { result = false, value = 255 };
+            ObjGetVCP SubInputList2 = new ObjGetVCP() { result = true, value = 57151 };
+            List<InputSourceObj> GetSubInputs1 = new List<InputSourceObj>() { };
+            GetSubInputs1 = null;
+            List<InputSourceObj> GetSubInputs2 = new List<InputSourceObj>();
+            GetSubInputs2.Add(new InputSourceObj(31, ""));
+            GetSubInputs2.Add(new InputSourceObj(25, "Thunderbolt-1"));
+            GetSubInputs2.Add(new InputSourceObj(23, "DisplayPort-3")); //Code=15,Name="DisplayPort-1";
+
+            string _DisplayManagerPlugin1 = null;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            bool SetSubInputs1 = false;
+            bool SetSubInputs2 = true;
+
+            InputSourceObj? sub1 = new InputSourceObj(0x11, "HDMI-1");          //0x11, "HDMI-1",
+            InputSourceObj? sub2 = new InputSourceObj(0x0F, "DisplayPort-1");  //0x0F, "DisplayPort-1",
+            InputSourceObj? sub3 = new InputSourceObj(0x1B, "USB-C1");        //0x1B, "USB-C1",
+
+            if (_DisplayManagerPlugin1 == null)
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                var SetSubInputsResult1 = pipPbpMangerPlugin.SetSubInputs(monitorInfo1, sub1, sub2, sub3).Result;
+                Assert.That(SetSubInputs1, Is.EqualTo(SetSubInputsResult1));
+            }
+
+            if (_DisplayManagerPlugin2 != null)
+            {
+                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                DisplayManagerService2.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(SubInputList2));
+                DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                var DisplayManagerService2Object = DisplayManagerService2.Object;
+                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2Object);   //GetVCPCapability 0x8E :value 15 ,true
+
+                var SetSubInputsResult2 = pipPbpMangerPlugin.SetSubInputs(monitorInfo1, sub1, sub2, sub3).Result;
+                Assert.That(SetSubInputs2, Is.EqualTo(SetSubInputsResult2));
+            }
+        }
+
+        [Test]
+        public void TestUsbSwitch()
+        {
+            ObjGetVCP SubInputList1 = new ObjGetVCP() { result = false, value = 255 };
+            ObjGetVCP SubInputList2 = new ObjGetVCP() { result = true, value = 57151 };
+            List<UInt16> GetSubInputList1 = new List<UInt16>() { };
+            List<UInt16> GetSubInputList2 = new List<UInt16>() { 31, 25, 23 };
+            UInt16 target1 = 5;
+            UInt16 target2 = 2;
+            bool UsbSwitch1 = true;
+            bool UsbSwitch2 = false;
+            string _DisplayManagerPlugin1 = string.Empty;
+            string _DisplayManagerPlugin2 = "E9(";
+
+            if (target1 > 4)
+            {
+                var UsbSwitchResult1 = pipPbpMangerPlugin.UsbSwitch(monitorInfo1, target1).Result;
+                Assert.That(UsbSwitch2, Is.EqualTo(UsbSwitchResult1));
+            }
+
+            if (target2 <= 4)
+            {
+                if (_DisplayManagerPlugin1 == "")
+                {
+                    PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                    privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+                    var UsbSwitchResult2 = pipPbpMangerPlugin.UsbSwitch(monitorInfo1, target2).Result;
+                    Assert.That(UsbSwitch2, Is.EqualTo(UsbSwitchResult2));
+                }
+
+                if (_DisplayManagerPlugin2 != "")
+                {
+                    PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+                    DisplayManagerService2.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
+                    var displayManagerService2Object = DisplayManagerService2.Object;
+                    privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", displayManagerService2Object);
+                    var UsbSwitchResult3 = pipPbpMangerPlugin.UsbSwitch(monitorInfo1, target2).Result;
+                    Assert.That(UsbSwitch1, Is.EqualTo(UsbSwitchResult3));
+                }
+            }
+        }
+
+        [Test]
+        public void TestInitializeDisplayManagerPlugin()
+        {
+            PrivateObject privatepipPbpObject = new PrivateObject(pipPbpMangerPlugin);
+            var result = privatepipPbpObject.Invoke("InitializeDisplayManagerPlugin");
+            Assert.IsNotNull(displayPlugin);
+        }
+
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            displayPlugin.Dispose();
+            vcpCorePlugin.Dispose();
+            pipPbpMangerPlugin.Dispose();  //fix 2024-08-28 complier ERROR
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace DDPM.SA.Common
         public string DPeMSubAgentVersion { get; set; }
         public string IsdDriverVersion { get; set; } = "";
 
-    public override string ToString()
+        public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             if (deviceInfo.Where(x => x.IsConnected).Count() > 0)

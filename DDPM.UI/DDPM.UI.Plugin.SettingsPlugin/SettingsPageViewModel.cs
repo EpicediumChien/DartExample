@@ -108,6 +108,18 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Optional_UpdateList_UI?.Count >= 1) ? Visibility.Visible : Visibility.Collapsed;
         }
 
+        private Visibility lockMaskVisible = Visibility.Collapsed;
+
+        public Visibility LockMaskVisible
+        {
+            get { return lockMaskVisible; }
+            set
+            {
+                lockMaskVisible = value;
+                OnPropertyChanged("LockMaskVisible");
+            }
+        }
+
         public void RefreshUI()
         {
             OnPropertyChanged("Critical_UpdateList_UI");
@@ -121,6 +133,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             OnPropertyChanged("Recommended_UpdateList");
             OnPropertyChanged("Optional_UpdateList");
             OnPropertyChanged("IsAnyUpdate");
+            OnPropertyChanged("LockMaskVisible");
         }
 
         public void RefreshProcessUI()

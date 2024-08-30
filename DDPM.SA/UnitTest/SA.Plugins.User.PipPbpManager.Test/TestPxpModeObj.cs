@@ -1,35 +1,37 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using DDPM.SA.Common.Display;
+using Dell.Client.Framework.UnitTestShared.Tests;
 
-[assembly: InternalsVisibleTo("SA.Plugins.User.PipPbpManager.Test")]
-
-namespace DDPM.SA.Plugins.User.PipPbpManager
+namespace SA.Plugins.User.PipPbpManager.Test
 {
-    internal class PxpModeObj
+    public class TestPxpModeObj
     {
-        #region Native data
-
-        private string _arg;
-        private UInt16 _modeCode;
-        private string _description;
-
-        #endregion Native data
-
-        #region ctor
-
-        public PxpModeObj(string arg, UInt16 modeMode, string desc)
+        [Test]
+        public void PxpModeObjTest()
         {
-            _arg = arg;
-            _modeCode = modeMode;
-            _description = desc;
+            string arg;
+            UInt16 modeMode;
+            string desc;
+
+            arg = "pip-large";
+            modeMode = 0x22;
+            desc = "PIP large";
+
+            PxpModeObj pxpModeObj = new PxpModeObj(arg, modeMode, desc);
+            PrivateObject privatepxpModeObj = new PrivateObject(pxpModeObj);
+            var get_pxpMode_arg = privatepxpModeObj.GetFieldOrProperty("_arg");
+            var get_pxpMode_modeMode = privatepxpModeObj.GetFieldOrProperty("_modeCode");
+            var get_pxpMode_description = privatepxpModeObj.GetFieldOrProperty("_description");
+
+            Assert.That(arg, Is.EqualTo(get_pxpMode_arg));
+            Assert.That(modeMode, Is.EqualTo(get_pxpMode_modeMode));
+            Assert.That(desc, Is.EqualTo(get_pxpMode_description));
         }
 
-        #endregion ctor
-
-        #region Table
-
-        public static PxpModeObj[] Table =
+        [Test]
+        public void PxpModeObjTableTest()
         {
+            PxpModeObj[] Table1 =
+            {
             new PxpModeObj("off", 0x00, "PIP/PBP off, full screen"),
             new PxpModeObj("pip", 0x21, "PIP small"),
             new PxpModeObj("pip-small", 0x21, "PIP small"),
@@ -58,8 +60,15 @@ namespace DDPM.SA.Plugins.User.PipPbpManager
             new PxpModeObj("pbp-4a", 0x41, "PBP 4 windows-quadrant"),
             new PxpModeObj("quad", 0x41, "PBP 4 windows-quadrant"),
             new PxpModeObj("pbp-4b", 0x42, "PBP 4 windows-1row, 4column")
-        };
-
-        #endregion Table
+           };
+            var PxpModeObjTable = PxpModeObj.Table;
+            Assert.That(Table1.Length, Is.EqualTo(PxpModeObjTable.Length));
+            Assert.That(Table1[1].ModeCode, Is.EqualTo(PxpModeObjTable[1].ModeCode));
+            Assert.That(Table1[1].Arg, Is.EqualTo(PxpModeObjTable[1].Arg));
+            Assert.That(Table1[15].ModeCode, Is.EqualTo(PxpModeObjTable[15].ModeCode));
+            Assert.That(Table1[15].Arg, Is.EqualTo(PxpModeObjTable[15].Arg));
+            Assert.That(Table1[27].ModeCode, Is.EqualTo(PxpModeObjTable[27].ModeCode));
+            Assert.That(Table1[27].Arg, Is.EqualTo(PxpModeObjTable[27].Arg));
+        }
     }
 }
