@@ -389,6 +389,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     "KEYBOARD",
                     "DOCK",
                     "HEADSET",
+                    "AUDIO",
+                    "PEN",
+                    "WEBCAM",
                 };
 
                 //Do command line action
