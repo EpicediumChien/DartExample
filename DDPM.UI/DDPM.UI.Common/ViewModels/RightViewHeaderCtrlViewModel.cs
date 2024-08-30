@@ -78,6 +78,8 @@ namespace DDPM.UI.Common
                 }
                 if (_shownCount == 2)
                 {
+                    //_itemCount = 2;
+
                     //ColumnDefinitions[1]="0"
                     Col1Width = new GridLength(0, GridUnitType.Pixel);
                     CtrlVisibility = Visibility.Visible;
@@ -91,11 +93,13 @@ namespace DDPM.UI.Common
                         {
                             Text3 = headers[1].Text;
                             _externalIndex3 = 1;
+                            _externalIndex2 = -1;
                             return;
                         }
                         //Else is Case#3
                         Text3 = headers[2].Text;
                         _externalIndex3 = 2;
+                        _externalIndex2 = -1;
                         return;
                     }
                     //Else is Case#4, Both headers[1] and headers[2] IsShown must be true
@@ -103,6 +107,7 @@ namespace DDPM.UI.Common
                     _externalIndex1 = 1;
                     Text3 = headers[2].Text;
                     _externalIndex3 = 2;
+                    _externalIndex1 = -1;
                     return;
                 }
                 //Else _showCount<=1 => Hide the RightViewHeader
@@ -181,6 +186,13 @@ namespace DDPM.UI.Common
         {
             get
             {
+                if (ItemCount == 3)
+                {
+                    if (_shownCount == 2)
+                    {
+
+                    }
+                }
                 if (ItemCount == 2)
                     if (_internalSelectedIndex == 2)
                     {
