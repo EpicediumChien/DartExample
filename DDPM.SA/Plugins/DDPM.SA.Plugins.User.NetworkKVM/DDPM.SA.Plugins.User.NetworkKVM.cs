@@ -1039,6 +1039,10 @@ namespace NetworkKVM.Plugins
                         }
                         break;
 
+                    case "SET_HOTKEY":
+                        reStr = GetSendHotkey(jsonstring).Result;
+                        break;
+
                     case "SET_HOTKEY_RESPONSE":
                         if (!ResponseSucces(json).Result && _HotkeyInfo != null)
                         {
@@ -1312,41 +1316,73 @@ namespace NetworkKVM.Plugins
             is_HOTKEY_AVAILABLE_RESPONSE.cid = is_HOTKEY_AVAILABLE.cid;
             HotkeyWinform jsonHotkey = is_HOTKEY_AVAILABLE.Hotkey;
             is_HOTKEY_AVAILABLE_RESPONSE.Hotkey = jsonHotkey;
-            if (_HotkeySettings != null && _HotkeySettings.Count != 0)
+            if (_HotkeySettings != null)
             {
-                foreach (HotkeySettings hotkeySettings in _HotkeySettings)
+                _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
+                if (_HotkeySettings.Count > 0)
                 {
-                    foreach (HotkeyInfo hotkeyInfo in hotkeySettings.HotkeyInfo)
+                    foreach (HotkeySettings hotkeySettings in _HotkeySettings)
                     {
-                        if (jsonHotkey.Control == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Control) &&
-                            jsonHotkey.Alt == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Menu) &&
-                            jsonHotkey.Shift == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Shift))
+                        foreach (HotkeyInfo hotkeyInfo in hotkeySettings.HotkeyInfo)
                         {
-                            _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable false");
-                            //VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey((Key)jsonHotkey.Key);
-                            int index = hotkeyInfo.Hotkey.FindIndex(x => (x == (VirtualKey)jsonHotkey.Key));
-                            if (index != -1)
+                            if (jsonHotkey.Control == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Control) &&
+                                jsonHotkey.Alt == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Menu) &&
+                                jsonHotkey.Shift == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Shift))
                             {
-                                is_HOTKEY_AVAILABLE_RESPONSE.Available = false;
-                                is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
-                                is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
-                                return is_HOTKEY_AVAILABLE_RESPONSE.ToJson();
+                                _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable false");
+                                //VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey((Key)jsonHotkey.Key);
+                                int index = hotkeyInfo.Hotkey.FindIndex(x => (x == (VirtualKey)jsonHotkey.Key));
+                                if (index != -1)
+                                {
+                                    is_HOTKEY_AVAILABLE_RESPONSE.Available = false;
+                                    is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
+                                    is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
+                                    return is_HOTKEY_AVAILABLE_RESPONSE.ToJson();
+                                }
                             }
                         }
                     }
+                    _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable true");
+                    is_HOTKEY_AVAILABLE_RESPONSE.Available = true;
+                    is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
                 }
-                _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable true");
-                is_HOTKEY_AVAILABLE_RESPONSE.Available = true;
-                is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
-                is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable true");
+                    is_HOTKEY_AVAILABLE_RESPONSE.Available = true;
+                    is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
+                }
             }
             else
             {
                 is_HOTKEY_AVAILABLE_RESPONSE.Available = false;
-                is_HOTKEY_AVAILABLE_RESPONSE.Success = false;
-                is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
+                is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
+                
             }
+            is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
             return is_HOTKEY_AVAILABLE_RESPONSE.ToJson();
+        }
+
+        private async Task<string> GetSendHotkey(string jsonstring)
+        {
+            _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable....");
+            SET_HOTKEY set_HOTKEY = new SET_HOTKEY();
+            set_HOTKEY = JsonConvert.DeserializeObject<SET_HOTKEY>(jsonstring);
+            SET_HOTKEY_RESPONSE set_HOTKEY_RESPONSE = new SET_HOTKEY_RESPONSE();
+            set_HOTKEY_RESPONSE.cid = set_HOTKEY.cid;
+            set_HOTKEY_RESPONSE.Hotkey = set_HOTKEY.Hotkey;
+            if (_HotkeySettings != null)
+            {
+                _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
+                set_HOTKEY_RESPONSE.Success = true;
+            }
+            else
+            {
+                set_HOTKEY_RESPONSE.Success = false;
+            }
+            set_HOTKEY_RESPONSE.Checksum = set_HOTKEY.CalculateChecksum();
+
+            return set_HOTKEY_RESPONSE.ToJson();
         }
 
         private void SendChangeLimitedSW(MonitorInfo monitorInfo, bool isON)

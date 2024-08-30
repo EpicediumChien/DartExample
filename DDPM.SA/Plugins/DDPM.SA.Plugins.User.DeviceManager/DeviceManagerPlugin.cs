@@ -874,17 +874,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
-                if (_AllInfoMonitors.Count > 0)
-                {
-                    if (_NKVMPlugin != null)
-                    {
-                        if (!_NKVMPlugin.IsNamedpipeConnected().Result)
-                        {
-                            _NKVMPlugin.CreatNewNamedpipe();
-                        }
-                    }
-                }
-
                 return Task.FromResult(_AllInfoMonitors);
             }
         }
@@ -2738,11 +2727,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region ImpExpSettings
 
+        private object FindVCPValue(Dictionary<EDID, Dictionary<object, object>> cacheTable, EDID edid, byte code)
+        {
+            if (cacheTable.Count > 0)
+            {
+                var Keys = cacheTable.Keys.ToList();
+                foreach (var Key in Keys)
+                {
+                    if (Key.Equals(edid))
+                    {
+                        if (cacheTable[Key].ContainsKey(code))
+                        {
+                            bool rc = false;
+                            var result = new object();
+                            rc = cacheTable[Key].TryGetValue(code, out result);
+
+                            writelog("[DeviceManagePlugin] Is GetFromCacheTable success?? : result => " + rc.ToString());
+                            return (rc ? result : null);
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path)
         {
             //need test, but need other function
             ////if vcp code is null, get vcp code
             //List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            //Dictionary<EDID, Dictionary<object, object>> VCPTable = _DisplayManagerPlugin.GetVCPCacheTable().Result;
             //if (settings != null)
             //{
             //    foreach (DDPMMonitorSettings monitorSettings in settings)
@@ -2753,16 +2767,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //            {
             //                foreach (VCP vcp in monitorSettings.VCPs)
             //                {
-            //                    if (vcp.Value == null)
+            //                    if (vcp.Value != null)
             //                    {
             //                        byte b_vcpcode = Convert.ToByte(vcp.Code);
-            //                        ObjGetVCP res = GetVCPCapability(monitorInfo, b_vcpcode).Result;
-            //                        if(res.result)
+            //                        object value = FindVCPValue(VCPTable, monitorInfo.edid, b_vcpcode);
+            //                        if (value != null)
             //                        {
-            //                            vcp.Value.Add((int)res.value);
+            //                            vcp.Value.Add((int)value);
             //                        }
             //                    }
-            //            }
+            //                }
             //            }
             //        }
             //    }
@@ -4208,9 +4222,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     continue;
                 saveList.Add(setting);
             }
-            if (WriteHotkeySettings(saveList).Result && _NKVMPlugin != null)
+            if (WriteHotkeySettings(saveList).Result)
             {
-                bool b = _NKVMPlugin.SetHotkey(info).Result;
+                if (_NKVMPlugin != null)
+                {
+                    _NKVMPlugin.ToNKVM_HotkeySettings(saveList).Wait();
+                    if (_NKVMPlugin.IsNamedpipeConnected().Result)
+                    {
+                        bool b = _NKVMPlugin.SetHotkey(info).Result;
+                    }
+                }
             }
             ReloadHotkeyConfigData();
 
