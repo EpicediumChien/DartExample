@@ -382,6 +382,14 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     return;
                 }
 
+                List<string> peripheral_DeviceType = new List<string>()
+                {
+                    "MOUSE",
+                    "KEYBOARD",
+                    "DOCK",
+                    "HEADSET",
+                };
+
                 //Do command line action
                 CLIEventResult? cliEventResult;
                 CommandLineInput commandLineInput = e.commandLineInput;
@@ -398,10 +406,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         return;
                     }
                 }
-                else if (commandLineInput.PluginsType.Equals("MOUSE") || 
-                         commandLineInput.PluginsType.Equals("KEYBOARD") || 
-                         commandLineInput.PluginsType.Equals("DOCK") || 
-                         commandLineInput.PluginsType.Equals("HEADSET"))
+                else if (peripheral_DeviceType.FindIndex( x => x.Equals(commandLineInput.PluginsType) ) >= 0)
+                //commandLineInput.PluginsType.Equals("MOUSE") || 
+                //commandLineInput.PluginsType.Equals("KEYBOARD") || 
+                //commandLineInput.PluginsType.Equals("DOCK") || 
+                //commandLineInput.PluginsType.Equals("HEADSET")) //please edit upper table "peripheral_DeviceType" if new device supported
                 {
                     if (_CLIPeripherals != null)
                     {
