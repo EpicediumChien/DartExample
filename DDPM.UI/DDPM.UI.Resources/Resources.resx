@@ -1599,4 +1599,7 @@
   <data name="Undo" xml:space="preserve">
     <value>Undo</value>
   </data>
+  <data name="Tooltip.5" xml:space="preserve">
+    <value>Keyboard layouts featuring the Copilot key may become available at different times, depending on language and region.</value>
+  </data>
 </root>

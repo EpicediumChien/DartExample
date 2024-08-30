@@ -11,6 +11,7 @@
 	<ItemGroup>
 	  <None Remove="Resources\double arrow blue.png" />
 	  <None Remove="Resources\double arrow.png" />
+	  <None Remove="Resources\Lock.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -40,6 +41,7 @@
 	  <Resource Include="Resources\double arrow.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
+	  <Resource Include="Resources\Lock.png" />
 	</ItemGroup>
 
 
