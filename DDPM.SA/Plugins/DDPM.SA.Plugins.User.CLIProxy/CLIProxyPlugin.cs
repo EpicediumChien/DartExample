@@ -406,8 +406,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         _CliManagerPlugin.WriteCommandResult(Response_PluginNotReady(commandLineInput, nameof(ICLIDisplay), e.command_guid_string));
                         return;
                     }
-                }
-                //else if (commandLineInput.PluginsType.Equals("MOUSE") || commandLineInput.PluginsType.Equals("KEYBOARD") || commandLineInput.PluginsType.Equals("DOCK") || commandLineInput.PluginsType.Equals("HEADSET"))
+                }                
                 else if (peripheral_DeviceType.FindIndex(x => x.Equals(commandLineInput.PluginsType)) >= 0)
                 {
                     if (_CLIPeripherals != null)
