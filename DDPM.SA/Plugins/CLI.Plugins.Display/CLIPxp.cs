@@ -78,6 +78,10 @@ namespace CLI.Plugins.Display
                 {
                     return GetSubInput();
                 }
+                if (cmdLineInput.TargetFeature.Equals("PxPZoom", StringComparison.OrdinalIgnoreCase))
+                {
+                    return GetPxpZoom();
+                }
             }
             if (cmdLineInput.Command.Equals("Set", StringComparison.OrdinalIgnoreCase))
             {
@@ -627,6 +631,45 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
+                response.Index = idx.ToString();
+                response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
+                if (isPass)
+                {
+                    response.Result = "PASS";
+                    response.Message = "";
+                }
+                else
+                {
+                    response.Result = "FAIL";
+                    response.Message = "Fail to set PXP Zoom.";
+                    errCount++;
+                }
+                _responses.Add(response);
+            }
+            if (errCount == 0)
+                return (int)CLI_ExitCode.success;
+            else
+                return (int)CLI_ExitCode.functional_error;
+        }
+
+        private static int GetPxpZoom()
+        {
+            int errCount = 0;
+            bool isPass = false;
+            foreach (int idx in _monitorIndeies)
+            {
+                ObjGetVCP rc = new ObjGetVCP();
+                rc = _devMgr.GetVCPCapability(_AllInfoMonitors[idx], 0xE5, 0x02).Result;
+                if (rc != null)
+                    isPass = true;
+
+
+                CLI_RESPONSE response = new CLI_RESPONSE()
+                {
+                    Command = _cmdLineInput.Command,
+                    TargetFeature = _cmdLineInput.TargetFeature
+                };
+                response.Value = (rc.value).ToString();
                 response.Index = idx.ToString();
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
