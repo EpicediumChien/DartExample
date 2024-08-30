@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
 using System.Reflection;
@@ -27,6 +28,16 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 vm.RefreshUI();
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.LockMaskVisible = data.LockSettings.Lock_TelemetryConsent ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_TelemetryConsent}");
+                    }
+                }));
             }
         }
 

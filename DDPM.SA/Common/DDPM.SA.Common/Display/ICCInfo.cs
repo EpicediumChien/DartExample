@@ -6,9 +6,11 @@ namespace DDPM.SA.Common
     {
         // jim add 20240611
         public Dictionary<string, List<ICC_SupportDeviceName>> _support_ICC_DeviceName = new Dictionary<string, List<ICC_SupportDeviceName>>() { };
-
+  
         public bool Is_Support_ICC_DeviceName { get; set; } = false;
         public string strICC_Folder { get; set; } = string.Empty;
+
+        public List<ICC_SupportDeviceName> _match_ICC_DeviceName = new List<ICC_SupportDeviceName>() { };
     }
 
     // jim add 20240611

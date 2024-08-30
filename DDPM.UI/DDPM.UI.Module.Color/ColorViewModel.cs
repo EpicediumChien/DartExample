@@ -197,9 +197,9 @@ namespace DDPM.UI.Module.Color
                             if (ICCprofile_based_Colorpreset_enable)
                             {
                                 // add jim 0607
-                                if (_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName] != null)
+                                if (_ICC_Metadata._match_ICC_DeviceName != null)
                                 {
-                                    int count = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName].Count;
+                                    int count = _ICC_Metadata._match_ICC_DeviceName.Count;
 
                                     // add jim 20240725
                                     //int i = 0;
@@ -211,13 +211,13 @@ namespace DDPM.UI.Module.Color
                                     for (int i = 0; i < count; i++)
                                     {
                                         string[] separators = { "|" };
-                                        string[] strICC_ColorPresets = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset.Split(separators, StringSplitOptions.None);
+                                        string[] strICC_ColorPresets = _ICC_Metadata._match_ICC_DeviceName[i].ColorPreset.Split(separators, StringSplitOptions.None);
 
                                         if (string.Equals(SupportColorPresets[idex], "Standard/Native", StringComparison.OrdinalIgnoreCase))
                                         {
                                             if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                                             {
-                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                                                 break;
                                             }
                                         }
@@ -225,7 +225,7 @@ namespace DDPM.UI.Module.Color
                                         {
                                             if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
                                             {
-                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                                                 break;
                                             }
                                         }
@@ -233,14 +233,14 @@ namespace DDPM.UI.Module.Color
                                         {
                                             if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
                                             {
-                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                                                RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                                                 break;
                                             }
                                         }
 
                                         if (string.Equals(SupportColorPresets[idex], strICC_ColorPresets[0], StringComparison.OrdinalIgnoreCase))
                                         {
-                                            RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File);
+                                            RegistryUtils.MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
                                             break;
                                         }
                                     }
@@ -535,6 +535,9 @@ namespace DDPM.UI.Module.Color
         {
             try //2024-06-19 Elie, add try catch to get exception.
             {
+                //OSD control back event
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
+
                 // -- begin add jim 20240604
                 SyncNightlightStatus();
 
@@ -579,7 +582,7 @@ namespace DDPM.UI.Module.Color
                 //NEW Code:
 
                 //Jim, 20240819, Fixed for applist increase repeatedly when change a different Monitor.
-                Test_AddAppCollectionData.GetInstance().AppsList.Clear();
+                //Test_AddAppCollectionData.GetInstance().AppsList.Clear();
 
                 List<AppData> tempList = new List<AppData>();
 
@@ -720,9 +723,7 @@ namespace DDPM.UI.Module.Color
 
                     IsisAdvanced_Settings = vis_ad;               
                 }
-
-                //OSD control back event
-                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
+               
             }
             catch (System.Exception)
             {
@@ -912,7 +913,7 @@ namespace DDPM.UI.Module.Color
             Key_Profile_Name = RegistryUtils.MonitorProfile.GetMonitorProfile();
 
             int index = 0;
-            int count = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName].Count;
+            int count = _ICC_Metadata._match_ICC_DeviceName.Count;
 
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
             {
@@ -921,14 +922,14 @@ namespace DDPM.UI.Module.Color
                 // 20240725 jim add
                 for (int i = 0; i < count; i++)
                 {
-                    if (string.Equals(Key_Profile_Name, _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].File, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(Key_Profile_Name, _ICC_Metadata._match_ICC_DeviceName[i].File, StringComparison.OrdinalIgnoreCase))
                     {
                         // 20240619 jim modify
 
                         //string strICC_ColorPreset = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset;
 
                         string[] separators = { "," };
-                        string[] strICC_ColorPresets = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset.Split(separators, StringSplitOptions.None);
+                        string[] strICC_ColorPresets = _ICC_Metadata._match_ICC_DeviceName[i].ColorPreset.Split(separators, StringSplitOptions.None);
 
                         if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPreset(MyModule.SelectedHomeDevice.MonitorInfo, "Standard/Native");

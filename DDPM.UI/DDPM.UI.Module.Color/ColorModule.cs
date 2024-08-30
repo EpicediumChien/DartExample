@@ -64,6 +64,7 @@ namespace DDPM.UI.Module.Color
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            vm.Invoke_RefreshData();
         }
 
         //Handle new device coming
