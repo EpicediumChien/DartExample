@@ -429,6 +429,9 @@ namespace DDPM.SA.Common
         #endregion public ALS functions
 
         #region for NKVM
+        Task CreatNewNamedpipe();
+
+        Task<bool> IsNamedpipeConnected();
 
         Task SupportedNKVMMonitors();
 
@@ -439,6 +442,8 @@ namespace DDPM.SA.Common
         Task<bool> isNKVMSupportMonitor(MonitorInfo monitorInfo);
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+
+        Task CallNKVMConnent();
 
         #endregion for NKVM
 

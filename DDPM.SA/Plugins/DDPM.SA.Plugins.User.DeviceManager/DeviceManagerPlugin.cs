@@ -856,6 +856,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                 }
 
+                if (_AllInfoMonitors.Count > 0)
+                {
+                    if (_NKVMPlugin != null)
+                    {
+                        if (!_NKVMPlugin.IsNamedpipeConnected().Result)
+                        {
+                            _NKVMPlugin.CreatNewNamedpipe();
+                        }
+                    }
+                }
+
                 return Task.FromResult(_AllInfoMonitors);
             }
         }
@@ -2361,6 +2372,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region NKVM implementation
 
+        public Task CreatNewNamedpipe()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.CreatNewNamedpipe();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> IsNamedpipeConnected()
+        {
+            if (_NKVMPlugin != null)
+            {
+                return Task.FromResult(_NKVMPlugin.IsNamedpipeConnected().Result);
+            }
+            return Task.FromResult(false);
+        }
+
         public Task SupportedNKVMMonitors()
         {
             if(_NKVMPlugin != null && _SettingsPlugin != null)
@@ -2435,6 +2464,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if(_NKVMPlugin != null)
             {
                 _NKVMPlugin.NKVM_ChangeMonitorIndex(monitorInfo);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task CallNKVMConnent()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.CallNKVMConnent();
             }
             return Task.CompletedTask;
         }

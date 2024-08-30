@@ -15,6 +15,10 @@ namespace DDPM.SA.Common
 
     public interface INKVMService : IFrameworkPlugin
     {
+        Task CreatNewNamedpipe();
+
+        Task<bool> IsNamedpipeConnected();
+
         Task OnNKVM();
 
         Task OffNKVM();
@@ -40,6 +44,8 @@ namespace DDPM.SA.Common
         Task NKVM_ChangeLimitedSW(MonitorInfo monitorInfo, bool isON);
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+
+        Task CallNKVMConnent();
 
         //Task ChangeNKVMState(bool state);
     }
