@@ -355,7 +355,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
-                    return PenAction.Buttons.Contains(PenButtonName.TopButton);
+                    //return PenAction.Buttons.Contains(PenButtonName.TopButton);
+                    return Model!="PN5122W";
             }
             set
             {
@@ -370,7 +371,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
-                    return PenAction.Buttons.Contains(PenButtonName.TopBarrelButton);
+                    return true;
             }
             set
             {
@@ -385,7 +386,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
-                    return PenAction.Buttons.Contains(PenButtonName.BottomBarrelButton);
+                    return true;
             }
             set
             {
@@ -547,12 +548,9 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void RefreshButtonInfo()
         {
-            if(PenAction.Buttons.Contains(PenButtonName.TopButton))
-            {
-                RefreshButtonImageFile(PenButtonName.TopButton.ToString(), false, PenButtonName.TopButton.ToString() == SelectedButton);
-                OnPropertyChanged(nameof(TopButtonTooltip));
-                OnPropertyChanged(nameof(TopButtonImageFile));
-            }
+            RefreshButtonImageFile(PenButtonName.TopButton.ToString(), false, PenButtonName.TopButton.ToString() == SelectedButton);
+            OnPropertyChanged(nameof(TopButtonTooltip));
+            OnPropertyChanged(nameof(TopButtonImageFile));
             RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString(), false, PenButtonName.TopBarrelButton.ToString() == SelectedButton);
             OnPropertyChanged(nameof(TopBarrelButtonTooltip));
             OnPropertyChanged(nameof(TopBarrelButtonImageFile));

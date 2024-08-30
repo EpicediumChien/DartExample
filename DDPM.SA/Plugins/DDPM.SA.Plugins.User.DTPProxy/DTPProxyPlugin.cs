@@ -317,6 +317,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
                     _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                         .MakeGenericMethod(_webcamInterfaceType);
+                    _penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
+                    _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                        .MakeGenericMethod(_penInterfaceType);
                 });
             }
             else

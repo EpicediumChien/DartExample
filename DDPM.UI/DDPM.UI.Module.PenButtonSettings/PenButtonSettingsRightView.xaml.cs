@@ -158,11 +158,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 searchText = txtSearchText.Text;
                 sourceList.ForEach(x =>
                 {
-                    if (_vm.SelectedButton == PenButtonName.TopButton.ToString() && Actions.PenTopButtonActions[x].Caption.StartsWith(searchText, StringComparison.OrdinalIgnoreCase))
-                    {
-                        filterdList.Add(x);
-                    }
-                    if (_vm.SelectedButton != PenButtonName.TopButton.ToString() && Actions.KnMActions[x].Caption.StartsWith(searchText, StringComparison.OrdinalIgnoreCase))
+                    if (Actions.PenActions[x].Caption.StartsWith(searchText, StringComparison.OrdinalIgnoreCase))
                     {
                         filterdList.Add(x);
                     }
@@ -239,7 +235,7 @@ namespace DDPM.UI.Module.PenButtonSettings
             {
                 var cat = ActionCategory.None;
                 if (_vm.SelectedActionID != -1)
-                    cat = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenTopButtonActions[_vm.SelectedActionID].Category!.Value : Actions.KnMActions[_vm.SelectedActionID].Category!.Value;
+                    cat = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[_vm.SelectedActionID].Category!.Value : Actions.KnMActions[_vm.SelectedActionID].Category!.Value;
                 if (cat == ActionCategory.None)
                 {
                     if (ActiveActionSection != "")
@@ -299,7 +295,7 @@ namespace DDPM.UI.Module.PenButtonSettings
             {
                 id = (int)((UXRadioButton)sender).DataContext;
                 rb.Name = $"Radio{id}";
-                rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenTopButtonActions[id].Caption : Actions.KnMActions[id].Caption;
+                rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[id].Caption : Actions.KnMActions[id].Caption;
                 if (rb.Tag.ToString() != "search")
                     rb.IsChecked = id == _vm.SelectedActionID;
             }
