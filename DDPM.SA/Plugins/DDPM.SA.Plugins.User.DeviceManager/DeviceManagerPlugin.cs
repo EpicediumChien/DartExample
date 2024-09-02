@@ -1495,6 +1495,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        public Task SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
+            writelog($"Target Guid is {deviceId}");
+            writelog($"Target Value is {newValue}");
+            _PeripheralsPlugin.SetSideTopSwitchSinglePressSetting(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
         #endregion
 
         #region CMA/CLI Function area
@@ -2991,6 +3000,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         public Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue)
+        {
+            writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
+            writelog($"Target itemID is {itemID}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetSideTopSwitchSinglePressSetting(itemID, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetSideTopSwitchSinglePressSetting(string itemID, string newValue)
         {
             writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
             writelog($"Target itemID is {itemID}");

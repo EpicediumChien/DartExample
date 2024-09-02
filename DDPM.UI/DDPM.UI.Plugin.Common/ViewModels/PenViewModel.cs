@@ -73,6 +73,7 @@ namespace DDPM.UI.Plugin.ViewModels
         void PrepareAction()
         {
             JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues));
+            JsonElement jsonObject2 = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.SideTopSwitchSinglePressSetting));
             foreach(var jo in jsonObject.EnumerateArray())
             {
 
@@ -566,6 +567,19 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedAction.AssignedAction.Parameter = parameter;
                 RefreshButtonInfo();
                 CheckRestoreStatus();
+                switch(SelectedButton)
+                {
+                    case "TopButton":
+                        break;
+                    case "TopBarrelButton":
+                        var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\",\"IsHoverEnabled\":true}}";
+                        byte[] newValue = Encoding.UTF8.GetBytes(value);
+                        //_deviceManager.SetSideTopSwitchSinglePressSetting(itemID, newValue);
+                        _deviceManager.SetSideTopSwitchSinglePressSetting(newValue, CurrentDeviceInfo!.ID);
+                        break;
+                    case "BottomBarrelButton":
+                        break;
+                }
                 ActionList.ExportActionList(PenAction, "PEN");
             }
         }

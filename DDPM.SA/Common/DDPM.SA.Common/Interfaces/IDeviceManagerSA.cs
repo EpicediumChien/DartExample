@@ -515,7 +515,9 @@ namespace DDPM.SA.Common
 
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
 
-        Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
+        //Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
+        //Task SetSideTopSwitchSinglePressSetting(string itemID, string newValue);
+        Task SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId);
 
         Task SetTiltSensitivity(string itemID, int newValue);
 

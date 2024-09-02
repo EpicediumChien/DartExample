@@ -725,6 +725,25 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId)
+        {
+            foreach(var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if(logicalDevice is ILogicalDevicePen _logicalDevicePen)
+                {
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if(_deviceInfo != null)
+                    {
+                        //_logicalDevicePen.SetSideTopSwitchSinglePressSetting(newValue);
+                        _logicalDevicePen.SideTopSwitchSinglePressSetting = newValue;
+                        _deviceInfo.SideTopSwitchSinglePressSetting = newValue;
+                        break;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Webcam methods
