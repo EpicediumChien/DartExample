@@ -122,9 +122,9 @@ mkdir "_BIN\SA"
 mkdir "_BIN\UI"
 
 
-xcopy /E /i ".\DDPM.SA\bin\CLI.Subagent\Debug\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\CLI"
-xcopy /E /i ".\DDPM.SA\bin\DDPM.Subagent\Debug\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\System"
-xcopy /E /i ".\DDPM.SA\bin\DDPM.Subagent.User\Debug\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\User"
+xcopy /E /i ".\DDPM.SA\bin\CLI.Subagent\%ConfigType%\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\CLI"
+xcopy /E /i ".\DDPM.SA\bin\DDPM.Subagent\%ConfigType%\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\System"
+xcopy /E /i ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\User"
 :: pause
 
 xcopy /E /i ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\*.*" ".\_BIN\UI"  
