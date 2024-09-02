@@ -17,6 +17,8 @@ namespace DDPM.UI.Common
         private int _itemCount = 0;
         private int _shownCount = 0;
 
+        private int _caseNo = 0;
+
         public string Text1
         {
             get => _text1;
@@ -64,6 +66,8 @@ namespace DDPM.UI.Common
             {
                 if (_shownCount == 3) //Case#1
                 {
+                    _caseNo = 1;
+
                     //ColumnDefinitions[1]="1*"
                     Col1Width = new GridLength((double)1, GridUnitType.Star);
                     CtrlVisibility = Visibility.Visible;
@@ -84,6 +88,40 @@ namespace DDPM.UI.Common
                     Col1Width = new GridLength(0, GridUnitType.Pixel);
                     CtrlVisibility = Visibility.Visible;
 
+                    if (!headers[2].IsShown) //Case#2
+                    {
+                        _caseNo = 2;
+                        // Column     0        (1)      2
+                        // External   0                 1
+                        //
+                        Text1 = headers[0].Text;
+                        _externalIndex1 = 0;
+                        Text3 = headers[1].Text;
+                        _externalIndex3 = 1;
+                        return;
+                    }
+                    if (!headers[1].IsShown) //Case#3
+                    {
+                        _caseNo = 3;
+
+                        // Column     0        (1)      2
+                        // External   0                 1
+                        Text1 = headers[0].Text;
+                        _externalIndex1 = 0;
+                        Text3 = headers[2].Text;
+                        _externalIndex3 = 2;
+                        return;
+                    }
+                    _caseNo = 4;
+                    //Case#4
+                    // Column     0        (1)      2
+                    // External   1                 2
+                    Text1 = headers[1].Text;
+                    _externalIndex1 = 1;
+                    Text3 = headers[2].Text;
+                    _externalIndex3 = 2;
+                    return;
+                    /*
                     if (headers[0].IsShown) //Show A at Col[0]
                     {
                         Text1 = headers[0].Text;
@@ -109,8 +147,16 @@ namespace DDPM.UI.Common
                     _externalIndex3 = 2;
                     _externalIndex1 = -1;
                     return;
+                    */
                 }
                 //Else _showCount<=1 => Hide the RightViewHeader
+                if (headers[0].IsShown)
+                    _caseNo = 5;
+                else if (headers[1].IsShown)
+                    _caseNo = 6;
+                else
+                    _caseNo = 7;
+
                 _itemCount = 0;
                 CtrlVisibility = Visibility.Collapsed;
                 return;
@@ -120,6 +166,8 @@ namespace DDPM.UI.Common
             {
                 if (_shownCount == 2) //Case#8
                 {
+                    _caseNo = 8;
+
                     //ColumnDefinitions[1]="0"
                     Col1Width = new GridLength(0, GridUnitType.Pixel);
                     CtrlVisibility = Visibility.Visible;
@@ -130,10 +178,21 @@ namespace DDPM.UI.Common
                     _externalIndex3 = 1;
                     return;
                 }
+                else //_showCount==1
+                {
+                    if (headers[0].IsShown)
+                        _caseNo = 9;
+                    else
+                        _caseNo = 10;
+                }
                 //Else _showCount<=1 => Hide the RightViewHeader
                 //_itemCount = 0;
                 //CtrlVisibility = Visibility.Collapsed;
                 //return;
+            }
+            else //_itemCount == 1
+            {
+                _caseNo = 11;
             }
             //Else _showCount<=1 => Hide the RightViewHeader
             _itemCount = 0;
@@ -186,6 +245,22 @@ namespace DDPM.UI.Common
         {
             get
             {
+                int ret = -1;
+                if (_internalSelectedIndex == 0)
+                    ret = _externalIndex1;
+                else if (_internalSelectedIndex == 1)
+                    ret = _externalIndex2;
+                else
+                    ret = _externalIndex3;
+
+                //Check range
+                if ((ret < 0) || (ret >= ItemCount))
+                {
+                    //Invaid return value, force return 0
+                    ret = 0;
+                }
+                return ret;
+                /*
                 if (ItemCount == 3)
                 {
                     if (_shownCount == 2)
@@ -200,16 +275,48 @@ namespace DDPM.UI.Common
                         return 1;
                     }
                 return _internalSelectedIndex;
+                */
             }
             set
             {
-                if (ItemCount == 2)
+                if (_shownCount == 2)
                 {
-                    if (value >= 1)
+                    switch(_caseNo)
                     {
-                        InternalSelectedIndex = 2;
-                        return;
+                        case 2:
+                            if (value == 0)
+                                InternalSelectedIndex = 0;
+                            else if (value == 1)
+                                InternalSelectedIndex = 2;
+                            break;
+                        case 3:
+                            if (value == 0)
+                                InternalSelectedIndex = 0;
+                            else if (value == 2)
+                                InternalSelectedIndex = 2;
+                            break;
+
+                        case 4:
+                            if (value == 1)
+                                InternalSelectedIndex = 0;
+                            else if (value == 2)
+                                InternalSelectedIndex = 2;
+                            break;
+
+                        case 8:
+                            if (value == 0)
+                                InternalSelectedIndex = 0;
+                            else if (value == 1)
+                                InternalSelectedIndex = 2;
+                            break;
+
                     }
+                    //if (value >= 1)
+                    //{
+                    //    InternalSelectedIndex = 2;
+                    //    return;
+                    //}
+                    return;
                 }
                 InternalSelectedIndex = value;
             }
