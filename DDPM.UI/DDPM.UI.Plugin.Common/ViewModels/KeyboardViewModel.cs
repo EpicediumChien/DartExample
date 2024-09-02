@@ -977,11 +977,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     return Strings.NullActionTooltip1;
                 }
-                actionItem = Actions.AllActions[action.DefaultActionID];
+                actionItem = Actions.KnMActions[action.DefaultActionID];
             }
             else
             {
-                actionItem = Actions.AllActions[action.AssignedAction.ID];
+                actionItem = Actions.KnMActions[action.AssignedAction.ID];
                 parameter = action.AssignedAction.Parameter;
             }
             string tooltip = actionItem.Caption!;

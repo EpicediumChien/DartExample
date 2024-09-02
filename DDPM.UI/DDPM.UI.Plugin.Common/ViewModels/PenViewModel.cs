@@ -355,7 +355,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
-                    return PenAction.Buttons.Contains(PenButtonName.TopButton);
+                    //return PenAction.Buttons.Contains(PenButtonName.TopButton);
+                    return Model!="PN5122W";
             }
             set
             {
@@ -370,7 +371,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
-                    return PenAction.Buttons.Contains(PenButtonName.TopBarrelButton);
+                    return true;
             }
             set
             {
@@ -385,7 +386,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
-                    return PenAction.Buttons.Contains(PenButtonName.BottomBarrelButton);
+                    return true;
             }
             set
             {
@@ -398,7 +399,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 //var tp1 = "";
-                string tooltip1 = Actions.PenTopButtonActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
+                string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
                 string parameter1 = PenAction.TopButtonClickAction.AssignedAction.Parameter;
                 if(parameter1 != "")
                 {
@@ -422,7 +423,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                     return $"{Strings.PenButtonClickOnce}: {tooltip1}";
 
-                string tooltip2 = Actions.PenTopButtonActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
+                string tooltip2 = Actions.PenActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
                 string parameter2 = PenAction.TopButtonDoubleClickAction.AssignedAction.Parameter;
                 if(parameter2 != "")
                 {
@@ -446,7 +447,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if(SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
                     return $"{Strings.PenButtonDoubleClick}: {tooltip2}";
 
-                string tooltip3 = Actions.PenTopButtonActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
+                string tooltip3 = Actions.PenActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
                 string parameter3 = PenAction.TopButtonPressHoldAction.AssignedAction.Parameter;
                 if(parameter3 != "")
                 {
@@ -477,7 +478,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                string tooltip = Actions.AllActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
+                string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
                 string parameter = PenAction.TopBarrelButtonClickAction.AssignedAction.Parameter;
                 if(parameter != "")
                 {
@@ -505,7 +506,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                string tooltip = Actions.AllActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
+                string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
                 string parameter = PenAction.BottomBarrelButtonClickAction.AssignedAction.Parameter;
                 if(parameter != "")
                 {
@@ -547,12 +548,9 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void RefreshButtonInfo()
         {
-            if(PenAction.Buttons.Contains(PenButtonName.TopButton))
-            {
-                RefreshButtonImageFile(PenButtonName.TopButton.ToString(), false, PenButtonName.TopButton.ToString() == SelectedButton);
-                OnPropertyChanged(nameof(TopButtonTooltip));
-                OnPropertyChanged(nameof(TopButtonImageFile));
-            }
+            RefreshButtonImageFile(PenButtonName.TopButton.ToString(), false, PenButtonName.TopButton.ToString() == SelectedButton);
+            OnPropertyChanged(nameof(TopButtonTooltip));
+            OnPropertyChanged(nameof(TopButtonImageFile));
             RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString(), false, PenButtonName.TopBarrelButton.ToString() == SelectedButton);
             OnPropertyChanged(nameof(TopBarrelButtonTooltip));
             OnPropertyChanged(nameof(TopBarrelButtonImageFile));
@@ -571,8 +569,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 ActionList.ExportActionList(PenAction, "PEN");
             }
         }
-        public ObservableCollection<int> SuggestedActionsTopButton { get => new() { 8, 0, 23, 73 }; }
-        public ObservableCollection<int> SuggestedActionsBarrelButton { get => new() { 8, 0, 81, 41 }; }
+        public ObservableCollection<int> SuggestedActionsTopButton { get => new(Actions.SuggestedActionsPenTopButton); }
+        public ObservableCollection<int> SuggestedActionsBarrelButton { get => new(Actions.SuggestedActionsPenBarrelButton); }
         public ObservableCollection<int> ProductivityActionsTopButton { get; set; } = new(Actions.ProductivityActionsPenTopButton);
         public ObservableCollection<int> ProductivityActionsBarrelButton { get; set; } = new(Actions.ProductivityActionsPenBarrelButton);
         public ObservableCollection<int> WindowsActionsTopButton { get; set; } = new(Actions.WindowsActionsPenTopButton);

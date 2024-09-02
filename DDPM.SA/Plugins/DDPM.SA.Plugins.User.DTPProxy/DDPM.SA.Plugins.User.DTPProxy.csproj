@@ -16,9 +16,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="DDPM.Peripherals.interface">
-			<HintPath>..\..\dll\DDPM.Peripherals.interface.dll</HintPath>
-		</Reference>
+	  <Reference Include="DDPM.Peripherals.interface">
+	    <HintPath>C:\Program Files\Dell\DTP\InstrumentationSubAgent\DDPM.Peripherals.interface.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>
