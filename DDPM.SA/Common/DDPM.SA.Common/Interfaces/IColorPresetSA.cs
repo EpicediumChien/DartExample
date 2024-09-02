@@ -38,6 +38,8 @@ namespace DDPM.SA.Common
 
         Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
 
+        Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
+
         #endregion public for  Color Preset Plugin
     }
 }

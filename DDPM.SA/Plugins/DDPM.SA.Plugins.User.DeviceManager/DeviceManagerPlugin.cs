@@ -39,6 +39,7 @@ using VcpCore.Common;
 using WinCopies.Util;
 using Windows.System;
 using IDs = DDPM.SA.Common.IDs;
+//using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -349,16 +350,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             bool blRet = true;
 
-            if (string.Equals(ColorPreset_Name, "Standard", StringComparison.OrdinalIgnoreCase))
-                blRet = MonitorProfile.SetMonitorProfile("Dell_U3224KB_Native_v2.icm");
-            else if (string.Equals(ColorPreset_Name, "Display P3", StringComparison.OrdinalIgnoreCase))
-                blRet = MonitorProfile.SetMonitorProfile("Dell_U3224KB_DisplayP3_v2.icm");
-            else if (string.Equals(ColorPreset_Name, "DCI-P3", StringComparison.OrdinalIgnoreCase))
-                blRet = MonitorProfile.SetMonitorProfile("Dell_U3224KB_DCIP3_v2.icm");
-            else if (string.Equals(ColorPreset_Name, "sRGB", StringComparison.OrdinalIgnoreCase))
-                blRet = MonitorProfile.SetMonitorProfile("Dell_U3224KB_sRGB_v2.icm");
-            else if (string.Equals(ColorPreset_Name, "Rec. 709", StringComparison.OrdinalIgnoreCase))
-                blRet = MonitorProfile.SetMonitorProfile("Dell_U3224KB_Rec709_v2.icm");
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - SetMonitorProfile]");
+                return Task.FromResult(blRet);
+                //return blRet;
+            }
+
+            blRet = _ColorPresetPlugin.SetMonitorProfile(m, ColorPreset_Name).Result;         
 
             return Task.FromResult(blRet);
         }
@@ -717,7 +716,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_ColorPresetPlugin == null)
             {
                 writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - AutoSetColorPresetForMonitorConfig]");
-                return Task.FromResult(false);
+                return Task.FromResult(false);                
             }
 
             var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this).Result;
@@ -875,6 +874,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                 }
 
+                /*
                 _ = Task.Run(async () =>
                 { 
                     lock (_CheckAutoLock)
@@ -883,6 +883,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                    
                 });
+                */
 
                 //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
@@ -3805,6 +3806,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void CheckAutoColorPresetEnableOnStartedCondition(List<MonitorInfo> _AllInfoMonitors)
         {
+            bool r = false;
+
             if (_SettingsPlugin == null)
             {
                 writelog("CheckAutoColorPresetEnableOnStartedCondition, _SettingsPlugin == null");
@@ -3840,13 +3843,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         if (config.RunType == (int)ColorPresetRunType.Auto)
                         {
                             writelog("CheckAutoColorPresetEnableOnStartedCondition, config.RunType is ColorPresetRunType.Auto");
-                            AutoSetColorPresetForMonitorConfig(_InfoMonitors, "ON");
+
+                            _ = Task.Run(async () =>
+                            {
+                                await AutoSetColorPresetForMonitorConfig(_InfoMonitors, "ON");
+
+                            });  
+                           
+
+                            writelog("CheckAutoColorPresetEnableOnStartedCondition, AutoSetColorPresetForMonitorConfig(_InfoMonitors, \"ON\")");
+
                             break;
-                        }
+                        }                        
 
                     }
                 }
-              
+
+                writelog("CheckAutoColorPresetEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
+
+
             }
 
             writelog("CheckAutoColorPresetEnableOnStartedCondition, Exit");
@@ -3885,7 +3900,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             ToNKVM_initHotKeys();
                         }
 
-                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
 
                     }

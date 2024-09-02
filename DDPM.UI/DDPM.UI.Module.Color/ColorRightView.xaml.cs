@@ -225,6 +225,7 @@ namespace DDPM.UI.Module.Color
                     //ColorViewModel vm = (ColorViewModel)DataContext;
                     DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "off");
+                    int i = 0;
                 }));
             }
             else if (expander_sender.Name == "Expander_Auto")
@@ -235,6 +236,7 @@ namespace DDPM.UI.Module.Color
                 {
                     DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON", vm.IsAutoColorPreset_Lock);
                     //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig((vm.MyModule.SelectedHomeDevice.MonitorInfo.Index).ToString(), "on");
+                    int j = 0;
                 })); 
             
             }
@@ -312,7 +314,7 @@ namespace DDPM.UI.Module.Color
 
                     for (int i = 0; i < count; i++)
                     {
-                        RegistryUtils.MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._match_ICC_DeviceName[i].File);
+                        MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._match_ICC_DeviceName[i].File);
                     }
                 }
             }
@@ -351,7 +353,7 @@ namespace DDPM.UI.Module.Color
 
                     for (int i = 0; i < count; i++)
                     {
-                        RegistryUtils.MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._match_ICC_DeviceName[i].File);
+                        MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._match_ICC_DeviceName[i].File);
                     }
 
                     string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
