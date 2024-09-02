@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.1.0-bfb389-beta" />
+		<PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.1.0" />
 		<PackageReference Include="Dell.TechHub.Sdk.Common.Identifiers" Version="3.0.0.606-2e2db9-beta" />
 		<PackageReference Include="DellClientFramework" Version="6.4.5.1" />
 	</ItemGroup>
@@ -16,9 +16,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="DDPM.Peripherals.interface">
-			<HintPath>..\..\dll\DDPM.Peripherals.interface.dll</HintPath>
-		</Reference>
+	  <Reference Include="DDPM.Peripherals.interface">
+	    <HintPath>C:\Program Files\Dell\DTP\InstrumentationSubAgent\DDPM.Peripherals.interface.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

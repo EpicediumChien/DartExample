@@ -153,7 +153,7 @@ namespace NetworkKVM.Plugins
                                 WriteAsync(ResponseSupportedMonitor().Result).Wait();
                                 MonitorPlug();
                             }
-                            else 
+                            else
                             {
                                 Disconnect();
                                 CreateNamedPipe();
@@ -904,7 +904,7 @@ namespace NetworkKVM.Plugins
             //#else
             //            namedpipeName = Guid.NewGuid().ToString("D");
             //#endif
-            namedpipeName = Guid.NewGuid().ToString("D");
+            namedpipeName = "VCPNamedPipe";
             _logs.DebugMsg("[NetworkKVM] Name: " + namedpipeName);
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
 
@@ -1358,7 +1358,7 @@ namespace NetworkKVM.Plugins
             {
                 is_HOTKEY_AVAILABLE_RESPONSE.Available = false;
                 is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
-                
+
             }
             is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
             return is_HOTKEY_AVAILABLE_RESPONSE.ToJson();

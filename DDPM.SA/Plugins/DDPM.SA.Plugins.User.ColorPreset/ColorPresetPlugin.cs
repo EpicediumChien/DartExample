@@ -85,6 +85,9 @@ namespace ColorPreset.Plugins
         private MainWindow? MonitorBorkerWin = null; //Dean 0626 fix SAST issue, remove static
         private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
 
+        //20240830 Jim add
+        IIC_Metadata _ICC_Metadata = new IIC_Metadata();
+
         private enum log_type
         {
             info = 0,
@@ -924,7 +927,7 @@ namespace ColorPreset.Plugins
         /// <returns> Run Deserialize ICC.json後的 object   </returns>
         public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "")
         {
-            IIC_Metadata _ICC_Metadata = new IIC_Metadata();
+            //IIC_Metadata _ICC_Metadata = new IIC_Metadata();
             try
             {
                 // ICC profiles mapping schema
@@ -1124,6 +1127,59 @@ namespace ColorPreset.Plugins
             {
                 return Task.FromResult(_ICC_Metadata);
             }
+        }
+
+        /// <summary>
+        ///  Set Monitor ICC color Profile
+        /// </summary>
+        /// <param name="m"> Monitor Info </param>
+        /// <param name="ColorPreset_Name"> ColorPreset Name </param>
+        /// <returns></returns>
+        public Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name)
+        {
+            if (_ICC_Metadata._match_ICC_DeviceName != null)
+            {
+                int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                for (int i = 0; i < count; i++)
+                {
+                    string[] separators = { "|" };
+                    string[] strICC_ColorPresets = _ICC_Metadata._match_ICC_DeviceName[i].ColorPreset.Split(separators, StringSplitOptions.None);
+
+                    if (string.Equals(ColorPreset_Name, "Standard/Native", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
+                        {
+                            MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            break;
+                        }
+                    }
+                    else if (string.Equals(ColorPreset_Name, "Game/Game1", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
+                        {
+                            MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            break;
+                        }
+                    }
+                    else if (string.Equals(ColorPreset_Name, "Rec. 709 / BT.709", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
+                        {
+                            MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                            break;
+                        }
+                    }
+
+                    if (string.Equals(ColorPreset_Name, strICC_ColorPresets[0], StringComparison.OrdinalIgnoreCase))
+                    {
+                        MonitorProfile.SetMonitorProfile(_ICC_Metadata._match_ICC_DeviceName[i].File);
+                        break;
+                    }
+                }              
+            }
+
+            return Task.FromResult(true);
         }
 
         #endregion

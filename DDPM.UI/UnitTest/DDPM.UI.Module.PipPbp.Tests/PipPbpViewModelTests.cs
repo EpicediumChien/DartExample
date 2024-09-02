@@ -342,20 +342,24 @@ namespace DDPM.UI.Module.PipPbp.Tests
         {
             Assert.That(pipPbpViewModel.IsVideoSwapComboBoxesVisible, Is.EqualTo(false));
 
-            var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj(), new InputSourceObj() };
-            pipPbpViewModel.InputSourceList = _inputSourceList;
+            pipPbpViewModel.CurPxpMode = 0x42;
             Assert.That(pipPbpViewModel.IsVideoSwapComboBoxesVisible, Is.EqualTo(true));
+            //var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj(), new InputSourceObj() };
+            // pipPbpViewModel.InputSourceList = _inputSourceList;
+            //Assert.That(pipPbpViewModel.IsVideoSwapComboBoxesVisible, Is.EqualTo(true));
         }
 
         [Test]
         public void TestIsVideoSwapButtonVisible()
-        {
+        {          
             Assert.That(pipPbpViewModel.IsVideoSwapButtonVisible, Is.EqualTo(false));
 
-            var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj() };
-            pipPbpViewModel.InputSourceList = _inputSourceList;
-            pipPbpViewModel.SplitItem_Off = new SplitItem();
+            pipPbpViewModel.CurPxpMode = 0x23;
             Assert.That(pipPbpViewModel.IsVideoSwapButtonVisible, Is.EqualTo(true));
+            //var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj() };
+            //pipPbpViewModel.InputSourceList = _inputSourceList;
+            //pipPbpViewModel.SplitItem_Off = new SplitItem();
+            //Assert.That(pipPbpViewModel.IsVideoSwapButtonVisible, Is.EqualTo(true));
         }
 
         [Test]
@@ -363,10 +367,12 @@ namespace DDPM.UI.Module.PipPbp.Tests
         {
             Assert.That(pipPbpViewModel.IsVideoSwapButtonEnabled, Is.EqualTo(false));
 
-            var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj() };
-            pipPbpViewModel.InputSourceList = _inputSourceList;
-            pipPbpViewModel.SplitItem_Off = new SplitItem();
+            pipPbpViewModel.CurPxpMode = 0x24;
             Assert.That(pipPbpViewModel.IsVideoSwapButtonEnabled, Is.EqualTo(true));
+            //var _inputSourceList = new List<InputSourceObj>() { new InputSourceObj(), new InputSourceObj() };
+            //pipPbpViewModel.InputSourceList = _inputSourceList;
+            //pipPbpViewModel.SplitItem_Off = new SplitItem();
+            //Assert.That(pipPbpViewModel.IsVideoSwapButtonEnabled, Is.EqualTo(true));
         }
 
         [Test]

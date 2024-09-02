@@ -5,15 +5,15 @@ namespace DDPM.UI.Common
 {
     public class PenActions
     {
-        public SelectedAction TopButtonClickAction = new(92, new AssignedAction(92));
-        public SelectedAction TopButtonDoubleClickAction = new(94, new AssignedAction(94));
-        public SelectedAction TopButtonPressHoldAction = new(95, new AssignedAction(95));
-        public SelectedAction TopBarrelButtonClickAction = new(60, new AssignedAction(60));
-        public SelectedAction BottomBarrelButtonClickAction = new(50, new AssignedAction(50));
+        public SelectedAction TopButtonClickAction = new(73, new AssignedAction(73));
+        public SelectedAction TopButtonDoubleClickAction = new(90, new AssignedAction(90));
+        public SelectedAction TopButtonPressHoldAction = new(75, new AssignedAction(75));
+        public SelectedAction TopBarrelButtonClickAction = new(27, new AssignedAction(27));
+        public SelectedAction BottomBarrelButtonClickAction = new(26, new AssignedAction(26));
         public bool IsTopBarrelHoverClickOn = false;
         public bool IsBottomBarrelHoverClickOn = false;
 
-        public List<PenButtonName> Buttons = new();
+        //public List<PenButtonName> Buttons = new();
         public Dictionary<int, string> RadialLabels = new();
         public Dictionary<int, SelectedAction> RadialActions = new();
         public bool IsUseCenter = true;
@@ -24,21 +24,21 @@ namespace DDPM.UI.Common
 
         public PenActions(string _model)
         {
-            var model = _model.ToUpper();
-            switch (model)
-            {
-                case "PN7522W":
-                case "PN9315A":
-                    Buttons.Add(PenButtonName.TopButton);
-                    Buttons.Add(PenButtonName.TopBarrelButton);
-                    Buttons.Add(PenButtonName.BottomBarrelButton);
-                    break;
+            //var model = _model.ToUpper();
+            //switch (model)
+            //{
+            //    case "PN7522W":
+            //    case "PN9315A":
+            //        Buttons.Add(PenButtonName.TopButton);
+            //        Buttons.Add(PenButtonName.TopBarrelButton);
+            //        Buttons.Add(PenButtonName.BottomBarrelButton);
+            //        break;
 
-                default:
-                    Buttons.Add(PenButtonName.TopBarrelButton);
-                    Buttons.Add(PenButtonName.BottomBarrelButton);
-                    break;
-            }
+            //    default:
+            //        Buttons.Add(PenButtonName.TopBarrelButton);
+            //        Buttons.Add(PenButtonName.BottomBarrelButton);
+            //        break;
+            //}
             ResetRadialMenu();
         }
 
