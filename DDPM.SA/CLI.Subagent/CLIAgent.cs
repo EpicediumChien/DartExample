@@ -10,7 +10,6 @@
 
 #endregion
 
-using DDPM.Common;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Agent;
 using Dell.Client.Framework.Common;
@@ -23,6 +22,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using static DDPM.SA.Common.ICLICommandTable;
+using DDPM.SA.Obfuscation;
 
 namespace CLI.Subagent
 {
