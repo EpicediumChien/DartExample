@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+    <ProjectReference Include="..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugin.CLIManager\DDPM.SA.Plugins.CLIManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SettingsManager\DDPM.SA.Plugins.SettingsManager.csproj" />
     <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SWUpdate\DDPM.SA.Plugins.SWUpdate.csproj" />
