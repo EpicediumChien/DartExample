@@ -16,7 +16,8 @@ using System.Diagnostics;
 using System.Reflection;
 using System.ServiceProcess;
 using Constants = NGA.Common.Constants;
-using DDPM.Common;
+using DDPM.SA.Obfuscation;
+
 
 //using DDPMConstants = DDPM.UI.Common.Constants;
 

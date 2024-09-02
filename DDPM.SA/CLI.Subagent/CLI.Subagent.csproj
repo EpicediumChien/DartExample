@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+	  <ProjectReference Include="..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
 	</ItemGroup>
 
 </Project>
