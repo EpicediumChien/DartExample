@@ -205,6 +205,10 @@ namespace DDPM.UI.Common.Models
             {
                 if (DeviceInfo != null)
                 {
+                    if (DeviceInfo.Name.ToUpper().Contains("WD19S"))
+                    {
+                        return DeviceInfo.Name.Replace("_", " ");
+                    }
                     return DeviceInfo.Name;
                 }
                 else if (MonitorInfo != null)
@@ -483,7 +487,7 @@ namespace DDPM.UI.Common.Models
             string model = DeviceInfo.ModelNumber;
             if (arr.Length > 0)
             {
-                model = arr[arr.Length-1];
+                model = arr[arr.Length - 1];
             }
             var colorCode = DeviceInfo.ColorCode == 0 ? "" : $"_{DeviceInfo.ColorCode}";
 
@@ -1195,7 +1199,7 @@ namespace DDPM.UI.Common.Models
             {
                 if (MonitorInfo != null)
                 {
-                    if (MonitorInfo.CapabilityDic != null&& MonitorInfo.modelName.ToUpper().StartsWith("G"))
+                    if (MonitorInfo.CapabilityDic != null && MonitorInfo.modelName.ToUpper().StartsWith("G"))
                         return MonitorInfo.CapabilityDic.ContainsKey("EC");
                 }
                 return false;
@@ -1291,9 +1295,9 @@ namespace DDPM.UI.Common.Models
                 {
                     if (String.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
                         return Strings.Display;
-                        /* Debug text
-                        return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sem lorem, ornare at fringilla sed, eleifend ut nibh. Nullam a tincidunt sapien. Donec luctus felis eget facilisis sodales. Mauris nec ipsum elit. Curabitur sagittis mollis libero, id fringilla neque interdum at. Vivamus sit amet tortor consectetur enim egestas volutpat in id elit.";
-                        */
+                    /* Debug text
+                    return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sem lorem, ornare at fringilla sed, eleifend ut nibh. Nullam a tincidunt sapien. Donec luctus felis eget facilisis sodales. Mauris nec ipsum elit. Curabitur sagittis mollis libero, id fringilla neque interdum at. Vivamus sit amet tortor consectetur enim egestas volutpat in id elit.";
+                    */
                     else
                         return MonitorInfo.MarketingName;
                 }
