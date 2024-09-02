@@ -8741,6 +8741,18 @@ namespace DDPM.CLI.Plugins.Display
             return output;
         }
 
+        private static string get_Uniformity(string status)
+        {
+            switch (status.ToUpper())
+            {
+                case "OFF": return "0";
+                case "HIGH": return "1";
+                case "LOW": return "2";
+                case "ON": return "2";
+                default: return "0";
+            }
+        }
+
         private static USBCPrioritizationType get_USBCPrioritization(string priority)
         {
             switch (priority)
