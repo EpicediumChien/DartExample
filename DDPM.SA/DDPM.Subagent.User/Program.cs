@@ -10,7 +10,6 @@
 
 #endregion
 
-using DDPM.Common;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Agent;
 using Dell.UnifiedAgent.Common;
@@ -18,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using DDPM.SA.Obfuscation;
 
 namespace DDPM.Subagent.User
 {

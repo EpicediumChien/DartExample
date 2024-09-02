@@ -1,4 +1,4 @@
-﻿namespace DDPM.Common
+﻿namespace DDPM.SA.Obfuscation
 {
     public class ThumbprintHash
     {
