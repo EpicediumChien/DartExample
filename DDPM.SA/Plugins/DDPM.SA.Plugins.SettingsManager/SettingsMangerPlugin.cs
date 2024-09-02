@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
@@ -247,7 +248,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                 Log.Error(text);
         }
 
-        private enum WTS_INFO_CLASS
+        /*private enum WTS_INFO_CLASS
         {
             WTSUserName = 5,
             WTSDomainName = 7,
@@ -360,7 +361,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
 
             return null;
-        }
+        }*/
 
         private DDPMITConfig InitDDPMITConfigFile()
         {
@@ -468,6 +469,59 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"[InitDDPMUserConfigFile] {info}");
 
             return _settings;
+        }
+
+        public Task<object> ReadRegistryData(Common.Settings.RegistryHive hive, string keyPath, string keyName)
+        {
+            try
+            {
+                object obj = null;
+                if (hive == Common.Settings.RegistryHive.CurrentUser)
+                {
+                    obj = WTSFunction.ImpersonateUser_ReadRegistry(Log, keyPath, keyName);
+                    WriteLog("[System setting plugin] Impersonate user read registry finish.");
+                }
+                else
+                {
+                    return Task.Run(() =>
+                    {
+                        obj = DDPMRegistryHelper.ReadRegistryKey(hive, keyPath, keyName);
+                        return obj;
+                    });
+                    //WriteLog("[System setting plugin] read registry finish.");
+                }                
+                if (obj == null)
+                    WriteLog($"[System setting plugin] read registry value return null");
+                return Task.FromResult( obj );
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[System settings plugin] ReadRegistryData exception ({e.Message})");
+                return null;
+            }
+        }
+
+        public Task<bool> WriteRegistryData(Common.Settings.RegistryHive hive, string keyPath, string keyName, object value)
+        {
+            try
+            {
+                if (hive == Common.Settings.RegistryHive.CurrentUser)
+                {
+                    WTSFunction.ImpersonateUser_WriteRegistry(Log, keyPath, keyName, value);
+                    WriteLog("[System setting plugin] Impersonate user write OK.");                    
+                }
+                else
+                {
+                    DDPMRegistryHelper.WriteRegistryKey(hive, keyPath, keyName, value);
+                    WriteLog($"[System setting plugin] Write data {value} finish");                    
+                }
+                return Task.FromResult(true);
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[System settings plugin] WriteRegistryData exception ({e.Message})");
+                return Task.FromResult(false);
+            }
         }
 
         #endregion

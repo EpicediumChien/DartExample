@@ -1332,59 +1332,6 @@ namespace DDPM.SA.Common.Settings
             return new X509Certificate2(certBytes);
         }
 
-        //private void testcode()
-        //{
-        //    Security.JsonSigningVerifier verifier = new Security.JsonSigningVerifier();
-        //    verifier.
-        //}
-
-        /*public static byte[] DataByteArrayEncryption(byte[] dataToEncrypt, string privateKey, out string info)
-        {
-            try
-            {
-                if(dataToEncrypt == null || dataToEncrypt.Length <= 0)
-                {
-                    info = "Null buffer input";
-                    return null;
-                }
-                byte[] signature;
-
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096))
-                {
-                    rsa.FromXmlString(privateKey);
-                    signature = rsa.SignData(dataToEncrypt, HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
-                }
-                info = "Completed";
-                return signature;
-            }
-            catch(Exception ex)
-            {
-                info = ex.Message;
-            }
-            return null;
-        }
-
-        public static byte[] DataByteArrayDecryption(byte[] dataToDecrypt, string publicKey, out string info)
-        {
-            try
-            {
-                if (dataToDecrypt == null || dataToDecrypt.Length <= 0)
-                {
-                    info = "Null buffer input";
-                    return null;
-                }
-                using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(4096))
-                {
-                    rsa.FromXmlString(publicKey);
-                }
-            }
-            catch (Exception ex)
-            {
-                info = ex.Message;
-            }
-            return null;
-        }*/
-
         #region Bruce 0814 Move this method to DDPM.SA.Common
 
         private enum WTS_INFO_CLASS
@@ -1440,7 +1387,9 @@ namespace DDPM.SA.Common.Settings
                     {
                         string regKey = $@"HKEY_USERS\{userSid}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders";
                         string localAppDataPath = (string)Registry.GetValue(regKey, "Local AppData", null);
+#if DEBUG
                         Console.WriteLine($"Local app data from registry: {localAppDataPath}");
+#endif
                         return localAppDataPath;
                     }
                 }

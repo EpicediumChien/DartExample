@@ -65,6 +65,7 @@ namespace DDPM.UI.Common.ViewModels
             set
             {
                 SetProperty(ref _groupSelectedIndex, value);
+                OnPropertyChanged("IsLandingMode");
 
                 //Validate value, allow set to -1 for reset to Landing mode, but should avoid
                 //to access to Groups
@@ -850,5 +851,6 @@ namespace DDPM.UI.Common.ViewModels
                 _log.Info(msg);
         }
         #endregion
+
     }
 }
