@@ -305,7 +305,10 @@ namespace ColorPreset.Plugins
         /// <param name="m"></param>
         public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin)
         {
-            Log.Info($"Launch_MonitorBorker requested ...");
+            if (Log != null)
+            {
+                Log.Info($"Launch_MonitorBorker requested ...");
+            }
             writelog("DeviceManagerPlugin Launch_MonitorBorker requested ...");
 
             if (m != null)
@@ -414,7 +417,10 @@ namespace ColorPreset.Plugins
 
         public void ShowOSD_ColoPreset(MonitorInfo m, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
         {
-            Log.Info($"ShowOSD_ColoPreset requested ...");
+            if (Log != null)
+            {
+                Log.Info($"ShowOSD_ColoPreset requested ...");
+            }
             writelog("ColorPresetPlugin ShowOSD_ColoPreset requested ...");
 
             Thread thread = new Thread(() =>
@@ -480,7 +486,10 @@ namespace ColorPreset.Plugins
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m, string vcp_capbilities)
         {
-            Log.Info($"ReadColorPreset requested ...");
+            if (Log != null)
+            {
+                Log.Info($"ReadColorPreset requested ...");
+            }
 
             if (string.IsNullOrEmpty(vcp_capbilities))
             {
@@ -522,7 +531,10 @@ namespace ColorPreset.Plugins
 
         public Task<List<ColorPresetSettings>> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, List<ColorPresetSettings> config)
         {
-            Log.Info($"WriteColorPreset requested ...");
+            if (Log != null)
+            {
+                Log.Info($"WriteColorPreset requested ...");
+            }
 
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
@@ -539,7 +551,10 @@ namespace ColorPreset.Plugins
 
         public Task<List<ColorPresetSettings>> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name, List<ColorPresetSettings> config)
         {
-            Log.Info($"WriteColorPreset_AUTO requested ...");
+            if (Log != null)
+            {
+                Log.Info($"WriteColorPreset_AUTO requested ...");
+            }
 
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
@@ -593,10 +608,13 @@ namespace ColorPreset.Plugins
         {
             text = "[ColorPreset] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         #region Event Handler
