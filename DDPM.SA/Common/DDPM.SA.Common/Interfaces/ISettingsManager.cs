@@ -35,6 +35,9 @@ namespace DDPM.SA.Common
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
 
         Task<DDPMITConfig> GetITGlobalConfigs(bool force_reload = false);
+        //Service to read/write current_user and local_machine
+        Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
+        Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
     }
 
     /// <summary>
@@ -84,5 +87,9 @@ namespace DDPM.SA.Common
 
         //IT lock
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
+
+        //Service to read/write current_user and dispatch local_machine to ISettingsManagerSA
+        Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
+        Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
     }
 }

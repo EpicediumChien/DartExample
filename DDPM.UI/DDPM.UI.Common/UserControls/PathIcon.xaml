@@ -46,7 +46,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid MouseLeftButtonDown="Path_MouseLeftButtonDown">
+    <Grid MouseLeftButtonUp="Path_MouseLeftButtonDown">
         <!-- Make hover state -->
         <Grid.Style>
             <Style TargetType="Grid">

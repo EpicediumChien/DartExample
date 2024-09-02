@@ -178,17 +178,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                 GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", "N/A", "N/A"));
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
-            Trace.WriteLine($"targetfeature: {_commandLineInput.TargetFeature}, pluginType: {_commandLineInput.PluginsType}");
-            
+           
             if (_commandLineInput.GuidString.Count == 0)
             {
                 _deviceinfo.ForEach(x =>
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
-                        if (_commandLineInput.TargetFeature.Equals("FWVERSION"))
-                            _commandLineInput.TargetFeature = "FIRMWAREVERSION";
-                        Trace.WriteLine($"targetfeature: {_commandLineInput.TargetFeature}, pluginType: {_commandLineInput.PluginsType}");
                         GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                     }
                 });
@@ -223,6 +219,8 @@ namespace DDPM.CLI.Plugins.Peripherals
         private int SetPeripheralProperty()
         {
             SetResults.Clear();
+            int val = 0;
+            bool bl = false;
             if (_devMgr == null)
             {
                 writelog("SetPeripheralProperty: input null IDeviceManagerSA");
@@ -275,6 +273,23 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (op.Option_Name.ToUpper() == "VALUE")
                 {
                     value = op.Option_Value;
+                    switch (value)
+                    {
+                        case "ENABLE":
+                        case "ON":
+                            val = 1;
+                            bl = true;
+                            break;                            
+                        case "DISABLE":
+                        case "OFF":
+                            val = 0;
+                            bl = false;
+                            break;
+                        default:
+                            value = op.Option_Value;
+                            break;
+
+                    }
                     break;
                 }
             }
@@ -291,137 +306,49 @@ namespace DDPM.CLI.Plugins.Peripherals
             switch (_commandLineInput.TargetFeature)
             {
                 case "BACKLIGHTINGCONTROLS":
-                    if (int.TryParse(value, out int val))
-                    {
                         taskA = _devMgr.SetBackLightingControls;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "BACKLIGHTINGLEVEL":
-                    if (int.TryParse(value, out val))
-                    {
                         taskA = _devMgr.SetBackLightingLevel;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "COLLABORATIONBLINKEFFECTENABLE":
-                    if (!bool.TryParse(value, out bool bl))
-                    {
                         taskB = _devMgr.SetCollaborationBlinkEffectEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "COLLABORATIONCAMERAENABLE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetCollaborationCameraEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "COLLABORATIONCHATENABLE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetCollaborationChatEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "COLLABORATIONDOUBLETAPENABLE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetCollaborationDoubleTapEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "COLLABORATIONKEYENABLE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetCollaborationKeyEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "COLLABORATIONMICENABLE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetCollaborationMicEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "COLLABORATIONSCREENSHAREENABLE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetCollaborationScreenShareEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "DPILEVEL":
-                    if (int.TryParse(value, out val))
-                    {
                         taskA = _devMgr.SetDPILevel;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "DPIVALUE":
-                    if (int.TryParse(value, out val))
-                    {
                         taskA = _devMgr.SetDPIValue;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "PRIMARYMOUSEBUTTON":
                     MouseButton button;
                     switch (value.ToUpper())
@@ -464,17 +391,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
 
                 case "TOUCHSCROLLSENSITIVITYLEVEL":
-                    if (int.TryParse(value, out val))
-                    {
                         taskA = _devMgr.SetTouchScrollSensitivityLevel;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "UNPAIR":
                     SetResults.ForEach(x =>
                     {
@@ -502,82 +421,29 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
                 //Headset&Speaker
                 case "SETWIREDAUDIOIMICNSENABLE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetWiredAudioIMicNSEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "SETWIREDAUDIOMICMUTESOUNDENABLE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetWiredAudioMicMuteSoundEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "SETWIREDAUDIOVOLUMEADJUSTMENTTONE":
-                    if (!int.TryParse(value, out val))
-                    {
                         taskA = _devMgr.SetWiredAudioVolumeAdjustmentTone;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "ANCMODE":
-                    //if (!int.TryParse(value, out val))
-                    if (value.Equals("ENABLE"))
-                        val = 1;
-                    else if (value.Equals("DISABLE"))
-                        val = 0;
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
-                        
-                    Trace.WriteLine($"set value int in CLI: {val} set value sting in CLI: {value}");
-                    taskA = _devMgr.SetAncMode;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
-
+                        taskA = _devMgr.SetAncMode;
+                        RunTaskA(val);
+                        return (int)CLI_ExitCode.success;
                 case "SETANCGAIN":
-                    if (!int.TryParse(value, out val))
-                    {
                         taskA = _devMgr.SetAncGain;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "SETSELECTEDPRESET":
-                    if (!int.TryParse(value, out val))
-                    {
                         taskA = _devMgr.SetSelectedPreset;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 //case "SETBANDSGAIN":
                 //    if (!int.TryParse(value, out val))
                 //    {
@@ -591,96 +457,33 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "MICNOISECANCELLATION":
-                    if (value.Equals("ENABLE"))
-                        bl = true;
-                    else if (value.Equals("DISABLE"))
-                        bl = false;
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
-                    //if (!bool.TryParse(value, out bl))
-                    taskB = _devMgr.SetMicNoiseCancellation;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-
+                        taskB = _devMgr.SetMicNoiseCancellation;
+                        RunTaskB(bl);
+                        return (int)CLI_ExitCode.success;
                 case "SETSIDETONE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetSidetone;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "SETSIDETONELEVEL":
-                    if (!int.TryParse(value, out val))
-                    {
                         taskA = _devMgr.SetSidetoneLevel;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "WEARDETECTION":
-                    if (value.Equals("ENABLE"))
-                        val = 1;
-                    else if (value.Equals("DISABLE"))
-                        val = 0;
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
-
-                    taskA = _devMgr.SetWearDetection;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
-
+                        taskA = _devMgr.SetWearDetection;
+                        RunTaskA(val);
+                        return (int)CLI_ExitCode.success;
                 case "SETBUSYLIGHT":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetBusyLight;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 case "SETVOICEGUIDANCE":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetVoiceGuidance;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
-
                 case "SETMICNCINCOMING":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetMicNCIncoming;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 //case "SETEQUALIZERVALUES":
                 //    if (!bool.TryParse(value, out bl))
                 //    {
@@ -694,17 +497,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "SETISMICENUMERATIONON":
-                    if (!bool.TryParse(value, out bl))
-                    {
                         taskB = _devMgr.SetIsMicEnumerationOn;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                    }
-                    else
-                    {
-                        SetFailResults("Invalid setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
                 default:
                     SetFailResults("Invalid TargetFeature");
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty_Property;

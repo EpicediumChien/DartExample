@@ -100,32 +100,51 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             _itemID = new ItemId(itemID);
 
-            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            if (_mouseMethodInfo != null)
             {
-                var value = GetPropertyValue(_mouseInterfaceType, commodity, "DpiValue");
-                return (int)value;
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_mouseInterfaceType, commodity, "DpiValue");
+                    return (int)value;
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                    return -1;
+                }
             }
             else
             {
-                Console.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                Console.WriteLine($"[GetDpiValue]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
+                writelog($"[GetDpiValue]Could not retrieve the Commodity Interface for the {_itemID} item. _mouseMethodInfo is null");
                 return -1;
             }
+
         }
 
         public async Task SetDPIValue(string itemID, int newValue)
         {
             _itemID = new ItemId(itemID);
 
-            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            if (_mouseMethodInfo != null)
             {
-                SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                }
             }
             else
             {
-                Console.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                Console.WriteLine($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
+                writelog($"[SetDPIValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _mouseMethodInfo is null");
             }
+
         }
 
         public async Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
@@ -258,7 +277,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var type = assembly.GetExportedTypes()
                                        .FirstOrDefault(t => t.FullName.Equals($"Dell.TechHub.Commodity.Peripheral.{commodityName}", StringComparison.OrdinalIgnoreCase));
-                    Debug.WriteLine($"\n{assembly.FullName}");
+                    Debug.WriteLine($"\n{assembly.FullName}, {assembly.Location}");
                     if (type is not null)
                         return type;
                 }
@@ -312,11 +331,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
                     _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
-                    _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
-                                                        .MakeGenericMethod(_mouseInterfaceType);
+
+                    if (_mouseInterfaceType != null)
+                    {
+                        _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                      .MakeGenericMethod(_mouseInterfaceType);
+                    }
+
                     _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
-                    _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+
+                    if (_webcamInterfaceType != null)
+                    {
+                        _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                         .MakeGenericMethod(_webcamInterfaceType);
+                    }
+
                 });
             }
             else
