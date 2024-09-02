@@ -56,6 +56,7 @@ namespace DDPM.UI.Common.UserControls
 
         private void Path_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true;
             if (ClickCommand != null)
             {
                 ClickCommand.Execute(this);

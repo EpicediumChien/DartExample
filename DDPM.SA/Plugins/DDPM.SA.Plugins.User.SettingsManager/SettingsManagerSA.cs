@@ -262,7 +262,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return;
             }
             _SysSettingsPlugin.ITSettingsActionEvent += _SysSettingsPlugin_ActionEvent;
-            relay_registered = true;
+            relay_registered = true;            
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
@@ -1469,5 +1469,104 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             return _powerNapSettings;
         }
+
+        #region Registry key read/write over system setting manager (only support local machine)
+        /*
+          Example:
+            string keyPath = @"SOFTWARE\MyApp";
+            string keyName = "MySetting";
+            string keyValue = "Hello, Registry!";
+            int keyValue2 = 2;
+
+            // Write to registry key in LocalMachine
+            WriteRegistryData(RegistryHive.LocalMachine, keyPath, keyName, keyValue2);
+            WriteLog("Registry key value updated in LocalMachine.");
+
+            // Read registry key from LocalMachine
+            object value = ReadRegistryData(RegistryHive.LocalMachine, keyPath, keyName).Result;
+            switch (value)
+            {
+                case int intValue:
+                    WriteLog("Integer value: " + intValue);
+                    break;
+                case string stringValue:
+                    WriteLog("String value: " + stringValue);
+                    break;
+                case byte[] byteArray:
+                    WriteLog("Byte array value: " + BitConverter.ToString(byteArray));
+                    break;
+                case string[] stringArray:
+                    WriteLog("String array value: " + string.Join(", ", stringArray));
+                    break;
+                case long longValue:
+                    WriteLog("Long value: " + longValue);
+                    break;
+                default:
+                    WriteLog("Unknown type: " + value.GetType());
+                    break;
+            }
+         */
+        public Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName)
+        {
+            try
+            {
+                if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
+                {
+                    if (_SysSettingsPlugin == null)
+                    {
+                        WriteLog($"[User setting plugin] null system settings plugin, can't access local machine registry");
+                        return null;
+                    }
+                    object obj = _SysSettingsPlugin.ReadRegistryData(hive, keyPath, keyName).Result;
+                    if (obj != null)
+                        WriteLog($"[User setting plugin] Read data success");
+                    else
+                        WriteLog($"[User setting plugin] Read data failed");
+                    return Task.FromResult(obj);
+                }
+                else
+                {
+                    WriteLog($"[User setting plugin] WARNING: un-defined registry hive ({hive})");
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[User setting plugin] WARNING: read registry cause exception ({e.Message})");
+                return null;
+            }
+        }
+
+        public Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value)
+        {
+            try
+            {
+                if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
+                {
+                    if (_SysSettingsPlugin == null)
+                    {
+                        WriteLog($"[User setting plugin] null system settings plugin, can't access local machine registry");
+                        return Task.FromResult(false);
+                    }
+                    bool result = _SysSettingsPlugin.WriteRegistryData(hive, keyPath, keyName, value).Result;
+                    if(result)
+                        WriteLog($"[User setting plugin] Write data {value} success");
+                    else
+                        WriteLog($"[User setting plugin] Write data {value} failed");
+                    return Task.FromResult(result);
+                }
+                else
+                {
+                    WriteLog($"[User setting plugin] WARNING: un-defined registry hive ({hive})");
+                    return Task.FromResult(false);
+                }
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[User setting plugin] WARNING: write registry cause exception ({e.Message})");
+                return Task.FromResult(false);
+            }
+        }
+        #endregion
     }
 }

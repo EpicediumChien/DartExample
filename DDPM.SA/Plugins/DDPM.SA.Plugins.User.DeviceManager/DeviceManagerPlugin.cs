@@ -24,6 +24,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -92,6 +93,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private List<string> _SupportedColorPreset = new List<string>();
+
+        private readonly object _CheckAutoLock = new object();
 
         // Jim move to here 20240621
         private ShowOSDWin OsdWin = null;
@@ -872,7 +875,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                 }
 
-                CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                _ = Task.Run(async () =>
+                { 
+                    lock (_CheckAutoLock)
+                    {
+                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                    }
+                   
+                });
+
+                //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
                 return Task.FromResult(_AllInfoMonitors);
             }
@@ -2379,6 +2391,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region NKVM implementation
 
+        public Task CreatNewNamedpipe()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.CreatNewNamedpipe();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> IsNamedpipeConnected()
+        {
+            if (_NKVMPlugin != null)
+            {
+                return Task.FromResult(_NKVMPlugin.IsNamedpipeConnected().Result);
+            }
+            return Task.FromResult(false);
+        }
+
         public Task SupportedNKVMMonitors()
         {
             if (_NKVMPlugin != null && _SettingsPlugin != null)
@@ -2453,6 +2483,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_NKVMPlugin != null)
             {
                 _NKVMPlugin.NKVM_ChangeMonitorIndex(monitorInfo);
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task CallNKVMConnent()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.CallNKVMConnent();
             }
             return Task.CompletedTask;
         }
@@ -2700,11 +2739,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region ImpExpSettings
 
+        private object FindVCPValue(Dictionary<EDID, Dictionary<object, object>> cacheTable, EDID edid, byte code)
+        {
+            if (cacheTable.Count > 0)
+            {
+                var Keys = cacheTable.Keys.ToList();
+                foreach (var Key in Keys)
+                {
+                    if (Key.Equals(edid))
+                    {
+                        if (cacheTable[Key].ContainsKey(code))
+                        {
+                            bool rc = false;
+                            var result = new object();
+                            rc = cacheTable[Key].TryGetValue(code, out result);
+
+                            writelog("[DeviceManagePlugin] Is GetFromCacheTable success?? : result => " + rc.ToString());
+                            return (rc ? result : null);
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
         public Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path)
         {
             //need test, but need other function
             ////if vcp code is null, get vcp code
             //List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            //Dictionary<EDID, Dictionary<object, object>> VCPTable = _DisplayManagerPlugin.GetVCPCacheTable().Result;
             //if (settings != null)
             //{
             //    foreach (DDPMMonitorSettings monitorSettings in settings)
@@ -2715,16 +2779,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //            {
             //                foreach (VCP vcp in monitorSettings.VCPs)
             //                {
-            //                    if (vcp.Value == null)
+            //                    if (vcp.Value != null)
             //                    {
             //                        byte b_vcpcode = Convert.ToByte(vcp.Code);
-            //                        ObjGetVCP res = GetVCPCapability(monitorInfo, b_vcpcode).Result;
-            //                        if(res.result)
+            //                        object value = FindVCPValue(VCPTable, monitorInfo.edid, b_vcpcode);
+            //                        if (value != null)
             //                        {
-            //                            vcp.Value.Add((int)res.value);
+            //                            vcp.Value.Add((int)value);
             //                        }
             //                    }
-            //            }
+            //                }
             //            }
             //        }
             //    }
@@ -3696,7 +3760,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             _AllAppData = _ColorPresetPlugin.GetInstalledAppsList().Result;//_ColorPresetPlugin.FindAppsbyShell().Result;
                         }
 
-                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
                     }
                     /*
                     else if(pluginCondition is PluginStartedCondition)
@@ -3821,7 +3885,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             ToNKVM_initHotKeys();
                         }
 
-                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
 
 
                     }
@@ -4170,9 +4234,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     continue;
                 saveList.Add(setting);
             }
-            if (WriteHotkeySettings(saveList).Result && _NKVMPlugin != null)
+            if (WriteHotkeySettings(saveList).Result)
             {
-                bool b = _NKVMPlugin.SetHotkey(info).Result;
+                if (_NKVMPlugin != null)
+                {
+                    _NKVMPlugin.ToNKVM_HotkeySettings(saveList).Wait();
+                    if (_NKVMPlugin.IsNamedpipeConnected().Result)
+                    {
+                        bool b = _NKVMPlugin.SetHotkey(info).Result;
+                    }
+                }
             }
             ReloadHotkeyConfigData();
 

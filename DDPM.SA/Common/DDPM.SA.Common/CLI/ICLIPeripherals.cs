@@ -37,36 +37,50 @@ namespace DDPM.SA.Common
             Model = di.ModelNumber;
             Guid = di.ID.ToString();
             Command = "GET";
-            if (targetFeature.Equals("FIRMWAREVERSION"))
-                TargetFeature = "FWVERSION";
-            else
-                TargetFeature = targetFeature;
+            switch (targetFeature)
+            {
+                case "FWVERSION":
+                    TargetFeature = "FIRMWAREVERSION";
+                    break;
+                case "COLLABCAMERAENABLE":
+                    TargetFeature = "_isCollaborationCameraEnable";
+                    break;
+                case "COLLABMICMUTE":
+                    TargetFeature = "_isCollaborationCameraEnable";
+                    break;
+                case "COLLABSCREENSHARE":
+                    TargetFeature = "_isCollaborationCameraEnable";
+                    break;
+                case "COLLABCHATENABLE":
+                    TargetFeature = "_isCollaborationCameraEnable";
+                    break;
+                default:
+                    TargetFeature = targetFeature;
+                    break;
+            }
 
             var properties = Property.DeviceProperties[deviceType];
-            //Trace.WriteLine($"properties: {properties}, target feature: {targetFeature}");
-            if (properties.Contains(targetFeature))
+            if (properties.Contains(TargetFeature))
             {
                 Result = "PASS";
                 Message = "N/A";
+
                 var type = di.GetType();
                 foreach (var prop in type.GetProperties())
                 {
-                    //Trace.WriteLine($"Propperty name: {prop.Name.ToUpper()}, Property value: {prop.GetValue(di).ToString()}");
-                    if (prop.Name.ToUpper() == targetFeature)
+                    if (prop.Name.ToUpper() == TargetFeature)
                     {
-                        Trace.WriteLine($"Anf_Propperty name: {prop.Name.ToUpper()}, Property value: {prop.GetValue(di).ToString()}");
                         if (prop.GetValue(di).ToString().Equals("1") || prop.GetValue(di).ToString().ToUpper().Equals("TRUE"))
                             Value = "ENABLE";
-                        if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
+                        else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
                             Value = "DISABLE";
-                        /*else
+                        else
                         {
-                            Value = "N/A";
-                            Result = "FAIL";
-                            Message = "Invalid return Value";
-                        }*/
+                            Value = prop.GetValue(di).ToString() ?? "";
+                        }
                     }
                 }
+                TargetFeature = targetFeature;
             }
             else
             {
@@ -206,6 +220,8 @@ namespace DDPM.SA.Common
             "MICNOISECANCELLATION",
             "WEARDETECTION",
             "ISWEARDETECTIONCHECKED",
+            "ISWEARDETECTIONSUPPORTED",
+            "ISANCSUPPORTED",
         };
 
         internal static readonly List<string> Audio = new()//Dean 0626 SAST issue
@@ -216,6 +232,9 @@ namespace DDPM.SA.Common
             "ANCMODE",
             "MICNOISECANCELLATION",
             "WEARDETECTION",
+            "ISWEARDETECTIONCHECKED",
+            "ISWEARDETECTIONSUPPORTED",
+            "ISANCSUPPORTED",
         };
 
         internal static readonly List<string> Dock = new()//Dean 0626 SAST issue
