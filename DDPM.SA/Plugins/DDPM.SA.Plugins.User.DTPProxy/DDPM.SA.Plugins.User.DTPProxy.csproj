@@ -6,8 +6,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DDPM.Peripherals.interface" Version="2.0.0.2-beta" />
 		<PackageReference Include="Dell.TechHub.Commodity.Sdk" Version="3.1.0-bfb389-beta" />
+		<PackageReference Include="Dell.TechHub.Sdk.Common.Identifiers" Version="3.0.0.606-2e2db9-beta" />
 		<PackageReference Include="DellClientFramework" Version="6.4.5.1" />
 	</ItemGroup>
 
@@ -16,14 +16,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="Dell.DTM.TransmissionData">
-			<HintPath>C:\Users\Elie\.nuget\packages\dell.dtm.client.sdk\3.1.0-209b7a-beta\lib\net8.0\Dell.DTM.TransmissionData.dll</HintPath>
-		</Reference>
-		<Reference Include="Dell.TechHub.Platform.Common">
-			<HintPath>C:\Users\Elie\.nuget\packages\dell.dtm.client.sdk\3.1.0-209b7a-beta\lib\net8.0\Dell.TechHub.Platform.Common.dll</HintPath>
-		</Reference>
-		<Reference Include="DPeMPublic.Common">
-			<HintPath>..\..\..\..\IndiLogic\DPeM-Core-8-16-2024 (R10)\Src-DTH-DTP-Peripherals-Components\Dell.TechHub.Peripheral.Plugins\DPeMSDK\DPeMPublic.Common.dll</HintPath>
+		<Reference Include="DDPM.Peripherals.interface">
+			<HintPath>..\..\dll\DDPM.Peripherals.interface.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 
