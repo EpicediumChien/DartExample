@@ -10,6 +10,7 @@
 
 #endregion
 
+using DDPM.Common;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Agent;
 using Dell.UnifiedAgent.Common;
