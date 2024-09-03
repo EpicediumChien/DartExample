@@ -2026,7 +2026,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 for (int i = 1; i < OrientationString.Length; i++)
                 {
-                    if (orientation.Equals(OrientationString[i].ToUpper()))
+                    if (orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
                     {
                         return Task.FromResult<bool?>(SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result);
                     }
