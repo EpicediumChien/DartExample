@@ -1,0 +1,68 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64;ARM64</Platforms>
+	  <Version>2.0.0.5</Version>
+	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
+	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Display.png" />
+    <None Remove="Img\Battery.png" />
+    <None Remove="Img\CapsLock Off.png" />
+    <None Remove="Img\CapsLock On.png" />
+    <None Remove="Img\CapsLockOff.png" />
+    <None Remove="Img\CapsLockOn.png" />
+    <None Remove="Img\Close.png" />
+    <None Remove="Img\Display.png" />
+    <None Remove="Img\Fingerprint.png" />
+    <None Remove="Img\Headset.png" />
+    <None Remove="Img\Keybord.png" />
+    <None Remove="Img\Lock.png" />
+    <None Remove="Img\Mouse.png" />
+    <None Remove="Img\Mute.png" />
+    <None Remove="Img\NumLockOff.png" />
+    <None Remove="Img\NumLockOn.png" />
+    <None Remove="Img\ScrollLock Off.png" />
+    <None Remove="Img\ScrollLock On.png" />
+    <None Remove="Img\ScrollLockOff.png" />
+    <None Remove="Img\ScrollLockOn.png" />
+    <None Remove="Img\Unmute.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Win32Lib\DDPM.Win32Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Img\Battery.png" />
+    <Resource Include="Img\CapsLockOff.png" />
+    <Resource Include="Img\CapsLockOn.png" />
+    <Resource Include="Img\Close.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Img\Display.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Img\Fingerprint.png" />
+    <Resource Include="Img\Headset.png" />
+    <Resource Include="Img\Keybord.png" />
+    <Resource Include="Img\Lock.png" />
+    <Resource Include="Img\Mouse.png" />
+    <Resource Include="Img\Mute.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Img\NumLockOff.png" />
+    <Resource Include="Img\NumLockOn.png" />
+    <Resource Include="Img\ScrollLockOff.png" />
+    <Resource Include="Img\ScrollLockOn.png" />
+    <Resource Include="Img\Unmute.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>
