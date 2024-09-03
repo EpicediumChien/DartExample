@@ -89,6 +89,24 @@
                             <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsAnyUpdate}">
                                 <Path Data="M7.5 10.5L7.5 3.5H8.5V10.5H7.5Z M7.5 11.5V12.5H8.5V11.5H7.5Z M0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8ZM8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1Z" Fill="#E67F01" />
                             </Grid>
+                            <Image Grid.Column="1" Visibility="{Binding LockMaskVisible_Updates}" 
+                                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                                <Image.ToolTip>
+                                    <ToolTip>
+                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                            <Border.Resources>
+                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                            </Border.Resources>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </ToolTip>
+                                </Image.ToolTip>
+                            </Image>
                         </Grid>
                     </Border>
                     <Border Margin="0,4,4,4" Grid.Row="2" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="AnalyticsButton_Click">
@@ -109,8 +127,23 @@
                             </Grid.ColumnDefinitions>
                             <UXControls:UXTextBlock Grid.Column="0" Width="212" FontSize="14" Margin="8,25,0,25" Foreground="White" Text="{Binding [Analytics], Source={x:Static lang:LangHelper.Instance}}" AutomationProperties.Name="Primary1" />
                             <Image Grid.Column="1" Visibility="{Binding LockMaskVisible}" 
-                                   Source="/DDPM.UI.Plugin.SettingsPlugin;component/Resources/Lock.png" 
-                                   VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16"/>
+                                   Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                                <Image.ToolTip>
+                                    <ToolTip>
+                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                            <Border.Resources>
+                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                            </Border.Resources>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </ToolTip>
+                                </Image.ToolTip>
+                            </Image>
                         </Grid>
                     </Border>                    
                     <Border Margin="0,4,4,4" Grid.Row="3" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True" MouseLeftButtonDown="QuickSettingsButton_Click">

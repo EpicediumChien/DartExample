@@ -117,8 +117,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (data.UserSettings == null)
                     return;
 
-                vm.ShowLockMask = data.LockSettings.Lock_TelemetryConsent;
-                vm.isTabStoppable = !data.LockSettings.Lock_TelemetryConsent;
+                vm.ShowLockMask = data.LockSettings.Lock_Settings_TelemetryConsent;                
+                vm.isTabStoppable = !data.LockSettings.Lock_Settings_TelemetryConsent;
                 vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -169,7 +169,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Trace.WriteLine("Got [DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
                 return;
             }
-            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_TelemetryConsent"));
+            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Settings_TelemetryConsent"));
             if(idx >= 0)
             {
                 string feature = e.IT_Feature_TriggerList[idx];

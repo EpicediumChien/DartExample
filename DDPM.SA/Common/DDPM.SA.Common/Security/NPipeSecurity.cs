@@ -72,7 +72,7 @@ namespace DDPM.SA.Common.Security
         {
             info = "success";
             IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
-            if (_GetNamedPipeClientProcessId(hPipe, out uint pid))
+            if (!_GetNamedPipeClientProcessId(hPipe, out uint pid))
             {
                 info = "[GetNamedPipeClientProcessId] failed";
                 return false;

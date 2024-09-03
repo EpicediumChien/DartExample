@@ -34,8 +34,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.LockMaskVisible = data.LockSettings.Lock_TelemetryConsent ? Visibility.Visible : Visibility.Collapsed;
-                        Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_TelemetryConsent}");
+                        vm.LockMaskVisible = data.LockSettings.Lock_Settings_TelemetryConsent ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_Settings_TelemetryConsent}");
+                        vm.LockMaskVisible_Updates = data.LockSettings.Lock_Settings_Updates ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(check) : {data.LockSettings.Lock_Settings_Updates}");
                     }
                 }));
             }
@@ -54,7 +56,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 Trace.WriteLine("Got [SettingsPage][DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
                 return;
             }
-            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_TelemetryConsent"));
+            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Settings_TelemetryConsent"));
             if (idx >= 0)
             {
                 string feature = e.IT_Feature_TriggerList[idx];
@@ -67,6 +69,22 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     {
                         vm.LockMaskVisible = (bool)propertyInfo.GetValue(e.target_object) ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(Lock) : {propertyInfo.GetValue(e.target_object)}");
+                    }
+                }));
+            }
+            idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Settings_Updates"));
+            if (idx >= 0)
+            {
+                string feature = e.IT_Feature_TriggerList[idx];
+                PropertyInfo propertyInfo = e.target_object.GetType().GetProperty(feature);
+                Trace.WriteLine($"Got [SettingsPage][IT settings event] {feature} : {propertyInfo.GetValue(e.target_object)}");
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.LockMaskVisible_Updates = (bool)propertyInfo.GetValue(e.target_object) ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(Lock) : {propertyInfo.GetValue(e.target_object)}");
                     }
                 }));
             }

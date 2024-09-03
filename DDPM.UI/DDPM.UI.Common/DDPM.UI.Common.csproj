@@ -71,6 +71,7 @@
     <None Remove="Resources\Icon_Info1.png" />
     <None Remove="Resources\info.png" />
     <None Remove="Resources\Loading.png" />
+    <None Remove="Resources\Lock.png" />
     <None Remove="Resources\Luminance.png" />
     <None Remove="Resources\Mic.png" />
     <None Remove="Resources\Microphone.png" />
@@ -191,6 +192,7 @@
     <Resource Include="Resources\Headset_GooglePlayStoreQR.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Lock.png" />
     <Resource Include="Resources\SD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

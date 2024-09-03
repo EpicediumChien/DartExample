@@ -1602,4 +1602,7 @@
   <data name="Tooltip.5" xml:space="preserve">
     <value>Keyboard layouts featuring the Copilot key may become available at different times, depending on language and region.</value>
   </data>
+  <data name="ITLockToolTip.0" xml:space="preserve">
+    <value>This setting is locked by your IT admin.</value>
+  </data>
 </root>
