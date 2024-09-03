@@ -2788,13 +2788,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (vcp.Value != null)
                                 {
                                     byte b_vcpcode = Convert.ToByte(vcp.Code);
-                                    object value = cacheTable[b_vcpcode];
-                                    if (value != null)
+                                    //object value = cacheTable[b_vcpcode];
+                                    ObjGetVCP objGet = GetVCPCapability(monitorInfo, b_vcpcode).Result;
+                                    if (objGet.result)
                                     {
-                                        Console.WriteLine("VCP code : " + vcp.Code.ToString());
-                                        Console.WriteLine("VCP value : " + value.ToString());
-                                        vcp.Value.Add((int)value);
+                                        writelog($"VCP code: {vcp.Code.ToString()}, value:{objGet.value.ToString()}");
+                                        vcp.Value.Add((int)objGet.value);
                                     }
+                                    //if (value != null)
+                                    //{
+                                    //    Console.WriteLine("VCP code : " + vcp.Code.ToString());
+                                    //    Console.WriteLine("VCP value : " + value.ToString());
+                                    //    vcp.Value.Add((int)value);
+                                    //}
                                 }
                             }
                         }
