@@ -7,4 +7,12 @@
 	  <Version>2.0.0.1</Version>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="DCF.Security" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
+  </ItemGroup>
+
 </Project>

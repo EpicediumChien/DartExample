@@ -262,11 +262,58 @@ namespace DDPM.SA.Plugin.CLIManager
                         //rst = CLI_Analytics_Consent(commandLineInput, command_guid);
                         return rst;
 
-                    case "ENERGESAVER":
+                    case "INAPPUPDATE":              //InAppUpdate               DDPMW-1329/1330
                         break;
-
+                    case "INAPPBRICONT":             //InAppBriCont              DDPMW-1342/1343
+                        break;
+                    case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
+                        break;
+                    case "INAPPRESTOREDEFAULTS":     //InAppRestoreDefaults      DDPMW-1333
+                        break;
+                    case "INAPPRESTORE":             //InAppRestore              Same as InAppRestoreDefaults
+                        break;
+                    case "RESTOREFACTORYDEFAULTS":   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
+                        break;
+                    case "SCREENNOTIFICATION":       //ScreenNotification        DDPMW-1901
+                        break;
+                    case "RESOLUTIONREFRESHRATE":    //ResolutionRefreshRate     DDPMW-1344
+                        break;
+                    case "USBCPRIORITIZATION":       //USBCPrioritization        DDPMW-1345
+                        break;
+                    case "ACTIVEINPUTSOURCE":        //ActiveInputSource         DDPMW-1346
+                        break;
+                    case "USBKVM":                   //USBKVM                    DDPMW-1347
+                        break;
+                    case "INAPPNETWORKKVM":          //InAppNetworkKVM           DDPMW-1599
+                        break;
+                    case "EASYARRANGELAYOUT":        //EasyArrangeLayout         DDPMW-1350
+                        break;
+                    case "INAPPCOLORPRESET":         //InAppColorPreset          DDPMW-1351/1352
+                        break;
+                    case "POWERNAP":                 //PowerNap                  DDPMW-1361
+                        break;
+                    case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
+                        break;
+                    case "COLLABSCREENSHARE":        //CollabScreenShare         DDPMW-1843
+                        break;
+                    case "HDR":                      //hdr                       DDPMW-1729
+                        break;
+                    case "ANTIFLICKER":              //AntiFlicker               DDPMW-1735
+                        break;
+                    case "MICSWITCH":                //MicSwitch                 DDPMW-1736
+                        break;
+                    case "AIAUTOFRAMING":            //AIAutoFraming             DDPMW-1742
+                        break;
+                    case "PRESENCEDETECTION":        //PresenceDetection         DDPMW-1747
+                        break;
+                    case "ANCMODE":                  //ancMode                   DDPMW-1853
+                        break;
+                    case "MICNOISECANCELLATION":     //micNoiseCancellation      DDPMW-1855
+                        break;
+                    case "WEARDETECTION":             //wearDetection             DDPMW-2093
+                        break;
                     default:
-                        response.Message = $"Feature {commandLineInput.TargetFeature} doesn't support as global setting";
+                        response.Message = $"Feature {commandLineInput.TargetFeature} doesn't in global setting support list";
                         response.Result = "FAIL";
                         rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                         break;
