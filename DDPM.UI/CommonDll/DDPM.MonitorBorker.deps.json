@@ -616,14 +616,11 @@
         },
         "runtime": {
           "DDPM.SA.Common.dll": {}
-<<<<<<< HEAD
-=======
         }
       },
       "DDPM.SA.Obfuscation/1.0.0": {
         "runtime": {
           "DDPM.SA.Obfuscation.dll": {}
->>>>>>> 0f6aef239f0ed5df40fda0b5ac8b0545a1f13780
         }
       },
       "DDPM.ShowOsd/2.0.0.5": {

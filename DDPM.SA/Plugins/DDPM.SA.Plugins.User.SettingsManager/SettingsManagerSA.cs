@@ -689,6 +689,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
         {
+            //0903 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
+
             string strReadJson = string.Empty;
             using (var reader = new StreamReader(filePath))
             {
@@ -710,6 +717,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> ExportPowerNapSettings(List<PowerNapSetting> powerNapSettings, string filePath)
         {
+            //0903 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
+
             if (powerNapSettings == null)
                 return Task.FromResult(false);
 
@@ -964,6 +978,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private string RunSerializeObject(List<PowerNapSetting> powerNapSettings, string filePath)
         {
+            //0903 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
+
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(powerNapSettings);
             using (StreamWriter writer = new StreamWriter(filePath))

@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.UX.WPF;
@@ -885,6 +886,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
         private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
         {
+            //0903 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
             return GetPrivateProfileInt(section, key, def, filePath);
         }
 
@@ -898,6 +905,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
         public static int _GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath)
         {
+            //0903 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
             return GetPrivateProfileString(section, key, def, retVal, size, filePath);
         }
         #endregion Read/Write INI file

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DDPM.SA.Common.Settings;
+using Newtonsoft.Json;
 using System.IO;
 
 namespace DDPM.UI.Common
@@ -284,6 +285,12 @@ namespace DDPM.UI.Common
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
+            //0903 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
             switch (type)
             {
                 case eDeviceCategory.KB:

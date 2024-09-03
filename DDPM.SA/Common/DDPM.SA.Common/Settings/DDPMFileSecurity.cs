@@ -1,4 +1,5 @@
-﻿using Dell.Client.Framework.Security;
+﻿using Dell.Client.Framework.Common;
+using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -16,6 +17,7 @@ using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -969,6 +971,13 @@ namespace DDPM.SA.Common.Settings
             FileInfo fileInfo = new FileInfo(filePath);
             try
             {
+                string FileInfo;
+                if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+                {
+                    Console.WriteLine("File path: " + filePath + " invalid");
+                    info = $"IsFilePathValid: {filePath} invalid";
+                    return false;
+                }
                 // verify the ACLs using the ACLChecker class
                 var aclChecker = new AclChecker();
                 if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
@@ -1088,6 +1097,12 @@ namespace DDPM.SA.Common.Settings
                     throw new ArgumentException("File isn't exist. ");
                 }
 
+                string FileInfo;
+                if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+                {
+                    throw new ArgumentException("Invalid file path.");
+                }
+
                 // Perform Input Validation: check file path
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
@@ -1132,6 +1147,12 @@ namespace DDPM.SA.Common.Settings
 
             try
             {
+                string FileInfo;
+                if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+                {
+                    throw new ArgumentException("Invalid file path.");
+                }
+
                 // Load the executable into a byte array
                 byte[] fileBytes = File.ReadAllBytes(filePath);
 
@@ -1165,6 +1186,11 @@ namespace DDPM.SA.Common.Settings
             {
                 string filePath = JsonPath.Trim();
 
+                string FileInfo;
+                if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+                {
+                    throw new ArgumentException("Invalid file path.");
+                }
                 /*
                 *   STEP 1: Create our Authenticode signature verifier
                 *
@@ -1247,6 +1273,12 @@ namespace DDPM.SA.Common.Settings
 
         public static byte[] GetFileSHA_256(string filePath, out string info)
         {
+            string FileInfo;
+            if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
+
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
@@ -1273,6 +1305,12 @@ namespace DDPM.SA.Common.Settings
 
         public static byte[] GetFileSHA_512(string filePath, out string info)
         {
+            string FileInfo;
+            if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
+
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
@@ -1299,6 +1337,12 @@ namespace DDPM.SA.Common.Settings
 
         public static bool IsContainValidDigitalSignature(string filePath, out string info)
         {
+            string FileInfo;
+            if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
+
             info = "";
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
@@ -1521,6 +1565,12 @@ namespace DDPM.SA.Common.Settings
 
         public static X509Certificate2 LoadCertificate(string filePath)
         {
+            string FileInfo;
+            if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+            {
+                throw new ArgumentException("Invalid file path.");
+            }
+
             byte[] certBytes = File.ReadAllBytes(filePath);
             return new X509Certificate2(certBytes);
         }

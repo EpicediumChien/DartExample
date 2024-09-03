@@ -6,6 +6,7 @@
 //
 #endregion
 
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Exceptions;
 using Dell.Client.Framework.Security;
@@ -63,6 +64,13 @@ namespace NGA.Common.Helpers
                 {
                     log.Info($"{nameof(ParseTelemetryFiles)} {UserChoicesFile} not found");
                     return response;
+                }
+
+                //0903 Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+                {
+                    throw new ArgumentException("Invalid file path.");
                 }
 
                 string xmlText = ReadFile(log, fileSystem, filePath);

@@ -72,6 +72,11 @@ namespace DDPM.SA.Common.Security
             Process process = Process.GetProcessById((int)pid);
             string filePath = process.MainModule.FileName;
             Console.WriteLine("File path: " + filePath);
+            //0903 Elsa Add Security
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))
+            {
+                return false;
+            }
 
             //Need to check dll/exe thumbprint
             X509Certificate2 cert = DDPMFileSecurity.LoadCertificate(filePath);
