@@ -32,15 +32,41 @@ namespace DDPM.SA.Common
         //IT feature table
         private readonly List<string> Supported_IT_Feature = new List<string>()//ex: /get -app="telemetryconsent"
         {
-            "TELEMETRYCONSENT",
-            "ENGERSAVER"
+            "TELEMETRYCONSENT",         //TelemetryConsent          DDPMW-1339
+            "INAPPUPDATE",              //InAppUpdate               DDPMW-1329/1330
+            "INAPPBRICONT",             //InAppBriCont              DDPMW-1342/1343
+            "INAPPAUTOBRITEMP",         //InAppAutoBriTemp          DDPMW-1341
+            "INAPPRESTOREDEFAULTS",     //InAppRestoreDefaults      DDPMW-1333
+            "INAPPRESTORE",             //InAppRestore              Same as InAppRestoreDefaults
+            "RESTOREFACTORYDEFAULTS",   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
+            "SCREENNOTIFICATION",       //ScreenNotification        DDPMW-1901
+            "RESOLUTIONREFRESHRATE",    //ResolutionRefreshRate     DDPMW-1344
+            "USBCPRIORITIZATION",       //USBCPrioritization        DDPMW-1345
+            "ACTIVEINPUTSOURCE",        //ActiveInputSource         DDPMW-1346
+            "USBKVM",                   //USBKVM                    DDPMW-1347
+            "INAPPNETWORKKVM",          //InAppNetworkKVM           DDPMW-1599
+            "EASYARRANGELAYOUT",        //EasyArrangeLayout         DDPMW-1350
+            "INAPPCOLORPRESET",         //InAppColorPreset          DDPMW-1351/1352
+            "POWERNAP",                 //PowerNap                  DDPMW-1361
+            "INAPPEXPORTSETTINGS",      //InAppExportSettings       DDPMW-1335
+            "COLLABSCREENSHARE",        //CollabScreenShare         DDPMW-1843
+            "HDR",                      //hdr                       DDPMW-1729
+            "ANTIFLICKER",              //AntiFlicker               DDPMW-1735
+            "MICSWITCH",                //MicSwitch                 DDPMW-1736
+            "AIAUTOFRAMING",            //AIAutoFraming             DDPMW-1742
+            "PRESENCEDETECTION",        //PresenceDetection         DDPMW-1747
+            "ANCMODE",                  //ancMode                   DDPMW-1853
+            "MICNOISECANCELLATION",     //micNoiseCancellation      DDPMW-1855
+            "WEARDETECTION"             //wearDetection             DDPMW-2093
         };
 
         //IT value table of IT feature
         private readonly List<string> Supported_IT_Value_Keyword = new List<string>()//ex: /set -app=telemetryconsent -value=on,"lock"
         {
             "UNLOCK",
-            "LOCK"
+            "LOCK",
+            "ENABLE",
+            "DISABLE"
         };
 
         //---
@@ -135,7 +161,7 @@ namespace DDPM.SA.Common
             //Here are 3 possible conditions,
             // 1.only normal command (pass to CLIProxy)
             // 2.only IT command (process it at CLIManager)
-            // 3.both IT and normal commands in one request (process cli at CLIManager and then bypass command to CLIProxy)
+            // 3.both IT and normal commands in one request (process cli at CLIManager and then pass command to CLIProxy)
             // It's not possible that both isITCommands and isNormalCommands are false.
             public bool isITCommands { get; set; } = false;
 
@@ -212,12 +238,7 @@ namespace DDPM.SA.Common
                 _Log.Error("[CLI] 2nd code should be the format like -Display=targetFeature ");
                 return commandInput;
             }
-            /*string[] str2 = str[1].Split(".");
-            if (str.Length < 2)
-            {
-                _Log.Error("[CLI] 2nd code should be the format like -name=Display.Feature");
-                return null;
-            }*/
+
             commandInput.TargetType = str[0].Replace("-", "");
             commandInput.TargetFeature = str[1];
             // 08-24 Casper: fine tune the string parser process
@@ -243,8 +264,7 @@ namespace DDPM.SA.Common
             }
             try
             {
-                //for (int i = 0; i < args.Length; i++)
-                for (int i = 2; i < args.Length; i++) //arg[0] should be command (ex: get, set, ...), arg[1] should be Type (ex: -name=...)
+                for (int i = 2; i < args.Length; i++) //arg[0] should be command (ex: get, set, ...), arg[1] should be Type (ex: -display= or -keyboard=...)
                 {
                     if (args[i] != "")
                     {
