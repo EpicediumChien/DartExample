@@ -67,7 +67,8 @@
             ThumbprintHash.DELL_Hash1,
             ThumbprintHash.DELL_Hash2,
             ThumbprintHash.WST_Hash,
-            ThumbprintHash.WST2_Hash
+            ThumbprintHash.WST2_Hash,
+            ThumbprintHash.QDA1_Hash
         };
     }
 }
