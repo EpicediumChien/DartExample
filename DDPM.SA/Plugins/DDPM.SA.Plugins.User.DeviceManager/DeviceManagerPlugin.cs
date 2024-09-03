@@ -2751,24 +2751,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region ImpExpSettings
 
-        private object FindVCPValue(Dictionary<EDID, Dictionary<object, object>> cacheTable, EDID edid, byte code)
+        private Dictionary<object, object> FindVCPTable(Dictionary<EDID, Dictionary<object, object>> cacheTable, EDID edid)
         {
             if (cacheTable.Count > 0)
             {
                 var Keys = cacheTable.Keys.ToList();
-                foreach (var Key in Keys)
+                foreach (EDID Key in Keys)
                 {
                     if (Key.Equals(edid))
                     {
-                        if (cacheTable[Key].ContainsKey(code))
-                        {
-                            bool rc = false;
-                            var result = new object();
-                            rc = cacheTable[Key].TryGetValue(code, out result);
-
-                            writelog("[DeviceManagePlugin] Is GetFromCacheTable success?? : result => " + rc.ToString());
-                            return (rc ? result : null);
-                        }
+                        return cacheTable[Key];
                     }
                 }
             }
@@ -2778,33 +2770,43 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path)
         {
             //need test, but need other function
-            ////if vcp code is null, get vcp code
-            //List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            //Dictionary<EDID, Dictionary<object, object>> VCPTable = _DisplayManagerPlugin.GetVCPCacheTable().Result;
-            //if (settings != null)
-            //{
-            //    foreach (DDPMMonitorSettings monitorSettings in settings)
-            //    {
-            //        if (monitorSettings != null)
-            //        {
-            //            if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
-            //            {
-            //                foreach (VCP vcp in monitorSettings.VCPs)
-            //                {
-            //                    if (vcp.Value != null)
-            //                    {
-            //                        byte b_vcpcode = Convert.ToByte(vcp.Code);
-            //                        object value = FindVCPValue(VCPTable, monitorInfo.edid, b_vcpcode);
-            //                        if (value != null)
-            //                        {
-            //                            vcp.Value.Add((int)value);
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+            //if vcp code is null, get vcp code
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            Dictionary<EDID, Dictionary<object, object>> VCPTable = _DisplayManagerPlugin.GetVCPCacheTable().Result;
+            if (settings != null)
+            {
+                foreach (DDPMMonitorSettings monitorSettings in settings)
+                {
+                    if (monitorSettings != null)
+                    {
+                        if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
+                        {
+                            Dictionary<object, object> cacheTable = new Dictionary<object, object>();
+                            cacheTable = FindVCPTable(VCPTable, monitorInfo.edid);
+                            foreach (VCP vcp in monitorSettings.VCPs)
+                            {
+                                if (vcp.Value != null)
+                                {
+                                    byte b_vcpcode = Convert.ToByte(vcp.Code);
+                                    //object value = cacheTable[b_vcpcode];
+                                    ObjGetVCP objGet = GetVCPCapability(monitorInfo, b_vcpcode).Result;
+                                    if (objGet.result)
+                                    {
+                                        writelog($"VCP code: {vcp.Code.ToString()}, value:{objGet.value.ToString()}");
+                                        vcp.Value.Add((int)objGet.value);
+                                    }
+                                    //if (value != null)
+                                    //{
+                                    //    Console.WriteLine("VCP code : " + vcp.Code.ToString());
+                                    //    Console.WriteLine("VCP value : " + value.ToString());
+                                    //    vcp.Value.Add((int)value);
+                                    //}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             //expot settings
             if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
