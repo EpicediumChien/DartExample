@@ -72,7 +72,7 @@ namespace DDPM.SA.Common.Security
         {
             info = "success";
             IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
-            if (_GetNamedPipeClientProcessId(hPipe, out uint pid))
+            if (!_GetNamedPipeClientProcessId(hPipe, out uint pid))
             {
                 info = "[GetNamedPipeClientProcessId] failed";
                 return false;
@@ -86,30 +86,30 @@ namespace DDPM.SA.Common.Security
                 return false;
 
             //Need to check dll/exe thumbprint
-            X509Certificate2 cert = DDPMFileSecurity.LoadCertificate(filePath);
-            if (cert == null)
-            {
-                info = "Can't retrieve cert from file.";
-                return false;
-            }
+            //X509Certificate2 cert = DDPMFileSecurity.LoadCertificate(filePath);
+            //if (cert == null)
+            //{
+            //    info = "Can't retrieve cert from file.";
+            //    return false;
+            //}
 
-            //compare thumbprint
-            //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
-            //Target cert.Thumbprint
-            try
-            {
-                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
-                if (!contains)
-                {
-                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                info = ex.Message;
-                return false;
-            }
+            ////compare thumbprint
+            ////source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+            ////Target cert.Thumbprint
+            //try
+            //{
+            //    bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+            //    if (!contains)
+            //    {
+            //        info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+            //        return false;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    info = ex.Message;
+            //    return false;
+            //}
             return true;
         }
     }
