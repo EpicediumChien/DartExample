@@ -99,11 +99,11 @@ namespace DDPM.SA.Common
         public bool IsSupported_HDRType;
         public bool IsSupported_DualResolutionType;
         public bool IsSupported_VisionEngineType;
-        public Gaming_GameEnhancementMode Current_GameEnhancementMode;
-        public Gaming_ResponseTime Current_ResponseTime;
-        public Gaming_DarkStabilizer Current_DarkStabilizer;
-        public Gaming_HDRType Current_HDRType;
-        public Gaming_DualResolutionType Current_DualResolutionType;
+        public Gaming_GameEnhancementMode? Current_GameEnhancementMode;
+        public Gaming_ResponseTime? Current_ResponseTime;
+        public Gaming_DarkStabilizer? Current_DarkStabilizer;
+        public Gaming_HDRType? Current_HDRType;
+        public Gaming_DualResolutionType? Current_DualResolutionType;
         public Gaming_VisionEngineType Current_VisionEngineType;
         public bool[] IsEnable_VisionEngineType;
         public List<Gaming_GameEnhancementMode> Supported_GameEnhancementMode;
@@ -116,11 +116,11 @@ namespace DDPM.SA.Common
 
         public GamingDisplayPropertiesInfo()
         {
-            Current_GameEnhancementMode = Gaming_GameEnhancementMode.Disable;
-            Current_ResponseTime = Gaming_ResponseTime.Disable;
-            Current_DarkStabilizer = Gaming_DarkStabilizer.Disable;
-            Current_HDRType = Gaming_HDRType.Disable;
-            Current_DualResolutionType = Gaming_DualResolutionType.Unknow;
+            Current_GameEnhancementMode = null;
+            Current_ResponseTime = null;
+            Current_DarkStabilizer = null;
+            Current_HDRType = null;
+            Current_DualResolutionType = null;
             IsEnable_VisionEngineType = new bool[6];
             Supported_GameEnhancementMode = new List<Gaming_GameEnhancementMode>();
             Supported_ResponseTime = new List<Gaming_ResponseTime>();
