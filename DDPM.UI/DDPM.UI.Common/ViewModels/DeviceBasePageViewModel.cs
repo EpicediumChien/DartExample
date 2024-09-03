@@ -689,6 +689,18 @@ namespace DDPM.UI.Common.ViewModels
                 {
                     rightHeader.IsShown = homeDev.HasCapability_PipPbp;
                 }
+
+                //If CurrentSelected module is "PIP/PBP" 
+                if (mg.HeaderSelectedIndex == 1)
+                {
+                    //Need update the index to 0 (InputSource)
+                    mg.HeaderSelectedIndex = 0;
+
+                    if (SelectedGroup == mg)
+                    {
+                        RightViewHeaderSelectedIndex = mg.HeaderSelectedIndex;
+                    }
+                }
             }
 
             //KVM Capability
@@ -775,6 +787,18 @@ namespace DDPM.UI.Common.ViewModels
                 {
                     rightHeader.IsShown = !homeDev.HasCapability_Gaming;
                     LogInfo($"  * DisplayProperties page isShown={rightHeader.IsShown}");
+
+                    //If CurrentSelected module is "DisplayProperties" 
+                    if (mg.HeaderSelectedIndex == 2)
+                    {
+                        //Need update the index to 1
+                        mg.HeaderSelectedIndex = 1;
+
+                        if (SelectedGroup == mg)
+                        {
+                            RightViewHeaderSelectedIndex = mg.HeaderSelectedIndex;
+                        }
+                    }
                 }
             }
 

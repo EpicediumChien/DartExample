@@ -606,6 +606,7 @@
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
           "DCF.UX.WPF": "2.2.4.1",
+          "DDPM.SA.Obfuscation": "1.0.0",
           "Dell.RPC.Transport": "1.5.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "DellClientFramework": "6.4.5.1",
@@ -615,6 +616,14 @@
         },
         "runtime": {
           "DDPM.SA.Common.dll": {}
+<<<<<<< HEAD
+=======
+        }
+      },
+      "DDPM.SA.Obfuscation/1.0.0": {
+        "runtime": {
+          "DDPM.SA.Obfuscation.dll": {}
+>>>>>>> 0f6aef239f0ed5df40fda0b5ac8b0545a1f13780
         }
       },
       "DDPM.ShowOsd/2.0.0.5": {
@@ -1081,6 +1090,11 @@
       "sha512": ""
     },
     "DDPM.SA.Common/2.0.0.5": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DDPM.SA.Obfuscation/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

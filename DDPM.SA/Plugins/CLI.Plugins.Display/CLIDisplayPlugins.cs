@@ -1342,13 +1342,13 @@ namespace DDPM.CLI.Plugins.Display
 
             if (type == "SET")
             {
+                writelog($"Brightness set entry");
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     S_Brightness_RESPONSE.Result = "Format Error";
                     S_Brightness_RESPONSE.Message = "Format Error";
                     return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
                 }
-
                 if (index.Count == 0 && serviceTag.Count == 0)
                 {
                     bool rc = false;
@@ -1356,6 +1356,18 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
                         S_Brightness_RESPONSE = new CLI_RESPONSE();
+                        if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                        {
+                            S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
+                            S_Brightness_RESPONSE.Message = "Format Error";
+                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                        }
+                        else if (!monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                        {
+                            S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                            S_Brightness_RESPONSE.Message = "Format Error";
+                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                        }
 
                         rc = SetVCPCode(devMgr, monitor, "0x10", value).Result;
 
@@ -1401,10 +1413,24 @@ namespace DDPM.CLI.Plugins.Display
                     bool IsFailhappened = false;
                     foreach (string idx in index)
                     {
+                        writelog($"Brightness set idx entry");
                         S_Brightness_RESPONSE = new CLI_RESPONSE();
 
                         bool rc = false;
                         int nidx = int.Parse(idx);
+                        if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                        {
+                            S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
+                            S_Brightness_RESPONSE.Message = "Format Error";
+                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                        }
+                        else if (!_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                        {
+                            S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                            S_Brightness_RESPONSE.Message = "Format Error";
+                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                        }
+
                         rc = SetVCPCode(devMgr, nidx, "0x10", value).Result;
 
                         S_Brightness_RESPONSE.Model = _AllInfoMonitors[nidx].AliasDeviceName;
@@ -1443,12 +1469,25 @@ namespace DDPM.CLI.Plugins.Display
 
                     foreach (string tag in serviceTag)
                     {
+                        writelog($"Brightness set tag entry");
                         S_Brightness_RESPONSE = new CLI_RESPONSE();
 
                         bool rc = false;
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
+                            if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            {
+                                S_Brightness_RESPONSE.Result = "Format Error, Brightness lager then 100";
+                                S_Brightness_RESPONSE.Message = "Format Error";
+                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            }
+                            else if (!mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 45)
+                            {
+                                S_Brightness_RESPONSE.Result = "Format Error, LUMINANCE samller then 45";
+                                S_Brightness_RESPONSE.Message = "Format Error";
+                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Brightness_RESPONSE, Formatting.Indented));
+                            }
                             rc = SetVCPCode(devMgr, mo, "0x10", value).Result;
 
                             S_Brightness_RESPONSE.Model = mo.AliasDeviceName;
@@ -1486,8 +1525,13 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                     if (IsFailhappened)
+                    {
+                        writelog($"Brightness set fail {output}");
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                    }
+
                 }
+                writelog($"Brightness get return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else if (type == "GET")
@@ -1498,6 +1542,7 @@ namespace DDPM.CLI.Plugins.Display
                     bool IsFailhappened = false;
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
+                        writelog($"Brightness get entry");
                         G_Brightness_RESPONSE = new CLI_Get_Brightness_RESPONSE();
 
                         rc = GetVCPCode(devMgr, monitor, "0x10").Result;
@@ -1556,6 +1601,7 @@ namespace DDPM.CLI.Plugins.Display
                     bool IsFailhappened = false;
                     foreach (string idx in index)
                     {
+                        writelog($"Brightness get idx entry");
                         G_Brightness_RESPONSE = new CLI_Get_Brightness_RESPONSE();
 
                         ObjGetVCP rc = new ObjGetVCP();
@@ -1616,6 +1662,7 @@ namespace DDPM.CLI.Plugins.Display
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
+                            writelog($"Brightness get tag entry");
                             rc = GetVCPCode(devMgr, mo, "0x10").Result;
 
                             G_Brightness_RESPONSE.Model = mo.AliasDeviceName;
@@ -1665,8 +1712,12 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     if (IsFailhappened)
+                    {
+                        writelog($"Brightness get fail {output}");
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                    }
                 }
+                writelog($"Brightness get return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else
@@ -1709,9 +1760,24 @@ namespace DDPM.CLI.Plugins.Display
                     bool IsFailhappened = false;
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
+                        writelog($"Contrast set entry");
                         S_Contrast_RESPONSE = new CLI_RESPONSE();
-                        if (monitor.CapabilityDic.ContainsKey("12"))
+                        if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                        {
+                            S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL lager then 100";
+                            S_Contrast_RESPONSE.Message = "Format Error";
+                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                        }
+                        else if (monitor.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 25)
+                        {
+                            S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL samller then 25";
+                            S_Contrast_RESPONSE.Message = "Format Error";
+                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                        }
+                        else if (monitor.CapabilityDic.ContainsKey("12"))
+                        {
                             rc = SetVCPCode(devMgr, monitor, "0x12", value).Result;
+                        }
                         else
                         {
                             S_Contrast_RESPONSE.Model = monitor.AliasDeviceName;
@@ -1759,11 +1825,26 @@ namespace DDPM.CLI.Plugins.Display
                     bool IsFailhappened = false;
                     foreach (string idx in index)
                     {
+                        writelog($"Contrast set idx entry");
                         S_Contrast_RESPONSE = new CLI_RESPONSE();
 
                         bool rc = false;
-                        if (_AllInfoMonitors[Convert.ToInt32(idx)].CapabilityDic.ContainsKey("12"))
+                        if (_AllInfoMonitors[Convert.ToInt32(idx)].CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                        {
+                            S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL lager then 100";
+                            S_Contrast_RESPONSE.Message = "Format Error";
+                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                        }
+                        else if (_AllInfoMonitors[Convert.ToInt32(idx)].CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 25)
+                        {
+                            S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL samller then 25";
+                            S_Contrast_RESPONSE.Message = "Format Error";
+                            return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                        }
+                        else if (_AllInfoMonitors[Convert.ToInt32(idx)].CapabilityDic.ContainsKey("12"))
+                        {
                             rc = SetVCPCode(devMgr, Convert.ToInt32(idx), "0x12", value).Result;
+                        }
                         else
                         {
                             S_Contrast_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].AliasDeviceName;
@@ -1805,6 +1886,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     foreach (string tag in serviceTag)
                     {
+                        writelog($"Contrast set tag entry");
                         S_Contrast_RESPONSE = new CLI_RESPONSE();
 
                         bool rc = false;
@@ -1812,8 +1894,22 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             rc = SetVCPCode(devMgr, mo, "0x12", value).Result;
-                            if (mo.CapabilityDic.ContainsKey("12"))
+                            if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) > 100)
+                            {
+                                S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL lager then 100";
+                                S_Contrast_RESPONSE.Message = "Format Error";
+                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                            }
+                            else if (mo.CapabilityDic.ContainsKey("12") && Int32.Parse(value) < 25)
+                            {
+                                S_Contrast_RESPONSE.Result = "Format Error, CONTRASTLEVEL samller then 25";
+                                S_Contrast_RESPONSE.Message = "Format Error";
+                                return ((int)CLI_ExitCode.fail_FormantError, JsonConvert.SerializeObject(S_Contrast_RESPONSE, Formatting.Indented));
+                            }
+                            else if (mo.CapabilityDic.ContainsKey("12"))
+                            {
                                 rc = SetVCPCode(devMgr, mo, "0x12", value).Result;
+                            }
                             else
                             {
                                 S_Contrast_RESPONSE.Model = mo.AliasDeviceName;
@@ -1853,8 +1949,12 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                     if (IsFailhappened)
+                    {
+                        writelog($"Contrast set fail");
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                    }
                 }
+                writelog($"Contrast set return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else if (type == "GET")
@@ -1865,6 +1965,7 @@ namespace DDPM.CLI.Plugins.Display
                     bool IsFailhappened = false;
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
+                        writelog($"Contrast get entry");
                         G_Contrast_RESPONSE = new CLI_Get_Contrast_RESPONSE();
 
                         rc = GetVCPCode(devMgr, monitor, "0x12").Result;
@@ -1897,13 +1998,17 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     if (IsFailhappened)
+                    {
+                        writelog($"Contrast set fail");
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                    }
                 }
                 else
                 {
                     bool IsFailhappened = false;
                     foreach (string idx in index)
                     {
+                        writelog($"Contrast get idx entry");
                         G_Contrast_RESPONSE = new CLI_Get_Contrast_RESPONSE();
 
                         ObjGetVCP rc = new ObjGetVCP();
@@ -1939,6 +2044,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     foreach (string tag in serviceTag)
                     {
+                        writelog($"Contrast get tag entry");
                         G_Contrast_RESPONSE = new CLI_Get_Contrast_RESPONSE();
 
                         ObjGetVCP rc = new ObjGetVCP();
@@ -1977,8 +2083,12 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     if (IsFailhappened)
+                    {
+                        writelog($"Contrast set fail");
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                    }
                 }
+                writelog($"Contrast get return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else
@@ -2845,6 +2955,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 if (index.Count == 0 && serviceTag.Count == 0)
                 {
+                    writelog($"FWVersion entry");
                     bool IsFailhappened = false;
                     foreach (MonitorInfo monitor in _AllInfoMonitors)
                     {
@@ -2878,13 +2989,18 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     if (IsFailhappened)
+                    {
+                        writelog($"FWVersion fail");
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                    }
+
                 }
                 else
                 {
                     bool IsFailhappened = false;
                     foreach (string idx in index)
                     {
+                        writelog($"FWVersion idx entry");
                         G_FW_RESPONSE = new CLI_Get_FW_RESPONSE();
 
                         if (Convert.ToInt32(idx) < _AllInfoMonitors.Count)
@@ -2935,6 +3051,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     foreach (string tag in serviceTag)
                     {
+                        writelog($"FWVersion tag entry");
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
@@ -2969,8 +3086,13 @@ namespace DDPM.CLI.Plugins.Display
                     }
 
                     if (IsFailhappened)
+                    {
+                        writelog($"FWVersion idx tag fail");
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
+                    }
+
                 }
+                writelog($"FWVersion return value exit {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else
@@ -3771,6 +3893,7 @@ namespace DDPM.CLI.Plugins.Display
             //    return (int)CLI_ExitCode.null_device_manager;
             //}
 
+            writelog($"ReadColorPreset Entry");
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
@@ -3786,6 +3909,7 @@ namespace DDPM.CLI.Plugins.Display
                         Message = "Empty input value"
                     };
                     output = JsonConvert.SerializeObject(ret, Formatting.Indented);
+                    writelog($"ReadColorPreset SET return value fail:{output}");
                     return ((int)CLI_ExitCode.fail_FormantError, output);
                 }
 
@@ -3802,6 +3926,7 @@ namespace DDPM.CLI.Plugins.Display
                         //n_index = _AllInfoMonitors.FindIndex(x => x.edid == monitor.edid);
 
                         //r = devMgr.WriteColorPreset(n_index.ToString(), monitor, value).Result;
+                        writelog($"WriteColorPreset set Entry");
 
                         r = devMgr.WriteColorPreset(monitor, value).Result;
 
@@ -3833,6 +3958,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         // 20240619 jim modify
                         //r = devMgr.WriteColorPreset(idx, _AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
+                        writelog($"WriteColorPreset set idx Entry");
                         r = devMgr.WriteColorPreset(_AllInfoMonitors[System.Convert.ToInt32(idx)], value).Result;
 
                         // jim modify 20240608
@@ -3871,6 +3997,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             // 20240619 jim modify
                             //r = devMgr.WriteColorPreset(n_index.ToString(), mo, value).Result;
+                            writelog($"WriteColorPreset set tag Entry");
                             r = devMgr.WriteColorPreset(mo, value).Result;
 
                             _Set_SupportedColorPreset_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
@@ -3897,8 +4024,10 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 if (ever_fail)
                 {
+                    writelog($"WriteColorPreset fail return exit value{output}");
                     return ((int)CLI_ExitCode.functional_error, output);
                 }
+                writelog($"WriteColorPreset return exit value{output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else if (type == "GET")//Dean 0726, should check its wording, not only use "else" to do get command
@@ -3913,6 +4042,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
+                        writelog($"ReadCurrentColorPreset Entry");
                         _ActiveColorPreset = devMgr.ReadCurrentColorPreset(monitor).Result;
 
                         _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -3943,6 +4073,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idx in index)
                     {
+                        writelog($"ReadCurrentColorPreset idx Entry");
                         _ActiveColorPreset = devMgr.ReadCurrentColorPreset(_AllInfoMonitors[System.Convert.ToInt32(idx)]).Result;
 
                         _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base(idx);
@@ -3974,6 +4105,7 @@ namespace DDPM.CLI.Plugins.Display
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
+                            writelog($"ReadCurrentColorPreset tag Entry");
                             _ActiveColorPreset = devMgr.ReadCurrentColorPreset(mo).Result;
 
                             _Get_ActiveColorPresetList_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
@@ -3998,6 +4130,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
+                writelog($"ReadCurrentColorPreset return exit value{output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else//Dean 0726 should check if command not support
@@ -4009,6 +4142,7 @@ namespace DDPM.CLI.Plugins.Display
                     Message = "Un-supported command"
                 };
                 output = JsonConvert.SerializeObject(ret, Formatting.Indented);
+                writelog($"ReadCurrentColorPreset fail return exit value{output}");
                 return ((int)CLI_ExitCode.unknow_command, output);
             }
         }
@@ -7761,6 +7895,7 @@ namespace DDPM.CLI.Plugins.Display
             string on_off = string.Empty;
             bool lock_unlock = true;
 
+            writelog($"Autocolorpreset Entry");
             if (commandLineInput.Command == "CONFIGURE")
             {
                 if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
@@ -7781,6 +7916,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     on_off = "on";
                                     lock_unlock = true;
+                                    writelog($"Autocolorpreset ON,LOCK Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
@@ -7791,6 +7927,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     on_off = "on";
                                     lock_unlock = false;
+                                    writelog($"Autocolorpreset ON,UNLOCK Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
@@ -7801,6 +7938,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     on_off = "off";
                                     lock_unlock = true;
+                                    writelog($"Autocolorpreset OFF,LOCK Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
@@ -7811,6 +7949,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     on_off = "off";
                                     lock_unlock = false;
+                                    writelog($"Autocolorpreset OFF,UNLOCK Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
@@ -7819,6 +7958,7 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             default:
                                 {
+                                    writelog($"Autocolorpreset default Entry");
                                     S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
                                     S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                                     S_Autocolorpreset_RESPONSE.Result = "FAIL";
@@ -7828,6 +7968,7 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                         }
                         output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                        writelog($"Autocolorpreset exit return value: {output}");
                     }
                 }
                 else
@@ -7849,6 +7990,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     on_off = "on";
                                     lock_unlock = true;
+                                    writelog($"Autocolorpreset ON,LOCK Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
@@ -7859,6 +8001,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     on_off = "on";
                                     lock_unlock = false;
+                                    writelog($"Autocolorpreset ON,UNLOCK Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
@@ -7869,6 +8012,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     on_off = "off";
                                     lock_unlock = true;
+                                    writelog($"Autocolorpreset OFF,LOCK Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
@@ -7879,6 +8023,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     on_off = "off";
                                     lock_unlock = false;
+                                    writelog($"Autocolorpreset OFF,UNLOCK Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
                                     S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
@@ -7887,6 +8032,7 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                             default:
                                 {
+                                    writelog($"Autocolorpreset default Entry");
                                     S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
                                     S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                                     S_Autocolorpreset_RESPONSE.Result = "FAIL";
@@ -7896,6 +8042,7 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                         }
                         output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                        writelog($"Autocolorpreset idx exit return value: {output}");
                     }
                     foreach (string tag in commandLineInput.ServiceTag)
                     {
@@ -7917,6 +8064,7 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         on_off = "on";
                                         lock_unlock = true;
+                                        writelog($"Autocolorpreset ON,LOCK Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                         retcode = true;
                                         S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
@@ -7927,6 +8075,7 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         on_off = "on";
                                         lock_unlock = false;
+                                        writelog($"Autocolorpreset ON,UNLOCK Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                         retcode = true;
                                         S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
@@ -7937,6 +8086,7 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         on_off = "off";
                                         lock_unlock = true;
+                                        writelog($"Autocolorpreset OFF,LOCK Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                         retcode = true;
                                         S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
@@ -7947,6 +8097,7 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         on_off = "off";
                                         lock_unlock = false;
+                                        writelog($"Autocolorpreset OFF,UNLOCK Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                         retcode = true;
                                         S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
@@ -7955,6 +8106,7 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                 default:
                                     {
+                                        writelog($"Autocolorpreset default Entry");
                                         S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
                                         S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                                         S_Autocolorpreset_RESPONSE.Result = "FAIL";
@@ -7964,6 +8116,7 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                             }
                             output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                            writelog($"Autocolorpreset tag exit return value: {output}");
                         }
                     }
                 }
@@ -7981,6 +8134,7 @@ namespace DDPM.CLI.Plugins.Display
                 S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                 output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
             }
+            writelog($"Autocolorpreset exit return value: {output}");
             return ((int)CLI_ExitCode.success, output);
         }
 
@@ -8120,6 +8274,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> MonitorCounts(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
+            writelog($"MonitorCounts default Entry");
             CLI_RESPONSE cli_Response = new CLI_RESPONSE();
 
             if (_AllInfoMonitors == null)
@@ -8144,6 +8299,7 @@ namespace DDPM.CLI.Plugins.Display
             output += "\n}";
             output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
 
+            writelog($"MonitorCounts exit return value:{output}");
             return ((int)CLI_ExitCode.success, output);
         }
 

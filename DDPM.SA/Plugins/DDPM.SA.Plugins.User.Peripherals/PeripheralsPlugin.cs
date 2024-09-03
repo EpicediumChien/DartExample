@@ -1029,10 +1029,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     if (item is ILogicalDeviceDock _logicalDeviceDock)
                     {
                         info.MonitorCount = _logicalDeviceDock.MonitorCount;
-                        info.DockData = _logicalDeviceDock.DockData;
                         info.DockInfo = _logicalDeviceDock.DockInfo;
                         info.DockType = _logicalDeviceDock.DockType;
                         info.DockServiceTag = _logicalDeviceDock.DockServiceTag;
+                        info.FirmwareVersion = _logicalDeviceDock.DockPackageFwVersion;
                         info.DockPackageFwVersion = _logicalDeviceDock.DockPackageFwVersion;
                         info.DockFwUpdateStatus = _logicalDeviceDock.DockFwUpdateStatus;
                         info.DockTBTConnectionStatus = _logicalDeviceDock.DockTBTConnectionStatus;
@@ -1041,13 +1041,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             string textString = System.Text.Encoding.UTF8.GetString(_logicalDeviceDock.DockData);
                             Debug.WriteLine(textString);
                             DockData dockData = JsonSerializer.Deserialize<DockData>(textString);
+                            info.DockData = dockData;
                             info.ModelNumber = dockData.MarketingName;
                             info.Name = $"Dell Dock {dockData.MarketingName}";
+                            if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
+                            {
+                                info.Name = $"Dell Dock {dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
+                            }
                             if (string.IsNullOrEmpty(info.DockServiceTag))
                             {
                                 info.DockServiceTag = dockData.ServiceTag;
                             }
-                            if (string.IsNullOrEmpty(info.FirmwareVersion))
+                            if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
                             {
                                 info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
                             }
