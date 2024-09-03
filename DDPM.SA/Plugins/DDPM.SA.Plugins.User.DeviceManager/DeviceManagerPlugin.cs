@@ -1459,7 +1459,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PeripheralsPlugin.SetWearDetection(newValue, deviceId);
             return Task.FromResult(true);
         }
-
+        public Task SetWearDetectionForCLI(int newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetWearDetectionForCLI requested ...");
+            writelog($"Target SetWearDetectionForCLI is {deviceId}");
+            _PeripheralsPlugin.SetWearDetectionForCLI(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+        
         public Task SetBusyLight(bool newValue, Guid deviceId)
         {
             writelog("DeviceMangerPlugin received SetBusyLight requested ...");

@@ -123,7 +123,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public async Task<DeviceHelper> GetDevices()
         {
-            ScanDevices();
             if (_deviceHelper != null)
             {
                 return await Task.Run(() => _deviceHelper);
@@ -670,7 +669,27 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
             }
         }
-
+        public void SetWearDetectionForCLI(int newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
+                {
+                    if (newValue == 0)
+                        newValue |= 0b00000000;
+                    else
+                        newValue |= 0b00000111;
+                    _logicalDeviceHeadset.SetWearDetection(newValue);
+                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    if (_deviceInfo != null)
+                    {
+                        _deviceInfo.WearDetection = newValue;
+                        break;
+                    }
+                }
+            }
+        }
         public void SetBusyLight(bool newValue, Guid deviceId)
         {
             foreach (var device in _iDeviceManager.Devices)
