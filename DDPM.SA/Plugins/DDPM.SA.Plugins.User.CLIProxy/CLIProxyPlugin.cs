@@ -440,6 +440,18 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             }
                             break;
 
+                        case "INAPPUPDATE":
+                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            DDPMSettings data_update = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerApp.CLI_SW_FW_Update(Log, data_update, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            //if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
+                            //{
+                                //UpdateUINotify no = new UpdateUINotify();
+                                //no.UI_Field_Name = "INAPPUPDATE";
+                                //_DevManagerPlugin.OnUIUpdateNotify(no);
+                            //}
+                            break;
+
                         default:
                             _CliManagerPlugin.WriteCommandResult(Response_TargetFeatureNotSupport(commandLineInput, e.command_guid_string));
                             return;
@@ -463,133 +475,6 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     _CliManagerPlugin.WriteCommandResult(cliEventResult);
             });
         }
-
-        /*private CLIEventResult CLI_Analytics_Consent(CommandLineInput commandLineInput, string action_guid)
-        {
-            if (commandLineInput == null)
-                return Response_EmptyCommandInput(action_guid);
-
-            CLIEventResult result = new CLIEventResult();
-            result.ticket = DateTime.Now;
-            result.command_guid_string = action_guid;
-
-            CLI_RESPONSE response = new CLI_RESPONSE();
-            response.Command = commandLineInput.Command;
-            response.TargetFeature = commandLineInput.TargetFeature;
-
-            DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
-            if (data == null)
-            {
-                response.Message = "Fail to read application setting";
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.fail_read_settings;
-                return result;
-            }
-            if (data.UserSettings == null || data.LockSettings == null)
-            {
-                response.Message = "Got empty setting";
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.fail_read_settings;
-                return result;
-            }
-
-            if (commandLineInput.Command.Equals("GET")) //ex: cli.exe /get -app=TelemetryConsent
-            {
-                if (commandLineInput.Options.Count > 0)
-                {
-                    response.Message = "GET command doesn't support options";
-                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                    result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                    return result;
-                }
-
-                Console.WriteLine($"Telemetry Consent: is function enable? => {data.UserSettings.isTelemetryConsentOn}");
-                Console.WriteLine($"Telemetry Consent: is Locked? => = {data.LockSettings.Lock_TelemetryConsent}");
-                response.Value = (data.UserSettings.isTelemetryConsentOn ? "On," : "Off,") + (data.LockSettings.Lock_TelemetryConsent ? "Lock" : "Unlock");
-                response.Result = "Completed";
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.success;
-
-                return result;
-            }
-            if (commandLineInput.Command.Equals("SET")) //ex: cli.exe /set -app=TelemetryConsent -value=on / off / on,lock / on,unlock / off,lock / off,unlock
-            {
-                if (commandLineInput.Options == null || commandLineInput.Options.Count == 0)
-                {
-                    response.Message = "Option is missing";
-                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                    result.ExitCode = (int)CLI_ExitCode.fail_no_analytics_options;
-                    return result;
-                }
-                if (commandLineInput.Options.Count > 1)
-                {
-                    WriteLog("Telemetry Consent: doesn't support multiple value options");
-                    response.Result = "Fail";
-                    response.Message = "Telemetry Consent: doesn't support multiple value options";
-                    result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                    return result;
-                }
-                CommandType_Option op = commandLineInput.Options[0];
-                op.Option_Value.Replace(".", ",");
-                List<string> values = op.Option_Value.Split(",").ToList();
-
-                if (!op.Option_Name.ToUpper().Equals("VALUE"))
-                {
-                    WriteLog($"Telemetry Consent: option name [{op.Option_Name}] not support");
-                    response.Result = "Fail";
-                    response.Message = $"Telemetry Consent: option name [{op.Option_Name}] not support";
-                    result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                    return result;
-                }
-
-                foreach (string value in values)
-                {
-                    if (value.ToUpper().Equals("ON"))
-                    {
-                        data.UserSettings.isTelemetryConsentOn = true;
-                    }
-                    else if (value.ToUpper().Equals("OFF"))
-                    {
-                        data.UserSettings.isTelemetryConsentOn = false;
-                    }
-                    else if (value.ToUpper().Equals("LOCK"))
-                    {
-                        data.LockSettings.Lock_TelemetryConsent = true;
-                    }
-                    else if (value.ToUpper().Equals("UNLOCK"))
-                    {
-                        data.LockSettings.Lock_TelemetryConsent = false;
-                    }
-                    else
-                    {
-                        response.Message = $"Telemetry Consent: value format error with {value}";
-                        Console.WriteLine(response.Message);
-                        response.Result += " FAILED";
-                        result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                        result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                        return result;
-                    }
-                    continue;
-                }
-                response.Result = "Completed";
-                response.Message += "Completed";
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.success;
-
-                _DevManagerPlugin.SetAppConfigData(data);
-                //call devcie manager to notice UI change
-                //!!!!!!!!!!!
-
-                return result;
-            }
-
-            response.Message = " Un-support command";
-            response.Result = " Un-support command";
-            result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-            result.ExitCode = (int)CLI_ExitCode.unknow_command;
-            return result;
-        }*/
-
         #endregion
 
         #region ICLIProxy implementation

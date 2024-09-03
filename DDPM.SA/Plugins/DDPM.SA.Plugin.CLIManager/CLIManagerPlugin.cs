@@ -246,87 +246,83 @@ namespace DDPM.SA.Plugin.CLIManager
                 response.Message = tmp.msg;
                 response.Result = "FAIL";
                 rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                rst.ExitCode = tmp.code;
                 return rst;
             }
 
-            if (commandLineInput.PluginsType.Equals("APP"))
+            // !!!
+            // Implement this switch-case, should match the Support_Lock_Feature in ICLICommandTable.cs
+            // !!!
+            switch (commandLineInput.TargetFeature)
             {
-                // !!!
-                // Implement this switch-case, should match the Support_Lock_Feature in ICLICommandTable.cs
-                // !!!
-                switch (commandLineInput.TargetFeature)
-                {
-                    case "TELEMETRYCONSENT":
-                        //If return null means command isn't belong to IT, bypass to user SA(CLIProxy).
+                case "TELEMETRYCONSENT":
+                    //If return null means command isn't belong to IT, bypass to user SA(CLIProxy).
+                    if (commandLineInput.PluginsType.Equals("APP"))
                         rst = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
-                        //rst = CLI_Analytics_Consent(commandLineInput, command_guid);
-                        return rst;
+                    else
+                        rst = CLIHandlerApp.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
 
-                    case "INAPPUPDATE":              //InAppUpdate               DDPMW-1329/1330
-                        break;
-                    case "INAPPBRICONT":             //InAppBriCont              DDPMW-1342/1343
-                        break;
-                    case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
-                        break;
-                    case "INAPPRESTOREDEFAULTS":     //InAppRestoreDefaults      DDPMW-1333
-                        break;
-                    case "INAPPRESTORE":             //InAppRestore              Same as InAppRestoreDefaults
-                        break;
-                    case "RESTOREFACTORYDEFAULTS":   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
-                        break;
-                    case "SCREENNOTIFICATION":       //ScreenNotification        DDPMW-1901
-                        break;
-                    case "RESOLUTIONREFRESHRATE":    //ResolutionRefreshRate     DDPMW-1344
-                        break;
-                    case "USBCPRIORITIZATION":       //USBCPrioritization        DDPMW-1345
-                        break;
-                    case "ACTIVEINPUTSOURCE":        //ActiveInputSource         DDPMW-1346
-                        break;
-                    case "USBKVM":                   //USBKVM                    DDPMW-1347
-                        break;
-                    case "INAPPNETWORKKVM":          //InAppNetworkKVM           DDPMW-1599
-                        break;
-                    case "EASYARRANGELAYOUT":        //EasyArrangeLayout         DDPMW-1350
-                        break;
-                    case "INAPPCOLORPRESET":         //InAppColorPreset          DDPMW-1351/1352
-                        break;
-                    case "POWERNAP":                 //PowerNap                  DDPMW-1361
-                        break;
-                    case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
-                        break;
-                    case "COLLABSCREENSHARE":        //CollabScreenShare         DDPMW-1843
-                        break;
-                    case "HDR":                      //hdr                       DDPMW-1729
-                        break;
-                    case "ANTIFLICKER":              //AntiFlicker               DDPMW-1735
-                        break;
-                    case "MICSWITCH":                //MicSwitch                 DDPMW-1736
-                        break;
-                    case "AIAUTOFRAMING":            //AIAutoFraming             DDPMW-1742
-                        break;
-                    case "PRESENCEDETECTION":        //PresenceDetection         DDPMW-1747
-                        break;
-                    case "ANCMODE":                  //ancMode                   DDPMW-1853
-                        break;
-                    case "MICNOISECANCELLATION":     //micNoiseCancellation      DDPMW-1855
-                        break;
-                    case "WEARDETECTION":             //wearDetection             DDPMW-2093
-                        break;
-                    default:
-                        response.Message = $"Feature {commandLineInput.TargetFeature} doesn't in global setting support list";
-                        response.Result = "FAIL";
-                        rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                        break;
-                }
-            }
-            else
-            {
-                //CLI_RESPONSE response = new CLI_RESPONSE();
-                //response.TargetFeature = commandLineInput.TargetFeature;
-                //response.Command = commandLineInput.Command;
-                response.Message = $"{commandLineInput.TargetFeature} doesn't support as global setting";
-                response.Result = "FAIL";
-                rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                case "INAPPUPDATE":              //InAppUpdate               DDPMW-1329/1330
+                    if (commandLineInput.PluginsType.Equals("APP"))
+                        rst = CLIHandlerApp.CLI_SW_FW_Update(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerApp.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
+                    break;
+                case "INAPPBRICONT":             //InAppBriCont              DDPMW-1342/1343
+                    break;
+                case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
+                    break;
+                case "INAPPRESTOREDEFAULTS":     //InAppRestoreDefaults      DDPMW-1333
+                    break;
+                case "INAPPRESTORE":             //InAppRestore              Same as InAppRestoreDefaults
+                    break;
+                case "RESTOREFACTORYDEFAULTS":   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
+                    break;
+                case "SCREENNOTIFICATION":       //ScreenNotification        DDPMW-1901
+                    break;
+                case "RESOLUTIONREFRESHRATE":    //ResolutionRefreshRate     DDPMW-1344
+                    break;
+                case "USBCPRIORITIZATION":       //USBCPrioritization        DDPMW-1345
+                    break;
+                case "ACTIVEINPUTSOURCE":        //ActiveInputSource         DDPMW-1346
+                    break;
+                case "USBKVM":                   //USBKVM                    DDPMW-1347
+                    break;
+                case "INAPPNETWORKKVM":          //InAppNetworkKVM           DDPMW-1599
+                    break;
+                case "EASYARRANGELAYOUT":        //EasyArrangeLayout         DDPMW-1350
+                    break;
+                case "INAPPCOLORPRESET":         //InAppColorPreset          DDPMW-1351/1352
+                    break;
+                case "POWERNAP":                 //PowerNap                  DDPMW-1361
+                    break;
+                case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
+                    break;
+                case "COLLABSCREENSHARE":        //CollabScreenShare         DDPMW-1843
+                    break;
+                case "HDR":                      //hdr                       DDPMW-1729
+                    break;
+                case "ANTIFLICKER":              //AntiFlicker               DDPMW-1735
+                    break;
+                case "MICSWITCH":                //MicSwitch                 DDPMW-1736
+                    break;
+                case "AIAUTOFRAMING":            //AIAutoFraming             DDPMW-1742
+                    break;
+                case "PRESENCEDETECTION":        //PresenceDetection         DDPMW-1747
+                    break;
+                case "ANCMODE":                  //ancMode                   DDPMW-1853
+                    break;
+                case "MICNOISECANCELLATION":     //micNoiseCancellation      DDPMW-1855
+                    break;
+                case "WEARDETECTION":             //wearDetection             DDPMW-2093
+                    break;
+                default:
+                    response.Message = $"Feature {commandLineInput.TargetFeature} doesn't in global setting support list";
+                    response.Result = "FAIL";
+                    rst.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                    break;
             }
 
             return rst;
@@ -441,130 +437,6 @@ namespace DDPM.SA.Plugin.CLIManager
 
             return ((int)CLI_ExitCode.success, "Success");
         }
-
-        //If return null means it's not IT command
-        /*private CLIEventResult CLI_Analytics_Consent(CommandLineInput commandLineInput, string action_guid)
-        {
-            //Expected format: /set -app=TelemetryConsent -value=on,lock / on,unlock / off,lock / off,unlock
-
-            CLIEventResult result = new CLIEventResult();
-            result.ticket = DateTime.Now;
-            result.command_guid_string = action_guid;
-
-            CLI_RESPONSE response = new CLI_RESPONSE();
-            response.Command = commandLineInput.Command;
-            response.TargetFeature = commandLineInput.TargetFeature;
-
-            if (commandLineInput.Options == null || commandLineInput.Options.Count == 0)
-            {
-                response.Message = "Option is missing";
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.fail_no_analytics_options;
-                return result;
-            }
-            if (commandLineInput.Options.Count > 1)
-            {
-                WriteLog("Telemetry Consent: doesn't support multiple value options");
-                response.Result = "Fail";
-                response.Message = "Telemetry Consent: doesn't support multiple value options";
-                result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                return result;
-            }
-            CommandType_Option op = commandLineInput.Options[0];
-
-            //Retrieve IT settings first
-            DDPMITConfig data = new DDPMITConfig();
-            var get_IT_setting_result = RetrieveITSettings(out data);
-            if (get_IT_setting_result.code != (int)CLI_ExitCode.success)
-            {
-                response.Message = get_IT_setting_result.msg;
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = get_IT_setting_result.code;
-                return result;
-            }
-
-            if (!commandLineInput.Command.Equals("SET"))
-            {
-                WriteLog("Telemetry Consent: for global IT setting the command should be SET");
-                response.Result = "Fail";
-                response.Value = op.Option_Value;
-                response.Message = "Telemetry Consent: LOCK/UNLOCK only support SET command";
-                result.ExitCode = (int)CLI_ExitCode.fail_analytics_command_notsupport;
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                return result;
-            }
-
-            result.ExitCode = (int)CLI_ExitCode.success;
-
-            if (!op.Option_Name.ToUpper().Equals("VALUE"))
-            {
-                WriteLog($"Telemetry Consent: option name [{op.Option_Name}] not support");
-                response.Result = "Fail";
-                response.Value = op.Option_Value;
-                response.Message = $"Telemetry Consent: option name [{op.Option_Name}] not support";
-                result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                return result;
-            }
-            bool status = true;
-            List<string> ops = op.Option_Value.Split(",").ToList();
-            if (ops.FindIndex(x => x.ToUpper().Trim().Equals("UNLOCK"))>= 0)
-            {
-                if (data.Lock_TelemetryConsent != false)
-                {
-                    data.Lock_TelemetryConsent = false;
-                    status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "Lock_TelemetryConsent" }).Result;
-                }
-                else
-                {
-                    response.Message = "TelemetryConsent is UNLOCKed already";
-                    status = true;
-                }
-            }
-            else if (ops.FindIndex(x => x.ToUpper().Trim().Equals("LOCK")) >= 0)
-            {
-                if (data.Lock_TelemetryConsent != true)
-                {
-                    data.Lock_TelemetryConsent = true;
-                    status = _SettingsPluginIT.WriteITConfigData(data, new List<string>() { "Lock_TelemetryConsent" }).Result;
-                }
-                else
-                {
-                    response.Message = "TelemetryConsent is LOCKed already";
-                    status = true;
-                }
-            }
-            else
-            {
-                WriteLog($"Telemetry Consent: option value [{op.Option_Value}] not support");
-                response.Result = "Fail";
-                response.Message = $"Telemetry Consent: option value [{op.Option_Value}] not support";
-                response.Value = op.Option_Value;
-                result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                return result;
-            }
-
-            if (status)
-            {
-                response.Result = "Completed";
-                response.Value = op.Option_Value;
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.success;
-                return result;
-            }
-            else
-            {
-                response.Message = "Write to IT config failed";
-                response.Result = "FAIL";
-                response.Value = op.Option_Value;
-                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
-                result.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
-                return result;
-            }
-        }*/
-
         #endregion
     }
 }
