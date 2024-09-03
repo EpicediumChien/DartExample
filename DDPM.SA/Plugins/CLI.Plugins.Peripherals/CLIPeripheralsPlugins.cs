@@ -83,7 +83,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (_commandLineInput.PluginsType.Equals("AUDIO"))
                     _commandLineInput.PluginsType = "HEADSET";
 
-                if (commandLineInput.Command.Equals("SET"))
+                if (commandLineInput.Command.Equals("SET") || commandLineInput.Command.Equals("CONFIGURE"))
                 {
                     exitcode = SetPeripheralProperty();
                     string json = JsonConvert.SerializeObject(SetResults, Formatting.Indented);
@@ -178,7 +178,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", "N/A", "N/A"));
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
-           
+
             if (_commandLineInput.GuidString.Count == 0)
             {
                 _deviceinfo.ForEach(x =>
@@ -202,8 +202,6 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         else
                         {
-                            if (_commandLineInput.TargetFeature.Equals("FWVERSION"))
-                                _commandLineInput.TargetFeature = "FIRMWAREVERSION";
                             GetResults.Add(new CLI_PeripheralRESPONSE(di, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                         }
                     }
@@ -231,14 +229,14 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 if (_deviceinfo == null || _deviceinfo.Count == 0)
                 {
-                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", "SET", _commandLineInput.TargetFeature, "FAIL", "Device not found", "N/A", "N/A"));
+                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found", "N/A", "N/A"));
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty;
                 }
                 _deviceinfo.ForEach(x =>
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
-                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", "SET", _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
+                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
                     }
                 });
             }
@@ -253,18 +251,18 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType) && x.ID == guid)
                     {
-                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", "SET", _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
+                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
                         found = true;
                     }
                 });
                         if (!found)
                         {
-                            SetResults.Add(new CLI_PeripheralRESPONSE($"{{{guid}}}", "SET", _commandLineInput.TargetFeature, "FAIL", "Device not found"));
+                            SetResults.Add(new CLI_PeripheralRESPONSE($"{{{guid}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                         }
                     }
                     else
                     {
-                        SetResults.Add(new CLI_PeripheralRESPONSE(x, "SET", _commandLineInput.TargetFeature, "FAIL", "Invalid Guid"));
+                        SetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Invalid Guid"));
                     }
                 });
             }
@@ -273,22 +271,33 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (op.Option_Name.ToUpper() == "VALUE")
                 {
                     value = op.Option_Value;
-                    switch (value)
+                    if (value == null) // if there is no option value
                     {
-                        case "ENABLE":
-                        case "ON":
-                            val = 1;
-                            bl = true;
-                            break;                            
-                        case "DISABLE":
-                        case "OFF":
-                            val = 0;
-                            bl = false;
-                            break;
-                        default:
-                            value = op.Option_Value;
-                            break;
-
+                        SetFailResults("no setting value");
+                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
+                    }
+                    else if ( int.TryParse(value, out int tmp)) // for the function argument is number
+                    {
+                        val = tmp;
+                    }
+                    else //for the function argument is int(0/1) or bool
+                    {
+                        switch (value)
+                        {
+                            case "ENABLE": //spec is only defined enable/disable, on/off
+                            case "ON":
+                                val = 1;
+                                bl = true;
+                                break;
+                            case "DISABLE":
+                            case "OFF":
+                                val = 0;
+                                bl = false;
+                                break;
+                            default: // currently, CLI peripheral didn't accept others setting type
+                                SetFailResults("Invalid setting value");
+                                return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
+                        }
                     }
                     break;
                 }
@@ -317,11 +326,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         taskB = _devMgr.SetCollaborationBlinkEffectEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                case "COLLABORATIONCAMERAENABLE":
+                case "COLLABCAMERAENABLE":
                         taskB = _devMgr.SetCollaborationCameraEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                case "COLLABORATIONCHATENABLE":
+                case "COLLABCHATENABLE":
                         taskB = _devMgr.SetCollaborationChatEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
@@ -333,11 +342,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         taskB = _devMgr.SetCollaborationKeyEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
-                case "COLLABORATIONMICENABLE":
+                case "COLLABMICMUTE":
                         taskB = _devMgr.SetCollaborationMicEnable;
-                        RunTaskB(bl);
+                        RunTaskB(!bl);
                         return (int)CLI_ExitCode.success;
-                case "COLLABORATIONSCREENSHAREENABLE":
+                case "COLLABSCREENSHARE":
                         taskB = _devMgr.SetCollaborationScreenShareEnable;
                         RunTaskB(bl);
                         return (int)CLI_ExitCode.success;
@@ -391,9 +400,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
 
                 case "TOUCHSCROLLSENSITIVITYLEVEL":
-                        taskA = _devMgr.SetTouchScrollSensitivityLevel;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetTouchScrollSensitivityLevel;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "UNPAIR":
                     SetResults.ForEach(x =>
                     {
@@ -421,29 +430,29 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
                 //Headset&Speaker
                 case "SETWIREDAUDIOIMICNSENABLE":
-                        taskB = _devMgr.SetWiredAudioIMicNSEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetWiredAudioIMicNSEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETWIREDAUDIOMICMUTESOUNDENABLE":
-                        taskB = _devMgr.SetWiredAudioMicMuteSoundEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetWiredAudioMicMuteSoundEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETWIREDAUDIOVOLUMEADJUSTMENTTONE":
-                        taskA = _devMgr.SetWiredAudioVolumeAdjustmentTone;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetWiredAudioVolumeAdjustmentTone;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "ANCMODE":
-                        taskA = _devMgr.SetAncMode;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetAncMode;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "SETANCGAIN":
-                        taskA = _devMgr.SetAncGain;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetAncGain;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "SETSELECTEDPRESET":
-                        taskA = _devMgr.SetSelectedPreset;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetSelectedPreset;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 //case "SETBANDSGAIN":
                 //    if (!int.TryParse(value, out val))
                 //    {
@@ -457,34 +466,34 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "MICNOISECANCELLATION":
-                        taskB = _devMgr.SetMicNoiseCancellation;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetMicNoiseCancellation;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETSIDETONE":
-                        taskB = _devMgr.SetSidetone;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetSidetone;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETSIDETONELEVEL":
-                        taskA = _devMgr.SetSidetoneLevel;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetSidetoneLevel;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "WEARDETECTION":
                         taskA = _devMgr.SetWearDetectionForCLI;
                         //taskA = _devMgr.SetWearDetection;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
                 case "SETBUSYLIGHT":
-                        taskB = _devMgr.SetBusyLight;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetBusyLight;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETVOICEGUIDANCE":
-                        taskB = _devMgr.SetVoiceGuidance;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetVoiceGuidance;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETMICNCINCOMING":
-                        taskB = _devMgr.SetMicNCIncoming;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetMicNCIncoming;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 //case "SETEQUALIZERVALUES":
                 //    if (!bool.TryParse(value, out bl))
                 //    {
@@ -498,9 +507,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "SETISMICENUMERATIONON":
-                        taskB = _devMgr.SetIsMicEnumerationOn;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetIsMicEnumerationOn;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 default:
                     SetFailResults("Invalid TargetFeature");
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty_Property;
@@ -894,7 +903,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                 {
                     cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
-                    cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
+                    //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
                     cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{index++} Firmware update {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}");
                 }
                 return true;
@@ -1004,7 +1013,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                     {
                         cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
-                        cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
+                        //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
                         cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"Ready to start updating Device:{fwUpdateInfo.DeviceName} to Version:{fwUpdateInfo.TheLatestVersion}");
                     }
                     cli_FWU_RESPONSE.OutputLog(cli_FWU_RESPONSE, commandLineInput);

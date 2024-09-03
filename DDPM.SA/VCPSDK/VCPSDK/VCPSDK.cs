@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using Dell.Client.Framework.Security;
+using System.Diagnostics;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace VCPSDK
@@ -83,18 +85,79 @@ namespace VCPSDK
         {
             DDPMEvent?.Invoke(this, new EventArgsjson(response));
         }
+        public static X509Certificate2 LoadCertificate(string filePath)
+        {
+            byte[] certBytes = File.ReadAllBytes(filePath);
+            return new X509Certificate2(certBytes);
+        }
+
         private bool NamedPipeServerSecurity(NamedPipeClientStream pipeServer)
         {
-            if (GetNamedPipeServerProcessId(pipeServer.SafePipeHandle.DangerousGetHandle(), out uint pid))
+            string filePath = string.Empty;
+            string info = string.Empty;
+            if (!GetNamedPipeServerProcessId(pipeServer.SafePipeHandle.DangerousGetHandle(), out uint pid))
             {
-                Console.WriteLine("pid: " + pid);
-                Process process = Process.GetProcessById((int)pid);
-                string filePath = process.MainModule.FileName;
-                Console.WriteLine("File path: " + filePath);
-                //check file path security
+                Console.WriteLine("Get server process id over pipeline failed");
+                return false;
             }
-            return true; // temporarily
-            //return false;
+            Console.WriteLine("pid: " + pid);
+            Process process = Process.GetProcessById((int)pid);
+            filePath = process.MainModule.FileName;
+            Console.WriteLine("File path: " + filePath);
+            //check file path security
+            if(!IsFilePathValid(filePath, out info))
+            {
+                Console.WriteLine($"File({filePath}) path check failed ({info}).");
+                return false;
+            }
+            
+            //Need to check dll/exe thumbprint
+            X509Certificate2 cert = LoadCertificate(filePath);
+            if (cert == null)
+            {
+                Console.WriteLine("Can't retrieve cert from file.");
+                return false;
+            }
+
+            //compare thumbprint
+            //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+            //Target cert.Thumbprint
+            try
+            {
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    Console.WriteLine($"No matched cert. thumbprint in file is {cert.Thumbprint}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }            
+            return true;
+        }
+
+        public static bool IsFilePathValid(string filePath, out string info)
+        {
+            info = "Valid";
+            //check return code with Enum PathCheckErrorCodes
+            PathCheckErrorCodes result = PathHelper.ValidateFilePath(filePath);
+            if (result != PathCheckErrorCodes.SUCCESS)
+            {
+                info = $"IsFilePathValid: {nameof(result)}";
+                return false;
+            }
+            return true;
+        }
+
+        private static byte[] ConvertThumbprintToByteArray(string thumbprint)
+        {
+            return Enumerable.Range(0, thumbprint.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(thumbprint.Substring(x, 2), 16))
+                             .ToArray();
         }
     }
 }

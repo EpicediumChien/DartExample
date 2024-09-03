@@ -102,7 +102,7 @@ namespace DDPM.SA.Common
         private int _tiltSensitivity;
         private int _tipSensitivity;
         private int _monitorCount;
-        private byte[] _dockData;
+        private DockData _dockData;
         private byte[] _dockInfo;
         private int _dockType;
         private string _dockService;
@@ -1278,7 +1278,7 @@ namespace DDPM.SA.Common
             }
         }
 
-        public byte[] DockData
+        public DockData DockData
         {
             get => _dockData;
             set

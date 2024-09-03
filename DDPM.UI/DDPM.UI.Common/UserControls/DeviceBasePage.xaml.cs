@@ -51,9 +51,15 @@ namespace DDPM.UI.Common.UserControls
             {
                 if (!viewModel.RightViewHeaders[viewModel.RightViewHeaderSelectedIndex].IsShown)
                 {
+                    int newIndex = 0;
+                    ModuleGroup? mg = viewModel.SelectedGroup;
+                    if (mg != null)
+                    {
+                        newIndex = mg.HeaderSelectedIndex;
+                    }
                     //Try to select [0] (NOTE. It's assume that the Headers[0] will be always isShown)
-                    if (viewModel.RightViewHeaders[0].IsShown)
-                        viewModel.RightViewHeaderSelectedIndex = 0;
+                    if (viewModel.RightViewHeaders[newIndex].IsShown)
+                        viewModel.RightViewHeaderSelectedIndex = newIndex;
                 }
             }
             rightViewHeaderCtrl.SelectedIndex = viewModel.RightViewHeaderSelectedIndex;

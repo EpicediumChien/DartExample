@@ -6,45 +6,46 @@
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
-	
-  <PropertyGroup>
-  
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-	  <Version>2.0.0.37</Version>
-	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Optimize>False</Optimize>
-  </PropertyGroup>
+	<PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
-    <PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
-  </ItemGroup>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
+		<Version>2.0.0.37</Version>
+		<Configurations>Debug;Release;Debug_NKVM</Configurations>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
-    <ProjectReference Include="..\Plugins\CLI.Plugins.Display\CLI.Plugins.Display.csproj" />
-    <ProjectReference Include="..\Plugins\CLI.Plugins.Peripherals\CLI.Plugins.Peripherals.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.ActionsManger\DDPM.SA.Plugins.User.ActionsManger.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.CLIProxy\DDPM.SA.Plugins.User.CLIProxy.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.ColorPreset\DDPM.SA.Plugins.User.ColorPreset.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DeviceManager\DDPM.SA.Plugins.User.DeviceManager.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayManager\DDPM.SA.Plugins.User.DisplayManager.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayProperties\DDPM.SA.Plugins.User.DisplayProperties.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DTPProxy\DDPM.SA.Plugins.User.DTPProxy.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.EasyArrange\DDPM.SA.Plugins.User.EasyArrange.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Hotkey\DDPM.SA.Plugins.User.Hotkey.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.NetworkKVM\DDPM.SA.Plugins.User.NetworkKVM.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Peripherals\DDPM.SA.Plugins.User.Peripherals.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.PipPbpManager\DDPM.SA.Plugins.User.PipPbpManager.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.SchedulerManager\DDPM.SA.Plugins.User.SchedulerManager.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.SettingsManager\DDPM.SA.Plugins.User.SettingsManager.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.USBKVM\DDPM.SA.Plugins.User.USBKVM.csproj" />
-    <ProjectReference Include="..\Plugins\VcpCore.Plugins\VcpCore.Plugins.csproj" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<Optimize>False</Optimize>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
+		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+		<ProjectReference Include="..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
+		<ProjectReference Include="..\Plugins\CLI.Plugins.Display\CLI.Plugins.Display.csproj" />
+		<ProjectReference Include="..\Plugins\CLI.Plugins.Peripherals\CLI.Plugins.Peripherals.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.ActionsManger\DDPM.SA.Plugins.User.ActionsManger.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.CLIProxy\DDPM.SA.Plugins.User.CLIProxy.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.ColorPreset\DDPM.SA.Plugins.User.ColorPreset.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DeviceManager\DDPM.SA.Plugins.User.DeviceManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayManager\DDPM.SA.Plugins.User.DisplayManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DisplayProperties\DDPM.SA.Plugins.User.DisplayProperties.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.DTPProxy\DDPM.SA.Plugins.User.DTPProxy.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.EasyArrange\DDPM.SA.Plugins.User.EasyArrange.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Hotkey\DDPM.SA.Plugins.User.Hotkey.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.NetworkKVM\DDPM.SA.Plugins.User.NetworkKVM.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.Peripherals\DDPM.SA.Plugins.User.Peripherals.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.PipPbpManager\DDPM.SA.Plugins.User.PipPbpManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.SchedulerManager\DDPM.SA.Plugins.User.SchedulerManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.SettingsManager\DDPM.SA.Plugins.User.SettingsManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.USBKVM\DDPM.SA.Plugins.User.USBKVM.csproj" />
+		<ProjectReference Include="..\Plugins\VcpCore.Plugins\VcpCore.Plugins.csproj" />
+	</ItemGroup>
 
 </Project>

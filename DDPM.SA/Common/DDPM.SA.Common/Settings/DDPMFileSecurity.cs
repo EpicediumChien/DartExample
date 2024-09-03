@@ -15,6 +15,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -621,7 +622,7 @@ namespace DDPM.SA.Common.Settings
             }
             return true;
         }
-
+        
         /// <summary>
         /// Normal user only can read but admin has full right
         /// </summary>

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
     <ProjectReference Include="..\VcpCore.Interfaces\VcpCore.Interfaces.csproj" />
   </ItemGroup>
 
