@@ -181,5 +181,155 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             }
         }
 
+        [Test]
+        public void TestAddColorPresetForMonitorConfig()
+        {
+            //var dismonitor = displayPlugin.GetMonitors();"Standard/Native"
+            string modelName = monitorInfo1.edid.ModelName;
+            string serialNumber = monitorInfo1.edid.SerialNumber;
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard/Native', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string appName = "Command Prompt";
+            string colorPreset_Name = "Standard/Native";
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard/Native", IconName = "cmd.exe" });
+
+            var AddColorPreset_resullt = colorPresetPlugin.AddColorPresetForMonitorConfig(monitorInfo1, appName, colorPreset_Name, supported_preset, monitorConfigs2).Result; //add Standard
+            Assert.IsNotNull(AddColorPreset_resullt);
+            Assert.Greater(AddColorPreset_resullt.Count, 0);
+            Assert.That(colorPreset_Name, Is.EqualTo(AddColorPreset_resullt[0].PresetForManual));
+            Assert.IsTrue(AddColorPreset_resullt[0].AppInfo.ContainsKey("Command Prompt"));
+        }
+
+
+        [Test]
+        public void TestChangeColorPresetForMonitorConfig()
+        {
+            string modelName = monitorInfo1.edid.ModelName;
+            string serialNumber = monitorInfo1.edid.SerialNumber;
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string appName = "Command Prompt";
+            string colorPreset_Name = "Custom Color";
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
+            int index_config = 0;
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            int count = 0;
+            if (index_config >= 0)
+            {
+                var ChangeColorPreset_resullt = colorPresetPlugin.ChangeColorPresetForMonitorConfig(monitorInfo1, appName, colorPreset_Name, monitorConfigs1).Result; //change Standard to Custom Color
+                Assert.IsNotNull(ChangeColorPreset_resullt);
+                Assert.Greater(ChangeColorPreset_resullt.Count, 0);
+                Assert.IsTrue(ChangeColorPreset_resullt[0].AppInfo.ContainsKey("Command Prompt"));
+                Assert.That(colorPreset_Name, Is.EqualTo(ChangeColorPreset_resullt[0].AppInfo[appName].ColorPresetName));
+            }
+            else
+            {
+                var ChangeColorPreset_resullt = colorPresetPlugin.ChangeColorPresetForMonitorConfig(monitorInfo1, appName, colorPreset_Name, monitorConfigs2).Result;
+                Assert.IsNotNull(ChangeColorPreset_resullt);
+                Assert.That(count, Is.EqualTo(ChangeColorPreset_resullt.Count));
+            }
+        }
+
+        [Test]
+        public void TestDeleteColorPresetForMonitorConfig()
+        {
+            string modelName = monitorInfo1.edid.ModelName;
+            string serialNumber = monitorInfo1.edid.SerialNumber;
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string appName = "Command Prompt";
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
+            int index_config = 0;
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            int count = 0;
+            if (index_config >= 0)
+            {
+                var DeleteColorPreset_resullt = colorPresetPlugin.DeleteColorPresetForMonitorConfig(monitorInfo1, appName, monitorConfigs1).Result; //delete appname AppInfo
+                Assert.IsNotNull(DeleteColorPreset_resullt);
+                Assert.That(count, Is.EqualTo(DeleteColorPreset_resullt[0].AppInfo.Count));
+            }
+            else
+            {
+                var DeleteColorPreset_resullt = colorPresetPlugin.DeleteColorPresetForMonitorConfig(monitorInfo1, appName, monitorConfigs2).Result; //delete appname
+                Assert.IsNotNull(DeleteColorPreset_resullt);
+                Assert.That(count, Is.EqualTo(DeleteColorPreset_resullt.Count));
+            }
+        }
+
+
+        [Test]
+        public void TestLaunch_MonitorBorker()
+        {
+            IDeviceManagerSA deviceManagerPlugin = null;
+            MonitorInfo m = null;
+            colorPresetPlugin.Launch_MonitorBorker(m, deviceManagerPlugin); //MonitorInfo is null
+            Assert.IsFalse(false);
+
+            var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            var DeviceManagerSA = DeviceManagerSAMock.Object;
+            monitorInfo1.DisplayName = "display1";
+            colorPresetPlugin.Launch_MonitorBorker(monitorInfo1, DeviceManagerSA); //MonitorInfo is not null
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestAutoSetColorPresetForMonitorConfig()
+        {
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string on_off1 = "on";
+            string on_off2 = "off";
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
+            int index_config = 0;
+            int runType = 1;
+            int runType2 = 0;
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 0, AppInfo = appInfo } };
+            ISettingsManagerDev settingsPlugin_;
+            IDeviceManagerSA _deviceManagerPlugin;
+            bool WriteColorPresetSettings = true;
+            Mock<ISettingsManagerDev> settingsPluginManagerDev = new Mock<ISettingsManagerDev>();
+            var settingsPluginManagerDev_ = settingsPluginManagerDev.Object;
+            settingsPluginManagerDev.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs1));
+            settingsPluginManagerDev.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(WriteColorPresetSettings));
+            PrivateObject colorPresetprivateObject = new PrivateObject(colorPresetPlugin);
+            colorPresetprivateObject.SetFieldOrProperty("_SettingsPlugin", settingsPluginManagerDev_);
+
+            var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            var DeviceManagerSA = DeviceManagerSAMock.Object;
+            var monitorBorkerWin = new MainWindow(DeviceManagerSA, monitorInfo1);
+            colorPresetprivateObject.SetFieldOrProperty("MonitorBorkerWin", monitorBorkerWin);
+
+            if (on_off1 == "on")
+            {
+                if (index_config >= 0)
+                {
+                    var AutoSetColorPreset_resullt = colorPresetPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo1, on_off1, settingsPluginManagerDev_, DeviceManagerSA).Result;   //set ColorPreset RunType Auto 1
+                    Assert.IsNotNull(AutoSetColorPreset_resullt);
+                    Assert.IsTrue(AutoSetColorPreset_resullt);
+                }
+            }
+            if (on_off2 == "off")
+            {
+                if (index_config >= 0)
+                {
+                    var AutoSetColorPreset_resullt2 = colorPresetPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo1, on_off2, settingsPluginManagerDev_, DeviceManagerSA).Result;//set ColorPreset RunType Manual 0
+                    Assert.IsNotNull(AutoSetColorPreset_resullt2);
+                    Assert.IsTrue(AutoSetColorPreset_resullt2);
+                }
+            }
+        }
+
     }
 }

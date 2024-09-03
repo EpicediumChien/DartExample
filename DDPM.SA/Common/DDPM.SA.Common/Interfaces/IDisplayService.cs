@@ -142,35 +142,21 @@ namespace DDPM.SA.Common
         #region Gaming
 
         event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
-
-        Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
-
-        Task<bool> GetCurrentGameEnhancementMode(MonitorInfo monitorInfo, ref Gaming_GameEnhancementMode GameEnhancementMode);
-
-        Task<bool> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo, ref Gaming_ResponseTime ResponseTime);
-
-        Task<bool> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo, ref Gaming_DarkStabilizer DarkStabilizer);
-
-        Task<bool> GetCurrentGaming_HDRType(MonitorInfo monitorInfo, ref Gaming_HDRType HDRType);
-
-        Task<bool> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo, ref Gaming_DualResolutionType DualResolutionType);
-
-        Task<bool> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, ref GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo);
-
+        Task<GamingDisplayPropertiesInfo> GetGamingProperties_SupportedList(MonitorInfo monitorInfo);
+        Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo);
+        Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo);
+        Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo);
+        Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo);
+        Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo);
+        Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo);
+        Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo);
         Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
-
         Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
-
         Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
-
         Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
-
         Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
-
         Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
-
         Task<bool> SwitchGaming_VisionEngineType(MonitorInfo monitorInfo, Gaming_VisionEngineType VisionEngineType);
-
         #endregion Gaming
     }
 }

@@ -1034,8 +1034,12 @@ namespace VcpCore.Plugins
                 bool rc = Set_VCPCapability(monitorInfoX, code, val, true);
 
                 if (rc)
-                    SetToCacheTable(monitorInfoX, code, val);
-
+                {
+                    if (!code.Equals(0xEC))//Add by Bruce, EC needs to get again from VCP every time
+                    {
+                        SetToCacheTable(monitorInfoX, code, val);
+                    }
+                }
                 return rc;  //Task.CompletedTask;
             }
             else
@@ -1782,7 +1786,7 @@ namespace VcpCore.Plugins
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToUInt32(key).ToString("X")));
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable value is " + ((value is string) ? value.ToString() : Convert.ToUInt32(value).ToString("X")));
-            
+
             if (_CacheTable.Count > 0)
             {
                 bool IsExist = false;
@@ -1805,7 +1809,7 @@ namespace VcpCore.Plugins
             }
             else
                 _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString }, { key, value } });
-            
+
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable finish");
         }
 

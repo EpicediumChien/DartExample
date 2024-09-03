@@ -361,7 +361,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //return blRet;
             }
 
-            blRet = _ColorPresetPlugin.SetMonitorProfile(m, ColorPreset_Name).Result;         
+            blRet = _ColorPresetPlugin.SetMonitorProfile(m, ColorPreset_Name).Result;
 
             return Task.FromResult(blRet);
         }
@@ -413,7 +413,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 Thread.Sleep(100);
             }
-            
+
 
             //show OSD over colorpreset plugin
             _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
@@ -720,7 +720,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_ColorPresetPlugin == null)
             {
                 writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - AutoSetColorPresetForMonitorConfig]");
-                return Task.FromResult(false);                
+                return Task.FromResult(false);
             }
 
             var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this).Result;
@@ -1459,7 +1459,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PeripheralsPlugin.SetWearDetection(newValue, deviceId);
             return Task.FromResult(true);
         }
-
+        public Task SetWearDetectionForCLI(int newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetWearDetectionForCLI requested ...");
+            writelog($"Target SetWearDetectionForCLI is {deviceId}");
+            _PeripheralsPlugin.SetWearDetectionForCLI(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+        
         public Task SetBusyLight(bool newValue, Guid deviceId)
         {
             writelog("DeviceMangerPlugin received SetBusyLight requested ...");
@@ -2826,16 +2833,70 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region Gaming
-
-        public Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo)
+        public Task<GamingDisplayPropertiesInfo> GetGamingProperties_SupportedList(MonitorInfo monitorInfo)
         {
             if (_DisplayManagerPlugin != null)
             {
-                return Task.FromResult(_DisplayManagerPlugin.GetGamingProperties(monitorInfo).Result);
+                return Task.FromResult(_DisplayManagerPlugin.GetGamingProperties_SupportedList(monitorInfo).Result);
             }
             return Task.FromResult(new GamingDisplayPropertiesInfo());
         }
-
+        public Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.GetCurrentGame_EnhancementMode(monitorInfo).Result);
+            }
+            return Task.FromResult(Gaming_GameEnhancementMode.Off);
+        }
+        public Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.GetCurrentGaming_ResponseTime(monitorInfo).Result);
+            }
+            return Task.FromResult(Gaming_ResponseTime.Disable);
+        }
+        public Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.GetCurrentGaming_DarkStabilizer(monitorInfo).Result);
+            }
+            return Task.FromResult(Gaming_DarkStabilizer.Disable);
+        }
+        public Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.GetCurrentGaming_HDRType(monitorInfo).Result);
+            }
+            return Task.FromResult(Gaming_HDRType.Off);
+        }
+        public Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.GetCurrentGaming_DualResolutionType(monitorInfo).Result);
+            }
+            return Task.FromResult(Gaming_DualResolutionType.Unknow);
+        }
+        public Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.GetCurrentGaming_VisionEngineType(monitorInfo).Result);
+            }
+            return Task.FromResult(Gaming_VisionEngineType.off);
+        }
+        public Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return Task.FromResult(_DisplayManagerPlugin.GetCurrentGaming_VisionEngineEnableType(monitorInfo, gamingDisplayPropertiesInfo).Result);
+            }
+            return Task.FromResult(new bool[0]);
+        }
         public Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode)
         {
             if (_DisplayManagerPlugin != null)
@@ -3750,7 +3811,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in an error condition");
                         //_ColorPresetPluginCondition = pluginCondition;
                     }
-                    else if(pluginCondition is PluginStartedCondition || pluginCondition is PluginRunningCondition )
+                    else if (pluginCondition is PluginStartedCondition || pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentColorPresetCondition)} - ColorPreset Plugin is in a started/running condition");
                         //_ColorPresetPluginCondition = pluginCondition;
@@ -3848,13 +3909,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 await AutoSetColorPresetForMonitorConfig(_InfoMonitors, "ON");
 
-                            });  
-                           
+                            });
+
 
                             writelog("CheckAutoColorPresetEnableOnStartedCondition, AutoSetColorPresetForMonitorConfig(_InfoMonitors, \"ON\")");
 
                             break;
-                        }                        
+                        }
 
                     }
                 }
@@ -4501,7 +4562,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Gaming_VisionEngineToggle(MonitorInfo monitorInfo, Object[] param)
         {
-            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
+            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties_SupportedList(monitorInfo).Result;
+            gamingDisplayProperties.IsEnable_VisionEngineType = GetCurrentGaming_VisionEngineEnableType(monitorInfo, gamingDisplayProperties).Result;
+            gamingDisplayProperties.Current_VisionEngineType = GetCurrentGaming_VisionEngineType(monitorInfo).Result;
             if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_VisionEngineType)
             {
                 List<Gaming_VisionEngineType> supported_VisionEngineType = gamingDisplayProperties.Supported_VisionEngineType;
@@ -4509,12 +4572,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (supported_VisionEngineType != null && supported_VisionEngineType.Count > 0)
                 {
                     List<Gaming_VisionEngineType> enabledList = new List<Gaming_VisionEngineType>();
+                    enabledList.Add(Gaming_VisionEngineType.off);
                     for (int i = 0; i < gamingDisplayProperties.Supported_VisionEngineType.Count; i++)
                     {
                         if (gamingDisplayProperties.IsEnable_VisionEngineType[i])
+                        {
+                            Debug.WriteLine(gamingDisplayProperties.Supported_VisionEngineType[i]);
                             enabledList.Add(gamingDisplayProperties.Supported_VisionEngineType[i]);
+                        }
                     }
-
                     if (enabledList.Count > 0)
                     {
                         Gaming_VisionEngineType current_VisionEngineType = gamingDisplayProperties.Current_VisionEngineType;
@@ -4576,13 +4642,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Gaming_DualResolutionToggle(MonitorInfo monitorInfo, Object[] param)
         {
-            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
+            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties_SupportedList(monitorInfo).Result;
+            gamingDisplayProperties.Current_DualResolutionType = GetCurrentGaming_DualResolutionType(monitorInfo).Result;
             if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_DualResolutionType)
             {
                 List<Gaming_DualResolutionType> supported_DualResolutionType = gamingDisplayProperties.Supported_DualResolutionType;
-                if (supported_DualResolutionType != null && supported_DualResolutionType.Count > 0)
+                if (supported_DualResolutionType != null && supported_DualResolutionType.Count > 0 && gamingDisplayProperties.Current_DualResolutionType != null)
                 {
-                    Gaming_DualResolutionType current_DualResolutionType = gamingDisplayProperties.Current_DualResolutionType;
+                    Gaming_DualResolutionType current_DualResolutionType = (Gaming_DualResolutionType)gamingDisplayProperties.Current_DualResolutionType;
                     Gaming_DualResolutionType nextDualResolutionType = Gaming_DualResolutionType.Unknow;
 
                     for (int i = 0; i < supported_DualResolutionType.Count; i++)
@@ -4605,6 +4672,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (result)
                     {
                         gamingDisplayProperties.Current_DualResolutionType = nextDualResolutionType;
+                        gamingDisplayProperties.Current_DarkStabilizer = null;
+                        gamingDisplayProperties.Current_HDRType = null;
+                        gamingDisplayProperties.Current_ResponseTime = null;
+                        gamingDisplayProperties.Current_GameEnhancementMode = null;
                         OnGamingParamChangeHandler(this, gamingDisplayProperties);
                     }
                     writelog($"Gaming_DualResolutionToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DualResolutionType}] to [{nextDualResolutionType}]" + (result ? "success" : "fail"));
@@ -4622,13 +4693,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Gaming_DarkStabilizerToggle(MonitorInfo monitorInfo, Object[] param)
         {
-            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties(monitorInfo).Result;
+            GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties_SupportedList(monitorInfo).Result;
+            gamingDisplayProperties.Current_DarkStabilizer = GetCurrentGaming_DarkStabilizer(monitorInfo).Result;
             if (gamingDisplayProperties != null && gamingDisplayProperties.IsSupported_DarkStabilizer)
             {
                 List<Gaming_DarkStabilizer> supported_DarkStabilizer = gamingDisplayProperties.Supported_DarkStabilizer;
-                if (supported_DarkStabilizer != null && supported_DarkStabilizer.Count > 0)
+                if (supported_DarkStabilizer != null && supported_DarkStabilizer.Count > 0 && gamingDisplayProperties.Current_DarkStabilizer != null)
                 {
-                    Gaming_DarkStabilizer current_DarkStabilizer = gamingDisplayProperties.Current_DarkStabilizer;
+                    Gaming_DarkStabilizer current_DarkStabilizer = (Gaming_DarkStabilizer)gamingDisplayProperties.Current_DarkStabilizer;
                     Gaming_DarkStabilizer nextDarkStabilizer = Gaming_DarkStabilizer.Disable;
 
                     for (int i = 0; i < supported_DarkStabilizer.Count; i++)
@@ -4651,6 +4723,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (result)
                     {
                         gamingDisplayProperties.Current_DarkStabilizer = nextDarkStabilizer;
+                        gamingDisplayProperties.Current_DualResolutionType = null;
+                        gamingDisplayProperties.Current_HDRType = null;
+                        gamingDisplayProperties.Current_ResponseTime = null;
+                        gamingDisplayProperties.Current_GameEnhancementMode = null;
                         OnGamingParamChangeHandler(this, gamingDisplayProperties);
                     }
                     writelog($"Gaming_DarkStabilizerToggle:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{current_DarkStabilizer}] to [{nextDarkStabilizer}]" + (result ? "success" : "fail"));

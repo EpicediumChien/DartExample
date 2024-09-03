@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<OutputPath>..\bin</OutputPath>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+		<PackageReference Include="Dell.UCA.ThickClient.Interfaces" Version="4.2.27.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+		<ProjectReference Include="..\DDPM.UI.DdpmHomePlugin\DDPM.UI.Plugin.DdpmHomePlugin.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="DDPM.SA.Common">
+			<HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="DPeMPublic.Common">
+		  <HintPath>..\CommonDll\DPeMPublic.Common.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+
+</Project>

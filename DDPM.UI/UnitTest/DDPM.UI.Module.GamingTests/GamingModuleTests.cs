@@ -29,8 +29,8 @@ namespace DDPM.UI.Module.Gaming.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
-            deviceManagerSAMock= new Mock<IDeviceManagerSA>();
-            deviceManagerSA= deviceManagerSAMock.Object;
+            deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            deviceManagerSA = deviceManagerSAMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             selectedHomeDevice = new HomeDevice();
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(selectedHomeDevice);
@@ -38,9 +38,9 @@ namespace DDPM.UI.Module.Gaming.Tests
             GamingViewModel gamingViewModel = new GamingViewModel();
             gamingViewModel.MyModule = myModule;
             gamingViewModel.MyModule.SelectedHomeDevice = selectedHomeDevice;
-            gamingViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo() { modelName="gx" };
+            gamingViewModel.MyModule.SelectedHomeDevice.MonitorInfo = new MonitorInfo() { modelName = "gx" };
             gamingModule = new GamingModule();
-            gamingModule.SelectedHomeDevice=selectedHomeDevice;
+            gamingModule.SelectedHomeDevice = selectedHomeDevice;
             privateObject = new PrivateObject(gamingModule);
         }
 
@@ -49,7 +49,7 @@ namespace DDPM.UI.Module.Gaming.Tests
         {
             // Assert
             Assert.That(gamingModule, Is.Not.Null);
-            UserControl _rightView =(UserControl)privateObject.GetFieldOrProperty("_rightView");
+            UserControl _rightView = (UserControl)privateObject.GetFieldOrProperty("_rightView");
             Assert.That(_rightView.DataContext, Is.EqualTo(privateObject.GetFieldOrProperty("vm")));
         }
 
@@ -133,8 +133,8 @@ namespace DDPM.UI.Module.Gaming.Tests
         [Test]
         public void TestOnActivated()
         {
-            
-            deviceManagerSAMock.Setup(x => x.GetGamingProperties(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new GamingDisplayPropertiesInfo()));
+
+            deviceManagerSAMock.Setup(x => x.GetGamingProperties_SupportedList(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new GamingDisplayPropertiesInfo()));
             try
             {
                 gamingModule.OnActivated();
