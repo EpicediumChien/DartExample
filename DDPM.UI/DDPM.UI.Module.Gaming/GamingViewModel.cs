@@ -240,25 +240,25 @@ namespace DDPM.UI.Module.Gaming
         {
             if (e != null)
             {
-                if (GameEnhanceMode_ItemsCollection != null)
+                if (GameEnhanceMode_ItemsCollection != null && e.Current_GameEnhancementMode != null)
                 {
                     _selectedGameEnhancementMode = GameEnhanceMode_ItemsCollection.Find(x => (x.GameEnhancementMode.Equals(e.Current_GameEnhancementMode)));
                 }
-                if (ResponseTime_ItemsCollection != null)
+                if (ResponseTime_ItemsCollection != null && e.Current_ResponseTime != null)
                 {
                     _selectedResponseTime = ResponseTime_ItemsCollection.Find(x => (x.ResponseTime.Equals(e.Current_ResponseTime)));
                 }
-                if (DarkStabilizer_ItemsCollection != null)
+                if (DarkStabilizer_ItemsCollection != null && e.Current_DarkStabilizer != null)
                 {
                     _selectedDarkStabilizer = DarkStabilizer_ItemsCollection.Find(x => (x.DarkStabilizer.Equals(e.Current_DarkStabilizer)));
                 }
-                if (HDRType_ItemsCollection != null)
+                if (HDRType_ItemsCollection != null && e.Current_HDRType != null)
                 {
                     _selectedHDRType = HDRType_ItemsCollection.Find(x => (x.HDRType.Equals(e.Current_HDRType)));
                 }
-                if (DualResolution_ItemsCollection != null)
+                if (DualResolution_ItemsCollection != null && e.Current_DualResolutionType != null)
                 {
-                    _selectedDualResolution = DualResolution_ItemsCollection.Find(x => (x.DualResolutionType.Equals(e.Supported_DualResolutionType)));
+                    _selectedDualResolution = DualResolution_ItemsCollection.Find(x => (x.DualResolutionType.Equals(e.Current_DualResolutionType)));
                 }
                 RefreshUI();
             }
@@ -288,16 +288,33 @@ namespace DDPM.UI.Module.Gaming
                 HDRType_ItemsCollection = new List<UI_HDRType>();
                 DualResolution_ItemsCollection = new List<UI_DualResolution>();
 
-                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                if (displayPropertiesInfo.IsSupported_GameEnhancementMode)
+                {
+                    displayPropertiesInfo.Current_GameEnhancementMode = DdpmCommonHelper.DeviceManagerSA.GetCurrentGame_EnhancementMode(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    IsSupported_GameEnhanceMode = Visibility.Visible;
+                }
+                if (displayPropertiesInfo.IsSupported_ResponseTime)
+                {
+                    displayPropertiesInfo.Current_ResponseTime = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_ResponseTime(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    IsSupported_ResponseTime = Visibility.Visible;
+                }
+                if (displayPropertiesInfo.IsSupported_DarkStabilizer)
+                {
+                    displayPropertiesInfo.Current_DarkStabilizer = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DarkStabilizer(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    IsSupported_DarkStabilizer = Visibility.Visible;
+                }
                 if (displayPropertiesInfo.IsSupported_HDRType)
                 {
+                    displayPropertiesInfo.Current_HDRType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_HDRType(MyModule.SelectedHomeDevice.MonitorInfo).Result;
                     IsGameSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
                     IsAWSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
                 }
-                IsSupported_GameEnhanceMode = displayPropertiesInfo.IsSupported_GameEnhancementMode ? Visibility.Visible : Visibility.Collapsed;
-                IsSupported_ResponseTime = displayPropertiesInfo.IsSupported_ResponseTime ? Visibility.Visible : Visibility.Collapsed;
-                IsSupported_DarkStabilizer = displayPropertiesInfo.IsSupported_DarkStabilizer ? Visibility.Visible : Visibility.Collapsed;
-                IsSupported_DualResolution = displayPropertiesInfo.IsSupported_DualResolutionType ? Visibility.Visible : Visibility.Collapsed;
+                if (displayPropertiesInfo.IsSupported_DualResolutionType)
+                {
+                    displayPropertiesInfo.Current_DualResolutionType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DualResolutionType(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    IsSupported_DualResolution = Visibility.Visible;
+                }
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {

@@ -29,6 +29,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using WinCopies.Util.Commands.Primitives;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -2576,9 +2578,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         private bool GamingChangeEventByPass = false;
 
-        public Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo)
+        public Task<GamingDisplayPropertiesInfo> GetGamingProperties_SupportedList(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg(nameof(GetGamingProperties) + " start");
+            _logs.DebugMsg(nameof(GetGamingProperties_SupportedList) + " start");
             GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo = new GamingDisplayPropertiesInfo();
 
             gamingDisplayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
@@ -2666,16 +2668,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = new bool[gamingDisplayPropertiesInfo.Supported_VisionEngineType.Count];
                 }
             }
-            GetCurrentGamingParam(monitorInfo, ref gamingDisplayPropertiesInfo);
-            _logs.DebugMsg(nameof(GetGamingProperties) + " done");
+            _logs.DebugMsg(nameof(GetGamingProperties_SupportedList) + " done");
             return Task.FromResult(gamingDisplayPropertiesInfo);
         }
 
-        public Task<bool> GetCurrentGameEnhancementMode(MonitorInfo monitorInfo, ref Gaming_GameEnhancementMode GameEnhancementMode)
+        public Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg(nameof(GetCurrentGameEnhancementMode) + " start");
+            _logs.DebugMsg(nameof(GetCurrentGame_EnhancementMode) + " start");
             GamingChangeEventByPass = true;
-            bool ret = false;
+            Gaming_GameEnhancementMode GameEnhancementMode = Gaming_GameEnhancementMode.Disable;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_GameEnhancementMode)).Result;
@@ -2686,18 +2687,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             catch (Exception ex)
             {
-                _logs.DebugMsg(nameof(GetCurrentGameEnhancementMode) + " Error:" + ex.ToString());
+                _logs.DebugMsg(nameof(GetCurrentGame_EnhancementMode) + " Error:" + ex.ToString());
             }
             GamingChangeEventByPass = false;
-            _logs.DebugMsg(nameof(GetCurrentGameEnhancementMode) + " done:Result" + ret);
-            return Task.FromResult(ret);
+            _logs.DebugMsg(nameof(GetCurrentGame_EnhancementMode) + " done:Result " + GameEnhancementMode);
+            return Task.FromResult(GameEnhancementMode);
         }
 
-        public Task<bool> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo, ref Gaming_ResponseTime ResponseTime)
+        public Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_ResponseTime) + " start");
             GamingChangeEventByPass = true;
-            bool ret = false;
+            Gaming_ResponseTime ResponseTime = Gaming_ResponseTime.Disable;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_ResponseTime)).Result;
@@ -2710,16 +2711,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg(nameof(GetCurrentGaming_ResponseTime) + " Error:" + ex.ToString());
             }
-            _logs.DebugMsg(nameof(GetCurrentGaming_ResponseTime) + " done:Result" + ret);
+            _logs.DebugMsg(nameof(GetCurrentGaming_ResponseTime) + " done:Result " + ResponseTime);
             GamingChangeEventByPass = false;
-            return Task.FromResult(ret);
+            return Task.FromResult(ResponseTime);
         }
 
-        public Task<bool> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo, ref Gaming_DarkStabilizer DarkStabilizer)
+        public Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_DarkStabilizer) + " start");
             GamingChangeEventByPass = true;
-            bool ret = false;
+            Gaming_DarkStabilizer DarkStabilizer = Gaming_DarkStabilizer.Disable;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_DarkStabilizer)).Result;
@@ -2732,16 +2733,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg(nameof(GetCurrentGaming_DarkStabilizer) + " Error:" + ex.ToString());
             }
-            _logs.DebugMsg(nameof(GetCurrentGaming_DarkStabilizer) + " done:Result" + ret);
+            _logs.DebugMsg(nameof(GetCurrentGaming_DarkStabilizer) + " done:Result " + DarkStabilizer);
             GamingChangeEventByPass = false;
-            return Task.FromResult(ret);
+            return Task.FromResult(DarkStabilizer);
         }
 
-        public Task<bool> GetCurrentGaming_HDRType(MonitorInfo monitorInfo, ref Gaming_HDRType HDRType)
+        public Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_HDRType) + " start");
             GamingChangeEventByPass = true;
-            bool ret = false;
+            Gaming_HDRType HDRType = Gaming_HDRType.Disable;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, nameof(Gaming_HDRType)).Result;
@@ -2754,15 +2755,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg(nameof(GetCurrentGaming_HDRType) + " Error:" + ex.ToString());
             }
-            _logs.DebugMsg(nameof(GetCurrentGaming_HDRType) + " done:Result" + ret);
+            _logs.DebugMsg(nameof(GetCurrentGaming_HDRType) + " done:Result " + HDRType);
             GamingChangeEventByPass = false;
-            return Task.FromResult(ret);
+            return Task.FromResult(HDRType);
         }
 
-        public Task<bool> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo, ref Gaming_DualResolutionType DualResolutionType)
+        public Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo)
         {
             _logs.DebugMsg(nameof(GetCurrentGaming_DualResolutionType) + " start");
-            bool ret = false;
+            Gaming_DualResolutionType DualResolutionType = Gaming_DualResolutionType.Unknow;
             try
             {
                 ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, "USB-C Prioritization").Result;
@@ -2775,14 +2776,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg(nameof(GetCurrentGaming_DualResolutionType) + " Error:" + ex.ToString());
             }
-            _logs.DebugMsg(nameof(GetCurrentGaming_DualResolutionType) + " done:Result" + ret);
-            return Task.FromResult(ret);
+            _logs.DebugMsg(nameof(GetCurrentGaming_DualResolutionType) + " done:Result " + DualResolutionType);
+            return Task.FromResult(DualResolutionType);
         }
-
-        public Task<bool> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, ref GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
+        public Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo)
         {
-            _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineEnableType) + " start");
-            bool ret = false;
+            _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineType) + " start");
+            Gaming_VisionEngineType current_VisionEngineType = Gaming_VisionEngineType.off;
             try
             {
                 if (monitorInfo.modelName.Contains("G"))
@@ -2790,21 +2790,43 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
                     if (ObjGetVCP.result == true)
                     {
-                        gamingDisplayPropertiesInfo.Current_VisionEngineType = (Gaming_VisionEngineType)((uint)ObjGetVCP.value & 0xf);
-                        Debug.WriteLine(gamingDisplayPropertiesInfo.Current_VisionEngineType);
+                        current_VisionEngineType = (Gaming_VisionEngineType)((uint)ObjGetVCP.value & 0xf);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineType) + " Error:" + ex.ToString());
+            }
+            _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineType) + " done:Result " + current_VisionEngineType);
+            return Task.FromResult(current_VisionEngineType);
+        }
+
+        public Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo)
+        {
+            _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineEnableType) + " start");
+            bool[] IsEnable_VisionEngineType = new bool[gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length];
+            try
+            {
+                if (monitorInfo.modelName.Contains("G"))
+                {
+                    ObjGetVCP ObjGetVCP = GetVCPCapability(monitorInfo, 0xEC).Result;
+                    if (ObjGetVCP.result == true)
+                    {
+                        _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineEnableType) + " VCP " + ObjGetVCP.value);
                         // 右移8位，將後半段不要的曲調
                         uint ea_Ret = ((uint)ObjGetVCP.value >> 8);
                         //轉成二進制
                         string binaryString = Convert.ToString(ea_Ret, 2).PadLeft(8, '0');
                         // 反向字串，使得順向
                         string reversedBinaryString = Algorithm.ReverseString(binaryString);
-
+                        Debug.WriteLine(reversedBinaryString);
                         for (int i = 0; i < gamingDisplayPropertiesInfo.IsEnable_VisionEngineType.Length; i++)
                         {
                             //字串中為1的代表啟用該引擎
                             if (reversedBinaryString[i] == ('1'))
                             {
-                                gamingDisplayPropertiesInfo.IsEnable_VisionEngineType[i] = true;
+                                IsEnable_VisionEngineType[i] = true;
                             }
                         }
                     }
@@ -2814,8 +2836,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineEnableType) + " Error:" + ex.ToString());
             }
-            _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineEnableType) + " done:Result" + ret);
-            return Task.FromResult(ret);
+            _logs.DebugMsg(nameof(GetCurrentGaming_VisionEngineEnableType) + " done:Result " + IsEnable_VisionEngineType.Length);
+            return Task.FromResult(IsEnable_VisionEngineType);
         }
 
         public Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode)
@@ -2975,6 +2997,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             try
             {
                 uint param = (uint)VisionEngineType;
+                _logs.DebugMsg(nameof(SetGaming_VisionEngineEnableType) + " value:" + param);
                 ret = SetVCPCapability(monitorInfo, 0xEC, param).Result;
             }
             catch (Exception ex)
@@ -2992,12 +3015,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             bool ret = false;
             try
             {
-                ret = GetCurrentGameEnhancementMode(monitorInfo, ref gamingDisplayPropertiesInfo.Current_GameEnhancementMode).Result;
-                ret = GetCurrentGaming_ResponseTime(monitorInfo, ref gamingDisplayPropertiesInfo.Current_ResponseTime).Result && ret;
-                ret = GetCurrentGaming_DarkStabilizer(monitorInfo, ref gamingDisplayPropertiesInfo.Current_DarkStabilizer).Result && ret;
-                ret = GetCurrentGaming_HDRType(monitorInfo, ref gamingDisplayPropertiesInfo.Current_HDRType).Result && ret; ;
-                ret = GetCurrentGaming_DualResolutionType(monitorInfo, ref gamingDisplayPropertiesInfo.Current_DualResolutionType).Result && ret;
-                ret = GetCurrentGaming_VisionEngineEnableType(monitorInfo, ref gamingDisplayPropertiesInfo).Result && ret;
+                gamingDisplayPropertiesInfo.Current_GameEnhancementMode = GetCurrentGame_EnhancementMode(monitorInfo).Result;
+                gamingDisplayPropertiesInfo.Current_ResponseTime = GetCurrentGaming_ResponseTime(monitorInfo).Result;
+                gamingDisplayPropertiesInfo.Current_DarkStabilizer = GetCurrentGaming_DarkStabilizer(monitorInfo).Result;
+                gamingDisplayPropertiesInfo.Current_HDRType = GetCurrentGaming_HDRType(monitorInfo).Result;
+                gamingDisplayPropertiesInfo.Current_DualResolutionType = GetCurrentGaming_DualResolutionType(monitorInfo).Result;
+                gamingDisplayPropertiesInfo.Current_VisionEngineType = GetCurrentGaming_VisionEngineType(monitorInfo).Result;
+                gamingDisplayPropertiesInfo.IsEnable_VisionEngineType = GetCurrentGaming_VisionEngineEnableType(monitorInfo, gamingDisplayPropertiesInfo).Result;
+                ret = true;
             }
             catch (Exception ex)
             {

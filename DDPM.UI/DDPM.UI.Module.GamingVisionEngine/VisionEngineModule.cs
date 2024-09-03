@@ -70,6 +70,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
 
         public void OnActivated()
         {
+            DdpmCommonHelper.DeviceManagerSA.GamingChangeEvent += vm.GamingParamChang;
             Trace.WriteLine("VisionEngineModule.OnActivated");
             if (isSelectChanged)
             {
@@ -80,6 +81,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
 
         public void OnDeactivated()
         {
+            DdpmCommonHelper.DeviceManagerSA.GamingChangeEvent -= vm.GamingParamChang;
         }
 
         #endregion Event Handlers
