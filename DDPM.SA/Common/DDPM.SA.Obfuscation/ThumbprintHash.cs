@@ -62,13 +62,23 @@
             0x4c, 0x37, 0xe7, 0x3c, 0x5b, 0xd2, 0xf8, 0x94, 0xd5, 0xac
         };
 
+        private static readonly byte[] QDA2_Hash = new byte[]
+        {
+            //Qisda NKVM Thumbprint : 4c1234547c6d0ab6f84a17e9153e1312e31b5f33
+            //4c 12 34 54 7c 6d 0a b6 f8 4a
+            //17 e9 15 3e 13 12 e3 1b 5f 33
+            0x4c, 0x12, 0x34, 0x54, 0x7c, 0x6d, 0x0a, 0xb6, 0xf8, 0x4a,
+            0x17, 0xe9, 0x15, 0x3e, 0x13, 0x12, 0xe3, 0x1b, 0x5f, 0x33
+        };
+
         public static byte[][] certificateHash = {
             ThumbprintHash.DELL_Hash,
             ThumbprintHash.DELL_Hash1,
             ThumbprintHash.DELL_Hash2,
             ThumbprintHash.WST_Hash,
             ThumbprintHash.WST2_Hash,
-            ThumbprintHash.QDA1_Hash
+            ThumbprintHash.QDA1_Hash,
+            ThumbprintHash.QDA2_Hash
         };
     }
 }
