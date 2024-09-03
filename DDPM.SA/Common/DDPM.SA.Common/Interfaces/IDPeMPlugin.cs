@@ -108,6 +108,8 @@ namespace DDPM.SA.Common
 
         void SetWearDetection(int newValue, Guid deviceId);
 
+        void SetWearDetectionForCLI(int newValue, Guid deviceId);
+        
         void SetBusyLight(bool newValue, Guid deviceId);
 
         void SetVoiceGuidance(bool newValue, Guid deviceId);
