@@ -237,3 +237,6 @@ testcoverage/
 /DDPM.UI/CommonDll/Dell.UnifiedAgent.SubAgentControl.Interfaces.xml
 /DDPM.SA/DDPMSA.reg
 /DDPM.UI/CommonDll/DDPM.SA.Obfuscation.dll
+/DDPM.UI/CommonDll/DDPM.OSDs.dll
+/DDPM.UI/CommonDll/DDPM.OSDs.deps.json
+/DDPM.SA/DDPMSA.Release.reg
