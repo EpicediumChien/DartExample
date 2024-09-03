@@ -13,9 +13,8 @@ namespace DDPM.SA.Common.Security
     {
         private List<X509Certificate2> TrustedPublisher = new List<X509Certificate2>();
         private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
-        private string Issuer = "CN=Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US";
+        private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
         private string[] Subject = new string[] { "content-cdn.dell.com", "*.dell.com" };
-
         public bool CheckFileCACertificate(string certificateFilePath)
         {
             // 讀取憑證檔案並創建 X509Certificate2 物件
@@ -30,7 +29,6 @@ namespace DDPM.SA.Common.Security
 
             return PinPublicKey(null, certificate, chain, sslPolicyErrors);
         }
-
         public bool CheckURLCACertificate(string URL)
         {
             bool flag = false;
@@ -66,6 +64,7 @@ namespace DDPM.SA.Common.Security
                     Thread.Sleep(1000);
                 }
 
+
                 num--;
             }
             Console.WriteLine(string.Format("[CheckURLCACertificate] res:" + flag));
@@ -79,7 +78,6 @@ namespace DDPM.SA.Common.Security
             }
             return flag;
         }
-
         private bool CheckCAHTTP(string URL)
         {
             try
@@ -100,7 +98,6 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
-
         private bool ValidateCertificate(HttpRequestMessage request, X509Certificate2 certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             if (certificate == null)
@@ -126,7 +123,6 @@ namespace DDPM.SA.Common.Security
             }
             return CheckCertificateIsVaild(certificate) && CheckIssuerAndSubject(certificate);
         }
-
         private bool PinPublicKey(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             X509Certificate2 certificate2 = new X509Certificate2(certificate);
@@ -149,7 +145,6 @@ namespace DDPM.SA.Common.Security
             flag = CheckCertificateIsVaild(certificate2) && CheckIssuerAndSubject(certificate2);
             return flag;
         }
-
         private bool CheckHTTPAvailable(string URL)
         {
             try
@@ -165,7 +160,6 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
-
         private bool GetResponse(HttpClient client, string URL)
         {
             bool flag = false;
@@ -190,7 +184,6 @@ namespace DDPM.SA.Common.Security
             Console.WriteLine(string.Format("[GetResponse] result:" + flag));
             return flag;
         }
-
         private void GetLocalTrustedCert()
         {
             try
@@ -227,7 +220,6 @@ namespace DDPM.SA.Common.Security
                 Console.WriteLine("[GetLocalTrustedCert] error:" + ex.Message.ToString());
             }
         }
-
         private bool CheckCertificateIsVaild(X509Certificate2 certificate)
         {
             bool result = false;
@@ -246,11 +238,13 @@ namespace DDPM.SA.Common.Security
             }
             return result;
         }
-
         private bool CheckIssuerAndSubject(X509Certificate2 certificate)
         {
             try
             {
+                bool isSubjectCNMatch = false;
+                bool isIssuerCNMatch = false;
+                bool isSANCNMatch = false;
                 bool isCNMatch = false;
                 Console.WriteLine("--------------CheckIssuerAndSubject------------------");
                 Console.WriteLine($"Issuer:{certificate.Issuer.ToString()}");
@@ -266,7 +260,14 @@ namespace DDPM.SA.Common.Security
                 {
                     if (ExtractCN(certificate.Subject).Equals(sub))
                     {
-                        isCNMatch = true;
+                        isSubjectCNMatch = true;
+                    }
+                }
+                foreach (string iss in Issuer)
+                {
+                    if (ExtractCN(certificate.Issuer).Equals(iss))
+                    {
+                        isIssuerCNMatch = true;
                     }
                 }
                 var sanList = GetSubjectAlternativeNames(certificate);
@@ -279,7 +280,7 @@ namespace DDPM.SA.Common.Security
                     if (containsAny)
                     {
                         Console.WriteLine("[CheckIssuerAndSubject] Subject is included in the SAN.");
-                        isCNMatch = true;
+                        isSANCNMatch = true;
                     }
                     else
                     {
@@ -287,12 +288,21 @@ namespace DDPM.SA.Common.Security
                     }
                 }
                 Console.WriteLine("---SAN END---");
+                isCNMatch = isSubjectCNMatch && isIssuerCNMatch && isSANCNMatch;
                 if (isCNMatch)
                 {
                     Console.WriteLine("[CheckIssuerAndSubject] Is match.");
                 }
                 else
                 {
+                    if (!isSubjectCNMatch)
+                    {
+                        Console.WriteLine("[CheckIssuerAndSubject] Subject is NOT match.");
+                    }
+                    if (!isIssuerCNMatch)
+                    {
+                        Console.WriteLine("[CheckIssuerAndSubject] Issuer is NOT match.");
+                    }
                     isCNMatch = ValidateProxyCertificate(certificate);
                     if (isCNMatch)
                     {
@@ -312,7 +322,6 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
-
         private bool ValidateProxyCertificate(X509Certificate2 certificate)
         {
             // Implement custom validation logic for proxy certificates
@@ -344,7 +353,6 @@ namespace DDPM.SA.Common.Security
             Console.WriteLine("Proxy check end");
             return true; // Assuming the proxy certificate is valid
         }
-
         private string ExtractCN(string subject)
         {
             if (string.IsNullOrEmpty(subject))
@@ -361,6 +369,7 @@ namespace DDPM.SA.Common.Security
                 string trimmedPart = part.Trim();
                 if (trimmedPart.StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
                 {
+                    Console.WriteLine(trimmedPart.Substring(3).Trim());
                     // Return the value after CN=
                     return trimmedPart.Substring(3).Trim();
                 }
@@ -369,8 +378,7 @@ namespace DDPM.SA.Common.Security
             // CN not found
             return null;
         }
-
-        public static string[] GetSubjectAlternativeNames(X509Certificate2 certificate)
+        private string[] GetSubjectAlternativeNames(X509Certificate2 certificate)
         {
             var sanList = new System.Collections.Generic.List<string>();
 
@@ -379,26 +387,28 @@ namespace DDPM.SA.Common.Security
                 if (extension is X509Extension x509Extension)
                 {
                     // Subject Alternative Name (SAN) extension OID: 2.5.29.17
-                    if (x509Extension.Oid.Value == "2.5.29.17")
+                    if (x509Extension != null && x509Extension.Oid != null)
                     {
-                        var sanExtension = new AsnEncodedData(x509Extension.Oid, x509Extension.RawData);
-                        var sanString = sanExtension.Format(true);
-
-                        // 解析 SAN 字符串
-                        var regex = new Regex(@"DNS Name=(?<san>[^,]+)");
-                        var matches = regex.Matches(sanString);
-                        foreach (Match match in matches)
+                        if (x509Extension.Oid.Value == "2.5.29.17" || x509Extension.Oid.Value == "Subject Alternative Name")
                         {
-                            sanList.Add(match.Groups["san"].Value);
+                            var sanExtension = new AsnEncodedData(x509Extension.Oid, x509Extension.RawData);
+                            var sanString = sanExtension.Format(true);
+
+                            // 解析 SAN 字符串
+                            var regex = new Regex(@"DNS Name=(?<san>[^,]+)");
+                            var matches = regex.Matches(sanString);
+                            foreach (Match match in matches)
+                            {
+                                sanList.Add(match.Groups["san"].Value);
+                            }
                         }
                     }
+
                 }
             }
-
             return sanList.ToArray();
         }
-
-        private static bool ContainsAny(string mainString, string[] searchArray)
+        private bool ContainsAny(string mainString, string[] searchArray)
         {
             foreach (string searchTerm in searchArray)
             {
@@ -409,5 +419,6 @@ namespace DDPM.SA.Common.Security
             }
             return false;
         }
+
     }
 }
