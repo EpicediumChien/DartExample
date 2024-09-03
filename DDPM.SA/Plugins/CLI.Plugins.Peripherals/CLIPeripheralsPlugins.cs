@@ -83,7 +83,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (_commandLineInput.PluginsType.Equals("AUDIO"))
                     _commandLineInput.PluginsType = "HEADSET";
 
-                if (commandLineInput.Command.Equals("SET"))
+                if (commandLineInput.Command.Equals("SET") || commandLineInput.Command.Equals("CONFIGURE"))
                 {
                     exitcode = SetPeripheralProperty();
                     string json = JsonConvert.SerializeObject(SetResults, Formatting.Indented);
@@ -202,8 +202,6 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         else
                         {
-                            if (_commandLineInput.TargetFeature.Equals("FWVERSION"))
-                                _commandLineInput.TargetFeature = "FIRMWAREVERSION";
                             GetResults.Add(new CLI_PeripheralRESPONSE(di, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                         }
                     }
@@ -231,14 +229,14 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 if (_deviceinfo == null || _deviceinfo.Count == 0)
                 {
-                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", "SET", _commandLineInput.TargetFeature, "FAIL", "Device not found", "N/A", "N/A"));
+                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found", "N/A", "N/A"));
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty;
                 }
                 _deviceinfo.ForEach(x =>
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
-                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", "SET", _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
+                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
                     }
                 });
             }
@@ -253,18 +251,18 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType) && x.ID == guid)
                     {
-                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", "SET", _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
+                        SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
                         found = true;
                     }
                 });
                         if (!found)
                         {
-                            SetResults.Add(new CLI_PeripheralRESPONSE($"{{{guid}}}", "SET", _commandLineInput.TargetFeature, "FAIL", "Device not found"));
+                            SetResults.Add(new CLI_PeripheralRESPONSE($"{{{guid}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                         }
                     }
                     else
                     {
-                        SetResults.Add(new CLI_PeripheralRESPONSE(x, "SET", _commandLineInput.TargetFeature, "FAIL", "Invalid Guid"));
+                        SetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Invalid Guid"));
                     }
                 });
             }
@@ -273,22 +271,33 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (op.Option_Name.ToUpper() == "VALUE")
                 {
                     value = op.Option_Value;
-                    switch (value)
+                    if (value == null) // if there is no option value
                     {
-                        case "ENABLE":
-                        case "ON":
-                            val = 1;
-                            bl = true;
-                            break;
-                        case "DISABLE":
-                        case "OFF":
-                            val = 0;
-                            bl = false;
-                            break;
-                        default:
-                            value = op.Option_Value;
-                            break;
-
+                        SetFailResults("no setting value");
+                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
+                    }
+                    else if ( int.TryParse(value, out int tmp)) // for the function argument is number
+                    {
+                        val = tmp;
+                    }
+                    else //for the function argument is int(0/1) or bool
+                    {
+                        switch (value)
+                        {
+                            case "ENABLE": //spec is only defined enable/disable, on/off
+                            case "ON":
+                                val = 1;
+                                bl = true;
+                                break;
+                            case "DISABLE":
+                            case "OFF":
+                                val = 0;
+                                bl = false;
+                                break;
+                            default: // currently, CLI peripheral didn't accept others setting type
+                                SetFailResults("Invalid setting value");
+                                return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
+                        }
                     }
                     break;
                 }
@@ -306,49 +315,49 @@ namespace DDPM.CLI.Plugins.Peripherals
             switch (_commandLineInput.TargetFeature)
             {
                 case "BACKLIGHTINGCONTROLS":
-                    taskA = _devMgr.SetBackLightingControls;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                        taskA = _devMgr.SetBackLightingControls;
+                        RunTaskA(val);
+                        return (int)CLI_ExitCode.success;
                 case "BACKLIGHTINGLEVEL":
-                    taskA = _devMgr.SetBackLightingLevel;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                        taskA = _devMgr.SetBackLightingLevel;
+                        RunTaskA(val);
+                        return (int)CLI_ExitCode.success;
                 case "COLLABORATIONBLINKEFFECTENABLE":
-                    taskB = _devMgr.SetCollaborationBlinkEffectEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "COLLABORATIONCAMERAENABLE":
-                    taskB = _devMgr.SetCollaborationCameraEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "COLLABORATIONCHATENABLE":
-                    taskB = _devMgr.SetCollaborationChatEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                        taskB = _devMgr.SetCollaborationBlinkEffectEnable;
+                        RunTaskB(bl);
+                        return (int)CLI_ExitCode.success;
+                case "COLLABCAMERAENABLE":
+                        taskB = _devMgr.SetCollaborationCameraEnable;
+                        RunTaskB(bl);
+                        return (int)CLI_ExitCode.success;
+                case "COLLABCHATENABLE":
+                        taskB = _devMgr.SetCollaborationChatEnable;
+                        RunTaskB(bl);
+                        return (int)CLI_ExitCode.success;
                 case "COLLABORATIONDOUBLETAPENABLE":
-                    taskB = _devMgr.SetCollaborationDoubleTapEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                        taskB = _devMgr.SetCollaborationDoubleTapEnable;
+                        RunTaskB(bl);
+                        return (int)CLI_ExitCode.success;
                 case "COLLABORATIONKEYENABLE":
-                    taskB = _devMgr.SetCollaborationKeyEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "COLLABORATIONMICENABLE":
-                    taskB = _devMgr.SetCollaborationMicEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
-                case "COLLABORATIONSCREENSHAREENABLE":
-                    taskB = _devMgr.SetCollaborationScreenShareEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                        taskB = _devMgr.SetCollaborationKeyEnable;
+                        RunTaskB(bl);
+                        return (int)CLI_ExitCode.success;
+                case "COLLABMICMUTE":
+                        taskB = _devMgr.SetCollaborationMicEnable;
+                        RunTaskB(!bl);
+                        return (int)CLI_ExitCode.success;
+                case "COLLABSCREENSHARE":
+                        taskB = _devMgr.SetCollaborationScreenShareEnable;
+                        RunTaskB(bl);
+                        return (int)CLI_ExitCode.success;
                 case "DPILEVEL":
-                    taskA = _devMgr.SetDPILevel;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                        taskA = _devMgr.SetDPILevel;
+                        RunTaskA(val);
+                        return (int)CLI_ExitCode.success;
                 case "DPIVALUE":
-                    taskA = _devMgr.SetDPIValue;
-                    RunTaskA(val);
-                    return (int)CLI_ExitCode.success;
+                        taskA = _devMgr.SetDPIValue;
+                        RunTaskA(val);
+                        return (int)CLI_ExitCode.success;
                 case "PRIMARYMOUSEBUTTON":
                     MouseButton button;
                     switch (value.ToUpper())
