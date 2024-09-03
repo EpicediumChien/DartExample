@@ -469,7 +469,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
                 case "WEARDETECTION":
-                        taskA = _devMgr.SetWearDetection;
+                        taskA = _devMgr.SetWearDetectionForCLI;
+                        //taskA = _devMgr.SetWearDetection;
                         RunTaskA(val);
                         return (int)CLI_ExitCode.success;
                 case "SETBUSYLIGHT":

@@ -74,4 +74,9 @@ public class Constants
     /// DDPM.UI.Plugin.SoundBarPlugin PluginId
     /// </summary>
     public const string SoundBarPluginId = "{87AA6D04-47D6-442A-BDA1-2660CA216CBD}";
+
+    /// <summary>
+    /// DDPM.UI.Plugin.WalkThroughPlugin PluginId
+    /// </summary>
+    public const string WalkThroughPluginId = "{CB7DD7CC-72C4-4D70-9C6B-AFF7758E5A29}";
 }

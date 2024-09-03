@@ -293,6 +293,8 @@ namespace DDPM.SA.Common
 
         Task SetWearDetection(int newValue, Guid deviceId);
 
+        Task SetWearDetectionForCLI(int newValue, Guid deviceId);
+
         Task SetBusyLight(bool newValue, Guid deviceId);
 
         Task SetVoiceGuidance(bool newValue, Guid deviceId);

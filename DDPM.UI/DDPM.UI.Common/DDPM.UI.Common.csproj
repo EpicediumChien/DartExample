@@ -135,6 +135,93 @@
     <None Remove="Resources\Vbar_Keyboard_Custom.png" />
     <None Remove="Resources\Vbar_Keyboard_Illumin.png" />
     <None Remove="Resources\VertNavBar.png" />
+    <None Remove="Resources\WalkThrough\Headset\Airmax %28WH3024%29\Walkthrough Image WH3024_1.png" />
+    <None Remove="Resources\WalkThrough\Headset\Airmax %28WH3024%29\Walkthrough Image WH3024_2.png" />
+    <None Remove="Resources\WalkThrough\Headset\Mito %28WL7024%29\Walkthrough Image WL7024_1.png" />
+    <None Remove="Resources\WalkThrough\Headset\Mito %28WL7024%29\Walkthrough Image WL7024_2.png" />
+    <None Remove="Resources\WalkThrough\Headset\Mito %28WL7024%29\Walkthrough Image WL7024_3.png" />
+    <None Remove="Resources\WalkThrough\Headset\Mito %28WL7024%29\Walkthrough Image WL7024_4.png" />
+    <None Remove="Resources\WalkThrough\Headset\Pegasus %28WL5024%29\Walkthrough Image WL5024_1.png" />
+    <None Remove="Resources\WalkThrough\Headset\Pegasus %28WL5024%29\Walkthrough Image WL5024_2.png" />
+    <None Remove="Resources\WalkThrough\Headset\Pegasus %28WL5024%29\Walkthrough Image WL5024_3.png" />
+    <None Remove="Resources\WalkThrough\Headset\Vaporfly %28WL3024%29\Walkthrough Image WL3024_1.png" />
+    <None Remove="Resources\WalkThrough\Headset\Vaporfly %28WL3024%29\Walkthrough Image WL3024_2.png" />
+    <None Remove="Resources\WalkThrough\Headset\Winflo %28wH5024%29\Walkthrough Image WH5024_1.png" />
+    <None Remove="Resources\WalkThrough\Headset\Winflo %28wH5024%29\Walkthrough Image WH5024_2.png" />
+    <None Remove="Resources\WalkThrough\Headset\Winflo %28wH5024%29\Walkthrough Image WH5024_3.png" />
+    <None Remove="Resources\WalkThrough\Keyboard\Elrond %28KB555%29\Walkthrough Image KB555_1.png" />
+    <None Remove="Resources\WalkThrough\Keyboard\Frodo KB525C\Walkthrough Image KB525C_1.png" />
+    <None Remove="Resources\WalkThrough\Keyboard\Frodo KB525C\Walkthrough Image KB525C_2.png" />
+    <None Remove="Resources\WalkThrough\Keyboard\Trident %28KB900%29\Walkthrough Image KB900_1.png" />
+    <None Remove="Resources\WalkThrough\Keyboard\Trident %28KB900%29\Walkthrough Image KB900_2.png" />
+    <None Remove="Resources\WalkThrough\Keyboard\Trident %28KB900%29\Walkthrough Image KB900_3.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S2725QC\Walkthrough Image Display_1.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S2725QC\Walkthrough Image Display_2.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S2725QC\Walkthrough Image Display_3.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S3225QC\Walkthrough Image Display_1.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S3225QC\Walkthrough Image Display_2.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S3225QC\Walkthrough Image Display_3.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S3425DW\Walkthrough Image Display_1.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S3425DW\Walkthrough Image Display_2.png" />
+    <None Remove="Resources\WalkThrough\Minitor\S3425DW\Walkthrough Image Display_3.png" />
+    <None Remove="Resources\WalkThrough\Minitor\U2725QE\Walkthrough Image Display_1.png" />
+    <None Remove="Resources\WalkThrough\Minitor\U2725QE\Walkthrough Image Display_2.png" />
+    <None Remove="Resources\WalkThrough\Minitor\U2725QE\Walkthrough Image Display_3.png" />
+    <None Remove="Resources\WalkThrough\Minitor\U3225QE\Walkthrough Image Display_1.png" />
+    <None Remove="Resources\WalkThrough\Minitor\U3225QE\Walkthrough Image Display_2.png" />
+    <None Remove="Resources\WalkThrough\Minitor\U3225QE\Walkthrough Image Display_3.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Arwen %28MS355%29\Walkthrough Image MS355_1.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Arwen %28MS355%29\Walkthrough Image MS355_2.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Arwen %28MS355%29\Walkthrough Image MS355_3.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Excalibur %28MS900%29\Walkthrough Image MS900_1.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Excalibur %28MS900%29\Walkthrough Image MS900_2.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Misty blue %28mS700%29\Walkthrough Image Misty blue mS700_1.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Misty blue %28mS700%29\Walkthrough Image Misty blue mS700_2.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Orion %28mS700%29\Walkthrough Image Orion mS700_1.png" />
+    <None Remove="Resources\WalkThrough\Mouse\Orion %28mS700%29\Walkthrough Image Orion mS700_2.png" />
+    <None Remove="Resources\WalkThrough\Pen\Caspian - Dell Premier Active Pen\Walkthrough Image Caspian_1.png" />
+    <None Remove="Resources\WalkThrough\Pen\Caspian - Dell Premier Active Pen\Walkthrough Image Caspian_2.png" />
+    <None Remove="Resources\WalkThrough\Pen\Caspian - Dell Premier Active Pen\Walkthrough Image Caspian_3.png" />
+    <None Remove="Resources\WalkThrough\Pen\Millenio DVT2 %28XPS Stylus%29\Walkthrough Image Millenio_1.png" />
+    <None Remove="Resources\WalkThrough\Pen\Millenio DVT2 %28XPS Stylus%29\Walkthrough Image Millenio_2.png" />
+    <None Remove="Resources\WalkThrough\Pen\Millenio DVT2 %28XPS Stylus%29\Walkthrough Image _3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Placeholder_4.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Webcam_1.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Webcam_2.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Webcam_3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Webcam_5.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Placeholder_4.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Webcam_1.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Webcam_2.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Webcam_3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Webcam_5.png" />
+    <None Remove="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Placeholder_4.png" />
+    <None Remove="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Webcam_1.png" />
+    <None Remove="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Webcam_2.png" />
+    <None Remove="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Webcam_3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Webcam_5.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Placeholder_4.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Webcam_1.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Webcam_2.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Webcam_3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Webcam_5.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Placeholder_4.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Webcam_1.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Webcam_2.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Webcam_3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Webcam_5.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB3023\Walkthrough Image WB3023_2.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB3023\Walkthrough Image WB3023_3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB3023\Walkthrough Image Webcam_1.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB5023\Walkthrough Image WB5023_2.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB5023\Walkthrough Image WB5023_3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB5023\Walkthrough Image WB5023_4.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB5023\Walkthrough Image Webcam_1.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image WB7022_2.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image WB7022_3.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image WB7022_4.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image Webcam_1.png" />
+    <None Remove="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image Webcam_4.png" />
     <None Remove="Resources\Warring.png" />
     <None Remove="Resources\WD19DCS.png" />
     <None Remove="Resources\WD19S_130W.png" />
@@ -261,6 +348,267 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\u2723qe.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Airmax (WH3024)\Walkthrough Image WH3024_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Airmax (WH3024)\Walkthrough Image WH3024_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Mito (WL7024)\Walkthrough Image WL7024_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Mito (WL7024)\Walkthrough Image WL7024_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Mito (WL7024)\Walkthrough Image WL7024_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Mito (WL7024)\Walkthrough Image WL7024_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Pegasus (WL5024)\Walkthrough Image WL5024_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Pegasus (WL5024)\Walkthrough Image WL5024_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Pegasus (WL5024)\Walkthrough Image WL5024_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Vaporfly (WL3024)\Walkthrough Image WL3024_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Vaporfly (WL3024)\Walkthrough Image WL3024_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Winflo (wH5024)\Walkthrough Image WH5024_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Winflo (wH5024)\Walkthrough Image WH5024_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Headset\Winflo (wH5024)\Walkthrough Image WH5024_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Keyboard\Elrond (KB555)\Walkthrough Image KB555_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Keyboard\Frodo KB525C\Walkthrough Image KB525C_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Keyboard\Frodo KB525C\Walkthrough Image KB525C_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Keyboard\Trident (KB900)\Walkthrough Image KB900_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Keyboard\Trident (KB900)\Walkthrough Image KB900_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Keyboard\Trident (KB900)\Walkthrough Image KB900_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S2725QC\Walkthrough Image Display_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S2725QC\Walkthrough Image Display_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S2725QC\Walkthrough Image Display_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S3225QC\Walkthrough Image Display_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S3225QC\Walkthrough Image Display_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S3225QC\Walkthrough Image Display_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S3425DW\Walkthrough Image Display_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S3425DW\Walkthrough Image Display_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\S3425DW\Walkthrough Image Display_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\U2725QE\Walkthrough Image Display_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\U2725QE\Walkthrough Image Display_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\U2725QE\Walkthrough Image Display_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\U3225QE\Walkthrough Image Display_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\U3225QE\Walkthrough Image Display_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Minitor\U3225QE\Walkthrough Image Display_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Arwen (MS355)\Walkthrough Image MS355_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Arwen (MS355)\Walkthrough Image MS355_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Arwen (MS355)\Walkthrough Image MS355_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Excalibur (MS900)\Walkthrough Image MS900_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Excalibur (MS900)\Walkthrough Image MS900_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Misty blue (mS700)\Walkthrough Image Misty blue mS700_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Misty blue (mS700)\Walkthrough Image Misty blue mS700_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Orion (mS700)\Walkthrough Image Orion mS700_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Mouse\Orion (mS700)\Walkthrough Image Orion mS700_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Pen\Caspian - Dell Premier Active Pen\Walkthrough Image Caspian_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Pen\Caspian - Dell Premier Active Pen\Walkthrough Image Caspian_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Pen\Caspian - Dell Premier Active Pen\Walkthrough Image Caspian_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Pen\Millenio DVT2 (XPS Stylus)\Walkthrough Image Millenio_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Pen\Millenio DVT2 (XPS Stylus)\Walkthrough Image Millenio_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Pen\Millenio DVT2 (XPS Stylus)\Walkthrough Image _3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Placeholder_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Webcam_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Webcam_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Webcam_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2424HEB\Walkthrough Image Webcam_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Placeholder_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Webcam_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Webcam_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Webcam_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\P2724DEB\Walkthrough Image Webcam_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Placeholder_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Webcam_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Webcam_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Webcam_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\p3424WEB\Walkthrough Image Webcam_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Placeholder_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Webcam_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Webcam_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Webcam_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3223QZ\Walkthrough Image Webcam_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Placeholder_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Webcam_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Webcam_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Webcam_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\U3224KBA\Walkthrough Image Webcam_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB3023\Walkthrough Image WB3023_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB3023\Walkthrough Image WB3023_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB3023\Walkthrough Image Webcam_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB5023\Walkthrough Image WB5023_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB5023\Walkthrough Image WB5023_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB5023\Walkthrough Image WB5023_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB5023\Walkthrough Image Webcam_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image WB7022_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image WB7022_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image WB7022_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image Webcam_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\WalkThrough\Webcam\WB7022\Walkthrough Image Webcam_4.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\WD25.png">
