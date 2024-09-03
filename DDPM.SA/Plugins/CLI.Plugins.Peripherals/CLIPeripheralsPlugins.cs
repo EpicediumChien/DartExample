@@ -178,7 +178,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", "N/A", "N/A"));
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
-           
+
             if (_commandLineInput.GuidString.Count == 0)
             {
                 _deviceinfo.ForEach(x =>
@@ -279,7 +279,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         case "ON":
                             val = 1;
                             bl = true;
-                            break;                            
+                            break;
                         case "DISABLE":
                         case "OFF":
                             val = 0;
@@ -306,49 +306,49 @@ namespace DDPM.CLI.Plugins.Peripherals
             switch (_commandLineInput.TargetFeature)
             {
                 case "BACKLIGHTINGCONTROLS":
-                        taskA = _devMgr.SetBackLightingControls;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetBackLightingControls;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "BACKLIGHTINGLEVEL":
-                        taskA = _devMgr.SetBackLightingLevel;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetBackLightingLevel;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONBLINKEFFECTENABLE":
-                        taskB = _devMgr.SetCollaborationBlinkEffectEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationBlinkEffectEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONCAMERAENABLE":
-                        taskB = _devMgr.SetCollaborationCameraEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationCameraEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONCHATENABLE":
-                        taskB = _devMgr.SetCollaborationChatEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationChatEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONDOUBLETAPENABLE":
-                        taskB = _devMgr.SetCollaborationDoubleTapEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationDoubleTapEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONKEYENABLE":
-                        taskB = _devMgr.SetCollaborationKeyEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationKeyEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONMICENABLE":
-                        taskB = _devMgr.SetCollaborationMicEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationMicEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "COLLABORATIONSCREENSHAREENABLE":
-                        taskB = _devMgr.SetCollaborationScreenShareEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetCollaborationScreenShareEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "DPILEVEL":
-                        taskA = _devMgr.SetDPILevel;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetDPILevel;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "DPIVALUE":
-                        taskA = _devMgr.SetDPIValue;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetDPIValue;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "PRIMARYMOUSEBUTTON":
                     MouseButton button;
                     switch (value.ToUpper())
@@ -391,9 +391,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
 
                 case "TOUCHSCROLLSENSITIVITYLEVEL":
-                        taskA = _devMgr.SetTouchScrollSensitivityLevel;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetTouchScrollSensitivityLevel;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "UNPAIR":
                     SetResults.ForEach(x =>
                     {
@@ -421,29 +421,29 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
                 //Headset&Speaker
                 case "SETWIREDAUDIOIMICNSENABLE":
-                        taskB = _devMgr.SetWiredAudioIMicNSEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetWiredAudioIMicNSEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETWIREDAUDIOMICMUTESOUNDENABLE":
-                        taskB = _devMgr.SetWiredAudioMicMuteSoundEnable;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetWiredAudioMicMuteSoundEnable;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETWIREDAUDIOVOLUMEADJUSTMENTTONE":
-                        taskA = _devMgr.SetWiredAudioVolumeAdjustmentTone;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetWiredAudioVolumeAdjustmentTone;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "ANCMODE":
-                        taskA = _devMgr.SetAncMode;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetAncMode;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "SETANCGAIN":
-                        taskA = _devMgr.SetAncGain;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetAncGain;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "SETSELECTEDPRESET":
-                        taskA = _devMgr.SetSelectedPreset;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetSelectedPreset;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 //case "SETBANDSGAIN":
                 //    if (!int.TryParse(value, out val))
                 //    {
@@ -457,33 +457,33 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "MICNOISECANCELLATION":
-                        taskB = _devMgr.SetMicNoiseCancellation;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetMicNoiseCancellation;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETSIDETONE":
-                        taskB = _devMgr.SetSidetone;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetSidetone;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETSIDETONELEVEL":
-                        taskA = _devMgr.SetSidetoneLevel;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetSidetoneLevel;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "WEARDETECTION":
-                        taskA = _devMgr.SetWearDetection;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    taskA = _devMgr.SetWearDetection;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "SETBUSYLIGHT":
-                        taskB = _devMgr.SetBusyLight;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetBusyLight;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETVOICEGUIDANCE":
-                        taskB = _devMgr.SetVoiceGuidance;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetVoiceGuidance;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 case "SETMICNCINCOMING":
-                        taskB = _devMgr.SetMicNCIncoming;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetMicNCIncoming;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 //case "SETEQUALIZERVALUES":
                 //    if (!bool.TryParse(value, out bl))
                 //    {
@@ -497,9 +497,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                 //    }
                 case "SETISMICENUMERATIONON":
-                        taskB = _devMgr.SetIsMicEnumerationOn;
-                        RunTaskB(bl);
-                        return (int)CLI_ExitCode.success;
+                    taskB = _devMgr.SetIsMicEnumerationOn;
+                    RunTaskB(bl);
+                    return (int)CLI_ExitCode.success;
                 default:
                     SetFailResults("Invalid TargetFeature");
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty_Property;
@@ -893,7 +893,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                 {
                     cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
-                    cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
+                    //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
                     cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{index++} Firmware update {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}");
                 }
                 return true;
@@ -1003,7 +1003,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                     {
                         cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
-                        cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
+                        //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
                         cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"Ready to start updating Device:{fwUpdateInfo.DeviceName} to Version:{fwUpdateInfo.TheLatestVersion}");
                     }
                     cli_FWU_RESPONSE.OutputLog(cli_FWU_RESPONSE, commandLineInput);
