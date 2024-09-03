@@ -109,7 +109,7 @@ namespace DDPM.SA.Common.Security
             {
                 info = ex.Message;
                 return false;
-            }            
+            }
             return true;
         }
     }

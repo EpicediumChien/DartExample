@@ -110,7 +110,7 @@ namespace VCPSDK
                 Console.WriteLine($"File({filePath}) path check failed ({info}).");
                 return false;
             }
-            
+
             //Need to check dll/exe thumbprint
             X509Certificate2 cert = LoadCertificate(filePath);
             if (cert == null)
@@ -135,7 +135,7 @@ namespace VCPSDK
             {
                 Console.WriteLine(ex.Message);
                 return false;
-            }            
+            }
             return true;
         }
 
