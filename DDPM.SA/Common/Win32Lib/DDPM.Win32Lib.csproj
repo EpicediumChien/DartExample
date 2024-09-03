@@ -9,6 +9,10 @@
 	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
 	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+  </ItemGroup>
  
 
 </Project>

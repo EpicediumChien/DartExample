@@ -4,6 +4,7 @@ using Dell.RPC.Transport;
 using System;
 using System.Diagnostics;
 using System.IO.Pipes;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
@@ -59,6 +60,14 @@ namespace DDPM.SA.Common.Security
             return pipeSecurity;
         }
 
+        private static byte[] ConvertThumbprintToByteArray(string thumbprint)
+        {
+            return Enumerable.Range(0, thumbprint.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(thumbprint.Substring(x, 2), 16))
+                             .ToArray();
+        }
+
         public static bool NamedPipeClientSecurity(NamedPipeServerStream pipeServer, out string info)
         {
             info = "success";
@@ -72,11 +81,17 @@ namespace DDPM.SA.Common.Security
             Process process = Process.GetProcessById((int)pid);
             string filePath = process.MainModule.FileName;
             Console.WriteLine("File path: " + filePath);
+<<<<<<< HEAD
             //0903 Elsa Add Security
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))
             {
                 return false;
             }
+=======
+            //check file path security
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))
+                return false;
+>>>>>>> ae91d345ae6279e6ffb70eb3d5ded05034abd12d
 
             //Need to check dll/exe thumbprint
             X509Certificate2 cert = DDPMFileSecurity.LoadCertificate(filePath);
@@ -85,12 +100,25 @@ namespace DDPM.SA.Common.Security
                 info = "Can't retrieve cert from file.";
                 return false;
             }
-            //compare thumbprint
-            //source array DDPM.Common.ThumbprintHash.certificateHash
-            //Target cert.Thumbprint
 
-            //check file path security
-            return DDPMFileSecurity.IsFilePathValid(filePath, out info);
+            //compare thumbprint
+            //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+            //Target cert.Thumbprint
+            try
+            {
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }            
+            return true;
         }
     }
 }
