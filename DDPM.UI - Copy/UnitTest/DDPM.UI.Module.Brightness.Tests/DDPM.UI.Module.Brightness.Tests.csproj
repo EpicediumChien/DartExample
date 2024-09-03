@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+	<OutputPath>$(UnitTestsOutputPath)</OutputPath>
+	<IsPackable>false</IsPackable>
+	<!--避免不必要的檔案-->
+	<SonarQubeExclude>true</SonarQubeExclude>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<IsTestProject>true</IsTestProject>
+	<SignAssembly>True</SignAssembly>
+	<AssemblyOriginatorKeyFile>..\DDPMUITests.snk</AssemblyOriginatorKeyFile>	  
+  </PropertyGroup>
+
+
+
+	<ItemGroup>
+    <PackageReference Include="Castle.Core" Version="5.1.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageReference Include="Moq" Version="4.18.2" />
+    <PackageReference Include="NUnit" Version="4.1.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+	  <PackageReference Include="coverlet.collector" Version="3.2.0">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.Module.Brightness\DDPM.UI.Module.Brightness.csproj" />
+    <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DDPM.SA.Common">
+      <HintPath>..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="VcpCore.Common">
+      <HintPath>..\..\CommonDll\VcpCore.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

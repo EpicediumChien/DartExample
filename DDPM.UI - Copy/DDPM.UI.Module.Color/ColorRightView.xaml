@@ -1,0 +1,357 @@
+﻿<UserControl x:Class="DDPM.UI.Module.Color.ColorRightView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DDPM.UI.Module.Color"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             mc:Ignorable="d"
+             d:DesignHeight="850" d:DesignWidth="800" Loaded="UserControl_Loaded" Unloaded="UserControl_UnLoaded">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <UXControls:UXScrollViewer>
+            <Grid>
+                <StackPanel>
+
+                    <!-- RightGroupBorder.Manual -->
+                    <Border Style="{StaticResource RightGroupBorderStyle}">
+
+                        <!-- Group: Manual -->
+                        <!--
+                        <Expander x:Name="Expander_Manual" Style="{StaticResource GroupExpanderStyle}" Expanded="expanderHasExpanded">
+                        -->
+                        <Expander x:Name="Expander_Manual" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded">
+                            <Expander.Header>
+                                <!-- Group Header: Manual-->
+                                <Grid Height="60">
+                                    <UXControls:UXTextBlock Margin="30,0,0,0" Text="{Binding [Manual], Source={x:Static lang:LangHelper.Instance}}" FontSize="20"
+                                                            TextBlockSemanticColorType="Light"
+                                                            TextBlockType="Caption" Foreground="White"
+                                                            VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                </Grid>
+                            </Expander.Header>
+
+                            <Expander.Content>
+                                <Grid Height="40" Margin="20,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <UXControls:UXTextBlock Text="{Binding [Color.6], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" FontSize="16"
+                                                            TextBlockSemanticColorType="Light" Foreground="White"
+                                                            TextBlockType="Display1"
+                                                            VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                                    <!--
+                                    <UXControls:UXComboBox x:Name="cbManualPreset" Grid.Column="2"
+                                    Background="{StaticResource UXComboBox_Background}"
+                                    BorderBrush="{StaticResource UXComboBox_BorderBrush}"
+                                    BorderThickness="{StaticResource Tooltip_BdThick}"
+                                    Foreground="{StaticResource UXComboBox_Foreground}"
+                                    Width="184"
+                                    ItemsSource="{Binding ColorPresets_ItemsCollection}"
+                                    SelectionChanged="cbManualPreset_SelectionChanged" />
+                                    -->
+                                    <ComboBox x:Name="cbManualPreset" Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
+                                              Width="184"
+                                              ItemsSource="{Binding ColorPresets_ItemsCollection}"
+                                              SelectedIndex="{Binding ColorPresetSelectedIndex}" />
+                                </Grid>
+                            </Expander.Content>
+                        </Expander>
+                    </Border>
+
+                    <!-- RightGroupBorder.Auto -->
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0">
+                        <Expander  x:Name="Expander_Auto" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded">
+                            <Expander.Header>
+                                <!-- Group Header: Auto-->
+                                <Grid Height="60">
+                                    <UXControls:UXTextBlock  Margin="30,0,0,0" Text="{Binding [Auto], Source={x:Static lang:LangHelper.Instance}}" FontSize="20"
+                                                            TextBlockSemanticColorType="Light" Foreground="White"
+                                                            TextBlockType="Caption"
+                                                            VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                </Grid>
+                            </Expander.Header>
+
+                            <Expander.Content>
+                                <StackPanel Margin="16">
+
+                                    <UXControls:UXTextBlock Text="{Binding [Color.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="16"
+                                                            TextBlockSemanticColorType="Light" Foreground="White"
+                                                            TextBlockType="Display1"
+                                                            VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                                    <!-- RightPartBorder.App -->
+                                    <Border Style="{StaticResource RightPartBorderStyle}" Margin="0,16,0,0">
+                                        <StackPanel>
+                                            <ListBox Background="{StaticResource RightViewContainerBkColor}"
+                                                     Margin="8" Grid.Row="1"
+                                                     x:Name="lb_AppList"
+                                                     ItemsSource="{Binding AppsList, UpdateSourceTrigger=PropertyChanged}"
+                                                     HorizontalContentAlignment="Stretch"
+                                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                                     ScrollViewer.CanContentScroll="True"
+                                                     PreviewDragEnter="lb_AppList_PreviewDragEnter"
+                                                     AllowDrop="True">
+                                                <ListBox.Resources>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="CornerRadius" Value="5" />
+                                                    </Style>
+                                                </ListBox.Resources>
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Margin="0,4">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />     <!-- App Icon-->
+                                                                <ColumnDefinition Width="*" />      <!-- App Name-->
+                                                                <ColumnDefinition Width="Auto" />    <!-- Preset for App, combobox-->
+                                                                <ColumnDefinition Width="12" />     <!--Delete button-->
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Image Grid.Column="0" x:Name="appIcon" Source="{Binding AppIcon}"
+                                                                   Width="40" Stretch="Uniform" />
+
+                                                            <TextBlock Grid.Column="1" x:Name="appName"
+                                                                       Text="{Binding AppName , UpdateSourceTrigger=PropertyChanged}"
+                                                                       Foreground="White"
+                                                                       VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                                                            <!-- -->
+                                                            <ComboBox Grid.Column="2" x:Name="appPreset"
+                                                                      Style="{StaticResource DdpmComboBoxStyle}"
+                                                                      ItemsSource="{Binding SupportPreset, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding AppPresetIdx, UpdateSourceTrigger=PropertyChanged}" Width="150"
+                                                                      VerticalAlignment="Center" HorizontalAlignment="Stretch"  Background="DimGray" SelectionChanged="appPreset_SelectionChanged" />
+
+                                                            <!--
+                                                            <UXControls:UXComboBox Grid.Column="2" x:Name="appPreset"
+                                                            Background="{StaticResource UXComboBox_Background}"
+                                                            BorderBrush="{StaticResource UXComboBox_BorderBrush}"
+                                                            BorderThickness="{StaticResource Tooltip_BdThick}"
+                                                            Foreground="{StaticResource UXComboBox_Foreground}"
+                                                            ItemsSource="{Binding SupportPreset, UpdateSourceTrigger=PropertyChanged}"
+                                                            SelectedIndex="{Binding AppPresetIdx, UpdateSourceTrigger=PropertyChanged}"
+                                                            Width="180" Height="40"
+                                                            VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                                            SelectionChanged="appPreset_SelectionChanged" />
+                                                            -->
+
+                                                            <Button Grid.Column="3" x:Name="appDeleteBtn" Content="X"
+                                                                    Background="Transparent"
+                                                                    Visibility="{Binding IsDeleteAble, UpdateSourceTrigger=PropertyChanged}"
+                                                                    BorderBrush="Transparent"
+                                                                    Click="appDeleteBtn_Click" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                                <ListBox.ItemContainerStyle>
+                                                    <Style TargetType="ListBoxItem">
+                                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                                                    </Style>
+                                                </ListBox.ItemContainerStyle>
+                                            </ListBox>
+
+                                            <UXControls:UXButton Name="btn_AddApp" Grid.Row="2" Content="{Binding [Color.0], Source={x:Static lang:LangHelper.Instance}}"
+                                                                 ButtonType="Secondary" ButtonSemanticColorType="Neutral"
+                                                                 Foreground="White" HorizontalAlignment="Center"
+                                                                 CornerRadius="2" Padding="24,8"
+                                                                 Click="btn_AddApp_Click" />
+
+                                            <!--
+                                            <Button x:Name="btn_AddApp" Grid.Row="2" Content="Add Application" VerticalAlignment="Top" Height="30" Width="140" Margin="0,60,0,0"
+                                            Foreground="White" Background="CornflowerBlue" BorderBrush="White"  Click="btn_AddApp_Click" />
+                                            -->
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Expander.Content>
+                        </Expander>
+                    </Border>
+
+                    <!-- RightGroupBorder.Nightlight -->
+                    <Border Style="{StaticResource RightGroupBorderStyle}"  Margin="0,16,0,0">
+                        <Grid x:Name="Nightlight_bar">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle Fill="Transparent" RadiusX="5" RadiusY="5" Grid.Column="0" Grid.ColumnSpan="2" Height="40" />
+                            <Grid Grid.Column="0" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="{Binding [Color.8], Source={x:Static lang:LangHelper.Instance}}"  Foreground="White" FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
+                                <TextBlock Text="(" Grid.Column="1" Foreground="White"  FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding NightlightStatus}" Grid.Column="2" Foreground="White" VerticalAlignment="Center" FontFamily="Noto Sans" FontSize="14" HorizontalAlignment="Center" />
+                                <TextBlock Text=")" Grid.Column="3" Foreground="White" FontFamily="Noto Sans" FontSize="14" VerticalAlignment="Center"  HorizontalAlignment="Center" />
+
+                                <Image Grid.Column="4" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
+                                    <Image.ToolTip>
+                                        <ToolTip>
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                </Border.Resources>
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding [Color.9], Source={x:Static lang:LangHelper.Instance}}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+                                        </ToolTip>
+                                    </Image.ToolTip>
+                                </Image>
+                            </Grid>
+                            <UXControls:UXLink Name="nightlight_config" Grid.Column="1" Content="{Binding [WindowsSettings], Source={x:Static lang:LangHelper.Instance}}" Click="nightlight_config_Click"
+                                               IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
+                                               LinkType="InLine" Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
+                                               HorizontalAlignment="Right" VerticalAlignment="Center" Height="40" />
+                        </Grid>
+                    </Border>
+
+                    <!-- RightGroupBorder.AdvancedSettings -->
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
+                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" >
+                            <Expander.Header>
+                                <!-- Group Header:  Advanced Settings-->
+                                <Grid Height="60">
+                                    <UXControls:UXTextBlock  Margin="0,0,0,0" Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" Foreground="White"
+                                                            TextBlockSemanticColorType="Light"
+                                                            TextBlockType="Caption"
+                                                            VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                </Grid>
+                            </Expander.Header>
+
+                            <Expander.Content>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.5*" />
+                                        <ColumnDefinition Width="8*" />
+                                        <ColumnDefinition Width="1.5*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="1*" />
+                                        <!--Color Management -->
+                                        <RowDefinition Height="15" />
+                                        <!-- space-->
+                                        <RowDefinition Height="0.8*" />
+                                        <!--Auto-adjust the ICC Color profile based on color preset-->
+                                        <RowDefinition Height="*" />
+                                        <!--Auto-adjust the color preset based on ICC Color profile-->
+                                        <RowDefinition Height="1.5*" />
+                                        <!--space-->
+                                        <RowDefinition Height="20" />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Column="0" Margin="0,0,0,0">
+                                        <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid Grid.Column="1" Grid.Row="0"  Margin="0,0,0,0">
+                                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
+                                            <TextBlock Text="{Binding [Color.11], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"  FontSize="14" FontFamily="Noto Sans" VerticalAlignment="Center" Grid.Column="0" Margin="16,0,0,0" HorizontalAlignment="Left" />
+
+                                            <Image Grid.Column="1" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
+                                                <Image.ToolTip>
+                                                    <ToolTip>
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <Border.Resources>
+                                                                <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                            </Border.Resources>
+                                                            <StackPanel>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="{Binding [Color.12], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid Grid.Column="3" Grid.Row="0"  Margin="0,0,0,0">
+
+                                        <UXControls:UXToggleSwitch
+                                            Name="ColorManagement_ToggleSwitch"
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            AutomationProperties.Name="ToggleSwitchLeft"
+                                            Click="Color_Management_Switch_Click"
+
+                                            ContentPlacement="Left"
+                                            ContentTextVisibility="True" />
+                                    </Grid>
+
+                                    <Grid Grid.Column="1" Grid.Row="2"  Margin="0,0,0,0">
+                                        <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False" Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}" Foreground="WhiteSmoke" FontSize="14" Click="rb_ICCprofile_based_Colorpreset_click" />
+                                    </Grid>
+
+                                    <Grid Grid.Column="1" Grid.Row="3"  Margin="0,0,0,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" Content="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}}" Foreground="WhiteSmoke" FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" />
+                                            <UXControls:UXLink Margin="-8,0,0,0" Name="ICC_profile_config" Content="{Binding [Color.5], Source={x:Static lang:LangHelper.Instance}}" Click="ICC_profile_config_Click"
+                                                               IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
+                                                               HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Expander.Content>
+                        </Expander>
+                    </Border>
+
+                    <StackPanel x:Name="stackpanel_DCM" Margin="-80,0,0,0" Height="100" HorizontalAlignment="Center" Width="850" Visibility="{Binding DCM_Visibility}">
+                        <!-- modify jim 20240604 -->
+                        <UXControls:UXAlert Margin="160,0,0,0">
+                            <UXControls:UXAlertItem AlertItemType="Info" Margin="8,8,8,8" Label=""
+                                                    Message="{Binding [Color.13], Source={x:Static lang:LangHelper.Instance}}" />
+                        </UXControls:UXAlert>
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Name="DisableAll" Background="#4C24273C">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <!-- Add a UXBusyIndicator from Robert -->
+                    <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
+                                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                IsActive="{Binding IsBusy}" />
+                </Border>
+            </Grid>
+        </UXControls:UXScrollViewer>
+    </Grid>
+</UserControl>

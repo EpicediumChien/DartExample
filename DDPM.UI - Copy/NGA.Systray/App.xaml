@@ -1,0 +1,7 @@
+﻿<!-- Copyright © 2022, Dell Inc., All Rights Reserved. -->
+<systrayCore:DucaSystrayCore x:Class="NGA.Systray.App"
+                             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                             xmlns:systrayCore="clr-namespace:NGA.SystrayCore;assembly=Dell.UCA.SystrayCore"
+                             Startup="AppStartup">
+</systrayCore:DucaSystrayCore>

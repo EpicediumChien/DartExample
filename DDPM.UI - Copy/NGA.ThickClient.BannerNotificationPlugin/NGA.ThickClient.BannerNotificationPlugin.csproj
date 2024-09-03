@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <OutputPath>..\bin</OutputPath>
+    <SignAssembly>True</SignAssembly>
+		<AssemblyOriginatorKeyFile>NGABannerNotificationPlugin.snk</AssemblyOriginatorKeyFile>
+		<UseWPF>true</UseWPF>
+		<AssemblyName>Dell.UCA.ThickClient.BannerNotificationPlugin</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\NGA.Common\NGA.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+		<PackageReference Include="Dell.UCA.ThickClient.Interfaces" Version="4.2.27.1" />
+	</ItemGroup>
+
+</Project>

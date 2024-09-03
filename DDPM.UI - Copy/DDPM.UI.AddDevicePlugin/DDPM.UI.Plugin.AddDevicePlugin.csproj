@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <OutputPath>..\bin</OutputPath>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Interfaces\**" />
+    <Compile Remove="UserControls\**" />
+    <Compile Remove="ViewModels\**" />
+    <EmbeddedResource Remove="Interfaces\**" />
+    <EmbeddedResource Remove="UserControls\**" />
+    <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="Interfaces\**" />
+    <None Remove="UserControls\**" />
+    <None Remove="ViewModels\**" />
+    <Page Remove="Interfaces\**" />
+    <Page Remove="UserControls\**" />
+    <Page Remove="ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+    <PackageReference Include="Dell.UCA.ThickClient.Interfaces" Version="4.2.27.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddDisplay\DDPM.UI.Module.AddDisplay.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddDock\DDPM.UI.Module.AddDock.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddHeadset_BL\DDPM.UI.Module.AddHeadset_BL.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddHeadset_Dongle\DDPM.UI.Module.AddHeadset_Dongle.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddHeadset_Wired\DDPM.UI.Module.AddHeadset_Wired.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddKnM_BL\DDPM.UI.Module.AddKnM_BL.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddKnM_Dongle\DDPM.UI.Module.AddKnM_Dongle.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddKnM_Wired\DDPM.UI.Module.AddKnM_Wired.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddPen_BL\DDPM.UI.Module.AddPen_BL.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddPen_Other\DDPM.UI.Module.AddPen_Other.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddSpeaker\DDPM.UI.Module.AddSpeaker.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.AddWebcam\DDPM.UI.Module.AddWebcam.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.KeyCustomization\DDPM.UI.Module.KeyCustomization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DDPM.SA.Common">
+      <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="DPeMPublic.Common">
+      <HintPath>..\CommonDll\DPeMPublic.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

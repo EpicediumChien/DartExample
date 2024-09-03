@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="DDPM.UI.Module.PipPbp.Test2FullView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DDPM.UI.Module.PipPbp"
+             Background="#FF0B3F3F"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="This is Test1 FullView" FontSize="24" Foreground="YellowGreen" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Test1Value=" Foreground="Cyan" />
+                <TextBox Text="{Binding Test1Value}" Width="100" />
+                <TextBlock Text="Test2Value=" Margin="20,0,0,0" Foreground="Cyan" />
+                <TextBox Text="{Binding Test2Value}" Width="100" />
+            </StackPanel>
+
+            <Button Content="Go to previous page" Command="{Binding GtotoPrevCommand}" />
+            <Button Content="Close FullView" Command="{Binding CloseFullViewCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

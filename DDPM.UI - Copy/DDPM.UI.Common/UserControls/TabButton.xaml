@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="DDPM.UI.Common.TabButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             mc:Ignorable="d"
+             d:DesignHeight="60"
+             d:DesignWidth="200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Border x:Name="Border" CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" BorderBrush="#0DFFFFFF"
+                Margin="0" MouseLeftButtonDown="OnClick">
+            <UXControls:UXTextBlock x:Name="TabCaption" Text="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontSize="{Binding CaptionSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Foreground="White" FontFamily="Roboto" FontWeight="Light"
+                                    Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </Border>
+        <Image x:Name="InfoIcon" Margin="0,8,8,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Fill" Visibility="Hidden"
+               VerticalAlignment="Top" HorizontalAlignment="Right" Cursor="Hand" Width="16" Height="16">
+            <Image.ToolTip>
+                <ToolTip x:Name="toolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                    <TextBlock x:Name="txtToolTip" Style="{StaticResource TabInfoToolTipTextStyle}" Padding="12,12,12,6" />
+                </ToolTip>
+            </Image.ToolTip>
+        </Image>
+    </Grid>
+</UserControl>

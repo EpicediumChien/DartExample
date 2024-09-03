@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="DDPM.UI.Module.Gaming.GamingRightView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:DDPM.UI.Module.Gaming" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="800" d:DesignWidth="800" mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <UXControls:UXScrollViewer>
+            <Grid>
+                <StackPanel>
+                    <Border Style="{StaticResource RightGroupBorderStyle}">
+                        <StackPanel>
+                            <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_GameEnhanceMode}" IsEnabled="{Binding GameEnhanceMode_IsEnable}" Opacity="{Binding GameEnhanceMode_Opacity}">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Game Enhance Mode" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding GameEnhanceMode_ItemsCollection}" SelectedItem="{Binding SelectedGameEnhancementMode, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
+                            </Grid>
+                            <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_ResponseTime}" IsEnabled="{Binding ResponseTime_IsEnable}" Opacity="{Binding ResponseTime_Opacity}">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Response Time" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding ResponseTime_ItemsCollection}" SelectedItem="{Binding SelectedResponseTime, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
+                            </Grid>
+                            <Grid Height="40" Margin="0,8">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Resolution and Refresh Rate" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding Resolution_ItemsCollection}" SelectedItem="{Binding SelectedResolution, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
+                            </Grid>
+                            <Grid Height="40" Margin="0,8" IsEnabled="{Binding HDRType_IsEnable}" Opacity="{Binding HDRType_Opacity}" Visibility="{Binding IsAWSeries}">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Smart HDR" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding HDRType_ItemsCollection}" SelectedItem="{Binding SelectedHDRType, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
+                            </Grid>
+                            <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DarkStabilizer}" IsEnabled="{Binding DarkStabilizer_IsEnable}" Opacity="{Binding DarkStabilizer_Opacity}">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Dark Stabilizer" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding DarkStabilizer_ItemsCollection}" SelectedItem="{Binding SelectedDarkStabilizer, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
+                            </Grid>
+                            <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DarkStabilizer}" IsEnabled="{Binding DarkStabilizer_IsEnable}" Opacity="{Binding DarkStabilizer_Opacity}">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Dark Stabilizer Toggle" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <UXControls:UXTextBox Width="260" Height="40" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14" Foreground="#FFA4B8CD" 
+                                                      Name="tbDarkStabilizerToggle"
+                                                      AcceptsReturn="True"
+                                                      PreviewKeyDown="tbDarkStabilizerToggle_PreviewKeyDown"
+                                                      PreviewKeyUp="tbDarkStabilizerToggle_PreviewKeyUp"
+                                                      GotFocus="tbDarkStabilizerToggle_GotFocus"
+                                                      LostFocus="tbDarkStabilizerToggle_LostFocus"
+                                                      ContextMenuOpening="tbDarkStabilizerToggle_ContextMenuOpening"
+                                                      ContextMenu="{x:Null}"
+                                                      Text="{Binding DarkStabilizerToggleKey,Mode=TwoWay}" />
+                            </Grid>
+                            <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DualResolution}">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Dual Resolution" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding DualResolution_ItemsCollection}" SelectedItem="{Binding SelectedDualResolution, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
+                            </Grid>
+                            <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DualResolution}">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Dual Resolution Toggle" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <UXControls:UXTextBox Width="260" Height="40" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="14" Foreground="#FFA4B8CD" 
+                                                      Name="tbDualResolutionToggle"
+                                                      AcceptsReturn="True"
+                                                      PreviewKeyDown="tbDualResolutionToggle_PreviewKeyDown"
+                                                      PreviewKeyUp="tbDualResolutionToggle_PreviewKeyUp"
+                                                      GotFocus="tbDualResolutionToggle_GotFocus"
+                                                      LostFocus="tbDualResolutionToggle_LostFocus"
+                                                      ContextMenuOpening="tbDualResolutionToggle_ContextMenuOpening"
+                                                      ContextMenu="{x:Null}"
+                                                      Text="{Binding DualResolutionToggleKey,Mode=TwoWay}" />
+                            </Grid>
+                            <Grid Height="40" Margin="0,8" IsEnabled="{Binding HDRType_IsEnable}" Opacity="{Binding HDRType_Opacity}" Visibility="{Binding IsGameSeries}">
+                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Smart HDR" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding HDRType_ItemsCollection}" SelectedItem="{Binding SelectedHDRType, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <Border Name="DisableAll" Background="#4C24273C">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <!--  Add a UXBusyIndicator from Robert  -->
+                    <UXControls:UXBusyIndicator Width="64" Height="64" HorizontalAlignment="Center" VerticalAlignment="Center" BusyIndicatorType="Secondary" IsActive="{Binding IsBusy}" />
+                </Border>
+                <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
+            </Grid>
+        </UXControls:UXScrollViewer>
+    </Grid>
+</UserControl>
