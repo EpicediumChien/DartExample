@@ -729,6 +729,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 if (input.Command.Equals("GET"))
                 {
+                    writelog(input.TargetFeature + " get entry");
                     var ret = GetALSPropertiesAsync(devMgr, input, idx.ToString());
                     output += "\n" + ret.result;
                     if (ret.code != 0)
@@ -736,6 +737,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else if (input.Command.Equals("SET"))
                 {
+                    writelog(input.TargetFeature + " set entry");
                     foreach (CommandType_Option opt in input.Options)
                     {
                         if (opt.Option_Name.ToUpper().Equals("VALUE"))
@@ -749,6 +751,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
             }
 
+            writelog(input.TargetFeature + " Return value{output}");
             return (exit, output);
         }
 
@@ -5732,6 +5735,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (commandLineInput.Command.Equals("GET"))
                         {
+                            writelog("USBCPRIORITIZATION get entry");
                             if (commandLineInput.Options.Count > 0)
                             {
                                 cLI_RESPONSE.Result = "FAIL";
@@ -5746,6 +5750,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else if (commandLineInput.Command.Equals("SET"))
                         {
+                            writelog("USBCPRIORITIZATION set entry");
                             if (commandLineInput.Options.Count > 1)
                             {
                                 cLI_RESPONSE.Result = "FAIL";
@@ -5780,6 +5785,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "RESOLUTION":
                     try
                     {
+                        writelog("RESOLUTION get entry");
                         if (commandLineInput.Options.Count > 1)
                         {
                             cLI_RESPONSE.Result = "FAIL";
@@ -5814,6 +5820,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "REFRESHRATE":
                     try
                     {
+                        writelog("REFRESHRATE get entry");
                         if (commandLineInput.Options.Count > 1)
                         {
                             cLI_RESPONSE.Result = "FAIL";
@@ -5854,6 +5861,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (commandLineInput.Command.Equals("GET"))
                         {
+                            writelog("ORIENTATION get entry");
                             if (commandLineInput.Options.Count > 0)
                             {
                                 cLI_RESPONSE.Result = "FAIL";
@@ -5868,6 +5876,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else if (commandLineInput.Command.Equals("SET"))
                         {
+                            writelog("ORIENTATION set entry");
                             if (commandLineInput.Options.Count > 1)
                             {
                                 cLI_RESPONSE.Result = "FAIL";
@@ -5934,6 +5943,7 @@ namespace DDPM.CLI.Plugins.Display
                         //CLI: Terry update 0723
                         if (commandLineInput.Command.ToUpper().Trim().Equals("CONFIGURE"))
                         {
+                            writelog("RESOLUTIONREFRESHRATE get entry");
                             if (commandLineInput.Options.Count > 1)//not allow more than one command code, print redundant commanmd
                             {
                                 cLI_RESPONSE.Result = "FAIL";
@@ -5983,6 +5993,7 @@ namespace DDPM.CLI.Plugins.Display
                     break;
 
                 case "CURRENTRESOLUTIONREFRESHRATE"://"CURRENTDISPLAYPROPERTIES":
+                    writelog("CURRENTRESOLUTIONREFRESHRATE get entry");
                     if (commandLineInput.Options.Count > 0)
                     {
                         cLI_RESPONSE.Result = "FAIL";
@@ -5999,6 +6010,7 @@ namespace DDPM.CLI.Plugins.Display
                     break;
 
                 case "ALLRESOLUTIONREFRESHRATE":
+                    writelog("ALLRESOLUTIONREFRESHRATE get entry");
                     if (commandLineInput.Options.Count > 0)
                     {
                         cLI_RESPONSE.Result = "FAIL";
@@ -6028,6 +6040,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     if (commandLineInput.Command.Equals("SET"))
                     {
+                        writelog("LOCKROTATE set entry");
                         for (int i = 0; i < commandLineInput.Options.Count; i++)
                         {
                             if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
@@ -6040,6 +6053,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else if (commandLineInput.Command.Equals("GET"))
                     {
+                        writelog("LOCKROTATE get entry");
                         for (int i = 0; i <= commandLineInput.Options.Count; i++)
                         {
                             ret_osd = devMgr.GetLockRotateStatus().Result;
@@ -6062,6 +6076,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     if (commandLineInput.Command.Equals("SET"))
                     {
+                        writelog("ROTATEOSDMENU set entry");
                         for (int i = 0; i < commandLineInput.Options.Count; i++)
                         {
                             if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
@@ -6074,6 +6089,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else if (commandLineInput.Command.Equals("GET"))
                     {
+                        writelog("ROTATEOSDMENU get entry");
                         for (int i = 0; i <= commandLineInput.Options.Count; i++)
                         {
                             output_osd = devMgr.GetOSDOrientation(monitorInfo).Result;
@@ -6093,31 +6109,37 @@ namespace DDPM.CLI.Plugins.Display
             if (HDR_RESPONSE != null)
             {
                 output = JsonConvert.SerializeObject(HDR_RESPONSE, Formatting.Indented);
+                writelog(commandLineInput.TargetFeature + $" Return value{output}");
                 System.Console.WriteLine(output);
             }
             else if (USBCPrioritization_RESPONSE != null)
             {
                 output = JsonConvert.SerializeObject(USBCPrioritization_RESPONSE, Formatting.Indented);
+                writelog(commandLineInput.TargetFeature + $" Return value{output}");
                 System.Console.WriteLine(output);
             }
             else if (CurrentOrientation_RESPONSE != null)
             {
                 output = JsonConvert.SerializeObject(CurrentOrientation_RESPONSE, Formatting.Indented);
+                writelog(commandLineInput.TargetFeature + $" Return value{output}");
                 System.Console.WriteLine(output);
             }
             else if (CurrentResolutionRefreshRate_RESPONSE != null)
             {
                 output = JsonConvert.SerializeObject(CurrentResolutionRefreshRate_RESPONSE, Formatting.Indented);
+                writelog(commandLineInput.TargetFeature + $" Return value{output}");
                 System.Console.WriteLine(output);
             }
             else if (SupportedResolutionRefreshRate_RESPONSE != null)
             {
                 output = JsonConvert.SerializeObject(SupportedResolutionRefreshRate_RESPONSE, Formatting.Indented);
+                writelog(commandLineInput.TargetFeature + $" Return value{output}");
                 System.Console.WriteLine(output);
             }
             else
             {
                 output = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                writelog(commandLineInput.TargetFeature + $" Return value{output}");
                 System.Console.WriteLine(output);
             }
             if (ret == true)
@@ -6389,6 +6411,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
             }
             System.Console.WriteLine(ALS_RESPONSE.ToJson());
+            writelog(input.TargetFeature + " Return value" + ALS_RESPONSE.ToJson());
             return ((int)exidcode, ALS_RESPONSE.ToJson());
         }
 
@@ -6396,6 +6419,7 @@ namespace DDPM.CLI.Plugins.Display
         {
             if (commandLineInput.Command.Equals("GET"))
             {
+                writelog("PowerNap get entry");
                 if (commandLineInput.Options.Count > 0)
                 {
                     CLI_RESPONSE G_PopwerNap_RESPONSE = new CLI_RESPONSE();
@@ -6411,6 +6435,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else if (commandLineInput.Command.Equals("SET"))
             {
+                writelog("PowerNap set entry");
                 if (commandLineInput.Options.Count == 1)
                 {
                     string output = string.Empty;
@@ -6743,6 +6768,8 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
+               
+                writelog($"PowerNap return exit value{output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             if (type == "GET")
@@ -6876,6 +6903,8 @@ namespace DDPM.CLI.Plugins.Display
                     }
                 }
             }
+
+            writelog($"PowerNap return exit value{output}");
             return ((int)CLI_ExitCode.success, output);
         }
 
@@ -7805,10 +7834,12 @@ namespace DDPM.CLI.Plugins.Display
         {
             if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
             {
+                writelog("Energysaver get entry");
                 return Energysaver(devMgr, commandLineInput).Result;
             }
             else if (commandLineInput.Command == "SET" && commandLineInput.Options.Count == 1)
             {
+                writelog("Energysaver set entry");
                 return Energysaver(devMgr, commandLineInput).Result;
             }
             else
@@ -7905,6 +7936,8 @@ namespace DDPM.CLI.Plugins.Display
                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
             }
+            
+            writelog($"Energysaver return exit value{output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
@@ -8602,6 +8635,7 @@ namespace DDPM.CLI.Plugins.Display
 
             if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
             {
+                writelog("ActiveHours get entry");
                 foreach (MonitorInfo monitor in _AllInfoMonitors)
                 {
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
@@ -8622,6 +8656,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
+                writelog("ActiveHours get entry");
                 foreach (string idx in commandLineInput.DeviceIndex)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
@@ -8643,6 +8678,7 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (string tag in commandLineInput.ServiceTag)
                 {
                     var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    writelog("ActiveHours get entry");
                     foreach (MonitorInfo monitor in tmp)
                     {
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
@@ -8662,7 +8698,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                 }
             }
-            writelog(output);
+            writelog($"ActiveHours return exit value{output}");
             return ((int)CLI_ExitCode.success, output);
         }
 
@@ -10000,6 +10036,7 @@ namespace DDPM.CLI.Plugins.Display
 
             if (commandLineInput.Command == "GET")
             {
+                writelog("Easyarrange get entry");
                 List<int> _monitorIndeies = new List<int>();
 
                 if (_AllInfoMonitors == null)
@@ -10045,6 +10082,7 @@ namespace DDPM.CLI.Plugins.Display
             if (commandLineInput.Command == "CONFIGURE")
             {
 
+                writelog("Easyarrange configure entry");
                 List<int> _monitorIndeies = new List<int>();
 
                 if (_AllInfoMonitors == null)
