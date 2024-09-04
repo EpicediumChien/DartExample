@@ -17,6 +17,23 @@ set ConfigType=%1
 RD /S /Q "_BIN"
 ::goto FileCopy
 
+
+echo Clean VCPSDK
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\VCPSDK\VCPSDK.sln"
+:: msbuild .\DDPM.UI\DDPM.UI.sln  /t:clean /p:platform=%build_arch% /p:configuration=%ConfigType%
+if errorlevel 1 goto errorVCPSDK
+:: pause
+echo Build VCPSDK
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\VCPSDK\VCPSDK.sln"
+:: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
+if errorlevel 1 goto errorVCPSDK
+echo *************************************
+echo BUILD VCPSDK SUCCESS
+echo *************************************
+
+
+
+
 echo Clean SA
 :: dotnet clean .\Display001\CommModule\AwCommModule.sln /p:platform="x64" /p:configuration=%ConfigType%
 :: msbuild .\DDPM.SA\DDPM.SA.sln /t:clean /p:platform=%build_arch% /p:configuration=%ConfigType%
@@ -55,6 +72,18 @@ echo *************************************
 
 
 goto PassDone
+
+:errorVCPSDK
+    @echo.
+    @echo   ####    #####    #    #       
+    @echo  #        #    #   #   #  
+    @echo  #        #    #   #  #   
+    @echo   ####    #    #   ### 
+    @echo       #   #    #   #  #
+    @echo       #   #    #   #   #
+    @echo   ####    ####     #    #
+    @echo.
+goto errorDone
 
 :errorSA
     @echo.
@@ -109,19 +138,24 @@ pause
 
 
 :FileCopy
+echo copy support list.
+xcopy /E /i ".\DDPM.SA\dll\SupportEncrypted.txt" ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\"
 
 echo Del SA all *.pdb 
 del /S ".\DDPM.SA\bin\*.pdb"
 echo Del UI all *.pdb 
 del /S ".\DDPM.UI\bin\*.pdb"
+echo Del UI all *.pdb 
+del /S ".\DDPM.SA\VCPSDK\VCPSDK\bin\*.pdb"
 
 RD /S /Q "_BIN"
 
 mkdir "_BIN"
 mkdir "_BIN\SA"
 mkdir "_BIN\UI"
+mkdir "_BIN\VCPSDK"
 
-
+xcopy /E /i ".\DDPM.SA\VCPSDK\VCPSDK\bin\%ConfigType%\%NET%-windows10.0.19041.0\*.*" ".\_BIN\VCPSDK"
 xcopy /E /i ".\DDPM.SA\bin\CLI.Subagent\%ConfigType%\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\CLI"
 xcopy /E /i ".\DDPM.SA\bin\DDPM.Subagent\%ConfigType%\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\System"
 xcopy /E /i ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\*.*" ".\_BIN\SA\User"

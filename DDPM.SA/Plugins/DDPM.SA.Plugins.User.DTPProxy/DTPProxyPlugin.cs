@@ -25,8 +25,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dell.TechHub.Commodity.Peripheral;
 using VcpCore.Common;
-using Dell.Client.Framework.Agent;
-//using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
