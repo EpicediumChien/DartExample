@@ -4,6 +4,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DPeMPublic.Common.Enums;
+using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -75,6 +76,46 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 _UpdatesPageUI_Enable = !DdpmCommonHelper.DeviceManagerSA.GetUILockStatus().Result;
                 return _UpdatesPageUI_Enable;
             }
+        }
+        private double _progressValue = 2;
+        public double ProgressValue
+        {
+            get
+            {
+                return _progressValue;
+            }
+            set
+            {
+                _progressValue = value;
+                OnPropertyChanged(nameof(ProgressValue));
+            }
+        }
+        public void UpdateProgress(double value)
+        {
+            if (value >= 0 && value <= 5)
+            {
+                ProgressValue = value;
+            }
+        }
+        private string _mainText = "Customizable Keys";
+        public string MainText
+        {
+            get => _mainText;
+            set => SetProperty(ref _mainText, value);
+        }
+
+        private string _subText = "You can customize the keys on your keyboard by assigning your favorite actions to the top row and other keys";
+        public string SubText
+        {
+            get => _subText;
+            set => SetProperty(ref _subText, value);
+        }
+
+        private string _mainImageSource = "pack://application:,,,/DDPM.UI.Common;component/Resources/WalkThrough/Keyboard/Trident (KB900)/Walkthrough Image KB900_1.png";
+        public string MainImageSource
+        {
+            get => _mainImageSource;
+            set => SetProperty(ref _mainImageSource, value);
         }
     }
 }

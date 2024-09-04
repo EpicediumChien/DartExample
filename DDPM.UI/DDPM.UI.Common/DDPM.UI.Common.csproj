@@ -19,7 +19,9 @@
 
   <ItemGroup>
     <None Remove="Resources\Alert.png" />
+    <None Remove="Resources\Arrow button.png" />
     <None Remove="Resources\arrow-left.png" />
+    <None Remove="Resources\Arrow-Right.png" />
     <None Remove="Resources\AW.png" />
     <None Remove="Resources\Background_Glow.png" />
     <None Remove="Resources\BatteryOutline.png" />

@@ -17,6 +17,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Input;
 using VcpCore.Common;
+using Windows.Devices.Input;
 using DDPMConstants = DDPM.UI.Common.Constants;
 
 //using VcpCore.Interfaces;
@@ -181,6 +182,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.Reset0x52TimerTick(2000);
                             await GetDdpmDevicesAsync(_deviceManager);
 
+                            //DdpmHomePlugin.DdpmHomePlugin.GetHomeDevices();
+
+                            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
                             //Call once
@@ -233,6 +238,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //_ = Task.Run(GetDdpmDevicesAsync(_deviceManager));
                     if (_deviceManager != null)
                         _ = GetDdpmDevicesAsync(_deviceManager);
+
+                    //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
 
                     if (e.type == DeviceChangedType.NotifyOnly)
                     {
