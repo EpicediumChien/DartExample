@@ -64,6 +64,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 if ((cellCount == 0) && (splitKey == 'A'))
                 {
                     _workingSplit = null;
+                    return;
                 }
                 else
                 {
@@ -72,6 +73,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 if (_workingSplit != null)
                 {
                     _workingSplit.SplitMode = eSplitModes.Work;
+                    if (settings == null)
+                        _workingSplit.Settings = new List<double>();
+                    else
+                        _workingSplit.Settings = settings;
                     _workingSplit.IsEditable = false;
                     splitCtrl.Content = _workingSplit;
                 }
@@ -83,6 +88,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 if (fadeSplit != null)
                 {
                     fadeSplit.SplitMode = eSplitModes.Work;
+                    fadeSplit.Settings = new List<double>(_workingSplit.Settings);
                     fadeSplit.IsEditable = false;
                     fadeOutCtrl.Content = fadeSplit;
                 }

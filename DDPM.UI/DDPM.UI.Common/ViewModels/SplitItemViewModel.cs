@@ -50,8 +50,11 @@ namespace DDPM.UI.Common.ViewModels
             {
                 if (_split != null)
                     return _split.Description;
-                else
-                    return "";
+                else if (SplitCtrl != null)
+                {
+                    return SplitCtrl.FriendlyName;
+                }
+                return "";
             }
         }
 
