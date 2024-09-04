@@ -570,14 +570,37 @@ namespace DDPM.UI.Plugin.ViewModels
                 switch(SelectedButton)
                 {
                     case "TopButton":
+                        if(SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
+                        {
+                            var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
+                            byte[] newValue = Encoding.UTF8.GetBytes(value);
+                            _deviceManager.SetEraserSinglePressSetting(itemID, newValue);
+                        }
+                        else if(SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
+                        {
+                            var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
+                            byte[] newValue = Encoding.UTF8.GetBytes(value);
+                            _deviceManager.SetEraserDoublePressSetting(itemID, newValue);
+                        }
+                        else
+                        {
+                            var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
+                            byte[] newValue = Encoding.UTF8.GetBytes(value);
+                            _deviceManager.SetEraserLongPressSetting(itemID, newValue);
+                        }
                         break;
                     case "TopBarrelButton":
-                        var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\",\"IsHoverEnabled\":true}}";
-                        byte[] newValue = Encoding.UTF8.GetBytes(value);
-                        //_deviceManager.SetSideTopSwitchSinglePressSetting(itemID, newValue);
-                        _deviceManager.SetSideTopSwitchSinglePressSetting(newValue, CurrentDeviceInfo!.ID);
+                        //var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\",\"IsHoverEnabled\":true}}";
+                        var value4 = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"IsHoverEnabled\":true}}";
+                        byte[] newValue4 = Encoding.UTF8.GetBytes(value4);
+                        //_deviceManager.SetSideTopSwitchSinglePressSetting1(itemID, newValue4);
+                        //_deviceManager.SetSideTopSwitchSinglePressSetting2(itemID, value4);
+                        _deviceManager.SetSideTopSwitchSinglePressSetting3(newValue4, CurrentDeviceInfo!.ID);
                         break;
                     case "BottomBarrelButton":
+                        var value5 = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"IsHoverEnabled\":true}}";
+                        byte[] newValue5 = Encoding.UTF8.GetBytes(value5);
+                        _deviceManager.SetSideBottomSwitchSinglePressSetting(itemID, newValue5);
                         break;
                 }
                 ActionList.ExportActionList(PenAction, "PEN");
@@ -598,11 +621,13 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if(SelectedButton == PenButtonName.TopBarrelButton.ToString())
                 {
+                    _deviceManager.SetIsSideTopButtonHoverClick(itemID, value);
                     PenAction.IsTopBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
                 if(SelectedButton == PenButtonName.BottomBarrelButton.ToString())
                 {
+                    _deviceManager.SetIsSideBottomButtonHoverClick(itemID, value);
                     PenAction.IsBottomBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
@@ -617,16 +642,16 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public Visibility IsHoverClickVisibility { get; set; } = Visibility.Collapsed;
 
-        private double _windowsPanelParameter = 401;
 
-        public double WindowsPanelParameter
+        public void UpdateRadialMenu(int index)
         {
-            get => _windowsPanelParameter;
-            set
-            {
-                _windowsPanelParameter = value;
-                OnPropertyChanged();
-            }
+            var value = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"menuIndex\":{index}}}";
+            byte[] newValue = Encoding.UTF8.GetBytes(value);
+            _deviceManager.SetMenuSinglePressSetting(itemID, newValue);
+        }
+        public void UpdateRadialMenuRightClick(bool value)
+        {
+            _deviceManager.SetMenuCenterRightClickSetting(itemID, value);
         }
     }
 }

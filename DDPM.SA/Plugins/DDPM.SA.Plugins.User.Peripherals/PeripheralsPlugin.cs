@@ -735,9 +735,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if(_deviceInfo != null)
                     {
+                        var payloadBytes = (byte[])newValue;
+                        var payloadSize = payloadBytes.Length;
+                        var byteArray = new byte[payloadSize + 4];
+                        BitConverter.GetBytes(payloadSize).CopyTo(byteArray, 0);
+                        payloadBytes.CopyTo(byteArray, 4);
                         //_logicalDevicePen.SetSideTopSwitchSinglePressSetting(newValue);
-                        _logicalDevicePen.SideTopSwitchSinglePressSetting = newValue;
-                        _deviceInfo.SideTopSwitchSinglePressSetting = newValue;
+                        _logicalDevicePen.SideTopSwitchSinglePressSetting = byteArray;
+                        //_deviceInfo.SideTopSwitchSinglePressSetting = newValue;
                         break;
                     }
                 }

@@ -1,5 +1,6 @@
 ﻿//using System.Drawing;
 using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,62 +21,64 @@ namespace DDPM.UI.Plugin.Common
     public partial class RadialMenuModalDialog : Window
     {
         PenActions PenActions;
-        string Model;
+        PenViewModel _vm;
 
         private const double OuterRadius = 198;
         private const double InnerRadius = 58;
         private const double CenterX = 200;
         private const double CenterY = 200;
 
-    private int SelectedMenuID = 2;
-    private int SelectedActionID = 0;
-    private bool IsComboOpen = false;
-    readonly SolidColorBrush NormalFillBrush = new();
-    readonly SolidColorBrush NormalBorderBrush = new();
-    readonly LinearGradientBrush FocusFillBrush = new();
-    readonly LinearGradientBrush FocusBorderBrush = new();
+        private int SelectedMenuID = 2;
+        private int SelectedActionID = 0;
+        private bool IsComboOpen = false;
+        readonly SolidColorBrush NormalFillBrush = new();
+        readonly SolidColorBrush NormalBorderBrush = new();
+        readonly LinearGradientBrush FocusFillBrush = new();
+        readonly LinearGradientBrush FocusBorderBrush = new();
 
-        public RadialMenuModalDialog(double width, double height, PenActions penActions, string model)
+        public RadialMenuModalDialog(double width, double height, PenViewModel vm)
         {
             InitializeComponent();
             this.Width = width;
             this.Height = height;
-            PenActions = penActions;
-            Model = model;
+            PenActions = vm.PenAction;
+            _vm = vm;
 
             DrawPieChart();
 
-      SelectedMenuID = 2;
-      SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
-      txtTitleBar.Text = Strings.RadialMenu;
-      txtFunction.Text = Strings.FunctionForSelectedRadial;
-      RefreshAction(true);
-      txtLabel.Text = Strings.LabelForSelectedRadial;
-      txtUseCenter.Text = Strings.UseCenterForEmulatingRightClick;
-      tsUseCenter.IsChecked = PenActions.IsUseCenter;
-      if(PenActions.IsUseCenter) {
-        tsUseCenter.Content = Strings.On;
-      }
-      else {
-        tsUseCenter.Content = Strings.Off;
-      }
-      btnRestore.Caption = Strings.RestoreToDefault;
-      btnSave.Caption = Strings.Save;
+            SelectedMenuID = 2;
+            SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+            txtTitleBar.Text = Strings.RadialMenu;
+            txtFunction.Text = Strings.FunctionForSelectedRadial;
+            RefreshAction(true);
+            txtLabel.Text = Strings.LabelForSelectedRadial;
+            txtUseCenter.Text = Strings.UseCenterForEmulatingRightClick;
+            tsUseCenter.IsChecked = PenActions.IsUseCenter;
+            if(PenActions.IsUseCenter)
+            {
+                tsUseCenter.Content = Strings.On;
+            }
+            else
+            {
+                tsUseCenter.Content = Strings.Off;
+            }
+            btnRestore.Caption = Strings.RestoreToDefault;
+            btnSave.Caption = Strings.Save;
 
-      NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
-      //NormalBorderBrush.Color = Color.FromRgb(0x1E, 0x3F, 0x6C);
-      NormalBorderBrush.Color = Color.FromRgb(0x13, 0x2F, 0x54);
-      FocusFillBrush.StartPoint = new Point(0, 0);
-      FocusFillBrush.EndPoint = new Point(1, 0);
-      FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x06, 0x72, 0xCB), 0));
-      FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
-      FocusBorderBrush.StartPoint = new Point(0, 0);
-      FocusBorderBrush.EndPoint = new Point(1, 0);
-      FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x55, 0xB4, 0xFD), 0));
-      FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
-    }
+            NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
+            //NormalBorderBrush.Color = Color.FromRgb(0x1E, 0x3F, 0x6C);
+            NormalBorderBrush.Color = Color.FromRgb(0x13, 0x2F, 0x54);
+            FocusFillBrush.StartPoint = new Point(0, 0);
+            FocusFillBrush.EndPoint = new Point(1, 0);
+            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x06, 0x72, 0xCB), 0));
+            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
+            FocusBorderBrush.StartPoint = new Point(0, 0);
+            FocusBorderBrush.EndPoint = new Point(1, 0);
+            FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x55, 0xB4, 0xFD), 0));
+            FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
+        }
 
-    private void DrawPieChart() {
+        private void DrawPieChart() {
       int numberOfSections = 8;
       double angleStep = 360.0 / numberOfSections;
 
@@ -229,7 +232,7 @@ namespace DDPM.UI.Plugin.Common
             CloseActionCombo();
             PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
             PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
-            ActionList.ExportActionList(PenActions, Model);
+            ActionList.ExportActionList(PenActions, "PEN");
             RefreshAction();
         }
 
@@ -430,7 +433,7 @@ namespace DDPM.UI.Plugin.Common
             }
             PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
             PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
-            ActionList.ExportActionList(PenActions, Model);
+            ActionList.ExportActionList(PenActions, "PEN");
             RefreshAction();
             CloseActionCombo();
         }
@@ -438,7 +441,7 @@ namespace DDPM.UI.Plugin.Common
         private void RestoreClick(object sender, MouseButtonEventArgs e)
         {
             PenActions.ResetRadialMenu();
-            ActionList.ExportActionList(PenActions, Model);
+            ActionList.ExportActionList(PenActions, "PEN");
             SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
             RefreshAction(true);
         }
@@ -446,24 +449,28 @@ namespace DDPM.UI.Plugin.Common
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
             PenActions.RadialLabels[SelectedMenuID] = txtLabelText.Text.Trim();
-            ActionList.ExportActionList(PenActions, Model);
+            ActionList.ExportActionList(PenActions, "PEN");
             RefreshLabel();
         }
 
-    private void tsUseCenter_Click(object sender, RoutedEventArgs e) {
-      if(tsUseCenter.IsChecked!.Value) {
-        tsUseCenter.Content = Strings.On;
-        imgCenter.Visibility = Visibility.Visible;
-      }
-      else {
-        tsUseCenter.Content = Strings.Off;
-        imgCenter.Visibility = Visibility.Collapsed;
-      }
-      PenActions.IsUseCenter = tsUseCenter.IsChecked!.Value;
-      ActionList.ExportActionList(PenActions, Model);
-    }
+        private void tsUseCenter_Click(object sender, RoutedEventArgs e)
+        {
+            if(tsUseCenter.IsChecked!.Value)
+            {
+                tsUseCenter.Content = Strings.On;
+                imgCenter.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                tsUseCenter.Content = Strings.Off;
+                imgCenter.Visibility = Visibility.Collapsed;
+            }
+            PenActions.IsUseCenter = tsUseCenter.IsChecked!.Value;
+            _vm.UpdateRadialMenuRightClick(PenActions.IsUseCenter);
+            ActionList.ExportActionList(PenActions, "PEN");
+        }
 
-    private void Path_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e) {
+        private void Path_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e) {
       if(sender is Path path) {
         path.Fill = FocusFillBrush;
         path.Stroke = FocusBorderBrush;
