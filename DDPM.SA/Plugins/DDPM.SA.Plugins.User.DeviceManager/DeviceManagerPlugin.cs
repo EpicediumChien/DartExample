@@ -2828,6 +2828,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
                         importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                     {
+                        writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
                         bool b = false;
                         //SHR on/off need load settings
                         //if (code.Code == 0xF0)
