@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -16,12 +17,13 @@ namespace DDPM.UI.Common
         private readonly LinearGradientBrush FocusFillBrush = new();
         private readonly LinearGradientBrush FocusBorderBrush = new();
 
-        public DeviceBarItem(int id, ImageSource icon, string text)
+        public DeviceBarItem(int id, ImageSource icon, string text, bool isHidden = false)
         {
             InitializeComponent();
             vm.Id = id;
             vm.Icon = icon;
             vm.Text = text;
+            vm.Visibility = isHidden ? Visibility.Collapsed : Visibility.Visible;
             DataContext = vm;
 
             NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
@@ -38,6 +40,8 @@ namespace DDPM.UI.Common
 
             bdRoot.Background = NormalFillBrush;
             bdRoot.BorderBrush = NormalBorderBrush;
+            //if(isHidden)
+            //    (bdRoot.Parent as Grid).Visibility = Visibility.Collapsed;
         }
 
         public int Id => vm.Id;
@@ -51,7 +55,8 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (IsSelected) { return; }
+            if(IsSelected)
+            { return; }
 
             bdRoot.Background = NormalFillBrush;
             bdRoot.BorderBrush = NormalBorderBrush;
@@ -61,9 +66,10 @@ namespace DDPM.UI.Common
 
         private void rootGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (IsSelected) { return; }
+            if(IsSelected)
+            { return; }
 
-            if (ClickCommand != null)
+            if(ClickCommand != null)
                 ClickCommand?.Execute(this);
 
             IsSelected = true;
@@ -75,7 +81,7 @@ namespace DDPM.UI.Common
             set
             {
                 vm.IsSelected = value;
-                if (IsSelected)
+                if(IsSelected)
                 {
                     bdRoot.Background = FocusFillBrush;
                     bdRoot.BorderBrush = FocusBorderBrush;

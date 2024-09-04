@@ -8,26 +8,26 @@
              mc:Ignorable="d"
              HorizontalAlignment="Right"
              d:DesignHeight="72" d:DesignWidth="228"
-             Height="73">
-    <UserControl.Resources>
-    </UserControl.Resources>
+             >
+  <UserControl.Resources>
+  </UserControl.Resources>
 
-    <Grid Height="64"  VerticalAlignment="Top" Margin="0" HorizontalAlignment="Right">
-        <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True"
+  <Grid Height="64"  VerticalAlignment="Top" Margin="0,0,0,8" HorizontalAlignment="Right" Visibility="{Binding Visibility}">
+    <Border Name="bdRoot" Width="212" BorderThickness="2" CornerRadius="13" Focusable="True"
                 MouseEnter="rootGrid_MouseEnter" MouseLeave="rootGrid_MouseLeave" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="60" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,0"
+        <Image Grid.Column="0" Width="24" Height="24" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,0"
                        Source="{Binding Icon}" />
 
-                <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14" FontFamily="Roboto" LineHeight="20"
+        <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14" FontFamily="Roboto" LineHeight="20"
                                         VerticalAlignment="Center" HorizontalAlignment="Left" FontWeight="Bold" Padding="0,4,0,0"
                                         Foreground="White" />
-            </Grid>
-        </Border>
-    </Grid>
+      </Grid>
+    </Border>
+  </Grid>
 </UserControl>

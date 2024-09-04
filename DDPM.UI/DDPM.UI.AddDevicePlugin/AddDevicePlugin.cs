@@ -66,7 +66,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
-                if (_deviceManagerPlugin == null)
+                if(_deviceManagerPlugin == null)
                 {
                     _log.Error($"{nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
                     return;
@@ -75,7 +75,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 // Manager Peripheralslugin Condition
                 _deviceManagerPluginCondition = _deviceManagerPlugin as IFrameworkPluginConditionNotification;
 
-                if (_deviceManagerPluginCondition == null)
+                if(_deviceManagerPluginCondition == null)
                     return;
 
                 // Subscribe to plugin changes
@@ -84,7 +84,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 // Get current condition
                 _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
                 _log.Error(ex, message);
@@ -102,21 +102,21 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} lock");
             try
             {
-                if (_deviceManagerPluginCondition == null)
+                if(_deviceManagerPluginCondition == null)
                     return;
 
                 var pluginCondition = await _deviceManagerPluginCondition.CurrentConditionAsync();
 
-                if (pluginCondition is PluginErrorCondition)
+                if(pluginCondition is PluginErrorCondition)
                 {
                     _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
                 }
-                else if (pluginCondition is PluginRunningCondition)
+                else if(pluginCondition is PluginRunningCondition)
                 {
                     _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 var message = $"{nameof(GetCurrentPeripheralsPluginCondition)} failed with error - {ex.Message}";
                 _log.Error(ex, message);
@@ -131,13 +131,16 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void GetRFDongleAsync()
         {
-            if (!SpinWait.SpinUntil(() =>
+            if(!SpinWait.SpinUntil(() =>
             _deviceManagerPluginCondition is not null, TimeSpan.FromMinutes(2)))
             {
                 Console.WriteLine("Could not establish communication with DDPM!!");
                 return;
             }
             _log.Debug($"GetPeripherals is invoked");
+            Task<DeviceHelper> tsk = _deviceManagerPlugin!.GetDevices();
+            _viewModel!.WacomVersion = tsk.Result.IsdDriverVersion;
+
             Task<RFDeviceHelper> task = _deviceManagerPlugin!.GetRFDongleDevices();
             _deviceHelper = task.Result;
 
@@ -156,7 +159,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
-            if (_isConfigured)
+            if(_isConfigured)
                 return;
 
             // Marked all the instances as singleton
@@ -205,33 +208,33 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
 
         private void DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.type == DeviceChangedType.Peripherals_PlugIn)
+            if(e.type == DeviceChangedType.Peripherals_PlugIn)
             {
-                if (e.changedProperty == "PhysicalDeviceAdded")
+                if(e.changedProperty == "PhysicalDeviceAdded")
                 {
                     GetRFDongleAsync();
                     return;
                 }
-                if (_viewModel!.CurrentDongle != null && e.device_peripherals.PhyscialDeviceID == _viewModel!.CurrentDongle.ID)
+                if(_viewModel!.CurrentDongle != null && e.device_peripherals.PhyscialDeviceID == _viewModel!.CurrentDongle.ID)
                 {
                     _viewModel.NewDevice = e.device_peripherals;
                     //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
                     //  _viewModel.GotoNewDevice();
                 }
-                if (e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio)
+                if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio)
                 {
                     _viewModel.NewDevice = e.device_peripherals;
                     _viewModel.GotoNewDevice();
                 }
             }
-            if (e.type == DeviceChangedType.Peripherals_UnPlug && e.changedProperty == "PhysicalDeviceRemoved")
+            if(e.type == DeviceChangedType.Peripherals_UnPlug && e.changedProperty == "PhysicalDeviceRemoved")
             {
                 GetRFDongleAsync();
                 return;
             }
-            if (e.device_peripherals?.IsPhysicalDeviceDongle ?? false)
+            if(e.device_peripherals?.IsPhysicalDeviceDongle ?? false)
             {
-                if (e.type == DeviceChangedType.Peripherals_SettingsChange)
+                if(e.type == DeviceChangedType.Peripherals_SettingsChange)
                 {
                     _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
                 }
