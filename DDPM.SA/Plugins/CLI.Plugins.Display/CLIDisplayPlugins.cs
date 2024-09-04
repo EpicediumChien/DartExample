@@ -1595,7 +1595,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!rc.result)
                         {
-                            G_Brightness_RESPONSE.Brightness = "N/A";
+                            //G_Brightness_RESPONSE.Brightness = "N/A";
                             G_Brightness_RESPONSE.Value = "N/A";
                             G_Brightness_RESPONSE.Result = "FAIL";
                             G_Brightness_RESPONSE.Message = "FAIL VCP";
@@ -1608,7 +1608,7 @@ namespace DDPM.CLI.Plugins.Display
                             if (monitor.CapabilityDic.ContainsKey("12"))
                             {
                                 G_Brightness_RESPONSE.Value = $"{rc.value}";
-                                G_Brightness_RESPONSE.Brightness = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                                //G_Brightness_RESPONSE.Brightness = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Brightness_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
@@ -1624,7 +1624,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.Command = "GET";
                                 G_Luminus_RESPONSE.TargetFeature = "LUMINANCE";
                                 G_Luminus_RESPONSE.Value = $"{rc.value}";
-                                G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                                //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Luminus_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented);
@@ -1656,7 +1656,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!rc.result)
                         {
-                            G_Brightness_RESPONSE.Brightness = "N/A";
+                            //G_Brightness_RESPONSE.Brightness = "N/A";
                             G_Brightness_RESPONSE.Value = "N/A";
                             G_Brightness_RESPONSE.Result = "FAIL";
                             G_Brightness_RESPONSE.Message = "FAIL VCP";
@@ -1669,7 +1669,7 @@ namespace DDPM.CLI.Plugins.Display
                             if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
                             {
                                 G_Brightness_RESPONSE.Value = $"{rc.value}";
-                                G_Brightness_RESPONSE.Brightness = $"{rc.value}";
+                                //G_Brightness_RESPONSE.Brightness = $"{rc.value}";
                                 G_Brightness_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
@@ -1684,7 +1684,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.Command = "GET";
                                 G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
                                 G_Luminus_RESPONSE.Value = $"{rc.value}";
-                                G_Luminus_RESPONSE.Luminus = $"{rc.value}";
+                                //G_Luminus_RESPONSE.Luminus = $"{rc.value}";
                                 G_Luminus_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
@@ -1713,7 +1713,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!rc.result)
                             {
-                                G_Brightness_RESPONSE.Brightness = "N/A";
+                                //G_Brightness_RESPONSE.Brightness = "N/A";
                                 G_Brightness_RESPONSE.Value = "N/A";
                                 G_Brightness_RESPONSE.Result = "FAIL";
                                 G_Brightness_RESPONSE.Message = "FAIL VCP";
@@ -1726,7 +1726,7 @@ namespace DDPM.CLI.Plugins.Display
                                 if (mo.CapabilityDic.ContainsKey("12"))
                                 {
                                     G_Brightness_RESPONSE.Value = $"{rc.value}";
-                                    G_Brightness_RESPONSE.Brightness = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                                    //G_Brightness_RESPONSE.Brightness = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                     G_Brightness_RESPONSE.Result = "PASS";
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
                                     output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
@@ -1741,7 +1741,7 @@ namespace DDPM.CLI.Plugins.Display
                                     G_Luminus_RESPONSE.Command = "GET";
                                     G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
                                     G_Luminus_RESPONSE.Value = $"{rc.value}";
-                                    G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                                    //G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                     G_Luminus_RESPONSE.Result = "PASS";
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
                                     output += "\n" + JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented);
@@ -2018,7 +2018,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!rc.result)
                         {
-                            G_Contrast_RESPONSE.Contrast = "N/A";
+                            //G_Contrast_RESPONSE.Contrast = "N/A";
                             G_Contrast_RESPONSE.Value = "N/A";
                             G_Contrast_RESPONSE.Result = "FAIL";
                             G_Contrast_RESPONSE.Message = "FAIL VCP";
@@ -2029,7 +2029,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             G_Contrast_RESPONSE.Value = $"{rc.value}";
-                            G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                            //G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                             G_Contrast_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented);
@@ -2063,7 +2063,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (!rc.result)
                         {
-                            G_Contrast_RESPONSE.Contrast = "N/A";
+                            //G_Contrast_RESPONSE.Contrast = "N/A";
                             G_Contrast_RESPONSE.Value = "N/A";
                             G_Contrast_RESPONSE.Result = "FAIL";
                             G_Contrast_RESPONSE.Message = "FAIL VCP";
@@ -2074,7 +2074,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             G_Contrast_RESPONSE.Value = $"{rc.value}";
-                            G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                            //G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                             G_Contrast_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented);
@@ -2102,7 +2102,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (!rc.result)
                             {
-                                G_Contrast_RESPONSE.Contrast = "N/A";
+                                //G_Contrast_RESPONSE.Contrast = "N/A";
                                 G_Contrast_RESPONSE.Value = "N/A";
                                 G_Contrast_RESPONSE.Result = "FAIL";
                                 G_Contrast_RESPONSE.Message = "FAIL VCP";
@@ -2113,7 +2113,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 G_Contrast_RESPONSE.Value = $"{rc.value}";
-                                G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
+                                //G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Contrast_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented);
@@ -3009,7 +3009,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         if (string.IsNullOrWhiteSpace(monitor.FwVersion))
                         {
-                            G_FW_RESPONSE.FWVer = "N/A";
+                            //G_FW_RESPONSE.FWVer = "N/A";
                             G_FW_RESPONSE.Value = "N/A";
                             G_FW_RESPONSE.Result = "FAIL";
                             G_FW_RESPONSE.Message = "FAIL GET FW VERSION";
@@ -3020,7 +3020,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             G_FW_RESPONSE.Value = monitor.FwVersion;
-                            G_FW_RESPONSE.FWVer = monitor.FwVersion;
+                            //G_FW_RESPONSE.FWVer = monitor.FwVersion;
                             G_FW_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented);
@@ -3053,7 +3053,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
                             {
-                                G_FW_RESPONSE.FWVer = "N/A";
+                                //G_FW_RESPONSE.FWVer = "N/A";
                                 G_FW_RESPONSE.Value = "N/A";
                                 G_FW_RESPONSE.Result = "FAIL";
                                 G_FW_RESPONSE.Message = "FAIL GET FW VERSION";
@@ -3064,7 +3064,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 G_FW_RESPONSE.Value = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
-                                G_FW_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
+                                //G_FW_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
                                 G_FW_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented);
@@ -3078,7 +3078,7 @@ namespace DDPM.CLI.Plugins.Display
                             G_FW_RESPONSE.ServiceTag = "N/A";
                             G_FW_RESPONSE.Command = "GET";
                             G_FW_RESPONSE.TargetFeature = "FWVersion";
-                            G_FW_RESPONSE.FWVer = "N/A";
+                            //G_FW_RESPONSE.FWVer = "N/A";
                             G_FW_RESPONSE.Value = "N/A";
                             G_FW_RESPONSE.Result = "FAIL";
                             G_FW_RESPONSE.Message = "Index Out of Range";
@@ -3105,7 +3105,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             if (string.IsNullOrWhiteSpace(mo.FwVersion))
                             {
-                                G_FW_RESPONSE.FWVer = "N/A";
+                                //G_FW_RESPONSE.FWVer = "N/A";
                                 G_FW_RESPONSE.Value = "N/A";
                                 G_FW_RESPONSE.Result = "FAIL";
                                 G_FW_RESPONSE.Message = "FAIL GET FW VERSION";
@@ -3116,7 +3116,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 G_FW_RESPONSE.Value = mo.FwVersion;
-                                G_FW_RESPONSE.FWVer = mo.FwVersion;
+                                //G_FW_RESPONSE.FWVer = mo.FwVersion;
                                 G_FW_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented);
@@ -3136,7 +3136,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                G_FW_RESPONSE.FWVer = "N/A";
+                //G_FW_RESPONSE.FWVer = "N/A";
                 G_FW_RESPONSE.Value = "N/A";
                 G_FW_RESPONSE.Command = type;
                 G_FW_RESPONSE.TargetFeature = "FWVERSION";
@@ -3335,7 +3335,7 @@ namespace DDPM.CLI.Plugins.Display
                                     bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
                                     if (!retcode) ispass = false;
 
-                                    _Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
+                                    //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
                                     _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
                                     if (!ispass)
                                     {
@@ -3353,7 +3353,7 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                                 else
                                 {
-                                    _Input_RESPONSE.ActiveInputSource = String.Empty;
+                                    //_Input_RESPONSE.ActiveInputSource = String.Empty;
                                     _Input_RESPONSE.Result = "FAIL";
                                     if (commandLineInput.Options.Count > 1)
                                     {
@@ -3370,7 +3370,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                _Input_RESPONSE.ActiveInputSource = String.Empty;
+                                //_Input_RESPONSE.ActiveInputSource = String.Empty;
                                 _Input_RESPONSE.Result = "FAIL";
                                 _Input_RESPONSE.Message = "Wrong option value: ";
                                 _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";//add error message if option value not exist in input source list
@@ -3404,7 +3404,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
                                     if (!retcode) ispass = false;
-                                    _Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
+                                    //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
                                     _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
                                     if (!ispass)
                                     {
@@ -3422,7 +3422,7 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                                 else
                                 {
-                                    _Input_RESPONSE.ActiveInputSource = String.Empty;
+                                    //_Input_RESPONSE.ActiveInputSource = String.Empty;
                                     _Input_RESPONSE.Result = "FAIL";
                                     if (commandLineInput.Options.Count > 1)
                                     {
@@ -3439,7 +3439,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                _Input_RESPONSE.ActiveInputSource = String.Empty;
+                                //_Input_RESPONSE.ActiveInputSource = String.Empty;
                                 _Input_RESPONSE.Result = "FAIL";
                                 _Input_RESPONSE.Message = "Wrong option value: ";
                                 _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";
@@ -3473,7 +3473,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     if (commandLineInput.Options.Count == 1)
                                     {
-                                        _Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
+                                        //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
                                         _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
                                         bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
                                         if (!retcode) ispass = false;
@@ -3493,7 +3493,7 @@ namespace DDPM.CLI.Plugins.Display
                                     }
                                     else
                                     {
-                                        _Input_RESPONSE.ActiveInputSource = String.Empty;
+                                        //_Input_RESPONSE.ActiveInputSource = String.Empty;
                                         _Input_RESPONSE.Result = "FAIL";
                                         if (commandLineInput.Options.Count > 1)
                                         {
@@ -3544,7 +3544,7 @@ namespace DDPM.CLI.Plugins.Display
                         if (commandLineInput.Options.Count == 0)
                         {
                             src = GetCurrentInput(devMgr, (monitor.Index).ToString()).Result;
-                            _Input_RESPONSE.ActiveInputSource = src;
+                            //_Input_RESPONSE.ActiveInputSource = src;
                             _Input_RESPONSE.Value = src;
                             if (src == String.Empty)
                             {
@@ -3562,7 +3562,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Input_RESPONSE.ActiveInputSource = src;
+                            //_Input_RESPONSE.ActiveInputSource = src;
                             _Input_RESPONSE.Result = "FAIL";
                             _Input_RESPONSE.Message = "Too Many Value";
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
@@ -3589,7 +3589,7 @@ namespace DDPM.CLI.Plugins.Display
                         if (commandLineInput.Options.Count == 0)
                         {
                             src = GetCurrentInput(devMgr, idx).Result;
-                            _Input_RESPONSE.ActiveInputSource = src;
+                            //_Input_RESPONSE.ActiveInputSource = src;
                             _Input_RESPONSE.Value = src;
                             if (src == String.Empty)
                             {
@@ -3607,7 +3607,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            _Input_RESPONSE.ActiveInputSource = src;
+                            //_Input_RESPONSE.ActiveInputSource = src;
                             _Input_RESPONSE.Result = "FAIL";
                             _Input_RESPONSE.Message = "Too Many Value";
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
@@ -3636,7 +3636,7 @@ namespace DDPM.CLI.Plugins.Display
                             if (commandLineInput.Options.Count == 0)
                             {
                                 src = GetCurrentInput(devMgr, mo).Result;
-                                _Input_RESPONSE.ActiveInputSource = src;
+                                //_Input_RESPONSE.ActiveInputSource = src;
                                 _Input_RESPONSE.Value = src;
                                 if (src == String.Empty)
                                 {
@@ -3654,7 +3654,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                _Input_RESPONSE.ActiveInputSource = src;
+                                //_Input_RESPONSE.ActiveInputSource = src;
                                 _Input_RESPONSE.Result = "FAIL";
                                 _Input_RESPONSE.Message = "Too Many Value";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
@@ -3994,7 +3994,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_SupportedColorPreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
                         _Set_SupportedColorPreset_RESPONSE.Command = "SET";
                         _Set_SupportedColorPreset_RESPONSE.TargetFeature = "COLORPRESET";
-                        _Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
+                        //_Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
                         _Set_SupportedColorPreset_RESPONSE.Value = value;
 
                         if (!r)
@@ -4027,7 +4027,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_SupportedColorPreset_RESPONSE.ServiceTag = "";
                         _Set_SupportedColorPreset_RESPONSE.Command = "SET";
                         _Set_SupportedColorPreset_RESPONSE.TargetFeature = "COLORPRESET";
-                        _Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
+                        //_Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
                         _Set_SupportedColorPreset_RESPONSE.Value = value;
 
                         if (!r)
@@ -4066,7 +4066,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_SupportedColorPreset_RESPONSE.ServiceTag = tag;
                             _Set_SupportedColorPreset_RESPONSE.Command = "SET";
                             _Set_SupportedColorPreset_RESPONSE.TargetFeature = "COLORPRESET";
-                            _Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
+                            //_Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
                             _Set_SupportedColorPreset_RESPONSE.Value = value;
 
                             if (!r)
@@ -4112,7 +4112,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Get_ActiveColorPresetList_RESPONSE.ServiceTag = monitor.edid.ServiceTag.ToString();
                         _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
                         _Get_ActiveColorPresetList_RESPONSE.TargetFeature = "COLORPRESET";
-                        _Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
+                        //_Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
                         _Get_ActiveColorPresetList_RESPONSE.Value = _ActiveColorPreset;
 
                         if (string.IsNullOrEmpty(_ActiveColorPreset))
@@ -4144,7 +4144,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Get_ActiveColorPresetList_RESPONSE.ServiceTag = "";
                         _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
                         _Get_ActiveColorPresetList_RESPONSE.TargetFeature = "COLORPRESET";
-                        _Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
+                        //_Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
                         _Get_ActiveColorPresetList_RESPONSE.Value = _ActiveColorPreset;
 
                         if (string.IsNullOrEmpty(_ActiveColorPreset))
@@ -4177,7 +4177,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Get_ActiveColorPresetList_RESPONSE.ServiceTag = tag;
                             _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
                             _Get_ActiveColorPresetList_RESPONSE.TargetFeature = "COLORPRESET";
-                            _Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
+                            //_Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
                             _Get_ActiveColorPresetList_RESPONSE.Value = _ActiveColorPreset;
 
                             if (string.IsNullOrEmpty(_ActiveColorPreset))
@@ -9166,13 +9166,13 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             case "OFF":
                                 writelog($"PowerSetting E0 set off");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "ON":
                                 writelog($"PowerSetting E0 set on");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
