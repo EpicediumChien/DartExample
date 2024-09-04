@@ -100,7 +100,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     MultiDevicesInfoVisibility = Visibility.Visible;
                     OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
                     return;
-                    ;
                 }
             }
             MultiDevicesInfoVisibility = Visibility.Collapsed;
