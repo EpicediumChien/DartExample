@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-    <BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
-	  <Version>2.0.0.37</Version>
-	  <Configurations>Debug;Release;Debug_NKVM</Configurations>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
+		<Version>2.0.0.38</Version>
+		<Configurations>Debug;Release;Debug_NKVM</Configurations>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
-    <PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Dell.TechHub.Settings" Version="1.5.7.1" />
+		<PackageReference Include="Dell.UnifiedAgent.Client" Version="1.4.3.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
-    <ProjectReference Include="..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugin.CLIManager\DDPM.SA.Plugins.CLIManager.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SettingsManager\DDPM.SA.Plugins.SettingsManager.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SWUpdate\DDPM.SA.Plugins.SWUpdate.csproj" />
-    <ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.FWUpdate\DDPM.SA.Plugins.FWUpdate.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+		<ProjectReference Include="..\Common\DDPM.SA.Obfuscation\DDPM.SA.Obfuscation.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugin.CLIManager\DDPM.SA.Plugins.CLIManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SettingsManager\DDPM.SA.Plugins.SettingsManager.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.SWUpdate\DDPM.SA.Plugins.SWUpdate.csproj" />
+		<ProjectReference Include="..\Plugins\DDPM.SA.Plugins.User.FWUpdate\DDPM.SA.Plugins.FWUpdate.csproj" />
+	</ItemGroup>
 
 </Project>
