@@ -240,3 +240,5 @@ testcoverage/
 /DDPM.UI/CommonDll/DDPM.OSDs.dll
 /DDPM.UI/CommonDll/DDPM.OSDs.deps.json
 /DDPM.SA/DDPMSA.Release.reg
+/DDPM.UI/CommonDll/DDPM.OSDs.dll
+/DDPM.UI/CommonDll/DDPM.SA.Obfuscation.dll
