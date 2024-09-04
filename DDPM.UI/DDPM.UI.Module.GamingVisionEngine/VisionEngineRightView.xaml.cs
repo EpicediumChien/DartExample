@@ -19,6 +19,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
         bool updateKeys = false;
         List<VirtualKey> newKeys = new List<VirtualKey>();
         UI_VisionEngine tempUI_VE = null;
+        bool isTrigger = true;
         public VisionEngineRightView()
         {
             InitializeComponent();
@@ -39,11 +40,15 @@ namespace DDPM.UI.Module.GamingVisionEngine
         }
         private void UXCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            VisionEngineViewModel vm = (VisionEngineViewModel)DataContext;
-            List<UI_VisionEngine> tempList = vm.VisionEngineList.FindAll(o => o.VisionEngine_Enable);
-            vm.VisionEngineIsEnable = false;
-            vm.RefreshUI();
-            vm.SetVisionEngine();
+            if (isTrigger)
+            {
+                VisionEngineViewModel vm = (VisionEngineViewModel)DataContext;
+                List<UI_VisionEngine> tempList = vm.VisionEngineList.ToList().FindAll(o => o.VisionEngine_Enable);
+                vm.VisionEngineIsEnable = false;
+                vm.RefreshUI();
+                vm.SetVisionEngine();
+            }
+            isTrigger = true;
         }
         private void UXCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
@@ -54,10 +59,11 @@ namespace DDPM.UI.Module.GamingVisionEngine
                 if (selectedItem != null)
                 {
                     var vm = (VisionEngineViewModel)DataContext;
-                    List<UI_VisionEngine> tempList = vm.VisionEngineList.FindAll(o => o.VisionEngine_Enable);
+                    List<UI_VisionEngine> tempList = vm.VisionEngineList.ToList().FindAll(o => o.VisionEngine_Enable);
                     if (tempList.Count <= 0)
                     {
                         checkBox.IsChecked = true;
+                        isTrigger = false;
                     }
                 }
             }

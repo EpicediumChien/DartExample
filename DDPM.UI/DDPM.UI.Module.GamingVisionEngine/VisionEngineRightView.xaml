@@ -13,15 +13,15 @@
                     <StackPanel>
                         <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
                         <StackPanel Margin="15" Height="150">
-                            <ListBox ItemsSource="{Binding VisionEngineList}" IsEnabled="{Binding VisionEngineIsEnable}" Name="listTopics" Background="Transparent" BorderThickness="0">
-                                <ListBox.ItemTemplate>
+                            <ItemsControl ItemsSource="{Binding VisionEngineList}" IsEnabled="{Binding VisionEngineIsEnable}" Name="listTopics" Background="Transparent" BorderThickness="0">
+                                <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <UXControls:UXCheckBox FontSize="14" Content="{Binding DisplayText}" IsChecked="{Binding VisionEngine_Enable}" Foreground="WhiteSmoke" Click="UXCheckBox_Click" Unchecked="UXCheckBox_Unchecked" />
+                                            <UXControls:UXCheckBox FontSize="14" Content="{Binding DisplayText}" IsChecked="{Binding VisionEngine_Enable}" Foreground="WhiteSmoke" Click="UXCheckBox_Click" Unchecked="UXCheckBox_Unchecked" Background="Transparent"/>
                                         </StackPanel>
                                     </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </StackPanel>
                         <Grid>
                             <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="20" Foreground="White" Text="Toggle Vision Engine" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
