@@ -18,6 +18,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
         List<VirtualKey> VisionEngineToggleNewKeys = new List<VirtualKey>();
         bool updateKeys = false;
         List<VirtualKey> newKeys = new List<VirtualKey>();
+        UI_VisionEngine tempUI_VE = null;
         public VisionEngineRightView()
         {
             InitializeComponent();
@@ -39,7 +40,28 @@ namespace DDPM.UI.Module.GamingVisionEngine
         private void UXCheckBox_Click(object sender, RoutedEventArgs e)
         {
             VisionEngineViewModel vm = (VisionEngineViewModel)DataContext;
-            vm.VisionEngine_Debouncer.Debounce(null);
+            List<UI_VisionEngine> tempList = vm.VisionEngineList.FindAll(o => o.VisionEngine_Enable);
+            vm.VisionEngineIsEnable = false;
+            vm.RefreshUI();
+            vm.SetVisionEngine();
+        }
+        private void UXCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as UXCheckBox;
+            if (checkBox != null)
+            {
+                var selectedItem = checkBox.DataContext as UI_VisionEngine;
+                if (selectedItem != null)
+                {
+                    var vm = (VisionEngineViewModel)DataContext;
+                    List<UI_VisionEngine> tempList = vm.VisionEngineList.FindAll(o => o.VisionEngine_Enable);
+                    if (tempList.Count <= 0)
+                    {
+                        checkBox.IsChecked = true;
+                    }
+                }
+            }
+
         }
         private void setUXTextBoxPreviewKey(object sender, KeyEventArgs e)
         {

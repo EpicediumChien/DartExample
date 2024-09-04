@@ -432,6 +432,19 @@ namespace DDPM.CLI.Plugins.Display
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
+                    else
+                    {
+                        CLI_RESPONSE rsp_fac = new CLI_RESPONSE()
+                        {
+                            Command = commandLineInput.Command,
+                            TargetFeature = commandLineInput.TargetFeature,
+                            Result = "Un-supported feature",
+                            Message = "Un-supported feature"
+                        };
+                        result.serialize_Json_response = JsonConvert.SerializeObject(rsp_fac, Formatting.Indented);
+                        result.ExitCode = (int)CLI_ExitCode.unknow_command;
+                        return result;
+                    }
                     break;
 
                 case "RESTORELEVELDEFAULTS":
@@ -441,6 +454,19 @@ namespace DDPM.CLI.Plugins.Display
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
                     }
+                    else
+                    {
+                        CLI_RESPONSE rsp_level = new CLI_RESPONSE()
+                        {
+                            Command = commandLineInput.Command,
+                            TargetFeature = commandLineInput.TargetFeature,
+                            Result = "Un-supported feature",
+                            Message = "Un-supported feature"
+                        };
+                        result.serialize_Json_response = JsonConvert.SerializeObject(rsp_level, Formatting.Indented);
+                        result.ExitCode = (int)CLI_ExitCode.unknow_command;
+                        return result;
+                    }
                     break;
 
                 case "RESTORECOLORDEFAULTS":
@@ -449,6 +475,19 @@ namespace DDPM.CLI.Plugins.Display
                         var ret = RestoreColorDefaults(devMgr, commandLineInput.Command, commandLineInput.DeviceIndex, commandLineInput.ServiceTag, "").Result;
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.result;
+                    }
+                    else
+                    {
+                        CLI_RESPONSE rsp_color = new CLI_RESPONSE()
+                        {
+                            Command = commandLineInput.Command,
+                            TargetFeature = commandLineInput.TargetFeature,
+                            Result = "Un-supported feature",
+                            Message = "Un-supported feature"
+                        };
+                        result.serialize_Json_response = JsonConvert.SerializeObject(rsp_color, Formatting.Indented);
+                        result.ExitCode = (int)CLI_ExitCode.unknow_command;
+                        return result;
                     }
                     break;
 
@@ -516,9 +555,9 @@ namespace DDPM.CLI.Plugins.Display
 
                 case "ENERGYSAVER":
                     {
-                        var autocolorpreset = EnergysaverX(devMgr, commandLineInput);
-                        result.ExitCode = autocolorpreset.code;
-                        result.serialize_Json_response = autocolorpreset.result;
+                        var energysaver = EnergysaverX(devMgr, commandLineInput);
+                        result.ExitCode = energysaver.code;
+                        result.serialize_Json_response = energysaver.result;
                     };
                     break;
 
@@ -1568,7 +1607,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             if (monitor.CapabilityDic.ContainsKey("12"))
                             {
-                                G_Brightness_RESPONSE.Value = "N/A";
+                                G_Brightness_RESPONSE.Value = $"{rc.value}";
                                 G_Brightness_RESPONSE.Brightness = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Brightness_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
@@ -1584,7 +1623,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
                                 G_Luminus_RESPONSE.Command = "GET";
                                 G_Luminus_RESPONSE.TargetFeature = "LUMINANCE";
-                                G_Luminus_RESPONSE.Value = "N/A";
+                                G_Luminus_RESPONSE.Value = $"{rc.value}";
                                 G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Luminus_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
@@ -1629,7 +1668,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             if (_AllInfoMonitors[nidx].CapabilityDic.ContainsKey("12"))
                             {
-                                G_Brightness_RESPONSE.Value = "N/A";
+                                G_Brightness_RESPONSE.Value = $"{rc.value}";
                                 G_Brightness_RESPONSE.Brightness = $"{rc.value}";
                                 G_Brightness_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
@@ -1644,7 +1683,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_Luminus_RESPONSE.ServiceTag = _AllInfoMonitors[nidx].edid.ServiceTag;
                                 G_Luminus_RESPONSE.Command = "GET";
                                 G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
-                                G_Luminus_RESPONSE.Value = "N/A";
+                                G_Luminus_RESPONSE.Value = $"{rc.value}";
                                 G_Luminus_RESPONSE.Luminus = $"{rc.value}";
                                 G_Luminus_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
@@ -1686,7 +1725,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 if (mo.CapabilityDic.ContainsKey("12"))
                                 {
-                                    G_Brightness_RESPONSE.Value = "N/A";
+                                    G_Brightness_RESPONSE.Value = $"{rc.value}";
                                     G_Brightness_RESPONSE.Brightness = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                     G_Brightness_RESPONSE.Result = "PASS";
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
@@ -1701,7 +1740,7 @@ namespace DDPM.CLI.Plugins.Display
                                     G_Luminus_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                                     G_Luminus_RESPONSE.Command = "GET";
                                     G_Luminus_RESPONSE.TargetFeature = "LUMINUS";
-                                    G_Luminus_RESPONSE.Value = "N/A";
+                                    G_Luminus_RESPONSE.Value = $"{rc.value}";
                                     G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                     G_Luminus_RESPONSE.Result = "PASS";
                                     System.Console.WriteLine(JsonConvert.SerializeObject(G_Brightness_RESPONSE, Formatting.Indented));
@@ -1989,7 +2028,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            G_Contrast_RESPONSE.Value = "N/A";
+                            G_Contrast_RESPONSE.Value = $"{rc.value}";
                             G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                             G_Contrast_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented));
@@ -2034,7 +2073,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            G_Contrast_RESPONSE.Value = "N/A";
+                            G_Contrast_RESPONSE.Value = $"{rc.value}";
                             G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                             G_Contrast_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented));
@@ -2073,7 +2112,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                G_Contrast_RESPONSE.Value = "N/A";
+                                G_Contrast_RESPONSE.Value = $"{rc.value}";
                                 G_Contrast_RESPONSE.Contrast = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Contrast_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Contrast_RESPONSE, Formatting.Indented));
@@ -2268,7 +2307,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            G_Luminus_RESPONSE.Value = "N/A";
+                            G_Luminus_RESPONSE.Value = ((uint)(long)rc.value).ToString();
                             G_Luminus_RESPONSE.Luminus = ((uint)(long)rc.value).ToString();
                             G_Luminus_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
@@ -2309,7 +2348,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            G_Luminus_RESPONSE.Value = "N/A";
+                            G_Luminus_RESPONSE.Value = $"{rc.value}";
                             G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                             G_Luminus_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
@@ -2347,7 +2386,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                G_Luminus_RESPONSE.Value = "N/A";
+                                G_Luminus_RESPONSE.Value = $"{rc.value}";
                                 G_Luminus_RESPONSE.Luminus = $"{rc.value}";// ((uint)(long)rc.value).ToString();
                                 G_Luminus_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_Luminus_RESPONSE, Formatting.Indented));
@@ -2980,7 +3019,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            G_FW_RESPONSE.Value = "N/A";
+                            G_FW_RESPONSE.Value = monitor.FwVersion;
                             G_FW_RESPONSE.FWVer = monitor.FwVersion;
                             G_FW_RESPONSE.Result = "PASS";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
@@ -3024,7 +3063,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                G_FW_RESPONSE.Value = "N/A";
+                                G_FW_RESPONSE.Value = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
                                 G_FW_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
                                 G_FW_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
@@ -3076,7 +3115,7 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                G_FW_RESPONSE.Value = "N/A";
+                                G_FW_RESPONSE.Value = mo.FwVersion;
                                 G_FW_RESPONSE.FWVer = mo.FwVersion;
                                 G_FW_RESPONSE.Result = "PASS";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_FW_RESPONSE, Formatting.Indented));
@@ -3275,6 +3314,7 @@ namespace DDPM.CLI.Plugins.Display
                         //foreach (var monitor in _AllInfoMonitors)
                         for (int i = 0; i < _AllInfoMonitors.Count; i++)
                         {
+                            writelog($"ActiveInputSource set entry");
                             var monitor = _AllInfoMonitors[i];
 
                             CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
@@ -3296,6 +3336,7 @@ namespace DDPM.CLI.Plugins.Display
                                     if (!retcode) ispass = false;
 
                                     _Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
+                                    _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
                                     if (!ispass)
                                     {
                                         _Input_RESPONSE.Result = "FAIL";
@@ -3335,6 +3376,7 @@ namespace DDPM.CLI.Plugins.Display
                                 _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";//add error message if option value not exist in input source list
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource set fail {output}");
                                 return ((int)CLI_ExitCode.fail_Value, output);
                             }
                         }
@@ -3343,6 +3385,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         foreach (string idx in commandLineInput.DeviceIndex)
                         {
+                            writelog($"ActiveInputSource set idx entry");
                             CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
                             MonitorInfo monitor = _AllInfoMonitors[int.Parse(idx)];
                             _Input_RESPONSE.Model = monitor.edid.ModelName;
@@ -3362,6 +3405,7 @@ namespace DDPM.CLI.Plugins.Display
                                     bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
                                     if (!retcode) ispass = false;
                                     _Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
+                                    _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
                                     if (!ispass)
                                     {
                                         _Input_RESPONSE.Result = "FAIL";
@@ -3401,6 +3445,7 @@ namespace DDPM.CLI.Plugins.Display
                                 _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource set idx fail {output}");
                                 return ((int)CLI_ExitCode.fail_Value, output);
                             }
                         }
@@ -3412,6 +3457,7 @@ namespace DDPM.CLI.Plugins.Display
                             var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                             foreach (MonitorInfo mo in tmp)
                             {
+                                writelog($"ActiveInputSource set tag entry");
                                 CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
                                 _Input_RESPONSE.Model = mo.edid.ModelName;
                                 _Input_RESPONSE.SerialNumber = mo.edid.SerialNumber;
@@ -3427,6 +3473,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     if (commandLineInput.Options.Count == 1)
                                     {
+                                        _Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
                                         _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
                                         bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
                                         if (!retcode) ispass = false;
@@ -3458,6 +3505,7 @@ namespace DDPM.CLI.Plugins.Display
                                         }
                                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                         output += "\n" + _Input_RESPONSE.ToJson();
+                                        writelog($"ActiveInputSource set tag fail {output}");
                                         return ((int)CLI_ExitCode.fail_Value, output);
                                     }
                                 }
@@ -3468,12 +3516,14 @@ namespace DDPM.CLI.Plugins.Display
                                     _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";//add error message if option value not exist in input source list
                                     System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                     output += "\n" + _Input_RESPONSE.ToJson();
+                                    writelog($"ActiveInputSource option value fail {output}");
                                     return ((int)CLI_ExitCode.fail_Value, output);
                                 }
                             }
                         }
                     }
                 }
+                writelog($"ActiveInputSource set exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
             else //Get
@@ -3482,6 +3532,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
+                        writelog($"ActiveInputSource get entry");
                         CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
                         string src = String.Empty;
                         _Input_RESPONSE.Model = monitor.edid.ModelName;
@@ -3494,6 +3545,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             src = GetCurrentInput(devMgr, (monitor.Index).ToString()).Result;
                             _Input_RESPONSE.ActiveInputSource = src;
+                            _Input_RESPONSE.Value = src;
                             if (src == String.Empty)
                             {
                                 _Input_RESPONSE.Result = "FAIL";
@@ -3515,6 +3567,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Input_RESPONSE.Message = "Too Many Value";
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
+                            writelog($"ActiveInputSource get fail {output}");
                             return ((int)CLI_ExitCode.fail_Value, output);
                         }
                     }
@@ -3523,6 +3576,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idx in commandLineInput.DeviceIndex)
                     {
+                        writelog($"ActiveInputSource set idx entry");
                         CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
                         string src = String.Empty;
                         MonitorInfo monitor = _AllInfoMonitors[int.Parse(idx)];
@@ -3536,6 +3590,7 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             src = GetCurrentInput(devMgr, idx).Result;
                             _Input_RESPONSE.ActiveInputSource = src;
+                            _Input_RESPONSE.Value = src;
                             if (src == String.Empty)
                             {
                                 _Input_RESPONSE.Result = "FAIL";
@@ -3557,6 +3612,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Input_RESPONSE.Message = "Too Many Value";
                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                             output += "\n" + _Input_RESPONSE.ToJson();
+                            writelog($"ActiveInputSource get idx fail {output}");
                             return ((int)CLI_ExitCode.fail_Value, output);
                         }
                     }
@@ -3568,6 +3624,7 @@ namespace DDPM.CLI.Plugins.Display
                         var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
                         foreach (MonitorInfo mo in tmp)
                         {
+                            writelog($"ActiveInputSource get tag entry");
                             CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
                             string src = String.Empty;
                             _Input_RESPONSE.Model = mo.edid.ModelName;
@@ -3580,6 +3637,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 src = GetCurrentInput(devMgr, mo).Result;
                                 _Input_RESPONSE.ActiveInputSource = src;
+                                _Input_RESPONSE.Value = src;
                                 if (src == String.Empty)
                                 {
                                     _Input_RESPONSE.Result = "FAIL";
@@ -3601,11 +3659,13 @@ namespace DDPM.CLI.Plugins.Display
                                 _Input_RESPONSE.Message = "Too Many Value";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
+                                writelog($"ActiveInputSource get option value fail {output}");
                                 return ((int)CLI_ExitCode.fail_Value, output);
                             }
                         }
                     }
                 }
+                writelog($"ActiveInputSource get exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
         }
@@ -3935,6 +3995,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_SupportedColorPreset_RESPONSE.Command = "SET";
                         _Set_SupportedColorPreset_RESPONSE.TargetFeature = "COLORPRESET";
                         _Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
+                        _Set_SupportedColorPreset_RESPONSE.Value = value;
 
                         if (!r)
                         {
@@ -3967,6 +4028,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Set_SupportedColorPreset_RESPONSE.Command = "SET";
                         _Set_SupportedColorPreset_RESPONSE.TargetFeature = "COLORPRESET";
                         _Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
+                        _Set_SupportedColorPreset_RESPONSE.Value = value;
 
                         if (!r)
                         {
@@ -4005,6 +4067,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_SupportedColorPreset_RESPONSE.Command = "SET";
                             _Set_SupportedColorPreset_RESPONSE.TargetFeature = "COLORPRESET";
                             _Set_SupportedColorPreset_RESPONSE.Set_SupportedColorPreset = value;
+                            _Set_SupportedColorPreset_RESPONSE.Value = value;
 
                             if (!r)
                             {
@@ -4050,6 +4113,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
                         _Get_ActiveColorPresetList_RESPONSE.TargetFeature = "COLORPRESET";
                         _Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
+                        _Get_ActiveColorPresetList_RESPONSE.Value = _ActiveColorPreset;
 
                         if (string.IsNullOrEmpty(_ActiveColorPreset))
                         {
@@ -4081,6 +4145,7 @@ namespace DDPM.CLI.Plugins.Display
                         _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
                         _Get_ActiveColorPresetList_RESPONSE.TargetFeature = "COLORPRESET";
                         _Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
+                        _Get_ActiveColorPresetList_RESPONSE.Value = _ActiveColorPreset;
 
                         if (string.IsNullOrEmpty(_ActiveColorPreset))
                         {
@@ -4113,6 +4178,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Get_ActiveColorPresetList_RESPONSE.Command = "GET";
                             _Get_ActiveColorPresetList_RESPONSE.TargetFeature = "COLORPRESET";
                             _Get_ActiveColorPresetList_RESPONSE.Get_ActiveColorPresetList = _ActiveColorPreset;
+                            _Get_ActiveColorPresetList_RESPONSE.Value = _ActiveColorPreset;
 
                             if (string.IsNullOrEmpty(_ActiveColorPreset))
                             {
@@ -4805,6 +4871,7 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (var monitor in _AllInfoMonitors)
                     {
                         // jim modify 20240715
+                        writelog($"RestoreFactoryDefaults entry");
                         r = devMgr.SetVCPCapability(monitor, 0x04, 0x01).Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -4817,6 +4884,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreFactoryDefaults fail{output}");
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
                         }
@@ -4825,6 +4893,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreFactoryDefaults pass{output}");
                         }
                     }
                 }
@@ -4834,6 +4903,7 @@ namespace DDPM.CLI.Plugins.Display
                     foreach (string idx in index)
                     {
                         // jim modify 20240802
+                        writelog($"RestoreFactoryDefaults idx entry");
                         r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0x04, 0x01).Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base(idx);
@@ -4846,6 +4916,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreFactoryDefaults idx fail{output}");
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
                         }
@@ -4854,6 +4925,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreFactoryDefaults idx pass{output}");
                         }
                     }
                 }
@@ -4867,6 +4939,7 @@ namespace DDPM.CLI.Plugins.Display
                         foreach (MonitorInfo mo in tmp)
                         {
                             // jim modify 20240802
+                            writelog($"RestoreFactoryDefaults tag entry");
                             r = devMgr.SetVCPCapability(mo, 0x04, 0x01).Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
@@ -4879,6 +4952,7 @@ namespace DDPM.CLI.Plugins.Display
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreFactoryDefaults tag fail{output}");
                                 if (exit == 0)
                                     exit = (int)CLI_ExitCode.functional_error;
                             }
@@ -4887,10 +4961,12 @@ namespace DDPM.CLI.Plugins.Display
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreFactoryDefaults tag pass{output}");
                             }
                         }
                     }
                 }
+                writelog($"RestoreFactoryDefaults exit return value{output}");
                 return (exit, output);
             }
             else
@@ -4923,6 +4999,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
+                        writelog($"RestoreLevelDefaults entry");
                         r = devMgr.SetVCPCapability(monitor, 0x05, 0x01).Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -4935,6 +5012,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreLevelDefaults fail {output}");
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
                         }
@@ -4943,6 +5021,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreLevelDefaults pass{output}");
                         }
                     }
                 }
@@ -4950,6 +5029,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idx in index)
                     {
+                        writelog($"RestoreLevelDefaults idx entry");
                         r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0x05, 0x01).Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base(idx);
@@ -4962,6 +5042,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreLevelDefaults idx fail {output}");
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
                         }
@@ -4970,6 +5051,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreLevelDefaults idx pass{output}");
                         }
                     }
                 }
@@ -4981,6 +5063,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         foreach (MonitorInfo mo in tmp)
                         {
+                            writelog($"RestoreLevelDefaults tag entry");
                             r = devMgr.SetVCPCapability(mo, 0x05, 0x01).Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo).ToString());
@@ -4993,6 +5076,7 @@ namespace DDPM.CLI.Plugins.Display
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreLevelDefaults tag fail {output}");
                                 if (exit == 0)
                                     exit = (int)CLI_ExitCode.functional_error;
                             }
@@ -5001,10 +5085,12 @@ namespace DDPM.CLI.Plugins.Display
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreLevelDefaults tag pass{output}");
                             }
                         }
                     }
                 }
+                writelog($"RestoreLevelDefaults exit return value pass{output}");
                 return (exit, output);
             }
             else
@@ -5037,6 +5123,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (var monitor in _AllInfoMonitors)
                     {
+                        writelog($"RestoreColorDefaults entry");
                         r = devMgr.SetVCPCapability(monitor, 0x08, 0x01).Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
@@ -5049,6 +5136,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreColorDefaults fail{output}");
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
                         }
@@ -5057,6 +5145,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreColorDefaults pass{output}");
                         }
                     }
                 }
@@ -5064,6 +5153,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     foreach (string idx in index)
                     {
+                        writelog($"RestoreColorDefaults idx entry");
                         r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0x08, 0x01).Result;
 
                         _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base(idx);
@@ -5076,6 +5166,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreColorDefaults idx fail{output}");
                             if (exit == 0)
                                 exit = (int)CLI_ExitCode.functional_error;
                         }
@@ -5084,6 +5175,7 @@ namespace DDPM.CLI.Plugins.Display
                             _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            writelog($"RestoreColorDefaults idx pass{output}");
                         }
                     }
                 }
@@ -5095,6 +5187,7 @@ namespace DDPM.CLI.Plugins.Display
 
                         foreach (MonitorInfo mo in tmp)
                         {
+                            writelog($"RestoreColorDefaults tag entry");
                             r = devMgr.SetVCPCapability(mo, 0x08, 0x01).Result;
 
                             _Set_CLI_RESPONSE_RESPONSE.Index = change_0base_to_1base((mo).ToString());
@@ -5107,6 +5200,7 @@ namespace DDPM.CLI.Plugins.Display
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "fail";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreColorDefaults tag fail{output}");
                                 if (exit == 0)
                                     exit = (int)CLI_ExitCode.functional_error;
                             }
@@ -5115,10 +5209,12 @@ namespace DDPM.CLI.Plugins.Display
                                 _Set_CLI_RESPONSE_RESPONSE.Result = "pass";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Set_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                writelog($"RestoreColorDefaults tag pass{output}");
                             }
                         }
                     }
                 }
+                writelog($"RestoreColorDefaults exit return value {output}");
                 return (exit, output);
             }
             else
@@ -8197,6 +8293,7 @@ namespace DDPM.CLI.Plugins.Display
 
             foreach (int idx in _monitorIndeies)
             {
+                writelog($"OSDLanguage entry");
                 MonitorInfo monitor = _AllInfoMonitors[idx];
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
@@ -8219,6 +8316,7 @@ namespace DDPM.CLI.Plugins.Display
                             support_languages.ToObject<List<string>>().ToArray();
                             foreach (var support_language in support_languages)
                             {
+                                writelog($"OSDLanguage SET entry");
                                 if (commandLineInput.Options[0].Option_Value.ToLower() == support_language.ToString().ToLower())
                                 {
                                     in_support_languages = true;
@@ -8230,6 +8328,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else if (commandLineInput.Command == "GET")
                     {
+                        writelog($"OSDLanguage GET entry");
                         rc = GetVCPCode(devMgr, monitor, "0xCC").Result;
                         cli_Response.Value = get_language(rc.value.ToString());
                         retcode = true;
@@ -8252,6 +8351,7 @@ namespace DDPM.CLI.Plugins.Display
                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
             }
+            writelog($"OSDLanguage exit return value {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
@@ -9010,6 +9110,7 @@ namespace DDPM.CLI.Plugins.Display
 
             foreach (int idx in _monitorIndeies)
             {
+                writelog($"PowerSetting entry");
                 MonitorInfo monitor = _AllInfoMonitors[idx];
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
@@ -9024,6 +9125,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     if (commandLineInput.Command == "SET")
                     {
+                        writelog($"PowerSetting set entry");
                         string[] ss = capability.Split("E0(");
                         ss = ss[1].Split(")");
                         ss = ss[0].Split(" ");
@@ -9043,6 +9145,7 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     else if (commandLineInput.Command == "GET")
                     {
+                        writelog($"PowerSetting get entry");
                         retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Message = "N/A";
@@ -9062,20 +9165,27 @@ namespace DDPM.CLI.Plugins.Display
                         switch (commandLineInput.Options[0].Option_Value.ToUpper())
                         {
                             case "OFF":
+                                writelog($"PowerSetting E0 set off");
                                 retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "ON":
+                                writelog($"PowerSetting E0 set on");
                                 retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "STANDBY":
+                                writelog($"PowerSetting E0 set standby");
                                 retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
+                                cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
                         }
                     }
                     else if (commandLineInput.Command == "GET")
                     {
+                        writelog($"PowerSetting E0 get");
                         retcode = true;
                         rc = GetVCPCode(devMgr, monitor, "0xE0").Result;
                         int getcode_e0 = Convert.ToInt32(rc.value);
@@ -9111,6 +9221,7 @@ namespace DDPM.CLI.Plugins.Display
                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
             }
+            writelog($"PowerSetting exit return value{output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 

@@ -390,4 +390,7 @@
   <data name="Mouse.5" xml:space="preserve">
     <value>Microsoft Outlook</value>
 </data>
+<data name="ITLockToolTip.0" xml:space="preserve">
+  <value>This setting is locked by your IT admin.</value>
+</data>
 </root>

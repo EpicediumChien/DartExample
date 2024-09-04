@@ -24,10 +24,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Dell.TechHub.Commodity.Peripheral;
+using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
-    [Plugin(IDs.DDPM_DTP_Proxy_Plugin, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
+    [Plugin(DDPM.SA.Common.IDs.DDPM_DTP_Proxy_Plugin, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
     [PluginRequires(Id = "{743D1C20-7A3E-4562-8D3E-C58F6ADFC050}", Version = "1.0.0", AllowDynamicResolving = true)]
     [Descriptor(Description = pluginDescription)]
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
@@ -71,6 +72,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private ItemId _itemID;
 
         public const string PluginLogId = "DTPProxy";
+        private Logs _logs = null;
 
         #endregion
 
@@ -79,6 +81,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public DTPProxyPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
+
+            if (_logs == null)
+                _logs = new Logs(Log, PluginLogId);
 
             writelog("DTPProxyPlugin constructor ...");
             writelog($"Initializing the Commodity Client SDK...");
@@ -102,9 +107,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             _itemID = new ItemId(itemID);
 
-            if(_mouseMethodInfo != null)
+            if (_mouseMethodInfo != null)
             {
-                if(await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_mouseInterfaceType, commodity, "DpiValue");
                     return (int)value;
@@ -129,9 +134,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             _itemID = new ItemId(itemID);
 
-            if(_mouseMethodInfo != null)
+            if (_mouseMethodInfo != null)
             {
-                if(await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
                 }
@@ -438,10 +443,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
-            if(e?.ChangedPlugins == null || !e.ChangedPlugins.Any())
+            if (e?.ChangedPlugins == null || !e.ChangedPlugins.Any())
             {
             }
-            if(e.ChangedPlugins.OfType<ICommodityClientSdk>().Any())
+            if (e.ChangedPlugins.OfType<ICommodityClientSdk>().Any())
                 InitializeDTPProxy();
         }
 
@@ -449,7 +454,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void OnNotify(DeviceChangedEventArgs e)
         {
-            if(Notify != null)
+            if (Notify != null)
                 Notify(this, e);
         }
 
@@ -462,15 +467,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         /// <param name="log_type">0 means info, others means error</param>
         private void writelog(string text, log_type log_type = log_type.info)
         {
-            text = "[DeviceManager] " + text;
+            text = "[DTPProxyPlugin] " + text;
             Console.WriteLine(text);
 
-            if(Log != null)
+
+            if (_logs != null)
             {
-                if(log_type == log_type.info)
-                    Log.Info(text);
+                if (log_type == log_type.info)
+                    _logs.Info(text);
                 else
-                    Log.Error(text);
+                    _logs.Error(text);
             }
         }
 
@@ -483,17 +489,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private Type FindCommodityInterfaceType(string commodityName)
         {
             //foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => IsAssemblyCanditate(a)))
-            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("DDPM.Peripheral")))
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("DDPM.Peripheral")))
             {
                 try
                 {
                     var type = assembly.GetExportedTypes()
                                        .FirstOrDefault(t => t.FullName.Equals($"Dell.TechHub.Commodity.Peripheral.{commodityName}", StringComparison.OrdinalIgnoreCase));
                     Debug.WriteLine($"\n{assembly.FullName}, {assembly.Location}");
-                    if(type is not null)
+                    if (type is not null)
                         return type;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     writelog($"Failed to get exported type from assembly {assembly.FullName}:{ex}");
                     Debug.WriteLine($"\n{ex}");
@@ -510,7 +516,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Console.WriteLine($"rawResult: {rawResult}");
                 return rawResult is null ? null : (ICommodity)await rawResult;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
                 writelog($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
@@ -532,43 +538,62 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void InitializeDTPProxy()
         {
-            if(_commSdk != null)
+            if (_commSdk != null)
                 return;
 
             _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
 
-            if(_commSdk != null)
+            if (_commSdk != null)
             {
                 _ = Task.Run(async () =>
                 {
+                    writelog($"Find IMouseCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
                     _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
 
-                    if(_mouseInterfaceType != null)
+                    if (_mouseInterfaceType != null)
                     {
                         _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                       .MakeGenericMethod(_mouseInterfaceType);
+
+                        writelog($"Find IMouseCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IMouseCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
 
+                    writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
 
-                    if(_webcamInterfaceType != null)
+                    if (_webcamInterfaceType != null)
                     {
                         _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                         .MakeGenericMethod(_webcamInterfaceType);
+                        writelog($"Find IWebcamCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
 
+                    writelog($"Find IPenCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     _penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
-                    if(_penInterfaceType != null)
+                    if (_penInterfaceType != null)
                     {
                         _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                                     .MakeGenericMethod(_penInterfaceType);
+                        writelog($"Find IPenCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                    }
+                    else
+                    {
+                        writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
                 });
             }
             else
             {
-                if(_commSdk is IFrameworkPluginConditionNotification pluginCondition)
+                if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
                 {
                     pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                     GetCurrentDTPProxyPluginCondition();
@@ -587,18 +612,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var pluginCondition = await (_commSdk as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
 
-                lock(_PluginConditionLock)
+                lock (_PluginConditionLock)
                 {
-                    if(pluginCondition is PluginErrorCondition)
+                    if (pluginCondition is PluginErrorCondition)
                     {
                         //writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in an error condition");
                         //_DisplayManagerPluginCondition = pluginCondition;
                     }
-                    else if(pluginCondition is PluginRunningCondition)
+                    else if (pluginCondition is PluginRunningCondition)
                     {
                         //_DisplayManagerPluginCondition = pluginCondition;
                     }
-                    else if(pluginCondition is PluginStartedCondition)
+                    else if (pluginCondition is PluginStartedCondition)
                     {
                         //_DisplayManagerPluginCondition = pluginCondition;
                     }
@@ -612,7 +637,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 writelog($"Error while Getting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
                 return null;
@@ -625,7 +650,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
             }
@@ -642,7 +667,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new [] { byteArray });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
             }

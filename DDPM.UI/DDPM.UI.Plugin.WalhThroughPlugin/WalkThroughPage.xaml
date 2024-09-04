@@ -1,0 +1,108 @@
+﻿<UserControl x:Class="DDPM.UI.Plugin.WalkThroughPlugin.WalkThroughPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             mc:Ignorable="d" Background="#FF0D121A"
+             d:DesignHeight="671" d:DesignWidth="1378">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Storyboard x:Key="StoryGotoTwoView">
+                <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
+                                 Duration="0:0:0.4" From="0" To="{Binding LeftFrameWidth}" FillBehavior="HoldEnd" />
+            </Storyboard>
+
+            <SolidColorBrush x:Key="PageBkColor" Color="#FF0D121A" />
+            <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
+            <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
+            <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Image x:Name="imgBkGlow"
+               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <StackPanel>
+            <Grid Margin="24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="552" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Margin="76, 60, 0, 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Progressbar1.png"
+                               HorizontalAlignment="Left" Height="5" Width="281" Visibility="{Binding SetInput}" />
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="400" HorizontalAlignment="Left">
+                        <UXControls:UXTextBlock Text="FEATURE HIGHLIGHT"
+                                                Foreground="#DAF5FD"
+                                                FontSize="20" LineHeight="28" />
+                    </Grid>
+                    <Grid Grid.Row="2" Margin="0, 8, 0 ,0" Width="476" HorizontalAlignment="Left">
+                        <UXControls:UXTextBlock Text="Customizable Keys"
+                                                Foreground="#F5F6F7"
+                                                FontSize="64" TextWrapping="Wrap"/>
+                    </Grid>
+                    <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" HorizontalAlignment="Left">
+                        <UXControls:UXTextBlock Text="You can customize the keys on your keyboard by assigning your favorite actions to the top row and other keys"
+                                                Foreground="#F5F6F7"
+                                                FontSize="16" TextWrapping="Wrap" />
+                    </Grid>
+                    <Grid Grid.Row="4" Margin="0, 93, 0 ,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
+                                                 ButtonType="Primary" Padding="40, 8"
+                                                 ButtonSize="Medium" VerticalContentAlignment="Center"
+                                                 Content="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" ContentStringFormat="{}{0} ⭢"  Margin="0"
+                                                 IconAnimation="Move" Width="164" Height="40" />
+                            <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
+                                                 ButtonType="Primary" Padding="40, 8"
+                                                 ButtonSize="Medium" VerticalContentAlignment="Center"
+                                                 Content="Save"  Margin="0"
+                                                 IconAnimation="Move" Width="164" Height="40"/>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <UXControls:UXButton ButtonType="Tertiary" Width="90" Height="40"
+                                                 ButtonSize="Medium" Margin="10, 0"
+                                                 Content="Close"
+                                                 IconAnimation="Move"/>
+                            <UXControls:UXButton ButtonType="Tertiary" Width="90" Height="40"
+                                                 ButtonSize="Medium" Margin="10, 0"
+                                                 Content="Cancel"
+                                                 IconAnimation="Move"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Column="1" Margin="0, 0, 0, 0" HorizontalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!-- Adding the keyboard image -->
+                    <Image Grid.Row="0" Margin="16, 48, 0, 0"
+                           Source="pack://application:,,,/DDPM.UI.Common;component/Resources/WalkThrough/Keyboard/Trident (KB900)/Walkthrough Image KB900_1.png"
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"
+                           Width="670" Height="535" />
+                </Grid>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

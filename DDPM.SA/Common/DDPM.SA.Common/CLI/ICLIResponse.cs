@@ -15,7 +15,7 @@ namespace DDPM.SA.Common
         public string Model { get; set; }
         public string SerialNumber { get; set; }
         public string Index { get; set; }
-        public List<string> GUID { get; set; }
+        //public List<string> GUID { get; set; }
         public string ServiceTag { get; set; }
         public string Command { get; set; }
         public string TargetFeature { get; set; }
@@ -34,7 +34,7 @@ namespace DDPM.SA.Common
             ServiceTag = "N/A";
             Value = "N/A";
             Message = "N/A";
-            GUID = new List<string>();
+            //GUID = new List<string>();
         }
 
         public string ToJson()

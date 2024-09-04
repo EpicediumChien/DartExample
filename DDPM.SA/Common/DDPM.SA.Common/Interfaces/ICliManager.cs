@@ -32,7 +32,9 @@ namespace DDPM.SA.Common
         fail_FormantError = 102,
         fail_NotSupport = 103,
         fail_Value = 104, //Jason add
-
+        fail_option_missing,
+        fail_option_name,
+        fail_option_value,
         //Robert_Lin, 2024-6-5 added
         functional_error,
 

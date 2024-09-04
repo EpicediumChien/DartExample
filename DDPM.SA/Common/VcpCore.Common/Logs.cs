@@ -39,5 +39,29 @@ namespace VcpCore.Common
                 Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
             }
         }
+
+        public void Info(string DebugMsg, bool IsDebugEnable = _IsDebugEnable)
+        {
+            if (IsDebugEnable)
+            {
+                string s = $"[{_PluginLogId}] " + DebugMsg;
+                if (Logg != null) // Elie, check if it's null or not.
+                    Logg.Info(s);
+
+                Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
+            }
+        }
+
+        public void Error(string DebugMsg, bool IsDebugEnable = _IsDebugEnable)
+        {
+            if (IsDebugEnable)
+            {
+                string s = $"[{_PluginLogId}]" + DebugMsg;
+                if (Logg != null) // Elie, check if it's null or not.
+                    Logg.Error(s);
+
+                Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + s);
+            }
+        }
     }
 }
