@@ -779,8 +779,9 @@ namespace DDPM.SA.Common.Settings
             FileInfo fileInfo = new FileInfo(filePath);
             try
             {
+                //0903 Elsa Add Security
                 string FileInfo;
-                if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+                if (!IsFilePathValid(filePath, out FileInfo))
                 {
                     Console.WriteLine("File path: " + filePath + " invalid");
                     info = $"IsFilePathValid: {filePath} invalid";
@@ -905,12 +906,6 @@ namespace DDPM.SA.Common.Settings
                     throw new ArgumentException("File isn't exist. ");
                 }
 
-                string FileInfo;
-                if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
-                {
-                    throw new ArgumentException("Invalid file path.");
-                }
-
                 // Perform Input Validation: check file path
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
@@ -955,8 +950,9 @@ namespace DDPM.SA.Common.Settings
 
             try
             {
+                //0903 Elsa Add Security
                 string FileInfo;
-                if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+                if (!IsFilePathValid(filePath, out FileInfo))
                 {
                     throw new ArgumentException("Invalid file path.");
                 }
@@ -994,11 +990,6 @@ namespace DDPM.SA.Common.Settings
             {
                 string filePath = JsonPath.Trim();
 
-                string FileInfo;
-                if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
-                {
-                    throw new ArgumentException("Invalid file path.");
-                }
                 /*
                 *   STEP 1: Create our Authenticode signature verifier
                 *
@@ -1081,12 +1072,6 @@ namespace DDPM.SA.Common.Settings
 
         public static byte[] GetFileSHA_256(string filePath, out string info)
         {
-            string FileInfo;
-            if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
-            {
-                throw new ArgumentException("Invalid file path.");
-            }
-
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
@@ -1113,12 +1098,6 @@ namespace DDPM.SA.Common.Settings
 
         public static byte[] GetFileSHA_512(string filePath, out string info)
         {
-            string FileInfo;
-            if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
-            {
-                throw new ArgumentException("Invalid file path.");
-            }
-
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
@@ -1145,12 +1124,6 @@ namespace DDPM.SA.Common.Settings
 
         public static bool IsContainValidDigitalSignature(string filePath, out string info)
         {
-            string FileInfo;
-            if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
-            {
-                throw new ArgumentException("Invalid file path.");
-            }
-
             info = "";
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
@@ -1373,8 +1346,9 @@ namespace DDPM.SA.Common.Settings
 
         public static X509Certificate2 LoadCertificate(string filePath)
         {
+            //0903 Elsa Add Security
             string FileInfo;
-            if (!IsFilePathValid(filePath, out FileInfo))//0903 Elsa Add Security
+            if (!IsFilePathValid(filePath, out FileInfo))
             {
                 throw new ArgumentException("Invalid file path.");
             }
