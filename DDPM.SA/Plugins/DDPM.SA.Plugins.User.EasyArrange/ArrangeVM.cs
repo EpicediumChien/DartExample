@@ -161,6 +161,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
             {
                 EAWorkWindow workWin = keyValuePair.Value;
+                if (workWin == null) continue;
+                
                 CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
                 if (cellObj != null)
                 {
@@ -268,7 +270,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
             {
                 EAWorkWindow workWin = keyValuePair.Value;
-                workWin.Invoke_RefreshCellRects();
+                if (workWin != null) 
+                    workWin.Invoke_RefreshCellRects();
             }
             RefreshWorkWinInfos();
         }
