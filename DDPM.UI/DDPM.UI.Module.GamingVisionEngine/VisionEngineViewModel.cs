@@ -12,6 +12,7 @@ using DDPM.SA.Common.Display;
 using System.Diagnostics;
 using Windows.System;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
 
@@ -21,7 +22,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
     {
         public IModuleOwner? ModuleOwner { get; set; }
         public VisionEngineModule MyModule { get; set; }
-        public List<UI_VisionEngine> VisionEngineList { get; set; }
+        public ObservableCollection<UI_VisionEngine> VisionEngineList { get; set; }
 
         public bool VisionEngineIsEnable { get; set; } = true;
         #region UI Enable Flags
@@ -66,7 +67,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
         {
             try
             {
-                VisionEngineList = new List<UI_VisionEngine>();
+                VisionEngineList = new ObservableCollection<UI_VisionEngine>();
                 GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(MyModule.SelectedHomeDevice.MonitorInfo).Result;
                 displayPropertiesInfo.IsEnable_VisionEngineType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_VisionEngineEnableType(MyModule.SelectedHomeDevice.MonitorInfo, displayPropertiesInfo).Result;
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
@@ -173,6 +174,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
         public void RefreshUI()
         {
             OnPropertyChanged("VisionEngineList");
+            OnPropertyChanged("VisionEngineList_UI");
             OnPropertyChanged("VisionEngineIsEnable");
         }
     }
