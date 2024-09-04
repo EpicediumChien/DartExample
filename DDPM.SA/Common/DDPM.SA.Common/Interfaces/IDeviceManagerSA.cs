@@ -526,13 +526,13 @@ namespace DDPM.SA.Common
 
         #region OSD
 
-        Task ShowOSD(MonitorInfo monitorInfo, OSDType type, OSDType_Device Device, string Content);
+        Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content);
 
-        Task ShowOSD(MonitorInfo monitorInfo, OSDType type, string Content, bool State);
+        Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State);
 
-        Task ShowOSD(MonitorInfo monitorInfo, OSDType type, bool State);
+        Task ShowOSD(object monitorInfo, OSDType type, bool State);
 
-        Task ShowOSD(MonitorInfo monitorInfo, OSDType type);
+        Task ShowOSD(object monitorInfo, OSDType type);
 
         #endregion OSD
     }

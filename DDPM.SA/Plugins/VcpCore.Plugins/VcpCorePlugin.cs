@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using static VcpCore.Common.dxva2;
@@ -907,6 +908,35 @@ namespace VcpCore.Plugins
                          new JProperty("CapsDataMap", new JObject(CapsDataMapJProperty))
                     );
 
+
+                    if (obj.ContainsKey("CapsDataMap"))
+                    {
+                        JObject capsDataMap = (JObject)obj["CapsDataMap"];
+                        JArray input = (JArray)capsDataMap["Input Select"];
+
+                        string T_strI = string.Empty;
+                        string T_strII = string.Empty;
+                        bool rc = false;
+                        for (int i = 0; i < input.Count; i++)
+                        {
+                            T_strI = System.Text.RegularExpressions.Regex.Replace(input[i].ToString(), @"\d", string.Empty);
+
+                            for (int j = 0; j < input.Count; j++)
+                            {
+                                if (i != j)
+                                {
+                                    T_strII = System.Text.RegularExpressions.Regex.Replace(input[j].ToString(), @"\d", string.Empty);
+
+                                    if (T_strI.Equals(T_strII))
+                                        rc = true;
+                                }
+                            }
+
+                            if (!rc)
+                                input[i] = T_strI;
+                        }
+                    }
+
                     rcString = JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
 
                     CapsDataMapJProperty.Clear();
@@ -978,8 +1008,8 @@ namespace VcpCore.Plugins
                     case "colorpreset":
                         {
                             //ro = GetFromCacheTable(monitorInfoX, func);
-                            if (ro == null)
-                                ro = GetCurrentColorPreset(monitorInfoX);
+                            //if (ro == null)
+                            ro = GetCurrentColorPreset(monitorInfoX);
                         }
                         break;
 
@@ -1035,9 +1065,20 @@ namespace VcpCore.Plugins
 
                 if (rc)
                 {
-                    if (!code.Equals(0xEC))//Add by Bruce, EC needs to get again from VCP every time
+                    switch (code)
                     {
-                        SetToCacheTable(monitorInfoX, code, val);
+
+                        case 0xEC:
+                            break;
+                        case 0X04:
+                            InitializeCacheTable();
+                            break;
+                        case 0x05:
+                            InitializeCacheTable();
+                            break;
+                        default:
+                            SetToCacheTable(monitorInfoX, code, val);
+                            break;
                     }
                 }
                 return rc;  //Task.CompletedTask;
@@ -1099,6 +1140,10 @@ namespace VcpCore.Plugins
 
                     case "input select":
                         {
+                            var val_ = System.Text.RegularExpressions.Regex.Replace((val.Substring(val.Length - 1)), @"\d", string.Empty);
+                            if (!string.IsNullOrWhiteSpace(val_))
+                                val = val + "1";
+
                             byte fuc = TranslatorVCPctrCode(FunctionName);
                             uint value = TranslatorVCPcategory(FunctionName, val);
                             rc = SetVCPCapability_(monitorInfoX, fuc, value);
@@ -3487,7 +3532,7 @@ namespace VcpCore.Plugins
                 case "E2425HSM": return "Dell Pro 24 Adjustable Stand Monitor";
                 case "E2225HM": return "Dell Pro 22 Monitor";
                 case "E2225HSM": return "Dell Pro 22 Adjustable Stand Monitor";
-                default: return String.Empty; //Robert_Lin 2024-0830, help Jarvis to fix.
+                default: return string.Empty; //Robert_Lin 2024-0830, help Jarvis to fix.
             }
         }
 
