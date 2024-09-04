@@ -331,5 +331,116 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             }
         }
 
+        [Test]
+        public void TestShowOSD_ColoPreset()
+        {
+            string modelName = monitorInfo1.edid.ModelName;
+            string serialNumber = monitorInfo1.edid.SerialNumber;
+            string DisplayName = "DISPL";
+            monitorInfo1.DisplayName = DisplayName;
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard/Native', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string colorPreset_Name = "Standard/Native";
+            string supported_preset = monitorInfo1.CapabilityString;
+            colorPresetPlugin.ShowOSD_ColoPreset(monitorInfo1, colorPreset_Name);
+
+        }
+
+        [Test]
+        public void TestReadColorPreset()
+        {
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string supported_preset = monitorInfo1.CapabilityString;
+            List<string> colorPresetSupportList = new List<string>() { "Standard", "Movie", "Game", "Custom Color" };
+            List<string> colorPresetSupportList2 = new List<string>();
+            string colorpreset2 = null;
+            int count = 0;
+            if (colorpreset2 == null)
+            {
+                var ReadColorPreset_resullt = colorPresetPlugin.ReadColorPreset(monitorInfo1, colorpreset2).Result;
+                Assert.That(count, Is.EqualTo(ReadColorPreset_resullt.Count));
+                Assert.That(colorPresetSupportList2, Is.EqualTo(ReadColorPreset_resullt));
+            }
+
+            if (!string.IsNullOrEmpty(colorpreset))
+            {
+                var ReadColorPreset_resullt = colorPresetPlugin.ReadColorPreset(monitorInfo1, colorpreset).Result;
+                Assert.Greater(ReadColorPreset_resullt.Count, 0);
+                Assert.That(colorPresetSupportList, Is.EqualTo(ReadColorPreset_resullt));
+            }
+        }
+
+        [Test]
+        public void TestWriteColorPreset()
+        {
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string colorPreset_Name = "Movie";
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
+            int index_config = 0;
+            int runType = 0; //Manual 0,auto 1
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            int count = 0;
+            if (index_config >= 0)
+            {
+                var WriteColorPreset_resullt = colorPresetPlugin.WriteColorPreset(monitorInfo1, colorPreset_Name, monitorConfigs1).Result; //write colorpreset to Manual Standard to movie
+                Assert.IsNotNull(WriteColorPreset_resullt);
+                Assert.That(runType, Is.EqualTo(WriteColorPreset_resullt[0].RunType));
+                Assert.That(colorPreset_Name, Is.EqualTo(WriteColorPreset_resullt[0].PresetForManual));
+            }
+            else
+            {
+                var WriteColorPreset_resullt = colorPresetPlugin.WriteColorPreset(monitorInfo1, colorPreset_Name, monitorConfigs2).Result;
+                Assert.IsNotNull(WriteColorPreset_resullt);
+                Assert.That(count, Is.EqualTo(WriteColorPreset_resullt.Count));
+            }
+        }
+
+        [Test]
+        public void TestWriteColorPreset_AUTO()
+        {
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string colorPreset_Name = "Custom Color";
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
+            int index_config = 0;
+            int runType = 1; //Manual 0,auto 1
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            int count = 0;
+            if (index_config >= 0)
+            {
+                var WriteColorPreset_AUTO_resullt = colorPresetPlugin.WriteColorPreset_AUTO(monitorInfo1, colorPreset_Name, monitorConfigs1).Result; //write colorpreset to Manual Standard to Custom Color
+                Assert.IsNotNull(WriteColorPreset_AUTO_resullt);
+                Assert.That(runType, Is.EqualTo(WriteColorPreset_AUTO_resullt[0].RunType));
+                Assert.That(colorPreset_Name, Is.EqualTo(WriteColorPreset_AUTO_resullt[0].PresetForManual));
+            }
+            else
+            {
+                var WriteColorPreset_AUTO_resullt = colorPresetPlugin.WriteColorPreset_AUTO(monitorInfo1, colorPreset_Name, monitorConfigs2).Result;
+                Assert.IsNotNull(WriteColorPreset_AUTO_resullt);
+                Assert.That(count, Is.EqualTo(WriteColorPreset_AUTO_resullt.Count));
+            }
+        }
+
+        [Test]
+        public void TestIsDisposed()
+        {
+            var Result = colorPresetPlugin.IsDisposed;
+            Assert.IsFalse(Result);
+            PrivateObject privatehotkeyPluginObject = new PrivateObject(colorPresetPlugin);
+            privatehotkeyPluginObject.SetFieldOrProperty("IsDisposed", true);
+            var Result2 = colorPresetPlugin.IsDisposed;
+            Assert.IsTrue(Result2);
+        }
+
     }
 }
