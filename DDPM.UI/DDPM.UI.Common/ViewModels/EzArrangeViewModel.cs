@@ -183,13 +183,11 @@ namespace DDPM.UI.Common.ViewModels
                     if (_selectedSplitItem.Buddy != null)
                         _selectedSplitItem.Buddy.IsSelected = true;
 
-                    //OnPropertyChanged("IsPipItemSelected");
                 }
                 else
                 {
                     //Selection none
                     SetProperty(ref _selectedSplitItem, value);
-                    //OnPropertyChanged("IsPipItemSelected");
                 }
             }
         }

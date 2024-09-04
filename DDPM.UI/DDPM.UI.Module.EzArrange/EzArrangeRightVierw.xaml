@@ -32,10 +32,6 @@
                 <StackPanel>
                     <Border Style="{StaticResource RightGroupBorderStyle}">
                         <StackPanel>
-                            <!-- Test -->
-                            <CheckBox Content="Enable EasyArrange Function" Foreground="White" Visibility="Collapsed"
-                                      IsChecked="{Binding IsEaFunctionEnabled, Mode=TwoWay}"
-                                      Click="CheckBox_Click" />
 
                             <!-- Recent -->
                             <Grid Height="40">

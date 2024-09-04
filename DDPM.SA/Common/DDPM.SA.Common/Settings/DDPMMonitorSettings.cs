@@ -52,7 +52,7 @@ namespace DDPM.SA.Common.Settings
         /// <summary>
         /// Current user selected Split item. Defaul is (CellCount=0, SplitKey='A')
         /// </summary>
-        public SplitJson SelectedSplit { get; set; } = new SplitJson(); //Default will be '2A'
+        public SplitJson SelectedSplit { get; set; } = new SplitJson(); //Default will be '0A'
 
         /// <summary>
         /// Custom layout items (up to 5 items), Default is empty.
