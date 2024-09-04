@@ -120,6 +120,18 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
         }
 
+        private Visibility lockMaskVisible_Updates = Visibility.Collapsed;
+
+        public Visibility LockMaskVisible_Updates
+        {
+            get { return lockMaskVisible_Updates; }
+            set
+            {
+                lockMaskVisible_Updates = value;
+                OnPropertyChanged("LockMaskVisible_Updates");
+            }
+        }
+
         public void RefreshUI()
         {
             OnPropertyChanged("Critical_UpdateList_UI");
@@ -134,6 +146,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             OnPropertyChanged("Optional_UpdateList");
             OnPropertyChanged("IsAnyUpdate");
             OnPropertyChanged("LockMaskVisible");
+            OnPropertyChanged("LockMaskVisible_Updates");
         }
 
         public void RefreshProcessUI()

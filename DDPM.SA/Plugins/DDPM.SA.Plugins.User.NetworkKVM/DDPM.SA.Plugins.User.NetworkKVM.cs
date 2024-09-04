@@ -964,8 +964,23 @@ namespace NetworkKVM.Plugins
             pipeServer.Dispose();
         }
 
+        private static bool isSignChecked = false;
         private async Task WriteAsync(string message)
         {
+            //if (!isSignChecked)
+            //{
+            //    string info;
+            //    if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
+            //    {
+            //        _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
+            //        isSignChecked = true;
+            //    }
+            //    else
+            //    {
+            //        _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
+            //        Disconnect();
+            //    }
+            //}
             _logs.DebugMsg("[NetworkKVM] WriteAsync : " + message);
             byte[] buffer = Encoding.UTF8.GetBytes(message);
             await pipeServer.WriteAsync(buffer, 0, buffer.Length);

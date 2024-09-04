@@ -1213,8 +1213,10 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (value)
                     _deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 0, 1), CurrentDeviceInfo!.ID).Wait();
+                //_deviceManager.SetWearDetectionForCLI(1, CurrentDeviceInfo!.ID).Wait();
                 else
                     _deviceManager.SetWearDetection((int)SetBitValue((uint)CurrentDeviceInfo!.WearDetection, 0, 0), CurrentDeviceInfo!.ID).Wait();
+                //_deviceManager.SetWearDetectionForCLI(0, CurrentDeviceInfo!.ID).Wait();
                 _isWearDetectionStatus = value;
                 OnPropertyChanged("WearDetection_String");
             }

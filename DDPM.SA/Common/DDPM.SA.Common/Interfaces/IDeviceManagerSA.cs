@@ -55,7 +55,7 @@ namespace DDPM.SA.Common
         // 20240619 jim modify
         //Task<bool> WriteColorPreset(string monitor_index, MonitorInfo m, string ColorPreset_Name);
         //Task<bool> WriteColorPreset_AUTO(string monitor_index, MonitorInfo m, string ColorPreset_Name);
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name,int ColorPresetRunType = 0);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int ColorPresetRunType = 0);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -293,6 +293,8 @@ namespace DDPM.SA.Common
 
         Task SetWearDetection(int newValue, Guid deviceId);
 
+        Task SetWearDetectionForCLI(int newValue, Guid deviceId);
+
         Task SetBusyLight(bool newValue, Guid deviceId);
 
         Task SetVoiceGuidance(bool newValue, Guid deviceId);
@@ -476,21 +478,20 @@ namespace DDPM.SA.Common
         #region Gaming
 
         event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
-
-        Task<GamingDisplayPropertiesInfo> GetGamingProperties(MonitorInfo monitorInfo);
-
+        Task<GamingDisplayPropertiesInfo> GetGamingProperties_SupportedList(MonitorInfo monitorInfo);
+        Task<Gaming_GameEnhancementMode> GetCurrentGame_EnhancementMode(MonitorInfo monitorInfo);
+        Task<Gaming_ResponseTime> GetCurrentGaming_ResponseTime(MonitorInfo monitorInfo);
+        Task<Gaming_DarkStabilizer> GetCurrentGaming_DarkStabilizer(MonitorInfo monitorInfo);
+        Task<Gaming_HDRType> GetCurrentGaming_HDRType(MonitorInfo monitorInfo);
+        Task<Gaming_DualResolutionType> GetCurrentGaming_DualResolutionType(MonitorInfo monitorInfo);
+        Task<Gaming_VisionEngineType> GetCurrentGaming_VisionEngineType(MonitorInfo monitorInfo);
+        Task<bool[]> GetCurrentGaming_VisionEngineEnableType(MonitorInfo monitorInfo, GamingDisplayPropertiesInfo gamingDisplayPropertiesInfo);
         Task<bool> SetGameEnhancementMode(MonitorInfo monitorInfo, Gaming_GameEnhancementMode GameEnhancementMode);
-
         Task<bool> SetGaming_ResponseTime(MonitorInfo monitorInfo, Gaming_ResponseTime ResponseTime);
-
         Task<bool> SetGaming_DarkStabilizer(MonitorInfo monitorInfo, Gaming_DarkStabilizer DarkStabilizer);
-
         Task<bool> SetGaming_HDRType(MonitorInfo monitorInfo, Gaming_HDRType HDRType);
-
         Task<bool> SetGaming_DualResolutionType(MonitorInfo monitorInfo, Gaming_DualResolutionType DualResolutionType);
-
         Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
-
         #endregion Gaming
 
         #region public for DTPProxy

@@ -11,6 +11,7 @@ using VcpCore.Common;
 using DDPM.SA.Common.Display;
 using System.Diagnostics;
 using Windows.System;
+using Newtonsoft.Json.Linq;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Gaming.Tests")]
 
@@ -21,7 +22,8 @@ namespace DDPM.UI.Module.GamingVisionEngine
         public IModuleOwner? ModuleOwner { get; set; }
         public VisionEngineModule MyModule { get; set; }
         public List<UI_VisionEngine> VisionEngineList { get; set; }
-        public Debouncer VisionEngine_Debouncer;
+
+        public bool VisionEngineIsEnable { get; set; } = true;
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -33,10 +35,22 @@ namespace DDPM.UI.Module.GamingVisionEngine
         }
 
         #endregion UI Enable Flags
-
+        public void GamingParamChang(object o, GamingDisplayPropertiesInfo e)
+        {
+            if (e != null)
+            {
+                if (VisionEngineList != null && e.IsEnable_VisionEngineType != null && VisionEngineList.Count == e.IsEnable_VisionEngineType.Length)
+                {
+                    for (int i = 0; i < VisionEngineList.Count; i++)
+                    {
+                        VisionEngineList[i].VisionEngine_Enable = e.IsEnable_VisionEngineType[i];
+                    }
+                }
+            }
+            RefreshUI();
+        }
         public void Invoke_RefreshData()
         {
-            VisionEngine_Debouncer = new Debouncer(1000, Set_VisionEngine);
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -53,8 +67,8 @@ namespace DDPM.UI.Module.GamingVisionEngine
             try
             {
                 VisionEngineList = new List<UI_VisionEngine>();
-                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties(MyModule.SelectedHomeDevice.MonitorInfo).Result;
-
+                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                displayPropertiesInfo.IsEnable_VisionEngineType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_VisionEngineEnableType(MyModule.SelectedHomeDevice.MonitorInfo, displayPropertiesInfo).Result;
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     for (int i = 0; i < displayPropertiesInfo.Supported_VisionEngineType.Count; i++)
@@ -75,7 +89,18 @@ namespace DDPM.UI.Module.GamingVisionEngine
             IsBusy = false;
             //Handling the result and final process
         }
-        private void Set_VisionEngine(object o)
+        public void SetVisionEngine()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += Set_VisionEngine_Dowork;
+            bw.RunWorkerCompleted += Set_VisionEngine_Done;
+            bw.RunWorkerAsync(ApartmentState.STA);
+        }
+        private void Set_VisionEngine_Dowork(object sender, DoWorkEventArgs e)
         {
             bool[] b = new bool[VisionEngineList.Count];
             for (int i = 0; i < VisionEngineList.Count; i++)
@@ -86,6 +111,11 @@ namespace DDPM.UI.Module.GamingVisionEngine
                 }
             }
             bool ret = DdpmCommonHelper.DeviceManagerSA.SetGaming_VisionEngineEnableType(MyModule.SelectedHomeDevice.MonitorInfo, b).Result;
+        }
+        private void Set_VisionEngine_Done(object sender, RunWorkerCompletedEventArgs e)
+        {
+            VisionEngineIsEnable = true;
+            OnPropertyChanged("VisionEngineIsEnable");
         }
         #region hotkey
         private string _visionEngineToggleKey = "None";
@@ -143,6 +173,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
         public void RefreshUI()
         {
             OnPropertyChanged("VisionEngineList");
+            OnPropertyChanged("VisionEngineIsEnable");
         }
     }
     internal class UI_VisionEngine
