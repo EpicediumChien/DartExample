@@ -5,8 +5,8 @@ namespace DDPM.SA.Common.Settings
 {
     public class ImportVCP
     {
-        public List<int> NotImportVCPs = new List<int>() { 0x02, 0x04, 0x05, 0x06, 0x08, 0xA };
-        public List<int> ImportVCPSequence = new List<int>() { 0x10, 0x12, 0x66, 0xAA, 0x60 };
+        public List<int> NotImportVCPs = new List<int>() { 0x02, 0x04, 0x05, 0x06, 0x08, 0xA, 0x60, 0xF0 };
+        public List<int> ImportVCPSequence = new List<int>() { 0x66, 0x10, 0x12, /*0xF0,*/ 0xE9 };
     }
 
     public class Input

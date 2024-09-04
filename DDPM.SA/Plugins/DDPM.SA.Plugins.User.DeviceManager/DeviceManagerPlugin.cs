@@ -2793,7 +2793,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     if (objGet.result)
                                     {
                                         writelog($"VCP code: {vcp.Code.ToString()}, value:{objGet.value.ToString()}");
-                                        vcp.Value.Add((int)objGet.value);
+                                        vcp.Value.Add((int)(uint)objGet.value);
                                     }
                                     //if (value != null)
                                     //{
@@ -2828,8 +2828,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
                         importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                     {
+                        writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                        bool b = false;
+                        //SHR on/off need load settings
+                        //if (code.Code == 0xF0)
+                        //{
+                        //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                        //}
                         //set vcp code
-                        bool b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
                     }
                 }
             }
