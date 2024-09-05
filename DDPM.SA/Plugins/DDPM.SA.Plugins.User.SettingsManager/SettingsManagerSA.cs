@@ -135,7 +135,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
             InitPowerNapConfigFile();
-            EAMakeSureDirExist();
+            //Robert_Lin, 2024-9-3, removed, will use SettingsManagerSA.ReloadMonitorSettings() instead
+            //EAMakeSureDirExist();
         }
 
         #endregion Overriding methods
@@ -922,55 +923,56 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #region EasyArrange Settings
 
-        private string _dir_ddpmUserSettings = String.Empty;
-        private string _dir_eaMonitorSettings = String.Empty;
-        private const string _dirName_EA = "EA";
+        //private string _dir_ddpmUserSettings = String.Empty;
+        //private string _dir_eaMonitorSettings = String.Empty;
+        //private const string _dirName_EA = "EA";
 
         /// <summary>
         /// The directory of DDPM per user settings, should be %LocalAppData%\Dell Display and Peripheral Manager
         /// Or "C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager"
         /// </summary>
-        private string GetDdpmUserSettingsDir()
-        {
-            if (String.IsNullOrEmpty(_dir_ddpmUserSettings))
-            {
-                // C:\Users\{UserName}\AppData\Local
-                string dir_localAppData = GetActiveUserLocalAppDataPath();
-                // C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager
-                _dir_ddpmUserSettings = System.IO.Path.Combine(dir_localAppData, folder_product);
-            }
-            return _dir_ddpmUserSettings;
-        }
+        //private string GetDdpmUserSettingsDir()
+        //{
+        //    if (String.IsNullOrEmpty(_dir_ddpmUserSettings))
+        //    {
+        //        // C:\Users\{UserName}\AppData\Local
+        //        string dir_localAppData = GetActiveUserLocalAppDataPath();
+        //        // C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager
+        //        _dir_ddpmUserSettings = System.IO.Path.Combine(dir_localAppData, folder_product);
+        //    }
+        //    return _dir_ddpmUserSettings;
+        //}
 
         // C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
-        private string GetEaUserSettingsDir()
-        {
-            if (String.IsNullOrEmpty(_dir_eaMonitorSettings))
-            {
-                _dir_eaMonitorSettings = System.IO.Path.Combine(GetDdpmUserSettingsDir(), _dirName_EA);
-            }
-            return _dir_eaMonitorSettings;
-        }
+        //private string GetEaUserSettingsDir()
+        //{
+        //    if (String.IsNullOrEmpty(_dir_eaMonitorSettings))
+        //    {
+        //        _dir_eaMonitorSettings = System.IO.Path.Combine(GetDdpmUserSettingsDir(), _dirName_EA);
+        //    }
+        //    return _dir_eaMonitorSettings;
+        //}
 
+        //Robert_Lin, 2024-9-3 Unused
         /// <summary>
         /// Make sure the EA directory exist before save/load EA settings.
         /// Call this method at init stage of SettingsManagerPlugin
         /// EA Dir: %LocalAppData%\Dell Display and Peripheral Manager\EA
         /// Or after expanded: "C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA"
         /// </summary>
-        private bool EAMakeSureDirExist()
-        {
-            try
-            {
-                DirectoryInfo di = System.IO.Directory.CreateDirectory(GetEaUserSettingsDir());
-            }
-            catch (Exception e1)
-            {
-                WriteLog($"CreateDirectory({GetEaUserSettingsDir()}) exception: {e1.Message}");
-                return false;
-            }
-            return true;
-        }
+        //private bool EAMakeSureDirExist()
+        //{
+        //    try
+        //    {
+        //        DirectoryInfo di = System.IO.Directory.CreateDirectory(GetEaUserSettingsDir());
+        //    }
+        //    catch (Exception e1)
+        //    {
+        //        WriteLog($"CreateDirectory({GetEaUserSettingsDir()}) exception: {e1.Message}");
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
         #endregion EasyArrange Settings
 

@@ -82,12 +82,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             _agent = agent;
 
-            if (_logs == null)
+            if(_logs == null)
                 _logs = new Logs(Log, PluginLogId);
 
             writelog("DTPProxyPlugin constructor ...");
             writelog($"Initializing the Commodity Client SDK...");
             var commodity = new ConnectedArgs("");
+
             InitializeDTPProxy();
             writelog($"Initialized successfully");
         }
@@ -107,9 +108,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             _itemID = new ItemId(itemID);
 
-            if (_mouseMethodInfo != null)
+            if(_mouseMethodInfo != null)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                if(await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_mouseInterfaceType, commodity, "DpiValue");
                     return (int)value;
@@ -134,9 +135,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             _itemID = new ItemId(itemID);
 
-            if (_mouseMethodInfo != null)
+            if(_mouseMethodInfo != null)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+                if(await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_mouseInterfaceType, commodity, "DpiValue", newValue);
                 }
@@ -156,52 +157,253 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public async Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "EraserDoublePressSetting", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetEraserDoublePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserDoublePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
         public async Task SetEraserLongPressSetting(string itemID, byte[] newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "EraserLongPressSetting", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetEraserLongPressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserLongPressSettingCould not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
         public async Task SetEraserSinglePressSetting(string itemID, byte[] newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "EraserSinglePressSetting", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetEraserSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
         public async Task SetIsSideBottomButtonHoverClick(string itemID, bool newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "IsSideBottomButtonHoverClick", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
         public async Task SetIsSideTopButtonHoverClick(string itemID, bool newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "IsSideTopButtonHoverClick", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
         public async Task SetMenuSinglePressSetting(string itemID, byte[] newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressSetting", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
-        public async Task SetMenuCenterRightClickSetting(string itemID, byte[] newValue)
+        public async Task SetMenuCenterRightClickSetting(string itemID, bool newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "MenuCenterRightClickSetting", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetMenuCenterRightClickSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetMenuCenterRightClickSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
         public async Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "SideBottomSwitchSinglePressSetting", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetSideBottomSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetSideBottomSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
-        public async Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue)
+        public async Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue)
         {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "SideTopSwitchSinglePressSetting", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
+        }
+        public async Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue)
+        {
+            _itemID = new ItemId(itemID);
+
+            if(_penMethodInfo != null)
+            {
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "SideTopSwitchSinglePressSetting", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetSideTopSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
         }
 
         public async Task SetTiltSensitivity(string itemID, int newValue)
         {
             _itemID = new ItemId(itemID);
 
-            if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+            if(_penMethodInfo != null)
             {
-                SetPropertyValue(_penInterfaceType, commodity, "TiltSensitivity", newValue);
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "TiltSensitivity", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
             }
             else
             {
-                Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                Console.WriteLine($"[SetTiltSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetTiltSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -209,14 +411,22 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             _itemID = new ItemId(itemID);
 
-            if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+            if(_penMethodInfo != null)
             {
-                SetPropertyValue(_penInterfaceType, commodity, "TipSensitivity", newValue);
+                if(await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "TipSensitivity", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
             }
             else
             {
-                Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                Console.WriteLine($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -234,10 +444,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
-            if (e?.ChangedPlugins == null || !e.ChangedPlugins.Any())
+            if(e?.ChangedPlugins == null || !e.ChangedPlugins.Any())
             {
             }
-            if (e.ChangedPlugins.OfType<ICommodityClientSdk>().Any())
+            if(e.ChangedPlugins.OfType<ICommodityClientSdk>().Any())
                 InitializeDTPProxy();
         }
 
@@ -245,7 +455,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void OnNotify(DeviceChangedEventArgs e)
         {
-            if (Notify != null)
+            if(Notify != null)
                 Notify(this, e);
         }
 
@@ -262,9 +472,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             Console.WriteLine(text);
 
 
-            if (_logs != null)
+            if(_logs != null)
             {
-                if (log_type == log_type.info)
+                if(log_type == log_type.info)
                     _logs.Info(text);
                 else
                     _logs.Error(text);
@@ -280,17 +490,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private Type FindCommodityInterfaceType(string commodityName)
         {
             //foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => IsAssemblyCanditate(a)))
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("DDPM.Peripheral")))
+            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => a.FullName.StartsWith("DDPM.Peripheral")))
             {
                 try
                 {
                     var type = assembly.GetExportedTypes()
                                        .FirstOrDefault(t => t.FullName.Equals($"Dell.TechHub.Commodity.Peripheral.{commodityName}", StringComparison.OrdinalIgnoreCase));
                     Debug.WriteLine($"\n{assembly.FullName}, {assembly.Location}");
-                    if (type is not null)
+                    if(type is not null)
                         return type;
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
                     writelog($"Failed to get exported type from assembly {assembly.FullName}:{ex}");
                     Debug.WriteLine($"\n{ex}");
@@ -307,7 +517,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Console.WriteLine($"rawResult: {rawResult}");
                 return rawResult is null ? null : (ICommodity)await rawResult;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
                 writelog($"\nError handling {_mouseInterfaceType}'s {_itemID} item.\n{ex}");
@@ -315,26 +525,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        private bool IsAssemblyCanditate(Assembly a)
-            => !a.IsDynamic
-            && a.FullName is var fullName
-            && IsCanditate(fullName, "Dell.")
-            && !IsCanditate(fullName, "Dell.TechHub.Sdk.")
-            && !IsCanditate(fullName, "Dell.UnifiedAgent.")
-            && !IsCanditate(fullName, "Dell.Client.")
-            && !IsCanditate(fullName, "Dell.RPC.");
+        //private bool IsAssemblyCanditate(Assembly a)
+        //    => !a.IsDynamic
+        //    && a.FullName is var fullName
+        //    && IsCanditate(fullName, "Dell.")
+        //    && !IsCanditate(fullName, "Dell.TechHub.Sdk.")
+        //    && !IsCanditate(fullName, "Dell.UnifiedAgent.")
+        //    && !IsCanditate(fullName, "Dell.Client.")
+        //    && !IsCanditate(fullName, "Dell.RPC.");
 
         private bool IsCanditate(string name, string startsWith)
             => name.StartsWith(startsWith, StringComparison.OrdinalIgnoreCase);
 
         private void InitializeDTPProxy()
         {
-            if (_commSdk != null)
+            if(_commSdk != null)
                 return;
 
             _commSdk = (ICommodityClientSdk)_agent.PluginManager.FindPluginByType(typeof(ICommodityClientSdk));
 
-            if (_commSdk != null)
+            if(_commSdk != null)
             {
                 _ = Task.Run(async () =>
                 {
@@ -342,7 +552,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     await _commSdk.InitializeAsync(appId, new CancellationTokenSource().Token);
                     _mouseInterfaceType = FindCommodityInterfaceType("IMouseCommodity");
 
-                    if (_mouseInterfaceType != null)
+                    if(_mouseInterfaceType != null)
                     {
                         _mouseMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                       .MakeGenericMethod(_mouseInterfaceType);
@@ -357,7 +567,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"Find IWebcamCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     _webcamInterfaceType = FindCommodityInterfaceType("IWebcamCommodity");
 
-                    if (_webcamInterfaceType != null)
+                    if(_webcamInterfaceType != null)
                     {
                         _webcamMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                         .MakeGenericMethod(_webcamInterfaceType);
@@ -370,7 +580,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                     writelog($"Find IPenCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     _penInterfaceType = FindCommodityInterfaceType("IPenCommodity");
-                    if (_penInterfaceType != null)
+                    if(_penInterfaceType != null)
                     {
                         _penMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
                                                                     .MakeGenericMethod(_penInterfaceType);
@@ -384,7 +594,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                if (_commSdk is IFrameworkPluginConditionNotification pluginCondition)
+                if(_commSdk is IFrameworkPluginConditionNotification pluginCondition)
                 {
                     pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                     GetCurrentDTPProxyPluginCondition();
@@ -403,18 +613,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 var pluginCondition = await (_commSdk as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
 
-                lock (_PluginConditionLock)
+                lock(_PluginConditionLock)
                 {
-                    if (pluginCondition is PluginErrorCondition)
+                    if(pluginCondition is PluginErrorCondition)
                     {
                         //writelog($"{nameof(GetCurrentDisplayManagerCondition)} - Display Manager Plugin is in an error condition");
                         //_DisplayManagerPluginCondition = pluginCondition;
                     }
-                    else if (pluginCondition is PluginRunningCondition)
+                    else if(pluginCondition is PluginRunningCondition)
                     {
                         //_DisplayManagerPluginCondition = pluginCondition;
                     }
-                    else if (pluginCondition is PluginStartedCondition)
+                    else if(pluginCondition is PluginStartedCondition)
                     {
                         //_DisplayManagerPluginCondition = pluginCondition;
                     }
@@ -428,7 +638,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 writelog($"Error while Getting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
                 return null;
@@ -441,7 +651,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
             }
@@ -449,11 +659,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
         {
+            var payloadBytes = (byte[])value;
+            var payloadSize = payloadBytes.Length;
+            var byteArray = new byte[payloadSize + 4];
+            BitConverter.GetBytes(payloadSize).CopyTo(byteArray, 0);
+            payloadBytes.CopyTo(byteArray, 4);
             try
             {
-                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { value });
+                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
             }

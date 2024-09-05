@@ -4,6 +4,9 @@ using System.Windows.Media.Imaging;
 
 namespace DDPM.Easy.Common
 {
+    //LastModified: Robert_Lin 2024-9-4 16:48
+    //[2024-9-4 16:48]
+    //1 Add Clone()
     /// <summary>
     /// All SplitCtrlXX are inherient from this interface
     /// </summary>
@@ -82,6 +85,18 @@ namespace DDPM.Easy.Common
             return iSplit.New();
         }
 
+        /// <summary>
+        /// Create a new ISplitCtrl and clone settings, but have different UserControl
+        /// </summary>
+        /// <returns></returns>
+        public ISplitCtrl Clone()
+        {
+            //Construct a new instance, class Native members are clone.
+            ISplitCtrl newObj = New();
+            //Clone settings
+            newObj.Settings = new List<double>(Settings);
+            return newObj;
+        }
         #endregion Create a new instance
 
         #region Working mode

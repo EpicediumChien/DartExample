@@ -391,7 +391,7 @@
                 <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
               </StackPanel>
             </Border>
-            <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" Height="92" VerticalAlignment="Bottom">
+            <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
               <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Margin="20,18,0,18">
                   <UXControls:UXTextBlock Name="txt1" Text="1" />
