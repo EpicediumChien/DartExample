@@ -342,6 +342,9 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             txt2.Style = ConnectionStyle2;
             imgBL2.Source = img2;
             txtBLHost2.Style = ConnectionStyle2;
+            txt3.Style = ConnectionStyle2;
+            imgBL3.Source = img2;
+            txtBLHost3.Style = ConnectionStyle2;
 
             switch(_vm.Model)
             {
