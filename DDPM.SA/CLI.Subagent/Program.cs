@@ -22,16 +22,16 @@ namespace CLI.Subagent
             /*
              * Only allow this application in debug mode
              */
-#if DEBUG
+            //#if DEBUG
             CLIAgent agent = new CLIAgent(Guid.NewGuid(), Guid.NewGuid());
             await agent.StartAsync(args).ConfigureAwait(false);
 
             Environment.Exit(agent.GetExitCode());
-#else
-            Console.WriteLine("\nERROR: Only the DEBUG build is supported");
-            Console.WriteLine("Hit any key to exit");
-            Console.ReadLine();
-#endif
+            //#else
+            //            Console.WriteLine("\nERROR: Only the DEBUG build is supported");
+            //            Console.WriteLine("Hit any key to exit");
+            //            Console.ReadLine();
+            //#endif
         }
     }
 }
