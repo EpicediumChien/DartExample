@@ -393,7 +393,7 @@
             </Border>
             <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
               <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
+                <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
                   <UXControls:UXTextBlock Name="txt1" Text="1" />
                   <Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" />
                   <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" />
