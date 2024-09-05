@@ -266,7 +266,7 @@ namespace DDPM.UI.Module.Color.Tests
             colorViewModel.MyModule = new ColorModule();
             colorViewModel.OnRegChanged_NightLight(null, null);
 
-            Assert.That(colorViewModel.NightlightStatus, Is.Is.Not.Null);
+            Assert.That(colorViewModel.NightlightStatus, Is.Not.Null);
         }
 
         [Test]

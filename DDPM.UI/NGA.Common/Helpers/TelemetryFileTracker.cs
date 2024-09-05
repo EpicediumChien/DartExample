@@ -29,7 +29,7 @@ namespace NGA.Common.Helpers
         private const string CsupFileName = "csup.txt";
         private const string DataFormat = "MM-dd-yyyy";
         private static readonly DateTime ReferenceDate = new(2021, 11, 24);
-
+        private static Log _log;
         /// <summary>
         /// Parse system files to identify user consent for telemetry preferences.
         /// </summary>
@@ -66,11 +66,12 @@ namespace NGA.Common.Helpers
                     return response;
                 }
 
-                //0903 Elsa Add Security
+                //0905 Elsa Add Security
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
                 {
-                    throw new ArgumentException("Invalid file path.");
+                    _log.Info($"{nameof(ParseTelemetryFiles)} {FileInfo}");
+                    return response;
                 }
 
                 string xmlText = ReadFile(log, fileSystem, filePath);

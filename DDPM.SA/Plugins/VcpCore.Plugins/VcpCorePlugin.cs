@@ -103,12 +103,6 @@ namespace VcpCore.Plugins
 
         private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
         {
-            //0903 Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
-            {
-                throw new ArgumentException("Invalid file path.");
-            }
             return GetPrivateProfileInt(section, key, def, filePath);
         }
 

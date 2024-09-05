@@ -6,6 +6,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Log = Dell.Client.Framework.Common.Log;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -33,7 +35,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private const string publisherCompany = "Wistron";
         private const string publisherWebsite = "https://www.wistron.com";
         private const string publisherSupport = "This plugin implements User.SettingsManager.Plugin.";
-
+        private static Log _log;
         private IAgent _agent;
 
         private enum log_type
@@ -690,11 +692,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
         {
-            //0903 Elsa Add Security
+            //0905 Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
             {
-                throw new ArgumentException("Invalid file path.");
+                _log.Info($"{nameof(ImportPowerNapSettings)} {FileInfo}");
+                return Task.FromResult(_present_powerNap_settings);
             }
 
             string strReadJson = string.Empty;
@@ -722,13 +725,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult(false);
 
             string temp = RunSerializeObject(powerNapSettings, filePath);
-            //0903 Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
-            {
-                throw new ArgumentException("Invalid file path.");
-            }
-
             if (!string.IsNullOrWhiteSpace(temp))
                 return Task.FromResult(true);
 
@@ -988,11 +984,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 writer.Write(jsonString);
             }
 
-            //0903 Elsa Add Security
+            //0905 Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
             {
-                throw new ArgumentException("Invalid file path.");
+                _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+                return string.Empty;
             }
             return jsonString;
         }

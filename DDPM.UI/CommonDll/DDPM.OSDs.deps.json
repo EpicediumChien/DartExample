@@ -9,21 +9,21 @@
       "DDPM.OSDs/2.0.0.5": {
         "dependencies": {
           "DDPM.Win32Lib": "2.0.0.5",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
         },
         "runtime": {
           "DDPM.OSDs.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.34"
+            "fileVersion": "10.0.19041.31"
           },
           "WinRT.Runtime.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.8.46841"
+            "fileVersion": "2.0.4.44211"
           }
         }
       },
@@ -427,10 +427,7 @@
           "DDPM.SA.Common": "2.0.0.5"
         },
         "runtime": {
-          "DDPM.Win32Lib.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.Win32Lib.dll": {}
         }
       },
       "VcpCore.Common/2.0.0.5": {
@@ -466,7 +463,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""

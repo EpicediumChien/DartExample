@@ -1,8 +1,10 @@
 ﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.RPC.Transport;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,6 +16,7 @@ namespace DDPM.SA.Common.Security
 {
     public class NPipeSecurity
     {
+        private static Log _log;
         [DllImport("kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
@@ -84,7 +87,11 @@ namespace DDPM.SA.Common.Security
 
             //check file path security
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))
+            {
+                //info = $"{nameof(NamedPipeClientSecurity)} {FileInfo}";
+                _log.Info($"{nameof(NamedPipeClientSecurity)} {info}");
                 return false;
+            }
 
             //Need to check dll/exe thumbprint
             //X509Certificate2 cert = DDPMFileSecurity.LoadCertificate(filePath);

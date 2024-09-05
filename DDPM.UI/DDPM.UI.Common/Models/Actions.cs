@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common;
 using Newtonsoft.Json;
 using System.IO;
 
@@ -261,6 +262,7 @@ namespace DDPM.UI.Common
 
     public static class ActionList
     {
+        private static Log _log;
         public static bool ExportActionList(object actions, string model, int instanceID = 0)
         {
             try
@@ -285,11 +287,12 @@ namespace DDPM.UI.Common
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
-            //0903 Elsa Add Security
+            //0905 Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
             {
-                throw new ArgumentException("Invalid file path.");
+                _log.Info($"{nameof(ImportActionList)} {FileInfo}");
+                return false;
             }
             switch (type)
             {

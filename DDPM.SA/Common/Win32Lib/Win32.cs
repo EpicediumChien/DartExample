@@ -353,12 +353,6 @@ namespace DDPM.Win32Lib
 
         private static int _GetPrivateProfileInt(string section, string key, int def, string filePath)
         {
-            //0903 Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
-            {
-                throw new ArgumentException("Invalid file path.");
-            }
             return GetPrivateProfileInt(section, key, def, filePath);
         }
 
@@ -373,12 +367,6 @@ namespace DDPM.Win32Lib
 
         public static int _GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath)
         {
-            //0903 Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
-            {
-                throw new ArgumentException("Invalid file path.");
-            }
             return GetPrivateProfileString(section, key, def, retVal, size, filePath);
         }
 

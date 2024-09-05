@@ -36,6 +36,7 @@ namespace DDPM.SA.Common.Settings
 
     public class DDPMFileSecurity
     {
+        private static Log _log;
         /// <summary>
         /// Using DPAPI to protect data
         /// </summary>
@@ -160,7 +161,8 @@ namespace DDPM.SA.Common.Settings
         {
             info = "Success";
             if (!IsFilePathValid(filePath, out info))
-            {
+            {              
+                _log.Info($"{nameof(GetSerializedJsonString)} {info}");
                 return string.Empty;
             }
             //1. Read json content
@@ -779,12 +781,12 @@ namespace DDPM.SA.Common.Settings
             FileInfo fileInfo = new FileInfo(filePath);
             try
             {
-                //0903 Elsa Add Security
+                //0905 Elsa Add Security
                 string FileInfo;
                 if (!IsFilePathValid(filePath, out FileInfo))
                 {
-                    Console.WriteLine("File path: " + filePath + " invalid");
-                    info = $"IsFilePathValid: {filePath} invalid";
+                    info = $"{nameof(CheckFileACL)} {FileInfo}";
+                    _log.Info(info);
                     return false;
                 }
                 // verify the ACLs using the ACLChecker class
@@ -897,24 +899,28 @@ namespace DDPM.SA.Common.Settings
                 // Check if file path is valid
                 if (string.IsNullOrWhiteSpace(filePath) || !Path.IsPathRooted(filePath) || filePath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Invalid file path.");
                     throw new ArgumentException("Invalid file path.");
                 }
 
                 // Check if file exist
                 if (!File.Exists(filePath))
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- File isn't exist.");
                     throw new ArgumentException("File isn't exist. ");
                 }
 
                 // Perform Input Validation: check file path
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Invalid file path string - {filePath}");
                     throw new ArgumentException($"Invalid file path string - {filePath}");
                 }
 
                 // Prevent Path Traversal: check redirection
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Redirection detected along file path - {filePath}");
                     throw new PathCheckRedirectionException($"Redirection detected along file path - {filePath}");
                 }
 
@@ -939,7 +945,8 @@ namespace DDPM.SA.Common.Settings
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                throw new SecurityException(ex.Message);
+                //throw new SecurityException(ex.Message);
+                return false;
             }
             return true;
         }
@@ -950,11 +957,12 @@ namespace DDPM.SA.Common.Settings
 
             try
             {
-                //0903 Elsa Add Security
+                //0905 Elsa Add Security
                 string FileInfo;
                 if (!IsFilePathValid(filePath, out FileInfo))
                 {
-                    throw new ArgumentException("Invalid file path.");
+                    _log.Info($"{nameof(GetCertificate)} {FileInfo}");
+                    return cert;
                 }
 
                 // Load the executable into a byte array
@@ -1018,6 +1026,7 @@ namespace DDPM.SA.Common.Settings
                 */
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
+                    _log.Info($"{nameof(CheckIsValidFile_Secure)} -- Invalid file path string - {filePath}");
                     throw new ArgumentException($"Invalid file path string - {filePath}");
                 }
 
@@ -1028,6 +1037,7 @@ namespace DDPM.SA.Common.Settings
                 */
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
                 {
+                    _log.Info($"{nameof(CheckIsValidFile_Secure)} -- Redirection detected along file path - {filePath}");
                     throw new PathCheckRedirectionException($"Redirection detected along file path - {filePath}");
                 }
 
@@ -1076,6 +1086,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+                _log.Info(info);
                 return null;
             }
 
@@ -1083,6 +1094,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+                _log.Info(info);
                 return null;
             }
             byte[] data = File.ReadAllBytes(filePath);
@@ -1102,6 +1114,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+                _log.Info(info);
                 return null;
             }
 
@@ -1109,6 +1122,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+                _log.Info(info);
                 return null;
             }
             byte[] data = File.ReadAllBytes(filePath);
@@ -1129,6 +1143,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+                _log.Info(info);
                 return false;
             }
 
@@ -1136,6 +1151,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+                _log.Info(info);
                 return false;
             }
 
@@ -1346,11 +1362,12 @@ namespace DDPM.SA.Common.Settings
 
         public static X509Certificate2 LoadCertificate(string filePath)
         {
-            //0903 Elsa Add Security
+            //0905 Elsa Add Security
             string FileInfo;
             if (!IsFilePathValid(filePath, out FileInfo))
             {
-                throw new ArgumentException("Invalid file path.");
+                _log.Info($"{nameof(LoadCertificate)} {FileInfo}");
+                return null;
             }
 
             byte[] certBytes = File.ReadAllBytes(filePath);
