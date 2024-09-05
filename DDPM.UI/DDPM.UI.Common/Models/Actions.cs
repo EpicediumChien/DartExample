@@ -54,14 +54,14 @@ namespace DDPM.UI.Common
         { 8, Strings.NextTrack },
       };
       RadialActions.Clear();
-      RadialActions.Add(1, new SelectedAction(19, new AssignedAction(19)));
-      RadialActions.Add(2, new SelectedAction(16, new AssignedAction(16)));
-      RadialActions.Add(3, new SelectedAction(20, new AssignedAction(20)));
-      RadialActions.Add(4, new SelectedAction(18, new AssignedAction(18)));
-      RadialActions.Add(5, new SelectedAction(15, new AssignedAction(15)));
-      RadialActions.Add(6, new SelectedAction(21, new AssignedAction(21)));
-      RadialActions.Add(7, new SelectedAction(14, new AssignedAction(14)));
-      RadialActions.Add(8, new SelectedAction(17, new AssignedAction(17)));
+      RadialActions.Add(1, new SelectedAction(84, new AssignedAction(84)));
+      RadialActions.Add(2, new SelectedAction(81, new AssignedAction(81)));
+      RadialActions.Add(3, new SelectedAction(85, new AssignedAction(85)));
+      RadialActions.Add(4, new SelectedAction(83, new AssignedAction(83)));
+      RadialActions.Add(5, new SelectedAction(80, new AssignedAction(80)));
+      RadialActions.Add(6, new SelectedAction(86, new AssignedAction(86)));
+      RadialActions.Add(7, new SelectedAction(79, new AssignedAction(79)));
+      RadialActions.Add(8, new SelectedAction(82, new AssignedAction(82)));
       IsUseCenter = true;
     }
 

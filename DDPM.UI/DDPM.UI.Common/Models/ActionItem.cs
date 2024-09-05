@@ -468,6 +468,6 @@ namespace DDPM.UI.Common
         //NEW Code:
         public static readonly ImmutableList<int> AdvancedActions = ImmutableList.Create(new int[] { 14, 25, 26, 28 });
 
-        public static readonly ImmutableList<int> AdvancedActionsPen = ImmutableList.Create(new int[] { 14, 53, 56 });
+        public static readonly ImmutableList<int> AdvancedActionsPen = ImmutableList.Create(new int[] { 8, 23, 41 });
     }
 }

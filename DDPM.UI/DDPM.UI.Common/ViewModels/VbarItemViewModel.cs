@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -41,6 +42,7 @@ namespace DDPM.UI.Common
             }
         }
 
+        public Visibility Visibility { get; set; }
         #region Commands
 
         private ICommand? _itemClickCommand;

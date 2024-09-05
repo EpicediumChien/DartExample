@@ -117,6 +117,8 @@ namespace DDPM.SA.Common
         void SetMicNCIncoming(bool newValue, Guid deviceId);
 
         public void SetIsMicEnumerationOn(bool newValue, Guid deviceId);
+
+        void SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId);
     }
 
     public interface IDPeMServiceRegPlugin : IFrameworkPlugin

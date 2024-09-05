@@ -1506,6 +1506,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        public Task SetSideTopSwitchSinglePressSetting3(byte[] newValue, Guid deviceId)
+        {
+            writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
+            writelog($"Target Guid is {deviceId}");
+            writelog($"Target Value is {newValue}");
+            _PeripheralsPlugin.SetSideTopSwitchSinglePressSetting(newValue, deviceId);
+            return Task.FromResult(true);
+        }
+
         #endregion
 
         #region CMA/CLI Function area
@@ -3046,7 +3055,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetMenuCenterRightClickSetting(string itemID, byte[] newValue)
+        public Task SetMenuCenterRightClickSetting(string itemID, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetMenuCenterRightClickSetting requested ...");
             writelog($"Target itemID is {itemID}");
@@ -3064,12 +3073,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        public Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue)
+        public Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue)
         {
             writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
             writelog($"Target itemID is {itemID}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSideTopSwitchSinglePressSetting(itemID, newValue);
+            _DTPProxyPlugin.SetSideTopSwitchSinglePressSetting1(itemID, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue)
+        {
+            writelog("DeviceMangerPlugin received SetSideTopSwitchSinglePressSetting requested ...");
+            writelog($"Target itemID is {itemID}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetSideTopSwitchSinglePressSetting2(itemID, newValue);
             return Task.FromResult(true);
         }
 

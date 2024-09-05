@@ -512,11 +512,13 @@ namespace DDPM.SA.Common
 
         Task SetMenuSinglePressSetting(string itemID, byte[] newValue);
 
-        Task SetMenuCenterRightClickSetting(string itemID, byte[] newValue);
+        Task SetMenuCenterRightClickSetting(string itemID, bool newValue);
 
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
 
-        Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
+        Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue);
+        Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue);
+        Task SetSideTopSwitchSinglePressSetting3(byte[] newValue, Guid deviceId);
 
         Task SetTiltSensitivity(string itemID, int newValue);
 
