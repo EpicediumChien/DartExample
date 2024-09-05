@@ -18,6 +18,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.Security;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -53,7 +54,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
-
+        private static Dell.Client.Framework.Common.Log _log;
         private enum log_type
         {
             info = 0,
@@ -145,6 +146,16 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"WriteITConfigData: write failed. Info({info})");
                 return Task.FromResult(false);
             }
+
+            //0905 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(_settings_path, out FileInfo))
+            {
+                info = $"{nameof(WriteITConfigData)} {FileInfo}";
+                _log.Info(info);
+                return Task.FromResult(false);
+            }
+
             if (IT_Feature_list != null && IT_Feature_list.Count > 0)
             {
                 ITSettingEventArgs e = new ITSettingEventArgs();
