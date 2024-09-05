@@ -6768,7 +6768,7 @@ namespace DDPM.CLI.Plugins.Display
                         }
                     }
                 }
-               
+
                 writelog($"PowerNap return exit value{output}");
                 return ((int)CLI_ExitCode.success, output);
             }
@@ -7936,7 +7936,7 @@ namespace DDPM.CLI.Plugins.Display
                 System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                 output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
             }
-            
+
             writelog($"Energysaver return exit value{output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
@@ -8991,6 +8991,22 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
+        private static string get_SpeakerMicrophoneControl(string status, int value)
+        {
+            switch (status.ToUpper())
+            {
+                case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
+                case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
+                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
+                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                default: return "Unknown_command";
+            }
+        }
+
         private static string get_MicrophoneControl_status(int value)
         {
             string output = string.Empty;
@@ -8998,6 +9014,15 @@ namespace DDPM.CLI.Plugins.Display
             output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
             output += ((value & 0x03) == 0x01) ? "OSDDISABLE" : "";
             output += ((value & 0x03) == 0x02) ? "OSDENABLE" : "";
+
+            return output;
+        }
+
+        private static string get_SpeakerMicrophoneControl_status(int value)
+        {
+            string output = string.Empty;
+            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
 
             return output;
         }
@@ -9020,6 +9045,22 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
+        private static string get_SpeakerMicrophoneVolume(string status, int value)
+        {
+            switch (status.ToUpper())
+            {
+                case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
+                case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
+                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
+                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                default: return "Unknown_command";
+            }
+        }
+
         private static string get_SpeakerVolume_status(int value)
         {
             string output = string.Empty;
@@ -9027,6 +9068,17 @@ namespace DDPM.CLI.Plugins.Display
             output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
             output += ((value & 0xFF) == 0xFF) ? "OSDDISABLE," : "";
             output += ((value & 0xFE) == 0xFE) ? "OSDENABLE," : "";
+            if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
+                output += $"Volume:{value & 0xFF}";
+
+            return output;
+        }
+
+        private static string get_SpeakerMicrophoneVolume_status(int value)
+        {
+            string output = string.Empty;
+            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
             if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
                 output += $"Volume:{value & 0xFF}";
 
@@ -9398,7 +9450,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                 int getvalue = Convert.ToInt32(rc.value);
-                                string setvalue = get_SpeakerVolume(commandLineInput.Options[0].Option_Value, getvalue);
+                                string setvalue = get_SpeakerMicrophoneVolume(commandLineInput.Options[0].Option_Value, getvalue);
 
                                 if (setvalue != "unknown_command")
                                 {
@@ -9410,7 +9462,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                 rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                 int getvalue2 = Convert.ToInt32(rc.value);
-                                string setvalue2 = get_MicrophoneControl(commandLineInput.Options[0].Option_Value, getvalue2);
+                                string setvalue2 = get_SpeakerMicrophoneControl(commandLineInput.Options[0].Option_Value, getvalue2);
 
                                 if (setvalue2 != "unknown_command")
                                 {
@@ -9423,9 +9475,9 @@ namespace DDPM.CLI.Plugins.Display
                             else if (commandLineInput.Command == "GET")
                             {
                                 rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                string ss0 = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
+                                string ss0 = get_SpeakerMicrophoneVolume_status(Convert.ToInt32(rc.value));
                                 rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                string ss1 = get_MicrophoneControl_status(Convert.ToInt32(rc.value));
+                                string ss1 = get_SpeakerMicrophoneControl_status(Convert.ToInt32(rc.value));
                                 cli_Response.Value = "SPEAKERVOLUME:" + ss0 + "\n" + "MICROPHONE:" + ss1;
                                 retcode = true;
                             }

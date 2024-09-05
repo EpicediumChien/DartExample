@@ -10,7 +10,7 @@ namespace DDPM.SA.Common
 
         public int CellCount { get; set; }
         public char SplitKey { get; set; }
-        public int CustomId { get; set; }
+        public long CustomId { get; set; }
         public List<double> Settings { get; set; }
         public List<string> CustomNames { get; set; }
         public string CustomName { get; set; }
