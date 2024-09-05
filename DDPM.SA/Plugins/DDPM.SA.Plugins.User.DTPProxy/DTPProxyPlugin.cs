@@ -666,7 +666,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             payloadBytes.CopyTo(byteArray, 4);
             try
             {
-                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
+                //interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { byteArray });
+                interfaceType.GetProperty(property).GetSetMethod().Invoke(commodity, new[] { Convert.ToBase64String(byteArray) });
             }
             catch(Exception ex)
             {

@@ -1955,6 +1955,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _updateItems.Priority = updateItem.Priority;
                 _updateItems.ServerPath = updateItem.ServerPath;
                 _updateItems.SupplierID = updateItem.SupplierID;
+                _updateItems.SHA512 = updateItem.SHA512;
+                _updateItems.Thumbprint = updateItem.Thumbprint;
+
 
                 _updateHelper.UpdateItems.Add(_updateItems);
             }

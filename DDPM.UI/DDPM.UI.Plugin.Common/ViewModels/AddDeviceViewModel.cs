@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.Views;
@@ -331,6 +332,17 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(DongleAlertHeadset));
             OnPropertyChanged(nameof(DongleAlertKnMVisibility));
             OnPropertyChanged(nameof(DongleAlertHeadsetVisibility));
+
+            if(DeviceBarSelectedIndex == 2 && DongleAlertKnMVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1)
+            {
+                CurrentDongle = DongleInfos.Values.First();
+                StartPairing(CurrentDongle.ID);
+            }
+            if(DeviceBarSelectedIndex == 4 && DongleAlertHeadsetVisibility == Visibility.Collapsed && RightViewHeaderSelectedIndex == 1)
+            {
+                CurrentDongle = AudioDongleInfos.Values.First();
+                StartPairing(CurrentDongle.ID);
+            }
         }
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")

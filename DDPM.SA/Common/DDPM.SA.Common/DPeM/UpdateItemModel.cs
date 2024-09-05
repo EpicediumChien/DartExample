@@ -27,7 +27,8 @@ namespace DDPM.SA.Common
         public int Priority;
         public string ServerPath;
         public string SupplierID;
-
+        public string SHA512;
+        public string Thumbprint;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string NewVersion
