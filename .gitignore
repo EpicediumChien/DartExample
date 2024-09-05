@@ -242,3 +242,4 @@ testcoverage/
 /DDPM.SA/DDPMSA.Release.reg
 /DDPM.UI/CommonDll/DDPM.OSDs.dll
 /DDPM.UI/CommonDll/DDPM.SA.Obfuscation.dll
+/DDPM.UI/CommonDll/DDPM.MonitorBorker.deps.json
