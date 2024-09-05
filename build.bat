@@ -15,6 +15,8 @@ set ConfigType=%1
 :: start /B cmd.exe /C .\SetVSBuildEnvironment.bat
 
 RD /S /Q "_BIN"
+del /Q /F /s "obj"
+del /Q /F /s "bin"
 ::goto FileCopy
 
 
