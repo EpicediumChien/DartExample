@@ -8979,14 +8979,14 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return ((value & 0xFF00) | 0x0001).ToString();          // "xx01"
                 case "OSDENABLE": return ((value & 0xFF00) | 0x0002).ToString();        // "xx02"
-                case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                //case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
+                //case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
+                //case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                //case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
+                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -8997,12 +8997,12 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
                 case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                case "OSDLOCK": return (value | 0x8000).ToString();                    // b15:1;
+                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -9010,8 +9010,8 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_MicrophoneControl_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
-            output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
+            //output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            //output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
             output += ((value & 0x03) == 0x01) ? "OSDDISABLE" : "";
             output += ((value & 0x03) == 0x02) ? "OSDENABLE" : "";
 
@@ -9021,7 +9021,7 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerMicrophoneControl_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
             output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
 
             return output;
@@ -9033,14 +9033,14 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return ((value & 0xFF00) | 0x00FF).ToString();          // "xxFF"
                 case "OSDENABLE": return ((value & 0xFF00) | 0x00FE).ToString();        // "xxFE"
-                case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                //case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
+                //case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
+                //case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                //case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
+                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -9051,12 +9051,12 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
                 case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                case "OSDLOCK": return (value | 0x8000).ToString();                    // b15:1;
+                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -9064,8 +9064,8 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerVolume_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
-            output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
+            //output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            //output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
             output += ((value & 0xFF) == 0xFF) ? "OSDDISABLE," : "";
             output += ((value & 0xFE) == 0xFE) ? "OSDENABLE," : "";
             if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
@@ -9077,7 +9077,7 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerMicrophoneVolume_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
             output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
             if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
                 output += $"Volume:{value & 0xFF}";
