@@ -38,6 +38,7 @@ namespace DDPM.SA.Common
         //Service to read/write current_user and local_machine
         Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
+        Task<string> QueryAccessInfo();
     }
 
     /// <summary>
