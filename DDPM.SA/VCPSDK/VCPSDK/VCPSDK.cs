@@ -112,7 +112,7 @@ namespace VCPSDK
             }
 
             //Need to check dll/exe thumbprint
-            //X509Certificate2 cert = LoadCertificate(filePath);
+            //X509Certificate2 cert = new X509Certificate2(filePath);//LoadCertificate(filePath);
             //if (cert == null)
             //{
             //    Console.WriteLine("Can't retrieve cert from file.");
