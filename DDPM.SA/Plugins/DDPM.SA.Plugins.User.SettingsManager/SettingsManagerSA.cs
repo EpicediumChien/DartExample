@@ -84,6 +84,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private static string filename_colorpreset_peruser = "ColorSetting.json";
         private static string filename_hotkey_peruser = "HotkeySetting.json";
         private static string filename_powernap_peruser = "PowerNapSetting.json";
+        private static string filename_GlobalSetting_peruser = "GlobalSetting.json";
 
         //---
         private ISettingsManagerSA? _SysSettingsPlugin;
@@ -111,6 +112,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _powerNapsettings_path { get; set; }
         private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         private static string _settingsAccessInfo = string.Empty;
+
+        private string _GlobalSetting_path;
+        private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
 
         #endregion Private Members
 
@@ -275,6 +279,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
             InitPowerNapConfigFile();
+            InitGlobalSettingConfigFile();
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
@@ -867,7 +872,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, out List<VCP> vcps)
+        public Task<bool> DisplayImportSettings(string path, /*bool isSameModel, */out List<VCP> vcps)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -884,19 +889,23 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
                     foreach (DDPMMonitorSettings settings in monitorSettingsList)
                     {
-                        if (settings.ServiceTag == monitorSettings.ServiceTag)
+                        if (settings.ServiceTag == monitorSettings.ServiceTag/* || isSameModel*/)
                         {
                             settings.Input = monitorSettings.Input;
                             settings.KVM = monitorSettings.KVM;
                             settings.VCPs = monitorSettings.VCPs;
+                            settings.EA = monitorSettings.EA;
                             if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                             {
                                 vcps = monitorSettings.VCPs;
-                                return Task.FromResult<bool>(true);
+                                //if (!isSameModel)
+                                //{
+                                    return Task.FromResult<bool>(true);
+                                //}
                             }
                             else
                             {
-                                WriteLog("[DisplayImportSettings] Import settings File...");
+                                WriteLog("[DisplayImportSettings] Import settings Fail...");
                                 break;
                             }
                         }
@@ -904,7 +913,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
                 else
                 {
-                    WriteLog("[DisplayImportSettings] Not Find File...");
+                    WriteLog("[DisplayImportSettings] Not Find Fail...");
                 }
             }
             else
@@ -1253,6 +1262,85 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #endregion ImpExpSettings
 
+        #region Global settings
+        public Task<GlobalSettingParam> ReadGlobalSettings()
+        {
+            string strFilePath = _GlobalSetting_path;
+            if (File.Exists(strFilePath))
+            {
+                string strReadJson = string.Empty;
+                using (var reader = new StreamReader(strFilePath))
+                {
+                    strReadJson = reader.ReadToEnd();
+                }
+                if (strReadJson == string.Empty || strReadJson.Length == 0)
+                {
+                    return Task.FromResult(_GlobalSettingParam);
+                }
+                try
+                {
+                    _GlobalSettingParam = RunGlobalSettinDeserializeObject(strReadJson);
+                }
+                catch (Exception)// ex)
+                {
+                    return Task.FromResult(_GlobalSettingParam);
+                }
+            }
+            else
+            {
+                File.Create(strFilePath).Close();
+            }
+            return Task.FromResult(_GlobalSettingParam);
+        }
+        public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam)
+        {
+            if (globalSettingParam == null)
+            {
+                return Task.FromResult(false);
+            }
+            string temp = RunSerializeObject(globalSettingParam);
+            if (!string.IsNullOrWhiteSpace(temp))
+            {
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+        private string RunSerializeObject(GlobalSettingParam globalSettingParam, string filePath)
+        {
+            string jsonString = string.Empty;
+            jsonString = JsonConvert.SerializeObject(globalSettingParam);
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.Write(jsonString);
+            }
+            return jsonString;
+        }
+        private string RunSerializeObject(GlobalSettingParam globalSettingParam)
+        {
+            string jsonString = string.Empty;
+            jsonString = JsonConvert.SerializeObject(globalSettingParam);
+            string jsonpath = _GlobalSetting_path;
+            using (StreamWriter writer = new StreamWriter(jsonpath))
+            {
+                writer.Write(jsonString);
+            }
+            return jsonString;
+        }
+        private GlobalSettingParam RunGlobalSettinDeserializeObject(string value)
+        {
+            GlobalSettingParam retList = new GlobalSettingParam();
+            try
+            {
+                retList = JsonConvert.DeserializeObject<GlobalSettingParam>(value);
+            }
+            catch (Exception)
+            {
+
+            }
+            return retList;
+        }
+        #endregion Global settings
+
         private DDPMSettings InitDDPMUserConfigFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
@@ -1497,6 +1585,59 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[InitPowerNapConfigFile] {info}");
 
             return _powerNapSettings;
+        }
+
+        private GlobalSettingParam InitGlobalSettingConfigFile()
+        {
+            string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
+            string folder_appdatapath = folder + "\\" + folder_product;
+
+            //create app list folder if not exist
+            string folder_applist_path = folder_appdatapath;
+            try
+            {
+                if (!Directory.Exists(folder_applist_path))
+                {
+                    DirectoryInfo di = System.IO.Directory.CreateDirectory(folder_applist_path);
+                    WriteLog($"create folder {folder_applist_path} success");
+                }
+            }
+            catch
+            {
+                WriteLog($"CreateDirectory with {folder_applist_path} failed.");
+                _powerNapSettings = null;
+                return null;
+            }
+            //create powernap setting file if not exist
+            string file_path = folder_applist_path + "\\" + filename_GlobalSetting_peruser;
+            _GlobalSetting_path = file_path;
+            WriteLog($"_GlobalSetting_path is {_GlobalSetting_path}.");
+
+
+            if (File.Exists(_GlobalSetting_path))
+                _GlobalSettingParam = ReadGlobalSettings().Result;
+            else
+            {
+                FileInfo fileInfo = new FileInfo(_GlobalSetting_path);
+                fileInfo.Create().Close();
+                WriteLog("[InitGlobalSettingConfigFile] settings file not exist, new an object");
+                //init data to file
+                if (WriteGlobalSettings(_GlobalSettingParam).Result)
+                {
+                    WriteLog("[InitGlobalSettingConfigFile] PowerNap settings file create and write success");
+                }
+                else
+                {
+                    WriteLog("[InitGlobalSettingConfigFile] PowerNap settings file create and write failed");
+                }
+            }
+            //ACL function to check exist rule and apply rule if not exist
+            string info;
+            if (!DDPMFileSecurity.ApplyFileACLNormalUser(_GlobalSetting_path, out info))
+                WriteLog($"[InitGlobalSettingConfigFile] {info}");
+
+            return _GlobalSettingParam;
         }
 
         #region Registry key read/write over system setting manager (only support local machine)

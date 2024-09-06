@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -294,7 +295,7 @@ namespace DDPM.SA.Common
         {
             get
             {
-                switch (_logicalDeviceType)
+                switch(_logicalDeviceType)
                 {
                     case "LogicalMouse":
                         DeviceName = "Mouse Settings";
@@ -1074,6 +1075,51 @@ namespace DDPM.SA.Common
 
         #region Webcam Properties
 
+        public int BrightnessMax { get; set; }
+        public int BrightnessMin { get; set; }
+        public int BrightnessSteppingDelta { get; set; }
+        public int ContrastMax { get; set; }
+        public int ContrastMin { get; set; }
+        public int ContrastSteppingDelta { get; set; }
+        public int FocusMax { get; set; }
+        public int FocusMin { get; set; }
+        public int FocusSteppingDelta { get; set; }
+        public bool IsPropertyAntiFlickerSupported { get; set; }
+        public bool IsPropertyAutoFramingSensitivitySupported { get; set; }
+        public bool IsPropertyAutoFramingSizeSupported { get; set; }
+        public bool IsPropertyAutoFramingSupported { get; set; }
+        public bool IsPropertyAutoFramingTransitionSupported { get; set; }
+        public bool IsPropertyBrightnessSupported { get; set; }
+        public bool IsPropertyContrastSupported { get; set; }
+        public bool IsPropertyFocusSupported { get; set; }
+        public bool IsPropertyFOVSupported { get; set; }
+        public bool IsPropertyHDRSupported { get; set; }
+        public bool IsPropertyPanSupported { get; set; }
+        public bool IsPropertyPrioritySupported { get; set; }
+        public bool IsPropertySaturationSupported { get; set; }
+        public bool IsPropertySharpnessSupported { get; set; }
+        public bool IsPropertyTiltSupported { get; set; }
+        public bool IsPropertyWhiteBalanceSupported { get; set; }
+        public bool IsPropertyZoomSupported { get; set; }
+        public int PanMax { get; set; }
+        public int PanMin { get; set; }
+        public int PanSteppingDelta { get; set; }
+        public IWebcamProfileManager ProfileManager { get; set; }
+        public int SaturationMax { get; set; }
+        public int SaturationMin { get; set; }
+        public int SaturationSteppingDelta { get; set; }
+        public int SharpnessMax { get; set; }
+        public int SharpnessMin { get; set; }
+        public int SharpnessSteppingDelta { get; set; }
+        public int TiltMax { get; set; }
+        public int TiltMin { get; set; }
+        public int TiltSteppingDelta { get; set; }
+        public int WhiteBalanceMax { get; set; }
+        public int WhiteBalanceMin { get; set; }
+        public int WhiteBalanceSteppingDelta { get; set; }
+        public int ZoomMax { get; set; }
+        public int ZoomMin { get; set; }
+        public int ZoomSteppingDelta { get; set; }
         public string DeviceSymbolicLink
         {
             get => _deviceSymbolicLink;
@@ -1361,7 +1407,7 @@ namespace DDPM.SA.Common
 
         private void ToggleOption(object parameter)
         {
-            if (parameter != null && bool.TryParse(parameter.ToString(), out bool isChecked))
+            if(parameter != null && bool.TryParse(parameter.ToString(), out bool isChecked))
             {
                 IsCollaborationKeyEnable = isChecked;
                 // Perform any other actions here based on the checkbox state.

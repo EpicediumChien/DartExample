@@ -24,7 +24,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Dell.TechHub.Commodity.Peripheral;
-using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -72,7 +71,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private ItemId _itemID;
 
         public const string PluginLogId = "DTPProxy";
-        private Logs _logs = null;
 
         #endregion
 
@@ -81,9 +79,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public DTPProxyPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
-
-            if(_logs == null)
-                _logs = new Logs(Log, PluginLogId);
 
             writelog("DTPProxyPlugin constructor ...");
             writelog($"Initializing the Commodity Client SDK...");
@@ -472,12 +467,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             Console.WriteLine(text);
 
 
-            if(_logs != null)
+            if(Log != null)
             {
                 if(log_type == log_type.info)
-                    _logs.Info(text);
+                    Log.Info(text);
                 else
-                    _logs.Error(text);
+                    Log.Error(text);
             }
         }
 

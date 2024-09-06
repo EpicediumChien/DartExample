@@ -102,14 +102,15 @@ namespace DDPM.UI.Module.Kvm
 
         private void OpenNKVM(object sender, RoutedEventArgs e)
         {
-            if(!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
-            {
-                DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe();
-            }
-            else
-            {
-                DdpmCommonHelper.DeviceManagerSA.CallNKVMConnent();
-            }
+            //if(!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            //{
+            DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
+            DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+            //}
+            //else
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.CallNKVMConnent();
+            //}
             vm.OpenNKVMUI(0, 100, 100);
         }
 

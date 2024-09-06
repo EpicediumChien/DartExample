@@ -340,11 +340,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 VM.RefreshCellRects();
                 this.IsFading = false;
+                fadeOutGrid.Visibility = Visibility.Collapsed;
                 //Visibility = Visibility.Hidden;
                 //gridSplitCtrl.Opacity = 1;
             };
 
             IsFading = true;
+            fadeOutGrid.Visibility = Visibility.Visible;
             //gridSplitCtrl.Opacity = 1;
             sb.Begin();
             // });
