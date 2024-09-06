@@ -155,6 +155,373 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
+        public async Task<int> GetBrightnessValue(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "Brightness");
+                    return (int)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[GetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return -1;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[GetBrightnessValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetBrightnessValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return -1;
+            }
+
+        }
+
+        public async Task SetBrightnessValue(string itemID, int newValue)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_webcamInterfaceType, commodity, "Brightness", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"[SetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[SetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetBrightnessValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
+                writelog($"[SetBrightnessValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
+            }
+
+        }
+
+        public async Task<string> GetCameraFirmwareVersion(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "FirmwareVersion");
+                    return (string)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[GetCameraFirmwareVersion]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetCameraFirmwareVersion]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[GetCameraFirmwareVersion]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetCameraFirmwareVersion]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return string.Empty;
+            }
+
+        }
+
+        public async Task<bool> CheckIsPropertyFOVSupported(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyFOVSupported");
+                    return (bool)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[CheckIsPropertyFOVSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[CheckIsPropertyFOVSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[CheckIsPropertyFOVSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[CheckIsPropertyFOVSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
+        public async Task<int> GetFieldOfViewValue(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "FieldOfView");
+                    return (int)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[GetFieldOfViewValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetFieldOfViewValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return -1;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[GetFieldOfViewValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetFieldOfViewValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return -1;
+            }
+
+        }
+
+        public async Task<bool> CheckIsPropertyHDRSupported(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyHDRSupported");
+                    return (bool)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
+        public async Task<bool> GetIsHDROnValue(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsHDROn");
+                    return (bool)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[GetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[GetIsHDROnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetIsHDROnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
+        public async Task SetIsHDROnValue(string itemID, bool newValue)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_webcamInterfaceType, commodity, "IsHDROn", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"[SetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[SetIsHDROnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetIsHDROnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
+                writelog($"[SetIsHDROnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
+            }
+
+        }
+
+        public async Task<bool> CheckIsPropertyAntiFlickerSupported(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyHDRSupported");
+                    return (bool)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[CheckIsPropertyHDRSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
+        public async Task<int> GetAntiFlickerValue(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker");
+                    return (int)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return -1;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetAntiFlickerValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return -1;
+            }
+
+        }
+
+        public async Task SetAntiFlickerValue(string itemID, int newValue)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
+                writelog($"[SetAntiFlickerValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
+            }
+
+        }
+
+        public async Task<bool> CheckIsPropertyAutoFramingSupported(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyAutoFramingSupported");
+                    return (bool)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[CheckIsPropertyAutoFramingSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[CheckIsPropertyAutoFramingSupported]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[CheckIsPropertyAutoFramingSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[CheckIsPropertyAutoFramingSupported]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        }
+
+        public async Task<bool> GetIsAutoFramingOnValue(string itemID)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingOn");
+                    return (bool)value;
+                }
+                else
+                {
+                    Console.WriteLine($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                writelog($"[GetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+
+        } 
+
+        public async Task SetIsAutoFramingOnValue(string itemID, bool newValue)
+        {
+            _itemID = new ItemId(itemID);
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingOn", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    writelog($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
+                writelog($"[SetIsAutoFramingOnValue]Could not retrieve the Commodity Interface for the  {_itemID}  item. _webcamMethodInfo is null");
+            }
+
+        }
+
+
         public async Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
         {
             _itemID = new ItemId(itemID);
