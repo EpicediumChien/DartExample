@@ -108,6 +108,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private List<PowerNapSetting> _powerNapSettings { get; set; }
         private string _powerNapsettings_path { get; set; }
         private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
+        private static string _settingsAccessInfo = string.Empty;
 
         #endregion Private Members
 
@@ -131,10 +132,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             InitializeSysSettingsPlugin();
 
-            InitDDPMUserConfigFile();
+            //Move to DoRelayRegister function since DDPM private key added
+            /*InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
-            InitPowerNapConfigFile();
+            InitPowerNapConfigFile();*/
+
             //Robert_Lin, 2024-9-3, removed, will use SettingsManagerSA.ReloadMonitorSettings() instead
             //EAMakeSureDirExist();
         }
@@ -263,7 +266,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return;
             }
             _SysSettingsPlugin.ITSettingsActionEvent += _SysSettingsPlugin_ActionEvent;
-            relay_registered = true;            
+            relay_registered = true;
+
+            _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
+            InitDDPMUserConfigFile();
+            InitColorPresetConfigFile();
+            InitHotkeyConfigFile();
+            InitPowerNapConfigFile();
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
@@ -415,7 +424,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         if (_settings == null || force_reload == true)
                         {
                             string info;
-                            string output = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);//, false);
+                            string output = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, _settings_path, out info);//, false);
                             _settings = JsonConvert.DeserializeObject<DDPMSettings>(output);
                         }
                     }
@@ -459,7 +468,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult(result);*/
 
                 string info;
-                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))//, false))
+                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(_settings).ToString(), _settings_path, out info))//, false))
                 {
                     WriteLog(info);
                     return Task.FromResult(false);
@@ -1257,7 +1266,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (File.Exists(file_appdatapath_userconfig))
             {
                 // DDPMSettings.getSettingsforImport(file_appdatapath_userconfig, ref ddpm_app, ref ddpm_user);
-                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(file_appdatapath_userconfig, out info);//, false);
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, file_appdatapath_userconfig, out info);//, false);
                 if (!string.IsNullOrEmpty(serialized_string))
                     _settings = JsonConvert.DeserializeObject<DDPMSettings>(serialized_string);
                 else
@@ -1267,7 +1276,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (_settings != null)
                     {
                         WriteLog("[InitDDPMUserConfigFile] *** Init cache from file fail, re-create default settings to file");
-                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))
+                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))
                             WriteLog("[InitDDPMUserConfigFile] re-create file content OK");
                         else
                             WriteLog("[InitDDPMUserConfigFile] save to file failed, please check file access right!!");

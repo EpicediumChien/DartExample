@@ -658,6 +658,55 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
+                case "NETWORKKVM":
+                    {
+                        var ret = Networkkvmx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+                case "NETWORKKVMAUTOCONNECT":
+                    {
+                        var ret = Networkkvmautoconnectx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+                case "NETWORKKVMCONTENTTRANSFER":
+                    {
+                        var ret = Networkkvmcontenttransferx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+                case "NETWORKKVMINCOMINGPORT":
+                    {
+                        var ret = Networkkvmincomingportx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+                case "NETWORKKVMOUTGOINGPORT":
+                    {
+                        var ret = Networkkvmoutgoingportx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+                case "NETWORKKVMCONTENTTRANSFERPORT":
+                    {
+                        var ret = Networkkvmcontenttransferportx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
+                case "NETWORKKVMACCESSRESET":
+                    {
+                        var ret = Networkkvmaccessresetx(devMgr, commandLineInput);
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
 
                 default:
                     CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -8979,14 +9028,14 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return ((value & 0xFF00) | 0x0001).ToString();          // "xx01"
                 case "OSDENABLE": return ((value & 0xFF00) | 0x0002).ToString();        // "xx02"
-                case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                //case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
+                //case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
+                //case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                //case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
+                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -8997,12 +9046,12 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
                 case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                case "OSDLOCK": return (value | 0x8000).ToString();                    // b15:1;
+                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -9010,8 +9059,8 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_MicrophoneControl_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
-            output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
+            //output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            //output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
             output += ((value & 0x03) == 0x01) ? "OSDDISABLE" : "";
             output += ((value & 0x03) == 0x02) ? "OSDENABLE" : "";
 
@@ -9021,7 +9070,7 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerMicrophoneControl_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
             output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
 
             return output;
@@ -9033,14 +9082,14 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return ((value & 0xFF00) | 0x00FF).ToString();          // "xxFF"
                 case "OSDENABLE": return ((value & 0xFF00) | 0x00FE).ToString();        // "xxFE"
-                case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                //case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
+                //case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
+                //case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                //case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
+                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -9051,12 +9100,12 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
                 case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
+                case "OSDLOCK": return (value | 0x8000).ToString();                    // b15:1;
+                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -9064,8 +9113,8 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerVolume_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
-            output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
+            //output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            //output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
             output += ((value & 0xFF) == 0xFF) ? "OSDDISABLE," : "";
             output += ((value & 0xFE) == 0xFE) ? "OSDENABLE," : "";
             if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
@@ -9077,7 +9126,7 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerMicrophoneVolume_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
+            output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
             output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
             if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
                 output += $"Volume:{value & 0xFF}";
@@ -10182,6 +10231,778 @@ namespace DDPM.CLI.Plugins.Display
                 }
             }
             writelog($"Output={output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+        private static void LaunchNetworkkvmApp()
+        {
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = "/console start";
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmApp_on()
+        {
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = "/networkkvm on";
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmApp_off()
+        {
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = "/networkkvm off";
+            Process.Start(exeFileAndLocation, arguments);
+        }
+
+        private static void LaunchNetworkkvmautoconnectApp_on()
+        {
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = "/networkkvmautoconnect on";
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmautoconnectApp_off()
+        {
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = "/networkkvmautoconnect off";
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmcontenttransferApp_on()
+        {
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = "/networkkvmcontenttransfer on";
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmcontenttransferApp_off()
+        {
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = "/networkkvmcontenttransfer off";
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmincomingportApp(CommandLineInput commandLineInput)
+        {
+
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = $"/networkkvmincomingport {commandLineInput.Options[0].Option_Value}";
+            //Trace.WriteLine("arguments :", arguments);
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmoutgoingportApp(CommandLineInput commandLineInput)
+        {
+
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = $"/networkkvmoutgoingport {commandLineInput.Options[0].Option_Value}";
+            //Trace.WriteLine("arguments :", arguments);
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmcontenttransferportApp(CommandLineInput commandLineInput)
+        {
+
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = $"/networkkvmcontenttransferport {commandLineInput.Options[0].Option_Value}";
+            //Trace.WriteLine("arguments :", arguments);
+            Process.Start(exeFileAndLocation, arguments);
+        }
+        private static void LaunchNetworkkvmaccessresetApp()
+        {
+
+            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string arguments = $"/networkkvmaccessreset";
+            //Trace.WriteLine("arguments :", arguments);
+            Process.Start(exeFileAndLocation, arguments);
+        }
+
+        private (int code, string result) Networkkvmx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            {
+                return Networkkvm(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> Networkkvm(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            {
+
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    ;
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                    {
+                        case "ON":
+                            writelog($"Networkkvm on entry");
+                            LaunchNetworkkvmApp_on();
+                            retcode = true;
+                            cli_Response.Result = "PASS";
+                            cli_Response.Value = "ON";
+                            break;
+
+                        case "OFF":
+                            writelog($"Networkkvm off entry");
+                            LaunchNetworkkvmApp_off();
+                            retcode = true;
+                            cli_Response.Result = "PASS";
+                            cli_Response.Value = "OFF";
+                            break;
+
+                        default:
+                            writelog($"option value not support");
+
+                            cli_Response.Command = commandLineInput.Command;
+                            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                            break;
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                    writelog($"Networkkvm get entry");
+
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"Networkkvm exit return value : {output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private (int code, string result) Networkkvmautoconnectx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            {
+                return Networkkvmautoconnect(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> Networkkvmautoconnect(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            {
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    ;
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                    {
+                        case "ON":
+                            writelog($"Networkkvmautoconnect on entry");
+                            LaunchNetworkkvmautoconnectApp_on();
+                            retcode = true;
+                            cli_Response.Result = "PASS";
+                            cli_Response.Value = "ON";
+                            break;
+
+                        case "OFF":
+                            writelog($"Networkkvmautoconnect off entry");
+                            LaunchNetworkkvmautoconnectApp_off();
+                            retcode = true;
+                            cli_Response.Result = "PASS";
+                            cli_Response.Value = "OFF";
+                            break;
+
+                        default:
+                            writelog($"option value not support");
+
+                            cli_Response.Command = commandLineInput.Command;
+                            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                            break;
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                    writelog($"Networkkvmautoconnect get entry");
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"Networkkvmautoconnect exit return value : {output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private (int code, string result) Networkkvmcontenttransferx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            {
+                return Networkkvmcontenttransfer(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> Networkkvmcontenttransfer(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            {
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    ;
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                    {
+                        case "ON":
+                            writelog($"Networkkvmcontenttransfer on entry");
+                            LaunchNetworkkvmcontenttransferApp_on();
+                            retcode = true;
+                            cli_Response.Result = "PASS";
+                            cli_Response.Value = "ON";
+                            break;
+
+                        case "OFF":
+                            writelog($"Networkkvmcontenttransfer off entry");
+                            LaunchNetworkkvmcontenttransferApp_off();
+                            retcode = true;
+                            cli_Response.Result = "PASS";
+                            cli_Response.Value = "OFF";
+                            break;
+
+                        default:
+                            writelog($"option value not support");
+
+                            cli_Response.Command = commandLineInput.Command;
+                            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                            break;
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                    writelog($"Networkkvmcontenttransfer get entry");
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+
+            }
+            writelog($"Networkkvmcontenttransfer exit return value : {output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private (int code, string result) Networkkvmincomingportx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            {
+                return Networkkvmincomingport(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> Networkkvmincomingport(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            {
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    int low = 1024;
+                    int high = 49151;
+
+                    if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
+                    {
+                        writelog($"Networkkvmincomingport entry");
+                        LaunchNetworkkvmincomingportApp(commandLineInput);
+                        retcode = true;
+                        cli_Response.Result = "PASS";
+                        cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
+                    }
+                    else
+                    {
+                        writelog($"option value not support");
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                    writelog($"Networkkvmincomingport get entry");
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"Networkkvmincomingport exit return value : {output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private (int code, string result) Networkkvmoutgoingportx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            {
+                return Networkkvmoutgoingport(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> Networkkvmoutgoingport(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    LaunchNetworkkvmApp(); //Open DDM console for debug
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    int low = 1024;
+                    int high = 49151;
+
+                    if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
+                    {
+                        writelog($"Networkkvmoutgoingport entry");
+                        LaunchNetworkkvmoutgoingportApp(commandLineInput);
+                        retcode = true;
+                        cli_Response.Result = "PASS";
+                        cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
+                    }
+                    else
+                    {
+                        writelog($"option value not support");
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                    writelog($"Networkkvmoutgoingport get entry");
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"Networkkvmoutgoingport exit return value : {output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private (int code, string result) Networkkvmcontenttransferportx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            {
+                return Networkkvcontenttransferport(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> Networkkvcontenttransferport(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            {
+
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    int low = 1024;
+                    int high = 49151;
+
+                    if (low < Int32.Parse(commandLineInput.Options[0].Option_Value) && Int32.Parse(commandLineInput.Options[0].Option_Value) < high)
+                    {
+                        writelog($"Networkkvcontenttransferport entry");
+                        LaunchNetworkkvmcontenttransferportApp(commandLineInput);
+                        retcode = true;
+                        cli_Response.Result = "PASS";
+                        cli_Response.Value = $"{commandLineInput.Options[0].Option_Value}";
+                    }
+                    else
+                    {
+                        writelog($"option value not support");
+
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                    writelog($"Networkkvcontenttransferport get entry");
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"Networkkvcontenttransferport exit return value : {output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
+        private (int code, string result) Networkkvmaccessresetx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            {
+                return Networkkvmaccessreset(devMgr, commandLineInput).Result;
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+            }
+        }
+
+        private async Task<(int code, string result)> Networkkvmaccessreset(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "CONFIGURE")
+            {
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    LaunchNetworkkvmApp(); //Open DDM console for debug
+
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    writelog($"Networkkvmaccessreset entry");
+                    LaunchNetworkkvmaccessresetApp();
+                    retcode = true;
+                    cli_Response.Result = "PASS";
+                    cli_Response.Value = $"Networkkvmaccessreset";
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    //LaunchNetworkkvmApp(); //Open DDM console for debug
+                    writelog($"Networkkvmaccessreset get entry");
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"Networkkvmaccessreset exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
             #endregion Malik
         }

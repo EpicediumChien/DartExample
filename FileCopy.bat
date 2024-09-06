@@ -10,11 +10,11 @@ echo copy support list.
 xcopy /E /i ".\DDPM.SA\dll\SupportEncrypted.txt" ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\" /Y
 
 echo Del SA all *.pdb 
-del /S ".\DDPM.SA\bin\*.pdb"
+del /Q /F /S ".\DDPM.SA\bin\*.pdb"
 echo Del UI all *.pdb 
-del /S ".\DDPM.UI\bin\*.pdb"
+del /Q /F /S ".\DDPM.UI\bin\*.pdb"
 echo Del UI all *.pdb 
-del /S ".\DDPM.SA\VCPSDK\VCPSDK\bin\*.pdb"
+del /Q /F /S ".\DDPM.SA\VCPSDK\VCPSDK\bin\*.pdb"
 
 RD /S /Q "_BIN"
 
