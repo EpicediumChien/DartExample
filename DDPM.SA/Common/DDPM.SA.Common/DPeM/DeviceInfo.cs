@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -1100,6 +1101,25 @@ namespace DDPM.SA.Common
         public bool IsPropertyTiltSupported { get; set; }
         public bool IsPropertyWhiteBalanceSupported { get; set; }
         public bool IsPropertyZoomSupported { get; set; }
+        public int PanMax { get; set; }
+        public int PanMin { get; set; }
+        public int PanSteppingDelta { get; set; }
+        public IWebcamProfileManager ProfileManager { get; set; }
+        public int SaturationMax { get; set; }
+        public int SaturationMin { get; set; }
+        public int SaturationSteppingDelta { get; set; }
+        public int SharpnessMax { get; set; }
+        public int SharpnessMin { get; set; }
+        public int SharpnessSteppingDelta { get; set; }
+        public int TiltMax { get; set; }
+        public int TiltMin { get; set; }
+        public int TiltSteppingDelta { get; set; }
+        public int WhiteBalanceMax { get; set; }
+        public int WhiteBalanceMin { get; set; }
+        public int WhiteBalanceSteppingDelta { get; set; }
+        public int ZoomMax { get; set; }
+        public int ZoomMin { get; set; }
+        public int ZoomSteppingDelta { get; set; }
         public string DeviceSymbolicLink
         {
             get => _deviceSymbolicLink;

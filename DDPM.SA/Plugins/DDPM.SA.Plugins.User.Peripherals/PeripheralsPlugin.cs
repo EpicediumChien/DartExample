@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 
 namespace DDPM.SA.Plugins.PeripheralsPlugin
@@ -75,6 +76,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private static List<Guid> LogicalDevices3 = new();
         private static List<Guid> LogicalDevices4 = new();
         private static List<Guid> LogicalDevicesPen = new();
+
+        private IDeviceManagerSA _DeviceManagerPlugin;
+        private readonly object _PluginConditionLock_DeviceManager = new object();
 
         #endregion
 
@@ -798,9 +802,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         protected override void OnPluginStarting()
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
-            Log.Info("Enter DPeMTask1 ");
+            writelog("DTPProxyPlugin plugin starting");
 
             PluginCondition = new PluginStartedCondition();
+            InitializeDeviceManagerPlugin();
         }
 
         #endregion
@@ -1036,10 +1041,29 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.IsPropertyWhiteBalanceSupported = _iLogicalDeviceWebcam.IsPropertyWhiteBalanceSupported;
                         info.IsPropertyZoomSupported = _iLogicalDeviceWebcam.IsPropertyZoomSupported;
                         info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
+                        info.PanMax = _iLogicalDeviceWebcam.PanMax;
+                        info.PanMin = _iLogicalDeviceWebcam.PanMin;
+                        info.PanSteppingDelta = _iLogicalDeviceWebcam.PanSteppingDelta;
                         info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
+                        info.ProfileManager = _iLogicalDeviceWebcam.ProfileManager;
+                        info.SaturationMax = _iLogicalDeviceWebcam.SaturationMax;
+                        info.SaturationMin = _iLogicalDeviceWebcam.SaturationMin;
+                        info.SaturationSteppingDelta = _iLogicalDeviceWebcam.SaturationSteppingDelta;
+                        info.SharpnessMax = _iLogicalDeviceWebcam.SharpnessMax;
+                        info.SharpnessMin = _iLogicalDeviceWebcam.SharpnessMin;
+                        info.SharpnessSteppingDelta = _iLogicalDeviceWebcam.SharpnessSteppingDelta;
+                        info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
                         info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
                         info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
-                        info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
+                        info.TiltMax = _iLogicalDeviceWebcam.TiltMax;
+                        info.TiltMin = _iLogicalDeviceWebcam.TiltMin;
+                        info.TiltSteppingDelta = _iLogicalDeviceWebcam.TiltSteppingDelta;
+                        info.WhiteBalanceMax = _iLogicalDeviceWebcam.WhiteBalanceMax;
+                        info.WhiteBalanceMin = _iLogicalDeviceWebcam.WhiteBalanceMin;
+                        info.WhiteBalanceSteppingDelta = _iLogicalDeviceWebcam.WhiteBalanceSteppingDelta;
+                        info.ZoomMax = _iLogicalDeviceWebcam.ZoomMax;
+                        info.ZoomMin = _iLogicalDeviceWebcam.ZoomMin;
+                        info.ZoomSteppingDelta = _iLogicalDeviceWebcam.ZoomSteppingDelta;
                         _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
                     }
 
@@ -1671,19 +1695,44 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void ILogicalDevice_BatteryLevelChanged(ILogicalDevice arg1, int arg2)
         {
-            Console.WriteLine(arg2.ToString());
-
             if(_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if(deviceInfo != null)
+                {
                     deviceInfo.BatteryLevel = arg2;
 
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "BatteryLevelChanged";
-                OnNotify(_EventArgs);
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "BatteryLevelChanged";
+                    OnNotify(_EventArgs);
+
+                    if(arg2 >= 0 && arg2 <= 9)
+                    {
+                        OSDType_Device type = OSDType_Device.Unknown;
+                        var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                        if(deviceType.Contains("PEN"))
+                        {
+                            if(deviceInfo.ModelNumber == "PN5122W" && arg2 > 6)
+                            { return; }
+                            type = OSDType_Device.Pen;
+                        }
+                        else if(deviceType.Contains("KEYBOARD"))
+                        {
+                            type = OSDType_Device.Keyboard;
+                        }
+                        else if(deviceType.Contains("MOUSE"))
+                        {
+                            type = OSDType_Device.Mouse;
+                        }
+                        else if(deviceType.Contains("HEADSET"))
+                        {
+                            type = OSDType_Device.Headset;
+                        }
+                        _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+                    }
+                }
             }
         }
 
@@ -2079,6 +2128,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iLogicalDeviceWebcam_IsMicEnumerationOnChanged(ILogicalDeviceWebcam iLogicalDeviceWebcam, bool newValue)
         {
+            if(_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == iLogicalDeviceWebcam.Id.ToString());
+                if(deviceInfo != null)
+                {
+                    deviceInfo.IsMicEnumerationOn = newValue;
+
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Peripherals_SettingsChange,
+                        device_peripherals = deviceInfo,
+                        changedProperty = "IsMicEnumerationOn"
+                    };
+                    OnNotify(_EventArgs);
+                }
+            }
         }
 
         private void ILogicalDevice_MousePrimaryButtonChanged(ILogicalDevice3 logicalDevice3, MouseButton newValue)
@@ -2134,5 +2199,65 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         }
 
         #endregion
+        private void writelog(string text, log_type log_type = log_type.info)
+        {
+            text = "[PeripheralsPlugin] " + text;
+            Console.WriteLine(text);
+            if(Log != null)
+            {
+                if(log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
+        }
+
+        private enum log_type
+        {
+            info = 0,
+            error
+        }
+
+
+        private void InitializeDeviceManagerPlugin()
+        {
+            if(_DeviceManagerPlugin != null)
+                return;
+
+            _DeviceManagerPlugin = _agent.PluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
+
+            if(_DeviceManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnDeviceManagerPluginConditionChangeHandler;
+                GetCurrentDeviceManagerPluginCondition();
+            }
+        }
+        private void OnDeviceManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentDeviceManagerPluginCondition();
+        }
+        private void GetCurrentDeviceManagerPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_DeviceManagerPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                lock(_PluginConditionLock_DeviceManager)
+                {
+                    if(pluginCondition is PluginErrorCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDeviceManagerPluginCondition)} - DeviceManager Plugin is in an error condition");
+                        //_PeripheralsPluginCondition = pluginCondition;
+                    }
+                    else if(pluginCondition is PluginRunningCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDeviceManagerPluginCondition)} - DeviceManager Plugin is in a running condition");
+                    }
+                    else if(pluginCondition is PluginStartedCondition)
+                    {
+                        writelog($"{nameof(GetCurrentDeviceManagerPluginCondition)} - DeviceManager Plugin is in a started condition");
+                    }
+                }
+            });
+        }
     }
 }
