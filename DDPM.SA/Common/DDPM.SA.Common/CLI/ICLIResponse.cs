@@ -85,7 +85,7 @@ namespace DDPM.SA.Common
 
     public class CLI_Get_FW_RESPONSE : CLI_RESPONSE
     {
-        public string FWVer { get; set; } = "N/A";
+        //public string FWVer { get; set; } = "N/A";
     }
 
     public class ConnectedDevices : CLI_RESPONSE
