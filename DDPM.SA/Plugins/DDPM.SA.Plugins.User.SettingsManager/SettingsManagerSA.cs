@@ -848,7 +848,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, out List<VCP> vcps)
+        public Task<bool> DisplayImportSettings(string path, /*bool isSameModel, */out List<VCP> vcps)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -865,19 +865,23 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
                     foreach (DDPMMonitorSettings settings in monitorSettingsList)
                     {
-                        if (settings.ServiceTag == monitorSettings.ServiceTag)
+                        if (settings.ServiceTag == monitorSettings.ServiceTag/* || isSameModel*/)
                         {
                             settings.Input = monitorSettings.Input;
                             settings.KVM = monitorSettings.KVM;
                             settings.VCPs = monitorSettings.VCPs;
+                            settings.EA = monitorSettings.EA;
                             if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                             {
                                 vcps = monitorSettings.VCPs;
-                                return Task.FromResult<bool>(true);
+                                //if (!isSameModel)
+                                //{
+                                    return Task.FromResult<bool>(true);
+                                //}
                             }
                             else
                             {
-                                WriteLog("[DisplayImportSettings] Import settings File...");
+                                WriteLog("[DisplayImportSettings] Import settings Fail...");
                                 break;
                             }
                         }
@@ -885,7 +889,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
                 else
                 {
-                    WriteLog("[DisplayImportSettings] Not Find File...");
+                    WriteLog("[DisplayImportSettings] Not Find Fail...");
                 }
             }
             else

@@ -2508,6 +2508,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        public Task NKVM_State(bool state)
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.NKVM_State(state);
+            }
+            return Task.CompletedTask;      
+        }
+
         public Task CallNKVMConnent()
         {
             if (_NKVMPlugin != null)
