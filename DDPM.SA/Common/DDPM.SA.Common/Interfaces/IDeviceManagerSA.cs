@@ -537,5 +537,16 @@ namespace DDPM.SA.Common
         Task ShowOSD(object monitorInfo, OSDType type);
 
         #endregion OSD
+
+        #region GlobalSetting
+        Task<GlobalSettingParam> GetGlobalSettingParam();
+        Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayKeyboardLockKey(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayWB7022CoverState(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayMuteState(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayColorPresetAndEasyMemory(bool isDisplay);
+        Task<bool> Set_GlobalSetting_EnableQuickAccessWidget(bool isEnable);
+        Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable);
+        #endregion
     }
 }

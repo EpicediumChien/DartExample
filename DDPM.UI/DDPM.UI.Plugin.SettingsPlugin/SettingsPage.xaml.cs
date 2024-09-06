@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Settings;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
@@ -24,6 +25,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             DataContext = new SettingsPageViewModel();
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
+                vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                 vm.SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
                 vm.RefreshUI();
 
@@ -99,7 +101,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void GeneralButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(0);
-            vm.FullView = null;
+            Settings_General settings_General = new Settings_General();
+            vm.OpenFullView(settings_General);
         }
         private void UpdatesButton_Click(object sender, MouseButtonEventArgs e)
         {
@@ -117,13 +120,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void QuickSettingsButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(3);
-            vm.FullView = null;
+            Settings_WidgetSettings settings_WidgetSettings = new Settings_WidgetSettings();
+            vm.OpenFullView(settings_WidgetSettings);
         }
 
         private void AboutButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(4);
-            vm.FullView = null;
+            Settings_About settings_About = new Settings_About();
+            vm.OpenFullView(settings_About);
         }
     }
 }
