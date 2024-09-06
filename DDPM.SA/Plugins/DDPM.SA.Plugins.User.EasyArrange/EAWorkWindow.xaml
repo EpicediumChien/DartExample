@@ -16,6 +16,8 @@
                              BeginTime="0:0:0.5" Duration="0:0:3"
                              From="1.0" To="0" FillBehavior="HoldEnd" />
         </Storyboard>
+
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
 
     <Grid Name="rootGrid2">
@@ -51,7 +53,9 @@
             </Grid.Style>
             <ContentControl Name="splitCtrl" />
         </Grid>
-        <Grid Name="fadeOutGrid">
+        <Grid Name="fadeOutGrid"
+              Visibility="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}">
+            <!-- 
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Hidden" />
@@ -63,6 +67,7 @@
                     </Style.Triggers>
                 </Style>
             </Grid.Style>
+            -->
             <ContentControl Name="fadeOutCtrl" />
         </Grid>
         <WrapPanel Visibility="Collapsed">
