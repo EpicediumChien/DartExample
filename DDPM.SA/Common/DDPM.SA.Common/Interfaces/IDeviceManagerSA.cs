@@ -515,11 +515,13 @@ namespace DDPM.SA.Common
 
         Task SetMenuSinglePressSetting(string itemID, byte[] newValue);
 
-        Task SetMenuCenterRightClickSetting(string itemID, byte[] newValue);
+        Task SetMenuCenterRightClickSetting(string itemID, bool newValue);
 
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
 
-        Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
+        Task SetSideTopSwitchSinglePressSetting1(string itemID, byte[] newValue);
+        Task SetSideTopSwitchSinglePressSetting2(string itemID, string newValue);
+        Task SetSideTopSwitchSinglePressSetting3(byte[] newValue, Guid deviceId);
 
         Task SetTiltSensitivity(string itemID, int newValue);
 
@@ -529,13 +531,13 @@ namespace DDPM.SA.Common
 
         #region OSD
 
-        Task ShowOSD(MonitorInfo monitorInfo, OSDType type, OSDType_Device Device, string Content);
+        Task ShowOSD(object monitorInfo, OSDType type, OSDType_Device Device, string Content);
 
-        Task ShowOSD(MonitorInfo monitorInfo, OSDType type, string Content, bool State);
+        Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State);
 
-        Task ShowOSD(MonitorInfo monitorInfo, OSDType type, bool State);
+        Task ShowOSD(object monitorInfo, OSDType type, bool State);
 
-        Task ShowOSD(MonitorInfo monitorInfo, OSDType type);
+        Task ShowOSD(object monitorInfo, OSDType type);
 
         #endregion OSD
     }

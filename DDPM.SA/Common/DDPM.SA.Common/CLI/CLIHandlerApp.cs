@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using static DDPM.SA.Common.ICLICommandTable;
@@ -211,6 +212,187 @@ namespace DDPM.SA.Common.CLI
 
             if (!status)
             {             
+                response.Message = "Failed to update config";
+                response.Result = "FAIL";
+                response.Value = op.Option_Value;
+                result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                result.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
+                return result;
+            }
+
+            return CLI_Response_CompleteWithSuccess(commandLineInput, result);
+        }
+
+        public static CLIEventResult CLI_App_LockUnlock(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+        {
+            //Expected format:
+            // IT > /configure -app=InAppUpdate -value=lock / unlock
+            // IT > /get -app=InAppUpdate
+            CLIEventResult result = new CLIEventResult();
+            result.ticket = DateTime.Now;
+            result.command_guid_string = action_guid;
+
+            CLI_RESPONSE response = new CLI_RESPONSE();
+            response.Command = commandLineInput.Command;
+            response.TargetFeature = commandLineInput.TargetFeature;
+
+            List<string> CMDLine_Command_Check = new List<string>()
+                {
+                    "GET",
+                    "SET",
+                    "CONFIGURE",
+                };
+            Debug.WriteLine($"command {commandLineInput.Command}");
+            //if (!commandLineInput.Command.Equals("CONFIGURE") && !commandLineInput.Command.Equals("GET"))
+            if (CMDLine_Command_Check.FindIndex(x => x.Equals(commandLineInput.Command)) < 0)
+            {
+                WriteLog(Log, $"{commandLineInput.Command}: the command should be configure, set or get, fail");
+                return CLI_Response_CommandNotSupport(commandLineInput, result);
+            }
+
+            Type type = inputData.GetType();
+            Type type2 = settingsPlugin.GetType();
+            DDPMSettings data_user = type == typeof(DDPMSettings) ? (DDPMSettings)inputData : null;
+            DDPMITConfig data_IT = type == typeof(DDPMITConfig) ? (DDPMITConfig)inputData : null;
+            WriteLog(Log, $"Output interface log: [{settingsPlugin.GetType()}],[{settingsPlugin.GetType().Name}]");
+            ISettingsManagerIT _SettingsPluginIT = type2.Name == "SettingsMangerPlugin" ? (ISettingsManagerIT)settingsPlugin : null;
+            IDeviceManagerSA _DeviceManagerPlugin = type2.Name == "DeviceMangerPlugin" ? (IDeviceManagerSA)settingsPlugin : null;
+
+            if (commandLineInput.Command.Equals("GET"))
+            {
+                if (data_user != null)
+                {
+                    data_IT = data_user != null ? data_user.LockSettings : null;
+                }
+                if (data_IT != null)
+                {
+                    response.Message = "Operation Completed";
+                    response.Result = "Success";
+                    switch (commandLineInput.TargetFeature)
+                    {
+                        case "INAPPUPDATE":
+                            response.Value = data_IT.Lock_Settings_Updates ? "Lock" : "Unlock";
+                            break;
+                        case "INAPPEXPORTSETTINGS":
+                            response.Value = data_IT.Lock_Display_ExportSettings ? "Lock" : "Unlock";
+                            break;
+                    }
+                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                    result.ExitCode = (int)CLI_ExitCode.success;
+                    return result;
+                }
+                else
+                {
+                    response.Message = "Operation failed";
+                    response.Result = "Retrieve data failed";
+                    response.Value = "N/A";
+                    result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
+                    result.ExitCode = (int)CLI_ExitCode.success;
+                    return result;
+                }
+            }
+
+            if (commandLineInput.Options == null || commandLineInput.Options.Count == 0)
+            {
+                WriteLog(Log, $"{commandLineInput.TargetFeature}: command SET without option, fail");
+                return CLI_Response_OptionMissing(commandLineInput, result);
+            }
+
+            CommandType_Option op = commandLineInput.Options[0];
+            if (!op.Option_Name.ToUpper().Equals("VALUE"))
+            {
+                WriteLog(Log, $"{commandLineInput.TargetFeature}: option name [{op.Option_Name}] not support");
+                return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
+            }
+            string value = op.Option_Value;
+            if (value.ToUpper().Equals("LOCK"))
+            {
+                if (data_IT != null)
+                {
+                    switch (commandLineInput.TargetFeature)
+                    {
+                        case "INAPPUPDATE":
+                            data_IT.Lock_Settings_Updates = true;
+                            break;
+                        case "INAPPEXPORTSETTINGS":
+                            data_IT.Lock_Display_ExportSettings = true;
+                            break;
+                    }
+                    Debug.WriteLine($"{data_IT.Lock_Settings_Updates}");
+                }
+                if (data_user != null)
+                {
+                    switch (commandLineInput.TargetFeature)
+                    {
+                        case "INAPPUPDATE":
+                            data_user.LockSettings.Lock_Settings_Updates = true;
+                            break;
+                        case "INAPPEXPORTSETTINGS":
+                            data_user.LockSettings.Lock_Display_ExportSettings = true;
+                            break;
+                    }
+                    Debug.WriteLine($"{data_user.LockSettings.Lock_Settings_Updates}");
+                }
+            }
+            else if (value.ToUpper().Equals("UNLOCK"))
+            {
+                if (data_IT != null)
+                {
+                    switch (commandLineInput.TargetFeature)
+                    {
+                        case "INAPPUPDATE":
+                            data_IT.Lock_Settings_Updates = false;
+                            break;
+                        case "INAPPEXPORTSETTINGS":
+                            data_IT.Lock_Display_ExportSettings = false;
+                            break;
+                    }
+                }
+                if (data_user != null)
+                {
+                    switch (commandLineInput.TargetFeature)
+                    {
+                        case "INAPPUPDATE":
+                            data_user.LockSettings.Lock_Settings_Updates = false;
+                            break;
+                        case "INAPPEXPORTSETTINGS":
+                            data_user.LockSettings.Lock_Display_ExportSettings = false;
+                            break;
+                    }
+                    data_user.LockSettings.Lock_Settings_Updates = false;
+                }
+            }
+            else
+            {
+                WriteLog(Log, $"{commandLineInput.TargetFeature}: option value [{value}] not support");
+                return CLI_Response_OptionValueNotSupport(commandLineInput, result, op);
+            }
+
+            bool status = false;
+            if (_SettingsPluginIT != null)
+            {
+                if (data_IT != null)
+                {
+                    switch (commandLineInput.TargetFeature)
+                    {
+                        case "INAPPUPDATE":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Settings_Updates" }).Result;
+                            break;
+                        case "INAPPEXPORTSETTINGS":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_ExportSettings" }).Result;
+                            break;
+                    }
+                }
+                Debug.WriteLine($"{status}");
+            }
+            if (_DeviceManagerPlugin != null)
+            {
+                if (data_user != null)
+                    status = _DeviceManagerPlugin.SetAppConfigData(data_user).Result;
+            }
+
+            if (!status)
+            {
                 response.Message = "Failed to update config";
                 response.Result = "FAIL";
                 response.Value = op.Option_Value;

@@ -108,6 +108,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private List<PowerNapSetting> _powerNapSettings { get; set; }
         private string _powerNapsettings_path { get; set; }
         private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
+        private static string _settingsAccessInfo = string.Empty;
 
         #endregion Private Members
 
@@ -131,11 +132,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             InitializeSysSettingsPlugin();
 
-            InitDDPMUserConfigFile();
+            //Move to DoRelayRegister function since DDPM private key added
+            /*InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
-            InitPowerNapConfigFile();
-            EAMakeSureDirExist();
+            InitPowerNapConfigFile();*/
+
+            //Robert_Lin, 2024-9-3, removed, will use SettingsManagerSA.ReloadMonitorSettings() instead
+            //EAMakeSureDirExist();
         }
 
         #endregion Overriding methods
@@ -262,7 +266,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return;
             }
             _SysSettingsPlugin.ITSettingsActionEvent += _SysSettingsPlugin_ActionEvent;
-            relay_registered = true;            
+            relay_registered = true;
+
+            _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
+            InitDDPMUserConfigFile();
+            InitColorPresetConfigFile();
+            InitHotkeyConfigFile();
+            InitPowerNapConfigFile();
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
@@ -414,7 +424,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         if (_settings == null || force_reload == true)
                         {
                             string info;
-                            string output = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);//, false);
+                            string output = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, _settings_path, out info);//, false);
                             _settings = JsonConvert.DeserializeObject<DDPMSettings>(output);
                         }
                     }
@@ -458,7 +468,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return Task.FromResult(result);*/
 
                 string info;
-                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))//, false))
+                if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(_settings).ToString(), _settings_path, out info))//, false))
                 {
                     WriteLog(info);
                     return Task.FromResult(false);
@@ -908,55 +918,56 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #region EasyArrange Settings
 
-        private string _dir_ddpmUserSettings = String.Empty;
-        private string _dir_eaMonitorSettings = String.Empty;
-        private const string _dirName_EA = "EA";
+        //private string _dir_ddpmUserSettings = String.Empty;
+        //private string _dir_eaMonitorSettings = String.Empty;
+        //private const string _dirName_EA = "EA";
 
         /// <summary>
         /// The directory of DDPM per user settings, should be %LocalAppData%\Dell Display and Peripheral Manager
         /// Or "C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager"
         /// </summary>
-        private string GetDdpmUserSettingsDir()
-        {
-            if (String.IsNullOrEmpty(_dir_ddpmUserSettings))
-            {
-                // C:\Users\{UserName}\AppData\Local
-                string dir_localAppData = GetActiveUserLocalAppDataPath();
-                // C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager
-                _dir_ddpmUserSettings = System.IO.Path.Combine(dir_localAppData, folder_product);
-            }
-            return _dir_ddpmUserSettings;
-        }
+        //private string GetDdpmUserSettingsDir()
+        //{
+        //    if (String.IsNullOrEmpty(_dir_ddpmUserSettings))
+        //    {
+        //        // C:\Users\{UserName}\AppData\Local
+        //        string dir_localAppData = GetActiveUserLocalAppDataPath();
+        //        // C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager
+        //        _dir_ddpmUserSettings = System.IO.Path.Combine(dir_localAppData, folder_product);
+        //    }
+        //    return _dir_ddpmUserSettings;
+        //}
 
         // C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA
-        private string GetEaUserSettingsDir()
-        {
-            if (String.IsNullOrEmpty(_dir_eaMonitorSettings))
-            {
-                _dir_eaMonitorSettings = System.IO.Path.Combine(GetDdpmUserSettingsDir(), _dirName_EA);
-            }
-            return _dir_eaMonitorSettings;
-        }
+        //private string GetEaUserSettingsDir()
+        //{
+        //    if (String.IsNullOrEmpty(_dir_eaMonitorSettings))
+        //    {
+        //        _dir_eaMonitorSettings = System.IO.Path.Combine(GetDdpmUserSettingsDir(), _dirName_EA);
+        //    }
+        //    return _dir_eaMonitorSettings;
+        //}
 
+        //Robert_Lin, 2024-9-3 Unused
         /// <summary>
         /// Make sure the EA directory exist before save/load EA settings.
         /// Call this method at init stage of SettingsManagerPlugin
         /// EA Dir: %LocalAppData%\Dell Display and Peripheral Manager\EA
         /// Or after expanded: "C:\Users\{UserName}\AppData\Local\Dell Display and Peripheral Manager\EA"
         /// </summary>
-        private bool EAMakeSureDirExist()
-        {
-            try
-            {
-                DirectoryInfo di = System.IO.Directory.CreateDirectory(GetEaUserSettingsDir());
-            }
-            catch (Exception e1)
-            {
-                WriteLog($"CreateDirectory({GetEaUserSettingsDir()}) exception: {e1.Message}");
-                return false;
-            }
-            return true;
-        }
+        //private bool EAMakeSureDirExist()
+        //{
+        //    try
+        //    {
+        //        DirectoryInfo di = System.IO.Directory.CreateDirectory(GetEaUserSettingsDir());
+        //    }
+        //    catch (Exception e1)
+        //    {
+        //        WriteLog($"CreateDirectory({GetEaUserSettingsDir()}) exception: {e1.Message}");
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
         #endregion EasyArrange Settings
 
@@ -1251,7 +1262,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (File.Exists(file_appdatapath_userconfig))
             {
                 // DDPMSettings.getSettingsforImport(file_appdatapath_userconfig, ref ddpm_app, ref ddpm_user);
-                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(file_appdatapath_userconfig, out info);//, false);
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, file_appdatapath_userconfig, out info);//, false);
                 if (!string.IsNullOrEmpty(serialized_string))
                     _settings = JsonConvert.DeserializeObject<DDPMSettings>(serialized_string);
                 else
@@ -1261,7 +1272,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (_settings != null)
                     {
                         WriteLog("[InitDDPMUserConfigFile] *** Init cache from file fail, re-create default settings to file");
-                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))
+                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(_settings).ToString(), file_appdatapath_userconfig, out info))
                             WriteLog("[InitDDPMUserConfigFile] re-create file content OK");
                         else
                             WriteLog("[InitDDPMUserConfigFile] save to file failed, please check file access right!!");

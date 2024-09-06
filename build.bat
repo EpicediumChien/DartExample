@@ -15,6 +15,8 @@ set ConfigType=%1
 :: start /B cmd.exe /C .\SetVSBuildEnvironment.bat
 
 RD /S /Q "_BIN"
+del /Q /F /s "obj"
+del /Q /F /s "bin"
 ::goto FileCopy
 
 
@@ -139,7 +141,7 @@ pause
 
 :FileCopy
 echo copy support list.
-xcopy /E /i ".\DDPM.SA\dll\SupportEncrypted.txt" ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\"
+xcopy /E /i ".\DDPM.SA\dll\SupportEncrypted.txt" ".\DDPM.SA\bin\DDPM.Subagent.User\%ConfigType%\%NET%-windows10.0.19041.0\" /Y
 
 echo Del SA all *.pdb 
 del /S ".\DDPM.SA\bin\*.pdb"

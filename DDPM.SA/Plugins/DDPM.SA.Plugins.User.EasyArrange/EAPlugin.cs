@@ -11,6 +11,7 @@ using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 using nsWinEventHook;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Windows;
 using VcpCore.Common;
@@ -452,6 +453,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// True: EAPlugin accept the command, caller must wait for EditStarted or EditCompleted event</returns>
         public Task<bool> EditCommand(MonitorInfo monitorInfo, EAArgs args)
         {
+            Trace.WriteLine("@ EditCommand()");
+            Trace.WriteLine($"  * Monitor.Model=[{monitorInfo.modelName}], ServiceTag=[{monitorInfo.edid.ServiceTag}]");
+            Trace.WriteLine($"  * EAArgs.Split=[{args.CellCount}{args.SplitKey}], CustomName=[{args.CustomName}]");
+
             //If InitEditWindow() not been called or failed.
             if (_editWindow == null)
             {
@@ -481,6 +486,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private bool UI_EditCommand(MonitorInfo monitorInfo, EAArgs args)
         {
+            Trace.WriteLine("@ UI_EditCommand()");
+            Trace.WriteLine($"  * Monitor.Model=[{monitorInfo.modelName}], ServiceTag=[{monitorInfo.edid.ServiceTag}]");
+            Trace.WriteLine($"  * EAArgs.Split=[{args.CellCount}{args.SplitKey}], CustomName=[{args.CustomName}]");
+
             //Get the DisplayName from MonitorInfo
             string displayName = monitorInfo.DisplayName;
             //Get the target Screen from the displayName
@@ -608,7 +617,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     _isEaBrokerStarted = true;
                 }
-                ConsoleWriteLine("EABroker Start.");
+                ConsoleWriteLine("EABroker Start = = = = = = = =");
+                LogInfo("EABroker Start = = = = = = = =");
                 _vmArrange.DisplayManager = _displayManagerPlugin;
 
                 InitInfoWindow();
@@ -750,9 +760,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             LogInfo($"  * Monitors.Count={monitors.Count}");
 
             //Default SplitCtrl, in official release it sould be read from per-monitor settings file
-            int cellCount = 0;
-            char splitKey = 'A';
-            List<double> settings = new List<double>();
+            //int cellCount = 0;
+            //char splitKey = 'A';
+            //List<double> settings = new List<double>();
 
             _vmArrange.ClearWorkWindows();
 
@@ -773,8 +783,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 LogInfo($"    - Screen[{idxScr}] {scr.DeviceName}   IsPrimary={scr.Primary}");
                 LogInfo($"      WorkingArea: ({left},{top}){width}x{height}");
 
-                //Add new WorkWindow
-
                 //Find all monitors which have the same DeviceName (DisplayName)
                 List<MonitorInfo> attachedMonitors = monitors.FindAll(x => x.DisplayName.Equals(scr.DeviceName, StringComparison.OrdinalIgnoreCase));
 
@@ -782,7 +790,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 // Workwindow for it
                 if ((attachedMonitors == null) || (attachedMonitors.Count <= 0))
                 {
-                    LogInfo($"      No attached Monitor for this screen => No WorkWindow to creat for it.");
+                    LogInfo($"      No attached Monitor for this screen => No WorkWindow to create for it.");
+                    idxScr++;
                     continue;
                 }
 
@@ -791,7 +800,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 int idxMonitor = 0;
                 foreach (MonitorInfo mi in attachedMonitors)
                 {
-                    LogInfo($"        [{mi.Index}] Name={mi.AliasDeviceName}]");
+                    LogInfo($"        [{mi.Index}] Name=[{mi.AliasDeviceName}], Model=[{mi.modelName}], ServiceTag=[{mi.edid.ServiceTag}], MarketName=[{mi.MarketingName}]");
                     idxMonitor++;
                 }
 
@@ -802,10 +811,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 Thread thread = new Thread(() =>
                 {
                     //Read settings for this monitor
+                    LogInfo($"  * ReadEAMonitorSettings({miWork.modelName}/{miWork.edid.ServiceTag})");
                     EAMonitorSettings eaSettings = _deviceManagerPlugin.ReadEAMonitorSettings(miWork).Result;
-                    cellCount = eaSettings.SelectedSplit.CellCount;
-                    splitKey = eaSettings.SelectedSplit.SplitKey;
-                    settings = eaSettings.SelectedSplit.Settings;
+                    int cellCount = eaSettings.SelectedSplit.CellCount;
+                    char splitKey = eaSettings.SelectedSplit.SplitKey;
+                    List<double> settings = eaSettings.SelectedSplit.Settings;
+
+                    LogInfo($"  * InitWorkSplit: {eaSettings.SelectedSplit.ToString()}");
 
                     EAWorkWindow workWin = new EAWorkWindow(_vmArrange, scr, attachedMonitors);
 
@@ -813,10 +825,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     workWin.Top = top;
                     workWin.Width = width;
                     workWin.Height = height;
+                    LogInfo($"  * SetWorkWindow pos ({left},{top}){width}x{height}, Split={cellCount}{splitKey}");
                     workWin.SetWorkingSplit(cellCount, splitKey, settings);
                     workWin.Show();
                     tempWorkWindows.Add(scr.DeviceName, workWin);
-                    LogInfo($"        New WorkWindow created and Shown.");
+                    LogInfo($"  * Add WorkWindow for [{idxScr}]{scr.DeviceName}.");
 
                     System.Windows.Threading.Dispatcher.Run();
                 });
@@ -824,6 +837,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 addCount++;
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.Start();
+                //thread.Join(200); //Wait until thread finished
                 idxScr++;
             } //foreach(Screen scr)
 
@@ -1074,6 +1088,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             _editWindow.InvokeClose();
             _saveCustomWindow.Hide();
+
+            _vmArrange.IsWorkUIEnabled = true;
         }
 
         private void saveCustomWidow_SaveButtonClick(object sender, string e)
@@ -1093,6 +1109,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             _editWindow.InvokeClose();
             _saveCustomWindow.Hide();
+            _vmArrange.IsWorkUIEnabled = true;
         }
 
         #endregion EditWindow and SaveCustomWindow

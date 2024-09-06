@@ -34,7 +34,7 @@
                     IsEditable="True" />
                     -->
                     <ComboBox Name="cbNames" Height="46" Margin="0,8"
-                              IsEditable="True" />
+                              IsEditable="True" Loaded="cbNames_Loaded" />
 
                     <StackPanel Orientation="Horizontal" Margin="0,8">
                         <Button Content="Cancel" Padding="31.5,8" Click="cancelButton_Click" />

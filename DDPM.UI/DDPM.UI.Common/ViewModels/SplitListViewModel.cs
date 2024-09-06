@@ -4,6 +4,7 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.UserControls;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace DDPM.UI.Common.ViewModels
 {
@@ -57,6 +58,52 @@ namespace DDPM.UI.Common.ViewModels
             return null;
         }
 
+        public SplitItem? FindSplitCtrlByFriendlyName(string friendlyName)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.ISplitCtrl != null)
+                {
+                    if (spItem.ISplitCtrl.FriendlyName.Equals(friendlyName, StringComparison.OrdinalIgnoreCase))
+                        return spItem;
+                }
+            }
+            return null;
+        }
+
+        public SplitItem? FindSplitItemByCustomId(long customId)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.CustomId == customId)
+                {
+                    return spItem;
+                }
+            }
+            return null;
+
+        }
+
+        public List<string> GetCustomFriendlyNameList()
+        {
+            List<string> listOut = new List<string>();
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.ISplitCtrl != null)
+                {
+                    if (!String.IsNullOrWhiteSpace(spItem.ISplitCtrl.FriendlyName))
+                        listOut.Add(spItem.ISplitCtrl.FriendlyName);
+                }
+            }
+            return listOut;
+
+        }
         #endregion ItemsSource
 
         #region Index

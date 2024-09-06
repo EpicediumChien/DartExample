@@ -331,5 +331,227 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             }
         }
 
+        [Test]
+        public void TestShowOSD_ColoPreset()
+        {
+            string modelName = monitorInfo1.edid.ModelName;
+            string serialNumber = monitorInfo1.edid.SerialNumber;
+            string DisplayName = "DISPL";
+            monitorInfo1.DisplayName = DisplayName;
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard/Native', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string colorPreset_Name = "Standard/Native";
+            string supported_preset = monitorInfo1.CapabilityString;
+            colorPresetPlugin.ShowOSD_ColoPreset(monitorInfo1, colorPreset_Name);
+
+        }
+
+        [Test]
+        public void TestReadColorPreset()
+        {
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string supported_preset = monitorInfo1.CapabilityString;
+            List<string> colorPresetSupportList = new List<string>() { "Standard", "Movie", "Game", "Custom Color" };
+            List<string> colorPresetSupportList2 = new List<string>();
+            string colorpreset2 = null;
+            int count = 0;
+            if (colorpreset2 == null)
+            {
+                var ReadColorPreset_resullt = colorPresetPlugin.ReadColorPreset(monitorInfo1, colorpreset2).Result;
+                Assert.That(count, Is.EqualTo(ReadColorPreset_resullt.Count));
+                Assert.That(colorPresetSupportList2, Is.EqualTo(ReadColorPreset_resullt));
+            }
+
+            if (!string.IsNullOrEmpty(colorpreset))
+            {
+                var ReadColorPreset_resullt = colorPresetPlugin.ReadColorPreset(monitorInfo1, colorpreset).Result;
+                Assert.Greater(ReadColorPreset_resullt.Count, 0);
+                Assert.That(colorPresetSupportList, Is.EqualTo(ReadColorPreset_resullt));
+            }
+        }
+
+        [Test]
+        public void TestWriteColorPreset()
+        {
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string colorPreset_Name = "Movie";
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
+            int index_config = 0;
+            int runType = 0; //Manual 0,auto 1
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            int count = 0;
+            if (index_config >= 0)
+            {
+                var WriteColorPreset_resullt = colorPresetPlugin.WriteColorPreset(monitorInfo1, colorPreset_Name, monitorConfigs1).Result; //write colorpreset to Manual Standard to movie
+                Assert.IsNotNull(WriteColorPreset_resullt);
+                Assert.That(runType, Is.EqualTo(WriteColorPreset_resullt[0].RunType));
+                Assert.That(colorPreset_Name, Is.EqualTo(WriteColorPreset_resullt[0].PresetForManual));
+            }
+            else
+            {
+                var WriteColorPreset_resullt = colorPresetPlugin.WriteColorPreset(monitorInfo1, colorPreset_Name, monitorConfigs2).Result;
+                Assert.IsNotNull(WriteColorPreset_resullt);
+                Assert.That(count, Is.EqualTo(WriteColorPreset_resullt.Count));
+            }
+        }
+
+        [Test]
+        public void TestWriteColorPreset_AUTO()
+        {
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string colorPreset_Name = "Custom Color";
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
+            int index_config = 0;
+            int runType = 1; //Manual 0,auto 1
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            int count = 0;
+            if (index_config >= 0)
+            {
+                var WriteColorPreset_AUTO_resullt = colorPresetPlugin.WriteColorPreset_AUTO(monitorInfo1, colorPreset_Name, monitorConfigs1).Result; //write colorpreset to Manual Standard to Custom Color
+                Assert.IsNotNull(WriteColorPreset_AUTO_resullt);
+                Assert.That(runType, Is.EqualTo(WriteColorPreset_AUTO_resullt[0].RunType));
+                Assert.That(colorPreset_Name, Is.EqualTo(WriteColorPreset_AUTO_resullt[0].PresetForManual));
+            }
+            else
+            {
+                var WriteColorPreset_AUTO_resullt = colorPresetPlugin.WriteColorPreset_AUTO(monitorInfo1, colorPreset_Name, monitorConfigs2).Result;
+                Assert.IsNotNull(WriteColorPreset_AUTO_resullt);
+                Assert.That(count, Is.EqualTo(WriteColorPreset_AUTO_resullt.Count));
+            }
+        }
+
+        [Test]
+        public void TestIsDisposed()
+        {
+            var Result = colorPresetPlugin.IsDisposed;
+            Assert.IsFalse(Result);
+            PrivateObject privatehotkeyPluginObject = new PrivateObject(colorPresetPlugin);
+            privatehotkeyPluginObject.SetFieldOrProperty("IsDisposed", true);
+            var Result2 = colorPresetPlugin.IsDisposed;
+            Assert.IsTrue(Result2);
+        }
+
+        [Test]
+        public void TestBytesToString()
+        {
+            byte[] bytes = { 0x10, 0x12, 0x13, 0x14, 0x15, 0x16 };
+            string expectresult = "101213141516";
+            var Result = ColorPresetPlugin.BytesToString(bytes);
+            Assert.That(expectresult, Is.EqualTo(Result));
+        }
+
+        [Test]
+        public void TestLoadInstalledAppList()
+        {
+            bool Renew_data1 = false;
+            PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
+            Dictionary<string, InstalledAppInfo> allAppData_ = new Dictionary<string, InstalledAppInfo>();
+            allAppData_.Add("CMD", new InstalledAppInfo()
+            {
+                AppName = "name",
+                IconName = "iconName",
+                AppInstallPath = "pth",
+                lastModifyTime = DateTime.Now,
+                isDesktopApp = true,
+                AppUserModelID = "appUserModelID",
+            });
+            privatecolorPresetObject.SetFieldOrProperty("_AllAppData", allAppData_);
+            privatecolorPresetObject.Invoke("LoadInstalledAppList", Renew_data1);   //appdata is null
+            var result1 = (Dictionary<string, InstalledAppInfo>)privatecolorPresetObject.GetFieldOrProperty("_AllAppData");
+            Assert.That(allAppData_, Is.EqualTo(result1));
+
+            bool Renew_data2 = true;
+            privatecolorPresetObject.Invoke("LoadInstalledAppList", Renew_data2);
+            var result2 = (Dictionary<string, InstalledAppInfo>)privatecolorPresetObject.GetFieldOrProperty("_AllAppData");  //appdata is not null
+            Assert.IsNotNull(result2);
+            Assert.Greater(result2.Count, 0);
+        }
+
+        [Test]
+        public void TestCheckCA()
+        {
+            string url = @"https://clientperipherals.dell.com/DDPM/";
+            string[] issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
+            string[] subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
+            PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
+            privatecolorPresetObject.SetFieldOrProperty("Issuers", issuer);
+            privatecolorPresetObject.SetFieldOrProperty("Subjects", subject);
+            //var mockWebRequest = new Mock<HttpWebRequest>();
+            //mockWebRequest.Setup(req => req.GetResponse()).Returns(new Mock<HttpWebResponse>().Object);
+            //privatecolorPresetObject.SetFieldOrProperty("HttpWebRequest", mockWebRequest.Object);
+            try
+            {
+                var Result = colorPresetPlugin.CheckCA(url);  // web no response,(404) Not Found.
+                Assert.IsNotNull(Result);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestDownloadICCData()
+        {
+            string savelPath = "";
+            string url = @"https://clientperipherals.dell.com/DDPM/";
+            string[] issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
+            string[] subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
+            PrivateObject privatehotkeyPluginObject = new PrivateObject(colorPresetPlugin);
+            privatehotkeyPluginObject.SetFieldOrProperty("Issuers", issuer);
+            privatehotkeyPluginObject.SetFieldOrProperty("Subjects", subject);
+
+            try
+            {
+                var Result = colorPresetPlugin.DownloadICCData(monitorInfo1, savelPath).Result;  // web no response,(404) Not Found.
+                Assert.IsNotNull(Result);
+                Assert.IsNotNull(Result.strICC_Folder);
+                Assert.IsFalse(Result.Is_Support_ICC_DeviceName);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestGetHashSha256()
+        {
+            string tempFilePath = Path.GetTempFileName();
+            byte[] testData = { 1, 2, 3, 4, 5 };
+            File.WriteAllBytes(tempFilePath, testData);
+            PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
+            byte[] hash = (byte[])privatecolorPresetObject.Invoke("GetHashSha256", tempFilePath);
+            Assert.IsNotNull(hash);
+            File.Delete(tempFilePath);
+        }
+
+        [Test]
+        public void TestCheckHTTPAvailable()
+        {
+            string Url_ = @"https://clientperipherals.dell.com/DDPM/";
+            PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
+            try
+            {
+                var result = privatecolorPresetObject.Invoke("CheckHTTPAvailable", Url_);
+                Assert.IsNotNull(result);
+            }
+            catch
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
     }
 }

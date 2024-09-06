@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.Easy.Common;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.ViewModels;
@@ -18,11 +19,13 @@ namespace DDPM.UI.Common.UserControls
         private SplitListViewModel vm = new SplitListViewModel();
         private ICommand? _splitItemClickCommand;
 
+        #region ctor
         public SplitListView()
         {
             InitializeComponent();
             DataContext = vm;
         }
+        #endregion ctor
 
         //Owner must assign this value before calling to AddSplitToList()
         public eSplitOwner SplitOwner
@@ -31,6 +34,11 @@ namespace DDPM.UI.Common.UserControls
             set => vm.SplitOwner = value;
         }
 
+        #region Add/Clear SplitItem
+        public ObservableCollection<SplitItem> SplitList
+        {
+            get { return vm.SplitList; }
+        }
         public SplitItem AddSplitToList(ISplit split)
         {
             SplitItem spItem = new SplitItem();
@@ -48,48 +56,40 @@ namespace DDPM.UI.Common.UserControls
             spItem.SplitOwner = vm.SplitOwner;
             spItem.ClickCommand = new RelayCommand<SplitItem>(HandleSplitItemClickCommand);
             spItem.EditClickCommand = new RelayCommand<SplitItem>(HandleSplitItemEditClickCommand);
+            spItem.DeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
+
+            if (vm.SplitOwner == eSplitOwner.EaCustom)
+            {
+                spItem.IsDeleteEnabled = true;
+                spItem.IsEditEnabled = true;
+            }
+            else if (vm.SplitOwner == eSplitOwner.EaWin)
+            {
+                spItem.IsEditEnabled = true;
+            }
             vm.AddSplitItemToList(spItem);
             return spItem;
         }
-
         public void ClearList()
         {
             vm.ClearList();
         }
+        #endregion Add/Clear SplitItem
 
-        public ObservableCollection<SplitItem> SplitList
+        #region Split List Operations
+
+
+
+        /// <summary>
+        /// Return a list of FriendlyNames for Custom List before starting edit.
+        /// If CustomList is empty, then return the first FriendlyName
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetCustomFriendlyNames()
         {
-            get { return vm.SplitList; }
+            return vm.GetCustomFriendlyNameList();
         }
-
-        public void MoveSelectedItemToSecondPosition()
-        {
-            int idxSelected = FindIndexOfSelectedItem();
-            if (idxSelected <= 0)
-                return;
-
-            //Unbinding
-            DataContext = null;
-            //Move the new recent item [idx] to [2]
-            vm.SplitList.Move(idxSelected, 1);
-            //Restore binding
-            DataContext = vm;
-
-            //Move to first page
-            vm.GotoFirstPage();
-        }
-
-        public int FindIndexOfSelectedItem()
-        {
-            int idx = 0;
-            foreach(SplitItem spItem in vm.SplitList)
-            {
-                if (spItem.IsSelected)
-                    return idx;
-                idx++;
-            }
-            return -1;
-        }
+        #endregion Split List Operations
 
         #region Click and Item Selection
 
@@ -191,11 +191,129 @@ namespace DDPM.UI.Common.UserControls
 
         #endregion SplitItem Edit Command
 
+        #region SplitItem Delete Command
+        /// <summary>
+        /// Handle the event from SplitItem's pencil item clicking
+        /// </summary>
+        /// <param name="spItem"></param>
+        private void HandleSplitItemDeleteCommand(SplitItem spItem)
+        {
+            if (ItemDeleteCommand != null)
+                ItemDeleteCommand.Execute(spItem);
+        }
+
+        public ICommand ItemDeleteCommand
+        {
+            get { return (ICommand)GetValue(ItemDeleteCommandProperty); }
+            set { SetValue(ItemDeleteCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ItemDeleteCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ItemDeleteCommandProperty =
+            DependencyProperty.Register("ItemDeleteCommand", typeof(ICommand), typeof(SplitListView));
+
+
+        #endregion SplitItem Delete Command
+
         #region Find
         public SplitItem? FindSplitItem(int cellCount, char splitKey)
         {
             return vm.FindSplitCtrl(cellCount, splitKey);
         }
+        public int FindIndexOfSelectedItem()
+        {
+            int idx = 0;
+            foreach (SplitItem spItem in vm.SplitList)
+            {
+                if (spItem.IsSelected)
+                    return idx;
+                idx++;
+            }
+            return -1;
+        }
+
+        public SplitItem? FindItemByFriendlyName(string firendlyName)
+        {
+            return vm.FindSplitCtrlByFriendlyName(firendlyName);
+        }
+        public SplitItem? FindItemByCustomId(long customId)
+        {
+            return vm.FindSplitItemByCustomId(customId);
+        }
         #endregion
+
+        #region Recent List 
+        public void MoveSelectedItemToSecondPosition()
+        {
+            int idxSelected = FindIndexOfSelectedItem();
+            if (idxSelected <= 0)
+                return;
+
+            //Unbinding
+            DataContext = null;
+            //Move the new recent item [idx] to [2]
+            vm.SplitList.Move(idxSelected, 1);
+            //Restore binding
+            DataContext = vm;
+
+            //Move to first page
+            vm.GotoFirstPage();
+        }
+
+        public SplitItem AddSplitCtrlTo2ndPosition(ISplitCtrl isp)
+        {
+            SplitItem spItem = new SplitItem();
+            spItem.InnerContent = isp.UC;
+            spItem.SplitOwner = vm.SplitOwner;
+            spItem.ClickCommand = new RelayCommand<SplitItem>(HandleSplitItemClickCommand);
+            spItem.EditClickCommand = new RelayCommand<SplitItem>(HandleSplitItemEditClickCommand);
+            spItem.DeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
+
+            if (vm.SplitOwner == eSplitOwner.EaCustom)
+            {
+                spItem.IsDeleteEnabled = true;
+                spItem.IsEditEnabled = true;
+            }
+            else if (vm.SplitOwner == eSplitOwner.EaWin)
+            {
+                spItem.IsEditEnabled = true;
+            }
+
+            DataContext = null;
+            vm.SplitList.Insert(1, spItem);
+            DataContext = vm;
+            vm.RefreshDisplayItems();
+            return spItem;
+        }
+
+        //public SplitItem? ReplaceByFriendlyName(string friendlyName, )
+        //{
+        //    int idx = 0;
+        //    foreach (SplitItem spItem in vm.SplitList)
+        //    {
+        //        if (spItem.ISplitCtrl != null)
+        //        {
+        //            if (spItem.ISplitCtrl.FriendlyName.Equals(friendlyName))
+        //            {
+        //            }
+        //        }
+        //        if (spItem.IsSelected)
+        //            return idx;
+        //        idx++;
+        //    }
+        //}
+        #endregion
+
+        #region Delete an item
+        public bool DeleteSplitItem(SplitItem spItem)
+        {
+            DataContext = null;
+            bool res = vm.SplitList.Remove(spItem);
+            DataContext = vm;
+            vm.RefreshDisplayItems();
+            vm.RefreshPrevNextButtons();
+            return res;
+        }
+        #endregion Delete an item
     }
 }

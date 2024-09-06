@@ -235,8 +235,9 @@ namespace DDPM.UI.Module.PenButtonSettings
             {
                 var cat = ActionCategory.None;
                 if (_vm.SelectedActionID != -1)
-                    cat = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[_vm.SelectedActionID].Category!.Value : Actions.KnMActions[_vm.SelectedActionID].Category!.Value;
-                if (cat == ActionCategory.None)
+                    //cat = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[_vm.SelectedActionID].Category!.Value : Actions.KnMActions[_vm.SelectedActionID].Category!.Value;
+                    cat = Actions.PenActions[_vm.SelectedActionID].Category!.Value;
+                if(cat == ActionCategory.None)
                 {
                     if (ActiveActionSection != "")
                     {
@@ -295,8 +296,9 @@ namespace DDPM.UI.Module.PenButtonSettings
             {
                 id = (int)((UXRadioButton)sender).DataContext;
                 rb.Name = $"Radio{id}";
-                rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[id].Caption : Actions.KnMActions[id].Caption;
-                if (rb.Tag.ToString() != "search")
+                //rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[id].Caption : Actions.KnMActions[id].Caption;
+                rb.Content = Actions.PenActions[id].Caption;
+                if(rb.Tag.ToString() != "search")
                     rb.IsChecked = id == _vm.SelectedActionID;
             }
             else if (sender is ActionButton btn)
@@ -466,7 +468,7 @@ namespace DDPM.UI.Module.PenButtonSettings
             Window parentWindow = Window.GetWindow(this);
             double windowLeft = 0;
             double windowTop = 0;
-            if (id == 14)
+            if (id == 8)
             {
                 ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
                 if (parentWindow != null)
@@ -483,7 +485,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);
                 }
             }
-            else if (id == 53)
+            else if (id == 23)
             {
                 var arr = parameter.Split('|');
                 OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
@@ -501,9 +503,9 @@ namespace DDPM.UI.Module.PenButtonSettings
                     _vm.UpdateAction(_vm.SelectedActionID, $"{modalDialog.ID}|{modalDialog.Parameter}");
                 }
             }
-            else if (id == 56)
+            else if (id == 41)
             {
-                RadialMenuModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.PenAction, _vm.Model);
+                RadialMenuModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm);
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
