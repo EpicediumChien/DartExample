@@ -335,38 +335,42 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         private void SetBLConnectionStatus()
         {
             string hostName = Dns.GetHostName();
-            var hostIndex = _vm!.PairedHostName1.ToUpper() == hostName.ToUpper() ? 1 : (_vm.PairedHostName2.ToUpper() == hostName.ToUpper() ? 2 : 3);
             txt1.Style = ConnectionStyle2;
             imgBL1.Source = img2;
             txtBLHost1.Style = ConnectionStyle2;
             txt2.Style = ConnectionStyle2;
             imgBL2.Source = img2;
             txtBLHost2.Style = ConnectionStyle2;
+            txt3.Style = ConnectionStyle2;
+            imgBL3.Source = img2;
+            txtBLHost3.Style = ConnectionStyle2;
 
-            switch(_vm.Model)
+            switch(_vm!.Model)
             {
                 case "KB700":
                 case "KB740":
-                    txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
-                    if(hostIndex == 2)
-                    {
-                        txt1.Style = ConnectionStyle1;
-                        imgBL1.Source = img1;
-                        txtBLHost1.Style = ConnectionStyle1;
-                    }
-                    else
+                    Host1.Visibility = Visibility.Collapsed;
+                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
+                    txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    if(txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt2.Style = ConnectionStyle1;
                         imgBL2.Source = img1;
                         txtBLHost2.Style = ConnectionStyle1;
                     }
+                    else
+                    {
+                        txt3.Style = ConnectionStyle1;
+                        imgBL3.Source = img1;
+                        txtBLHost3.Style = ConnectionStyle1;
+                    }
                     break;
 
                 case "KB900":
+                    Host3.Visibility = Visibility.Collapsed;
                     txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
                     txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    if(hostIndex == 1)
+                    if(txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt1.Style = ConnectionStyle1;
                         imgBL1.Source = img1;
@@ -381,11 +385,12 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     break;
 
                 default:
-                    txtBLHost1.Text = hostName;
-                    txt1.Style = ConnectionStyle1;
-                    imgBL1.Source = img1;
-                    txtBLHost1.Style = ConnectionStyle1;
-                    Host2.Visibility = Visibility.Collapsed;
+                    Host1.Visibility = Visibility.Collapsed;
+                    Host3.Visibility = Visibility.Collapsed;
+                    txt2.Style = ConnectionStyle1;
+                    imgBL2.Source = img1;
+                    txtBLHost2.Text = hostName;
+                    txtBLHost2.Style = ConnectionStyle1;
                     break;
             }
         }

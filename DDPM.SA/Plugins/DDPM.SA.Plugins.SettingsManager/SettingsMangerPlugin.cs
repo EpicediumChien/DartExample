@@ -12,6 +12,7 @@
 
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -31,6 +32,7 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -51,6 +53,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         private const string publisherCompany = "Wistron";
         private const string publisherWebsite = "https://www.wistron.com";
         private const string publisherSupport = "This plugin implements Settings Manager Plugin.";
+        private static string _settingsAccess = SettingsAccess.AppAccessInfo;
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
@@ -106,6 +109,10 @@ namespace DDPM.SA.Plugins.SettingsManager
             return ReadITConfigData(force_reload);
         }
 
+        public Task<string> QueryAccessInfo()
+        {
+            return Task.FromResult(_settingsAccess);
+        }
         #endregion
 
         #region ISettingsManagerIT implementation
@@ -121,7 +128,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
                 WriteLog($"ReadITConfigData: null settings, load data from file");
             }
-            string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);
+            string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, _settings_path, out info);
             _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
             return Task.FromResult(_settings);
         }
@@ -141,7 +148,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             _settings = data;
             string info = "Success";
-            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JObject.FromObject(_settings).ToString(), _settings_path, out info))
             {
                 WriteLog($"WriteITConfigData: write failed. Info({info})");
                 return Task.FromResult(false);
@@ -411,6 +418,13 @@ namespace DDPM.SA.Plugins.SettingsManager
                     WriteLog($"re-create system settings folder success");
                 }
             }
+            string info = string.Empty;
+            //Apply folder ACL
+            if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
+            {
+                WriteLog($"Apply ACL to folder failed. ({info})");
+                return null;
+            }
             _settings_path = folder + "\\" + filename_appsettings_IT;
             //WriteLog($"_settings_path is {_settings_path}."); //SDL to remove (not allow path in log)
 
@@ -438,10 +452,10 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
 
             DDPMITConfig ddpm_it = new DDPMITConfig();
-            string info;
+            info = string.Empty;
             if (File.Exists(_settings_path))
             {
-                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settings_path, out info);
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString(_settingsAccess, _settings_path, out info);
                 if (!string.IsNullOrEmpty(serialized_string))
                     _settings = JsonConvert.DeserializeObject<DDPMITConfig>(serialized_string);
                 else
@@ -451,7 +465,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                     if (_settings != null)
                     {
                         WriteLog("[InitDDPMITConfigFile] *** Init cache from file fail, re-create default settings to file");
-                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
+                        if (DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JObject.FromObject(_settings).ToString(), _settings_path, out info))
                             WriteLog("[InitDDPMITConfigFile] re-create file content OK");
                         else
                             WriteLog("[InitDDPMITConfigFile] save to file failed, please check file access right!!");
@@ -465,7 +479,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog("[InitDDPMITConfigFile] settings file not exist, new an object");
                 _settings = new DDPMITConfig();
                 //init data to file
-                if (DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(_settings).ToString(), _settings_path, out info))
+                if (DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccess, JObject.FromObject(_settings).ToString(), _settings_path, out info))
                 {
                     WriteLog("[InitDDPMITConfigFile] settings file create and write success");
                 }

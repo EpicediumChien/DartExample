@@ -593,9 +593,9 @@ namespace DDPM.UI.Plugin.ViewModels
                         //var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\",\"IsHoverEnabled\":true}}";
                         var value4 = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"IsHoverEnabled\":true}}";
                         byte[] newValue4 = Encoding.UTF8.GetBytes(value4);
-                        //_deviceManager.SetSideTopSwitchSinglePressSetting1(itemID, newValue4);
+                        _deviceManager.SetSideTopSwitchSinglePressSetting1(itemID, newValue4);
                         //_deviceManager.SetSideTopSwitchSinglePressSetting2(itemID, value4);
-                        _deviceManager.SetSideTopSwitchSinglePressSetting3(newValue4, CurrentDeviceInfo!.ID);
+                        //_deviceManager.SetSideTopSwitchSinglePressSetting3(newValue4, CurrentDeviceInfo!.ID);
                         break;
                     case "BottomBarrelButton":
                         var value5 = $"{{\"actionId\":79,\"actionName\":\"網路瀏覽器\",\"IsHoverEnabled\":true}}";

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿using Dell.Client.Framework.Common;
+=======
+﻿using DDPM.SA.Obfuscation;
+>>>>>>> 747050587031a8a52e2f74efea5495ace0431cc2
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Microsoft.Win32;
@@ -75,6 +79,9 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
+        //need system privilege to query this string
+        public static string AppAccessInfo { get; } = SettingsAccess.AppAccessInfo;
+
         /// <summary>
         /// Apply DDPM data security [Write settings]
         /// 1. Calculate hash of serialized string
@@ -86,7 +93,7 @@ namespace DDPM.SA.Common.Settings
         /// <param name="target_file">Describe your target file to save</param>
         /// <param name="info">Read this param for detail info if return false</param>
         /// <returns>true or false as result</returns>
-        public static bool SetJsonContentFromSerializedString(string serialized_string, string target_file, out string info, bool isEncrypt = false)
+        public static bool SetJsonContentFromSerializedString(string accessInfo, string serialized_string, string target_file, out string info, bool isEncrypt = false)
         {
             info = "Success";
             if (string.IsNullOrEmpty(serialized_string))
@@ -97,10 +104,18 @@ namespace DDPM.SA.Common.Settings
             string signature;
             try
             {
-                byte[] decrypted_data = Encoding.UTF8.GetBytes(serialized_string);
+                //byte[] decrypted_data = Encoding.UTF8.GetBytes(serialized_string);
                 //1. Calculate the HASH
-                byte[] hash_sign = GetSHA512(decrypted_data, 0, decrypted_data.Length);
-                signature = Encoding.UTF8.GetString(hash_sign);
+                //byte[] hash_sign = GetSHA512(decrypted_data, 0, decrypted_data.Length);
+                //signature = Encoding.UTF8.GetString(hash_sign);
+
+                //0905 apply DDPM private key rule
+                if(accessInfo == null || accessInfo.Length < 32)
+                {
+                    info = "DDPM AccessInfo value is abnormal";
+                    return false;
+                }
+                signature = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
             }
             catch (Exception e)
             {
@@ -157,12 +172,17 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         /// <param name="filePath">Source file for reading content</param>
         /// <returns>Empty string returned if any error occur</returns>
-        public static string GetSerializedJsonString(string filePath, out string info, bool isEncrypt = false)
+        public static string GetSerializedJsonString(string accessInfo, string filePath, out string info, bool isEncrypt = false)
         {
             info = "Success";
             if (!IsFilePathValid(filePath, out info))
             {              
                 _log.Info($"{nameof(GetSerializedJsonString)} {info}");
+                return string.Empty;
+            }
+            if (accessInfo == null || accessInfo.Length < 32)
+            {
+                info = "DDPM AccessInfo value is abnormal";
                 return string.Empty;
             }
             //1. Read json content
@@ -242,10 +262,12 @@ namespace DDPM.SA.Common.Settings
             string cal_sign;
             try
             {
+                //0905 apply DDPM private key rule
                 modifiedJson = jObject.ToString();
-                byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
-                byte[] sign = GetSHA512(body_array, 0, body_array.Length);
-                cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
+                //byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
+                //byte[] sign = GetSHA512(body_array, 0, body_array.Length);
+                //cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
+                cal_sign = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
                 {
                     info = "Null signature from hash calculation";
