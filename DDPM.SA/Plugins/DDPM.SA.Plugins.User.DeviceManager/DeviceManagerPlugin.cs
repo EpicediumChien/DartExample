@@ -1484,7 +1484,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PeripheralsPlugin.SetWearDetectionForCLI(newValue, deviceId);
             return Task.FromResult(true);
         }
-        
+
         public Task SetBusyLight(bool newValue, Guid deviceId)
         {
             writelog("DeviceMangerPlugin received SetBusyLight requested ...");
@@ -2532,7 +2532,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _NKVMPlugin.NKVM_State(state);
             }
-            return Task.CompletedTask;      
+            return Task.CompletedTask;
         }
 
         public Task CallNKVMConnent()
@@ -4201,6 +4201,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             ReloadHotkeyConfigData();
                             ToNKVM_SupportedMonitorList();
                             ToNKVM_initHotKeys();
+                            LoadGlobalSettingParam();
                         }
 
                         CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
