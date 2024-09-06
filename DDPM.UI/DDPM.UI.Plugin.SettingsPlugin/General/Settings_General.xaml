@@ -1,0 +1,145 @@
+﻿<UserControl x:Class="DDPM.UI.Plugin.SettingsPlugin.Settings_General"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
+             mc:Ignorable="d"
+             Margin="5,4,60,120"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <UXControls:UXScrollViewer>
+            <Border Background="#99132F54"
+                    CornerRadius="13">
+                <StackPanel>
+                    <Grid Margin="14,16,14,16">
+                        <UXControls:UXTextBlock Text="On screen notifications"
+                                                Style="{StaticResource ModuleCaptionStyle}" />
+                    </Grid>
+                    <Grid Margin="14,16,14,16">
+                        <Border Background="#132F54"
+                                CornerRadius="6">
+                            <StackPanel Orientation="Vertical"
+                                        Margin="15,0,0,0">
+                                <UXControls:UXTextBlock Margin="0,20,0,0"
+                                                        Text="All Devices"
+                                                        Style="{StaticResource ModuleItemStyle}" />
+                                <UXControls:UXCheckBox Margin="0,20,0,15"
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Center"
+                                                       Content="Low battery level"
+                                                       Foreground="#FFFFFF"
+                                                       FontSize="16"
+                                                       Background="#0A0E14"
+                                                       IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Low_Battery_Level}"
+                                                       Click="LowBatteryLevel_Click"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Grid Margin="14,16,14,16">
+                        <Border Background="#132F54"
+                                CornerRadius="6">
+                            <StackPanel Orientation="Vertical"
+                                        Margin="15,0,0,0">
+                                <UXControls:UXTextBlock Margin="0,20,0,0"
+                                                        Text="Device-specific"
+                                                        Style="{StaticResource ModuleItemStyle}" />
+                                <UXControls:UXCheckBox Margin="0,20,0,15"
+                                                       Height="25"
+                                                       Content="Keyboard lock key"
+                                                       Foreground="#FFFFFF"
+                                                       FontSize="16"
+                                                       Background="#0A0E14"
+                                                       IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key}"
+                                                       Click="KeyboardLockKey_Click" />
+                                <UXControls:UXCheckBox Margin="0,0,0,15"
+                                                       Height="25"
+                                                       HorizontalAlignment="Left"
+                                                       Content="Webcam WB7022 Presence Detection sensor cover state"
+                                                       Foreground="#FFFFFF"
+                                                       FontSize="16"
+                                                       Background="#0A0E14"
+                                                       IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State}"
+                                                       Click="WB7022CoverState_Click" />
+                                <UXControls:UXCheckBox Margin="0,0,0,15"
+                                                       Height="25"
+                                                       HorizontalAlignment="Left"
+                                                       Content="Headset, speakerphone and soundbar mute/unmute"
+                                                       Foreground="#FFFFFF"
+                                                       FontSize="16"
+                                                       Background="#0A0E14"
+                                                       IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Display_MuteState}"
+                                                       Click="MuteState_Click" />
+                                <UXControls:UXCheckBox Margin="0,0,0,15"
+                                                       Height="25"
+                                                       HorizontalAlignment="Left"
+                                                       Content="Display Color Preset and Easy Memory"
+                                                       Foreground="#FFFFFF"
+                                                       FontSize="16"
+                                                       Background="#0A0E14"
+                                                       IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory}"
+                                                       Click="DisplayCPAndEM_Click" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <Grid Margin="14,16,14,16">
+                        <UXControls:UXTextBlock Text="Reports"
+                                                Style="{StaticResource ModuleCaptionStyle}" />
+                    </Grid>
+                    <Grid Margin="14,16,14,16">
+                        <Border Background="#132F54"
+                                CornerRadius="6">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="15,0,0,0">
+                                <Border Style="{StaticResource BorderUnpair}"
+                                        Background="#132F54"
+                                        Width="176"
+                                        MouseLeftButtonDown="SaveDiagnosticReport_Click"
+                                        Cursor="Hand"
+                                        Margin="8,15,5,15"
+                                        Visibility="Visible">
+                                    <!--0614 Bruce 修改按鈕名稱-->
+                                    <Grid>
+                                        <UXControls:UXTextBlock Foreground="#FFFFFF"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Center"
+                                                                FontFamily="Roboto"
+                                                                FontSize="14"
+                                                                Text="Save diagnostic report" />
+                                    </Grid>
+                                </Border>
+                                <Border Style="{StaticResource BorderUnpair}"
+                                        Background="#132F54"
+                                        Width="176"
+                                        MouseLeftButtonDown="SaveMonitorAssetReport_Click"
+                                        Cursor="Hand"
+                                        Margin="8,15,5,15"
+                                        Visibility="Visible">
+                                    <!--0614 Bruce 修改按鈕名稱-->
+                                    <Grid>
+                                        <UXControls:UXTextBlock Foreground="#FFFFFF"
+                                                                VerticalAlignment="Center"
+                                                                HorizontalAlignment="Center"
+                                                                FontFamily="Roboto"
+                                                                FontSize="14"
+                                                                Text="Save monitor asset report" />
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </UXControls:UXScrollViewer>
+    </Grid>
+</UserControl>
