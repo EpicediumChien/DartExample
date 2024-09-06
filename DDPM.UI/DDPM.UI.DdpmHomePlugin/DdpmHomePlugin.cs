@@ -16,7 +16,9 @@ using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using VcpCore.Common;
+using Windows.Devices.Geolocation;
 using Windows.Devices.Input;
 using DDPMConstants = DDPM.UI.Common.Constants;
 
@@ -76,7 +78,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private bool _disposed;
         private bool _HasRegisted = false;
         private DdpmHomePageViewModel? _viewModel;
-
+        private List<DeviceInfo> deviceInfosForWalkThrough = new List<DeviceInfo>();
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -182,9 +184,37 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _deviceManager.Reset0x52TimerTick(2000);
                             await GetDdpmDevicesAsync(_deviceManager);
 
-                            //DdpmHomePlugin.DdpmHomePlugin.GetHomeDevices();
 
+                            if (_deviceManager == null)
+                            {
+                                _log.Error($"{nameof(PluginManager_PluginsStarted)} ISettingsManagerDev Plugin is null");
+                                return;
+                            }
+                       
+                            object value = _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\S-1-5-21-1955305480-2923385767-3602544926-1001", "IsFirstTimeNotificationDone_com.dell.DPM.Plugin.LogicalDevice.WL5024").Result;
+                            switch (value)
+                            {
+                                case int intValue:
+                                    Console.WriteLine("Integer value: " + intValue);
+                                    break;
+                                case string stringValue:
+                                    Console.WriteLine("String value: " + stringValue);
+                                    break;
+                                case byte[] byteArray:
+                                    Console.WriteLine("Byte array value: " + BitConverter.ToString(byteArray));
+                                    break;
+                                case string[] stringArray:
+                                    Console.WriteLine("String array value: " + string.Join(", ", stringArray));
+                                    break;
+                                case long longValue:
+                                    Console.WriteLine("Long value: " + longValue);
+                                    break;
+                                default:
+                                    Console.WriteLine("Unknown type: " + value.GetType());
+                                    break;
+                            }
                             _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                            //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId, deviceInfosForWalkThrough[0].ModelNumber.ToString());
 
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
@@ -239,7 +269,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     if (_deviceManager != null)
                         _ = GetDdpmDevicesAsync(_deviceManager);
 
-                    //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
 
                     if (e.type == DeviceChangedType.NotifyOnly)
                     {
@@ -369,6 +399,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
                 {
                     deviceInfos = deviceHelper.deviceInfo;
+                    deviceInfosForWalkThrough = deviceHelper.deviceInfo;
                 }
                 _log.Info($"Peripheral count is ${deviceInfos.Count}");
 

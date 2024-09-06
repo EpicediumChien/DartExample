@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
-             mc:Ignorable="d" 
-             Background="#FF0D121A"
+             mc:Ignorable="d"     
              d:DesignHeight="671" 
              d:DesignWidth="1378">
 
@@ -20,7 +19,11 @@
     </UserControl.Resources>
 
     <Grid>
-        <Image x:Name="imgBkGlow" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png" Stretch="UniformToFill" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+        <Image x:Name="imgBkGlow"
+               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <!--<Image x:Name="imgBkGlow" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png" Stretch="UniformToFill" HorizontalAlignment="Center"  VerticalAlignment="Center" />-->
         <StackPanel>
             <Grid Margin="0">
                 <Grid.ColumnDefinitions>
