@@ -590,6 +590,12 @@ namespace NetworkKVM.Plugins
             return Task.CompletedTask;
         }
 
+        public Task NKVM_State(bool state)
+        {
+            NKVMState = state;
+            return Task.CompletedTask;
+        }
+
         //public Task OpenNKVMUI(System.Windows.Window mainWindow, int index, int x, int y)
         //{
         //    var directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
