@@ -88,7 +88,6 @@ namespace DDPM.SA.Common.Security
             //check file path security
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))
             {
-                //info = $"{nameof(NamedPipeClientSecurity)} {FileInfo}";
                 _log.Info($"{nameof(NamedPipeClientSecurity)} {info}");
                 return false;
             }

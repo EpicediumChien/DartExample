@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-﻿using Dell.Client.Framework.Common;
-=======
+using Dell.Client.Framework.Common;
 ﻿using DDPM.SA.Obfuscation;
->>>>>>> 747050587031a8a52e2f74efea5495ace0431cc2
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Microsoft.Win32;
@@ -305,6 +302,14 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //0906 Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    _log.Info($"{nameof(Json_ExportSettingsToFileWithCheckSum)} {FileInfo}");
+                    return false;
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -330,6 +335,14 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //0906 Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    _log.Info($"{nameof(Json_ExportSettingsToFileWithCheckSum)} {FileInfo}");
+                    return false;
+                }
+                
                 return true;
             }
             catch (Exception ex)
@@ -362,6 +375,13 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //0906 Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    _log.Info($"{nameof(Json_ExportSettingsToFileWithSha512)} {FileInfo}");
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -385,6 +405,13 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //0906 Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    _log.Info($"{nameof(Json_ExportSettingsToFileWithoutSignature)} {FileInfo}");
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -402,6 +429,13 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //0906 Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        _log.Info($"{nameof(Json_ImportSettingsWithoutSignature)} {FileInfo}");
+                        return null;
+                    }
                     int num = (int)new FileInfo(path).Length;
                     if (num > 0)
                     {
@@ -436,6 +470,14 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //0906 Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        _log.Info($"{nameof(Json_ImportSettingsAndCheckCheckSum)} {FileInfo}");
+                        return null;
+                    }
+
                     int num = (int)new FileInfo(path).Length;
                     if (num > 4)
                     {
@@ -478,6 +520,13 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //0906 Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        _log.Info($"{nameof(Json_ImportSettingsAndCheckSha512)} {FileInfo}");
+                        return null;
+                    }
                     int num = (int)new FileInfo(path).Length;
                     if (num > 64)
                     {
@@ -671,6 +720,13 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
+            //0906 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
+            {
+                _log.Info($"{nameof(ApplyFileACLUserReadOnly)} {FileInfo}");
+                return false;
+            }
             FileInfo fileInfo = new FileInfo(fileName);
 
             // Get file's security content
@@ -724,6 +780,14 @@ namespace DDPM.SA.Common.Settings
             if (File.Exists(fileName) == false)
             {
                 info = $"[ApplyFileACLNormalUser] file ({fileName}) not exist";
+                return false;
+            }
+
+            //0906 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
+            {
+                _log.Info($"{nameof(ApplyFileACLNormalUser)} {FileInfo}");
                 return false;
             }
 

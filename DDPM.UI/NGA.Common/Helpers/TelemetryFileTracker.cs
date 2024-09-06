@@ -139,8 +139,11 @@ namespace NGA.Common.Helpers
 
             var result = PathHelper.ValidateFilePath(file, PathCheckOption.IgnoreFileExists);
             if (result != PathCheckErrorCodes.SUCCESS)
+            {
+                _log.Info($"{nameof(ReadFile)} --is not a valid path");
                 throw new ArgumentException($"{nameof(file)} is not a valid path. Received the following " +
-                    $"error code while validating: {result}", nameof(file));
+    $"error code while validating: {result}", nameof(file));
+            }
 
             var redirectionReturnCode = PathHelper.CheckPathRedirection(file);
             if (redirectionReturnCode != PathRedirectionReturn.PathIsNormal && redirectionReturnCode != PathRedirectionReturn.PathDoesNotExist)

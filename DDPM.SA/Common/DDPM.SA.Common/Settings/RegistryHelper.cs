@@ -5,6 +5,7 @@ using System.Security;
 using System.Windows.Media.Animation;
 using Windows.Devices.Geolocation;
 using System.Runtime.InteropServices;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -16,6 +17,7 @@ namespace DDPM.SA.Common.Settings
 
     public class DDPMRegistryHelper
     {
+        private static Log _log;
         public static void WriteRegistryKey(RegistryHive hive, string keyPath, string keyName, object value)
         {
             ValidateInput(keyPath, keyName);
@@ -55,6 +57,13 @@ namespace DDPM.SA.Common.Settings
                 throw new ArgumentException("Key name cannot be null or empty.");
             }
 
+            //0906 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(keyPath, out FileInfo))
+            {
+                _log.Info($"{nameof(ValidateInput)} {FileInfo}");
+                throw new ArgumentException($"Invalid file path string - {keyPath}");
+            }
             return true;
         }
 

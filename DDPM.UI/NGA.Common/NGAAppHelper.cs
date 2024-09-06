@@ -8,6 +8,7 @@
 
 #endregion
 
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
@@ -37,7 +38,13 @@ namespace NGA.Common
                 throw new ArgumentNullException(paramName: nameof(processFullPath), $"{nameof(processFullPath)} is cannot be null or empty.");
             if (string.IsNullOrEmpty(appWindowTitle))
                 throw new ArgumentNullException(paramName: nameof(appWindowTitle), $"{nameof(appWindowTitle)} is cannot be null or empty.");
-
+            //0906 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
+            {
+                log.Info($"{nameof(CloseProcessAsync)} {FileInfo}");
+                throw new ArgumentNullException(paramName: nameof(processFullPath), $"{nameof(processFullPath)} is Invalid.");
+            }
             return CloseProcessInternalAsync(processFullPath, appWindowTitle, log);
         }
 
@@ -63,6 +70,14 @@ namespace NGA.Common
 
             if (pluginManager == null)
                 throw new ArgumentNullException(nameof(pluginManager));
+
+            //0906 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
+            {
+                log.Info($"{nameof(ValidateAndStartAppProcess)} {FileInfo}");
+                return false;
+            }
 
             try
             {
@@ -151,6 +166,12 @@ namespace NGA.Common
             {
                 try
                 {
+                    //0906 Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
+                    {
+                        log.Info($"{nameof(CloseProcessInternalAsync)} {FileInfo}");
+                    }
                     var appName = Path.GetFileName(processFullPath);
 
                     // Check whether NGA App is running for current user

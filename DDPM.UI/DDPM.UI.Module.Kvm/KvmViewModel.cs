@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using Dell.Client.Framework.Common;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -165,6 +167,7 @@ namespace DDPM.UI.Module.Kvm
         private bool _isNoKVM = false;
         private bool _isUSBKVM = false;
         private bool _isNKVM = false;
+        private static Log _log;
 
         //private Dictionary<string, PCsInfo> pcsList = new Dictionary<string, PCsInfo>();
         private ImageSource? _PCImage;
@@ -1103,7 +1106,12 @@ namespace DDPM.UI.Module.Kvm
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
             string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
-
+            //0906 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(strFullPath, out FileInfo))
+            {
+                _log.Info($"{nameof(OpenNKVMUI)} {FileInfo}");                
+            }
             Trace.WriteLine($"NKVM full path is {strFullPath}");
 
             try

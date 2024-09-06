@@ -8,6 +8,7 @@
 
 #endregion
 
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.Common;
 using Dell.Client.Framework.UX.Common.DataModel;
@@ -310,6 +311,14 @@ namespace NGA.ThickClientCore
             if (_systrayDetails == null || string.IsNullOrWhiteSpace(_systrayDetails.SystrayFullPath))
             {
                 _log?.Info("Systray path is not provided");
+                return;
+            }
+
+            //0906 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(_systrayDetails.SystrayFullPath, out FileInfo))
+            {
+                _log.Info($"{nameof(ValidateAndStartSystray)} {FileInfo}");
                 return;
             }
 

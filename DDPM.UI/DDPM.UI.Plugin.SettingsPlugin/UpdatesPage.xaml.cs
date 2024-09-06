@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using Dell.Client.Framework.Common;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
@@ -14,6 +15,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class UpdatesPage : UserControl
     {
+        private static Log _log;
         public UpdatesPage()
         {
             InitializeComponent();
@@ -139,6 +141,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo).Result;
                 }
                 string path = "DDPM.exe";
+                //0906 Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    _log.Info($"{nameof(CallFWU)} {FileInfo}");
+                }
+
                 string processName = "DDPM";
                 Process[] processes = Process.GetProcessesByName(processName);
                 if (processes.Length > 0)
