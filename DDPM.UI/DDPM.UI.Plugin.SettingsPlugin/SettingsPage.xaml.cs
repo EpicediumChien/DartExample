@@ -43,6 +43,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     }
                 }));
             }
+            GeneralButton_Click(this, null);
         }
 
         ~SettingsPage()
