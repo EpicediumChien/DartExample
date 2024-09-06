@@ -1,4 +1,5 @@
 ﻿using DDPM.Easy.Common;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.EAEM;
@@ -226,7 +227,12 @@ namespace DDPM.UI.Common.UserControls
 
         #region For Easy Arrange
 
-        public long CustomId;
+        public long CustomId
+        {
+            get => vm.CustomId;
+            set { vm.CustomId = value; }
+        }
+
         public SplitItem? Buddy { get; set; } = null;
 
         public int CellCount
@@ -316,5 +322,27 @@ namespace DDPM.UI.Common.UserControls
         }
         #endregion For Easy Arrange
 
+        #region Replace
+        public void ReplaceByEAArgs(EAArgs args)
+        {
+            //Check if it need to change ISplitCtrl
+            if ((CellCount != args.CellCount) || (SplitKey !=  args.SplitKey))
+            {
+                ISplitCtrl? ispNew = ISplitCtrl.Create(args.CellCount, args.SplitKey);
+                if (ispNew == null)
+                    return;
+                InnerContent = ispNew.UC;
+            }
+            if (ISplitCtrl == null)
+                return;
+
+            //Copy data
+            ISplitCtrl.Settings = new List<double>(args.Settings);
+            ISplitCtrl.FriendlyName = args.CustomName;
+            //CustomId = args.CustomId;
+
+            vm.NotifyPropertyChanged_TooltipText();
+        }
+        #endregion
     }
 }
