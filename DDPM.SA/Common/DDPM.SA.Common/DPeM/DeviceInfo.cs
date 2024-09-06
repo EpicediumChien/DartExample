@@ -294,7 +294,7 @@ namespace DDPM.SA.Common
         {
             get
             {
-                switch (_logicalDeviceType)
+                switch(_logicalDeviceType)
                 {
                     case "LogicalMouse":
                         DeviceName = "Mouse Settings";
@@ -1074,6 +1074,32 @@ namespace DDPM.SA.Common
 
         #region Webcam Properties
 
+        public int BrightnessMax { get; set; }
+        public int BrightnessMin { get; set; }
+        public int BrightnessSteppingDelta { get; set; }
+        public int ContrastMax { get; set; }
+        public int ContrastMin { get; set; }
+        public int ContrastSteppingDelta { get; set; }
+        public int FocusMax { get; set; }
+        public int FocusMin { get; set; }
+        public int FocusSteppingDelta { get; set; }
+        public bool IsPropertyAntiFlickerSupported { get; set; }
+        public bool IsPropertyAutoFramingSensitivitySupported { get; set; }
+        public bool IsPropertyAutoFramingSizeSupported { get; set; }
+        public bool IsPropertyAutoFramingSupported { get; set; }
+        public bool IsPropertyAutoFramingTransitionSupported { get; set; }
+        public bool IsPropertyBrightnessSupported { get; set; }
+        public bool IsPropertyContrastSupported { get; set; }
+        public bool IsPropertyFocusSupported { get; set; }
+        public bool IsPropertyFOVSupported { get; set; }
+        public bool IsPropertyHDRSupported { get; set; }
+        public bool IsPropertyPanSupported { get; set; }
+        public bool IsPropertyPrioritySupported { get; set; }
+        public bool IsPropertySaturationSupported { get; set; }
+        public bool IsPropertySharpnessSupported { get; set; }
+        public bool IsPropertyTiltSupported { get; set; }
+        public bool IsPropertyWhiteBalanceSupported { get; set; }
+        public bool IsPropertyZoomSupported { get; set; }
         public string DeviceSymbolicLink
         {
             get => _deviceSymbolicLink;
@@ -1361,7 +1387,7 @@ namespace DDPM.SA.Common
 
         private void ToggleOption(object parameter)
         {
-            if (parameter != null && bool.TryParse(parameter.ToString(), out bool isChecked))
+            if(parameter != null && bool.TryParse(parameter.ToString(), out bool isChecked))
             {
                 IsCollaborationKeyEnable = isChecked;
                 // Perform any other actions here based on the checkbox state.

@@ -1002,19 +1002,44 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     if(item is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                     {
+                        info.BrightnessMax = _iLogicalDeviceWebcam.BrightnessMax;
+                        info.BrightnessMin = _iLogicalDeviceWebcam.BrightnessMin;
+                        info.BrightnessSteppingDelta = _iLogicalDeviceWebcam.BrightnessSteppingDelta;
+                        info.ContrastMax = _iLogicalDeviceWebcam.ContrastMax;
+                        info.ContrastMin = _iLogicalDeviceWebcam.ContrastMin;
+                        info.ContrastSteppingDelta = _iLogicalDeviceWebcam.ContrastSteppingDelta;
+                        info.CurrentFeatures = _iLogicalDeviceWebcam.CurrentFeatures;
                         info.DeviceSymbolicLink = _iLogicalDeviceWebcam.DeviceSymbolicLink;
-                        info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
-                        info.IsESISupported = _iLogicalDeviceWebcam.IsESISupported;
-                        info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
+                        info.FocusMax = _iLogicalDeviceWebcam.FocusMax;
+                        info.FocusMin = _iLogicalDeviceWebcam.FocusMin;
+                        info.FocusSteppingDelta = _iLogicalDeviceWebcam.FocusSteppingDelta;
                         info.FOVValues = _iLogicalDeviceWebcam.FOVValues;
+                        info.HasWindowsHelloPowerConstraint = _iLogicalDeviceWebcam.HasWindowsHelloPowerConstraint;
+                        info.IsESISupported = _iLogicalDeviceWebcam.IsESISupported;
+                        info.IsMicEnumerationOn = _iLogicalDeviceWebcam.IsMicEnumerationOn;
+                        info.IsMicEnumerationSupported = _iLogicalDeviceWebcam.IsMicEnumerationSupported;
+                        info.IsPropertyAntiFlickerSupported = _iLogicalDeviceWebcam.IsPropertyAntiFlickerSupported;
+                        info.IsPropertyAutoFramingSensitivitySupported = _iLogicalDeviceWebcam.IsPropertyAutoFramingSensitivitySupported;
+                        info.IsPropertyAutoFramingSizeSupported = _iLogicalDeviceWebcam.IsPropertyAutoFramingSizeSupported;
+                        info.IsPropertyAutoFramingSupported = _iLogicalDeviceWebcam.IsPropertyAutoFramingSupported;
+                        info.IsPropertyAutoFramingTransitionSupported = _iLogicalDeviceWebcam.IsPropertyAutoFramingTransitionSupported;
+                        info.IsPropertyBrightnessSupported = _iLogicalDeviceWebcam.IsPropertyBrightnessSupported;
+                        info.IsPropertyContrastSupported = _iLogicalDeviceWebcam.IsPropertyContrastSupported;
+                        info.IsPropertyFocusSupported = _iLogicalDeviceWebcam.IsPropertyFocusSupported;
+                        info.IsPropertyFOVSupported = _iLogicalDeviceWebcam.IsPropertyFOVSupported;
+                        info.IsPropertyHDRSupported = _iLogicalDeviceWebcam.IsPropertyHDRSupported;
+                        info.IsPropertyPanSupported = _iLogicalDeviceWebcam.IsPropertyPanSupported;
+                        info.IsPropertyPrioritySupported = _iLogicalDeviceWebcam.IsPropertyPrioritySupported;
+                        info.IsPropertySaturationSupported = _iLogicalDeviceWebcam.IsPropertySaturationSupported;
+                        info.IsPropertySharpnessSupported = _iLogicalDeviceWebcam.IsPropertySharpnessSupported;
+                        info.IsPropertyTiltSupported = _iLogicalDeviceWebcam.IsPropertyTiltSupported;
+                        info.IsPropertyWhiteBalanceSupported = _iLogicalDeviceWebcam.IsPropertyWhiteBalanceSupported;
+                        info.IsPropertyZoomSupported = _iLogicalDeviceWebcam.IsPropertyZoomSupported;
+                        info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
+                        info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
+                        info.SupportedProperties = _iLogicalDeviceWebcam.SupportedProperties;
                         info.SupportedResolutions = _iLogicalDeviceWebcam.SupportedResolutions;
                         info.SupportedFeatures = _iLogicalDeviceWebcam.SupportedFeatures;
-                        info.CurrentFeatures = _iLogicalDeviceWebcam.CurrentFeatures;
-                        info.IsMicEnumerationSupported = _iLogicalDeviceWebcam.IsMicEnumerationSupported;
-                        info.IsMicEnumerationOn = _iLogicalDeviceWebcam.IsMicEnumerationOn;
-                        info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
-                        info.HasWindowsHelloPowerConstraint = _iLogicalDeviceWebcam.HasWindowsHelloPowerConstraint;
-                        info.IsWindowsHelloSupported = _iLogicalDeviceWebcam.IsWindowsHelloSupported;
                         _iLogicalDeviceWebcam.IsMicEnumerationOnChanged += _iLogicalDeviceWebcam_IsMicEnumerationOnChanged;
                     }
 
