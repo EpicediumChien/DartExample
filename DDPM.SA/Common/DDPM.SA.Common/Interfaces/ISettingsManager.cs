@@ -86,6 +86,10 @@ namespace DDPM.SA.Common
 
         Task<bool> DisplayImportSettings(string path, out List<VCP> vcps);
 
+        //GlobalSettings
+        Task<GlobalSettingParam> ReadGlobalSettings();
+        Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam);
+
         //IT lock
         event EventHandler<ITSettingEventArgs> ITSettingsActionEvent;
 

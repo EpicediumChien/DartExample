@@ -443,13 +443,18 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "INAPPUPDATE":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             DDPMSettings data_update = _DevManagerPlugin.ReloadAppConfigData().Result;
-                            cliEventResult = CLIHandlerApp.CLI_SW_FW_Update(Log, data_update, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_update, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             //if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
                             //{
                                 //UpdateUINotify no = new UpdateUINotify();
                                 //no.UI_Field_Name = "INAPPUPDATE";
                                 //_DevManagerPlugin.OnUIUpdateNotify(no);
                             //}
+                            break;
+                        case "INAPPEXPORTSETTINGS":
+                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             break;
 
                         default:

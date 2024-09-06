@@ -7,5 +7,6 @@
         //global setting -> Analytics page -> checkbox enable/disable
         public bool Lock_Settings_TelemetryConsent { get; set; } = false;
         public bool Lock_Settings_Updates { get; set; } = false;
+        public bool Lock_Display_ExportSettings { get; set; } = false;
     }
 }

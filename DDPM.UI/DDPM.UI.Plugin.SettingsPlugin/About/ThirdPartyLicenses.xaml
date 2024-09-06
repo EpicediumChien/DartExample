@@ -1,0 +1,63 @@
+﻿<UXControls:UXWindow x:Class="DDPM.UI.Plugin.SettingsPlugin.ThirdPartyLicenses"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+                     xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
+                     mc:Ignorable="d"
+                     Title="ThirdPartyLicenses"
+                     Height="428"
+                     Width="600"
+                     MaxHeight="428"
+                     MaxWidth="600"
+                     MinHeight="428"
+                     MinWidth="600"
+                     WindowState="Normal"
+                     WindowStyle="None"
+                     WindowStartupLocation="CenterScreen"
+                     Background="#99132F54"
+                     Topmost="True">
+    <UXControls:UXWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UXControls:UXWindow.Resources>
+    <Grid>
+        <Image Source="Background_Glow.png" />
+        <Grid Grid.Column="1"
+              Margin="10"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Top"
+              MouseDown="Grid_MouseDown">
+            <Path VerticalAlignment="Center"
+                  Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"
+                  Fill="#CCCCCC" />
+        </Grid>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <UXControls:UXTextBlock  Grid.Column="0"
+                                     Text="On screen notifications"
+                                     Style="{StaticResource ModuleCaptionStyle}" />
+            <UXControls:UXScrollViewer Grid.Row="1"
+                                       Margin="0,10,0,0">
+                <UXControls:UXTextBlock  Grid.Column="0"
+                                         Width="524"
+                                         Height="410"
+                                         TextWrapping="WrapWithOverflow"
+                                         Style="{StaticResource ModuleCaptionStyle}"
+                                         Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim praesent elementum facilisis leo vel fringilla. Nullam vehicula ipsum a arcu cursus vitae congue mauris. Amet mattis vulputate enim nulla aliquet. Pellentesque sit amet porttitor eget dolor. Magna sit amet purus gravida. Eu tincidunt tortor aliquam nulla. Viverra orci sagittis eu volutpat odio facilisis. Vitae ultricies leo integer malesuada nunc vel risus commodo viverra. Urna et pharetra pharetra massa massa ultricies. Sodales ut eu sem integer vitae justo eget. Ultricies mi eget mauris pharetra et ultrices neque ornare. Mollis nunc sed id semper risus. Ultrices eros in cursus turpis. Arcu bibendum at varius vel pharetra vel turpis nunc eget. Vitae ultricies leo integer malesuada nunc vel risus commodo. Id venenatis a condimentum vitae. Facilisis mauris sit amet massa vitae tortor condimentum lacinia quis.
+Eget velit aliquet sagittis id. Ornare quam viverra orci sagittis. Fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Lacus luctus accumsan tortor posuere ac ut consequat semper viverra. Vel fringilla est ullamcorper eget. Nulla facilisi nullam vehicula ipsum a arcu cursus vitae congue. Accumsan in nisl nisi scelerisque eu ultrices vitae. Et netus et malesuada fames ac turpis. Nibh venenatis cras sed felis eget velit aliquet. Mauris vitae ultricies leo integer malesuada nunc vel risus commodo. Enim blandit volutpat maecenas volutpat blandit aliquam. Egestas diam in arcu cursus euismod quis viverra nibh cras. Habitant morbi tristique senectus et netus et malesuada. Interdum velit euismod in pellentesque massa placerat. Lorem ipsum dolor sit amet. Lacinia at quis risus sed vulputate. A scelerisque purus semper eget duis at tellus at. Nunc vel risus commodo viverra maecenas accumsan lacus. Diam quam nulla porttitor massa id neque aliquam. Duis at tellus at urna condimentum mattis pellentesque id.
+Habitasse platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper dignissim. Tempor orci eu lobortis elementum nibh. Molestie nunc non blandit massa enim nec dui. Enim ut tellus elementum sagittis vitae et. Quam pellentesque nec nam aliquam sem et tortor consequat. Consequat id porta nibh venenatis cras sed felis eget velit. Sit amet dictum sit amet. Nibh tortor id aliquet lectus proin nibh. Cras semper auctor neque vitae tempus. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Amet mattis vulputate enim nulla aliquet. Eu nisl nunc mi ipsum faucibus vitae aliquet nec. Nisi quis eleifend quam adipiscing vitae proin sagittis nisl. Erat imperdiet sed euismod nisi. Donec enim diam vulputate ut. Nullam vehicula ipsum a arcu cursus vitae congue. Quis imperdiet massa tincidunt nunc pulvinar. Et tortor consequat id porta nibh venenatis cras sed felis. Urna nunc id cursus metus aliquam eleifend mi in nulla. Lectus vestibulum mattis ullamcorper velit sed ullamcorper.
+Maecenas volutpat blandit aliquam etiam erat velit scelerisque in. Id semper risus in hendrerit gravida rutrum quisque non tellus. Sollicitudin tempor id eu nisl nunc mi ipsum. Lacus suspendisse faucibus interdum posuere lorem ipsum. Aliquam sem fringilla ut morbi tincidunt augue interdum. Enim nec dui nunc mattis enim ut tellus elementum. Augue eget arcu dictum varius duis at consectetur lorem. At risus viverra adipiscing at in tellus integer. Urna cursus eget nunc scelerisque viverra mauris in aliquam. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Vulputate dignissim suspendisse in est ante in. Pharetra vel turpis nunc eget lorem dolor. Ultrices mi tempus imperdiet nulla. Malesuada fames ac turpis egestas integer eget aliquet nibh. Tempor nec feugiat nisl pretium fusce id velit ut.
+Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis feugiat. Et tortor at risus viverra. Nunc id cursus metus aliquam. Molestie at elementum eu facilisis sed odio morbi quis commodo. Ac ut consequat semper viverra nam. Bibendum ut tristique et egestas quis ipsum suspendisse ultrices. Dui sapien eget mi proin sed libero enim. Luctus accumsan tortor posuere ac ut consequat semper viverra. Penatibus et magnis dis parturient montes nascetur. Pharetra pharetra massa massa ultricies mi quis. Hac habitasse platea dictumst vestibulum rhoncus est pellentesque. In egestas erat imperdiet sed. Duis at tellus at urna. Id velit ut tortor pretium viverra suspendisse potenti nullam ac. Eu turpis egestas pretium aenean pharetra magna ac. Nulla facilisi morbi tempus iaculis urna id volutpat lacus laoreet. Tincidunt ornare massa eget egestas purus. Est ultricies integer quis auctor elit sed vulputate." />
+            </UXControls:UXScrollViewer>
+        </Grid>
+    </Grid>
+</UXControls:UXWindow>

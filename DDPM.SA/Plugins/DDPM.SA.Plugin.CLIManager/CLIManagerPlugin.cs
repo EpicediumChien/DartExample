@@ -265,7 +265,7 @@ namespace DDPM.SA.Plugin.CLIManager
 
                 case "INAPPUPDATE":              //InAppUpdate               DDPMW-1329/1330
                     if (commandLineInput.PluginsType.Equals("APP"))
-                        rst = CLIHandlerApp.CLI_SW_FW_Update(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                        rst = CLIHandlerApp.CLI_App_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerApp.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
@@ -299,6 +299,11 @@ namespace DDPM.SA.Plugin.CLIManager
                 case "POWERNAP":                 //PowerNap                  DDPMW-1361
                     break;
                 case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
+                    if (commandLineInput.PluginsType.Equals("APP"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
                     break;
                 case "COLLABSCREENSHARE":        //CollabScreenShare         DDPMW-1843
                     break;
