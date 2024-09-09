@@ -5592,11 +5592,11 @@ namespace DDPM.CLI.Plugins.Display
             }
             else if (cli_USBCPrioritization_RESPONSE != null)
             {
-                cli_USBCPrioritization_RESPONSE.USBCPrioritizationType = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
+                cli_USBCPrioritization_RESPONSE.Value = displayPropertiesInfo.USBCPrioritizationType == USBCPrioritizationType.HighDataSpeed ? "High Data Speed" : "High Resolution";
             }
             else if (cli_Orientation_RESPONSE != null)
             {
-                cli_Orientation_RESPONSE.Orientation = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
+                cli_Orientation_RESPONSE.Value = Orientations_Str[(int)displayPropertiesInfo.CurrentOrientation];
             }
             else if (cli_CurrentResolutionRefreshRate_RESPONSE != null)
             {
@@ -5604,7 +5604,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     if (properties.isCurrent)
                     {
-                        cli_CurrentResolutionRefreshRate_RESPONSE.CurrentResolutionRefreshRate = $"Resolutions and RefreshRate:{properties.Resolutions_Width}x{properties.Resolutions_High}, {properties.Frequency}Hz";
+                        cli_CurrentResolutionRefreshRate_RESPONSE.Value = $"Resolutions and RefreshRate:{properties.Resolutions_Width}x{properties.Resolutions_High}, {properties.Frequency}Hz";
                         cli_CurrentResolutionRefreshRate_RESPONSE.BitsPerPixel = properties.BitsPerPixel.ToString();
                         break;
                     }
@@ -5814,7 +5814,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                                 {
-                                    USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;
+                                    //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;
                                     USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
                                     USBCPrioritizationType usbcPrioritizationType = commandLineInput.Options[i].Option_Value.ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
                                     ret = _devMgr.SetUSBCPrioritizationType(monitorInfo, usbcPrioritizationType).Result;
@@ -5825,7 +5825,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         USBCPrioritization_RESPONSE.Message = "USB-C Prioritization not supported";
-                        USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
+                       // USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
                         ret = null;
                     }
                     USBCPrioritization_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
