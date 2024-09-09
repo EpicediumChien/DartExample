@@ -15,7 +15,7 @@ namespace DDPM.ShowOSD
         private string showString = string.Empty;
         private double ShowTextFontSize = 80;
 
-        public ShowOSDWin(string str, double dbFontSize = 80, VcpCore.Common.EDID? devEdid = null)
+        public ShowOSDWin(string str, double dbFontSize = 80)
         {
             InitializeComponent();
             DataContext = this;

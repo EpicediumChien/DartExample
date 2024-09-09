@@ -131,6 +131,43 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 OnPropertyChanged("LockMaskVisible_Updates");
             }
         }
+        public GlobalSettingParam GlobalSettingParam { get; set; }
+        public string EnableQuickAccessWidget_String
+        {
+            get
+            {
+                if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+                {
+                    return "ON";
+                }
+                return "OFF";
+            }
+        }
+        public string EnableQuickAccessWidget_Reminder_String
+        {
+            get
+            {
+                if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                {
+                    return "ON";
+                }
+                return "OFF";
+            }
+        }
+        public string SWVersion
+        {
+            get
+            {
+                return $"Software version: {GlobalSettingParam.GlobalSetting_About.SWVersion}";
+            }
+        }
+        public string DriverVersion
+        {
+            get
+            {
+                return $"Driver version: {GlobalSettingParam.GlobalSetting_About.DriverVersion}";
+            }
+        }
 
         public void RefreshUI()
         {
@@ -147,6 +184,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             OnPropertyChanged("IsAnyUpdate");
             OnPropertyChanged("LockMaskVisible");
             OnPropertyChanged("LockMaskVisible_Updates");
+            OnPropertyChanged("GlobalSettingParam");
+            OnPropertyChanged("EnableQuickAccessWidget_String");
+            OnPropertyChanged("EnableQuickAccessWidget_Reminder_String");
+            OnPropertyChanged("SWVersion");
+            OnPropertyChanged("DriverVersion");
         }
 
         public void RefreshProcessUI()

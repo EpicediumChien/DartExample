@@ -21,16 +21,29 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="*" x:Name="privacy_policy_height" />
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*"
+                                           x:Name="privacy_policy_height" />
                         </Grid.RowDefinitions>
-                        <UXControls:UXTextBlock Text="{Binding [Analytics.1], Source={x:Static lang:LangHelper.Instance}}" 
-                                                Grid.Row="0" Margin="20,14,0,0" Foreground="White" FontSize="18"/>
-                        <UXControls:UXButton Name="url_btn" Content="{Binding [Analytics.2], Source={x:Static lang:LangHelper.Instance}}" ButtonType="Secondary" Margin="20,0,20,0" Foreground="White" 
-                                             FontSize="16" Grid.Row="1" Width="250" HorizontalAlignment="Left" Click="url_btn_Click" BorderBrush="White" IsTabStop="{Binding isTabStoppable}"/>
-                        <UXControls:UXCheckBox Name="chk_analytics" Content="{Binding [Analytics.3], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left" 
-                                               IsTabStop="{Binding isTabStoppable}" IsChecked="{Binding isConsentChecked}"
-                                               Margin="20,0,0,0" Grid.Row="2" FontSize="20" Foreground="White"/>
+                        <UXControls:UXCheckBox Name="chk_analytics" Content="{Binding [Analytics.1], Source={x:Static lang:LangHelper.Instance}}"
+                                               Grid.Row="0"
+                                               Margin="20,14,0,0"
+                                               Foreground="White"
+                                               FontSize="18"
+                                               HorizontalAlignment="Left"
+                                               IsTabStop="{Binding isTabStoppable}"
+                                               IsChecked="{Binding isConsentChecked}" />
+                        <UXControls:UXButton Name="url_btn"
+                                             Content="{Binding [Analytics.2], Source={x:Static lang:LangHelper.Instance}}"
+                                             ButtonType="Secondary"
+                                             Margin="20,0,20,0"
+                                             Foreground="White"
+                                             FontSize="16"
+                                             Grid.Row="1"
+                                             Width="250"
+                                             HorizontalAlignment="Left"
+                                             Click="url_btn_Click"
+                                             BorderBrush="White"
+                                             IsTabStop="{Binding isTabStoppable}" />
                     </Grid>
                 </Border>
             </Grid>

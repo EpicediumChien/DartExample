@@ -15,7 +15,8 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         #region Variables
         private readonly ILog _log;
-        private readonly IDeviceManagerSA _deviceManager;
+        //private readonly IDeviceManagerSA _deviceManager;
+        public readonly IDeviceManagerSA _deviceManager;
 
         private int _tipSensitivity = 75;
         private int _tiltSensitivity = 20;

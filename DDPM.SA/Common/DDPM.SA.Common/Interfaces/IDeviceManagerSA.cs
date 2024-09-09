@@ -48,13 +48,10 @@ namespace DDPM.SA.Common
 
         Task<Dictionary<string, InstalledAppInfo>> FindAppsbyShell(bool isReload = false);
 
-        void ShowOSD_ColoPreset(MonitorInfo m, string strMsg);//, bool isMainUI = false);
+        void ShowOSD_ColoPreset(MonitorInfo m, string strMsg);
 
         Task<List<string>> ReadColorPreset(MonitorInfo m);
-
-        // 20240619 jim modify
-        //Task<bool> WriteColorPreset(string monitor_index, MonitorInfo m, string ColorPreset_Name);
-        //Task<bool> WriteColorPreset_AUTO(string monitor_index, MonitorInfo m, string ColorPreset_Name);
+     
         Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int ColorPresetRunType = 0);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
@@ -88,6 +85,9 @@ namespace DDPM.SA.Common
         Task<bool> ColorManagement_Bymonitor(MonitorInfo mo);
 
         Task<bool> ColorManagement_Byhost(MonitorInfo mo);
+
+        //Jim add 20240904
+        Task<string> GetAutoColorPresetStatus(MonitorInfo m);
 
         #endregion public for ColorPreset
 
@@ -448,6 +448,8 @@ namespace DDPM.SA.Common
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
 
+        Task NKVM_State(bool state);
+
         Task CallNKVMConnent();
 
         #endregion for NKVM
@@ -527,6 +529,36 @@ namespace DDPM.SA.Common
 
         Task SetTipSensitivity(string itemID, int newValue);
 
+        // Webcam
+        Task<int> GetBrightnessValueByDTP(string itemID);
+
+        Task SetBrightnessValueByDTP(string itemID, int newValue);
+
+        Task<string> GetCameraFirmwareVersionByDTP(string itemID);
+
+        Task<bool> CheckIsPropertyFOVSupportedByDTP(string itemID);
+
+        Task<int> GetFieldOfViewValueByDTP(string itemID);
+
+        Task<bool> CheckIsPropertyHDRSupportedByDTP(string itemID);
+
+        Task<bool> GetIsHDROnValueByDTP(string itemID);
+
+        Task SetIsHDROnValueByDTP(string itemID, bool newValue);
+
+        Task<bool> CheckIsPropertyAntiFlickerSupportedByDTP(string itemID);
+
+        Task<int> GetAntiFlickerValueByDTP(string itemID);
+
+        Task SetAntiFlickerValueByDTP(string itemID, int newValue);
+
+        Task<bool> CheckIsPropertyAutoFramingSupportedByDTP(string itemID);
+
+        Task<bool> GetIsAutoFramingOnValueByDTP(string itemID);
+
+        Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
+
+
         #endregion public for DTPProxy
 
         #region OSD
@@ -540,5 +572,16 @@ namespace DDPM.SA.Common
         Task ShowOSD(object monitorInfo, OSDType type);
 
         #endregion OSD
+
+        #region GlobalSetting
+        Task<GlobalSettingParam> GetGlobalSettingParam();
+        Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayKeyboardLockKey(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayWB7022CoverState(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayMuteState(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayColorPresetAndEasyMemory(bool isDisplay);
+        Task<bool> Set_GlobalSetting_EnableQuickAccessWidget(bool isEnable);
+        Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable);
+        #endregion
     }
 }

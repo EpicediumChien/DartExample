@@ -12,6 +12,7 @@
 
 using DDPM.MonitorBorker;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Method;
 using DDPM.ShowOSD;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -24,6 +25,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -87,6 +89,8 @@ namespace ColorPreset.Plugins
 
         //20240830 Jim add
         IIC_Metadata _ICC_Metadata = new IIC_Metadata();
+        private Download? download = null;
+        private Logs _logs;
 
         private enum log_type
         {
@@ -96,7 +100,7 @@ namespace ColorPreset.Plugins
 
         public event EventHandler<VCPchangedEventArgs> VCPchanged;
 
-        private ShowOSDWin OsdWin = null;
+        private static ShowOSDWin OsdWin = null;
         private string iconFolderPath = string.Empty;
 
         #endregion
@@ -106,6 +110,7 @@ namespace ColorPreset.Plugins
         public ColorPresetPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
+            _logs ??= new Logs(Log, PluginLogId);
             writelog("ColorPresetPlugin constructor ...");
 
             LoadInstalledAppList(true);
@@ -415,7 +420,26 @@ namespace ColorPreset.Plugins
             //return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
 
-        public void ShowOSD_ColoPreset(MonitorInfo m, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
+        public Task<string> GetAutoColorPresetStatus(MonitorInfo mo, ISettingsManagerDev _SettingsPlugin)
+        {
+            List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
+
+            Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
+
+            int index = get_index_of_json_config_for_cur_monitor(mo);
+
+            if (index >= 0)
+            {
+               if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType == (int)ColorPresetRunType.Auto)
+                    return Task.FromResult("ON");
+               else
+                    return Task.FromResult("OFF");
+            }
+
+            return Task.FromResult("OFF");
+        }
+
+        public void ShowOSD_ColoPreset(MonitorInfo monitorInfo, string strMsg, bool is_ShowUI = true, bool is_AUTO = false)
         {
             if (Log != null)
             {
@@ -425,52 +449,61 @@ namespace ColorPreset.Plugins
 
             Thread thread = new Thread(() =>
             {
-                if (m != null)
+                if (monitorInfo != null)
                 {
-                    var v = (MonitorInfo)m;
+                    //var v = (MonitorInfo)m;
 
-                    System.Windows.Forms.Screen s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == v.DisplayName);
+                    System.Windows.Forms.Screen sreen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == monitorInfo.DisplayName);
 
-                    if (s != null)
+                    if (sreen != null)
                     {
                         if (OsdWin != null)
                         {
                             OsdWin.Close();
                         }
 
-                        OsdWin = new ShowOSDWin(strMsg, 40, v.edid);
+                        OsdWin = new ShowOSDWin(strMsg, 40);
 
                         var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
                         var varX = (int)dpiXProperty.GetValue(null, null);
                         double dpiX = (double)varX / (double)96;
                         try
                         {
-                            OsdWin.Top = s.WorkingArea.Top / (double)dpiX;
+                            OsdWin.Top = sreen.WorkingArea.Top / (double)dpiX;
+                            OsdWin.Left = sreen.WorkingArea.Left / (double)dpiX;
+
+                            double dbfactor = ((double)((double)40 / (double)96));
+
+                            double dbscale = dbfactor * dpiX;
+
+                            OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
+                            OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
+
+                            if (is_ShowUI)
+                                OsdWin.Show();
                         }
                         catch (Exception)
                         {
-                            OsdWin.Top = s.WorkingArea.Top;
-                        }
+                            //OsdWin.Top = s.WorkingArea.Top;
+                            //OsdWin.Left = s.WorkingArea.Left;
 
-                        try
+                            OsdWin.Top = sreen.WorkingArea.Top / (double)dpiX;
+                            OsdWin.Left = sreen.WorkingArea.Left / (double)dpiX;
+
+                            double dbfactor = ((double)((double)40 / (double)96));
+
+                            double dbscale = dbfactor * dpiX;
+
+                            OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
+                            OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
+
+                            if (is_ShowUI)
+                                OsdWin.Show();
+                        }
+                        finally
                         {
-                            OsdWin.Left = s.WorkingArea.Left / (double)dpiX;
-                        }
-                        catch (Exception)
-                        {
-                            OsdWin.Left = s.WorkingArea.Left;
-                        }
-
-                        double dbfactor = ((double)((double)40 / (double)96));
-
-                        double dbscale = dbfactor * dpiX;
-
-                        OsdWin.Height = (s.WorkingArea.Height * dbscale) / ((40 * dbscale));
-                        OsdWin.Width = (s.WorkingArea.Width) / ((40 * dbfactor));
-
-                        if (is_ShowUI)
-                            OsdWin.Show();
-                        OsdWin = null;
+                            OsdWin = null;
+                        }                        
                     }
                 }
                 // 啟動消息循環
@@ -969,174 +1002,192 @@ namespace ColorPreset.Plugins
 
                 //if (_ICC_Metadata.Is_Support_ICC_DeviceName)
                 //{
-                    string strICC_Folder;
-                    if (string.IsNullOrEmpty(savelPath))
+                string strICC_Folder;
+                if (string.IsNullOrEmpty(savelPath))
+                {
+                    strICC_Folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "Dell Display and Peripheral Manager" + @"\ICC\";
+                }
+                else
+                {
+                    strICC_Folder = savelPath;
+                }
+
+                if (!Directory.Exists(strICC_Folder))
+                {
+                    Directory.CreateDirectory(strICC_Folder);
+                }
+
+                _ICC_Metadata.strICC_Folder = String.Format($"{strICC_Folder}");
+
+                string url = string.Empty;
+                string strFilePath = string.Empty;
+                download = new Download(_logs);
+                string downloadInfo = string.Empty;
+                // 20240627 jim add
+                string str_EnableDDPMMetadataTest = string.Empty;
+                string str_IncludeTestPath = string.Empty;
+
+                // 20240627 jim add
+                RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+
+                if (localKey64 != null)
+                {
+                    RegistryKey registryKey = localKey64.OpenSubKey(@"SOFTWARE\DELL\Dell Display and Peripheral Manager\UpdateServer", false);
+
+                    if (registryKey != null)
                     {
-                        strICC_Folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "Dell Display and Peripheral Manager" + @"\ICC\";
-                    }
-                    else
-                    {
-                        strICC_Folder = savelPath;
-                    }
+                        object obj_tmp_key_EnableDDPMMetadataTest = registryKey?.GetValue("EnableDDPMMetadataTest");
+                        object obj_tmp_keyIncludeTestPath = registryKey?.GetValue("IncludeTestPath");
 
-                    if (!Directory.Exists(strICC_Folder))
-                    {
-                        Directory.CreateDirectory(strICC_Folder);
-                    }
-
-                    _ICC_Metadata.strICC_Folder = String.Format($"{strICC_Folder}");
-
-                    string url = string.Empty;
-                    string strFilePath = string.Empty;
-                    // 20240627 jim add
-                    string str_EnableDDPMMetadataTest = string.Empty;
-                    string str_IncludeTestPath = string.Empty;
-
-                    // 20240627 jim add
-                    RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-
-                    if (localKey64 != null)
-                    {
-                        RegistryKey registryKey = localKey64.OpenSubKey(@"SOFTWARE\DELL\Dell Display and Peripheral Manager\UpdateServer", false);
-
-                        if (registryKey != null)
+                        if (obj_tmp_key_EnableDDPMMetadataTest != null)
                         {
-                            object obj_tmp_key_EnableDDPMMetadataTest = registryKey?.GetValue("EnableDDPMMetadataTest");
-                            object obj_tmp_keyIncludeTestPath = registryKey?.GetValue("IncludeTestPath");
+                            str_EnableDDPMMetadataTest = (string)obj_tmp_key_EnableDDPMMetadataTest;
+                        }
 
-                            if (obj_tmp_key_EnableDDPMMetadataTest != null)
-                            {
-                                str_EnableDDPMMetadataTest = (string)obj_tmp_key_EnableDDPMMetadataTest;
-                            }
-
-                            if (obj_tmp_keyIncludeTestPath != null)
-                            {
-                                str_IncludeTestPath = (string)obj_tmp_keyIncludeTestPath;
-                            }
+                        if (obj_tmp_keyIncludeTestPath != null)
+                        {
+                            str_IncludeTestPath = (string)obj_tmp_keyIncludeTestPath;
                         }
                     }
+                }
 
-                    if (str_EnableDDPMMetadataTest.ToUpper().Contains("TRUE"))
+                if (str_EnableDDPMMetadataTest.ToUpper().Contains("TRUE"))
+                {
+                    string str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
+                    str_url_prefix += str_IncludeTestPath;
+                    str_url_prefix += @"/Windows/Display/ICC/";
+                    //str_url_prefix += m.modelName;
+                    //str_url_prefix += @"/ICC.json";
+                    str_url_prefix += @"icc_profile_sha256_new.json";
+
+                    url = str_url_prefix;
+
+                    if (!string.IsNullOrEmpty(url))
                     {
-                        string str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
+                        strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+
+                        download.DownloadFile(url, strFilePath, out downloadInfo);
+
+                        //for (int x = 0; x < Issuer.Length; x++)
+                        //{
+                        //    Issuers = Issuer[x].Split(",");
+                        //    Subjects = Subject[x].Split(",");
+                        //}
+
+                        // 向遠端伺服器發送請求
+                        //if (CheckCA(url))
+                        //{
+                        //HttpClient httpClient = new HttpClient();
+                        // 取得回應標頭
+                        //var header = httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                        // 取得檔案大小
+                        //var size = header.Content.Headers.ContentLength;
+
+                        //var stream = httpClient.GetStreamAsync(url).Result;
+                        //fileStream = System.IO.File.Create(Path.Combine(strICC_Folder, Path.GetFileName(url)));
+                        //stream.CopyToAsync(fileStream).Wait();
+                        //fileStream.Close();
+
+                        //strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+
+                        if (System.IO.File.Exists(strFilePath))
+                        {
+                            string strReadJson = string.Empty;
+                            using (var reader = new StreamReader(strFilePath))
+                            {
+                                strReadJson = reader.ReadToEnd();
+                            }
+
+                            ///if (strReadJson == string.Empty || strReadJson.Length == 0)
+                            //return Task.FromResult(_preset_settings);
+
+                            try
+                            {
+                                //_ICC_Metadata._supportDeviceName.Add("U3224KB",);
+
+                                _ICC_Metadata = RunDeserializeObject(strReadJson);
+                                _ICC_Metadata.strICC_Folder = strICC_Folder;
+                                _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+                            }
+                            catch (System.Exception ex)
+                            {
+                                Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
+                                writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
+                            }
+                        }
+
+
+                        foreach (var kvp in _ICC_Metadata._support_ICC_DeviceName)
+                        {
+                            Trace.WriteLine($" Model name = {kvp.Key}");
+                        }
+
+                        Trace.WriteLine($"m.modelName = {m.modelName} ");
+
+                        var lookup = _ICC_Metadata._support_ICC_DeviceName.First(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
+
+                        Trace.WriteLine($"lookup.Key = {lookup.Key} ");
+
+                        if (lookup.Key != null)
+                        {
+                            _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
+                            _ICC_Metadata.Is_Support_ICC_DeviceName = true;
+                        }
+                        else
+                        {
+                            _ICC_Metadata._match_ICC_DeviceName.Clear();
+                            _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+                        }
+
+                        //int count = _ICC_Metadata._support_ICC_DeviceName[m.modelName].Count;
+                        int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                        // 20240725 jim add
+
+                        str_url_prefix = string.Empty;
+
+                        str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
                         str_url_prefix += str_IncludeTestPath;
                         str_url_prefix += @"/Windows/Display/ICC/";
-                        //str_url_prefix += m.modelName;
-                        //str_url_prefix += @"/ICC.json";
-                        str_url_prefix += @"icc_profile_sha256_new.json";
+                        str_url_prefix += m.modelName;
+                        str_url_prefix += @"/";
 
-                        url = str_url_prefix;
-
-                        if (!string.IsNullOrEmpty(url))
+                        for (int i = 0; i < count; i++)
                         {
-                            for (int x = 0; x < Issuer.Length; x++)
-                            {
-                                Issuers = Issuer[x].Split(",");
-                                Subjects = Subject[x].Split(",");
-                            }
+                            url = string.Empty;
+
+                            //url = str_url_prefix + _ICC_Metadata._support_ICC_DeviceName[m.modelName][i].File;
+                            url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
 
                             // 向遠端伺服器發送請求
-                            if (CheckCA(url))
+                            //if (CheckCA(url))
+                            //{
+                            //HttpClient httpClient_ICM = new HttpClient();
+                            // 取得回應標頭
+                            //var header_ICM = httpClient_ICM.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                            // 取得檔案大小
+                            //var size_ICM = header_ICM.Content.Headers.ContentLength;
+
+                            //var stream_ICM = httpClient_ICM.GetStreamAsync(url).Result;
+                            //fileStream_ICM = System.IO.File.Create(Path.Combine(strICC_Folder, Path.GetFileName(url)));
+                            //stream_ICM.CopyToAsync(fileStream_ICM).Wait();
+                            //fileStream_ICM.Close();
+
+                            strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+
+                            download.DownloadFile(url, strFilePath, out downloadInfo);
+
+                            string txtSha256 = BytesToString(GetHashSha256(strFilePath));
+
+                            if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
                             {
-                                HttpClient httpClient = new HttpClient();
-                                // 取得回應標頭
-                                var header = httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                                // 取得檔案大小
-                                var size = header.Content.Headers.ContentLength;
-
-                                var stream = httpClient.GetStreamAsync(url).Result;
-                                fileStream = System.IO.File.Create(Path.Combine(strICC_Folder, Path.GetFileName(url)));
-                                stream.CopyToAsync(fileStream).Wait();
-                                fileStream.Close();
-
-                                strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
-
-                                if (System.IO.File.Exists(strFilePath))
-                                {
-                                    string strReadJson = string.Empty;
-                                    using (var reader = new StreamReader(strFilePath))
-                                    {
-                                        strReadJson = reader.ReadToEnd();
-                                    }
-
-                                    ///if (strReadJson == string.Empty || strReadJson.Length == 0)
-                                    //return Task.FromResult(_preset_settings);
-
-                                    try
-                                    {
-                                        //_ICC_Metadata._supportDeviceName.Add("U3224KB",);
-
-                                        _ICC_Metadata = RunDeserializeObject(strReadJson);
-                                        _ICC_Metadata.strICC_Folder = strICC_Folder;
-                                        _ICC_Metadata.Is_Support_ICC_DeviceName = false;
-                                    }
-                                    catch (System.Exception ex)
-                                    {
-                                        Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
-                                        writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
-                                    }
-                                }
-
-                                var lookup = _ICC_Metadata._support_ICC_DeviceName.FirstOrDefault(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
-
-                                if (lookup.Key != null)
-                                {
-                                    _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
-                                    _ICC_Metadata.Is_Support_ICC_DeviceName = true;
-                                }
-                                else
-                                {
-                                    _ICC_Metadata._match_ICC_DeviceName.Clear();
-                                    _ICC_Metadata.Is_Support_ICC_DeviceName = false;
-                                }
-
-                                //int count = _ICC_Metadata._support_ICC_DeviceName[m.modelName].Count;
-                                int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                                // 20240725 jim add
-
-                                str_url_prefix = string.Empty;
-
-                                str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
-                                str_url_prefix += str_IncludeTestPath;
-                                str_url_prefix += @"/Windows/Display/ICC/";
-                                str_url_prefix += m.modelName;
-                                str_url_prefix += @"/";
-
-                                for (int i = 0; i < count; i++)
-                                {
-                                    url = string.Empty;
-
-                                    //url = str_url_prefix + _ICC_Metadata._support_ICC_DeviceName[m.modelName][i].File;
-                                    url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
-
-                                    // 向遠端伺服器發送請求
-                                    if (CheckCA(url))
-                                    {
-                                        HttpClient httpClient_ICM = new HttpClient();
-                                        // 取得回應標頭
-                                        var header_ICM = httpClient_ICM.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                                        // 取得檔案大小
-                                        var size_ICM = header_ICM.Content.Headers.ContentLength;
-
-                                        var stream_ICM = httpClient_ICM.GetStreamAsync(url).Result;
-                                        fileStream_ICM = System.IO.File.Create(Path.Combine(strICC_Folder, Path.GetFileName(url)));
-                                        stream_ICM.CopyToAsync(fileStream_ICM).Wait();
-                                        fileStream_ICM.Close();
-
-                                        strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
-
-                                        string txtSha256 = BytesToString(GetHashSha256(strFilePath));
-
-                                        if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} SHA256 error: icc profile sha256 download = {txtSha256} , icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256}");
-                                        }
-                                    }
-                                }
+                                writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} SHA256 error: icc profile sha256 download = {txtSha256} , icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256}");
                             }
+                            //}
                         }
+                        //}
                     }
+                }
                 //}
 
                 return Task.FromResult(_ICC_Metadata);
