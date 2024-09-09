@@ -137,9 +137,9 @@ namespace VcpCore.Plugins.Test
         [Test]
         public void TestFormatVCP_60()
         {
-            string vcpControlName1 = "Composite video 1";
+            string vcpControlName1 = "Composite video1";
             var expectvcpControlName1 = NodeFormatter.FormatVCP_60("05");
-            string vcpControlName2 = "Mini DisplayPort-1";
+            string vcpControlName2 = "Mini DisplayPort1";
             var expectvcpControlName2 = NodeFormatter.FormatVCP_60("10");
             string vcpControlName3 = "HDMI3";
             var expectvcpControlName3 = NodeFormatter.FormatVCP_60("15");

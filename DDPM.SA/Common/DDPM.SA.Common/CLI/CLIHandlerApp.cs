@@ -223,7 +223,17 @@ namespace DDPM.SA.Common.CLI
             return CLI_Response_CompleteWithSuccess(commandLineInput, result);
         }
 
+        public static CLIEventResult CLI_Analytics_Consent(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+        {
+            return CLI_Common_LockUlockWithUserAction(Log, inputData, settingsPlugin, commandLineInput, action_guid);
+        }
+
         public static CLIEventResult CLI_App_LockUnlock(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+        {
+            return CLI_Common_LockUnlock_WithoutUserAction(Log, inputData, settingsPlugin, commandLineInput, action_guid);
+        }
+
+        public static CLIEventResult CLI_Common_LockUnlock_WithoutUserAction(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
         {
             //Expected format:
             // IT > /configure -app=InAppUpdate -value=lock / unlock
@@ -402,14 +412,15 @@ namespace DDPM.SA.Common.CLI
             }
 
             return CLI_Response_CompleteWithSuccess(commandLineInput, result);
-        }
+        }             
 
-        public static CLIEventResult CLI_Analytics_Consent(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+        public static CLIEventResult CLI_Common_LockUlockWithUserAction(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
         {
-            //Expected format:
-            // IT    > /set -app=TelemetryConsent -value=true,lock / true,unlock / false,lock / false,unlock
-            // Normal> /set -app=TelemetryConsent -value=true / false
-            // Normal> /get -app=TelemetryConsent
+            //Example:
+            // Expected format:
+            //  IT    > /set -app=TelemetryConsent -value=true,lock / true,unlock / false,lock / false,unlock
+            //  Normal> /set -app=TelemetryConsent -value=true / false
+            //  Normal> /get -app=TelemetryConsent
             CLIEventResult result = new CLIEventResult();
             result.ticket = DateTime.Now;
             result.command_guid_string = action_guid;
@@ -422,12 +433,12 @@ namespace DDPM.SA.Common.CLI
             {
                 if (commandLineInput.Options == null || commandLineInput.Options.Count == 0)
                 {
-                    WriteLog(Log, "Telemetry Consent: command SET without option, fail");
+                    WriteLog(Log, $"{commandLineInput.TargetFeature}: command SET without option, fail");
                     return CLI_Response_OptionMissing(commandLineInput, result);
                 }
                 if (commandLineInput.Options.Count > 1)
                 {
-                    WriteLog(Log, "Telemetry Consent: doesn't support multiple value options");
+                    WriteLog(Log, $"{commandLineInput.TargetFeature}: doesn't support multiple value options");
                     return CLI_Response_NotSupport_MultipleOptions(commandLineInput, result);
                 }
             }
@@ -464,9 +475,16 @@ namespace DDPM.SA.Common.CLI
                     return result;
                 }
 
-                Console.WriteLine($"Telemetry Consent: is function enable? => {data_user.UserSettings.isTelemetryConsentOn}");
-                Console.WriteLine($"Telemetry Consent: is Locked? => = {data_user.LockSettings.Lock_Settings_TelemetryConsent}");
-                response.Value = (data_user.UserSettings.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
+                Console.WriteLine($"{commandLineInput.TargetFeature}: is function enable? => {data_user.UserSettings.isTelemetryConsentOn}");
+                Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_user.LockSettings.Lock_Settings_TelemetryConsent}");
+                switch(commandLineInput.TargetFeature)
+                {
+                    case "TELEMETRYCONSENT":
+                        response.Value = (data_user.UserSettings.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
+                        break;
+                    default:
+                        return CLI_Response_TypeNotSupport(commandLineInput, result);
+                }                
                 response.Result = "Completed";
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.success;
@@ -494,34 +512,37 @@ namespace DDPM.SA.Common.CLI
                     if (value.ToUpper().Equals("TRUE"))
                     {
                         if (data_user != null)
-                            data_user.UserSettings.isTelemetryConsentOn = true;
+                        {
+                            if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
+                                 data_user.UserSettings.isTelemetryConsentOn = true;
+                            else
+                                return CLI_Response_TypeNotSupport(commandLineInput, result);
+                        }
                     }
                     else if (value.ToUpper().Equals("FALSE"))
-                    {
-                        if (data_user != null)
+                    { 
+                        if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
                             data_user.UserSettings.isTelemetryConsentOn = false;
+                        else
+                            return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
-                    else if (value.ToUpper().Equals("LOCK"))
+                    else if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("UNLOCK"))
                     {
-                        if (data_IT != null)
+                        bool target = false;
+                        if (value.ToUpper().Equals("LOCK"))
+                            target = true;
+                        if(value.ToUpper().Equals("UNLOCK"))
+                            target = false;
+
+                        if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
                         {
-                            data_IT.Lock_Settings_TelemetryConsent = true;
+                            if (data_IT != null)
+                                data_IT.Lock_Settings_TelemetryConsent = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Settings_TelemetryConsent = target;
                         }
-                        if (data_user != null)
-                        {
-                            data_user.LockSettings.Lock_Settings_TelemetryConsent = true;
-                        }
-                    }
-                    else if (value.ToUpper().Equals("UNLOCK"))
-                    {
-                        if (data_IT != null)
-                        {
-                            data_IT.Lock_Settings_TelemetryConsent = false;
-                        }
-                        if (data_user != null)
-                        {
-                            data_user.LockSettings.Lock_Settings_TelemetryConsent = false;
-                        }
+                        else
+                            return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
                     else
                     {
@@ -570,6 +591,14 @@ namespace DDPM.SA.Common.CLI
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.command_not_support;
                 return result;
+            }
+        }
+
+        private static void ApplyValueToBoolObject(ref bool config, bool value)
+        {
+            if (config != null && value != null)
+            {
+                config = value;
             }
         }
 

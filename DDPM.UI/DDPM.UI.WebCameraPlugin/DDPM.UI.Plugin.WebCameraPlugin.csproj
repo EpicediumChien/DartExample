@@ -19,12 +19,16 @@
   <ItemGroup>
     <Compile Remove="Models\**" />
     <Compile Remove="Themes\**" />
+    <Compile Remove="UserControls\**" />
     <EmbeddedResource Remove="Models\**" />
     <EmbeddedResource Remove="Themes\**" />
+    <EmbeddedResource Remove="UserControls\**" />
     <None Remove="Models\**" />
     <None Remove="Themes\**" />
+    <None Remove="UserControls\**" />
     <Page Remove="Models\**" />
     <Page Remove="Themes\**" />
+    <Page Remove="UserControls\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,18 +45,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.WebCameraCapture\DDPM.UI.Module.WebCameraCapture.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.WebCameraMicrophone\DDPM.UI.Module.WebCameraMicrophone.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.WebCameraPresenceDetection\DDPM.UI.Module.WebCameraPresenceDetection.csproj" />    
     <ProjectReference Include="..\DDPM.UI.Module.WebCameraSettings\DDPM.UI.Module.WebCameraSettings.csproj" />    
     <ProjectReference Include="..\DDPM.UI.Module.WebColorImage\DDPM.UI.Module.WebCameraColorImage.csproj" />
     <ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UserControls\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -45,11 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.PenButtonSettings\DDPM.UI.Module.PenButtonSettings.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.PenSettings\DDPM.UI.Module.PenSettings.csproj" />
     <ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -40,6 +40,8 @@ namespace DDPM.SA.Common
 
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
+        Task<string> GetAutoColorPresetStatus(MonitorInfo mo, ISettingsManagerDev _SettingsPlugin);
+
         #endregion public for  Color Preset Plugin
     }
 }

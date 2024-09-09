@@ -42,6 +42,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(check) : {data.LockSettings.Lock_Settings_Updates}");
                     }
                 }));
+
+
+                GeneralButton_Click(this, null);
             }
         }
 
