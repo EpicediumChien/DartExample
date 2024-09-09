@@ -1667,8 +1667,7 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier catch monitors ...");
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier Monitors.count is " + mos.Count);
                                         _AllInfoMonitors = mos.ToList();
-                                        Initialize2TypesMonitorInfo(true);
-                                        InitializeCacheTable();
+                                        Initialize2TypesMonitorInfo(true);                                        
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
                                         Initialize0x52toEmpty();
 
@@ -1710,7 +1709,6 @@ namespace VcpCore.Plugins
                         {
                             _AllInfoMonitors = monitors.ToList();
                             Initialize2TypesMonitorInfo(true);
-                            InitializeCacheTable();
                             _logs.DebugMsg("[VcpCorePlugin] InitializeMonitorsList AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
                             Initialize0x52toEmpty();
                         }
@@ -1777,6 +1775,8 @@ namespace VcpCore.Plugins
                     if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
                     else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
+                    InitializeCacheTable();
+
                     foreach (var MonitorInfoX in _AllInfoMonitors)
                     {
                         MonitorInfo monitorInfo = new MonitorInfo();
@@ -1794,7 +1794,7 @@ namespace VcpCore.Plugins
                         monitorInfo.series = MonitorInfoX.series;
                         monitorInfo.MarketingName = MonitorInfoX.MarketingName;
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
-
+                        
                         GetVCPCapability_(MonitorInfoX, "inputsourcelist", 0);
                     }
                 }
@@ -1889,7 +1889,6 @@ namespace VcpCore.Plugins
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Let's go ...");
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToUInt32(key).ToString("X")));
-            _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable value is " + ((value is string) ? value.ToString() : Convert.ToUInt32(value).ToString("X")));
 
             if (_CacheTable.Count > 0)
             {
