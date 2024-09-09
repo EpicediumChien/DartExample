@@ -53,7 +53,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private UpdateHelper _updateHelper;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
-        private bool IsPhysicalDeviceEventAdded = false;
 
         #endregion
 
@@ -69,6 +68,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private UpdateItemInfo _updateItems = new();
 
+        private static List<Guid> PhysicalDevices = new();
         private static List<Guid> PhysicalDevices1 = new();
         private static List<Guid> PhysicalDevices2 = new();
         private static List<Guid> LogicalDevices1 = new();
@@ -1045,7 +1045,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.PanMin = _iLogicalDeviceWebcam.PanMin;
                         info.PanSteppingDelta = _iLogicalDeviceWebcam.PanSteppingDelta;
                         info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
-                        info.ProfileManager = _iLogicalDeviceWebcam.ProfileManager;
+                        //info.ProfileManager = _iLogicalDeviceWebcam.ProfileManager;
                         info.SaturationMax = _iLogicalDeviceWebcam.SaturationMax;
                         info.SaturationMin = _iLogicalDeviceWebcam.SaturationMin;
                         info.SaturationSteppingDelta = _iLogicalDeviceWebcam.SaturationSteppingDelta;
@@ -1159,11 +1159,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     //item.update
                 }
-                if (!IsPhysicalDeviceEventAdded)
-                {
-                    _iDeviceManager_DeviceAddedEvent(device);
-                    IsPhysicalDeviceEventAdded = true;
-                }
+                _iDeviceManager_DeviceAddedEvent(device);
             }
 
             Console.WriteLine(_deviceHelper.ToString());
@@ -1474,10 +1470,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iDeviceManager_DeviceAddedEvent(IPhysicalDevice iPhysicalDevice)
         {
+            if (PhysicalDevices.Contains(iPhysicalDevice.Id))
+            { return; }
+
             System.Diagnostics.Debug.WriteLine("ParentPhysicalDevice Added, Id : " + iPhysicalDevice.Id + ", Name : " + iPhysicalDevice.Name);
 
             iPhysicalDevice.DeviceAddedEvent += IPhysicalDevice_DeviceAddedEvent;
             iPhysicalDevice.DeviceRemovedEvent += IPhysicalDevice_DeviceRemovedEvent;
+            PhysicalDevices.Add(iPhysicalDevice.Id);
         }
 
         private void _iDeviceManager_DeviceRemovedEvent(IPhysicalDevice iPhysicalDevice)
