@@ -247,12 +247,21 @@ namespace DDPM.SA.Common.CLI
             response.TargetFeature = commandLineInput.TargetFeature;
 
             List<string> CMDLine_Command_Check = new List<string>()
-                {
-                    "GET",
-                    "SET",
-                    "CONFIGURE",
-                };
-            Debug.WriteLine($"command {commandLineInput.Command}");
+            {
+                "GET",
+                "SET",
+                "CONFIGURE",
+            };
+            List<string> peripheral_DeviceType = new List<string>()
+            {
+                "MOUSE",
+                "KEYBOARD",
+                //"DOCK",
+                //"HEADSET",
+                "AUDIO",
+                "PEN",
+                "WEBCAM",
+            };
             //if (!commandLineInput.Command.Equals("CONFIGURE") && !commandLineInput.Command.Equals("GET"))
             if (CMDLine_Command_Check.FindIndex(x => x.Equals(commandLineInput.Command)) < 0)
             {
@@ -285,6 +294,29 @@ namespace DDPM.SA.Common.CLI
                             break;
                         case "INAPPEXPORTSETTINGS":
                             response.Value = data_IT.Lock_Display_ExportSettings ? "Lock" : "Unlock";
+                            break;
+                        case "RESTOREFACTORYDEFAULTS":
+                            switch (commandLineInput.PluginsType.ToUpper())
+                            {
+                                case "PEN":
+                                    response.Value = data_IT.Lock_Pen_RestoreFactoryDefaults ? "Lock" : "Unlock";
+                                    break;
+                                case "WEBCAM":
+                                    response.Value = data_IT.Lock_Webcam_RestoreFactoryDefaults ? "Lock" : "Unlock";
+                                    break;
+                                case "KEYBOARD":
+                                    response.Value = data_IT.Lock_Keyboard_RestoreFactoryDefaults ? "Lock" : "Unlock";
+                                    break;
+                                case "MOUSE":
+                                    response.Value = data_IT.Lock_Mouse_RestoreFactoryDefaults ? "Lock" : "Unlock";
+                                    break;
+                                case "AUDIO":
+                                    response.Value = data_IT.Lock_Audio_RestoreFactoryDefaults ? "Lock" : "Unlock";
+                                    break;
+                            }
+                            break;
+                        case "INAPPRESTOREDEFAULTS":
+                            response.Value = data_IT.Lock_Setting_RestoreDefaults ? "Lock" : "Unlock";
                             break;
                     }
                     result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
@@ -327,8 +359,30 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPEXPORTSETTINGS":
                             data_IT.Lock_Display_ExportSettings = true;
                             break;
+                        case "RESTOREFACTORYDEFAULTS":
+                            switch (commandLineInput.PluginsType.ToUpper())
+                            {
+                                case "PEN":
+                                    data_IT.Lock_Pen_RestoreFactoryDefaults = true;
+                                    break;
+                                case "WEBCAM":
+                                     data_IT.Lock_Webcam_RestoreFactoryDefaults = true;
+                                    break;
+                                case "KEYBOARD":
+                                    data_IT.Lock_Keyboard_RestoreFactoryDefaults = true;
+                                    break;
+                                case "MOUSE":
+                                    data_IT.Lock_Mouse_RestoreFactoryDefaults = true;
+                                    break;
+                                case "AUDIO":
+                                    data_IT.Lock_Audio_RestoreFactoryDefaults = true;
+                                    break;
+                            }
+                            break;
+                        case "INAPPRESTOREDEFAULTS":
+                            data_IT.Lock_Setting_RestoreDefaults = true;
+                            break;
                     }
-                    Debug.WriteLine($"{data_IT.Lock_Settings_Updates}");
                 }
                 if (data_user != null)
                 {
@@ -340,8 +394,30 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPEXPORTSETTINGS":
                             data_user.LockSettings.Lock_Display_ExportSettings = true;
                             break;
+                        case "RESTOREFACTORYDEFAULTS":
+                            switch (commandLineInput.PluginsType.ToUpper())
+                            {
+                                case "PEN":
+                                    data_user.LockSettings.Lock_Pen_RestoreFactoryDefaults = true;
+                                    break;
+                                case "WEBCAM":
+                                    data_user.LockSettings.Lock_Webcam_RestoreFactoryDefaults = true;
+                                    break;
+                                case "KEYBOARD":
+                                    data_user.LockSettings.Lock_Keyboard_RestoreFactoryDefaults = true;
+                                    break;
+                                case "MOUSE":
+                                    data_user.LockSettings.Lock_Mouse_RestoreFactoryDefaults = true;
+                                    break;
+                                case "AUDIO":
+                                    data_user.LockSettings.Lock_Audio_RestoreFactoryDefaults = true;
+                                    break;
+                            }
+                            break;
+                        case "INAPPRESTOREDEFAULTS":
+                            data_user.LockSettings.Lock_Setting_RestoreDefaults = true;
+                            break;
                     }
-                    Debug.WriteLine($"{data_user.LockSettings.Lock_Settings_Updates}");
                 }
             }
             else if (value.ToUpper().Equals("UNLOCK"))
@@ -356,8 +432,30 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPEXPORTSETTINGS":
                             data_IT.Lock_Display_ExportSettings = false;
                             break;
-                    }
-                }
+                        case "RESTOREFACTORYDEFAULTS":
+                            switch (commandLineInput.PluginsType.ToUpper())
+                            {
+                                case "PEN":
+                                    data_IT.Lock_Pen_RestoreFactoryDefaults = false;
+                                    break;
+                                case "WEBCAM":
+                                    data_IT.Lock_Webcam_RestoreFactoryDefaults = false;
+                                    break;
+                                case "KEYBOARD":
+                                    data_IT.Lock_Keyboard_RestoreFactoryDefaults = false;
+                                    break;
+                                case "MOUSE":
+                                    data_IT.Lock_Mouse_RestoreFactoryDefaults = false;
+                                    break;
+                                case "AUDIO":
+                                    data_IT.Lock_Audio_RestoreFactoryDefaults = false;
+                                    break;
+                            }
+                            break;
+                        case "INAPPRESTOREDEFAULTS":
+                            data_IT.Lock_Setting_RestoreDefaults = false;
+                            break;
+                    }                }
                 if (data_user != null)
                 {
                     switch (commandLineInput.TargetFeature)
@@ -368,8 +466,30 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPEXPORTSETTINGS":
                             data_user.LockSettings.Lock_Display_ExportSettings = false;
                             break;
+                        case "RESTOREFACTORYDEFAULTS":
+                            switch (commandLineInput.PluginsType.ToUpper())
+                            {
+                                case "PEN":
+                                    data_user.LockSettings.Lock_Pen_RestoreFactoryDefaults = false;
+                                    break;
+                                case "WEBCAM":
+                                    data_user.LockSettings.Lock_Webcam_RestoreFactoryDefaults = false;
+                                    break;
+                                case "KEYBOARD":
+                                    data_user.LockSettings.Lock_Keyboard_RestoreFactoryDefaults = false;
+                                    break;
+                                case "MOUSE":
+                                    data_user.LockSettings.Lock_Mouse_RestoreFactoryDefaults = false;
+                                    break;
+                                case "AUDIO":
+                                    data_user.LockSettings.Lock_Audio_RestoreFactoryDefaults = false;
+                                    break;
+                            }
+                            break;
+                        case "INAPPRESTOREDEFAULTS":
+                            data_user.LockSettings.Lock_Setting_RestoreDefaults = false;
+                            break;
                     }
-                    data_user.LockSettings.Lock_Settings_Updates = false;
                 }
             }
             else
@@ -390,6 +510,29 @@ namespace DDPM.SA.Common.CLI
                             break;
                         case "INAPPEXPORTSETTINGS":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_ExportSettings" }).Result;
+                            break;
+                        case "RESTOREFACTORYDEFAULTS":
+                            switch (commandLineInput.PluginsType.ToUpper())
+                            {
+                                case "PEN":
+                                    status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Pen_RestoreFactoryDefaults" }).Result;
+                                    break;
+                                case "WEBCAM":
+                                    status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Webcam_RestoreFactoryDefaults" }).Result;
+                                    break;
+                                case "KEYBOARD":
+                                    status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Keyboard_RestoreFactoryDefaults" }).Result;
+                                    break;
+                                case "MOUSE":
+                                    status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Mouse_RestoreFactoryDefaults" }).Result;
+                                    break;
+                                case "AUDIO":
+                                    status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Audio_RestoreFactoryDefaults" }).Result;
+                                    break;
+                            }
+                            break;
+                        case "INAPPRESTOREDEFAULTS":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Setting_RestoreDefaults" }).Result;
                             break;
                     }
                 }
