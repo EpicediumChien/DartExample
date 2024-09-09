@@ -83,7 +83,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
 
             inputSplitCtrl = isplitCtrl;
-            //inputSplitCtrl.Vertical = isVertical;
+            inputSplitCtrl.IsVertical = isVertical;
             inputSplitCtrl.IsEditable = true;
             inputSplitCtrl.SplitMode = eSplitModes.Edit;
 
@@ -211,5 +211,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 Hide();
             });
         }
+
+        public bool IsVertical { get; set; } = false;
     }
 }

@@ -187,6 +187,17 @@ namespace DDPM.Easy.Common
 
         #endregion Settings
 
+        #region Screen Orientation
+
+        public bool IsVertical
+        {
+            get { return VM.IsVertical; }
+            set { VM.IsVertical = value; }
+        }
+
+        #endregion Screen Orientation
+
+
         #region Bitmap - Currently is not used in DDPM
 
         /// <summary>
