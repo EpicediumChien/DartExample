@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Plugin.ViewModels;
 using System.Windows;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
@@ -35,7 +36,14 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     BrightnessSlider.TickFrequency = _vm._mediaCapture.VideoDeviceController.Brightness.Capabilities.Step;
 
                     double dbvalue = 0.0f;
-                    if (brightnessControl.TryGetValue(out dbvalue))
+
+                    //if (brightnessControl.TryGetValue(out dbvalue))
+                    // 20240903 Jim add
+                    //Task<int> task = _vm._deviceManager.GetBrightnessValueByDTP("DellPeripheral.Webcam.0");
+
+                    //dbvalue = (double)(task.Result);
+
+                    //if (brightnessControl.TryGetValue(out dbvalue))
                         BrightnessSlider.Value = dbvalue;
 
                     BrightnessSlider.ValueChanged += BrightnessSlider_ValueChanged;
@@ -111,7 +119,11 @@ namespace DDPM.UI.Module.WebCameraColorImage
         //  Jim add 20240628
         private void BrightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            SetBrightnessLevel((float)BrightnessSlider.Value);
+            // 20240903 Jim add
+            //_vm._deviceManager.SetBrightnessValueByDTP("DellPeripheral.Webcam.0", (int)BrightnessSlider.Value);
+
+
+            //SetBrightnessLevel((float)BrightnessSlider.Value);
         }
 
         private void SetBrightnessLevel(float level)

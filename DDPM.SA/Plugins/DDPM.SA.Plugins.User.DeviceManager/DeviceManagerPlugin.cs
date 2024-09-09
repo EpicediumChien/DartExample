@@ -352,6 +352,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(Key_Profile_Name);
         }
 
+        public Task<string> GetAutoColorPresetStatus(MonitorInfo m)
+        {
+            writelog("DeviceManagerPlugin received GetAutoColorPresetStatus requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - GetAutoColorPresetStatus]");
+                return Task.FromResult("OFF");
+            }
+
+            var temp = _ColorPresetPlugin.GetAutoColorPresetStatus(m,_SettingsPlugin).Result;
+
+
+            return Task.FromResult(temp.ToString());
+        }
+
         public Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name)
         {
             bool blRet = true;
@@ -2516,7 +2532,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _NKVMPlugin.NKVM_State(state);
             }
-            return Task.CompletedTask;      
+            return Task.CompletedTask;
         }
 
         public Task CallNKVMConnent()
@@ -2646,7 +2662,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
             if (settings == null)
             {
-                writelog($"@ WriteEAMonitorSettings: ReloadMonitorSettings(model={model}) return null.");
+                writelog($"@ WriteEAMonitorSettings: ReloadMonitorSettings(model={monitorInfo.AliasDeviceName}) return null.");
                 return Task.FromResult(false);
             }
 
@@ -3119,6 +3135,95 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetTipSensitivity(itemID, newValue);
             return Task.FromResult(true);
         }
+
+        // Webcam
+        public async Task<int> GetBrightnessValueByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetBrightnessValue(itemID));
+        }
+
+        public Task SetBrightnessValueByDTP(string itemID, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetBrightnessValueByDTP requested ...");
+            writelog($"Target itemID is {itemID}");
+            writelog($"Target Brightness Value is {newValue}");
+            _DTPProxyPlugin.SetBrightnessValue(itemID, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<string> GetCameraFirmwareVersionByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetCameraFirmwareVersion(itemID));
+        }
+
+        public async Task<bool> CheckIsPropertyFOVSupportedByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyFOVSupported(itemID));
+        }
+
+        public async Task<int> GetFieldOfViewValueByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetFieldOfViewValue(itemID));
+        }
+
+        public async Task<bool> CheckIsPropertyHDRSupportedByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyHDRSupported(itemID));
+        }
+
+        public async Task<bool> GetIsHDROnValueByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsHDROnValue(itemID));
+        }
+
+        public Task SetIsHDROnValueByDTP(string itemID, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsHDROnValueByDTP requested ...");
+            writelog($"Target itemID is {itemID}");
+            writelog($"Target IsHDROn Value is {newValue}");
+            _DTPProxyPlugin.SetIsHDROnValue(itemID, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> CheckIsPropertyAntiFlickerSupportedByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyAntiFlickerSupported(itemID));
+        }
+
+        public async Task<int> GetAntiFlickerValueByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetAntiFlickerValue(itemID));
+        }
+
+        public Task SetAntiFlickerValueByDTP(string itemID, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetAntiFlickerValueByDTP requested ...");
+            writelog($"Target itemID is {itemID}");
+            writelog($"Target AntiFlicker Value is {newValue}");
+            _DTPProxyPlugin.SetAntiFlickerValue(itemID, newValue);
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> CheckIsPropertyAutoFramingSupportedByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.CheckIsPropertyAutoFramingSupported(itemID));
+        }
+
+        public async Task<bool> GetIsAutoFramingOnValueByDTP(string itemID)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetIsAutoFramingOnValue(itemID));
+        }
+
+        public Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsAutoFramingOnValueByDTP requested ...");
+            writelog($"Target itemID is {itemID}");
+            writelog($"Target IsAutoFramingOn Value is {newValue}");
+            _DTPProxyPlugin.SetIsAutoFramingOnValue(itemID, newValue);
+            return Task.FromResult(true);
+        }
+
+
 
         #endregion
 
@@ -4096,6 +4201,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             ReloadHotkeyConfigData();
                             ToNKVM_SupportedMonitorList();
                             ToNKVM_initHotKeys();
+                            LoadGlobalSettingParam();
                         }
 
                         CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
