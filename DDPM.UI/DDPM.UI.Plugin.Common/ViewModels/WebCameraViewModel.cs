@@ -1,7 +1,9 @@
 ﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using System.Buffers;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -353,6 +355,32 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 framingGrid_isChecked = value;
                 OnPropertyChanged("FramingGrid_IsChecked");
+            }
+        }
+        public string IsMicEnumerationOnText
+        {
+            get => (CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;
+        }
+        public bool IsHoverClickOn
+        {
+            get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn);
+            set
+            {
+                if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
+                {
+                    _deviceManager.SetIsSideTopButtonHoverClick(itemID, value);
+                    PenAction.IsTopBarrelHoverClickOn = value;
+                    ActionList.ExportActionList(PenAction, "PEN");
+                }
+                if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
+                {
+                    _deviceManager.SetIsSideBottomButtonHoverClick(itemID, value);
+                    PenAction.IsBottomBarrelHoverClickOn = value;
+                    ActionList.ExportActionList(PenAction, "PEN");
+                }
+                OnPropertyChanged();
+                //IsMicEnumerationOnText = value ? Strings.On : Strings.Off;
+                OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
         }
     }

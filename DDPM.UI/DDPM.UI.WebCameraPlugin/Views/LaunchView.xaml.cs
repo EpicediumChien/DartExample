@@ -51,7 +51,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private readonly WebCameraViewModel? _vm;
 
-        private readonly int[] _rightFrameWidth = new int[] { 0, 500, 500, 500, 500, 500 };//SDL, change to use new
+        private readonly int[] _rightFrameWidth = new int[] { 0, 483, 483, 483, 483, 483 };
         //private readonly string Restore = "Restore to default";
         //private readonly string Unpair = "Unpair";
         private readonly string CameraControl = Strings.CameraControl;
@@ -59,10 +59,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly string PresenceDetection = Strings.PresenceDetection;
         private readonly string Capture = Strings.Capture;
         private readonly string Microphone = Strings.Microphone;
-        private readonly Style ConnectionStyle1;
-        private readonly Style ConnectionStyle2;
-        private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
-        private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
         private readonly string WebCameraButton = "Button\nCustomization";
 
@@ -84,17 +80,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 BuildModuleGroups();
             }
-
-            //txtUnpair.Text = Unpair;
-            //txtRestore.Text = Restore;
-
-            ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-            ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-            txtSystemName1.Text = _vm!.VisiblePairedHostName1;
-            txtSystemName2.Text = _vm.VisiblePairedHostName1;
-            txtSystemName3.Text = _vm.VisiblePairedHostName1;
-            txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
-            //txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
         }
 
         //  Jim remove 20240626
@@ -136,13 +121,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             moduleGroup.AddHeader(ColorandImage, new WebCameraColorImageModule(_vm!));
             groups.Add(moduleGroup);
 
-            moduleGroup = new ModuleGroup()
+            if (_vm!.Model == "WB7022" || _vm.Model == "P2424HEB")
             {
-                GroupName = PresenceDetection,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources")
-            };
-            moduleGroup.AddHeader(PresenceDetection, new WebCameraPresenceDetectionModule(_vm!));
-            groups.Add(moduleGroup);
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = PresenceDetection,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/CameraPresenceDetection.png", "DDPM.UI.Resources")
+                };
+                moduleGroup.AddHeader(PresenceDetection, new WebCameraPresenceDetectionModule(_vm!));
+                groups.Add(moduleGroup);
+            }
 
             moduleGroup = new ModuleGroup()
             {
@@ -168,7 +156,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void OnVbarItemClicked(VbarItem newItem)
         {
-            if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
+            if (newItem.Id == _vm!.VbarSelectedIndex)
+            { return; }
 
             if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
             {
@@ -271,55 +260,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         #endregion Mode Change
 
-        private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (_vm!.ConnectionType == "Dongle")
-            {
-                UnpairModalDialog unpairModalDialog = new(eDeviceCategory.KB);
-                Window parentWindow = Window.GetWindow(this);
-                if (parentWindow != null)
-                {
-                    unpairModalDialog.Owner = parentWindow;
-                }
-
-                bool? dialogResult = unpairModalDialog.ShowDialog();
-                if (dialogResult == true)
-                {
-                    _vm.Unpair();
-                }
-            }
-            else
-            {
-                Version win10Version = new(10, 0);
-                Version currentVersion = Environment.OSVersion.Version;
-#pragma warning disable CA1416
-                if (currentVersion >= win10Version)
-                {
-                    Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
-                    {
-                        UseShellExecute = true
-                    });
-                }
-                else
-                {
-                    Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
-                    {
-                        UseShellExecute = true
-                    });
-                }
-#pragma warning restore CA1416
-            }
-        }
-
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.VbarSelectedIndex == -1) { return; }
+            if (_vm!.VbarSelectedIndex == -1)
+            { return; }
 
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
             InvokeGotoTwoViewModeAnimation();
             btnUnpair.Visibility = Visibility.Visible;
-            if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
+            if (_vm.VbarSelectedIndex == 0)
+            { InvokeEnlargeAnimation(); }
             _vm.VbarSelectedIndex = -1;
             _vm.SetLadningMode(true);
             _vm.SelectVBar();
@@ -341,43 +292,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
         }
 
-        private void BatteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            if (_vm!.ConnectionType == "Dongle")
-            {
-                DongleConnection.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                string hostName = Dns.GetHostName();
-                if (_vm.VisiblePairedHostName1 == hostName)
-                {
-                    txt1.Style = ConnectionStyle1;
-                    txt2.Style = ConnectionStyle2;
-                    imgBL1.Source = img1;
-                    imgBL2.Source = img2;
-                    txtSystemName1.Style = ConnectionStyle1;
-                    txtSystemName2.Style = ConnectionStyle2;
-                }
-                else
-                {
-                    txt1.Style = ConnectionStyle2;
-                    txt2.Style = ConnectionStyle1;
-                    imgBL1.Source = img2;
-                    imgBL2.Source = img1;
-                    txtSystemName1.Style = ConnectionStyle2;
-                    txtSystemName2.Style = ConnectionStyle1;
-                }
-                BLConnection.Visibility = Visibility.Visible;
-            }
-        }
-
-        private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            DongleConnection.Visibility = Visibility.Collapsed;
-            BLConnection.Visibility = Visibility.Collapsed;
-        }
-
         private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
         }
@@ -385,11 +299,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // 20240626 jim add
         private async void Button_Preview_Click(object sender, RoutedEventArgs e)
         {
-            // 20240626 jim add
-            if (_vm.captureManagerInitialized == true)
-            {
-                return;
-            }
+            if (_vm!.captureManagerInitialized)
+            { return; }
 
             try
             {
@@ -430,7 +341,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 MediaFrameSourceInfo frameSourceInfo = selectedFrameSourceGroup.SourceInfos[0];
 
-                _vm._mediaCapture = new MediaCapture();
+                _vm!._mediaCapture = new MediaCapture();
 
                 try
                 {
@@ -488,7 +399,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 CameraImage.Dispatcher.BeginInvoke(async () =>
                 {
-                    if (_vm._running) return;
+                    if (_vm._running)
+                        return;
                     _vm._running = true;
 
                     CameraImage.Source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
