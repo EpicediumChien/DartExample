@@ -113,6 +113,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private string _GlobalSetting_path;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
+        public event EventHandler SettingReadyEvent;
 
         #endregion Private Members
 
@@ -278,6 +279,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitHotkeyConfigFile();
             InitPowerNapConfigFile();
             InitGlobalSettingConfigFile();
+            SettingReadyEvent?.Invoke(this, new EventArgs());
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)

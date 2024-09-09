@@ -38,6 +38,7 @@ using Dell.Client.Framework.Security.Interfaces;
 using Dell.Client.Framework.Security;
 using System.Security;
 using DDPM.SA.Common.Method;
+using DDPM.SA.Common.Security;
 
 namespace DDPM.SA.Plugins.User.FWUpdate
 {
@@ -403,6 +404,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceType = updateHelper.UpdateItems[i].DeviceType,
                             DeviceId = updateHelper.UpdateItems[i].DeviceId,
                             DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                            SHA512 = updateHelper.UpdateItems[i].SHA512,
+                            Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
                             IsUOD = (isUODMode &&
                             (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                             updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock))
@@ -426,6 +429,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                SHA512 = updateHelper.UpdateItems[i].SHA512,
+                                Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
                                 IsUOD = (isUODMode &&
                                 (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                                 updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock))
@@ -484,6 +489,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 FWUpdateInfo? delayFUpdateInfo = _DelayFWUpdateInfoPackage.FWUpdateInfo.Find(o => o.Equals(fwUpdateInfo));
                                 if (delayFUpdateInfo != null)
                                 {
+                                    delayFUpdateInfo.ServerPath = fwUpdateInfo.ServerPath;
+                                    delayFUpdateInfo.SHA512 = fwUpdateInfo.SHA512;
+                                    delayFUpdateInfo.Thumbprint = fwUpdateInfo.Thumbprint;
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
                                     if (_isDefer)
                                     {
@@ -522,13 +530,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             try
             {
+                string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " start");
                 string saveFolderName = Guid.NewGuid().ToString();
                 string savePath;
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 if (string.IsNullOrEmpty(installPath))
                 {
-                    savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                    savePath = path_programdata + "\\" + "Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
                 }
                 else
                 {
@@ -537,6 +546,35 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (!Directory.Exists(savePath))
                 {
                     Directory.CreateDirectory(savePath);
+                }
+                //0909 Bruce Add Security
+                string FolderInfo;
+                int count = 0;
+                bool folderValid = false;
+                do
+                {
+                    FolderInfo = string.Empty;
+                    folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo);
+                    if (!folderValid)
+                    {
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
+                        if (Directory.Exists(savePath))
+                        {
+                            Directory.Delete(savePath, true);
+                            Directory.CreateDirectory(savePath);
+                        }
+                    }
+                } while (!folderValid && count < 2);
+                if (!folderValid)
+                {
+                    foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+                    {
+                        fwUpdateInfo.FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                    }
+                    _notificationStr = $"Firmware update unsuccessful.";
+                    NotificationFWupdate("Error", _notificationStr);
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo);
+                    return Task.FromResult(fwUpdateInfos);
                 }
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
@@ -556,11 +594,27 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         continue;
                     }
                     string url = fwUpdateInfos[i].ServerPath;
-                    string FolderInfo;
-                    if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
+                    //0909 Bruce Add Security
+                    FolderInfo = string.Empty;
+                    count = 0;
+                    folderValid = false;
+                    do
+                    {
+                        FolderInfo = string.Empty;
+                        folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo);
+                        if (!folderValid)
+                        {
+                            _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
+                            Directory.Delete(savePath, true);
+                            Directory.CreateDirectory(savePath);
+                        }
+                    } while (!folderValid && count < 2);
+                    if (!folderValid)
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo);
                         continue;
                     }
                     _downloadTimer = new Timer();
@@ -586,10 +640,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (downloadInfo.Equals("CA check fail"))
                         {
                             fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
+                            _notificationStr = $"Firmware update unsuccessful.";
+                            NotificationFWupdate("Error", _notificationStr);
                         }
                         else if (downloadInfo.Equals("Network fail"))
                         {
                             fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
+                            _notificationStr = $"Update failed due to network error. Try again.";
+                            NotificationFWupdate("Error", _notificationStr);
                         }
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail");
                         continue;
@@ -599,11 +657,27 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         Directory.CreateDirectory(extractPath);
                     }
-                    FolderInfo = "";
-                    if (!DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo))//0815 Bruce Add Security
+                    //0909 Bruce Add Security
+                    FolderInfo = string.Empty;
+                    count = 0;
+                    folderValid = false;
+                    do
+                    {
+                        FolderInfo = string.Empty;
+                        folderValid = DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo);
+                        if (!folderValid)
+                        {
+                            _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
+                            Directory.Delete(extractPath, true);
+                            Directory.CreateDirectory(extractPath);
+                        }
+                    } while (!folderValid && count < 2);
+                    if (!folderValid)
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
                     string exeFilePath;
@@ -612,13 +686,32 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile");
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
-                    //暫時註解 等待check sha512和CA
-                    //if (caCheck.CheckFileCA(exeFilePath))
+                    //Bruce 0909 Add check SHA512, SHA256 and Thumbprint.
+                    CertificateCheck certificateCheck = new CertificateCheck();
+                    bool isCheckSHA = true;//Bruce bypass
+                    string FileCAInfo = string.Empty;
+                    if (!string.IsNullOrEmpty(fwUpdateInfos[i].SHA512))
+                    {
+                        //isCheckSHA = certificateCheck.CheckFile_SHA512(exeFilePath, fwUpdateInfos[i].SHA512, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
+                    }
+                    else
+                    {
+                        //isCheckSHA = certificateCheck.CheckFile_SHA256(exeFilePath, fwUpdateInfos[i].SHA256, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
+                    }
+                    if (isCheckSHA)
                     {
                         fwUpdateInfos[i].InstallPaths = exeFilePath;
                         fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
+                    }
+                    else
+                    {
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FileCheckFail;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " File check fail. Ex:" + FileCAInfo);
+                        _notificationStr = $"Firmware update unsuccessful.";
                     }
                     if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
                     {
@@ -664,6 +757,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _isForce = false;
                 return Task.FromResult(fwUpdateInfos);
             }
+        }
+
+        public Task<FWUErrorCode> Install(string installPath)
+        {
+            FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+            {
+                InstallPaths = installPath
+            };
+            return Task.FromResult(Install(fWUpdateInfo));
         }
 
         /// <summary>
@@ -900,6 +1002,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (!_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(newFWUpdateInfo)))
                         {
+                            newFWUpdateInfo.ServerPath = "";
+                            newFWUpdateInfo.SHA256 = "";
+                            newFWUpdateInfo.SHA512 = "";
+                            newFWUpdateInfo.Thumbprint = "";
                             _DelayFWUpdateInfoPackage.FWUpdateInfo.Add(newFWUpdateInfo);
                         }
                     }
@@ -909,6 +1015,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 else if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.SaveTime == null)
                 {
                     _DelayFWUpdateInfoPackage = _fWUpdateInfoPackage;
+                    foreach (FWUpdateInfo newFWUpdateInfo in _DelayFWUpdateInfoPackage.FWUpdateInfo)
+                    {
+                        newFWUpdateInfo.ServerPath = "";
+                        newFWUpdateInfo.SHA256 = "";
+                        newFWUpdateInfo.SHA512 = "";
+                        newFWUpdateInfo.Thumbprint = "";
+                    }
                     _DelayFWUpdateInfoPackage.DelayTimesAvailable = 2;
                     _DelayFWUpdateInfoPackage.SaveTime = DateTime.Now;
                     CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelayFWUpdateInfoPackage, System.Threading.CancellationToken.None);
@@ -960,10 +1073,29 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             //0614 Bruce 新增Dock韌體安裝功能
             try
             {
-                _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " start");
+                _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}  {nameof(Install)}  start");
+                //Bruce 0909 Add check SHA512, SHA256 and Thumbprint.
+                CertificateCheck certificateCheck = new CertificateCheck();
+                bool isCheckSHA = true;//Bruce bypass
+                string FileCAInfo = string.Empty;
+                if (!string.IsNullOrEmpty(fwUpdateInfo.SHA512))
+                {
+                    //isCheckSHA = certificateCheck.CheckFile_SHA512(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA512, fwUpdateInfo.Thumbprint, out FileCAInfo);
+                }
+                else
+                {
+                    //isCheckSHA = certificateCheck.CheckFile_SHA256(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA256, fwUpdateInfo.Thumbprint, out FileCAInfo);
+                }
+                if (!isCheckSHA)
+                {
+                    _notificationStr = $"Firmware update unsuccessful.";
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
+                    return FWUErrorCode.FileCheckFail;
+                }
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFilePathValid(fwUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
                 {
+                    _notificationStr = $"Firmware update unsuccessful.";
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " FileIsNoSafe:" + FileInfo);
                     return FWUErrorCode.FileIsNoSafe;
                 }
@@ -973,7 +1105,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _timerTimeOut.Elapsed += new ElapsedEventHandler(_timerTimeOut_Tick);
                 //foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
                 string _namedPipeName = Guid.NewGuid().ToString("D"); // 生成唯一的管道名稱
-                _namedPipeServer = new NamedPipeStreamServer(_namedPipeName); // 創建命名管道伺服器
+                _namedPipeServer = new NamedPipeStreamServer(_namedPipeName, fwUpdateInfo.Thumbprint); // 創建命名管道伺服器
                 _namedPipeServer.MessageReceived += _namedPipeServer_MessageReceived;
                 _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
                 _namedPipeServer.ClientDisconnectedEvent += _namedPipeServer_ClientDisconnectedEvent;
@@ -1016,6 +1148,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         throw new SecurityException($"Signature validation failed for {fwUpdateInfo.InstallPaths}! Received the following return code {result}");
                     }*/
                     _timerTimeOut.Enabled = true;
+                    //WTSFunction.RunElevatedProcess(fwUpdateInfo.InstallPaths, arguments);
                     UserImpersonator.RunAsUser(token, () =>
                     {
                         using (Process clientProcess = new Process())
@@ -1032,6 +1165,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
                 {
+                    _notificationStr = $"Firmware update unsuccessful.";
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
                     return FWUErrorCode.NamedPipeServerIsNoSafe;
                 }

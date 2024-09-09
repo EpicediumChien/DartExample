@@ -409,11 +409,20 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             string info = string.Empty;
             //Apply folder ACL
-            if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
+            try
             {
-                WriteLog($"Apply ACL to folder failed. ({info})");
+                DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(folder);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"Apply ACL to folder failed ({ex.Message})");
                 return null;
             }
+            //if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
+            //{
+            //    WriteLog($"Apply ACL to folder failed. ({info})");
+            //    return null;
+            //}
             _settings_path = folder + "\\" + filename_appsettings_IT;
             //WriteLog($"_settings_path is {_settings_path}."); //SDL to remove (not allow path in log)
 

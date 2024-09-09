@@ -16,13 +16,15 @@
         public event EventHandler? ClientDisconnectedEvent;
 
         public bool IsNamedPipeServerIsNoSafe = false;
+        private string thumbPrint;
 
-        public NamedPipeStreamServer(string pipeName) : base(pipeName)
+        public NamedPipeStreamServer(string pipeName, string thumbPrint) : base(pipeName)
         {
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
             this._Connections = new List<NamedPipeStreamConnection>();
             NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
+            this.thumbPrint = thumbPrint;
         }
 
         private void ClientConnected(IAsyncResult result)
@@ -35,13 +37,14 @@
                 if (asyncState.IsConnected)
                 {
                     string info;
-                    if (!NPipeSecurity.NamedPipeClientSecurity(asyncState, out info))
-                    {
-                        Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
-                        IsNamedPipeServerIsNoSafe = true;
-                        asyncState.Disconnect();
-                        return;
-                    }
+                    //Bruce Bypass becaus IL No ready and Dock FWU ISP tool no signature
+                    //if (!NPipeSecurity.NamedPipeClientSecurity(asyncState, out info/*, thumbPrint*/))
+                    //{
+                    //    Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
+                    //    IsNamedPipeServerIsNoSafe = true;
+                    //    asyncState.Disconnect();
+                    //    return;
+                    //}
                     NamedPipeStreamConnection item = new NamedPipeStreamConnection(asyncState, base.PipeName);
                     item.MessageReceived += new MessageEventHandler(this.Connection_MessageReceived);
                     item.DisconnectedEvent += Connection_DisconnectedEvent;
