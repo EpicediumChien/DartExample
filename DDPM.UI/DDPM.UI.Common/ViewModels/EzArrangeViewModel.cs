@@ -227,5 +227,14 @@ namespace DDPM.UI.Common.ViewModels
         }
 
         #endregion Log
+
+        #region Screen Orientation
+        private bool _isVertical = false;
+        public bool IsVertical
+        {
+            get => _isVertical;
+            set => SetProperty(ref _isVertical, value);
+        }
+        #endregion
     }
 }
