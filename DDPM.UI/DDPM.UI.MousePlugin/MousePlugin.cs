@@ -33,7 +33,6 @@ namespace DDPM.UI.Plugin.MousePlugin
         private readonly ILog _log;
         private readonly IConsole _console;
         private readonly IPluginManager _pluginManager;
-        private readonly string? _applicationName;
         private MouseViewModel? _viewModel;
 
         private bool _isConfigured;
@@ -65,7 +64,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 _deviceManagerPlugin = _pluginManager.FindPluginByType<IDeviceManagerSA>(PluginResolution.Dynamic);
 
-                if(_deviceManagerPlugin == null)
+                if (_deviceManagerPlugin == null)
                 {
                     _log.Error($"{nameof(PluginManager_PluginsStarted)} DeviceManager Plugin is null");
                     return;
@@ -74,7 +73,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 // Manager Peripheralslugin Condition
                 _deviceManagerPluginCondition = _deviceManagerPlugin as IFrameworkPluginConditionNotification;
 
-                if(_deviceManagerPluginCondition == null)
+                if (_deviceManagerPluginCondition == null)
                     return;
 
                 // Subscribe to plugin changes
@@ -83,7 +82,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 // Get current condition
                 _ = Task.Run(GetCurrentPeripheralsPluginCondition, CancellationToken);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var message = $"{nameof(PluginManager_PluginsStarted)} failed: {ex.Message}";
                 _log.Error(ex, message);
@@ -92,11 +91,11 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if(e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Mouse"))
+            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Mouse"))
             {
-                if(e.type == DeviceChangedType.Peripherals_UnPlug)
+                if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {
-                    if(e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
                     {
                         _viewModel.OnGoBackClicked();
                         return;
@@ -123,21 +122,21 @@ namespace DDPM.UI.Plugin.MousePlugin
             _log.Trace($"{nameof(GetCurrentPeripheralsPluginCondition)} lock");
             try
             {
-                if(_deviceManagerPluginCondition == null)
+                if (_deviceManagerPluginCondition == null)
                     return;
 
                 var pluginCondition = await _deviceManagerPluginCondition.CurrentConditionAsync();
 
-                if(pluginCondition is PluginErrorCondition)
+                if (pluginCondition is PluginErrorCondition)
                 {
                     _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginErrorCondition)}");
                 }
-                else if(pluginCondition is PluginRunningCondition)
+                else if (pluginCondition is PluginRunningCondition)
                 {
                     _log.Info($"{nameof(GetCurrentPeripheralsPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var message = $"{nameof(GetCurrentPeripheralsPluginCondition)} failed with error - {ex.Message}";
                 _log.Error(ex, message);
@@ -152,7 +151,7 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void GetPeripheralsAsync()
         {
-            if(!SpinWait.SpinUntil(() =>
+            if (!SpinWait.SpinUntil(() =>
             _deviceManagerPluginCondition is not null, TimeSpan.FromMinutes(2)))
             {
                 Console.WriteLine("Could not establish communication with DDPM!!");
@@ -172,7 +171,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         /// <remarks>Below code will be removed when <see cref="IConsole"/> provides the bootstrapper support</remarks>
         private void ConfigureServices()
         {
-            if(_isConfigured)
+            if (_isConfigured)
                 return;
 
             // Marked all the instances as singleton
@@ -185,7 +184,7 @@ namespace DDPM.UI.Plugin.MousePlugin
                 .BuildServiceProvider());
 
             _viewModel = (MouseViewModel?)PluginIoc?.GetService<IPeripheralViewModel>();
-            if(_viewModel != null)
+            if (_viewModel != null)
             {
                 _viewModel.WordVisibility = CheckOfficeApp("Word.Application");
                 _viewModel.ExcelVisibility = CheckOfficeApp("Excel.Application");
@@ -198,7 +197,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         private static Visibility CheckOfficeApp(string progId)
         {
             Type? type = Type.GetTypeFromProgID(progId);
-            if(type == null)
+            if (type == null)
                 return Visibility.Collapsed;
             else
                 return Visibility.Visible;
@@ -233,7 +232,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             //Task<int> task = _deviceManagerPlugin!.GetDpiValueByDTP("DellPeripheral.Mouse.0");
             //var DpiValue = task.Result;
             //_deviceManagerPlugin.SetDPIValueByDTP("DellPeripheral.Mouse.0", 1350);
-            if(_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
             { }
             Mouse.OverrideCursor = null;
         }

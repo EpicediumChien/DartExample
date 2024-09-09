@@ -19,12 +19,16 @@
   <ItemGroup>
     <Compile Remove="Models\**" />
     <Compile Remove="Themes\**" />
+    <Compile Remove="UserControls\**" />
     <EmbeddedResource Remove="Models\**" />
     <EmbeddedResource Remove="Themes\**" />
+    <EmbeddedResource Remove="UserControls\**" />
     <None Remove="Models\**" />
     <None Remove="Themes\**" />
+    <None Remove="UserControls\**" />
     <Page Remove="Models\**" />
     <Page Remove="Themes\**" />
+    <Page Remove="UserControls\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,10 +53,6 @@
     <ProjectReference Include="..\DDPM.UI.Module.WebColorImage\DDPM.UI.Module.WebCameraColorImage.csproj" />
     <ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UserControls\" />
   </ItemGroup>
 
   <ItemGroup>
