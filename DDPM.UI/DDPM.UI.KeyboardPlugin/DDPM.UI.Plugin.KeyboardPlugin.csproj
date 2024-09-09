@@ -45,12 +45,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.Collaboration\DDPM.UI.Module.Collaboration.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.Illumination\DDPM.UI.Module.Illumination.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.KeyCustomization\DDPM.UI.Module.KeyCustomization.csproj" />
     <ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
-    <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
   </ItemGroup>
 
   <ItemGroup>

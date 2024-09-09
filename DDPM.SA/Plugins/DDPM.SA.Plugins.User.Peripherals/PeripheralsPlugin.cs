@@ -1045,7 +1045,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.PanMin = _iLogicalDeviceWebcam.PanMin;
                         info.PanSteppingDelta = _iLogicalDeviceWebcam.PanSteppingDelta;
                         info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
-                        info.ProfileManager = _iLogicalDeviceWebcam.ProfileManager;
+                        //info.ProfileManager = _iLogicalDeviceWebcam.ProfileManager;
                         info.SaturationMax = _iLogicalDeviceWebcam.SaturationMax;
                         info.SaturationMin = _iLogicalDeviceWebcam.SaturationMin;
                         info.SaturationSteppingDelta = _iLogicalDeviceWebcam.SaturationSteppingDelta;
