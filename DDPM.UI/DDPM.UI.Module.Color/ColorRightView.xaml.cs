@@ -9,6 +9,7 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.IO;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Reflection;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.UI.Module.Color
 {
@@ -20,7 +21,7 @@ namespace DDPM.UI.Module.Color
         //  Jim remove 20240604
         //private List<string> _Support_DeviceName  = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW" , "UP2720Q" , "UP3221Q" };
 
-        
+        private static Log _log;
 
         public ColorRightView()
         {
@@ -390,6 +391,14 @@ namespace DDPM.UI.Module.Color
         
             string targetPath = dropFileNames[0];
 
+            //0909 Elsa Add Security
+            string filePath=System.IO.Path.GetDirectoryName(targetPath);
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            {
+                _log.Info($"{nameof(lb_AppList_PreviewDragEnter)} {FileInfo}");
+            }
+
             if (targetPath.EndsWith(".lnk")  || targetPath.EndsWith(".exe"))
             {     
                 string strAppName = string.Empty;
@@ -471,6 +480,12 @@ namespace DDPM.UI.Module.Color
 
                         if (!System.IO.Directory.Exists(strFolder))
                             System.IO.Directory.CreateDirectory(strFolder);
+
+                        //0909 Elsa Add Security
+                        if (!DDPMFileSecurity.IsFilePathValid(strFolder, out FileInfo))
+                        {
+                            _log.Info($"{nameof(lb_AppList_PreviewDragEnter)} {FileInfo}");
+                        }
 
                         if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
                         {

@@ -1462,18 +1462,6 @@ namespace DDPM.SA.Common.Settings
 
         public static bool VerifyFileCertWithThumbprint(string filePath, out string info)
         {
-<<<<<<< HEAD
-            //0905 Elsa Add Security
-            string FileInfo;
-            if (!IsFilePathValid(filePath, out FileInfo))
-            {
-                _log.Info($"{nameof(LoadCertificate)} {FileInfo}");
-                return null;
-            }
-
-            byte[] certBytes = File.ReadAllBytes(filePath);
-            return new X509Certificate2(certBytes);
-=======
             info = "success";
             if(!IsFilePathValid(filePath, out info))
             {
@@ -1546,7 +1534,7 @@ namespace DDPM.SA.Common.Settings
 
             }
             return true;
->>>>>>> ebf391c442ea967d17499c77b1ed3fb8cfbed56d
+
         }
 
         #region Bruce 0814 Move this method to DDPM.SA.Common

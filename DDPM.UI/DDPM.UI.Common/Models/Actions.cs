@@ -272,6 +272,14 @@ namespace DDPM.UI.Common
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
 
+                //0909 Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(fileFolder, out FileInfo))
+                {
+                    _log.Info($"{nameof(ExportActionList)} {FileInfo}");
+                    return false;
+                }
+
                 //File.WriteAllText(Path.Combine(fileFolder, $"{model}_{instanceID}.json"), json);
                 File.WriteAllText(Path.Combine(fileFolder, $"{model}.json"), json);
                 return true;

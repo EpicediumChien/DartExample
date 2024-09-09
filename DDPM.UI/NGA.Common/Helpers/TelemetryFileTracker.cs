@@ -123,6 +123,14 @@ namespace NGA.Common.Helpers
                 return false;
             }
 
+            //0909 Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(winPath, out FileInfo))
+            {
+                _log.Info($"{nameof(ParseCsupFile)} {FileInfo}");
+                return false;
+            }
+
             var text = ReadFile(log, fileSystem, csupFile);
 
             var date = DateTime.ParseExact(text.Trim(), DataFormat,
