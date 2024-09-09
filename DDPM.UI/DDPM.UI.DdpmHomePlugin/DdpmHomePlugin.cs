@@ -213,7 +213,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                     Console.WriteLine("Unknown type: " + value.GetType());
                                     break;
                             }
-                            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                            //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
                             //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId, deviceInfosForWalkThrough[0].ModelNumber.ToString());
 
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,

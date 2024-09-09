@@ -1,20 +1,46 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using DPeMPublic.Common.Enums;
+using Microsoft;
 using Newtonsoft.Json.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.WalkThroughPlugin
 {
     public class WalkThroughPageViewModel : ObservableObject
     {
+        private readonly IConsole _console;
+        private readonly ILog _log;
+        private readonly IDeviceManagerSA _deviceManager;
         private List<HomeDevice> _homeDevices = new List<HomeDevice>();
         public bool[] IsSelected { get; set; } = new bool[5];
+        public ICommand GoBackClickedCommand { get; private set; }
+        public WalkThroughPageViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
+        {
+            Requires.NotNull(console, nameof(console));
+            Requires.NotNull(log, nameof(log));
+            Requires.NotNull(log, nameof(deviceManager));
 
+            _console = console;
+            _log = log;
+            _deviceManager = deviceManager;
+
+            GoBackClickedCommand = new RelayCommand(OnGoBackClicked);
+
+        }
+        public void OnGoBackClicked()
+        {
+            _console.ShowHomePage();
+        }
         public List<HomeDevice> HomeDevices
         {
             get => _homeDevices;

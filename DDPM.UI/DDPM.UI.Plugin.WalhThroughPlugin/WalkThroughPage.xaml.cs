@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
@@ -22,7 +23,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         public WalkThroughPage()
         {
             InitializeComponent();
-            DataContext = new WalkThroughPageViewModel();
+            //DataContext = new WalkThroughPageViewModel();
         }
 
         ~WalkThroughPage()
