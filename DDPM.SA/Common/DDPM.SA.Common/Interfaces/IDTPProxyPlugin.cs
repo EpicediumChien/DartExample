@@ -43,5 +43,35 @@ namespace DDPM.SA.Common
         Task SetTiltSensitivity(string itemID, int newValue);
 
         Task SetTipSensitivity(string itemID, int newValue);
+
+        // webcam
+        Task<int> GetBrightnessValue(string itemID);
+
+        Task SetBrightnessValue(string itemID, int newValue);
+
+        Task<string> GetCameraFirmwareVersion(string itemID);        
+
+        Task<bool> CheckIsPropertyFOVSupported(string itemID);
+
+        Task<int> GetFieldOfViewValue(string itemID);
+
+        Task<bool> CheckIsPropertyHDRSupported(string itemID);
+
+        Task<bool> GetIsHDROnValue(string itemID);
+
+        Task SetIsHDROnValue(string itemID, bool newValue);
+
+        Task<bool> CheckIsPropertyAntiFlickerSupported(string itemID);
+
+        Task<int> GetAntiFlickerValue(string itemID);
+
+        Task SetAntiFlickerValue(string itemID, int newValue);
+
+        Task<bool> CheckIsPropertyAutoFramingSupported(string itemID);
+
+        Task<bool> GetIsAutoFramingOnValue(string itemID);
+
+        Task SetIsAutoFramingOnValue(string itemID,bool newValue);
+
     }
 }

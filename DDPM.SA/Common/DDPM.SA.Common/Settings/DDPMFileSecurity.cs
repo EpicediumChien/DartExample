@@ -596,7 +596,7 @@ namespace DDPM.SA.Common.Settings
         {
             return array1.SequenceEqual(array2);
         }
-
+        /*
         /// <summary>
         /// Encrypt bytes content with RSA key
         /// </summary>
@@ -623,8 +623,8 @@ namespace DDPM.SA.Common.Settings
             {
             }
             return null;
-        }
-
+        }*/
+        /*
         /// <summary>
         /// Decrypt bytes content with RSA key
         /// </summary>
@@ -651,7 +651,7 @@ namespace DDPM.SA.Common.Settings
             {
             }
             return null;
-        }
+        }*/
 
         public static bool IsFilePathValid(string filePath, out string info)
         {
@@ -1222,7 +1222,7 @@ namespace DDPM.SA.Common.Settings
             return result;
         }
 
-        public static bool IsContainValidDigitalSignature(string filePath, out string info)
+        /*public static bool IsContainValidDigitalSignature(string filePath, out string info)
         {
             info = "";
             // Check our path string for invalid characters, null value, empty value, etc.
@@ -1249,10 +1249,10 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
             return true;
-        }
+        }*/
 
         //using private key and source json file to create signature output file
-        public static bool CreateJsonSignature(string json_content, string private_key_file, string target_sign_file, HashAlgorithmName algorithm, out string info)
+        /*public static bool CreateJsonSignature(string json_content, string private_key_file, string target_sign_file, HashAlgorithmName algorithm, out string info)
         {
             info = "unknow error";
 
@@ -1287,10 +1287,10 @@ namespace DDPM.SA.Common.Settings
                 info = ex.Message;
                 return false;
             }
-        }
+        }*/
 
         //Using public key and pre-generated signature to validate json file
-        public static bool IsJsonContentValid(string json_content, string base64_signature, string public_key_file, HashAlgorithmName algorithm, out string info)
+        /*public static bool IsJsonContentValid(string json_content, string base64_signature, string public_key_file, HashAlgorithmName algorithm, out string info)
         {
             info = "unknow error";
 
@@ -1328,10 +1328,10 @@ namespace DDPM.SA.Common.Settings
                 info = ex.Message;
                 return false;
             }
-        }
+        }*/
 
         //for test purpose to generate public and private key pair, method 1
-        public static bool GenerateNewRSAKeyPair(string publicName, string privateName, out string privateKey, out string publicKey)
+        /*public static bool GenerateNewRSAKeyPair(string publicName, string privateName, out string privateKey, out string publicKey)
         {
             using (var rsa = RSA.Create(4096))
             {
@@ -1374,10 +1374,10 @@ namespace DDPM.SA.Common.Settings
                 }
                 return true;
             }
-        }
+        }*/
 
         //for test purpose to generate public and private key pair, method 2
-        private static bool GenerateNewRSAKeyPair(string publicName, string privateName)
+        /*private static bool GenerateNewRSAKeyPair(string publicName, string privateName)
         {
             if (File.Exists(publicName))
             {
@@ -1421,9 +1421,9 @@ namespace DDPM.SA.Common.Settings
                 }
             }
             return true;
-        }
+        }*/
 
-        public static void DirectoryLockTest(string folderPath)
+        /*public static void DirectoryLockTest(string folderPath)
         {
             try
             {
@@ -1444,10 +1444,25 @@ namespace DDPM.SA.Common.Settings
             {
                 Console.WriteLine($"Error：{ex.Message}");
             }
+        }*/
+        /*
+        //public static X509Certificate2 LoadCertificate(string filePath)
+        //{
+        //    byte[] certBytes = File.ReadAllBytes(filePath);
+        //    return new X509Certificate2(certBytes);
+        //}*/
+
+        private static byte[] ConvertThumbprintToByteArray(string thumbprint)
+        {
+            return Enumerable.Range(0, thumbprint.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(thumbprint.Substring(x, 2), 16))
+                             .ToArray();
         }
 
-        public static X509Certificate2 LoadCertificate(string filePath)
+        public static bool VerifyFileCertWithThumbprint(string filePath, out string info)
         {
+<<<<<<< HEAD
             //0905 Elsa Add Security
             string FileInfo;
             if (!IsFilePathValid(filePath, out FileInfo))
@@ -1458,6 +1473,80 @@ namespace DDPM.SA.Common.Settings
 
             byte[] certBytes = File.ReadAllBytes(filePath);
             return new X509Certificate2(certBytes);
+=======
+            info = "success";
+            if(!IsFilePathValid(filePath, out info))
+            {
+                Console.WriteLine(info);
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = new X509Certificate2(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint
+                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+                //Target cert.Thumbprint
+
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+            return true;
+        }
+
+        public static bool VerifyFileCertWithThumbprint(string filePath, string targetThumbprint, out string info)
+        {
+            info = "success";
+            if(!IsFilePathValid(filePath, out info))
+            {
+                Console.WriteLine(info);
+                return false;
+            }
+            if(string.IsNullOrEmpty(targetThumbprint))
+            {
+                info = "Abnormal thumbprint as input";
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = new X509Certificate2(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint from input
+                //Target cert.Thumbprint{
+                bool contains = targetThumbprint.ToUpper().Trim().Equals(cert.Thumbprint.ToUpper().Trim());
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                info = e.Message;
+                return false;
+
+            }
+            return true;
+>>>>>>> ebf391c442ea967d17499c77b1ed3fb8cfbed56d
         }
 
         #region Bruce 0814 Move this method to DDPM.SA.Common
