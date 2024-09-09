@@ -63,7 +63,7 @@ namespace DDPM.SA.Plugin.CLIManager
         public CLIManagerPlugin(IAgent agent) : base(agent, PluginLogId)
         {
             _agent = agent;
-            WriteLog($"SettingsManagerPlugin constructor ...(Admin:{_IsAdministrator})");
+            WriteLog($"CLIMamagerPlugin constructor ...(Admin:{_IsAdministrator})");
         }
 
         #endregion
