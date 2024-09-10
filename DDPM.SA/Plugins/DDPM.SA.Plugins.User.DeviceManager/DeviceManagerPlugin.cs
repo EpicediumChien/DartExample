@@ -3588,9 +3588,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //}
                 CheckUpdate();
                 CheckUODFWUInfoPackage(true);
+                //0909 Bruce move to add and remove 
+                var thread = new Thread(() =>
+                {
+                    CheckDocks();
+                });
+                thread.Start();
             }
             else if (changedProperty.ToLower().Contains("remove"))
             {
+                //0909 Bruce move to add and remove  
+                var thread = new Thread(() =>
+                {
+                    CheckDocks();
+                });
+                thread.Start();
             }
             else if ((string.Compare(changedProperty, "DisplayChanged", true) == 0))
             {
@@ -3605,12 +3617,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     SupportedNKVMMonitors();
                 }
             }
-            //0617 Bruce 如使用Dell的Popup視窗顯示，需卡執行緒，故另外使用一條執行緒給Popup顯示用
-            var thread = new Thread(() =>
-            {
-                CheckDocks();
-            });
-            thread.Start();
         }
 
         //0613 Bruce 用於看是否連接超過2個dock
