@@ -35,6 +35,7 @@ namespace DDPM.SA.Common
         Task<List<FWUpdateInfo>> CheckUpdate(UpdateHelper updateHelper, bool isShowNotify, List<DeviceType> deviceTypeList, bool isUODMode);
 
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath);
+        Task<FWUErrorCode> Install(string installPath);
 
         void SetDeviceinfo(List<DeviceInfo> DeviceInfos);
 

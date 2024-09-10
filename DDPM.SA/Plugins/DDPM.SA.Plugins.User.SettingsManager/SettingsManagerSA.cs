@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -114,6 +115,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private string _GlobalSetting_path;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
+        public event EventHandler SettingReadyEvent;
 
         #endregion Private Members
 
@@ -280,6 +282,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitHotkeyConfigFile();
             InitPowerNapConfigFile();
             InitGlobalSettingConfigFile();
+            SettingReadyEvent?.Invoke(this, new EventArgs());
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
@@ -892,7 +895,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                 vcps = monitorSettings.VCPs;
                                 //if (!isSameModel)
                                 //{
-                                    return Task.FromResult<bool>(true);
+                                return Task.FromResult<bool>(true);
                                 //}
                             }
                             else
@@ -1264,6 +1267,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 try
                 {
                     _GlobalSettingParam = RunGlobalSettinDeserializeObject(strReadJson);
+                    _GlobalSettingParam.GlobalSetting_About.SWVersion = _settingsAccessInfoVer;
                 }
                 catch (Exception)// ex)
                 {
@@ -1703,7 +1707,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         return Task.FromResult(false);
                     }
                     bool result = _SysSettingsPlugin.WriteRegistryData(hive, keyPath, keyName, value).Result;
-                    if(result)
+                    if (result)
                         WriteLog($"[User setting plugin] Write data {value} success");
                     else
                         WriteLog($"[User setting plugin] Write data {value} failed");
