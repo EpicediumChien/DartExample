@@ -67,7 +67,7 @@
 
                             <!-- Your camera preview control goes here -->
                             <Image Grid.Row="0"  Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="3" Name="CameraImage" Width="704" Height="396" Stretch="Fill" />
-
+                            <!-- <CaptureElement Name="PreviewControl" Stretch="Uniform"/> -->
                             <!-- Add vertical grid line -->
                             <Grid Visibility="{Binding IsChecked_FramingGrid}">
                                 <Grid.RowDefinitions>
