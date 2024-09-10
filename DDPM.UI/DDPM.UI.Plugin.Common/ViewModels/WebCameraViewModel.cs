@@ -359,27 +359,16 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public string IsMicEnumerationOnText
         {
-            get => (CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;
+            get => CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;
         }
-        public bool IsHoverClickOn
+        public bool IsMicEnumerationOn
         {
-            get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn);
+            get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
-                if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
-                {
-                    _deviceManager.SetIsSideTopButtonHoverClick(itemID, value);
-                    PenAction.IsTopBarrelHoverClickOn = value;
-                    ActionList.ExportActionList(PenAction, "PEN");
-                }
-                if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
-                {
-                    _deviceManager.SetIsSideBottomButtonHoverClick(itemID, value);
-                    PenAction.IsBottomBarrelHoverClickOn = value;
-                    ActionList.ExportActionList(PenAction, "PEN");
-                }
+                //_deviceManager.SetIsMicEnumerationOn(CurrentDeviceInfo!.ID.ToString(), value);
+                _deviceManager.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
-                //IsMicEnumerationOnText = value ? Strings.On : Strings.Off;
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
         }

@@ -54,7 +54,7 @@
               </StackPanel>
             </Grid>
             <Grid Grid.Column="1">
-              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top">
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Center">
                 <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" VerticalAlignment="Top">
                   <Image.ToolTip>
                     <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
@@ -62,7 +62,7 @@
                     </ToolTip>
                   </Image.ToolTip>
                 </Image>
-                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Microphone}" ContentTextVisibility="True" Content="{Binding Path=MicrophoneStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsMicEnumerationOn}" Content="{Binding Path=IsMicEnumerationOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0" />
               </StackPanel>
             </Grid>
           </Grid>

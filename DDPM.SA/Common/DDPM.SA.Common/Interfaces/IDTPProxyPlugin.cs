@@ -49,7 +49,7 @@ namespace DDPM.SA.Common
 
         Task SetBrightnessValue(string itemID, int newValue);
 
-        Task<string> GetCameraFirmwareVersion(string itemID);        
+        Task<string> GetCameraFirmwareVersion(string itemID);
 
         Task<bool> CheckIsPropertyFOVSupported(string itemID);
 
@@ -71,7 +71,8 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsAutoFramingOnValue(string itemID);
 
-        Task SetIsAutoFramingOnValue(string itemID,bool newValue);
+        Task SetIsAutoFramingOnValue(string itemID, bool newValue);
+        Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
     }
 }

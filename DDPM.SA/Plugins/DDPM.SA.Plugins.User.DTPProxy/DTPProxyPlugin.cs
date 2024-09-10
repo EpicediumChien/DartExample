@@ -150,6 +150,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
+        #region Webcam
         public async Task<int> GetBrightnessValue(string itemID)
         {
             _itemID = new ItemId(itemID);
@@ -516,7 +517,94 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         }
 
+        public async Task SetProfile(string itemID, string newValue)
+        {
+            _itemID = new ItemId(itemID);
 
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_penInterfaceType, commodity, "TipSensitivity", newValue);
+                }
+                else
+                {
+                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+            }
+        }
+        public async Task SetIsMicEnumerationOn(string Guid, bool newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            {
+                Console.WriteLine($"Webcam not foungnd GUID: {Guid}");
+                writelog($"Webcam not foungnd GUID: {Guid}");
+                return;
+            }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "IsMicEnumerationOn", newValue);
+            }
+            else
+            {
+                Console.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+
+        private async Task<bool> GetItemIDAsync(string type, string guid)
+        {
+            MethodInfo methodInfo = type switch
+            {
+                "Pen" => _penMethodInfo,
+                "Webcam" => _webcamMethodInfo,
+                "Headset" => _headsetMethodInfo,
+                _ => null
+            };
+            Type interfaceType = type switch
+            {
+                "Pen" => _penInterfaceType,
+                "Webcam" => _webcamInterfaceType,
+                "Headset" => _headsetInterfaceType,
+                _ => null
+            };
+
+
+            if (methodInfo == null)
+            {
+                Console.WriteLine($"Could not retrieve the Commodity Interface to get Guid");
+                writelog($"Could not retrieve the Commodity Interface to get Guid");
+                return false;
+            }
+
+            int i = 0;
+            string item = "DellPeripheral";
+            while (i < 10)
+            {
+                _itemID = new ItemId($"{item}.{type}.{i}");
+                Debug.WriteLine($"{_itemID}");
+                if (await GetCommodityInterfaceInstanceAsync(methodInfo) is ICommodity commodity)
+                {
+                    Debug.WriteLine($"{commodity.GetType}");
+                    var value = GetPropertyValue(interfaceType, commodity, "DeviceId");
+                    Debug.WriteLine((string)value);
+                    if ((string)value == guid)
+                    { return true; }
+                }
+                i++;
+            }
+            return false;
+        }
+        #endregion
+
+        #region Pen
         public async Task SetEraserDoublePressSetting(string itemID, byte[] newValue)
         {
             _itemID = new ItemId(itemID);
@@ -792,31 +880,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        #region Webcam methods
-        public async Task SetProfile(string itemID, string newValue)
-        {
-            _itemID = new ItemId(itemID);
-
-            if (_penMethodInfo != null)
-            {
-                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
-                {
-                    SetPropertyValue(_penInterfaceType, commodity, "TipSensitivity", newValue);
-                }
-                else
-                {
-                    Console.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-            }
-        }
-
         #endregion
+
 
         #region Overriding methods
 
@@ -1024,11 +1089,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
+                Debug.WriteLine($"{commodity.GetType().Name}");
                 return interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
             }
             catch (Exception ex)
             {
                 writelog($"Error while Getting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+                Debug.WriteLine($"Error while Getting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
                 return null;
             }
         }

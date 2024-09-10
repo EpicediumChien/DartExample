@@ -362,7 +362,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult("OFF");
             }
 
-            var temp = _ColorPresetPlugin.GetAutoColorPresetStatus(m,_SettingsPlugin).Result;
+            var temp = _ColorPresetPlugin.GetAutoColorPresetStatus(m, _SettingsPlugin).Result;
 
 
             return Task.FromResult(temp.ToString());
@@ -3136,7 +3136,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        // Webcam
+        #region Webcam
         public async Task<int> GetBrightnessValueByDTP(string itemID)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetBrightnessValue(itemID));
@@ -3223,6 +3223,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+
+        public Task SetIsMicEnumerationOn(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsMicEnumerationOn requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsMicEnumerationOn(guid, newValue);
+            return Task.FromResult(true);
+        }
+        #endregion
 
 
         #endregion
