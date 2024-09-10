@@ -385,7 +385,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 if (_AllMonitorSettings != null)
                 {
                     //find monitor settings
-                    if (!_AllMonitorSettings.ContainsKey(modelname))
+                    if (_AllMonitorSettings.ContainsKey(modelname))
+                    {
+                        _AllMonitorSettings[modelname] = monitorSettingList;
+                    }
+                    else
                     {
                         _AllMonitorSettings.Add(modelname, monitorSettingList);
                     }

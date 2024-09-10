@@ -112,30 +112,30 @@ namespace VCPSDK
             }
 
             //Need to check dll/exe thumbprint
-            //X509Certificate2 cert = new X509Certificate2(filePath);//LoadCertificate(filePath);
-            //if (cert == null)
-            //{
-            //    Console.WriteLine("Can't retrieve cert from file.");
-            //    return false;
-            //}
+            X509Certificate2 cert = new X509Certificate2(filePath);//LoadCertificate(filePath);
+            if (cert == null)
+            {
+                Console.WriteLine("Can't retrieve cert from file.");
+                return false;
+            }
 
-            ////compare thumbprint
-            ////source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
-            ////Target cert.Thumbprint
-            //try
-            //{
-            //    bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
-            //    if (!contains)
-            //    {
-            //        Console.WriteLine($"No matched cert. thumbprint in file is {cert.Thumbprint}");
-            //        return false;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.Message);
-            //    return false;
-            //}
+            //compare thumbprint
+            //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+            //Target cert.Thumbprint
+            try
+            {
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    Console.WriteLine($"No matched cert. thumbprint in file is {cert.Thumbprint}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
             return true;
         }
 
