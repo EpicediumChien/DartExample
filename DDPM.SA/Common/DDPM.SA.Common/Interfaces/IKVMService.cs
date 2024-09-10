@@ -45,6 +45,8 @@ namespace DDPM.SA.Common
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
 
+        Task NKVM_State(bool state);
+
         Task CallNKVMConnent();
 
         //Task ChangeNKVMState(bool state);

@@ -408,6 +408,8 @@ namespace DDPM.SA.Common
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
+        Task<FWUErrorCode> Install(string installPath);
+
 
         void SetUILockStatus(bool isLockFWU_UI);
 
@@ -446,6 +448,8 @@ namespace DDPM.SA.Common
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
 
+        Task NKVM_State(bool state);
+
         Task CallNKVMConnent();
 
         #endregion for NKVM
@@ -462,7 +466,7 @@ namespace DDPM.SA.Common
 
         Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
 
-        Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, string path);
+        Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
 
         #endregion public for ImpExpSettings
 
@@ -568,5 +572,16 @@ namespace DDPM.SA.Common
         Task ShowOSD(object monitorInfo, OSDType type);
 
         #endregion OSD
+
+        #region GlobalSetting
+        Task<GlobalSettingParam> GetGlobalSettingParam();
+        Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayKeyboardLockKey(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayWB7022CoverState(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayMuteState(bool isDisplay);
+        Task<bool> Set_GlobalSetting_DisplayColorPresetAndEasyMemory(bool isDisplay);
+        Task<bool> Set_GlobalSetting_EnableQuickAccessWidget(bool isEnable);
+        Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable);
+        #endregion
     }
 }

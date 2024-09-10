@@ -85,7 +85,7 @@ namespace DDPM.SA.Common
 
     public class CLI_Get_FW_RESPONSE : CLI_RESPONSE
     {
-        public string FWVer { get; set; } = "N/A";
+        //public string FWVer { get; set; } = "N/A";
     }
 
     public class ConnectedDevices : CLI_RESPONSE
@@ -153,7 +153,7 @@ namespace DDPM.SA.Common
     public class CLI_Get_Properties_USBCPrioritization_RESPONSE : CLI_RESPONSE
     {
         public string SupportedUSBCPrioritization { get; set; }
-        public string USBCPrioritizationType { get; set; }
+        //public string USBCPrioritizationType { get; set; }
 
         public CLI_Get_Properties_USBCPrioritization_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
@@ -168,11 +168,11 @@ namespace DDPM.SA.Common
 
     public class CLI_Get_Properties_Orientation_RESPONSE : CLI_RESPONSE
     {
-        public string Orientation { get; set; }
+        //public string Orientation { get; set; }
 
         public CLI_Get_Properties_Orientation_RESPONSE(CLI_RESPONSE cli_RESPONSE)
         {
-            this.Orientation = "N/A";
+            //this.Orientation = "N/A";
             this.Index = cli_RESPONSE.Index;
             this.ServiceTag = cli_RESPONSE.ServiceTag;
             this.Command = cli_RESPONSE.Command;
@@ -184,7 +184,7 @@ namespace DDPM.SA.Common
 
     public class CLI_Get_Properties_CurrentResolutionRefreshRate_RESPONSE : CLI_RESPONSE
     {
-        public string CurrentResolutionRefreshRate { get; set; }
+        //public string CurrentResolutionRefreshRate { get; set; }
         public string BitsPerPixel { get; set; }
 
         public CLI_Get_Properties_CurrentResolutionRefreshRate_RESPONSE(CLI_RESPONSE cli_RESPONSE)

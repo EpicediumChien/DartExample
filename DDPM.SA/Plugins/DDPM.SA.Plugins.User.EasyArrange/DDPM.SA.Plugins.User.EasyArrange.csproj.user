@@ -7,6 +7,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ComboBoxStyle.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="InfoWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

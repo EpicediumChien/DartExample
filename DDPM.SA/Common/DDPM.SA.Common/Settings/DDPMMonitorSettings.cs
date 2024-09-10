@@ -11,14 +11,14 @@ namespace DDPM.SA.Common.Settings
 
     public class Input
     {
-        public string strInputSourceList { get; set; } = string.Empty;
+        public string strInputSourceList { get; set; }
     }
 
     public class KVM
     {
-        public string strUSBKVMPCsList { get; set; } = string.Empty;
-        public bool isOnUSBKVM { get; set; } = false;
-        public bool isOnNKVM { get; set; } = false;
+        public string strUSBKVMPCsList { get; set; }
+        public bool isOnUSBKVM { get; set; }
+        public bool isOnNKVM { get; set; }
     }
 
     public class VCP

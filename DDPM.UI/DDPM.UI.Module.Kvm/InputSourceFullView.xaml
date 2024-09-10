@@ -75,9 +75,14 @@
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"
-                                                 Content="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" ContentStringFormat="{}{0} ⭢"  Margin="0"
                                                  IconAnimation="Move" Width="164" Height="40"
-                                                 Click="OpenMKFullView" Visibility="{Binding SetInput}" />
+                                                 ContentStringFormat="{}{0}"
+                                                 Click="OpenMKFullView" Visibility="{Binding SetInput}">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>
+                                    <Path Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
+                                </StackPanel>
+                            </UXControls:UXButton>
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"

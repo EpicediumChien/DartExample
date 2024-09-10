@@ -104,7 +104,7 @@ namespace DDPM.SA.Common.Settings
                 //signature = Encoding.UTF8.GetString(hash_sign);
 
                 //0905 apply DDPM private key rule
-                if(accessInfo == null || accessInfo.Length < 32)
+                if (accessInfo == null || accessInfo.Length < 32)
                 {
                     info = "DDPM AccessInfo value is abnormal";
                     return false;
@@ -540,7 +540,7 @@ namespace DDPM.SA.Common.Settings
         {
             return array1.SequenceEqual(array2);
         }
-
+        /*
         /// <summary>
         /// Encrypt bytes content with RSA key
         /// </summary>
@@ -567,8 +567,8 @@ namespace DDPM.SA.Common.Settings
             {
             }
             return null;
-        }
-
+        }*/
+        /*
         /// <summary>
         /// Decrypt bytes content with RSA key
         /// </summary>
@@ -595,7 +595,7 @@ namespace DDPM.SA.Common.Settings
             {
             }
             return null;
-        }
+        }*/
 
         public static bool IsFilePathValid(string filePath, out string info)
         {
@@ -641,7 +641,7 @@ namespace DDPM.SA.Common.Settings
             }
             return true;
         }
-        
+
         /// <summary>
         /// Normal user only can read but admin has full right
         /// </summary>
@@ -893,6 +893,34 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
+        public static void SetFolderPermissions_UserReadAndExecute(string folderPath)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+            DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
+
+            // Admin - full control
+            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+            FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(adminRule);
+
+            // System - full control
+            SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+            FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(systemRule);
+
+            // normal user - read and execute (w/o write)
+            SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+            FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(usersRule);
+
+            // normal user - read write deny
+            FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
+            directorySecurity.AddAccessRule(denyWriteRule);
+
+            // apply change
+            directoryInfo.SetAccessControl(directorySecurity);
+        }
+
         public static bool CheckIfFileCanBeExecuted_Secure(string executablePath, bool NeedElevated = false)
         {
             if (string.IsNullOrEmpty(executablePath))
@@ -1072,7 +1100,7 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
-        public static byte[] GetFileSHA_256(string filePath, out string info)
+        public static string GetFileSHA_256(string filePath, out string info)
         {
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
@@ -1093,12 +1121,32 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            //Bruce 0909 modify
+            //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            string result = CalculateFileSHA256(filePath);
             info = "Complete";
+            if (string.IsNullOrEmpty(result))
+            {
+                info = "Calculate fail.";
+            }
             return result;
         }
+        static string CalculateFileSHA256(string filePath)
+        {
+            string ret = string.Empty;
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] hashBytes = sha256.ComputeHash(fileStream);
 
-        public static byte[] GetFileSHA_512(string filePath, out string info)
+                    // 將計算的雜湊值轉換為十六進制字符串
+                    ret = BitConverter.ToString(hashBytes);
+                }
+            }
+            return ret;
+        }
+        public static string GetFileSHA_512(string filePath, out string info)
         {
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
@@ -1119,12 +1167,33 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            //Bruce 0909 modify
+            //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            string result = CalculateFileSHA512(filePath);
             info = "Complete";
+            if (string.IsNullOrEmpty(result))
+            {
+                info = "Calculate fail.";
+            }
             return result;
         }
+        static string CalculateFileSHA512(string filePath)
+        {
+            string ret = string.Empty;
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                using (SHA512 sha512 = SHA512.Create())
+                {
+                    byte[] hashBytes = sha512.ComputeHash(fileStream);
 
-        public static bool IsContainValidDigitalSignature(string filePath, out string info)
+                    // 將計算的雜湊值轉換為十六進制字符串
+                    ret = BitConverter.ToString(hashBytes);
+                }
+            }
+            return ret;
+        }
+
+        /*public static bool IsContainValidDigitalSignature(string filePath, out string info)
         {
             info = "";
             // Check our path string for invalid characters, null value, empty value, etc.
@@ -1149,10 +1218,10 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
             return true;
-        }
+        }*/
 
         //using private key and source json file to create signature output file
-        public static bool CreateJsonSignature(string json_content, string private_key_file, string target_sign_file, HashAlgorithmName algorithm, out string info)
+        /*public static bool CreateJsonSignature(string json_content, string private_key_file, string target_sign_file, HashAlgorithmName algorithm, out string info)
         {
             info = "unknow error";
 
@@ -1187,10 +1256,10 @@ namespace DDPM.SA.Common.Settings
                 info = ex.Message;
                 return false;
             }
-        }
+        }*/
 
         //Using public key and pre-generated signature to validate json file
-        public static bool IsJsonContentValid(string json_content, string base64_signature, string public_key_file, HashAlgorithmName algorithm, out string info)
+        /*public static bool IsJsonContentValid(string json_content, string base64_signature, string public_key_file, HashAlgorithmName algorithm, out string info)
         {
             info = "unknow error";
 
@@ -1228,10 +1297,10 @@ namespace DDPM.SA.Common.Settings
                 info = ex.Message;
                 return false;
             }
-        }
+        }*/
 
         //for test purpose to generate public and private key pair, method 1
-        public static bool GenerateNewRSAKeyPair(string publicName, string privateName, out string privateKey, out string publicKey)
+        /*public static bool GenerateNewRSAKeyPair(string publicName, string privateName, out string privateKey, out string publicKey)
         {
             using (var rsa = RSA.Create(4096))
             {
@@ -1274,10 +1343,10 @@ namespace DDPM.SA.Common.Settings
                 }
                 return true;
             }
-        }
+        }*/
 
         //for test purpose to generate public and private key pair, method 2
-        private static bool GenerateNewRSAKeyPair(string publicName, string privateName)
+        /*private static bool GenerateNewRSAKeyPair(string publicName, string privateName)
         {
             if (File.Exists(publicName))
             {
@@ -1321,9 +1390,9 @@ namespace DDPM.SA.Common.Settings
                 }
             }
             return true;
-        }
+        }*/
 
-        public static void DirectoryLockTest(string folderPath)
+        /*public static void DirectoryLockTest(string folderPath)
         {
             try
             {
@@ -1344,12 +1413,96 @@ namespace DDPM.SA.Common.Settings
             {
                 Console.WriteLine($"Error：{ex.Message}");
             }
+        }*/
+        /*
+        //public static X509Certificate2 LoadCertificate(string filePath)
+        //{
+        //    byte[] certBytes = File.ReadAllBytes(filePath);
+        //    return new X509Certificate2(certBytes);
+        //}*/
+
+        private static byte[] ConvertThumbprintToByteArray(string thumbprint)
+        {
+            return Enumerable.Range(0, thumbprint.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(thumbprint.Substring(x, 2), 16))
+                             .ToArray();
         }
 
-        public static X509Certificate2 LoadCertificate(string filePath)
+        public static bool VerifyFileCertWithThumbprint(string filePath, out string info)
         {
-            byte[] certBytes = File.ReadAllBytes(filePath);
-            return new X509Certificate2(certBytes);
+            info = "success";
+            if (!IsFilePathValid(filePath, out info))
+            {
+                Console.WriteLine(info);
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = new X509Certificate2(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint
+                //source array DDPM.SA.Obfuscation.ThumbprintHash.certificateHash
+                //Target cert.Thumbprint
+
+                bool contains = DDPM.SA.Obfuscation.ThumbprintHash.certificateHash.Any(arr => arr.SequenceEqual(ConvertThumbprintToByteArray(cert.Thumbprint)));
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+            return true;
+        }
+
+        public static bool VerifyFileCertWithThumbprint(string filePath, string targetThumbprint, out string info)
+        {
+            info = "success";
+            if (!IsFilePathValid(filePath, out info))
+            {
+                Console.WriteLine(info);
+                return false;
+            }
+            if (string.IsNullOrEmpty(targetThumbprint))
+            {
+                info = "Abnormal thumbprint as input";
+                return false;
+            }
+            try
+            {
+                X509Certificate2 cert = new X509Certificate2(filePath);
+                if (cert == null)
+                {
+                    info = "Can't retrieve cert from file.";
+                    return false;
+                }
+
+                //compare thumbprint from input
+                //Target cert.Thumbprint{
+                bool contains = targetThumbprint.ToUpper().Trim().Equals(cert.Thumbprint.ToUpper().Trim());
+                if (!contains)
+                {
+                    info = $"No matched cert. thumbprint in file is {cert.Thumbprint}";
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                info = e.Message;
+                return false;
+
+            }
+            return true;
         }
 
         #region Bruce 0814 Move this method to DDPM.SA.Common

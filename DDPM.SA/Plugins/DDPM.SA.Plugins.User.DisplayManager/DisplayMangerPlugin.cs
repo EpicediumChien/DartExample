@@ -309,25 +309,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             inputSourcelist = new Dictionary<string, InputInfo>();
 
-            _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
+            //_getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
             usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
 
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
+            ObjGetVCP objGet = new ObjGetVCP();
             objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
-
-            if (!string.IsNullOrEmpty(_getVCPCapabilities))
+            objGet = GetVCPCapability(monitorInfo, "inputsourcelist").Result;
+            if (objGet.result)
             {
-                JObject VCPjson = JObject.Parse(_getVCPCapabilities);
-
-                JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
-                JArray input = (JArray)capsDataMap["Input Select"];
-                foreach (var tmp in input)
+                //JObject VCPjson = JObject.Parse(_getVCPCapabilities);
+                //JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
+                //JArray input = (JArray)capsDataMap["Input Select"];
+                foreach (InputSourceObject tmp in (List<InputSourceObject>)objGet.value)
                 {
                     if (!inputSourcelist.ContainsKey(tmp.ToString()))
                     {
                         InputInfo inputInfo = new InputInfo();
-                        inputInfo.InputName = tmp.ToString();
+                        inputInfo.InputName = tmp.Name;
+                        inputInfo.Code = tmp.value;
                         if (objGetVCP.result && usbUpstreamList.Count > 0)
                         {
                             string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
@@ -360,13 +361,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                 if (usbUpstreamList.Count > 3)//0708 non-EE issue
                                     inputInfo.USBUpstream = usbUpstreamList[3];
                             }
-                            inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.ToString()).Result;
+                            inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.Name).Result;
                         }
                         else
                         {
                             inputInfo.USBUpstream = string.Empty;
                         }
-                        inputSourcelist.Add(tmp.ToString(), inputInfo);
+                        inputSourcelist.Add(tmp.Name, inputInfo);
                         input_num = input_num + 1;
                     }
                 }

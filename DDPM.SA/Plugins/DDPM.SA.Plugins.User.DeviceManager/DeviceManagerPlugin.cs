@@ -17,6 +17,7 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Popup;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.UpdateProgressPage;
+using DDPM.SA.Obfuscation;
 using DDPM.ShowOSD;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -159,6 +160,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //Bruce 0815 Added new judgment whether to trigger DisplayChang event
         private bool displayInOut = true;
+
+        private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
 
         #endregion
 
@@ -338,7 +341,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult("OFF");
             }
 
-            var temp = _ColorPresetPlugin.GetAutoColorPresetStatus(m,_SettingsPlugin).Result;
+            var temp = _ColorPresetPlugin.GetAutoColorPresetStatus(m, _SettingsPlugin).Result;
 
 
             return Task.FromResult(temp.ToString());
@@ -1439,7 +1442,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _PeripheralsPlugin.SetWearDetectionForCLI(newValue, deviceId);
             return Task.FromResult(true);
         }
-        
+
         public Task SetBusyLight(bool newValue, Guid deviceId)
         {
             writelog("DeviceMangerPlugin received SetBusyLight requested ...");
@@ -1949,7 +1952,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(tmpFWUpdateInfos);
         }
-
+        public Task<FWUErrorCode> Install(string installPath)
+        {
+            FWUErrorCode ret = FWUErrorCode.Unknow;
+            if (_UpdateProgress != null)
+            {
+                ret = _FWUpdatePlugin.Install(installPath).Result;
+            }
+            return Task.FromResult(ret);
+        }
         public void SetUILockStatus(bool isLockFWU_UI)
         {
             if (_SettingsPlugin != null)
@@ -2481,6 +2492,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        public Task NKVM_State(bool state)
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.NKVM_State(state);
+            }
+            return Task.CompletedTask;
+        }
+
         public Task CallNKVMConnent()
         {
             if (_NKVMPlugin != null)
@@ -2608,7 +2628,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
             if (settings == null)
             {
-                writelog($"@ WriteEAMonitorSettings: ReloadMonitorSettings(model={monitorInfo.AliasDeviceName}) return null.");
+                writelog($"@ WriteEAMonitorSettings: ReloadMonitorSettings(model={model}) return null.");
                 return Task.FromResult(false);
             }
 
@@ -2798,10 +2818,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, string path)
+        public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
         {
             ImportVCP importVCP = new ImportVCP();
-            if (_SettingsPlugin.DisplayImportSettings(path, out List<VCP> vcps).Result)
+            if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCP> vcps).Result)
             {
                 //set ImportVCPSequence
                 SetVCPSequence(monitorInfo, vcps);
@@ -3173,6 +3193,119 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
+        #region GlobalSetting
+        public Task<GlobalSettingParam> GetGlobalSettingParam()
+        {
+            return Task.FromResult(_GlobalSettingParam);
+        }
+        public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level = isDisplay;
+                ret = SaveGlobalSettingParam();
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> Set_GlobalSetting_DisplayKeyboardLockKey(bool isDisplay)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key = isDisplay;
+                ret = SaveGlobalSettingParam();
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> Set_GlobalSetting_DisplayWB7022CoverState(bool isDisplay)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State = isDisplay;
+                ret = SaveGlobalSettingParam();
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> Set_GlobalSetting_DisplayMuteState(bool isDisplay)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.GlobalSetting_General.Display_MuteState = isDisplay;
+                ret = SaveGlobalSettingParam();
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> Set_GlobalSetting_DisplayColorPresetAndEasyMemory(bool isDisplay)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory = isDisplay;
+                ret = SaveGlobalSettingParam();
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> Set_GlobalSetting_EnableQuickAccessWidget(bool isEnable)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = isEnable;
+                ret = SaveGlobalSettingParam();
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable)
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = isEnable;
+                ret = SaveGlobalSettingParam();
+            }
+            return Task.FromResult(ret);
+        }
+        private bool LoadGlobalSettingParam()
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                string tmpDriberVersion = string.Empty;
+                if (!string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.DriverVersion))
+                {
+                    tmpDriberVersion = _GlobalSettingParam.GlobalSetting_About.DriverVersion;
+                }
+                _GlobalSettingParam = _SettingsPlugin.ReadGlobalSettings().Result;
+                _GlobalSettingParam.GlobalSetting_About.DriverVersion = tmpDriberVersion;
+            }
+            if (_PeripheralsPlugin != null)
+            {
+                _GlobalSettingParam.GlobalSetting_About.DriverVersion = _PeripheralsPlugin.GetDevices().Result.IsdDriverVersion;
+                if (string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.DriverVersion))
+                {
+                    _GlobalSettingParam.GlobalSetting_About.DriverVersion = "N/A";
+                }
+            }
+            return ret;
+        }
+        private bool SaveGlobalSettingParam()
+        {
+            bool ret = false;
+            if (_SettingsPlugin != null)
+            {
+                ret = _SettingsPlugin.WriteGlobalSettings(_GlobalSettingParam).Result;
+            }
+            return ret;
+        }
+        private void SettingsReady(object o, EventArgs eventArgs)
+        {
+            LoadGlobalSettingParam();
+        }
+        #endregion
+
         #endregion
 
         #region Private Methods
@@ -3412,9 +3545,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //}
                 CheckUpdate();
                 CheckUODFWUInfoPackage(true);
+                //0909 Bruce move to add and remove 
+                var thread = new Thread(() =>
+                {
+                    CheckDocks();
+                });
+                thread.Start();
             }
             else if (changedProperty.ToLower().Contains("remove"))
             {
+                //0909 Bruce move to add and remove  
+                var thread = new Thread(() =>
+                {
+                    CheckDocks();
+                });
+                thread.Start();
             }
             else if ((string.Compare(changedProperty, "DisplayChanged", true) == 0))
             {
@@ -3429,12 +3574,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     SupportedNKVMMonitors();
                 }
             }
-            //0617 Bruce 如使用Dell的Popup視窗顯示，需卡執行緒，故另外使用一條執行緒給Popup顯示用
-            var thread = new Thread(() =>
-            {
-                CheckDocks();
-            });
-            thread.Start();
         }
 
         //0613 Bruce 用於看是否連接超過2個dock
@@ -3764,7 +3903,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             _DTPProxyPlugin = _agent.PluginManager.FindPluginByType<IDTPProxyPlugin>(PluginResolution.Dynamic);
 
-            if (_ScheduleManagerPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            if (_DTPProxyPlugin is IFrameworkPluginConditionNotification pluginCondition)
             {
                 pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                 GetCurrentDTPProxyPluginCondition();
@@ -3952,10 +4091,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
+                        LoadGlobalSettingParam();
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a started condition");
+                        LoadGlobalSettingParam();
                     }
                 }
             });
@@ -4132,7 +4273,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
-
+                        _SettingsPlugin.SettingReadyEvent += SettingsReady;
                         DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
                         if (config != null)
                         {

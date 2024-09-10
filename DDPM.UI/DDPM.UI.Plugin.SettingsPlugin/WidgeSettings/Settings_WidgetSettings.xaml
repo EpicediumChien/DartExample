@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="DDPM.UI.Plugin.SettingsPlugin.Settings_WidgetSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin"
+             mc:Ignorable="d"
+             Margin="5,4,60,120"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <UXControls:UXScrollViewer>
+            <Border Background="#99132F54"
+                    CornerRadius="13">
+                <StackPanel>
+                    <Grid Margin="20,20,8,8">
+                        <UXControls:UXTextBlock Text="Widget Settings"
+                                                FontSize="20"
+                                                TextBlockType="Header1"
+                                                Style="{StaticResource ModuleCaptionStyle}" />
+                    </Grid>
+                    <Grid Margin="20,20,8,8">
+                        <Border Background="#132F54"
+                                CornerRadius="6">
+                            <StackPanel Orientation="Vertical"
+                                        Margin="15,0,15,0">
+                                <Grid Margin="0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <UXControls:UXTextBlock Grid.Column="0"
+                                                            Text="Activate Quick Access widget during Zoom conference calls"
+                                                            FontSize="16"
+                                                            Foreground="White"
+                                                            TextBlockSemanticColorType="Light"
+                                                            TextBlockType="Caption"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Left" />
+                                    <UXControls:UXToggleSwitch Grid.Column="1"
+                                                               IsChecked="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}"
+                                                               ContentTextVisibility="True"
+                                                               Content="{Binding Path=EnableQuickAccessWidget_String}"
+                                                               HorizontalAlignment="Right"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="White"
+                                                               Click="EnableQuickAccessWidget_Click" />
+                                </Grid>
+                                <UXControls:UXTextBlock Text="Widget will automatically appear when meeting begins to customize settings for supported webcams"
+                                                        FontSize="14"
+                                                        Foreground="White"
+                                                        TextBlockSemanticColorType="Light"
+                                                        TextBlockType="Caption"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Left" />
+                                <Grid Height="40"
+                                      Margin="0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <UXControls:UXTextBlock Grid.Column="0"
+                                                            Text="Enable shortcut reminder for Quick Accesswidget"
+                                                            FontSize="16"
+                                                            Foreground="White"
+                                                            TextBlockSemanticColorType="Light"
+                                                            TextBlockType="Caption"
+                                                            VerticalAlignment="Center"
+                                                            Width="362"
+                                                            HorizontalAlignment="Left" />
+                                    <UXControls:UXToggleSwitch Grid.Column="1"
+                                                               IsChecked="{Binding Path= GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder}"
+                                                               ContentTextVisibility="True"
+                                                               Content="{Binding Path=EnableQuickAccessWidget_Reminder_String}"
+                                                               HorizontalAlignment="Right"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="White"
+                                                               Click="QuickAccessWidget_Reminder_Click"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </UXControls:UXScrollViewer>
+    </Grid>
+</UserControl>
