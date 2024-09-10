@@ -5825,7 +5825,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         USBCPrioritization_RESPONSE.Message = "USB-C Prioritization not supported";
-                       // USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
+                        // USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
                         ret = null;
                     }
                     USBCPrioritization_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
@@ -8072,6 +8072,7 @@ namespace DDPM.CLI.Plugins.Display
             bool retcode = false;
             string on_off = string.Empty;
             bool lock_unlock = true;
+            string restult_onoff = string.Empty;
 
             writelog($"Autocolorpreset Entry");
             if (commandLineInput.Command == "CONFIGURE")
@@ -8090,47 +8091,25 @@ namespace DDPM.CLI.Plugins.Display
 
                         switch (commandLineInput.Options[0].Option_Value)
                         {
-                            case "ON,LOCK":
-                                {
-                                    on_off = "on";
-                                    lock_unlock = true;
-                                    writelog($"Autocolorpreset ON,LOCK Entry");
-                                    devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                    retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
-                                    S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "ON,UNLOCK":
+                            case "ON":
                                 {
                                     on_off = "on";
                                     lock_unlock = false;
-                                    writelog($"Autocolorpreset ON,UNLOCK Entry");
+                                    writelog($"Autocolorpreset ON Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
+                                    S_Autocolorpreset_RESPONSE.Value = "ON";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
                                     break;
                                 }
-                            case "OFF,LOCK":
-                                {
-                                    on_off = "off";
-                                    lock_unlock = true;
-                                    writelog($"Autocolorpreset OFF,LOCK Entry");
-                                    devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                    retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
-                                    S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "OFF,UNLOCK":
+                            case "OFF":
                                 {
                                     on_off = "off";
                                     lock_unlock = false;
-                                    writelog($"Autocolorpreset OFF,UNLOCK Entry");
+                                    writelog($"Autocolorpreset OFF Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
+                                    S_Autocolorpreset_RESPONSE.Value = "OFF";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
                                     break;
                                 }
@@ -8164,47 +8143,25 @@ namespace DDPM.CLI.Plugins.Display
 
                         switch (commandLineInput.Options[0].Option_Value)
                         {
-                            case "ON,LOCK":
-                                {
-                                    on_off = "on";
-                                    lock_unlock = true;
-                                    writelog($"Autocolorpreset ON,LOCK Entry");
-                                    devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                    retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
-                                    S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "ON,UNLOCK":
+                            case "ON":
                                 {
                                     on_off = "on";
                                     lock_unlock = false;
-                                    writelog($"Autocolorpreset ON,UNLOCK Entry");
+                                    writelog($"Autocolorpreset ON Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
+                                    S_Autocolorpreset_RESPONSE.Value = "ON";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
                                     break;
                                 }
-                            case "OFF,LOCK":
-                                {
-                                    on_off = "off";
-                                    lock_unlock = true;
-                                    writelog($"Autocolorpreset OFF,LOCK Entry");
-                                    devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                    retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
-                                    S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "OFF,UNLOCK":
+                            case "OFF":
                                 {
                                     on_off = "off";
                                     lock_unlock = false;
-                                    writelog($"Autocolorpreset OFF,UNLOCK Entry");
+                                    writelog($"Autocolorpreset OFF Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
+                                    S_Autocolorpreset_RESPONSE.Value = "OFF";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
                                     break;
                                 }
@@ -8238,47 +8195,25 @@ namespace DDPM.CLI.Plugins.Display
 
                             switch (commandLineInput.Options[0].Option_Value)
                             {
-                                case "ON,LOCK":
-                                    {
-                                        on_off = "on";
-                                        lock_unlock = true;
-                                        writelog($"Autocolorpreset ON,LOCK Entry");
-                                        devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                        retcode = true;
-                                        S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
-                                        S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                        break;
-                                    }
-                                case "ON,UNLOCK":
+                                case "ON":
                                     {
                                         on_off = "on";
                                         lock_unlock = false;
-                                        writelog($"Autocolorpreset ON,UNLOCK Entry");
+                                        writelog($"Autocolorpreset ON Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                         retcode = true;
-                                        S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
+                                        S_Autocolorpreset_RESPONSE.Value = "ON";
                                         S_Autocolorpreset_RESPONSE.Result = "PASS";
                                         break;
                                     }
-                                case "OFF,LOCK":
-                                    {
-                                        on_off = "off";
-                                        lock_unlock = true;
-                                        writelog($"Autocolorpreset OFF,LOCK Entry");
-                                        devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                        retcode = true;
-                                        S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
-                                        S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                        break;
-                                    }
-                                case "OFF,UNLOCK":
+                                case "OFF":
                                     {
                                         on_off = "off";
                                         lock_unlock = false;
-                                        writelog($"Autocolorpreset OFF,UNLOCK Entry");
+                                        writelog($"Autocolorpreset OFF Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                         retcode = true;
-                                        S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
+                                        S_Autocolorpreset_RESPONSE.Value = "OFF";
                                         S_Autocolorpreset_RESPONSE.Result = "PASS";
                                         break;
                                     }
@@ -8301,8 +8236,129 @@ namespace DDPM.CLI.Plugins.Display
             }
             else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
             {
-                S_Autocolorpreset_RESPONSE.Result = "PASS";
-                output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                {
+                    foreach (MonitorInfo monitor in _AllInfoMonitors)
+                    {
+                        S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
+                        S_Autocolorpreset_RESPONSE.Model = monitor.edid.ModelName;
+                        S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                        S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                        S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+
+                        writelog($"Autocolorpreset GET Entry");
+                        restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                        Trace.WriteLine("restult_onoff:", restult_onoff);
+                        if (restult_onoff == "ON")
+                        {
+                            retcode = true;
+                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                            S_Autocolorpreset_RESPONSE.Result = "PASS";
+                        }
+                        else if (restult_onoff == "OFF")
+                        {
+                            retcode = true;
+                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                            S_Autocolorpreset_RESPONSE.Result = "PASS";
+                        }
+                        else
+                        {
+                            writelog($"Autocolorpreset fail");
+                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+                            S_Autocolorpreset_RESPONSE.Result = "FAIL";
+                            S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                            retcode = false;
+                        }
+                        output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                        writelog($"Autocolorpreset exit return value: {output}");
+                    }
+                }
+                else
+                {
+                    foreach (string idx in commandLineInput.DeviceIndex)
+                    {
+                        MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
+                        S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
+                        S_Autocolorpreset_RESPONSE.Model = monitor.edid.ModelName;
+                        S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                        S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                        S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+
+                        writelog($"Autocolorpreset GET idx Entry");
+                        restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                        Trace.WriteLine("restult_onoff:", restult_onoff);
+                        if (restult_onoff == "ON")
+                        {
+                            retcode = true;
+                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                            S_Autocolorpreset_RESPONSE.Result = "PASS";
+                        }
+                        else if (restult_onoff == "OFF")
+                        {
+                            retcode = true;
+                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                            S_Autocolorpreset_RESPONSE.Result = "PASS";
+                        }
+                        else
+                        {
+                            writelog($"Autocolorpreset fail");
+                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+                            S_Autocolorpreset_RESPONSE.Result = "FAIL";
+                            S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                            retcode = false;
+                        }
+                        output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                        writelog($"Autocolorpreset idx exit return value: {output}");
+                    }
+                    foreach (string tag in commandLineInput.ServiceTag)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        foreach (MonitorInfo monitor in tmp)
+                        {
+                            S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
+
+                            S_Autocolorpreset_RESPONSE.Model = monitor.edid.ModelName;
+                            S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                            S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                            S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+
+                            writelog($"Autocolorpreset GET Entry");
+                            restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                            Trace.WriteLine("restult_onoff:", restult_onoff);
+                            if (restult_onoff == "ON")
+                            {
+                                retcode = true;
+                                S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                                S_Autocolorpreset_RESPONSE.Result = "PASS";
+                            }
+                            else if (restult_onoff == "OFF")
+                            {
+                                retcode = true;
+                                S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                                S_Autocolorpreset_RESPONSE.Result = "PASS";
+                            }
+                            else
+                            {
+                                writelog($"Autocolorpreset fail");
+                                S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                                S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+                                S_Autocolorpreset_RESPONSE.Result = "FAIL";
+                                S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                                retcode = false;
+                            }
+                            output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                            writelog($"Autocolorpreset tag exit return value: {output}");
+                        }
+                    }
+                }
             }
             else
             {

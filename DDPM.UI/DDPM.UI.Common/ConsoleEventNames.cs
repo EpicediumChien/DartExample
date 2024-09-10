@@ -8,6 +8,10 @@ namespace DDPM.UI.Common
 {
     /// <summary>
     /// The constant strings of EventName for IConsole.RaiseEvent()
+    /// Example: Register an event handler
+    ///   see DDPM.UI.Plugin.DdpmHomePlugin/DdpmHomePlugin.cs, AddIconsToMasthead( )
+    /// Example: Raise an event
+    ///   see DDPM.UI.Plugin.DdpmHomePlugin/DdpmHomePlugin.cs, OnGearIconClicked( )
     /// </summary>
     public class ConsoleEventNames
     {
@@ -21,7 +25,7 @@ namespace DDPM.UI.Common
         /// Activate MainWindow with Window.Activate(). Registered by MainWindow. 
         /// </summary>
         public const string MainWindow_Activate = "MainWindow.Activate";
-        #endregion
+        #endregion MainWindow
 
         #region DisplayPlugin
         /// <summary>
@@ -29,6 +33,46 @@ namespace DDPM.UI.Common
         /// Registered by ModuleOwner (DeviceBasePageViewModel)
         /// </summary>
         public const string Display_SelectedHomeDeviceChanged = "Display.SelectedHomeDeviceChanged";
-        #endregion
+        #endregion DisplayPlugin
+
+        #region Masthead Icons : AddDevice and GlobalSettings (gear icon)
+        /// <summary>
+        /// Request HomePlugin to load/show AddDevicePlugin. It will let AddDevice icon hide and GlobalSettings icon show.
+        /// </summary>
+        public const string Masthead_ShowAddDevicePlugin = "ShowAddDevicePlugin";
+
+        /// <summary>
+        /// Request HomePlugin to load/show SettingsPlugin. It will let GlobalSettings icon hide and AddDevice icon show.
+        /// </summary>
+        public const string Masthead_ShowSettingsPlugin = "ShowSettingsPlugin";
+
+        /// <summary>
+        /// Request the gear icon (GlobalSettings) starts the Glow effect.
+        /// </summary>
+        public const string Masthead_StartGlowEffectOnGearIcon = "StartGlowEffectOnGearIcon";
+
+        /// <summary>
+        /// Request the gear icon (GlobalSettings) stops the Glow effect.
+        /// </summary>
+        public const string Masthead_StopGlowEffectOnGearIcon = "StopGlowEffectOnGearIcon";
+
+        /// <summary>
+        /// Request to show/hide the AddDevice icon.
+        /// var args = new EventManagerArgs();
+        /// args.Tag = (bool) isShow; //true=Show, false=Hide
+        /// (IConsole) _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
+        /// </summary>
+        public const string Masthead_ShowAddDeviceIcon = "Masthead_ShowAddDeviceIcon";
+
+        /// <summary>
+        /// Request to show/hide the Settings icon.
+        /// var args = new EventManagerArgs();
+        /// args.Tag = (bool) isShow; //true=Show, false=Hide
+        /// (IConsole) _console.RaiseEvent(ConsoleEventNames.Masthead_HideAddDeviceIcon, this, args);
+        /// </summary>
+        public const string Masthead_ShowSettingsIcon = "Masthead_ShowSettingsIcon";
+
+        #endregion Masthead Icons : AddDevice and GlobalSettings (gear icon)
+
     }
 }

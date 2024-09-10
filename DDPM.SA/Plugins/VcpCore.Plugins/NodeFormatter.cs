@@ -339,12 +339,12 @@ namespace VcpCore.Plugins
                 case "1c": return "USB-C2";
                 case "1d": return "USB-C3";
                 case "1e": return "USB-C4";
-                case "80": return "USB Comm from USB1 (Type-B, port 1)";
-                case "81": return "USB Comm from USB2 (Type-B, port 2)";
-                case "82": return "USB Comm from USB-C1 (Type-C, port 1)";
-                case "83": return "USB Comm from USB-C2 (Type-C, port 2)";
-                case "84": return "USB Comm from USB-C3 (Type-C, port 3)";
-                case "85": return "USB Comm from USB-C4 (Type-C, port 4)";
+                case "80": return "USB Comm from USB1, Type-B, port 1";
+                case "81": return "USB Comm from USB2, Type-B, port 2";
+                case "82": return "USB Comm from USB-C1, Type-C, port 1";
+                case "83": return "USB Comm from USB-C2, Type-C, port 2";
+                case "84": return "USB Comm from USB-C3, Type-C, port 3";
+                case "85": return "USB Comm from USB-C4, Type-C, port 4";
                 default: return null;
             }
         }

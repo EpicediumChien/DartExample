@@ -19,6 +19,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
@@ -74,11 +75,17 @@
                                 <commonCtrl:SplitItem Width="88" Height="68" Margin="8,0" Name="pipLarge"
                                                       ClickCommand="{Binding PipLargeClickCommand}"/>
 
-                                <!-- Toggle between positions button -->
+                                <!-- Toggle between positions button 
                                 <UXControls:UXButton Content="{Binding [PipPbp.7], Source={x:Static lang:LangHelper.Instance}}" Height="40" CornerRadius="2" Padding="12,8"
                                                      Margin="4,0" IsEnabled="{Binding IsPipItemSelected}"
                                                      ButtonType="Secondary" ButtonSemanticColorType="Neutral" Foreground="Gray"
                                                      Command="{Binding PipTogglePositionClickCommand}" />
+                                -->
+                                <!-- Using Custom WPF buton, defined in ButtonStyle.xaml -->
+                                <Button Style="{StaticResource SecondaryButtonStyle}"
+                                        Content="{Binding [PipPbp.7], Source={x:Static lang:LangHelper.Instance}}"
+                                        Height="40" Margin="4,0" IsEnabled="{Binding IsPipItemSelected}"
+                                        Command="{Binding PipTogglePositionClickCommand}" />
                             </StackPanel>
 
                             <!-- PBP divTitle-->
@@ -210,7 +217,7 @@
                     IsEnabled="{Binding IsUsbSwitchButtonEnabled}"
                     -->
                     <StackPanel Margin="0,16,0,24" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <!-- Video Swap Button -->
+                        <!-- Video Swap Button 
                         <Border Name="VideoSwapButton" Style="{StaticResource BlackButtonBorder}"
                                 Width="132" Margin="0,0,4,0"
                                 IsEnabled="{Binding IsVideoSwapButtonEnabled, Mode=OneWay}"
@@ -221,9 +228,20 @@
                                                     Foreground="#FFFFFF" FontSize="14"
                                                     VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>
+                        -->
+                        <!-- Using custom WPF style, defined in ButtonStyle.xaml 
+                                Content="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}"
+                                Content="VideoSwap"
+                        -->
+                        <Button Style="{StaticResource SecondaryButtonStyle}"
+                                Content="{Binding [VideoSwap], Source={x:Static lang:LangHelper.Instance}}"
+                                Width="132" Margin="0,0,4,0"
+                                IsEnabled="{Binding IsVideoSwapButtonEnabled, Mode=OneWay}"
+                                Visibility="{Binding IsVideoSwapButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
+                                MouseLeftButtonDown="videoSwapButton_MouseLeftButtonDown"/>
 
                         <!-- USB Switch Button -->
-
+                        <!-- Using Border + TextBlock solution 
                         <Border Name="UsbSwitchButton" Style="{StaticResource BlackButtonBorder}" Width="132"
                                 Margin="4,0,0,0"
                                 IsEnabled="{Binding IsUsbSwitchButtonEnabled, Mode=OneWay}"
@@ -232,6 +250,14 @@
                             <UXControls:UXTextBlock Style="{StaticResource BlackButtonText}"
                                                     Name="UsbSwitchButtonText" Text="{Binding [PipPbp.6], Source={x:Static lang:LangHelper.Instance}}" />
                         </Border>
+                        -->
+                        <!-- Using Custom WPF button, defined in ButtonStyle.xaml -->
+                        <Button Style="{StaticResource SecondaryButtonStyle}"
+                                Content="{Binding [PipPbp.6], Source={x:Static lang:LangHelper.Instance}}"
+                                Width="132" Margin="4,0,0,0"
+                                IsEnabled="{Binding IsUsbSwitchButtonEnabled, Mode=OneWay}"
+                                Visibility="{Binding IsUsbSwitchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                                MouseLeftButtonDown="usbSwitchButton_MouseLeftButtonDown"/>
                     </StackPanel>
                 </StackPanel>
 

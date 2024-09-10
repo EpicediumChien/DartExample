@@ -39,6 +39,7 @@ namespace DDPM.SA.Common
         Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
         Task<string> QueryAccessInfo();
+        Task<string> QueryAccessInfoVer();
     }
 
     /// <summary>
