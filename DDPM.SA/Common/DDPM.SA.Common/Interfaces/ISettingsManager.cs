@@ -85,7 +85,7 @@ namespace DDPM.SA.Common
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);
 
-        Task<bool> DisplayImportSettings(string path, out List<VCP> vcps);
+        Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps);
 
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();

@@ -390,7 +390,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 if (_AllMonitorSettings != null)
                 {
                     //find monitor settings
-                    if (!_AllMonitorSettings.ContainsKey(modelname))
+                    if (_AllMonitorSettings.ContainsKey(modelname))
+                    {
+                        _AllMonitorSettings[modelname] = monitorSettingList;
+                    }
+                    else
                     {
                         _AllMonitorSettings.Add(modelname, monitorSettingList);
                     }
@@ -867,7 +871,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, /*bool isSameModel, */out List<VCP> vcps)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -884,7 +888,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
                     foreach (DDPMMonitorSettings settings in monitorSettingsList)
                     {
-                        if (settings.ServiceTag == monitorSettings.ServiceTag/* || isSameModel*/)
+                        if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
                         {
                             settings.Input = monitorSettings.Input;
                             settings.KVM = monitorSettings.KVM;
@@ -893,15 +897,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                             {
                                 vcps = monitorSettings.VCPs;
-                                //if (!isSameModel)
-                                //{
-                                return Task.FromResult<bool>(true);
-                                //}
+                                if (!isSameModel)
+                                {
+                                    return Task.FromResult<bool>(true);
+                                }
                             }
                             else
                             {
+                                WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
                                 WriteLog("[DisplayImportSettings] Import settings Fail...");
-                                break;
+                                if (!isSameModel)
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
