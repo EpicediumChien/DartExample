@@ -145,7 +145,7 @@ namespace VcpCore.Plugins.Test
             var expectvcpControlName3 = NodeFormatter.FormatVCP_60("15");
             string vcpControlName4 = "USB-C1";
             var expectvcpControlName4 = NodeFormatter.FormatVCP_60("1b");
-            string vcpControlName5 = "USB Comm from USB2 (Type-B, port 2)";
+            string vcpControlName5 = "USB Comm from USB2, Type-B, port 2";
             var expectvcpControlName5 = NodeFormatter.FormatVCP_60("81");
             string? vcpControlName6 = null;
             var expectvcpControlName6 = NodeFormatter.FormatVCP_60("88");
