@@ -397,6 +397,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     "INAPPAUTOBRITEMP",
                     "INAPPNETWORKKVM",
                     "INAPPCOLORPRESET",
+                    //"POWERNAP", //do not add powernap here, go throw normal process via CLI Display plugin as well
                 };
 
                 //Do command line action
