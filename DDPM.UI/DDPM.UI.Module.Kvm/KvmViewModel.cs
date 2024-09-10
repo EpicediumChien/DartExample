@@ -672,8 +672,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else 
                     {
-                        //isUSBKVMButton = false;
-                        isUSBKVMButton = true;
+                        isUSBKVMButton = false;
                         USBKVMButtonOpacity = 0.5;
                     }
                     OnPropertyChanged("PC1Inputs_Selected");
@@ -747,8 +746,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        //isUSBKVMButton = false;
-                        isUSBKVMButton = true;
+                        isUSBKVMButton = false;
                         USBKVMButtonOpacity = 0.5;
                     }
 
