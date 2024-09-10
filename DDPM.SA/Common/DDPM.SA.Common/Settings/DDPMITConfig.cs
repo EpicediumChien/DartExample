@@ -13,7 +13,12 @@
         #endregion Global Setting
 
         #region Display Setting
-        public bool Lock_Display_ExportSettings { get; set; } = false; 
+        public bool Lock_Display_ExportSettings { get; set; } = false;
+        public bool Lock_Display_BriCont { get; set; } = false;
+        public bool Lock_Display_AutoBriTemp { get; set; } = false;
+        public bool Lock_Display_NetworkKVM { get; set; } = false;
+        public bool Lock_Display_ColorPreset { get; set; } = false;
+
         #endregion Display Setting
 
         #region Peripheral Setting

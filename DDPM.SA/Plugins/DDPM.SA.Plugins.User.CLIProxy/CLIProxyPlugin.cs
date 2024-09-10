@@ -387,11 +387,16 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     "MOUSE",
                     "KEYBOARD",
-                    //"DOCK",
-                    //"HEADSET",
                     "AUDIO",
                     "PEN",
                     "WEBCAM",
+                };
+                List<string> Display_Lock_WithoutAction = new List<string>()
+                {
+                    "INAPPBRICONT",
+                    "INAPPAUTOBRITEMP",
+                    "INAPPNETWORKKVM",
+                    "INAPPCOLORPRESET",
                 };
 
                 //Do command line action
@@ -401,7 +406,13 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     if (_CLIDisplay != null)
                     {
-                        cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                        if (Display_Lock_WithoutAction.FindIndex(x => x.Equals(commandLineInput.TargetFeature)) >= 0)
+                        {
+                            DDPMSettings data_inappdisplaylock = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_inappdisplaylock, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        }
+                        else
+                            cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                     }
                     else
                     {
