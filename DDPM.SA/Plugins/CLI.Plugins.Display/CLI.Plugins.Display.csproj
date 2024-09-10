@@ -1,14 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
 		<Platforms>AnyCPU;x64</Platforms>
 		<Configurations>Debug;Release;Debug_NKVM</Configurations>
-  </PropertyGroup>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Common\DDPM.SA.Common\DDPM.SA.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="DPeMClientBroker">
+			<HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
+		</Reference>
+		<Reference Include="DPeMPublic.Common">
+			<HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
 </Project>
