@@ -170,7 +170,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
-            _ColorPresetPluginMock.Setup(x => x.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
+            //_ColorPresetPluginMock.Setup(x => x.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
@@ -194,7 +194,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
-            _ColorPresetPluginMock.Setup(x => x.WriteColorPreset_AUTO(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
+            //_ColorPresetPluginMock.Setup(x => x.WriteColorPreset_AUTO(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
@@ -218,7 +218,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
-            _ColorPresetPluginMock.Setup(x => x.WriteColorPreset_AUTO(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
+            //_ColorPresetPluginMock.Setup(x => x.WriteColorPreset_AUTO(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;

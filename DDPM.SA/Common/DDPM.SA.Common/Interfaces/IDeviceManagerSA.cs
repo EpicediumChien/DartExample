@@ -46,13 +46,16 @@ namespace DDPM.SA.Common
 
         #region public for ColorPreset
 
+        event EventHandler<string> Coloreset_manual_ChangeEvent;
+
         Task<Dictionary<string, InstalledAppInfo>> FindAppsbyShell(bool isReload = false);
 
         void ShowOSD_ColoPreset(MonitorInfo m, string strMsg);
 
         Task<List<string>> ReadColorPreset(MonitorInfo m);
-     
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int ColorPresetRunType = 0);
+
+        //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -77,17 +80,15 @@ namespace DDPM.SA.Common
         Task<bool> Notify_refresh_app_list();
 
         //Jim add 20240801
-        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
-
-        //Jim add 20240820
-        Task<bool> ColorManagement_Off(MonitorInfo mo);
-
-        Task<bool> ColorManagement_Bymonitor(MonitorInfo mo);
-
-        Task<bool> ColorManagement_Byhost(MonitorInfo mo);
+        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");      
 
         //Jim add 20240904
         Task<string> GetAutoColorPresetStatus(MonitorInfo m);
+
+        //Jim add 20240905
+        Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, string ColorPreset_Name = "", string ICC_profile_Name = "");
+
+        Task<string> GetColorManagementStatus(MonitorInfo m);
 
         #endregion public for ColorPreset
 

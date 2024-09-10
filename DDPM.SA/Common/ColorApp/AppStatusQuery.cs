@@ -187,7 +187,7 @@ namespace DDPM.ColorApp
                     strlog = String.Format($"[Watcher-callback] Got sandbox app, retrieve process info by process id");
                     writelog(strlog);
 
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         Thread.Sleep(1000);
                         forgroundProcess = Process.GetProcessById(GetWindowProcessId(Native._GetForegroundWindow()));
