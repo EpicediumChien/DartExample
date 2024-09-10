@@ -16,7 +16,8 @@ namespace DDPM.SA.Common.CLI
     {
         public static CLIEventResult CLI_Display_LockUnlock(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
        => CLIHandlerApp.CLI_App_LockUnlock(Log, inputData, settingsPlugin, commandLineInput, action_guid);
-
+        public static CLIEventResult CLI_Display_LockUnlockWithUserAction(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+       => CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, inputData, settingsPlugin, commandLineInput, action_guid);
         private static void WriteLog(ILog Log, string text, log_type log_type = log_type.info)
         {
             text = "[CLIHandlerDisplay] " + text;
