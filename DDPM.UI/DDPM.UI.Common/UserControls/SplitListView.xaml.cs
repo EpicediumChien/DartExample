@@ -349,5 +349,16 @@ namespace DDPM.UI.Common.UserControls
             return res;
         }
         #endregion Delete an item
+
+        #region Screen Orientation
+
+        public bool IsVertical
+        {
+            get { return vm.IsVertical; }
+            set { vm.IsVertical = value; }
+        }
+
+        #endregion Screen Orientation
+
     }
 }

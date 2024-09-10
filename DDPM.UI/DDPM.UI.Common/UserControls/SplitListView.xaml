@@ -65,6 +65,10 @@
                 <GradientStop Offset="1" Color="#FF5051DA" />
             </LinearGradientBrush>
 
+            <!-- 
+                <Setter Property="Width" Value="88" />
+                <Setter Property="Height" Value="68" />
+            -->
             <Style x:Key="ContentControlStyle_SplitItem" TargetType="ContentControl">
                 <Setter Property="Width" Value="88" />
                 <Setter Property="Height" Value="68" />
@@ -95,6 +99,12 @@
                 </Setter.Value>
                 </Setter>
                 -->
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsVertical}" Value="True">
+                        <Setter Property="Width" Value="68"/>
+                        <Setter Property="Height" Value="80"/>
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
             <!-- The style of prev and next navigation border -->

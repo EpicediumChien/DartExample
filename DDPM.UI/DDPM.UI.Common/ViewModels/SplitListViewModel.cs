@@ -336,12 +336,16 @@ namespace DDPM.UI.Common.ViewModels
         }
         #endregion Page Navigation
 
-        //private ICommand? _itemEditCommand;
+        #region Screen Orientation
 
-        //public ICommand? ItemEditCommand
-        //{
-        //    get => _itemEditCommand;
-        //    set => SetProperty(ref _itemEditCommand, value);
-        //}
+        private bool isVertical = false;
+
+        public bool IsVertical
+        {
+            get { return isVertical; }
+            set { isVertical = value; OnPropertyChanged("IsVertical"); }
+        }
+
+        #endregion Screen Orientation
     }
 }

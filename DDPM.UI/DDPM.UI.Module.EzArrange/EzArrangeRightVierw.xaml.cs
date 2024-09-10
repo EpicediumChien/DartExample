@@ -15,6 +15,8 @@ using Microsoft;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using Windows.Media.AppRecording;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.EzArrange
 {
@@ -51,6 +53,10 @@ namespace DDPM.UI.Module.EzArrange
             _vm = _homeDevice.vmEzArrange;
             DataContext = _homeDevice.vmEzArrange;
 
+            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
+
+
             splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
             splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
             splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
@@ -79,6 +85,16 @@ namespace DDPM.UI.Module.EzArrange
 
             splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
+            splitListView_Recent.IsVertical = _vm.IsVertical;
+            splitListView_Custom.IsVertical = _vm.IsVertical;
+            splitListView_2w.IsVertical = _vm.IsVertical;
+            splitListView_3w.IsVertical = _vm.IsVertical;
+            splitListView_4w.IsVertical = _vm.IsVertical;
+            splitListView_5w.IsVertical = _vm.IsVertical;
+            splitListView_6w.IsVertical = _vm.IsVertical;
+            splitListView_7w.IsVertical = _vm.IsVertical;
+
+
             //InitRecentListView();
             InitListViewItems();
         }
@@ -100,6 +116,8 @@ namespace DDPM.UI.Module.EzArrange
             if (_deviceManagerSA == null) return;
 
             EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_homeDevice.MonitorInfo).Result;
+            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
             //A Build WindowLists
             //
@@ -110,6 +128,7 @@ namespace DDPM.UI.Module.EzArrange
                 if (newSplit == null)
                     continue;
                 newSplit.SplitMode = eSplitModes.Icon;
+                newSplit.IsVertical = _vm.IsVertical;
 
                 switch (newSplit.CellCount)
                 {
@@ -186,6 +205,7 @@ namespace DDPM.UI.Module.EzArrange
 
             if (sp0A != null)
             {
+                sp0A.FriendlyName = "Off"; //Need Multilogual support
                 sp0A.SplitMode = eSplitModes.Icon;
                 item0A = splitListView_Recent.AddItemToList(sp0A.UC);
                 item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
@@ -842,6 +862,12 @@ namespace DDPM.UI.Module.EzArrange
             InitListViewItems();
         }
         #endregion Refresh Data
- 
+
+        #region Screen
+        private Screen? GetAttachedScreen(string deviceName)
+        {
+            return Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(deviceName));
+        }
+        #endregion
     }
 }

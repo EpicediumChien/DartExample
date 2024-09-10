@@ -825,6 +825,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     workWin.Top = top;
                     workWin.Width = width;
                     workWin.Height = height;
+                    workWin.IsVertical = isVertical;
+
                     LogInfo($"  * SetWorkWindow pos ({left},{top}){width}x{height}, Split={cellCount}{splitKey}");
                     workWin.SetWorkingSplit(cellCount, splitKey, settings);
                     workWin.Show();

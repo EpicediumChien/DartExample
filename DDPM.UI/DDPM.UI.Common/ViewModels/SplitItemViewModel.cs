@@ -99,5 +99,21 @@ namespace DDPM.UI.Common.ViewModels
             set => SetProperty(ref _customId, value);
         }
         #endregion
+<<<<<<< HEAD
+=======
+
+        #region Screen Orientation
+
+        private bool isVertical = false;
+
+        public bool IsVertical
+        {
+            get { return isVertical; }
+            set { isVertical = value; OnPropertyChanged("IsVertical"); }
+        }
+
+        #endregion Screen Orientation
+
+>>>>>>> ac397592151171fdead1fff9c20b6409c75006e3
     }
 }

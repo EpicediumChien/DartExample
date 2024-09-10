@@ -82,14 +82,16 @@ namespace DDPM.SA.Common
         private readonly List<string> pluginType = new List<string>()
         {
             "DISPLAY",
-            "COLOR",
+            //"COLOR",
             "MOUSE",
             "KEYBOARD",
             "APP",
             "DOCK",
-            "HEADSET",
+            //"HEADSET",
             "AUDIO",
-            "VALUE"
+            "VALUE",
+            "PEN",
+            "WEBCAM",
         };
 
         private ILog _Log;
@@ -716,6 +718,7 @@ namespace DDPM.SA.Common
                 //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "EasyArrangeLayout" },         { "Value", "N/A" }, { "Type", 0 }}, // TODO: EasyArrangeLayout also lands in Config
                 //new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "AllResolutionRefreshRate" },  { "Value", "N/A" }, { "Type", 0 }}, // TO DROP
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "CurrentResolutionRefreshRate" }, { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "InAppRestoreDefault" },        { "Value", "N/A" }, { "Type", 1 }},
 
                 // - CONFIG
                 new Dictionary<string, object> {{ "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "Value", "N/A" }, { "Type", 2 }},
