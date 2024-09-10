@@ -37,14 +37,13 @@
                 if (asyncState.IsConnected)
                 {
                     string info;
-                    //Bruce Bypass becaus IL No ready and Dock FWU ISP tool no signature
-                    //if (!NPipeSecurity.NamedPipeClientSecurity(asyncState, out info/*, thumbPrint*/))
-                    //{
-                    //    Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
-                    //    IsNamedPipeServerIsNoSafe = true;
-                    //    asyncState.Disconnect();
-                    //    return;
-                    //}
+                    if (!NPipeSecurity.NamedPipeClientSecurity(asyncState, out info, thumbPrint))
+                    {
+                        Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
+                        IsNamedPipeServerIsNoSafe = true;
+                        asyncState.Disconnect();
+                        return;
+                    }
                     NamedPipeStreamConnection item = new NamedPipeStreamConnection(asyncState, base.PipeName);
                     item.MessageReceived += new MessageEventHandler(this.Connection_MessageReceived);
                     item.DisconnectedEvent += Connection_DisconnectedEvent;

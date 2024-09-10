@@ -17,6 +17,7 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Popup;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.UpdateProgressPage;
+using DDPM.SA.Obfuscation;
 using DDPM.ShowOSD;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -1994,7 +1995,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(tmpFWUpdateInfos);
         }
-
+        public Task<FWUErrorCode> Install(string installPath)
+        {
+            FWUErrorCode ret = FWUErrorCode.Unknow;
+            if (_UpdateProgress != null)
+            {
+                ret = _FWUpdatePlugin.Install(installPath).Result;
+            }
+            return Task.FromResult(ret);
+        }
         public void SetUILockStatus(bool isLockFWU_UI)
         {
             if (_SettingsPlugin != null)
@@ -3313,13 +3322,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     tmpDriberVersion = _GlobalSettingParam.GlobalSetting_About.DriverVersion;
                 }
                 _GlobalSettingParam = _SettingsPlugin.ReadGlobalSettings().Result;
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                _GlobalSettingParam.GlobalSetting_About.SWVersion = FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
                 _GlobalSettingParam.GlobalSetting_About.DriverVersion = tmpDriberVersion;
             }
             if (_PeripheralsPlugin != null)
             {
                 _GlobalSettingParam.GlobalSetting_About.DriverVersion = _PeripheralsPlugin.GetDevices().Result.IsdDriverVersion;
+                if (string.IsNullOrEmpty(_GlobalSettingParam.GlobalSetting_About.DriverVersion))
+                {
+                    _GlobalSettingParam.GlobalSetting_About.DriverVersion = "N/A";
+                }
             }
             return ret;
         }

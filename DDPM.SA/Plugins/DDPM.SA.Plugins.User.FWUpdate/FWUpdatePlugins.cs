@@ -692,15 +692,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     //Bruce 0909 Add check SHA512, SHA256 and Thumbprint.
                     CertificateCheck certificateCheck = new CertificateCheck();
-                    bool isCheckSHA = true;//Bruce bypass
+                    bool isCheckSHA = false;
                     string FileCAInfo = string.Empty;
                     if (!string.IsNullOrEmpty(fwUpdateInfos[i].SHA512))
                     {
-                        //isCheckSHA = certificateCheck.CheckFile_SHA512(exeFilePath, fwUpdateInfos[i].SHA512, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
+                        isCheckSHA = certificateCheck.CheckFile_SHA512(exeFilePath, fwUpdateInfos[i].SHA512, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
                     }
                     else
                     {
-                        //isCheckSHA = certificateCheck.CheckFile_SHA256(exeFilePath, fwUpdateInfos[i].SHA256, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
+                        isCheckSHA = certificateCheck.CheckFile_SHA256(exeFilePath, fwUpdateInfos[i].SHA256, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
                     }
                     if (isCheckSHA)
                     {
@@ -1076,15 +1076,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}  {nameof(Install)}  start");
                 //Bruce 0909 Add check SHA512, SHA256 and Thumbprint.
                 CertificateCheck certificateCheck = new CertificateCheck();
-                bool isCheckSHA = true;//Bruce bypass
+                bool isCheckSHA = false;
                 string FileCAInfo = string.Empty;
                 if (!string.IsNullOrEmpty(fwUpdateInfo.SHA512))
                 {
-                    //isCheckSHA = certificateCheck.CheckFile_SHA512(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA512, fwUpdateInfo.Thumbprint, out FileCAInfo);
+                    isCheckSHA = certificateCheck.CheckFile_SHA512(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA512, fwUpdateInfo.Thumbprint, out FileCAInfo);
                 }
                 else
                 {
-                    //isCheckSHA = certificateCheck.CheckFile_SHA256(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA256, fwUpdateInfo.Thumbprint, out FileCAInfo);
+                    isCheckSHA = certificateCheck.CheckFile_SHA256(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA256, fwUpdateInfo.Thumbprint, out FileCAInfo);
                 }
                 if (!isCheckSHA)
                 {
