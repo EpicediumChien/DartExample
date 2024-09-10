@@ -261,6 +261,32 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
             Assert.IsFalse(result);
         }
 
+        [Test]
+        public void Test_CallNextHookEx()
+        {
+            IntPtr idHook = IntPtr.Zero;
+            int nCode = 0;
+            int wParam = 0;
+            keyboardHookStruct lParam = new keyboardHookStruct()
+            {
+                vkCode = 65,
+                scanCode = 30,
+                flags = 0,
+                time = 12345,
+                dwExtraInfo = 98765
+            };
+            var result = HotkeyPlugin._CallNextHookEx(idHook, nCode, wParam, ref lParam);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void TestGetAsyncKeyState()
+        {
+            int number = 0;
+            System.Windows.Forms.Keys vKey = Keys.A;
+            var result = HotkeyPlugin._GetAsyncKeyState(vKey);
+            Assert.That(number, Is.EqualTo(result));
+        }
 
     }
 }
