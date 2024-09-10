@@ -114,6 +114,10 @@ namespace CLI.Plugins.Display
 
             return (int)CLI_ExitCode.fail_NotSupport;
         }
+        public static string change_0base_to_1base(string value)
+        {
+            return (int.Parse(value) + 1).ToString();
+        }
 
         //CmdLine: -set -name=Display.SwapVideo [-value[=source,target]]
         //Examples: [-value[=source,target]]
@@ -177,7 +181,7 @@ namespace CLI.Plugins.Display
                             TargetFeature = _cmdLineInput.TargetFeature
                         };
                         response.Value = rawValue;
-                        response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                        response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                         response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                         response.Result = "ERROR";
                         response.Message = "Invalid command line syntax (-value=source,target).";
@@ -197,7 +201,7 @@ namespace CLI.Plugins.Display
                             TargetFeature = _cmdLineInput.TargetFeature
                         };
                         response.Value = rawValue;
-                        response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                        response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                         response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                         response.Result = "ERROR";
                         response.Message = "Invalid input name of (-value=source,target).";
@@ -214,7 +218,7 @@ namespace CLI.Plugins.Display
                             TargetFeature = _cmdLineInput.TargetFeature
                         };
                         response.Value = rawValue;
-                        response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                        response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                         response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                         response.Result = "DO nothing";
                         response.Message = "source=target in (-value=source,target).";
@@ -236,7 +240,7 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Value = rawValue;
-                response.Index = idx.ToString();
+                response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
                 {
@@ -267,7 +271,7 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_PxpMode response = new CLI_RESPONSE_PxpMode();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Index = idx.ToString();
+                response.Index = change_0base_to_1base(idx.ToString());
 
                 //1 Get supported modes
                 UInt16[] caps = _devMgr.GetPipPbpCapabilitiesWords(_AllInfoMonitors[idx]).Result;
@@ -330,7 +334,7 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                 response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                 response.Result = "ERROR";
                 response.Message = "Invalid command line syntax, missing (-value=pxpMode).";
@@ -346,7 +350,7 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                 response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                 response.Result = "ERROR";
                 response.Message = "Invalid command line syntax, only one value (-value=pxpMode).";
@@ -374,7 +378,7 @@ namespace CLI.Plugins.Display
                             Command = _cmdLineInput.Command,
                             TargetFeature = _cmdLineInput.TargetFeature
                         };
-                        response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                        response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                         response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                         response.Result = "ERROR";
                         response.Message = "Invalid pxpMode value in (-value=pxpMode).";
@@ -395,7 +399,7 @@ namespace CLI.Plugins.Display
                             Command = _cmdLineInput.Command,
                             TargetFeature = _cmdLineInput.TargetFeature
                         };
-                        response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                        response.Index = change_0base_to_1base(string.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                         response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                         response.Result = "ERROR";
                         response.Message = "Invalid pxpMode value in (-value=pxpMode).";
@@ -416,7 +420,7 @@ namespace CLI.Plugins.Display
                         Command = _cmdLineInput.Command,
                         TargetFeature = _cmdLineInput.TargetFeature
                     };
-                    response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                    response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                     response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                     response.Result = "ERROR";
                     response.Message = "Invalid pxpMode value in (-value=pxpMode). Try /get command.";
@@ -438,7 +442,7 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Index = idx.ToString();
+                response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 response.Value = rawValue;
                 if (isPass)
@@ -470,7 +474,7 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Index = idx.ToString();
+                response.Index = change_0base_to_1base(idx.ToString());
 
                 List<InputSourceObj> inputSources = _devMgr.GetSubInputs(_AllInfoMonitors[idx]).Result;
                 if (inputSources == null)
@@ -575,7 +579,7 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                 response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                 response.Result = "ERROR";
                 response.Message = "Invalid command line syntax, missing options (-value,-sub1,-sub2, or -sub3).";
@@ -591,7 +595,7 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
-                response.Index = idx.ToString();
+                response.Index = change_0base_to_1base(idx.ToString());
                 response.Sub1InputSource = (sub1 == null) ? "" : sub1.Name;
                 response.Sub2InputSource = (sub2 == null) ? "" : sub2.Name;
                 response.Sub3InputSource = (sub3 == null) ? "" : sub3.Name;
@@ -631,7 +635,7 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Index = idx.ToString();
+                response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
                 {
@@ -670,7 +674,7 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Value = (rc.value).ToString();
-                response.Index = idx.ToString();
+                response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
                 {
@@ -709,7 +713,7 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Value = "";
-                response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                 response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                 response.Result = "No keyword -value";
                 response.Message = "source=target in (-value=source,target).";
@@ -737,7 +741,7 @@ namespace CLI.Plugins.Display
                             TargetFeature = _cmdLineInput.TargetFeature
                         };
                         response.Value = rawValue;
-                        response.Index = String.Join(",", _cmdLineInput.DeviceIndex.ToArray());
+                        response.Index = change_0base_to_1base(String.Join(",", _cmdLineInput.DeviceIndex.ToArray()));
                         response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
                         response.Result = "ERROR";
                         response.Message = "Invalid command line syntax, target should be 0~4 in (-value=target).";
@@ -761,7 +765,7 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
-                response.Index = idx.ToString();
+                response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 response.Value = rawValue;
                 if (isPass)
