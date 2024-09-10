@@ -90,8 +90,10 @@
                         Background="{StaticResource FakeTransparent}"
                         MouseLeftButtonDown="spItem_MouseLeftButtonDown" />
 
-        <!-- Hover Layer -->
+        <!-- Hover Layer 
         <Border Name="bdHover" Width="88" Height="68" CornerRadius="6">
+        -->
+        <Border Name="bdHover" CornerRadius="6">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
@@ -164,8 +166,11 @@
             </Border.ToolTip>
         </Border>
 
-        <!--  Background="{StaticResource FakeTransparent}" -->
+        <!--  Background="{StaticResource FakeTransparent}" 
+        
         <Border Name="bdSelected" Width="88" Height="68" CornerRadius="6">
+        -->
+        <Border Name="bdSelected" CornerRadius="6">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush" Value="{StaticResource SplitItem_SelectedBdColor}" />

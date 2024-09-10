@@ -387,8 +387,8 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     "MOUSE",
                     "KEYBOARD",
-                    "DOCK",
-                    "HEADSET",
+                    //"DOCK",
+                    //"HEADSET",
                     "AUDIO",
                     "PEN",
                     "WEBCAM",
@@ -415,8 +415,14 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     if (_CLIPeripherals != null)
                     {
-                        cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
-                    }
+                        if (commandLineInput.TargetFeature.Equals("RESTOREFACTORYDEFAULTS"))
+                        {
+                            DDPMSettings data_restorefactorydefault = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data_restorefactorydefault, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        }
+                        else
+                            cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
+                    }                    
                     else
                     {
                         WriteLog($"{nameof(ICLIPeripherals)} was missing.");
@@ -455,6 +461,12 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             DDPMSettings data_exportsettings = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data_exportsettings, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+
+                        case "INAPPRESTOREDEFAULTS":
+                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            DDPMSettings data_restoredefaults = _DevManagerPlugin.ReloadAppConfigData().Result;
+                            cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_restoredefaults, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             break;
 
                         default:

@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using WinCopies.Util;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
 using IDs = VcpCore.Common.IDs;
@@ -908,7 +909,6 @@ namespace VcpCore.Plugins
                          new JProperty("CapsDataMap", new JObject(CapsDataMapJProperty))
                     );
 
-
                     if (obj.ContainsKey("CapsDataMap"))
                     {
                         JObject capsDataMap = (JObject)obj["CapsDataMap"];
@@ -998,6 +998,37 @@ namespace VcpCore.Plugins
 
                 switch (func)
                 {
+                    case "inputsourcelist":
+                        {
+                            ro = GetFromCacheTable(monitorInfoX, func);
+                            if (ro == null)
+                            {
+                                string VCPCapabilities_ = GetVCPCapabilities_(monitorInfoX);
+                                var obj = JObject.Parse(VCPCapabilities_);
+                                if (obj.ContainsKey("CapsDataMap"))
+                                {
+                                    JObject capsDataMap = (JObject)obj["CapsDataMap"];
+                                    JArray inputs = (JArray)capsDataMap["Input Select"];
+                                    string R_ = string.Empty;
+                                    List<InputSourceObject> list = new List<InputSourceObject>();
+                                    foreach (var input in inputs)
+                                    {
+                                        R_ = input.ToString();
+                                        var val_ = System.Text.RegularExpressions.Regex.Replace((R_.Substring(R_.Length - 1)), @"\d", string.Empty);
+                                        if (!string.IsNullOrWhiteSpace(val_))
+                                            val_ = R_ + "1";
+                                        else val_ = R_;
+
+                                        VcpCodeList.VCP60.TryGetValue(val_, out uint value);
+                                        list.Add(new InputSourceObject() { Name = R_, value = value });
+                                    }
+                                    ro = list;
+                                    SetToCacheTable(monitorInfoX, "inputsourcelist", ro);
+                                }
+                            }
+                        }
+                        break;
+
                     case @"USB-C Prioritization":
                         {
                             ro = GetVcp2Steps(monitorInfoX, 0xEA, 0xF8FF);
@@ -1006,11 +1037,7 @@ namespace VcpCore.Plugins
                         break;
 
                     case "colorpreset":
-                        {
-                            //ro = GetFromCacheTable(monitorInfoX, func);
-                            //if (ro == null)
-                            ro = GetCurrentColorPreset(monitorInfoX);
-                        }
+                        ro = GetCurrentColorPreset(monitorInfoX);
                         break;
 
                     case nameof(Gaming_GameEnhancementMode):
@@ -1067,15 +1094,17 @@ namespace VcpCore.Plugins
                 {
                     switch (code)
                     {
-
                         case 0xEC:
                             break;
+
                         case 0X04:
                             InitializeCacheTable();
                             break;
+
                         case 0x05:
                             InitializeCacheTable();
                             break;
+
                         default:
                             SetToCacheTable(monitorInfoX, code, val);
                             break;
@@ -1142,10 +1171,11 @@ namespace VcpCore.Plugins
                         {
                             var val_ = System.Text.RegularExpressions.Regex.Replace((val.Substring(val.Length - 1)), @"\d", string.Empty);
                             if (!string.IsNullOrWhiteSpace(val_))
-                                val = val + "1";
+                                val_ = val + "1";
+                            else val_ = val;
 
                             byte fuc = TranslatorVCPctrCode(FunctionName);
-                            uint value = TranslatorVCPcategory(FunctionName, val);
+                            uint value = TranslatorVCPcategory(FunctionName, val_);
                             rc = SetVCPCapability_(monitorInfoX, fuc, value);
 
                             if (rc)
@@ -1373,8 +1403,35 @@ namespace VcpCore.Plugins
                                             {
                                                 if (x.Equals(monitorInfoX))
                                                 {
-                                                    x.inputSource = NodeFormatter.FormatVCP_60(rc_str.ToLower());
-                                                    o.inputSource = NodeFormatter.FormatVCP_60(rc_str.ToLower());
+                                                    List<InputSourceObject> r = new List<InputSourceObject>();
+                                                    var R = GetFromCacheTable(monitorInfoX, "inputsourcelist");
+                                                    if (R != null)
+                                                        r.AddRange(R as List<InputSourceObject>);
+
+                                                    var n = NodeFormatter.FormatVCP_60(rc_str.ToLower());
+                                                    bool rv = false;
+                                                    if (r.Count > 0)
+                                                    {
+                                                        foreach (InputSourceObject t in r)
+                                                        {
+                                                            if (n.Equals(t.Name))
+                                                            {
+                                                                rv = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (rv)
+                                                    {
+                                                        x.inputSource = n;
+                                                        o.inputSource = x.inputSource;
+                                                    }
+                                                    else
+                                                    {
+                                                        x.inputSource = System.Text.RegularExpressions.Regex.Replace(n, @"\d", string.Empty);
+                                                        o.inputSource = x.inputSource;
+                                                    }
                                                     break;
                                                 }
                                             }
@@ -1610,8 +1667,7 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier catch monitors ...");
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier Monitors.count is " + mos.Count);
                                         _AllInfoMonitors = mos.ToList();
-                                        Initialize2TypesMonitorInfo(true);
-                                        InitializeCacheTable();
+                                        Initialize2TypesMonitorInfo(true);                                        
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
                                         Initialize0x52toEmpty();
 
@@ -1653,7 +1709,6 @@ namespace VcpCore.Plugins
                         {
                             _AllInfoMonitors = monitors.ToList();
                             Initialize2TypesMonitorInfo(true);
-                            InitializeCacheTable();
                             _logs.DebugMsg("[VcpCorePlugin] InitializeMonitorsList AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
                             Initialize0x52toEmpty();
                         }
@@ -1720,6 +1775,8 @@ namespace VcpCore.Plugins
                     if (_AllInfoMonitors_Mix != null) _AllInfoMonitors_Mix.Clear();
                     else _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
+                    InitializeCacheTable();
+
                     foreach (var MonitorInfoX in _AllInfoMonitors)
                     {
                         MonitorInfo monitorInfo = new MonitorInfo();
@@ -1737,6 +1794,8 @@ namespace VcpCore.Plugins
                         monitorInfo.series = MonitorInfoX.series;
                         monitorInfo.MarketingName = MonitorInfoX.MarketingName;
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
+                        
+                        GetVCPCapability_(MonitorInfoX, "inputsourcelist", 0);
                     }
                 }
             }
@@ -1830,7 +1889,6 @@ namespace VcpCore.Plugins
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Let's go ...");
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToUInt32(key).ToString("X")));
-            _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable value is " + ((value is string) ? value.ToString() : Convert.ToUInt32(value).ToString("X")));
 
             if (_CacheTable.Count > 0)
             {
@@ -1911,7 +1969,7 @@ namespace VcpCore.Plugins
             return rc;
         }
 
-        private void OnCacheTimedRaise(Object source, System.Timers.ElapsedEventArgs e)
+        private void OnCacheTimedRaise(System.Object source, System.Timers.ElapsedEventArgs e)
         {
             _logs.DebugMsg("[VcpCorePlugin] [Hook] OnCacheTimedRaise");
 

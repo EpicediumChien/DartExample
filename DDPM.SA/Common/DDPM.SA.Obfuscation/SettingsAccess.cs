@@ -54,18 +54,20 @@ namespace DDPM.SA.Obfuscation
             }
         }
 
-        public static string AppAccessInfo { get; } = QueryAppAccessInfo();
+        private static (string id, string ver) AppInfo { get; } = QueryAppAccessInfo();
+        public static string AppAccessInfo { get; } = AppInfo.id;
+        public static string AppAccessVer { get; } = AppInfo.ver;
 
         // ***Important***
         //This function require system/admin privilege
         //And return the setting file's private key for signature generate
-        private static string QueryAppAccessInfo()//out string info)
+        private static (string id, string ver) QueryAppAccessInfo()//out string info)
         {
             //info = string.Empty;
             if(!IsUserElevated())
             {
                 //info = "Caller doesn't has elevated privilege";
-                return string.Empty;
+                return (string.Empty, string.Empty);
             }
 
             string softwareName = "Dell Display and Peripheral Manager";
@@ -98,7 +100,8 @@ namespace DDPM.SA.Obfuscation
                                             string output = subkeyName.ToUpper().Replace("{", "").Replace("}", "").Replace("-", "").Trim();
                                             if (output != null && output.Length == 32)
                                             {
-                                                return GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName); //this is used as DDPM settings private key
+                                                string ver = subkey.GetValue("DisplayVersion") as string;
+                                                return (GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName), ver); //this id is used as DDPM settings private key
                                             }
                                         }
                                     }
@@ -107,11 +110,12 @@ namespace DDPM.SA.Obfuscation
                         }
                         catch
                         {
+                            //do nothing
                         }
                     }
                 }
             }
-            return string.Empty;
+            return (string.Empty, string.Empty);
         }
     }
 }

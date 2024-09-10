@@ -7,7 +7,9 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.EzMemory"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <StackPanel>
         <Button Width="200" Height="160" Content="EzMemoryRightView" />
-    </Grid>
+        <CheckBox Name="ck" Content="AddDeviceIcon" IsChecked="True" Click="CheckBox_Click_1" Foreground="White"/>
+        <CheckBox Name="ckSettings" Content="SettingsIcon" IsChecked="True" Click="ckSettings_Click" Foreground="White"/>
+    </StackPanel>
 </UserControl>

@@ -205,12 +205,12 @@ namespace VcpCore.Common
             {"USB-C2" , 0x1C },
             {"USB-C3" , 0x1D },
             {"USB-C4" , 0x1E },
-            {"USB Comm from USB1 (Type-B, port 1)" , 0x80 },
-            {"USB Comm from USB2 (Type-B, port 2)" , 0x81 },
-            {"USB Comm from USB-C1 (Type-C, port 1)" , 0x82 },
-            {"USB Comm from USB-C2 (Type-C, port 2)" , 0x83 },
-            {"USB Comm from USB-C3 (Type-C, port 3)" , 0x84 },
-            {"USB Comm from USB-C4 (Type-C, port 4)" , 0x85 }
+            {"USB Comm from USB1, Type-B, port 1" , 0x80 },
+            {"USB Comm from USB2, Type-B, port 2" , 0x81 },
+            {"USB Comm from USB-C1, Type-C, port 1" , 0x82 },
+            {"USB Comm from USB-C2, Type-C, port 2" , 0x83 },
+            {"USB Comm from USB-C3, Type-C, port 3" , 0x84 },
+            {"USB Comm from USB-C4, Type-C, port 4" , 0x85 }
         };
 
         public static Dictionary<string, uint> VCPF8 = new Dictionary<string, uint> // USB-C Prioritization

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DDPM.SA.Common.Display;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.UserControls;
@@ -41,6 +42,10 @@ namespace DDPM.UI.Common.ViewModels
             SplitList = new ObservableCollection<SplitItem>();
         }
 
+
+        #endregion ItemsSource
+
+        #region Find
         public SplitItem? FindSplitCtrl(int cellCount, char splitKey)
         {
             if (_splitList == null) return null;
@@ -104,7 +109,32 @@ namespace DDPM.UI.Common.ViewModels
             return listOut;
 
         }
-        #endregion ItemsSource
+
+        public SplitItem? FindItemBySplitJson(SplitJson spj)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                //Compare if it's equal between SplitItem and SplitJson
+                //  1 CustomId must be the same
+                //  2 If CustomId==0, the compare (CellCount, SplitKey)
+                //
+                //1 CustomId must be the same
+                if (spItem.CustomId != spj.CustomId)
+                    continue;
+
+                //2 If CustomId==0, the compare (CellCount, SplitKey)
+                if (spItem.CustomId == 0)
+                {
+                    if ((spItem.CellCount == spj.CellCount) && (spItem.SplitKey == spj.SplitKey))
+                        return spItem;
+                }
+            }
+            return null;
+        }
+        #endregion Find
 
         #region Index
 
@@ -306,12 +336,16 @@ namespace DDPM.UI.Common.ViewModels
         }
         #endregion Page Navigation
 
-        //private ICommand? _itemEditCommand;
+        #region Screen Orientation
 
-        //public ICommand? ItemEditCommand
-        //{
-        //    get => _itemEditCommand;
-        //    set => SetProperty(ref _itemEditCommand, value);
-        //}
+        private bool isVertical = false;
+
+        public bool IsVertical
+        {
+            get { return isVertical; }
+            set { isVertical = value; OnPropertyChanged("IsVertical"); }
+        }
+
+        #endregion Screen Orientation
     }
 }

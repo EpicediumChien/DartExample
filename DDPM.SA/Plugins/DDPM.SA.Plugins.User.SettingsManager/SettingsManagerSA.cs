@@ -110,6 +110,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _powerNapsettings_path { get; set; }
         private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         private static string _settingsAccessInfo = string.Empty;
+        private static string _settingsAccessInfoVer = string.Empty;
 
         private string _GlobalSetting_path;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
@@ -274,6 +275,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             relay_registered = true;
 
             _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
+            _settingsAccessInfoVer = _SysSettingsPlugin.QueryAccessInfoVer().Result;
             InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
