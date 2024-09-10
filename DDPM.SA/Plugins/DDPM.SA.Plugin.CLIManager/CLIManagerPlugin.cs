@@ -283,8 +283,18 @@ namespace DDPM.SA.Plugin.CLIManager
                     return rst;
                     break;
                 case "INAPPBRICONT":             //InAppBriCont              DDPMW-1342/1343
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
                     break;
                 case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
                     break;
                 case "INAPPRESTOREDEFAULTS":     //InAppRestoreDefaults      DDPMW-1333
                     if (commandLineInput.PluginsType.Equals("APP"))
@@ -313,10 +323,20 @@ namespace DDPM.SA.Plugin.CLIManager
                 case "USBKVM":                   //USBKVM                    DDPMW-1347
                     break;
                 case "INAPPNETWORKKVM":          //InAppNetworkKVM           DDPMW-1599
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
                     break;
                 case "EASYARRANGELAYOUT":        //EasyArrangeLayout         DDPMW-1350
                     break;
                 case "INAPPCOLORPRESET":         //InAppColorPreset          DDPMW-1351/1352
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
                     break;
                 case "POWERNAP":                 //PowerNap                  DDPMW-1361
                     break;

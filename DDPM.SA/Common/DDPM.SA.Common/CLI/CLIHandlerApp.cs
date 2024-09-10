@@ -252,16 +252,7 @@ namespace DDPM.SA.Common.CLI
                 "SET",
                 "CONFIGURE",
             };
-            List<string> peripheral_DeviceType = new List<string>()
-            {
-                "MOUSE",
-                "KEYBOARD",
-                //"DOCK",
-                //"HEADSET",
-                "AUDIO",
-                "PEN",
-                "WEBCAM",
-            };
+
             //if (!commandLineInput.Command.Equals("CONFIGURE") && !commandLineInput.Command.Equals("GET"))
             if (CMDLine_Command_Check.FindIndex(x => x.Equals(commandLineInput.Command)) < 0)
             {
@@ -317,6 +308,18 @@ namespace DDPM.SA.Common.CLI
                             break;
                         case "INAPPRESTOREDEFAULTS":
                             response.Value = data_IT.Lock_Setting_RestoreDefaults ? "Lock" : "Unlock";
+                            break;
+                        case "INAPPBRICONT":
+                            response.Value = data_IT.Lock_Display_BriCont ? "Lock" : "Unlock";
+                            break;
+                        case "INAPPAUTOBRITEMP":
+                            response.Value = data_IT.Lock_Display_AutoBriTemp ? "Lock" : "Unlock";
+                            break;
+                        case "INAPPNETWORKKVM":
+                            response.Value = data_IT.Lock_Display_NetworkKVM ? "Lock" : "Unlock";
+                            break;
+                        case "INAPPCOLORPRESET":
+                            response.Value = data_IT.Lock_Display_ColorPreset ? "Lock" : "Unlock";
                             break;
                     }
                     result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
@@ -382,6 +385,18 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPRESTOREDEFAULTS":
                             data_IT.Lock_Setting_RestoreDefaults = true;
                             break;
+                        case "INAPPBRICONT":
+                            data_IT.Lock_Display_BriCont = true;
+                            break;
+                        case "INAPPAUTOBRITEMP":
+                            data_IT.Lock_Display_AutoBriTemp = true;
+                            break;
+                        case "INAPPNETWORKKVM":
+                            data_IT.Lock_Display_NetworkKVM = true;
+                            break;
+                        case "INAPPCOLORPRESET":
+                            data_IT.Lock_Display_ColorPreset = true;
+                            break;
                     }
                 }
                 if (data_user != null)
@@ -416,6 +431,18 @@ namespace DDPM.SA.Common.CLI
                             break;
                         case "INAPPRESTOREDEFAULTS":
                             data_user.LockSettings.Lock_Setting_RestoreDefaults = true;
+                            break;
+                        case "INAPPBRICONT":
+                            data_user.LockSettings.Lock_Display_BriCont = true;
+                            break;
+                        case "INAPPAUTOBRITEMP":
+                            data_user.LockSettings.Lock_Display_AutoBriTemp = true;
+                            break;
+                        case "INAPPNETWORKKVM":
+                            data_user.LockSettings.Lock_Display_NetworkKVM = true;
+                            break;
+                        case "INAPPCOLORPRESET":
+                            data_user.LockSettings.Lock_Display_ColorPreset = true;
                             break;
                     }
                 }
@@ -455,6 +482,18 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPRESTOREDEFAULTS":
                             data_IT.Lock_Setting_RestoreDefaults = false;
                             break;
+                        case "INAPPBRICONT":
+                            data_IT.Lock_Display_BriCont = false;
+                            break;
+                        case "INAPPAUTOBRITEMP":
+                            data_IT.Lock_Display_AutoBriTemp = false;
+                            break;
+                        case "INAPPNETWORKKVM":
+                            data_IT.Lock_Display_NetworkKVM = false;
+                            break;
+                        case "INAPPCOLORPRESET":
+                            data_IT.Lock_Display_ColorPreset = false;
+                            break;
                     }                }
                 if (data_user != null)
                 {
@@ -488,6 +527,18 @@ namespace DDPM.SA.Common.CLI
                             break;
                         case "INAPPRESTOREDEFAULTS":
                             data_user.LockSettings.Lock_Setting_RestoreDefaults = false;
+                            break;
+                        case "INAPPBRICONT":
+                            data_user.LockSettings.Lock_Display_BriCont = false;
+                            break;
+                        case "INAPPAUTOBRITEMP":
+                            data_user.LockSettings.Lock_Display_AutoBriTemp = false;
+                            break;
+                        case "INAPPNETWORKKVM":
+                            data_user.LockSettings.Lock_Display_NetworkKVM = false;
+                            break;
+                        case "INAPPCOLORPRESET":
+                            data_user.LockSettings.Lock_Display_ColorPreset = false;
                             break;
                     }
                 }
@@ -533,6 +584,18 @@ namespace DDPM.SA.Common.CLI
                             break;
                         case "INAPPRESTOREDEFAULTS":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Setting_RestoreDefaults" }).Result;
+                            break;
+                        case "INAPPBRICONT":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_BriCont" }).Result;
+                            break;
+                        case "INAPPAUTOBRITEMP":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_AutoBriTemp" }).Result;
+                            break;
+                        case "INAPPNETWORKKVM":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_NetworkKVM" }).Result;
+                            break;
+                        case "INAPPCOLORPRESET":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_ColorPreset" }).Result;
                             break;
                     }
                 }
