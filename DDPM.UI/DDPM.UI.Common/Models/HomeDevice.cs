@@ -218,13 +218,22 @@ namespace DDPM.UI.Common.Models
                     //return MonitorInfo.AliasDeviceName;
                     //return DisplayName;
 
+                    //Robert_Lin, 2024-9-9, per Dell Villavicencio, Kathia added a comment - 06/Sep/24 5:18 AM
+                    //Tooltip show "{MarketName} {InstanceNo}"
+                    //
                     //Robert_Lin, 2024-8-29, for DDPMW-2094 Update DDPM 2.0 Display Frontend for NPI; Non-NPI TBD
                     //For NPI models, MonitorInfo.MarketName will provide the name to show
                     //Otherwise (Non-NPI), MonitorInfo.MarketName will be empty, will show DisplayName (Model + instanceNo)
                     if (String.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
                         return DisplayName;
                     else
-                        return MonitorInfo.MarketingName;
+                    {
+                        //If the InstanceNo is 0
+                        if (InstanceNo == 0)
+                            return MonitorInfo.MarketingName;
+                        else
+                            return MonitorInfo.MarketingName + $" ({InstanceNo})";
+                    }
                 }
                 return DeviceCategory.ToString();
             }

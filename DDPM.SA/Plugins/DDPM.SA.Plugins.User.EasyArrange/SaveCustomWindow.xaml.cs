@@ -25,9 +25,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #region Init
 
-        public SaveCustomWindow()
+        public SaveCustomWindow(Window owner)
         {
             InitializeComponent();
+            Owner = owner;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

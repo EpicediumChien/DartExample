@@ -266,7 +266,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetCapabilitiesString requested ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -306,7 +306,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapabilities requested ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -346,7 +346,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -388,7 +388,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -430,7 +430,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -472,7 +472,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
@@ -518,7 +518,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Initialize0x52toEmpty requested ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0)
             {
                 Guid _guid = Guid.NewGuid();
                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
@@ -536,7 +536,7 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Watcher0x52 requested ...");
 
-            if (_AllInfoMonitors.Count > 0)
+            if (_AllInfoMonitors.Count > 0 && _AllInfoMonitors_Mix.Count > 0)
             {
                 Guid _guid = Guid.NewGuid();
                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
@@ -839,12 +839,12 @@ namespace VcpCore.Plugins
 
                 if (!string.IsNullOrWhiteSpace(capabilities) && (node.Nodes.Count() > 0))
                 {
-                    var vcpNode = node.Nodes.RecursiveSelect(n => n.Nodes)
-                    .Single(n => n.Value == "vcp");
+                    var vcpNode = node.Nodes.RecursiveSelect(n => n.Nodes).Single(n => n.Value == "vcp");
 
                     StringWrite(vcpNode, ref rcString);
 
                     rcString += "ColorPreset\n";
+
                     foreach (string colorPreset in monitorInfoX.ColorPresetSupportList)
                         rcString += "\t" + colorPreset + "\n";
 
@@ -929,7 +929,10 @@ namespace VcpCore.Plugins
                                     T_strII = System.Text.RegularExpressions.Regex.Replace(input[j].ToString(), @"\d", string.Empty);
 
                                     if (T_strI.Equals(T_strII))
+                                    {
                                         rc = true;
+                                        break;
+                                    }
                                 }
                             }
 
@@ -1668,7 +1671,7 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier catch monitors ...");
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier Monitors.count is " + mos.Count);
                                         _AllInfoMonitors = mos.ToList();
-                                        Initialize2TypesMonitorInfo(true);                                        
+                                        Initialize2TypesMonitorInfo(true);
                                         _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier AllInfoMonitors.count is " + _AllInfoMonitors_Mix.Count);
                                         Initialize0x52toEmpty();
 
@@ -1780,6 +1783,9 @@ namespace VcpCore.Plugins
 
                     foreach (var MonitorInfoX in _AllInfoMonitors)
                     {
+                        GetVCPCapability_(MonitorInfoX, "inputsourcelist", 0);
+                        MonitorInfoX.inputSource = GetInputSource(MonitorInfoX);
+
                         MonitorInfo monitorInfo = new MonitorInfo();
                         monitorInfo.AliasDeviceName = MonitorInfoX.AliasDeviceName;
                         monitorInfo.IsDellMonitor = MonitorInfoX.IsDellMonitor;
@@ -1795,8 +1801,6 @@ namespace VcpCore.Plugins
                         monitorInfo.series = MonitorInfoX.series;
                         monitorInfo.MarketingName = MonitorInfoX.MarketingName;
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
-                        
-                        GetVCPCapability_(MonitorInfoX, "inputsourcelist", 0);
                     }
                 }
             }
@@ -2275,7 +2279,6 @@ namespace VcpCore.Plugins
                             }
                             _TargetMonitor.Index = MoIndexCounter;
                             _TargetMonitor.FwVersion = FwVersion(_TargetMonitor.hPhysicalMonitor, _TargetMonitor.modelName);
-                            _TargetMonitor.inputSource = GetInputSource(_TargetMonitor.hPhysicalMonitor);
                             if (!string.IsNullOrWhiteSpace(_TargetMonitor.series)) monitors.Add(_TargetMonitor);
                             MoIndexCounter++;
                         }
@@ -2383,23 +2386,49 @@ namespace VcpCore.Plugins
             return Newlist;
         }
 
-        private string GetInputSource(IntPtr hPhysicalMonitor)
+        private string GetInputSource(MonitorInfo_complex monitorInfo_)
         {
             string rc = string.Empty;
             int count = 0;
             do
             {
-                MonitorInfo_complex monitor = new MonitorInfo_complex { hPhysicalMonitor = hPhysicalMonitor };
-                var value = Get_VCPCapability(monitor, 0x60, 0, true);
+                var value = Get_VCPCapability(monitorInfo_, 0x60, 0, true);
                 if (value != null)
                 {
                     uint val = (Convert.ToUInt32(value) & 0XFFFF);
                     string valstring = val.ToString("X2");
                     int pos = valstring.Length - 2;
                     rc = valstring.Substring(pos);
+
+                    if (!string.IsNullOrWhiteSpace(rc))
+                    {
+                        SetToCacheTable(monitorInfo_, 0x60, val);
+
+                        List<InputSourceObject> r = new List<InputSourceObject>();
+                        var R = GetFromCacheTable(monitorInfo_, "inputsourcelist");
+                        if (R != null)
+                            r.AddRange(R as List<InputSourceObject>);
+
+                        var n = NodeFormatter.FormatVCP_60(rc.ToLower());
+                        bool rv = false;
+                        if (r.Count > 0)
+                        {
+                            foreach (InputSourceObject t in r)
+                            {
+                                if (n.Equals(t.Name))
+                                {
+                                    rv = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (rv)
+                            return n;
+                        else
+                            return System.Text.RegularExpressions.Regex.Replace(n, @"\d", string.Empty);
+                    }
                 }
-                if (!string.IsNullOrWhiteSpace(rc))
-                    return NodeFormatter.FormatVCP_60(rc.ToLower());
 
                 count++;
                 _logs.DebugMsg($"[VcpCorePlugin] GetInputSource retry ({count})");

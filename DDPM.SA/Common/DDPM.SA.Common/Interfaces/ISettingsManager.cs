@@ -85,7 +85,7 @@ namespace DDPM.SA.Common
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);
 
-        Task<bool> DisplayImportSettings(string path, out List<VCP> vcps);
+        Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps);
 
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();
@@ -97,5 +97,7 @@ namespace DDPM.SA.Common
         //Service to read/write current_user and dispatch local_machine to ISettingsManagerSA
         Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
+
+        event EventHandler SettingReadyEvent;
     }
 }

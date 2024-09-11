@@ -121,7 +121,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             vm.FullView = new AnalyticsPage();
         }
 
-        private void QuickSettingsButton_Click(object sender, MouseButtonEventArgs e)
+        private void WidgetSettingsButton_Click(object sender, MouseButtonEventArgs e)
         {
             vm.SetSelected(3);
             Settings_WidgetSettings settings_WidgetSettings = new Settings_WidgetSettings();

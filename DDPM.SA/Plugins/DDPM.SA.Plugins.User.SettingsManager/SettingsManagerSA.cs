@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -116,6 +117,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private string _GlobalSetting_path;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
+        public event EventHandler SettingReadyEvent;
 
         #endregion Private Members
 
@@ -216,10 +218,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             text = "[User.SettingsManager] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private void InitializeSysSettingsPlugin()
@@ -282,6 +287,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitHotkeyConfigFile();
             InitPowerNapConfigFile();
             InitGlobalSettingConfigFile();
+            SettingReadyEvent?.Invoke(this, new EventArgs());
         }
 
         private void _SysSettingsPlugin_ActionEvent(object? sender, ITSettingEventArgs e)
@@ -398,7 +404,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 if (_AllMonitorSettings != null)
                 {
                     //find monitor settings
-                    if (!_AllMonitorSettings.ContainsKey(modelname))
+                    if (_AllMonitorSettings.ContainsKey(modelname))
+                    {
+                        _AllMonitorSettings[modelname] = monitorSettingList;
+                    }
+                    else
                     {
                         _AllMonitorSettings.Add(modelname, monitorSettingList);
                     }
@@ -500,9 +510,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname)
         {
             List<DDPMMonitorSettings> monitorSettings = new List<DDPMMonitorSettings>();
-            if (!string.IsNullOrEmpty(_settings_path))
+            //Robert_Lin, 2024-9-10 fix. _settings_path is null, check _display_path instead
+            //if (!string.IsNullOrEmpty(_settings_path))
+            if (!string.IsNullOrEmpty(_display_path))
             {
-                string monitorSettings_path = _display_path + "\\" + modelname + ".json";
+                    string monitorSettings_path = _display_path + "\\" + modelname + ".json";
                 if (File.Exists(monitorSettings_path))
                 {
                     if (_AllMonitorSettings != null)
@@ -891,7 +903,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, /*bool isSameModel, */out List<VCP> vcps)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -908,7 +920,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
                     foreach (DDPMMonitorSettings settings in monitorSettingsList)
                     {
-                        if (settings.ServiceTag == monitorSettings.ServiceTag/* || isSameModel*/)
+                        if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
                         {
                             settings.Input = monitorSettings.Input;
                             settings.KVM = monitorSettings.KVM;
@@ -917,15 +929,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                             {
                                 vcps = monitorSettings.VCPs;
-                                //if (!isSameModel)
-                                //{
+                                if (!isSameModel)
+                                {
                                     return Task.FromResult<bool>(true);
-                                //}
+                                }
                             }
                             else
                             {
+                                WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
                                 WriteLog("[DisplayImportSettings] Import settings Fail...");
-                                break;
+                                if (!isSameModel)
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1350,6 +1366,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 try
                 {
                     _GlobalSettingParam = RunGlobalSettinDeserializeObject(strReadJson);
+                    _GlobalSettingParam.GlobalSetting_About.SWVersion = _settingsAccessInfoVer;
                 }
                 catch (Exception)// ex)
                 {
@@ -1838,7 +1855,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         return Task.FromResult(false);
                     }
                     bool result = _SysSettingsPlugin.WriteRegistryData(hive, keyPath, keyName, value).Result;
-                    if(result)
+                    if (result)
                         WriteLog($"[User setting plugin] Write data {value} success");
                     else
                         WriteLog($"[User setting plugin] Write data {value} failed");

@@ -27,7 +27,6 @@
         </ResourceDictionary>
     </UXControls:UXWindow.Resources>
     <Grid>
-        <Image Source="Background_Glow.png" />
         <Grid Grid.Column="1"
               Margin="10"
               HorizontalAlignment="Right"
@@ -43,7 +42,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <UXControls:UXTextBlock  Grid.Column="0"
-                                     Text="On screen notifications"
+                                     FontSize="20"
+                                     Text="Third Party Licenses"
                                      Style="{StaticResource ModuleCaptionStyle}" />
             <UXControls:UXScrollViewer Grid.Row="1"
                                        Margin="0,10,0,0">
