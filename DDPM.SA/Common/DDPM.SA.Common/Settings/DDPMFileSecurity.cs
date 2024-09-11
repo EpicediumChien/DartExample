@@ -98,6 +98,14 @@ namespace DDPM.SA.Common.Settings
                 info = "Null json content as input";
                 return false;
             }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!IsFilePathValid(target_file, out FileInfo))
+            {
+                _log.Info($"{nameof(CheckFileACL)} {FileInfo}");
+                return false;
+            }
             string signature;
             try
             {
@@ -302,7 +310,7 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
-                //0906 Elsa Add Security
+                //Elsa Add Security
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                 {
@@ -335,7 +343,7 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
-                //0906 Elsa Add Security
+                //Elsa Add Security
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                 {
@@ -375,7 +383,7 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
-                //0906 Elsa Add Security
+                //Elsa Add Security
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                 {
@@ -405,7 +413,7 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
-                //0906 Elsa Add Security
+                //Elsa Add Security
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                 {
@@ -429,7 +437,7 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
-                    //0906 Elsa Add Security
+                    //Elsa Add Security
                     string FileInfo;
                     if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                     {
@@ -470,7 +478,7 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
-                    //0906 Elsa Add Security
+                    //Elsa Add Security
                     string FileInfo;
                     if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                     {
@@ -520,7 +528,7 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
-                    //0906 Elsa Add Security
+                    //Elsa Add Security
                     string FileInfo;
                     if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
                     {
@@ -720,7 +728,7 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
             {
@@ -783,7 +791,7 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
             {
@@ -864,17 +872,17 @@ namespace DDPM.SA.Common.Settings
                 info = $"CheckFileACL: {filePath} isn't exist.";
                 return false;
             }
+            //Elsa Add Security
+            string FileInfo;
+            if (!IsFilePathValid(filePath, out FileInfo))
+            {
+                info = $"{nameof(CheckFileACL)} {FileInfo}";
+                _log.Info(info);
+                return false;
+            }
             FileInfo fileInfo = new FileInfo(filePath);
             try
             {
-                //0905 Elsa Add Security
-                string FileInfo;
-                if (!IsFilePathValid(filePath, out FileInfo))
-                {
-                    info = $"{nameof(CheckFileACL)} {FileInfo}";
-                    _log.Info(info);
-                    return false;
-                }
                 // verify the ACLs using the ACLChecker class
                 var aclChecker = new AclChecker();
                 if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
@@ -929,6 +937,15 @@ namespace DDPM.SA.Common.Settings
                 info = $"CheckFolderACL: {folderPath} isn't exist.";
                 return false;
             }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!IsFolderPathValid(folderPath, out FileInfo))
+            {
+                info = info = $"{nameof(CheckFolderACL)} {FileInfo}";
+                _log.Info(info);
+                return false;
+            }
             DirectoryInfo folderInfo = new DirectoryInfo(folderPath);
             // verify the ACLs using the ACLChecker class
             try
@@ -974,6 +991,12 @@ namespace DDPM.SA.Common.Settings
 
         public static void SetFolderPermissions_UserReadAndExecute(string folderPath)
         {
+            // Elsa Add Security
+            string FileInfo;
+            if (!IsFolderPathValid(folderPath, out FileInfo))
+            {
+                _log.Info($"{nameof(SetFolderPermissions_UserReadAndExecute)} {FileInfo}");
+            }
             DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
             DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
 
@@ -1071,7 +1094,7 @@ namespace DDPM.SA.Common.Settings
 
             try
             {
-                //0905 Elsa Add Security
+                //Elsa Add Security
                 string FileInfo;
                 if (!IsFilePathValid(filePath, out FileInfo))
                 {

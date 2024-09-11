@@ -272,9 +272,9 @@ namespace DDPM.UI.Common
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
 
-                //0909 Elsa Add Security
+                //Elsa Add Security
                 string FileInfo;
-                if (!DDPMFileSecurity.IsFilePathValid(fileFolder, out FileInfo))
+                if (!DDPMFileSecurity.IsFolderPathValid(fileFolder, out FileInfo))
                 {
                     _log.Info($"{nameof(ExportActionList)} {FileInfo}");
                     return false;
@@ -295,7 +295,7 @@ namespace DDPM.UI.Common
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
-            //0905 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
             {

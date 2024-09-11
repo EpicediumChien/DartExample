@@ -38,7 +38,7 @@ namespace NGA.Common
                 throw new ArgumentNullException(paramName: nameof(processFullPath), $"{nameof(processFullPath)} is cannot be null or empty.");
             if (string.IsNullOrEmpty(appWindowTitle))
                 throw new ArgumentNullException(paramName: nameof(appWindowTitle), $"{nameof(appWindowTitle)} is cannot be null or empty.");
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
             {
@@ -71,7 +71,7 @@ namespace NGA.Common
             if (pluginManager == null)
                 throw new ArgumentNullException(nameof(pluginManager));
 
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
             {
@@ -166,7 +166,7 @@ namespace NGA.Common
             {
                 try
                 {
-                    //0906 Elsa Add Security
+                    //Elsa Add Security
                     string FileInfo;
                     if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
                     {

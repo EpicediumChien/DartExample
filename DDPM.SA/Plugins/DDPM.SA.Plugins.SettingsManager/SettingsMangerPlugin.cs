@@ -160,15 +160,6 @@ namespace DDPM.SA.Plugins.SettingsManager
                 return Task.FromResult(false);
             }
 
-            //0905 Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(_settings_path, out FileInfo))
-            {
-                info = $"{nameof(WriteITConfigData)} {FileInfo}";
-                _log.Info(info);
-                return Task.FromResult(false);
-            }
-
             if (IT_Feature_list != null && IT_Feature_list.Count > 0)
             {
                 ITSettingEventArgs e = new ITSettingEventArgs();
@@ -402,6 +393,15 @@ namespace DDPM.SA.Plugins.SettingsManager
                 _settings = null;
                 return null;
             }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFolderPathValid(folder, out FileInfo))
+            {
+                _log.Info($"{nameof(InitDDPMITConfigFile)} {FileInfo}");
+                return null;
+            }
+
             //check if setting file contain illegal privilege
             //if yes, delete file and then apply right ACL
             if (Directory.Exists(folder))

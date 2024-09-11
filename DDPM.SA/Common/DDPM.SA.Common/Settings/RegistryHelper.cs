@@ -57,7 +57,7 @@ namespace DDPM.SA.Common.Settings
                 throw new ArgumentException("Key name cannot be null or empty.");
             }
 
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(keyPath, out FileInfo))
             {

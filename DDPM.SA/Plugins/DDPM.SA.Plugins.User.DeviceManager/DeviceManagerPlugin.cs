@@ -92,7 +92,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private readonly object _PluginConditionLock_ScheduleManager = new object();
         private readonly object _PluginConditionLock_DTPProxy = new object();
         private DisplayChange displayChange;
-
+        private static Dell.Client.Framework.Common.Log _log;
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
 
@@ -605,6 +605,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("null/empty iconFolder in _SettingsPlugin [AddColorPresetForMonitorConfig]");
                 return Task.FromResult(false);
             }
+
+            // Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFolderPathValid(iconFolder, out FileInfo))
+            {
+                _log.Info($"{nameof(AddColorPresetForMonitorConfig)} {FileInfo}");
+                return Task.FromResult(false);
+            }
+
             _ColorPresetPlugin.SetAppIconFolder(iconFolder);
             if (!int.TryParse(index_monitor, out int idx))
             {

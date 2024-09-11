@@ -391,12 +391,12 @@ namespace DDPM.UI.Module.Color
         
             string targetPath = dropFileNames[0];
 
-            //0909 Elsa Add Security
-            string filePath=System.IO.Path.GetDirectoryName(targetPath);
+            //Elsa Add Security
             string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            if (!DDPMFileSecurity.IsFilePathValid(targetPath, out FileInfo))
             {
                 _log.Info($"{nameof(lb_AppList_PreviewDragEnter)} {FileInfo}");
+                return;
             }
 
             if (targetPath.EndsWith(".lnk")  || targetPath.EndsWith(".exe"))
@@ -481,8 +481,8 @@ namespace DDPM.UI.Module.Color
                         if (!System.IO.Directory.Exists(strFolder))
                             System.IO.Directory.CreateDirectory(strFolder);
 
-                        //0909 Elsa Add Security
-                        if (!DDPMFileSecurity.IsFilePathValid(strFolder, out FileInfo))
+                        //Elsa Add Security
+                        if (!DDPMFileSecurity.IsFolderPathValid(strFolder, out FileInfo))
                         {
                             _log.Info($"{nameof(lb_AppList_PreviewDragEnter)} {FileInfo}");
                         }

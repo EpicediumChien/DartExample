@@ -66,7 +66,7 @@ namespace NGA.Common.Helpers
                     return response;
                 }
 
-                //0905 Elsa Add Security
+                //Elsa Add Security
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
                 {
@@ -123,9 +123,9 @@ namespace NGA.Common.Helpers
                 return false;
             }
 
-            //0909 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(winPath, out FileInfo))
+            if (!DDPMFileSecurity.IsFilePathValid(csupFile, out FileInfo))
             {
                 _log.Info($"{nameof(ParseCsupFile)} {FileInfo}");
                 return false;

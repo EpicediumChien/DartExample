@@ -58,7 +58,7 @@ namespace DDPM.SA.Common.Settings
 
         public static string GetTargetPath(string path)
         {
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
             {
@@ -90,7 +90,7 @@ namespace DDPM.SA.Common.Settings
 
         public static bool RemoveFileSymlink(string path, out string info)
         {
-            //0903 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
             {
@@ -120,7 +120,7 @@ namespace DDPM.SA.Common.Settings
 
         public static bool RemoveFolderSymlink(string path, out string info)
         {
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
             {
@@ -151,7 +151,7 @@ namespace DDPM.SA.Common.Settings
         public static bool IsFileHasSymlink(string path, out string info)
         {
             info = $"File {path} has symlink";
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
             {
@@ -177,7 +177,7 @@ namespace DDPM.SA.Common.Settings
         public static bool IsFolderHasSymlink(string path, out string info)
         {
             info = $"Folder {path} has symlink";
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
             {

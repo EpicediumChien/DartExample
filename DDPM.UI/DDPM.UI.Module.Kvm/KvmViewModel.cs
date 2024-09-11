@@ -1106,7 +1106,7 @@ namespace DDPM.UI.Module.Kvm
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
             string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
-            //0906 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(strFullPath, out FileInfo))
             {

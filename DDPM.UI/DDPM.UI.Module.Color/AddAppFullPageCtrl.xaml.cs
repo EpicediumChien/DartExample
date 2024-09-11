@@ -29,9 +29,9 @@ namespace DDPM.UI.Module.Color
             if (!System.IO.Directory.Exists(strFolder))
                 System.IO.Directory.CreateDirectory(strFolder);
 
-            //0909 Elsa Add Security
+            //Elsa Add Security
             string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(strFolder, out FileInfo))
+            if (!DDPMFileSecurity.IsFolderPathValid(strFolder, out FileInfo))
             {
                 _log.Info($"{nameof(UserControl_Loaded)} {FileInfo}");
             }

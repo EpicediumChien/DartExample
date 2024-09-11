@@ -19,6 +19,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.PortableDevices.ResourceSystem;
 using Newtonsoft.Json;
@@ -1092,6 +1093,14 @@ namespace ColorPreset.Plugins
 
                         if (System.IO.File.Exists(strFilePath))
                         {
+                            //Elsa Add Security
+                            string FileInfo;
+                            if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
+                            {
+                                _logs.Info($"{nameof(DownloadICCData)} {FileInfo}");
+                                return null;
+                            }
+
                             string strReadJson = string.Empty;
                             using (var reader = new StreamReader(strFilePath))
                             {
