@@ -158,7 +158,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                var value = GetPropertyValue(_mouseInterfaceType, commodity, "ProfileName");
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "ProfileName");
                 return (string)value;
             }
             else
