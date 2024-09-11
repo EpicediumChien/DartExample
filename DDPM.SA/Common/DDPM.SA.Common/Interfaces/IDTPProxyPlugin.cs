@@ -45,11 +45,12 @@ namespace DDPM.SA.Common
         Task SetTipSensitivity(string itemID, int newValue);
 
         // webcam
-        Task<int> GetBrightnessValue(string itemID);
+        Task<string> GetProfileName(string Guid);
+        Task<int> GetBrightness(string Guid);
 
         Task SetBrightnessValue(string itemID, int newValue);
 
-        Task<string> GetCameraFirmwareVersion(string itemID);        
+        Task<string> GetCameraFirmwareVersion(string itemID);
 
         Task<bool> CheckIsPropertyFOVSupported(string itemID);
 
@@ -71,7 +72,8 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsAutoFramingOnValue(string itemID);
 
-        Task SetIsAutoFramingOnValue(string itemID,bool newValue);
+        Task SetIsAutoFramingOnValue(string itemID, bool newValue);
+        Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
     }
 }
