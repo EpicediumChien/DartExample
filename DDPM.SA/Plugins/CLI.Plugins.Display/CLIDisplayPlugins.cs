@@ -6678,9 +6678,19 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             PowerNapSetting temp = read_list[idx];
-                            switch (value.ToUpper())
+                            value.Replace(".", ",");
+                            List<string> values = value.Split(",").ToList();
+                            foreach (string v in values)
                             {
-                                case "OFF":
+                                switch (v.ToUpper())
+                                {
+                                    case "LOCK":
+                                    case "UNLOCK":
+                                        if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = true;
+                                        if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = false;
+                                        await devMgr.SetAppConfigData(ddpmSettings);
+                                        break;
+                                    case "OFF":
                                     {
                                         PowerNapSetting setting = new PowerNapSetting
                                         {
@@ -6692,7 +6702,7 @@ namespace DDPM.CLI.Plugins.Display
                                         await devMgr.SavePowerNapSetting(setting);
                                         break;
                                     }
-                                case "SLEEP":
+                                    case "SLEEP":
                                     {
                                         PowerNapSetting setting = new PowerNapSetting
                                         {
@@ -6704,7 +6714,7 @@ namespace DDPM.CLI.Plugins.Display
                                         await devMgr.SavePowerNapSetting(setting);
                                         break;
                                     }
-                                case "REDUCEBRIGHTNESS":
+                                    case "REDUCEBRIGHTNESS":
                                     {
                                         PowerNapSetting setting = new PowerNapSetting
                                         {
@@ -6716,12 +6726,13 @@ namespace DDPM.CLI.Plugins.Display
                                         await devMgr.SavePowerNapSetting(setting);
                                         break;
                                     }
-                                default:
+                                    default:
                                     {
                                         S_PowerNap_RESPONSE.Result = "FAIL";
                                         S_PowerNap_RESPONSE.Message = "Unsupport Option";
                                         return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented));
                                     }
+                                }
                             }
                         }
                         List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
@@ -6733,6 +6744,8 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Value = "Sleep";
                         else
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
+
+                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
@@ -6772,9 +6785,19 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 PowerNapSetting temp = read_list[idx];
-                                switch (value.ToUpper())
+                                value.Replace(".", ",");
+                                List<string> values = value.Split(",").ToList();
+                                foreach (string v in values)
                                 {
-                                    case "OFF":
+                                    switch (v.ToUpper())
+                                    {
+                                        case "LOCK":
+                                        case "UNLOCK":
+                                            if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = true;
+                                            if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = false;
+                                            await devMgr.SetAppConfigData(ddpmSettings);
+                                            break;
+                                        case "OFF":
                                         {
                                             PowerNapSetting setting = new PowerNapSetting
                                             {
@@ -6786,7 +6809,7 @@ namespace DDPM.CLI.Plugins.Display
                                             await devMgr.SavePowerNapSetting(setting);
                                             break;
                                         }
-                                    case "SLEEP":
+                                        case "SLEEP":
                                         {
                                             PowerNapSetting setting = new PowerNapSetting
                                             {
@@ -6798,7 +6821,7 @@ namespace DDPM.CLI.Plugins.Display
                                             await devMgr.SavePowerNapSetting(setting);
                                             break;
                                         }
-                                    case "REDUCEBRIGHTNESS":
+                                        case "REDUCEBRIGHTNESS":
                                         {
                                             PowerNapSetting setting = new PowerNapSetting
                                             {
@@ -6810,12 +6833,13 @@ namespace DDPM.CLI.Plugins.Display
                                             await devMgr.SavePowerNapSetting(setting);
                                             break;
                                         }
-                                    default:
+                                        default:
                                         {
                                             S_PowerNap_RESPONSE.Result = "FAIL";
                                             S_PowerNap_RESPONSE.Message = "Unsupport Option";
                                             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented));
                                         }
+                                    }
                                 }
                             }
                             List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
@@ -6827,6 +6851,8 @@ namespace DDPM.CLI.Plugins.Display
                                 S_PowerNap_RESPONSE.Value = "Sleep";
                             else
                                 S_PowerNap_RESPONSE.Value = tmp_rst.RunType.ToString();
+
+                            S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
