@@ -177,7 +177,7 @@ namespace DDPM.SA.Plugin.CLIManager
             };
 
             WriteLog($"Got CLI request: ID:{arg.command_guid_string}, command: {arg.commandLineInput.Command}, target type: {arg.commandLineInput.TargetType}");
-
+            Trace.WriteLine($"check is ITcommand: {commandLineInput.isITCommands}, option value: {commandLineInput.Options.ToString()}");
             //Dean 0816, check if IT admin command and do not relay to CLIProxy if it's IT lock command.
             if (commandLineInput.isITCommands)
             {
@@ -255,8 +255,6 @@ namespace DDPM.SA.Plugin.CLIManager
                 {
                     "MOUSE",
                     "KEYBOARD",
-                    //"DOCK",
-                    //"HEADSET",
                     "AUDIO",
                     "PEN",
                     "WEBCAM",
@@ -303,8 +301,8 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
                     break;
-                case "INAPPRESTORE":             //InAppRestore              Same as InAppRestoreDefaults
-                    break;
+                //case "INAPPRESTORE":             //InAppRestore              Same as InAppRestoreDefaults
+                    //break;
                 case "RESTOREFACTORYDEFAULTS":   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
                     if (peripheral_DeviceType.FindIndex(x => x.Equals(commandLineInput.PluginsType)) >= 0)
                         rst = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
@@ -339,6 +337,11 @@ namespace DDPM.SA.Plugin.CLIManager
                     return rst;
                     break;
                 case "POWERNAP":                 //PowerNap                  DDPMW-1361
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
+                    return rst;
                     break;
                 case "INAPPEXPORTSETTINGS":      //InAppExportSettings       DDPMW-1335
                     if (commandLineInput.PluginsType.Equals("APP"))
