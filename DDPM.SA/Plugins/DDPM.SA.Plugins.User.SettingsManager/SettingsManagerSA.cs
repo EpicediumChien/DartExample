@@ -499,9 +499,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname)
         {
             List<DDPMMonitorSettings> monitorSettings = new List<DDPMMonitorSettings>();
-            if (!string.IsNullOrEmpty(_settings_path))
+            //Robert_Lin, 2024-9-10 fix. _settings_path is null, check _display_path instead
+            //if (!string.IsNullOrEmpty(_settings_path))
+            if (!string.IsNullOrEmpty(_display_path))
             {
-                string monitorSettings_path = _display_path + "\\" + modelname + ".json";
+                    string monitorSettings_path = _display_path + "\\" + modelname + ".json";
                 if (File.Exists(monitorSettings_path))
                 {
                     if (_AllMonitorSettings != null)
