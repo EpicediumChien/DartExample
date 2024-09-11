@@ -10291,11 +10291,12 @@ namespace DDPM.CLI.Plugins.Display
 
                     rc = devMgr.GetEAFunctionEnabled().Result;
 
-                    if (rc != null)
-                        retcode = true;
+                    //if (rc != null)
+                    //    retcode = true;
 
-                    if (retcode)
+                    if (rc != null) // 20240911 SAST fix
                     {
+                        retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Message = "N/A";
                         if (rc.value.ToString() == "True")
