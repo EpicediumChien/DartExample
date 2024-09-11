@@ -83,7 +83,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (_commandLineInput.PluginsType.Equals("AUDIO"))
                     _commandLineInput.PluginsType = "HEADSET";
 
-                if (commandLineInput.Command.Equals("SET") || commandLineInput.Command.Equals("CONFIGURE"))
+                if (commandLineInput.Command.Equals("SET"))
                 {
                     exitcode = SetPeripheralProperty();
                     string json = JsonConvert.SerializeObject(SetResults, Formatting.Indented);
