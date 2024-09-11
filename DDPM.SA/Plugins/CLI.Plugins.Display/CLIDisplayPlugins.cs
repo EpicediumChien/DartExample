@@ -11291,8 +11291,8 @@ namespace DDPM.CLI.Plugins.Display
             }
             writelog($"Networkkvmaccessreset exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
-            #endregion Malik
+            
         }
-
+        #endregion Malik
     }
 }
