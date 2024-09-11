@@ -7,6 +7,7 @@ using System.Buffers;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Storage;
@@ -19,9 +20,6 @@ namespace DDPM.UI.Plugin.ViewModels
         private readonly ILog _log;
         //private readonly IDeviceManagerSA _deviceManager;
         public readonly IDeviceManagerSA _deviceManager;
-
-        private int _tipSensitivity = 75;
-        private int _tiltSensitivity = 20;
 
         #endregion Variables
 
@@ -130,30 +128,13 @@ namespace DDPM.UI.Plugin.ViewModels
             deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(deviceID))
-                return false;
+            { return false; }
 
-            //IsTouchScrollSensitivitySupported = CurrentDeviceInfo.IsTouchScrollSensitivitySupported;
-            //IsTouchScrollSensitivitySupported = true;
-            //if(IsTouchScrollSensitivitySupported) {
-            //  TouchScrollSensitivityLevel = CurrentDeviceInfo.TouchScrollSensitivityLevel;
-            //}
-            //OnPropertyChanged(nameof(IsTouchScrollSensitivitySupported));
+            OnPropertyChanged(nameof(IsMicEnumerationOn));
+            OnPropertyChanged(nameof(IsMicEnumerationOnText));
 
-            IsReportRateSupported = CurrentDeviceInfo!.IsReportRateSupported;
-            IsReportRateSupported = true;
+            IsMicEnumerationOnEnabled = true;
 
-            OnPropertyChanged(nameof(IsReportRateSupported));
-            ReportRate = CurrentDeviceInfo.ReportRate;
-
-            //OnPropertyChanged(nameof(ButtonCollection));
-            //PrimaryButtonIndex = (int)CurrentDeviceInfo.MousePrimaryButton;
-
-            ButtonCount = Model switch
-            {
-                "MS7421W" => 5,
-                "MS900" => 3,
-                _ => 1,
-            };
             return true;
         }
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -198,59 +179,6 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public int TipSensitivity
-        {
-            get => _tipSensitivity;
-            set
-            {
-                if (_tipSensitivity != value)
-                {
-                    _tipSensitivity = value;
-                    //DPITextMargin = new double[] { (_DPIValue - DPIMin) * 1.0 / (DPIMax - DPIMin) * 365 + 39, 0, 0, 1 };
-                    //if(_DPIValue == DPIMax || _DPIValue == DPIMin) {
-                    //  DPIValueText = "";
-                    //}
-                    //else {
-                    //  DPIValueText = _DPIValue.ToString();
-                    //}
-                    //if(!IsSliderDragging)
-                    //  SetDPIValue();
-                    OnPropertyChanged();
-                    //OnPropertyChanged(nameof(DPITextMargin));
-                    //OnPropertyChanged(nameof(DPIValueText));
-                }
-            }
-        }
-
-        public int TiltSensitivity
-        {
-            get => _tiltSensitivity;
-            set
-            {
-                if (_tiltSensitivity != value)
-                {
-                    _tiltSensitivity = value;
-                    //DPITextMargin = new double[] { (_DPIValue - DPIMin) * 1.0 / (DPIMax - DPIMin) * 365 + 39, 0, 0, 1 };
-                    //if(_DPIValue == DPIMax || _DPIValue == DPIMin) {
-                    //  DPIValueText = "";
-                    //}
-                    //else {
-                    //  DPIValueText = _DPIValue.ToString();
-                    //}
-                    //if(!IsSliderDragging)
-                    //  SetDPIValue();
-                    OnPropertyChanged();
-                    //OnPropertyChanged(nameof(DPITextMargin));
-                    //OnPropertyChanged(nameof(DPIValueText));
-                }
-            }
-        }
-
-        public int DPIMax { get; set; }
-        public int DpiDelta { get; set; }
-        public string DPIValueText { get; set; } = "";
-        public double[] DPITextMargin { get; set; } = { 0 };//SDL, change to use array
-        public bool IsReportRateSupported { get; set; }
         public bool IsDongleRateVisible { get; set; }
         public bool IsBluetoothRateVisible { get; set; }
         public int ReportRate { get; set; }
@@ -286,7 +214,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private string autofocusStatus_String;
+        private string autofocusStatus_String = "";
 
         public string AutofocusStatus_String
         {
@@ -306,11 +234,11 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 isChecked_AWB = value;
-                OnPropertyChanged("IsChecked_AWB");
+                OnPropertyChanged(nameof(IsChecked_AWB));
             }
         }
 
-        private string awbStatus_String;
+        private string awbStatus_String = "";
 
         public string AWBStatus_String
         {
@@ -370,6 +298,16 @@ namespace DDPM.UI.Plugin.ViewModels
                 _deviceManager.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
+            }
+        }
+        private bool isMicEnumerationOnEnabled;
+        public bool IsMicEnumerationOnEnabled
+        {
+            get => isMicEnumerationOnEnabled;
+            set
+            {
+                isMicEnumerationOnEnabled = value;
+                OnPropertyChanged();
             }
         }
     }

@@ -236,6 +236,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
             CheckMultiDevice();
             GenerateInfo();
+
+            CurrentCursor = Cursors.Arrow;
             return true;
         }
 
@@ -640,7 +642,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public string Model2 { get; set; }
+        public string Model2 { get; set; } = "";
 
         public string? DeviceInfo { get; set; }
         public Guid CurrentDeviceID { get; set; }
@@ -1137,6 +1139,20 @@ namespace DDPM.UI.Plugin.ViewModels
             foreach (VbarItem vbarItem in _vbarItems)
             {
                 vbarItem.IsSelected = vbarItem.Id == VbarSelectedIndex;
+            }
+        }
+
+        private Cursor _currentCursor = Cursors.Arrow;
+        public Cursor CurrentCursor
+        {
+            get { return _currentCursor; }
+            set
+            {
+                if (_currentCursor != value)
+                {
+                    _currentCursor = value;
+                    OnPropertyChanged();
+                }
             }
         }
 

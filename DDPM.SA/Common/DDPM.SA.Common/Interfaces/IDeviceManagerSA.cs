@@ -527,7 +527,8 @@ namespace DDPM.SA.Common
         Task SetTipSensitivity(string itemID, int newValue);
 
         #region Webcam
-        Task<int> GetBrightnessValueByDTP(string itemID);
+        Task<string> GetProfileName(string Guid);
+        Task<int> GetBrightness(string Guid);
 
         Task SetBrightnessValueByDTP(string itemID, int newValue);
 

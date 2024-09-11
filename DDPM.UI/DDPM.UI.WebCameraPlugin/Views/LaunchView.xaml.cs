@@ -60,8 +60,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly string Capture = Strings.Capture;
         private readonly string Microphone = Strings.Microphone;
 
-        private readonly string WebCameraButton = "Button\nCustomization";
-
         // 20240731
         private DispatcherTimer _timer;
 
@@ -139,13 +137,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             };
             moduleGroup.AddHeader(Capture, new WebCameraCaptureModule(_vm!));
             groups.Add(moduleGroup);
-            moduleGroup = new ModuleGroup()
+
+            if (_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
             {
-                GroupName = Microphone,
-                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
-            };
-            moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
-            groups.Add(moduleGroup);
+                moduleGroup = new ModuleGroup()
+                {
+                    GroupName = Microphone,
+                    GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Images/Microphone.png", "DDPM.UI.Resources")
+                };
+                moduleGroup.AddHeader(Microphone, new WebCameraMicrophoneModule(_vm!));
+                groups.Add(moduleGroup);
+            }
 
             _vm!.ModuleGroups = groups;
         }
@@ -165,15 +167,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.RightFrameWidthTo = _rightFrameWidth[newItem.Id + 1];
 
                 InvokeGotoTwoViewModeAnimation();
-
-                if (newItem.Id == 0)
-                {
-                    InvokeShrinkAnimation();
-                }
-                else if (_vm.VbarSelectedIndex == 0)
-                {
-                    InvokeEnlargeAnimation();
-                }
             }
 
             _vm.VbarSelectedIndex = newItem.Id;
@@ -182,7 +175,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
             }
-            btnUnpair.Visibility = Visibility.Collapsed;
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
         }
@@ -226,38 +218,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }));
         }
 
-        private void InvokeShrinkAnimation()
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                Storyboard sb = (Storyboard)this.FindResource("StoryShrink");
-                if (sb != null)
-                {
-                    sb.Completed += (o, s) =>
-                    {
-                    };
-
-                    sb.Begin();
-                }
-            }));
-        }
-
-        private void InvokeEnlargeAnimation()
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                Storyboard sb = (Storyboard)this.FindResource("StoryEnlarge");
-                if (sb != null)
-                {
-                    sb.Completed += (o, s) =>
-                    {
-                    };
-
-                    sb.Begin();
-                }
-            }));
-        }
-
         #endregion Mode Change
 
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -268,9 +228,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
             InvokeGotoTwoViewModeAnimation();
-            btnUnpair.Visibility = Visibility.Visible;
-            if (_vm.VbarSelectedIndex == 0)
-            { InvokeEnlargeAnimation(); }
+
             _vm.VbarSelectedIndex = -1;
             _vm.SetLadningMode(true);
             _vm.SelectVBar();
@@ -432,7 +390,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             return result;
         }
 
-        private async void Button_Record_Click(object sender, RoutedEventArgs e)
+        private async void StartRecord()
         {
             // jim add 20240625
 
@@ -575,6 +533,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.captureManagerInitialized = false;
 
             Debug.WriteLine("Media preview has canceled.");
+        }
+
+        private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            StartRecord();
         }
     }
 }

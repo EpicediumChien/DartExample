@@ -3014,6 +3014,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region DTPProxy implementation
 
+        public async Task<string> GetProfileName(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
+        }
+
         public async Task<int> GetDpiValueByDTP(string itemID)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(itemID));
@@ -3137,9 +3142,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #region Webcam
-        public async Task<int> GetBrightnessValueByDTP(string itemID)
+        public async Task<int> GetBrightness(string itemID)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetBrightnessValue(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetBrightness(itemID));
         }
 
         public Task SetBrightnessValueByDTP(string itemID, int newValue)

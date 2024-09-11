@@ -11,6 +11,7 @@
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              d:DesignHeight="735" d:DesignWidth="1378"
+             Cursor="{Binding CurrentCursor}"
              Unloaded="LaunchView_Unloaded">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -29,6 +30,20 @@
         <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" Duration="0:0:0.4" From="540" To="900" />
         <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" Duration="0:0:0.4" From="500" To="540" />-->
       </Storyboard>
+      <Style x:Key="Border1" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="#99193457" />
+        <Setter Property="Border.CornerRadius" Value="2" />
+        <Setter Property="Width" Value="40" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="#1B385F" />
+      </Style>
+      <Style x:Key="Border2" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="#293B4D" />
+        <Setter Property="Border.CornerRadius" Value="2" />
+        <Setter Property="Width" Value="184" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#40586D" />
+      </Style>
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
@@ -154,19 +169,22 @@
       </Grid>
       <!--Battery-->
       <Grid VerticalAlignment="Bottom">
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-            <Border Style="{StaticResource BorderUnpair}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
-              <Grid>
-                <UXControls:UXTextBlock Name="txtUnpair" Foreground="#F5F6F7" VerticalAlignment="Center"
-                                                        HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
-              </Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+          <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
+          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder">
+            <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />
+          </Border>
+          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click">
+            <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedCircle.png" Stretch="Fill" Width="17" Height="16" />
+          </Border>
+          <StackPanel Orientation="Vertical">
+            <Border Margin="8,10,0,70" Style="{StaticResource Border2}" Cursor="Hand" Visibility="Visible" x:Name="btnPreset">
+              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" />
             </Border>
 
-            <Button Content="Previw" Click="Button_Preview_Click" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" />
-            <Button Content="Record" Click="Button_Record_Click" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" />
+
           </StackPanel>
+          <Button Content="Previw" Click="Button_Preview_Click" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" />
         </StackPanel>
       </Grid>
     </Grid>

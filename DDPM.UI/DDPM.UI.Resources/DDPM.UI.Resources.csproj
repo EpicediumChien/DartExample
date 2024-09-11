@@ -29,6 +29,7 @@
     <None Remove="Resources\Images\CameraColorImage.png" />
     <None Remove="Resources\Images\CameraControl.png" />
     <None Remove="Resources\Images\CameraPresenceDetection.png" />
+    <None Remove="Resources\Images\CameraPreset.png" />
     <None Remove="Resources\Images\Chat.png" />
     <None Remove="Resources\Images\ChatC.png" />
     <None Remove="Resources\Images\CheckOK.png" />
@@ -42,6 +43,7 @@
     <None Remove="Resources\Images\DownloadTileA.png" />
     <None Remove="Resources\Images\DownloadTileG.png" />
     <None Remove="Resources\Images\EOLDongle.png" />
+    <None Remove="Resources\Images\Folder.png" />
     <None Remove="Resources\Images\G.png" />
     <None Remove="Resources\Images\GearConnection.png" />
     <None Remove="Resources\Images\Group 1010105297.png" />
@@ -192,6 +194,7 @@
     <None Remove="Resources\Images\R1.png" />
     <None Remove="Resources\Images\R2.png" />
     <None Remove="Resources\Images\R3.png" />
+    <None Remove="Resources\Images\RedCircle.png" />
     <None Remove="Resources\Images\Right.png" />
     <None Remove="Resources\Images\SB3022.png" />
     <None Remove="Resources\Images\ScrollButton1.png" />
@@ -301,6 +304,7 @@
     <Resource Include="Resources\Images\CameraPresenceDetection.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\CameraPreset.png" />
     <Resource Include="Resources\Images\Chat.png" />
     <Resource Include="Resources\Images\ChatC.png" />
     <Resource Include="Resources\Images\CheckOK.png" />
@@ -314,6 +318,7 @@
     <Resource Include="Resources\Images\DownloadTileA.png" />
     <Resource Include="Resources\Images\DownloadTileG.png" />
     <Resource Include="Resources\Images\EOLDongle.png" />
+    <Resource Include="Resources\Images\Folder.png" />
     <Resource Include="Resources\Images\G.png" />
     <Resource Include="Resources\Images\GearConnection.png" />
     <Resource Include="Resources\Images\HandTouch.png" />
@@ -327,6 +332,7 @@
     <Resource Include="Resources\Images\HeadsetModel_7024-mall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\RedCircle.png" />
     <Resource Include="Resources\Images\SD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

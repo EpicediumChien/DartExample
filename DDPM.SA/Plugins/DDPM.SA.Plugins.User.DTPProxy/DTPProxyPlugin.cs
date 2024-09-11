@@ -151,31 +151,40 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
         #region Webcam
-        public async Task<int> GetBrightnessValue(string itemID)
+        public async Task<string> GetProfileName(string Guid)
         {
-            _itemID = new ItemId(itemID);
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
 
-            if (_webcamMethodInfo != null)
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
-                {
-                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "Brightness");
-                    return (int)value;
-                }
-                else
-                {
-                    Console.WriteLine($"[GetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    writelog($"[GetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return -1;
-                }
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "ProfileName");
+                return (string)value;
             }
             else
             {
-                Console.WriteLine($"[GetBrightnessValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                writelog($"[GetBrightnessValue]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                Console.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return "";
+            }
+        }
+
+        public async Task<int> GetBrightness(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return -1; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "Brightness");
+                return (int)value;
+            }
+            else
+            {
+                Console.WriteLine($"[GetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"[GetBrightnessValue]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 return -1;
             }
-
         }
 
         public async Task SetBrightnessValue(string itemID, int newValue)
@@ -542,11 +551,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task SetIsMicEnumerationOn(string Guid, bool newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            {
-                Console.WriteLine($"Webcam not foungnd GUID: {Guid}");
-                writelog($"Webcam not foungnd GUID: {Guid}");
-                return;
-            }
+            { return; }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
@@ -600,6 +605,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 i++;
             }
+            Console.WriteLine($"Not foungnd {type} GUID: {guid}");
+            writelog($"Not foungnd {type} GUID: {guid}");
             return false;
         }
         #endregion

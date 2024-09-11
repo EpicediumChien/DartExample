@@ -12,6 +12,7 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="647"
+             Cursor="{Binding CurrentCursor}"
              VerticalAlignment="Top" HorizontalAlignment="Left">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -47,7 +48,7 @@
                 <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                   <Image.ToolTip>
                     <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                      <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                      <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" TextWrapping="Wrap" Width="345" />
                     </ToolTip>
                   </Image.ToolTip>
                 </Image>
@@ -55,14 +56,15 @@
             </Grid>
             <Grid Grid.Column="1">
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Center">
-                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" VerticalAlignment="Top">
+                <Image Margin="0,0,10,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" VerticalAlignment="Top">
                   <Image.ToolTip>
-                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                      <TextBlock Text="Enables your camera's microphone. Camera will restart quickly when turning ON/OFF this feature." Style="{StaticResource TabInfoToolTipTextStyle}" />
+                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Left" VerticalOffset="0" HorizontalOffset="0">
+                      <TextBlock Text="{Binding [WebCameraMicrophone.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" TextWrapping="Wrap" Width="345" />
                     </ToolTip>
                   </Image.ToolTip>
                 </Image>
-                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsMicEnumerationOn}" Content="{Binding Path=IsMicEnumerationOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0" />
+                <UXControls:UXToggleSwitch Name="tsMicOn" Click="UXToggleSwitch_Click" IsChecked="{Binding Path= IsMicEnumerationOn}" Content="{Binding Path=IsMicEnumerationOnText}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                           IsEnabled="{Binding IsMicEnumerationOnEnabled}" Margin="0,0,16,0" />
               </StackPanel>
             </Grid>
           </Grid>

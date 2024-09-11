@@ -45,7 +45,8 @@ namespace DDPM.SA.Common
         Task SetTipSensitivity(string itemID, int newValue);
 
         // webcam
-        Task<int> GetBrightnessValue(string itemID);
+        Task<string> GetProfileName(string Guid);
+        Task<int> GetBrightness(string Guid);
 
         Task SetBrightnessValue(string itemID, int newValue);
 
