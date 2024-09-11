@@ -5,6 +5,7 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.Common.ViewModels;
 using System.Windows.Controls;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.EzArrange
 {

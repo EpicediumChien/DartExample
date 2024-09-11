@@ -199,6 +199,20 @@ namespace DDPM.SA.Common
         Auto = 1
     }
 
+    public enum ColorManagementStatus
+    {
+        Off = 0,
+        On = 1
+    }
+
+    public enum ColorManagementRunType
+    {
+        Off = 0,
+        Bymonitor = 1,
+        Byhost = 2
+    }
+
+
     internal class AppDataDefinitions
     {
     }

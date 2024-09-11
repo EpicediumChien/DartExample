@@ -53,6 +53,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         private const string publisherWebsite = "https://www.wistron.com";
         private const string publisherSupport = "This plugin implements Settings Manager Plugin.";
         private static string _settingsAccess = SettingsAccess.AppAccessInfo;
+        private static string _settingsAccessVer = SettingsAccess.AppAccessVer;
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
@@ -111,6 +112,11 @@ namespace DDPM.SA.Plugins.SettingsManager
         public Task<string> QueryAccessInfo()
         {
             return Task.FromResult(_settingsAccess);
+        }
+
+        public Task<string> QueryAccessInfoVer()
+        {
+            return Task.FromResult(_settingsAccessVer);
         }
         #endregion
 
@@ -409,11 +415,20 @@ namespace DDPM.SA.Plugins.SettingsManager
             }
             string info = string.Empty;
             //Apply folder ACL
-            if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
+            try
             {
-                WriteLog($"Apply ACL to folder failed. ({info})");
+                DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(folder);
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"Apply ACL to folder failed ({ex.Message})");
                 return null;
             }
+            //if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
+            //{
+            //    WriteLog($"Apply ACL to folder failed. ({info})");
+            //    return null;
+            //}
             _settings_path = folder + "\\" + filename_appsettings_IT;
             //WriteLog($"_settings_path is {_settings_path}."); //SDL to remove (not allow path in log)
 

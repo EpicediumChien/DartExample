@@ -104,7 +104,7 @@ namespace DDPM.SA.Common.Settings
                 //signature = Encoding.UTF8.GetString(hash_sign);
 
                 //0905 apply DDPM private key rule
-                if(accessInfo == null || accessInfo.Length < 32)
+                if (accessInfo == null || accessInfo.Length < 32)
                 {
                     info = "DDPM AccessInfo value is abnormal";
                     return false;
@@ -641,7 +641,7 @@ namespace DDPM.SA.Common.Settings
             }
             return true;
         }
-        
+
         /// <summary>
         /// Normal user only can read but admin has full right
         /// </summary>
@@ -893,6 +893,34 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
+        public static void SetFolderPermissions_UserReadAndExecute(string folderPath)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+            DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
+
+            // Admin - full control
+            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+            FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(adminRule);
+
+            // System - full control
+            SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+            FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(systemRule);
+
+            // normal user - read and execute (w/o write)
+            SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+            FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(usersRule);
+
+            // normal user - read write deny
+            FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
+            directorySecurity.AddAccessRule(denyWriteRule);
+
+            // apply change
+            directoryInfo.SetAccessControl(directorySecurity);
+        }
+
         public static bool CheckIfFileCanBeExecuted_Secure(string executablePath, bool NeedElevated = false)
         {
             if (string.IsNullOrEmpty(executablePath))
@@ -1072,7 +1100,7 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
-        public static byte[] GetFileSHA_256(string filePath, out string info)
+        public static string GetFileSHA_256(string filePath, out string info)
         {
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
@@ -1093,12 +1121,32 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            //Bruce 0909 modify
+            //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            string result = CalculateFileSHA256(filePath);
             info = "Complete";
+            if (string.IsNullOrEmpty(result))
+            {
+                info = "Calculate fail.";
+            }
             return result;
         }
+        static string CalculateFileSHA256(string filePath)
+        {
+            string ret = string.Empty;
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] hashBytes = sha256.ComputeHash(fileStream);
 
-        public static byte[] GetFileSHA_512(string filePath, out string info)
+                    // 將計算的雜湊值轉換為十六進制字符串
+                    ret = BitConverter.ToString(hashBytes);
+                }
+            }
+            return ret;
+        }
+        public static string GetFileSHA_512(string filePath, out string info)
         {
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
@@ -1119,9 +1167,30 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            //Bruce 0909 modify
+            //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            string result = CalculateFileSHA512(filePath);
             info = "Complete";
+            if (string.IsNullOrEmpty(result))
+            {
+                info = "Calculate fail.";
+            }
             return result;
+        }
+        static string CalculateFileSHA512(string filePath)
+        {
+            string ret = string.Empty;
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                using (SHA512 sha512 = SHA512.Create())
+                {
+                    byte[] hashBytes = sha512.ComputeHash(fileStream);
+
+                    // 將計算的雜湊值轉換為十六進制字符串
+                    ret = BitConverter.ToString(hashBytes);
+                }
+            }
+            return ret;
         }
 
         /*public static bool IsContainValidDigitalSignature(string filePath, out string info)
@@ -1363,7 +1432,7 @@ namespace DDPM.SA.Common.Settings
         public static bool VerifyFileCertWithThumbprint(string filePath, out string info)
         {
             info = "success";
-            if(!IsFilePathValid(filePath, out info))
+            if (!IsFilePathValid(filePath, out info))
             {
                 Console.WriteLine(info);
                 return false;
@@ -1399,12 +1468,12 @@ namespace DDPM.SA.Common.Settings
         public static bool VerifyFileCertWithThumbprint(string filePath, string targetThumbprint, out string info)
         {
             info = "success";
-            if(!IsFilePathValid(filePath, out info))
+            if (!IsFilePathValid(filePath, out info))
             {
                 Console.WriteLine(info);
                 return false;
             }
-            if(string.IsNullOrEmpty(targetThumbprint))
+            if (string.IsNullOrEmpty(targetThumbprint))
             {
                 info = "Abnormal thumbprint as input";
                 return false;

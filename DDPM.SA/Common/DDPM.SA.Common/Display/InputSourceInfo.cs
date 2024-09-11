@@ -7,5 +7,6 @@
     {
         public string InputName { get; set; }
         public string USBUpstream { get; set; }
+        public uint Code { get; set; }
     }
 }

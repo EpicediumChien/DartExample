@@ -48,5 +48,15 @@ namespace DDPM.SA.Common
         //public Dictionary<string, string> AppInfo { get; set; } = new Dictionary<string, string>() { };
 
         public string PresetForManual { get; set; }
+
+        // 0 is Off
+        // 1 is on
+        public int ColorManagement_Status { get; set; }
+
+        // 1 is Bymonitor - automatically adjust the ICC color profile based on monitor color preset
+        // 2 is Byhost - Automatically adjust the monitor color preset based on ICC color profile 
+        public int ColorManagement_RunType { get; set; }
+
+
     }
 }

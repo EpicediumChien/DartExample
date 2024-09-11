@@ -1,9 +1,12 @@
 ﻿using CLI.Plugins.Display;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
+using DPeMPublic.Common.Enums;
 using Microsoft;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -51,6 +54,7 @@ namespace DDPM.CLI.Plugins.Display
         private List<MonitorInfo> _AllInfoMonitors;
         private IDeviceManagerSA _devMgr;
         private Dictionary<string, InputInfo> inputSourceList;
+        private DeviceHelper _deviceHelper;
 
         // jim remove 20240607
         ///private List<string> _SupportedColorPreset = new List<string>();
@@ -180,11 +184,28 @@ namespace DDPM.CLI.Plugins.Display
             {
                 case "CONNECTEDDEVICES":
                     {
-                        int exitcode = 0;
-                        result.serialize_Json_response = ConnectedDevicesX(commandLineInput, devMgr, ref exitcode);
-                        result.ExitCode = exitcode;
-                        break;
+                        if (commandLineInput.TargetType == "APP")
+                        {
+                            int exitcode = 0;
+                            result.serialize_Json_response = ConnectedDevicesX(commandLineInput, devMgr, ref exitcode);
+                            result.ExitCode = exitcode;
+                        }
+                        else
+                        {
+                            CLI_RESPONSE rsp_device = new CLI_RESPONSE()
+                            {
+                                Command = commandLineInput.Command,
+                                TargetFeature = commandLineInput.TargetFeature,
+                                Result = "Un-supported feature",
+                                Message = "Un-supported feature"
+                            };
+                            result.serialize_Json_response = JsonConvert.SerializeObject(rsp_device, Formatting.Indented);
+                            result.ExitCode = (int)CLI_ExitCode.unknow_command;
+                            return result;
+                        }
                     }
+                    break;
+
                 case "DETECTMONITORS":
                     {
                         var ret = DetectMonitorsX(commandLineInput, devMgr);
@@ -547,9 +568,26 @@ namespace DDPM.CLI.Plugins.Display
 
                 case "DEVICEDATA":
                     {
-                        var ret = GetDeviceData(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
+                        if (commandLineInput.TargetType == "APP")
+                        {
+                            var ret = GetDeviceData(devMgr, commandLineInput);
+                            result.ExitCode = ret.code;
+                            result.serialize_Json_response = ret.result;
+                        }
+                        else
+                        {
+                            CLI_RESPONSE rsp_device = new CLI_RESPONSE()
+                            {
+                                Command = commandLineInput.Command,
+                                TargetFeature = commandLineInput.TargetFeature,
+                                Result = "Un-supported feature",
+                                Message = "Un-supported feature"
+                            };
+                            result.serialize_Json_response = JsonConvert.SerializeObject(rsp_device, Formatting.Indented);
+                            result.ExitCode = (int)CLI_ExitCode.unknow_command;
+                            return result;
+                        }
+
                     }
                     break;
 
@@ -835,8 +873,16 @@ namespace DDPM.CLI.Plugins.Display
 
             string output = string.Empty;
 
-            G_ConnectedDevices_RESPONSE.Command = "GET";
-            G_ConnectedDevices_RESPONSE.TargetFeature = "ConnectedDevices";
+            _deviceHelper = new DeviceHelper
+            {
+                deviceInfo = new List<DeviceInfo>()
+            };
+
+            List<DeviceInfo> _deviceinfo = null;
+            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+
+            int index_per = 0;
+            bool recode_per = false;
 
             if (type == "GET")
             {
@@ -850,17 +896,10 @@ namespace DDPM.CLI.Plugins.Display
                         G_ConnectedDevices_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         G_ConnectedDevices_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        G_ConnectedDevices_RESPONSE.Command = "GET";
-                        G_ConnectedDevices_RESPONSE.TargetFeature = "ConnectedDevices";
 
                         if (string.IsNullOrWhiteSpace(monitor.FwVersion))
                         {
-                            G_ConnectedDevices_RESPONSE.FirmwareVersion = "N/A";
-                            G_ConnectedDevices_RESPONSE.Manufacturer = "N/A";
-                            G_ConnectedDevices_RESPONSE.ManufacturingYear = "N/A";
-                            G_ConnectedDevices_RESPONSE.ManufacturingWeek = "N/A";
                             G_ConnectedDevices_RESPONSE.PID = "N/A";
-                            G_ConnectedDevices_RESPONSE.Value = "N/A";
                             G_ConnectedDevices_RESPONSE.Result = "Fail";
                             G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
@@ -869,13 +908,9 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
-                            G_ConnectedDevices_RESPONSE.Value = "N/A";
-                            G_ConnectedDevices_RESPONSE.FirmwareVersion = monitor.FwVersion;
-                            G_ConnectedDevices_RESPONSE.Manufacturer = FirstCharSubstring(monitor.edid.ManufactureID.ToLower()) + "l";
-                            G_ConnectedDevices_RESPONSE.ManufacturingYear = monitor.edid.Year.ToString();
-                            G_ConnectedDevices_RESPONSE.ManufacturingWeek = "ISO week " + monitor.edid.Week.ToString();
                             G_ConnectedDevices_RESPONSE.PID = monitor.edid.PID.ToString();
                             G_ConnectedDevices_RESPONSE.Result = "Success";
+                            index_per = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
                         }
@@ -895,19 +930,12 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base(idx);
                             G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
-                            G_ConnectedDevices_RESPONSE.Command = "GET";
-                            G_ConnectedDevices_RESPONSE.TargetFeature = "ConnectedDevices";
                             G_ConnectedDevices_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ModelName;
                             G_ConnectedDevices_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
 
                             if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
                             {
-                                G_ConnectedDevices_RESPONSE.FirmwareVersion = "N/A";
-                                G_ConnectedDevices_RESPONSE.Manufacturer = "N/A";
-                                G_ConnectedDevices_RESPONSE.ManufacturingYear = "N/A";
-                                G_ConnectedDevices_RESPONSE.ManufacturingWeek = "N/A";
                                 G_ConnectedDevices_RESPONSE.PID = "N/A";
-                                G_ConnectedDevices_RESPONSE.Value = "N/A";
                                 G_ConnectedDevices_RESPONSE.Result = "Fail";
                                 G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
@@ -916,13 +944,9 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                G_ConnectedDevices_RESPONSE.Value = "N/A";
-                                G_ConnectedDevices_RESPONSE.FirmwareVersion = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
-                                G_ConnectedDevices_RESPONSE.Manufacturer = FirstCharSubstring(_AllInfoMonitors[Convert.ToInt32(idx)].edid.ManufactureID.ToLower()) + "l";
-                                G_ConnectedDevices_RESPONSE.ManufacturingYear = _AllInfoMonitors[Convert.ToInt32(idx)].edid.Year.ToString();
-                                G_ConnectedDevices_RESPONSE.ManufacturingWeek = "ISO week " + _AllInfoMonitors[Convert.ToInt32(idx)].edid.Week.ToString();
                                 G_ConnectedDevices_RESPONSE.PID = _AllInfoMonitors[Convert.ToInt32(idx)].edid.PID;
                                 G_ConnectedDevices_RESPONSE.Result = "Succes";
+                                index_per = int.Parse(change_0base_to_1base((_AllInfoMonitors[Convert.ToInt32(idx)].Index).ToString()));
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
                             }
@@ -931,10 +955,6 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base(idx);
                             G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
-                            G_ConnectedDevices_RESPONSE.Command = "GET";
-                            G_ConnectedDevices_RESPONSE.TargetFeature = "ConnectedDevices";
-                            G_ConnectedDevices_RESPONSE.FirmwareVersion = "N/A";
-                            G_ConnectedDevices_RESPONSE.Value = "N/A";
                             G_ConnectedDevices_RESPONSE.Result = "Fail";
                             G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
                             System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
@@ -955,19 +975,12 @@ namespace DDPM.CLI.Plugins.Display
 
                             G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((mo.Index).ToString());
                             G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
-                            G_ConnectedDevices_RESPONSE.Command = "GET";
-                            G_ConnectedDevices_RESPONSE.TargetFeature = "ConnectedDevices";
                             G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
                             G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
 
                             if (string.IsNullOrWhiteSpace(mo.FwVersion))
                             {
-                                G_ConnectedDevices_RESPONSE.FirmwareVersion = "N/A";
-                                G_ConnectedDevices_RESPONSE.Manufacturer = "N/A";
-                                G_ConnectedDevices_RESPONSE.ManufacturingYear = "N/A";
-                                G_ConnectedDevices_RESPONSE.ManufacturingWeek = "N/A";
                                 G_ConnectedDevices_RESPONSE.PID = "N/A";
-                                G_ConnectedDevices_RESPONSE.Value = "N/A";
                                 G_ConnectedDevices_RESPONSE.Result = "Fail";
                                 G_ConnectedDevices_RESPONSE.Message = "Fail_VCPCapability";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
@@ -976,13 +989,9 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             else
                             {
-                                G_ConnectedDevices_RESPONSE.Value = "N/A";
-                                G_ConnectedDevices_RESPONSE.FirmwareVersion = mo.FwVersion;
-                                G_ConnectedDevices_RESPONSE.Manufacturer = FirstCharSubstring(mo.edid.ManufactureID.ToLower()) + "l";
-                                G_ConnectedDevices_RESPONSE.ManufacturingYear = mo.edid.Year.ToString();
-                                G_ConnectedDevices_RESPONSE.ManufacturingWeek = "ISO week " + mo.edid.Week.ToString();
                                 G_ConnectedDevices_RESPONSE.PID = mo.edid.PID;
                                 G_ConnectedDevices_RESPONSE.Result = "Succes";
+                                index_per = int.Parse(change_0base_to_1base((mo.Index).ToString()));
                                 System.Console.WriteLine(JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented);
                             }
@@ -992,11 +1001,25 @@ namespace DDPM.CLI.Plugins.Display
                     if (IsFailhappened)
                         return ((int)CLI_ExitCode.fail_SetVCPCapability, output);
                 }
+                foreach (var g in _deviceinfo)
+                {
+                    output += $"\n  \"Device\": \"{g.Name}\"";
+                    CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+                    index_per++;
+
+                    cli_Response2.Index = index_per.ToString();
+                    cli_Response2.Model = g.Name;
+                    cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                    cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                    cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                    recode_per = true;
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+                }
                 return ((int)CLI_ExitCode.success, output);
             }
             else
             {
-                G_ConnectedDevices_RESPONSE.Command = type;
                 G_ConnectedDevices_RESPONSE.Result = "Fail";
                 G_ConnectedDevices_RESPONSE.Message = $"Un-supported command: {type}";
             }
@@ -5825,7 +5848,7 @@ namespace DDPM.CLI.Plugins.Display
                     else
                     {
                         USBCPrioritization_RESPONSE.Message = "USB-C Prioritization not supported";
-                       // USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
+                        // USBCPrioritization_RESPONSE.USBCPrioritizationType = "N/A";
                         ret = null;
                     }
                     USBCPrioritization_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
@@ -6529,6 +6552,8 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
             string output = string.Empty;
+            List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result; 
+            DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
             if (type == "SET")
             {
@@ -6551,8 +6576,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
                         S_PowerNap_RESPONSE.Command = "SET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
-
-                        List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                        
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
@@ -6570,51 +6594,62 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         else
                         {
+                            value.Replace(".", ",");
+                            List<string> values = value.Split(",").ToList();
                             PowerNapSetting temp = read_list[idx];
-                            switch (value.ToUpper())
+                            foreach (string v in values)
                             {
-                                case "OFF":
-                                    {
-                                        PowerNapSetting setting = new PowerNapSetting
-                                        {
-                                            Status = false,//temp.Status,
-                                            ModelName = temp.ModelName,
-                                            SerialNumber = temp.SerialNumber,
-                                            RunType = PowerNapType.Off
-                                        };
-                                        await devMgr.SavePowerNapSetting(setting);
+                                switch (v.ToUpper())
+                                {
+                                    case "LOCK":
+                                    case "UNLOCK":
+                                        if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = true;
+                                        if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = false;
+                                        await devMgr.SetAppConfigData(ddpmSettings);
                                         break;
-                                    }
-                                case "SLEEP":
-                                    {
-                                        PowerNapSetting setting = new PowerNapSetting
+                                    case "OFF":
                                         {
-                                            Status = true,//temp.Status,
-                                            ModelName = temp.ModelName,
-                                            SerialNumber = temp.SerialNumber,
-                                            RunType = PowerNapType.SleepIfRunning
-                                        };
-                                        await devMgr.SavePowerNapSetting(setting);
-                                        break;
-                                    }
-                                case "REDUCEBRIGHTNESS":
-                                    {
-                                        PowerNapSetting setting = new PowerNapSetting
+                                            PowerNapSetting setting = new PowerNapSetting
+                                            {
+                                                Status = false,//temp.Status,
+                                                ModelName = temp.ModelName,
+                                                SerialNumber = temp.SerialNumber,
+                                                RunType = PowerNapType.Off
+                                            };
+                                            await devMgr.SavePowerNapSetting(setting);
+                                            break;
+                                        }
+                                    case "SLEEP":
                                         {
-                                            Status = true,//temp.Status,
-                                            ModelName = temp.ModelName,
-                                            SerialNumber = temp.SerialNumber,
-                                            RunType = PowerNapType.ReduceBrightness
-                                        };
-                                        await devMgr.SavePowerNapSetting(setting);
-                                        break;
-                                    }
-                                default:
-                                    {
-                                        S_PowerNap_RESPONSE.Result = "FAIL";
-                                        S_PowerNap_RESPONSE.Message = "Unsupport Option";
-                                        return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented));
-                                    }
+                                            PowerNapSetting setting = new PowerNapSetting
+                                            {
+                                                Status = true,//temp.Status,
+                                                ModelName = temp.ModelName,
+                                                SerialNumber = temp.SerialNumber,
+                                                RunType = PowerNapType.SleepIfRunning
+                                            };
+                                            await devMgr.SavePowerNapSetting(setting);
+                                            break;
+                                        }
+                                    case "REDUCEBRIGHTNESS":
+                                        {
+                                            PowerNapSetting setting = new PowerNapSetting
+                                            {
+                                                Status = true,//temp.Status,
+                                                ModelName = temp.ModelName,
+                                                SerialNumber = temp.SerialNumber,
+                                                RunType = PowerNapType.ReduceBrightness
+                                            };
+                                            await devMgr.SavePowerNapSetting(setting);
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            S_PowerNap_RESPONSE.Result = "FAIL";
+                                            S_PowerNap_RESPONSE.Message = "Un-supported Option";
+                                            return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented));
+                                        }
+                                }
                             }
                         }
                         List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
@@ -6626,6 +6661,8 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Value = "Sleep";
                         else
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
+
+                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
@@ -6644,7 +6681,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.Command = "SET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                        List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                        //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
@@ -6663,9 +6700,19 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             PowerNapSetting temp = read_list[idx];
-                            switch (value.ToUpper())
+                            value.Replace(".", ",");
+                            List<string> values = value.Split(",").ToList();
+                            foreach (string v in values)
                             {
-                                case "OFF":
+                                switch (v.ToUpper())
+                                {
+                                    case "LOCK":
+                                    case "UNLOCK":
+                                        if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = true;
+                                        if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = false;
+                                        await devMgr.SetAppConfigData(ddpmSettings);
+                                        break;
+                                    case "OFF":
                                     {
                                         PowerNapSetting setting = new PowerNapSetting
                                         {
@@ -6677,7 +6724,7 @@ namespace DDPM.CLI.Plugins.Display
                                         await devMgr.SavePowerNapSetting(setting);
                                         break;
                                     }
-                                case "SLEEP":
+                                    case "SLEEP":
                                     {
                                         PowerNapSetting setting = new PowerNapSetting
                                         {
@@ -6689,7 +6736,7 @@ namespace DDPM.CLI.Plugins.Display
                                         await devMgr.SavePowerNapSetting(setting);
                                         break;
                                     }
-                                case "REDUCEBRIGHTNESS":
+                                    case "REDUCEBRIGHTNESS":
                                     {
                                         PowerNapSetting setting = new PowerNapSetting
                                         {
@@ -6701,12 +6748,13 @@ namespace DDPM.CLI.Plugins.Display
                                         await devMgr.SavePowerNapSetting(setting);
                                         break;
                                     }
-                                default:
+                                    default:
                                     {
                                         S_PowerNap_RESPONSE.Result = "FAIL";
                                         S_PowerNap_RESPONSE.Message = "Unsupport Option";
                                         return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented));
                                     }
+                                }
                             }
                         }
                         List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
@@ -6718,6 +6766,8 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Value = "Sleep";
                         else
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
+
+                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
@@ -6738,7 +6788,7 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Command = "SET";
                             S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                            List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                            //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                             read_list.RemoveAll(x => x.SerialNumber == null);
                             int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
@@ -6757,9 +6807,19 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 PowerNapSetting temp = read_list[idx];
-                                switch (value.ToUpper())
+                                value.Replace(".", ",");
+                                List<string> values = value.Split(",").ToList();
+                                foreach (string v in values)
                                 {
-                                    case "OFF":
+                                    switch (v.ToUpper())
+                                    {
+                                        case "LOCK":
+                                        case "UNLOCK":
+                                            if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = true;
+                                            if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Display_PowerNap = false;
+                                            await devMgr.SetAppConfigData(ddpmSettings);
+                                            break;
+                                        case "OFF":
                                         {
                                             PowerNapSetting setting = new PowerNapSetting
                                             {
@@ -6771,7 +6831,7 @@ namespace DDPM.CLI.Plugins.Display
                                             await devMgr.SavePowerNapSetting(setting);
                                             break;
                                         }
-                                    case "SLEEP":
+                                        case "SLEEP":
                                         {
                                             PowerNapSetting setting = new PowerNapSetting
                                             {
@@ -6783,7 +6843,7 @@ namespace DDPM.CLI.Plugins.Display
                                             await devMgr.SavePowerNapSetting(setting);
                                             break;
                                         }
-                                    case "REDUCEBRIGHTNESS":
+                                        case "REDUCEBRIGHTNESS":
                                         {
                                             PowerNapSetting setting = new PowerNapSetting
                                             {
@@ -6795,12 +6855,13 @@ namespace DDPM.CLI.Plugins.Display
                                             await devMgr.SavePowerNapSetting(setting);
                                             break;
                                         }
-                                    default:
+                                        default:
                                         {
                                             S_PowerNap_RESPONSE.Result = "FAIL";
                                             S_PowerNap_RESPONSE.Message = "Unsupport Option";
                                             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented));
                                         }
+                                    }
                                 }
                             }
                             List<PowerNapSetting> rst = devMgr.ReadPowerNapSettings().Result;
@@ -6812,6 +6873,8 @@ namespace DDPM.CLI.Plugins.Display
                                 S_PowerNap_RESPONSE.Value = "Sleep";
                             else
                                 S_PowerNap_RESPONSE.Value = tmp_rst.RunType.ToString();
+
+                            S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
 
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
@@ -6836,7 +6899,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.Command = "GET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
                         //read current PowerNap setting back
-                        List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                        //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
@@ -6861,6 +6924,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                                 S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                         }
+                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
                 }
@@ -6878,7 +6942,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.Command = "GET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
                         //read current PowerNap setting back
-                        List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                        //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
@@ -6903,6 +6967,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                                 S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                         }
+                        S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
                 }
@@ -6922,7 +6987,7 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Command = "GET";
                             S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
                             //read current PowerNap setting back
-                            List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+                            //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                             read_list.RemoveAll(x => x.SerialNumber == null);
                             int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
@@ -6947,6 +7012,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                     S_PowerNap_RESPONSE.Value = temp.RunType.ToString();
                             }
+                            S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
                     }
@@ -7474,19 +7540,29 @@ namespace DDPM.CLI.Plugins.Display
             ALSConfig param = new ALSConfig();
             string[] Orientations_Str = new string[] { "Landscape", "Portrait", "Landscape(flipped)", "Portrait(flipped)" };
             string output = string.Empty;
+            bool recode_dis = false;
+            bool recode_per = false;
 
             List<int> _monitorIndeies = new List<int>();
+            _deviceHelper = new DeviceHelper
+            {
+                deviceInfo = new List<DeviceInfo>()
+            };
+
+            List<DeviceInfo> _deviceinfo = null;
+            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
 
+            int index = 0;
+
             foreach (int idx in _monitorIndeies)
             {
                 MonitorInfo monitor = _AllInfoMonitors[idx];
                 Get_DeviceData get_DeviceData = new Get_DeviceData();
-                get_DeviceData.Command = commandLineInput.Command;
-                get_DeviceData.TargetFeature = commandLineInput.TargetFeature;
+
 
                 get_DeviceData.Model = monitor.AliasDeviceName;
                 get_DeviceData.SerialNumber = monitor.edid.SerialNumber;
@@ -7651,7 +7727,7 @@ namespace DDPM.CLI.Plugins.Display
                     get_DeviceData.MicrophoneControl = "N/A";
                 writelog($"MicrophoneControl Exit return value: {get_DeviceData.MicrophoneControl}");
 
-                writelog($"Uniformity Entry");
+                /*writelog($"Uniformity Entry");
                 if (monitor.CapabilityDic.ContainsKey("E4"))
                 {
                     rc = GetVCPCode(devMgr, monitor, "0xE4").Result;
@@ -7659,7 +7735,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                     get_DeviceData.Uniformity = "N/A";
-                writelog($"Uniformity Exit return value: {(rc.value).ToString()}");
+                writelog($"Uniformity Exit return value: {(rc.value).ToString()}");*/
 
                 writelog($"PowerNap Entry");
                 List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
@@ -7692,13 +7768,58 @@ namespace DDPM.CLI.Plugins.Display
                 get_DeviceData.OSD_language = get_language((rc.value).ToString());
                 writelog($"OSD_language Exit return value: {get_DeviceData.OSD_language}");
 
-                get_DeviceData.Result = "PASS";
-                get_DeviceData.Message = "N/A";
+                recode_dis = true;
+
+                index = int.Parse(change_0base_to_1base((monitor.Index).ToString()));
 
                 System.Console.WriteLine(JsonConvert.SerializeObject(get_DeviceData, Formatting.Indented));
                 output += "\n" + JsonConvert.SerializeObject(get_DeviceData, Formatting.Indented);
             }
+
+            foreach (var g in _deviceinfo)
+            {
+                output += $"\n  \"Device\": \"{g.Name}\"";
+                CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
+
+                index++;
+                cli_Response2.Index = index.ToString();
+                cli_Response2.Model = g.Name;
+                cli_Response2.FirmwareVersion = g.FirmwareVersion;
+                cli_Response2.Connectiontype = get_headsetconnection_type(g.ConnectionType);
+                cli_Response2.BatteryStatus = g.BatteryStatus;
+
+                recode_per = true;
+                output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
+            }
+            CLI_RESPONSE3 cli_Response = new CLI_RESPONSE3();
+            if (recode_per && recode_dis)
+            {
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "PASS";
+                cli_Response.Message = "N/A";
+            }
+            else
+            {
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Invalid command line syntax.";
+            }
+            output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
             return ((int)CLI_ExitCode.success, output);
+        }
+
+        private static string get_headsetconnection_type(HeadsetConnectionType ConnectionType)
+        {
+            switch (ConnectionType.ToString())
+            {
+
+                case "1": return "Wired";
+                case "2": return "WirelessDongle";
+                case "3": return "WirelessBLE";
+                default: return "Unknown";
+            }
         }
 
         private static string get_display_technology_type(string index)
@@ -8072,6 +8193,7 @@ namespace DDPM.CLI.Plugins.Display
             bool retcode = false;
             string on_off = string.Empty;
             bool lock_unlock = true;
+            string restult_onoff = string.Empty;
 
             writelog($"Autocolorpreset Entry");
             if (commandLineInput.Command == "CONFIGURE")
@@ -8090,47 +8212,25 @@ namespace DDPM.CLI.Plugins.Display
 
                         switch (commandLineInput.Options[0].Option_Value)
                         {
-                            case "ON,LOCK":
-                                {
-                                    on_off = "on";
-                                    lock_unlock = true;
-                                    writelog($"Autocolorpreset ON,LOCK Entry");
-                                    devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                    retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
-                                    S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "ON,UNLOCK":
+                            case "ON":
                                 {
                                     on_off = "on";
                                     lock_unlock = false;
-                                    writelog($"Autocolorpreset ON,UNLOCK Entry");
+                                    writelog($"Autocolorpreset ON Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
+                                    S_Autocolorpreset_RESPONSE.Value = "ON";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
                                     break;
                                 }
-                            case "OFF,LOCK":
-                                {
-                                    on_off = "off";
-                                    lock_unlock = true;
-                                    writelog($"Autocolorpreset OFF,LOCK Entry");
-                                    devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                    retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
-                                    S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "OFF,UNLOCK":
+                            case "OFF":
                                 {
                                     on_off = "off";
                                     lock_unlock = false;
-                                    writelog($"Autocolorpreset OFF,UNLOCK Entry");
+                                    writelog($"Autocolorpreset OFF Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
+                                    S_Autocolorpreset_RESPONSE.Value = "OFF";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
                                     break;
                                 }
@@ -8164,47 +8264,25 @@ namespace DDPM.CLI.Plugins.Display
 
                         switch (commandLineInput.Options[0].Option_Value)
                         {
-                            case "ON,LOCK":
-                                {
-                                    on_off = "on";
-                                    lock_unlock = true;
-                                    writelog($"Autocolorpreset ON,LOCK Entry");
-                                    devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                    retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
-                                    S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "ON,UNLOCK":
+                            case "ON":
                                 {
                                     on_off = "on";
                                     lock_unlock = false;
-                                    writelog($"Autocolorpreset ON,UNLOCK Entry");
+                                    writelog($"Autocolorpreset ON Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
+                                    S_Autocolorpreset_RESPONSE.Value = "ON";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
                                     break;
                                 }
-                            case "OFF,LOCK":
-                                {
-                                    on_off = "off";
-                                    lock_unlock = true;
-                                    writelog($"Autocolorpreset OFF,LOCK Entry");
-                                    devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                    retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
-                                    S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                    break;
-                                }
-                            case "OFF,UNLOCK":
+                            case "OFF":
                                 {
                                     on_off = "off";
                                     lock_unlock = false;
-                                    writelog($"Autocolorpreset OFF,UNLOCK Entry");
+                                    writelog($"Autocolorpreset OFF Entry");
                                     devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                     retcode = true;
-                                    S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
+                                    S_Autocolorpreset_RESPONSE.Value = "OFF";
                                     S_Autocolorpreset_RESPONSE.Result = "PASS";
                                     break;
                                 }
@@ -8238,47 +8316,25 @@ namespace DDPM.CLI.Plugins.Display
 
                             switch (commandLineInput.Options[0].Option_Value)
                             {
-                                case "ON,LOCK":
-                                    {
-                                        on_off = "on";
-                                        lock_unlock = true;
-                                        writelog($"Autocolorpreset ON,LOCK Entry");
-                                        devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                        retcode = true;
-                                        S_Autocolorpreset_RESPONSE.Value = "ON,LOCK";
-                                        S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                        break;
-                                    }
-                                case "ON,UNLOCK":
+                                case "ON":
                                     {
                                         on_off = "on";
                                         lock_unlock = false;
-                                        writelog($"Autocolorpreset ON,UNLOCK Entry");
+                                        writelog($"Autocolorpreset ON Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                         retcode = true;
-                                        S_Autocolorpreset_RESPONSE.Value = "ON,UNLOCK";
+                                        S_Autocolorpreset_RESPONSE.Value = "ON";
                                         S_Autocolorpreset_RESPONSE.Result = "PASS";
                                         break;
                                     }
-                                case "OFF,LOCK":
-                                    {
-                                        on_off = "off";
-                                        lock_unlock = true;
-                                        writelog($"Autocolorpreset OFF,LOCK Entry");
-                                        devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
-                                        retcode = true;
-                                        S_Autocolorpreset_RESPONSE.Value = "OFF,LOCK";
-                                        S_Autocolorpreset_RESPONSE.Result = "PASS";
-                                        break;
-                                    }
-                                case "OFF,UNLOCK":
+                                case "OFF":
                                     {
                                         on_off = "off";
                                         lock_unlock = false;
-                                        writelog($"Autocolorpreset OFF,UNLOCK Entry");
+                                        writelog($"Autocolorpreset OFF Entry");
                                         devMgr.AutoSetColorPresetForMonitorConfig(monitor, on_off, lock_unlock);
                                         retcode = true;
-                                        S_Autocolorpreset_RESPONSE.Value = "OFF,UNLOCK";
+                                        S_Autocolorpreset_RESPONSE.Value = "OFF";
                                         S_Autocolorpreset_RESPONSE.Result = "PASS";
                                         break;
                                     }
@@ -8301,8 +8357,129 @@ namespace DDPM.CLI.Plugins.Display
             }
             else if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
             {
-                S_Autocolorpreset_RESPONSE.Result = "PASS";
-                output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+                {
+                    foreach (MonitorInfo monitor in _AllInfoMonitors)
+                    {
+                        S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
+                        S_Autocolorpreset_RESPONSE.Model = monitor.edid.ModelName;
+                        S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                        S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                        S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+
+                        writelog($"Autocolorpreset GET Entry");
+                        restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                        Trace.WriteLine("restult_onoff:", restult_onoff);
+                        if (restult_onoff == "ON")
+                        {
+                            retcode = true;
+                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                            S_Autocolorpreset_RESPONSE.Result = "PASS";
+                        }
+                        else if (restult_onoff == "OFF")
+                        {
+                            retcode = true;
+                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                            S_Autocolorpreset_RESPONSE.Result = "PASS";
+                        }
+                        else
+                        {
+                            writelog($"Autocolorpreset fail");
+                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+                            S_Autocolorpreset_RESPONSE.Result = "FAIL";
+                            S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                            retcode = false;
+                        }
+                        output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                        writelog($"Autocolorpreset exit return value: {output}");
+                    }
+                }
+                else
+                {
+                    foreach (string idx in commandLineInput.DeviceIndex)
+                    {
+                        MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
+                        S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
+                        S_Autocolorpreset_RESPONSE.Model = monitor.edid.ModelName;
+                        S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                        S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                        S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                        S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+
+                        writelog($"Autocolorpreset GET idx Entry");
+                        restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                        Trace.WriteLine("restult_onoff:", restult_onoff);
+                        if (restult_onoff == "ON")
+                        {
+                            retcode = true;
+                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                            S_Autocolorpreset_RESPONSE.Result = "PASS";
+                        }
+                        else if (restult_onoff == "OFF")
+                        {
+                            retcode = true;
+                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                            S_Autocolorpreset_RESPONSE.Result = "PASS";
+                        }
+                        else
+                        {
+                            writelog($"Autocolorpreset fail");
+                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+                            S_Autocolorpreset_RESPONSE.Result = "FAIL";
+                            S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                            retcode = false;
+                        }
+                        output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                        writelog($"Autocolorpreset idx exit return value: {output}");
+                    }
+                    foreach (string tag in commandLineInput.ServiceTag)
+                    {
+                        var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                        foreach (MonitorInfo monitor in tmp)
+                        {
+                            S_Autocolorpreset_RESPONSE = new CLI_RESPONSE();
+
+                            S_Autocolorpreset_RESPONSE.Model = monitor.edid.ModelName;
+                            S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
+                            S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
+                            S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
+                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+
+                            writelog($"Autocolorpreset GET Entry");
+                            restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
+                            Trace.WriteLine("restult_onoff:", restult_onoff);
+                            if (restult_onoff == "ON")
+                            {
+                                retcode = true;
+                                S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                                S_Autocolorpreset_RESPONSE.Result = "PASS";
+                            }
+                            else if (restult_onoff == "OFF")
+                            {
+                                retcode = true;
+                                S_Autocolorpreset_RESPONSE.Value = restult_onoff;
+                                S_Autocolorpreset_RESPONSE.Result = "PASS";
+                            }
+                            else
+                            {
+                                writelog($"Autocolorpreset fail");
+                                S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                                S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
+                                S_Autocolorpreset_RESPONSE.Result = "FAIL";
+                                S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                                retcode = false;
+                            }
+                            output += "\n" + JsonConvert.SerializeObject(S_Autocolorpreset_RESPONSE, Formatting.Indented);
+                            writelog($"Autocolorpreset tag exit return value: {output}");
+                        }
+                    }
+                }
             }
             else
             {
@@ -8362,7 +8539,7 @@ namespace DDPM.CLI.Plugins.Display
         private async Task<(int code, string result)> OSDLanguage(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             ObjGetVCP rc = new ObjGetVCP();
-            bool retcode = true;
+            bool retcode = false;
             string output = string.Empty;
             string capability = string.Empty;
             bool in_support_languages = false;
@@ -8399,7 +8576,7 @@ namespace DDPM.CLI.Plugins.Display
                             foreach (var support_language in support_languages)
                             {
                                 writelog($"OSDLanguage SET entry");
-                                if (commandLineInput.Options[0].Option_Value.ToLower() == support_language.ToString().ToLower())
+                                if (get_language(GetOSDLanguage_index(commandLineInput.Options[0].Option_Value).ToString()).ToLower() == support_language.ToString().ToLower())
                                 {
                                     in_support_languages = true;
                                     retcode = SetVCPCode(devMgr, monitor, "0xCC", GetOSDLanguage_index(commandLineInput.Options[0].Option_Value).ToString()).Result;
@@ -9026,32 +9203,8 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (status.ToUpper())
             {
-                case "OSDDISABLE": return ((value & 0xFF00) | 0x0001).ToString();          // "xx01"
+                case "OSDDISABLE": return ((value & 0xFF00) | 0x0001).ToString();       // "xx01"
                 case "OSDENABLE": return ((value & 0xFF00) | 0x0002).ToString();        // "xx02"
-                //case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                //case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                //case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                //case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
-                default: return "Unknown_command";
-            }
-        }
-
-        private static string get_SpeakerMicrophoneControl(string status, int value)
-        {
-            switch (status.ToUpper())
-            {
-                case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "OSDLOCK": return (value | 0x8000).ToString();                    // b15:1;
-                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -9059,19 +9212,8 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_MicrophoneControl_status(int value)
         {
             string output = string.Empty;
-            //output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
-            //output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
             output += ((value & 0x03) == 0x01) ? "OSDDISABLE" : "";
             output += ((value & 0x03) == 0x02) ? "OSDENABLE" : "";
-
-            return output;
-        }
-
-        private static string get_SpeakerMicrophoneControl_status(int value)
-        {
-            string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
-            output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
 
             return output;
         }
@@ -9080,32 +9222,8 @@ namespace DDPM.CLI.Plugins.Display
         {
             switch (status.ToUpper())
             {
-                case "OSDDISABLE": return ((value & 0xFF00) | 0x00FF).ToString();          // "xxFF"
+                case "OSDDISABLE": return ((value & 0xFF00) | 0x00FF).ToString();       // "xxFF"
                 case "OSDENABLE": return ((value & 0xFF00) | 0x00FE).ToString();        // "xxFE"
-                //case "DISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                //case "ENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                //case "UNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                //case "LOCK": return (value | 0x8000).ToString();                    // b15:1;
-                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
-                default: return "Unknown_command";
-            }
-        }
-
-        private static string get_SpeakerMicrophoneVolume(string status, int value)
-        {
-            switch (status.ToUpper())
-            {
-                case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                   // b15:0;
-                case "OSDLOCK": return (value | 0x8000).ToString();                    // b15:1;
-                //case "UNLOCK,DISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                //case "UNLOCK,ENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                //case "LOCK,DISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                //case "LOCK,ENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "Unknown_command";
             }
         }
@@ -9113,8 +9231,6 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerVolume_status(int value)
         {
             string output = string.Empty;
-            //output += ((value & 0x8000) == 0x8000) ? "LOCK," : "UNLOCK,";
-            //output += ((value & 0x4000) == 0x4000) ? "ENABLE," : "DISABLE,";
             output += ((value & 0xFF) == 0xFF) ? "OSDDISABLE," : "";
             output += ((value & 0xFE) == 0xFE) ? "OSDENABLE," : "";
             if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
@@ -9123,13 +9239,27 @@ namespace DDPM.CLI.Plugins.Display
             return output;
         }
 
-        private static string get_SpeakerMicrophoneVolume_status(int value)
+        private static string get_SpeakerMicrophone(string status, int value)
+        {
+            switch (status.ToUpper())
+            {
+                case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
+                case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
+                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                 // b15:0;
+                case "OSDLOCK": return (value | 0x8000).ToString();                   // b15:1;
+                case "OSDUNLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                case "OSDUNLOCK,OSDENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
+                case "OSDLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
+                case "OSDLOCK,OSDENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
+                default: return "Unknown_command";
+            }
+        }
+
+        private static string get_SpeakerMicrophone_status(int value)
         {
             string output = string.Empty;
             output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
             output += ((value & 0x4000) == 0x4000) ? "OSDENABLE," : "OSDDISABLE,";
-            if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
-                output += $"Volume:{value & 0xFF}";
 
             return output;
         }
@@ -9499,7 +9629,7 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                                 int getvalue = Convert.ToInt32(rc.value);
-                                string setvalue = get_SpeakerMicrophoneVolume(commandLineInput.Options[0].Option_Value, getvalue);
+                                string setvalue = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue);
 
                                 if (setvalue != "unknown_command")
                                 {
@@ -9511,7 +9641,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                 rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                                 int getvalue2 = Convert.ToInt32(rc.value);
-                                string setvalue2 = get_SpeakerMicrophoneControl(commandLineInput.Options[0].Option_Value, getvalue2);
+                                string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
 
                                 if (setvalue2 != "unknown_command")
                                 {
@@ -9524,10 +9654,13 @@ namespace DDPM.CLI.Plugins.Display
                             else if (commandLineInput.Command == "GET")
                             {
                                 rc = GetVCPCode(devMgr, monitor, "0x62").Result;
-                                string ss0 = get_SpeakerMicrophoneVolume_status(Convert.ToInt32(rc.value));
+                                string ss0 = get_SpeakerMicrophone_status(Convert.ToInt32(rc.value));
                                 rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                string ss1 = get_SpeakerMicrophoneControl_status(Convert.ToInt32(rc.value));
-                                cli_Response.Value = "SPEAKERVOLUME:" + ss0 + "\n" + "MICROPHONE:" + ss1;
+                                string ss1 = get_SpeakerMicrophone_status(Convert.ToInt32(rc.value));
+                                if (ss0 == ss1)
+                                    cli_Response.Value = "SPEAKERMICROPHONE:" + ss0;
+                                else
+                                    cli_Response.Value = "SPEAKER:" + ss0 + "," + "MICROPHONE:" + ss1;
                                 retcode = true;
                             }
                         }
@@ -10158,11 +10291,12 @@ namespace DDPM.CLI.Plugins.Display
 
                     rc = devMgr.GetEAFunctionEnabled().Result;
 
-                    if (rc != null)
-                        retcode = true;
+                    //if (rc != null)
+                    //    retcode = true;
 
-                    if (retcode)
+                    if (rc != null) // 20240911 SAST fix
                     {
+                        retcode = true;
                         cli_Response.Result = "PASS";
                         cli_Response.Message = "N/A";
                         if (rc.value.ToString() == "True")
@@ -10235,78 +10369,354 @@ namespace DDPM.CLI.Plugins.Display
         }
         private static void LaunchNetworkkvmApp()
         {
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = "/console start";
-            Process.Start(exeFileAndLocation, arguments);
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = "/console start";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmApp_on()
         {
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = "/networkkvm on";
-            Process.Start(exeFileAndLocation, arguments);
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = "/networkkvm on";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmApp_off()
         {
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = "/networkkvm off";
-            Process.Start(exeFileAndLocation, arguments);
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = "/networkkvm off";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
 
         private static void LaunchNetworkkvmautoconnectApp_on()
         {
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = "/networkkvmautoconnect on";
-            Process.Start(exeFileAndLocation, arguments);
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = "/networkkvmautoconnect on";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmautoconnectApp_off()
         {
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = "/networkkvmautoconnect off";
-            Process.Start(exeFileAndLocation, arguments);
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = "/networkkvmautoconnect off";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmcontenttransferApp_on()
         {
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = "/networkkvmcontenttransfer on";
-            Process.Start(exeFileAndLocation, arguments);
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = "/networkkvmcontenttransfer on";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmcontenttransferApp_off()
         {
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = "/networkkvmcontenttransfer off";
-            Process.Start(exeFileAndLocation, arguments);
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = "/networkkvmcontenttransfer off";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmincomingportApp(CommandLineInput commandLineInput)
         {
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
 
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = $"/networkkvmincomingport {commandLineInput.Options[0].Option_Value}";
-            //Trace.WriteLine("arguments :", arguments);
-            Process.Start(exeFileAndLocation, arguments);
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = $"/networkkvmincomingport {commandLineInput.Options[0].Option_Value}";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmoutgoingportApp(CommandLineInput commandLineInput)
         {
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
 
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = $"/networkkvmoutgoingport {commandLineInput.Options[0].Option_Value}";
-            //Trace.WriteLine("arguments :", arguments);
-            Process.Start(exeFileAndLocation, arguments);
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = $"/networkkvmoutgoingport {commandLineInput.Options[0].Option_Value}";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmcontenttransferportApp(CommandLineInput commandLineInput)
         {
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
 
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = $"/networkkvmcontenttransferport {commandLineInput.Options[0].Option_Value}";
-            //Trace.WriteLine("arguments :", arguments);
-            Process.Start(exeFileAndLocation, arguments);
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = $"/networkkvmcontenttransferport {commandLineInput.Options[0].Option_Value}";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
+
         private static void LaunchNetworkkvmaccessresetApp()
         {
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
+            string valueName = "(Default)";
 
-            string exeFileAndLocation = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
-            string arguments = $"/networkkvmaccessreset";
-            //Trace.WriteLine("arguments :", arguments);
-            Process.Start(exeFileAndLocation, arguments);
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                Trace.WriteLine("key: " + key);
+                if (key != null)
+                {
+                    object value = key.GetValue(null);
+
+                    if (value != null)
+                    {
+                        string executablePath = value.ToString();
+                        string exeFileAndLocation = executablePath;
+                        string arguments = $"/networkkvmaccessreset";
+                        Process.Start(exeFileAndLocation, arguments);
+                        Trace.WriteLine("Executable Path: " + executablePath);
+                    }
+                    else
+                    {
+                        Trace.WriteLine("Value not found.");
+                    }
+                }
+                else
+                {
+                    Trace.WriteLine("Registry key not found.");
+                }
+            }
         }
 
         private (int code, string result) Networkkvmx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)

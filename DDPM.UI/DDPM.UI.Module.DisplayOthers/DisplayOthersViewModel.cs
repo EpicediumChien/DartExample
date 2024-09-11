@@ -94,6 +94,8 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public System.Windows.Media.Brush PowerNap_Color { get; set; }
 
+        public bool AutoApply_Checked { get; set; }
+
         public void Invoke_RefreshData()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -173,7 +175,7 @@ namespace DDPM.UI.Module.DisplayOthers
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
-                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, filename).Result;
+                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, filename).Result;
                 if (b) 
                 {
                     return true;

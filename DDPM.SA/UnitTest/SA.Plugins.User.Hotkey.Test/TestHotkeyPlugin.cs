@@ -186,6 +186,107 @@ namespace DDPM.SA.Plugins.User.Hotkey.Test
             Assert.IsFalse(HookResult);
         }
 
+        [Test]
+        public void TestUnhook()
+        {
+            var UnhookResult = hotkeyPlugin.Unhook();
+            Assert.IsNotNull(UnhookResult);
+            Assert.IsTrue(UnhookResult);
+        }
+
+        [Test]
+        public void TestIsKeyPushedDown()
+        {
+            System.Windows.Forms.Keys vKey = Keys.A;
+            var keyResult = hotkeyPlugin.IsKeyPushedDown(vKey);
+            Assert.IsNotNull(keyResult);
+            Assert.IsFalse(keyResult);
+        }
+
+        [Test]
+        public void TestkeyboardHookStruct()
+        {
+            var hookStruct = new keyboardHookStruct
+            {
+                vkCode = 65, // Assuming 'A' key's virtual key code
+                scanCode = 30,
+                flags = 0,
+                time = 12345,
+                dwExtraInfo = 98765
+            };
+            int vkCode = 65;
+            int scanCode = 30;
+            int flags = 0;
+            int time = 12345;
+            int dwExtraInfo = 98765;
+
+            Assert.That(vkCode, Is.EqualTo(hookStruct.vkCode));
+            Assert.That(scanCode, Is.EqualTo(hookStruct.scanCode));
+            Assert.That(flags, Is.EqualTo(hookStruct.flags));
+            Assert.That(time, Is.EqualTo(hookStruct.time));
+            Assert.That(dwExtraInfo, Is.EqualTo(hookStruct.dwExtraInfo));
+        }
+
+        [Test]
+        public void Test_LoadLibrary()
+        {
+            string lpFileName;
+            lpFileName = "User32";
+            var result = HotkeyPlugin._LoadLibrary(lpFileName);
+            Assert.IsNotNull(result);
+        }
+
+        private int MockCallback(int code, int wParam, ref HotkeyPlugin.keyboardHookStruct lParam)
+        {
+            return 0;
+        }
+
+        [Test]
+        public void Test_SetWindowsHookEx()
+        {
+            int idHook_ = 13;
+            keyboardHookProc callback1_;
+            IntPtr hInstance_ = IntPtr.Zero;
+            uint threadId = 0;
+            var result = HotkeyPlugin._SetWindowsHookEx(idHook_, MockCallback, IntPtr.Zero, threadId);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void Test_UnhookWindowsHookEx()
+        {
+            IntPtr hInstance = IntPtr.Zero;
+            var result = HotkeyPlugin._UnhookWindowsHookEx(hInstance);
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void Test_CallNextHookEx()
+        {
+            IntPtr idHook = IntPtr.Zero;
+            int nCode = 0;
+            int wParam = 0;
+            keyboardHookStruct lParam = new keyboardHookStruct()
+            {
+                vkCode = 65,
+                scanCode = 30,
+                flags = 0,
+                time = 12345,
+                dwExtraInfo = 98765
+            };
+            var result = HotkeyPlugin._CallNextHookEx(idHook, nCode, wParam, ref lParam);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void TestGetAsyncKeyState()
+        {
+            int number = 0;
+            System.Windows.Forms.Keys vKey = Keys.A;
+            var result = HotkeyPlugin._GetAsyncKeyState(vKey);
+            Assert.That(number, Is.EqualTo(result));
+        }
 
     }
 }

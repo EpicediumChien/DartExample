@@ -59,9 +59,11 @@
     <Resource Include="Img\NumLockOff.png" />
     <Resource Include="Img\NumLockOn.png" />
     <Resource Include="Img\ScrollLockOff.png" />
-    <Resource Include="Img\ScrollLockOn.png" />
+    <Resource Include="Img\ScrollLockOn.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Img\Unmute.png">
-      <CopyToOutputDirectory></CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

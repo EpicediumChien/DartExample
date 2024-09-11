@@ -22,6 +22,7 @@ using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
+using Windows.UI.Popups;
 using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
@@ -254,6 +255,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
         }
 
+        MediaCaptureFailedEventHandler handler = (sender, e) =>
+        {
+            System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Run(async () =>
+            {
+                await new MessageDialog("There was an error capturing the video from camera.", "Error").ShowAsync();
+            });
+        };
+
+
         // 20240626 jim add
         private async void Button_Preview_Click(object sender, RoutedEventArgs e)
         {
@@ -299,15 +309,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 MediaFrameSourceInfo frameSourceInfo = selectedFrameSourceGroup.SourceInfos[0];
 
-                _vm!._mediaCapture = new MediaCapture();
+                _vm._mediaCapture = new MediaCapture();
+                _vm._mediaCapture.Failed += handler;
 
                 try
                 {
                     await _vm._mediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
                     {
                         SourceGroup = selectedFrameSourceGroup,
-                        //SharingMode = MediaCaptureSharingMode.ExclusiveControl,
-                        SharingMode = MediaCaptureSharingMode.SharedReadOnly,
+                        SharingMode = MediaCaptureSharingMode.ExclusiveControl,
+                        //SharingMode = MediaCaptureSharingMode.SharedReadOnly,
                         MemoryPreference = MediaCaptureMemoryPreference.Cpu,
                         StreamingCaptureMode = StreamingCaptureMode.Video
                     });

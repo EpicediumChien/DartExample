@@ -19,5 +19,6 @@ namespace DDPM.SA.Common
         public string File { get; set; } = string.Empty;
         public string ColorPreset { get; set; } = string.Empty;
         public string SHA256 { get; set; } = string.Empty;
+        public string SHA512 { get; set; } = string.Empty;
     }
 }

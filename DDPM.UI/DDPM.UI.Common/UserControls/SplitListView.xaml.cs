@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.Easy.Common;
+using DDPM.SA.Common.Display;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.ViewModels;
@@ -27,18 +28,37 @@ namespace DDPM.UI.Common.UserControls
         }
         #endregion ctor
 
+        #region SplitOwner
         //Owner must assign this value before calling to AddSplitToList()
         public eSplitOwner SplitOwner
         {
             get => vm.SplitOwner;
             set => vm.SplitOwner = value;
         }
+        #endregion SplitOwner
 
-        #region Add/Clear SplitItem
+
+        #region SplitList
         public ObservableCollection<SplitItem> SplitList
         {
             get { return vm.SplitList; }
         }
+
+        public int ItemCount { get { return vm.ItemCount; } }
+
+        public SplitItem? GetAt(int index)
+        {
+            if (index < 0 || index >= ItemCount) return null;
+            return vm.SplitList[index];
+        }
+
+        public void ClearList()
+        {
+            vm.ClearList();
+        }
+        #endregion SplitList
+
+        #region Add Item
         public SplitItem AddSplitToList(ISplit split)
         {
             SplitItem spItem = new SplitItem();
@@ -70,11 +90,7 @@ namespace DDPM.UI.Common.UserControls
             vm.AddSplitItemToList(spItem);
             return spItem;
         }
-        public void ClearList()
-        {
-            vm.ClearList();
-        }
-        #endregion Add/Clear SplitItem
+        #endregion Add Item
 
         #region Split List Operations
 
@@ -216,10 +232,21 @@ namespace DDPM.UI.Common.UserControls
         #endregion SplitItem Delete Command
 
         #region Find
+        /// <summary>
+        /// Find SplitItem by (cellCount, splitKey)
+        /// </summary>
+        /// <param name="cellCount"></param>
+        /// <param name="splitKey"></param>
+        /// <returns></returns>
         public SplitItem? FindSplitItem(int cellCount, char splitKey)
         {
             return vm.FindSplitCtrl(cellCount, splitKey);
         }
+
+        /// <summary>
+        /// Return the index of the first IsSlected=true item.
+        /// </summary>
+        /// <returns></returns>
         public int FindIndexOfSelectedItem()
         {
             int idx = 0;
@@ -240,6 +267,28 @@ namespace DDPM.UI.Common.UserControls
         {
             return vm.FindSplitItemByCustomId(customId);
         }
+
+        public SplitItem? FindItemBySplitJson(SplitJson spj)
+        {
+            return vm.FindItemBySplitJson(spj);
+        }
+
+        //public SplitItem? ReplaceByFriendlyName(string friendlyName, )
+        //{
+        //    int idx = 0;
+        //    foreach (SplitItem spItem in vm.SplitList)
+        //    {
+        //        if (spItem.ISplitCtrl != null)
+        //        {
+        //            if (spItem.ISplitCtrl.FriendlyName.Equals(friendlyName))
+        //            {
+        //            }
+        //        }
+        //        if (spItem.IsSelected)
+        //            return idx;
+        //        idx++;
+        //    }
+        //}
         #endregion
 
         #region Recent List 
@@ -286,23 +335,8 @@ namespace DDPM.UI.Common.UserControls
             return spItem;
         }
 
-        //public SplitItem? ReplaceByFriendlyName(string friendlyName, )
-        //{
-        //    int idx = 0;
-        //    foreach (SplitItem spItem in vm.SplitList)
-        //    {
-        //        if (spItem.ISplitCtrl != null)
-        //        {
-        //            if (spItem.ISplitCtrl.FriendlyName.Equals(friendlyName))
-        //            {
-        //            }
-        //        }
-        //        if (spItem.IsSelected)
-        //            return idx;
-        //        idx++;
-        //    }
-        //}
-        #endregion
+
+        #endregion Recent List 
 
         #region Delete an item
         public bool DeleteSplitItem(SplitItem spItem)
@@ -315,5 +349,16 @@ namespace DDPM.UI.Common.UserControls
             return res;
         }
         #endregion Delete an item
+
+        #region Screen Orientation
+
+        public bool IsVertical
+        {
+            get { return vm.IsVertical; }
+            set { vm.IsVertical = value; }
+        }
+
+        #endregion Screen Orientation
+
     }
 }
