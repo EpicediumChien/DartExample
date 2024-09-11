@@ -16,7 +16,7 @@ namespace DDPM.SA.Common.Security
 {
     public class NPipeSecurity
     {
-        private static Log _log;
+        //private static Log _log;
         [DllImport("kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         internal static extern bool GetNamedPipeClientProcessId(IntPtr Pipe, out UInt32 ClientProcessId);
@@ -80,7 +80,7 @@ namespace DDPM.SA.Common.Security
             //check file path security
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))
             {
-                _log.Info($"{nameof(NamedPipeClientSecurity)} {info}");
+                info = $"[NamedPipeClientSecurity][IsFilePathValid] {info}";
                 return false;
             }
 
