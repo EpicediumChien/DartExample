@@ -51,6 +51,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="WorkWindowCount=" />
                         <TextBlock Text="{Binding WorkWindowCount}" />
+                        <CheckBox Name="chkIsFading" Click="chkIsFading_Click" />
                     </StackPanel>
                     <ListBox Name="lbWorkWins" ItemsSource="{Binding WorkWinCellInfos}">
                     </ListBox>

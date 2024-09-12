@@ -13,9 +13,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     {
         private ILog? _log;
 
-        //[InfoWin solution]
-        private SaveCustomWindow saveCustomWindow;
-
+        //private SaveCustomWindow saveCustomWindow;
         private string _orgFriendlyName = string.Empty;
 
         private string _lastError = string.Empty;
@@ -25,20 +23,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             InitializeComponent();
         }
 
-        //[InfoWin solution]
-        private void OpenSaveCustomWindow()
-        {
-            SaveCustomWindow saveCustomWindow = new SaveCustomWindow(this);
-            //saveCustomWindow = new SaveCustomWindow();
-            saveCustomWindow.Owner = this;
-            saveCustomWindow.Left = this.Left;
-            saveCustomWindow.Top = this.Top;
-            saveCustomWindow.CustomName = _orgFriendlyName;
-            saveCustomWindow.CustomNames = _inputArgs.CustomNames;
-            saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
-            saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
-            saveCustomWindow.Show();
-        }
+        //private void OpenSaveCustomWindow()
+        //{
+        //    SaveCustomWindow saveCustomWindow = new SaveCustomWindow();
+        //    saveCustomWindow = new SaveCustomWindow();
+        //    saveCustomWindow.Owner = this;
+        //    saveCustomWindow.Left = this.Left;
+        //    saveCustomWindow.Top = this.Top;
+        //    saveCustomWindow.CustomName = _orgFriendlyName;
+        //    saveCustomWindow.CustomNames = _inputArgs.CustomNames;
+        //    saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
+        //    saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
+        //    saveCustomWindow.Show();
+        //}
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             _log = EAPlugin.PluginIoc?.GetService<ILog>();
@@ -128,7 +125,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 inputSplitCtrl = ispCtrl;
                 inputSplitCtrl.IsEditable = true;
                 inputSplitCtrl.SplitMode = eSplitModes.Edit;
-                inputSplitCtrl.IsVertical = (scr.Bounds.Width < scr.Bounds.Height);
 
                 if (args.Settings != null)
                 {
@@ -154,7 +150,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 Width = scr.WorkingArea.Width / (double)dpiX;
                 Height = scr.WorkingArea.Height / (double)dpiX;
 
-                //[InfoWin solution] need add
                 //OpenSaveCustomWindow();
 
                 Show();
@@ -172,9 +167,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Input SplitCtrl
 
-        #region SaveDlg Button Clicks - [InfoWin solution]
-        //[InfoWin solution]
-        private void saveCustomWidow_CancelButtonClick(object sender, string e)
+        #region SaveDlg Button Clicks
+
+        //Unused, move to EAPlugin
+        private void saveCustomWidow_CancelButtonClick(object sender, EventArgs e)
         {
             //if (EditCompleted != null)
             //    EditCompleted(this, "");
@@ -189,8 +185,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
         }
 
-        //[InfoWin solution]
-        private void saveCustomWidow_SaveButtonClick(object sender, string e)
+        //Unused, move to EAPlugin
+        private void saveCustomWidow_SaveButtonClick(object sender, EventArgs e)
         {
             //if (EditCompleted != null)
             //    EditCompleted(this, "");
