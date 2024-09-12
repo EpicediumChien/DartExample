@@ -130,7 +130,7 @@ namespace NetworkKVM.Plugins
                 _SupportedMonitors = GetSupportedNKVM().Result;
                 if (pipeServer.IsConnected)
                 {
-                    WriteAsync(ResponseSupportedMonitor().Result).Wait();
+                    ResponseSupportedMonitor();
                     MonitorPlug();
                 }
                 _AllInfoMonitors.Clear();
@@ -150,7 +150,7 @@ namespace NetworkKVM.Plugins
                         {
                             if (pipeServer.IsConnected)
                             {
-                                WriteAsync(ResponseSupportedMonitor().Result).Wait();
+                                ResponseSupportedMonitor();
                                 MonitorPlug();
                             }
                             else
@@ -175,7 +175,7 @@ namespace NetworkKVM.Plugins
                         _SupportedMonitors = GetSupportedNKVM().Result;
                         if (pipeServer.IsConnected)
                         {
-                            WriteAsync(ResponseSupportedMonitor().Result).Wait();
+                            ResponseSupportedMonitor();
                             MonitorPlug();
                         }
                     }
@@ -190,7 +190,7 @@ namespace NetworkKVM.Plugins
                         _SupportedMonitors = GetSupportedNKVM().Result;
                         if (pipeServer.IsConnected)
                         {
-                            WriteAsync(ResponseSupportedMonitor().Result).Wait();
+                            ResponseSupportedMonitor();
                             MonitorPlug();
                         }
                     }
@@ -202,36 +202,14 @@ namespace NetworkKVM.Plugins
             return Task.CompletedTask;
         }
 
-        //public Task<bool> getNKVMStatus() //UI get to NKVM
-        //{
-        //    //to NKVM json....
-
-        //    //send to VCPSDK
-        //    NKVMPluginEvent?.Invoke(this, new EventArgsjson("Status"));
-        //    //await WriteAsync("getStatus");
-
-        //    //return Status...
-
-        //    return Task.FromResult(true);
-        //}
-        //public Task setNKVMStatus() //UI set to NKVM
-        //{
-        //    NKVMPluginEvent?.Invoke(this, new EventArgsjson("set Status"));
-        //    return Task.CompletedTask;
-        //}
         public Task MonitorPlug()
         {
             _logs.DebugMsg("[NetworkKVM] MonitorPlug....");
-            //if (pipeServer.IsConnected)
-            //{
-            //cid = cid + 1;
-            //_AllInfoMonitors.Clear();
-            //_SupportedMonitors = GetSupportedNKVM().Result;
-            MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
-            //_COMMAND.cid = cid;
-            //_COMMAND.type = "MONITOR_PLUG_DETECTION";
-            WriteAsync(_COMMAND.ToJson()).Wait();
-            //}
+            if (pipeServer.IsConnected)
+            {
+                MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
+                WriteAsync(_COMMAND.ToJson()).Wait();
+            }
             return Task.CompletedTask;
         }
 
@@ -590,6 +568,120 @@ namespace NetworkKVM.Plugins
             return Task.CompletedTask;
         }
 
+        #region CLI_NKVM
+        public Task GetNKVMVersion()
+        {
+            if (pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] GetNKVMVersion...");
+                GET_NKVM_VERSION get_NKVM_VERSION = new GET_NKVM_VERSION();
+                cid = cid + 1;
+                get_NKVM_VERSION.cid = cid;
+                get_NKVM_VERSION.Checksum = get_NKVM_VERSION.CalculateChecksum();
+                WriteAsync(get_NKVM_VERSION.ToJson()).Wait();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMStatus()
+        {
+            if (pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] GetNKVMStatus...");
+                GET_NKVM_STATUS get_NKVM_STATUS = new GET_NKVM_STATUS();
+                cid = cid + 1;
+                get_NKVM_STATUS.cid = cid;
+                get_NKVM_STATUS.Checksum = get_NKVM_STATUS.CalculateChecksum();
+                WriteAsync(get_NKVM_STATUS.ToJson()).Wait();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMAutoConnect()
+        {
+            if (pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] GetNKVMAutoConnect...");
+                GET_NKVM_AUTO_CONNECT get_NKVM_AUTO_CONNECT = new GET_NKVM_AUTO_CONNECT();
+                cid = cid + 1;
+                get_NKVM_AUTO_CONNECT.cid = cid;
+                get_NKVM_AUTO_CONNECT.Checksum = get_NKVM_AUTO_CONNECT.CalculateChecksum();
+                WriteAsync(get_NKVM_AUTO_CONNECT.ToJson()).Wait();
+            }
+            return Task.CompletedTask ;
+        }
+
+        public Task GetNKVMContentTransfer()
+        {
+            if (pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] GetNKVMContentTransfer...");
+                GET_NKVM_CONTENT_TRANSFER get_NKVM_CONTENT_TRANSFER = new GET_NKVM_CONTENT_TRANSFER();
+                cid = cid + 1;
+                get_NKVM_CONTENT_TRANSFER.cid = cid;
+                get_NKVM_CONTENT_TRANSFER.Checksum = get_NKVM_CONTENT_TRANSFER.CalculateChecksum();
+                WriteAsync(get_NKVM_CONTENT_TRANSFER.ToJson()).Wait();
+            }
+            return Task.CompletedTask ;
+        }
+
+        public Task GetNKVMIncommingPort()
+        {
+            if (pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] GetNKVMIncommingPort...");
+                GET_NKVM_INCOMMING_PORT get_NKVM_INCOMMING_PORT = new GET_NKVM_INCOMMING_PORT();
+                cid = cid + 1;
+                get_NKVM_INCOMMING_PORT.cid = cid;
+                get_NKVM_INCOMMING_PORT.Checksum = get_NKVM_INCOMMING_PORT.CalculateChecksum();
+                WriteAsync(get_NKVM_INCOMMING_PORT.ToJson()).Wait();
+            }
+            return Task.CompletedTask ;
+        }
+
+        public Task GetNKVMOutgoingPort()
+        {
+            if (pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] GetNKVMOutgoingPort...");
+                GET_NKVM_OUTGOING_PORT get_NKVM_OUTGOING_PORT = new GET_NKVM_OUTGOING_PORT();
+                cid = cid + 1;
+                get_NKVM_OUTGOING_PORT.cid = cid;
+                get_NKVM_OUTGOING_PORT.Checksum = get_NKVM_OUTGOING_PORT.CalculateChecksum() ;
+                WriteAsync(get_NKVM_OUTGOING_PORT.ToJson()).Wait();
+            }
+            return Task.CompletedTask ;
+        }
+
+        public Task GetNKVMContentTransferPort()
+        {
+            if (pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] GetNKVMContentTransferPort...");
+                GET_NKVM_CONTENT_TRANSFER_PORT get_NKVM_CONTENT_TRANSFER_PORT = new GET_NKVM_CONTENT_TRANSFER_PORT();
+                cid = cid + 1;
+                get_NKVM_CONTENT_TRANSFER_PORT.cid = cid;
+                get_NKVM_CONTENT_TRANSFER_PORT.Checksum = get_NKVM_CONTENT_TRANSFER_PORT .CalculateChecksum() ;
+                WriteAsync(get_NKVM_CONTENT_TRANSFER_PORT.ToJson()).Wait();
+            }
+            return Task.CompletedTask ;
+        }
+
+        public Task GetNKVMSettings()
+        {
+            if (pipeServer.IsConnected)
+            {
+                _logs.DebugMsg("[NetworkKVM] GetNKVMSettings...");
+                GET_NKVM_SETTINGS get_NKVM_SETTINGS = new GET_NKVM_SETTINGS();
+                cid = cid + 1;
+                get_NKVM_SETTINGS.cid = cid;
+                get_NKVM_SETTINGS.Checksum = get_NKVM_SETTINGS.CalculateChecksum();
+                WriteAsync(get_NKVM_SETTINGS.ToJson()).Wait();
+            }
+            return Task.CompletedTask ;
+        }
+        #endregion
+
         public Task NKVM_State(bool state)
         {
             NKVMState = state;
@@ -881,11 +973,7 @@ namespace NetworkKVM.Plugins
                             }
                             else
                             {
-                                string returntest = JsonstringParse(response).Result; //read json type
-                                if (returntest != string.Empty)
-                                {
-                                    _ = WriteAsync(returntest);
-                                }
+                                JsonstringParse(response); //read json type
                             }
                         }
                     }
@@ -941,7 +1029,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
                 _SupportedMonitors = GetSupportedNKVM().Result;
-                await WriteAsync(ResponseSupportedMonitor().Result);
+                ResponseSupportedMonitor();
                 await OnNKVM();
             }
             else
@@ -970,26 +1058,11 @@ namespace NetworkKVM.Plugins
             pipeServer.Dispose();
         }
 
-        private static bool isSignChecked = false;
         private async Task WriteAsync(string message)
         {
-            //if (!isSignChecked)
-            //{
-            //    string info;
-            //    if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
-            //    {
-            //        _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
-            //        isSignChecked = true;
-            //    }
-            //    else
-            //    {
-            //        _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
-            //        Disconnect();
-            //    }
-            //}
             _logs.DebugMsg("[NetworkKVM] WriteAsync : " + message);
             byte[] buffer = Encoding.UTF8.GetBytes(message);
-            await pipeServer.WriteAsync(buffer, 0, buffer.Length);
+            await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
             await pipeServer.FlushAsync();
             pipeServer.WaitForPipeDrain();
         }
@@ -997,11 +1070,13 @@ namespace NetworkKVM.Plugins
         private async Task<string> ReadAsync()
         {
             byte[] buffer = new byte[2048];
-            int bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length);
-            return Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            int bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+            string readmessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            _logs.DebugMsg("[NetworkKVM] ReadAsync : " + readmessage);
+            return readmessage;
         }
 
-        private async Task<string> JsonstringParse(string jsonstring)
+        private Task JsonstringParse(string jsonstring)
         {
             string type;
             string reStr = string.Empty;
@@ -1013,23 +1088,23 @@ namespace NetworkKVM.Plugins
                 switch (type)
                 {
                     case "SET_VCP":
-                        reStr = SetVCP(json).Result;
+                        SetVCP(jsonstring);
                         break;
 
                     case "GET_VCP":
-                        reStr = GetVCP(json).Result;
+                        GetVCP(jsonstring);
                         break;
 
                     case "GET_MONITOR_INFO":
-                        reStr = GetMonitorInfo(jsonstring).Result;
+                        GetMonitorInfo(jsonstring);
                         break;
 
                     case "GET_CURRENT_MONITOR_INDEX":
-                        reStr = GetCurrentMonitorIndex(json).Result;
+                        GetCurrentMonitorIndex(jsonstring);
                         break;
 
                     case "IS_HOTKEY_AVAILABLE":
-                        reStr = isHotkeyAvailable(jsonstring).Result;
+                        isHotkeyAvailable(jsonstring);
                         break;
 
                     case "DISCONNECT":
@@ -1039,30 +1114,30 @@ namespace NetworkKVM.Plugins
                     case "UPDATE_SUPPORTED_MONITOR_LIST_RESPONSE":
                         if (!ResponseSucces(json).Result)
                         {
-                            reStr = ResponseSupportedMonitor().Result;
+                            ResponseSupportedMonitor();
                         }
                         else
                         {
-                            await OnNKVM();
+                            OnNKVM();
                         }
                         break;
 
                     case "ON_NKVM_RESPONSE":
                         if (!ResponseSucces(json).Result)
                         {
-                            await OnNKVM();
+                            OnNKVM();
                         }
                         break;
 
                     case "OFF_NKVM_RESPONSE":
                         if (!ResponseSucces(json).Result)
                         {
-                            await OffNKVM();
+                            OffNKVM();
                         }
                         break;
 
                     case "SET_HOTKEY":
-                        reStr = GetSendHotkey(jsonstring).Result;
+                        GetSendHotkey(jsonstring);
                         break;
 
                     case "SET_HOTKEY_RESPONSE":
@@ -1072,212 +1147,298 @@ namespace NetworkKVM.Plugins
                         }
                         break;
 
+                    case "GET_NKVM_VERSION_RESPONSE":
+                        break;
+
                     default:
-                        reStr = NotFindType(json).Result;
+                        NotFindType(json);
                         break;
                 }
             }
-            return reStr;
+            return Task.CompletedTask;
         }
 
-        private async Task<string> SetVCP(JObject json)
+        private Task SetVCP(string jsonstring)
         {
             byte b_vcpcode;
             SET_VCP_RESPONSE set_VCP_R = new SET_VCP_RESPONSE();
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            SET_VCP set_VCP = new SET_VCP();
+            set_VCP = JsonConvert.DeserializeObject<SET_VCP>(jsonstring);
+            if (set_VCP != null)
             {
-                _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
-            }
-            set_VCP_R.cid = (int)json["cid"];
-            //set_VCP_R.type = (string)json["type"] + "_RESPONSE";
-            if (_AllInfoMonitors.Count != 0)
-            {
-                if (json.ContainsKey("MonitorIndex") && json.ContainsKey("VcpCode") && json.ContainsKey("Value"))
+                if (set_VCP.IsChecksumValid())
                 {
-                    b_vcpcode = Convert.ToByte(((int)json["VcpCode"]).ToString());
-                    bool b = _VcpCorePlugin.SetVCPCapability(_AllInfoMonitors[(int)json["MonitorIndex"]], b_vcpcode, (uint)(int)json["Value"]).Result;
-                    set_VCP_R.MonitorIndex = (int)json["MonitorIndex"];
-                    set_VCP_R.VcpCode = (int)json["VcpCode"];
-                    set_VCP_R.Value = (int)json["Value"];
-                    set_VCP_R.Success = b;
-                    set_VCP_R.Checksum = set_VCP_R.CalculateChecksum();
+                    if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+                    {
+                        _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
+                    }
+                    set_VCP_R.cid = set_VCP.cid;
+                    //set_VCP_R.type = (string)json["type"] + "_RESPONSE";
+                    if (_AllInfoMonitors.Count != 0)
+                    {
+                        b_vcpcode = Convert.ToByte(set_VCP.VcpCode.ToString());
+                        bool b = _VcpCorePlugin.SetVCPCapability(_AllInfoMonitors[set_VCP.MonitorIndex], b_vcpcode, (uint)set_VCP.Value).Result;
+                        set_VCP_R.MonitorIndex = set_VCP.MonitorIndex;
+                        set_VCP_R.VcpCode = set_VCP.VcpCode;
+                        set_VCP_R.Value = set_VCP.Value;
+                        set_VCP_R.Success = b;
+                        set_VCP_R.Checksum = set_VCP_R.CalculateChecksum();
+                        if (set_VCP_R.ToJson() != string.Empty)
+                        {
+                            _ = WriteAsync(set_VCP_R.ToJson());
+                        }
+                        return Task.CompletedTask;
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[NetworkKVM] No Monitor....");
+                    }
                 }
                 else
                 {
-                    set_VCP_R.MonitorIndex = -1;
-                    set_VCP_R.VcpCode = -1;
-                    set_VCP_R.Value = -1;
-                    set_VCP_R.Success = false;
-                    set_VCP_R.Checksum = set_VCP_R.CalculateChecksum();
+                    _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
                 }
             }
             else
             {
-                set_VCP_R.MonitorIndex = -1;
-                set_VCP_R.VcpCode = -1;
-                set_VCP_R.Value = -1;
-                set_VCP_R.Success = false;
-                set_VCP_R.Checksum = set_VCP_R.CalculateChecksum();
+                _logs.DebugMsg("[NetworkKVM] Not SET_VCP....");
             }
-            return set_VCP_R.ToJson();
+            set_VCP_R.MonitorIndex = -1;
+            set_VCP_R.VcpCode = -1;
+            set_VCP_R.Value = -1;
+            set_VCP_R.Success = false;
+            set_VCP_R.Checksum = set_VCP_R.CalculateChecksum();
+            if (set_VCP_R.ToJson() != string.Empty)
+            {
+                _ = WriteAsync(set_VCP_R.ToJson());
+            }
+            return Task.CompletedTask;
         }
 
-        private async Task<string> GetVCP(JObject json)
+        private Task GetVCP(string jsonstring)
         {
             byte b_vcpcode;
             ObjGetVCP objGetVCP;
             string rc_string = string.Empty;
             GET_VCP_RESPONSE get_VCP_R = new GET_VCP_RESPONSE();
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            GET_VCP get_VCP = new GET_VCP();
+            get_VCP = JsonConvert.DeserializeObject<GET_VCP>(jsonstring);
+            if (get_VCP != null)
             {
-                _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
-            }
-            get_VCP_R.cid = (int)json["cid"];
-            //get_VCP_R.type = (string)json["type"] + "_RESPONSE";
-            if (_AllInfoMonitors.Count != 0)
-            {
-                if (json.ContainsKey("MonitorIndex") && json.ContainsKey("VcpCode"))
+                if (get_VCP.IsChecksumValid())
                 {
-                    b_vcpcode = Convert.ToByte(((int)json["VcpCode"]).ToString());
-                    objGetVCP = _VcpCorePlugin.GetVCPCapability(_AllInfoMonitors[(int)json["MonitorIndex"]], b_vcpcode, 0).Result;
-
-                    get_VCP_R.MonitorIndex = (int)json["MonitorIndex"];
-                    get_VCP_R.VcpCode = (int)json["VcpCode"];
-                    if (objGetVCP.result)
+                    if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
                     {
-                        get_VCP_R.Success = true;
-                        get_VCP_R.Value = (int)(uint)objGetVCP.value;
-                        get_VCP_R.Checksum = get_VCP_R.CalculateChecksum();
+                        _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
+                    }
+                    get_VCP_R.cid = get_VCP.cid;
+                    if (_AllInfoMonitors.Count != 0)
+                    {
+                        b_vcpcode = Convert.ToByte(get_VCP.VcpCode.ToString());
+                        objGetVCP = _VcpCorePlugin.GetVCPCapability(_AllInfoMonitors[get_VCP.MonitorIndex], b_vcpcode, 0).Result;
+
+                        get_VCP_R.MonitorIndex = get_VCP.MonitorIndex;
+                        get_VCP_R.VcpCode = get_VCP.VcpCode;
+                        if (objGetVCP.result)
+                        {
+                            get_VCP_R.Success = true;
+                            get_VCP_R.Value = (int)(uint)objGetVCP.value;
+                            get_VCP_R.Checksum = get_VCP_R.CalculateChecksum();
+                            if (get_VCP_R.ToJson() != string.Empty)
+                            {
+                                _ = WriteAsync(get_VCP_R.ToJson());
+                            }
+                            return Task.CompletedTask;
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[NetworkKVM] get VCP code Fail....");
+                            get_VCP_R.Success = false;
+                            get_VCP_R.Value = 0;
+                            get_VCP_R.Checksum = get_VCP_R.CalculateChecksum();
+                            if (get_VCP_R.ToJson() != string.Empty)
+                            {
+                                _ = WriteAsync(get_VCP_R.ToJson());
+                            }
+                            return Task.CompletedTask;
+                        }
                     }
                     else
                     {
-                        get_VCP_R.Success = false;
-                        get_VCP_R.Value = 0;
-                        get_VCP_R.Checksum = get_VCP_R.CalculateChecksum();
+                        _logs.DebugMsg("[NetworkKVM] No Monitor....");
                     }
                 }
                 else
                 {
-                    get_VCP_R.MonitorIndex = -1;
-                    get_VCP_R.VcpCode = -1;
-                    get_VCP_R.Success = false;
-                    get_VCP_R.Value = 0;
-                    get_VCP_R.Checksum = get_VCP_R.CalculateChecksum();
+                    _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
                 }
             }
             else
             {
-                get_VCP_R.MonitorIndex = -1;
-                get_VCP_R.VcpCode = -1;
-                get_VCP_R.Success = false;
-                get_VCP_R.Value = 0;
-                get_VCP_R.Checksum = get_VCP_R.CalculateChecksum();
+                _logs.DebugMsg("[NetworkKVM] Not GET_VCP....");
             }
-            return get_VCP_R.ToJson();
+            get_VCP_R.MonitorIndex = -1;
+            get_VCP_R.VcpCode = -1;
+            get_VCP_R.Success = false;
+            get_VCP_R.Value = 0;
+            get_VCP_R.Checksum = get_VCP_R.CalculateChecksum();
+            if (get_VCP_R.ToJson() != string.Empty)
+            {
+                _ = WriteAsync(get_VCP_R.ToJson());
+            }
+            return Task.CompletedTask;
         }
 
-        private async Task<string> GetMonitorInfo(string jsonstring)
+        private Task GetMonitorInfo(string jsonstring)
         {
             _logs.DebugMsg("[NetworkKVM] GetMonitorInfo....");
             GET_MONITOR_INFO get_MONITOR_INFO = new GET_MONITOR_INFO();
-            //GET_MONITOR_INFO get_MONITOR_INFO1 = new GET_MONITOR_INFO();
             GET_MONITOR_INFO_RESPONSE get_MONITORINFO_R = new GET_MONITOR_INFO_RESPONSE();
             get_MONITOR_INFO = JsonConvert.DeserializeObject<GET_MONITOR_INFO>(jsonstring);
-
+            get_MONITORINFO_R.Monitors = new List<DdpmJsonCommon.Monitor>();
             //byte[] by1 = get_MONITOR_INFO.Checksum;
             //get_MONITOR_INFO1.cid = get_MONITOR_INFO.cid;
             //get_MONITOR_INFO1.Checksum = get_MONITOR_INFO.CalculateChecksum();
             //byte[] by = get_MONITOR_INFO1.CalculateChecksum();
-
-            get_MONITORINFO_R.Monitors = new List<DdpmJsonCommon.Monitor>();
-            DdpmJsonCommon.Monitor get_MonitorInfo = new DdpmJsonCommon.Monitor();
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            if (get_MONITOR_INFO != null)
             {
-                _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
-            }
-            get_MONITORINFO_R.cid = get_MONITOR_INFO.cid;
-            //get_MONITORINFO_R.type = (string)json["type"] + "_RESPONSE";
-            if (_AllInfoMonitors.Count != 0)
-            {
-                get_MONITORINFO_R.Success = true;
-                foreach (var item in _AllInfoMonitors)
+                if (get_MONITOR_INFO.IsChecksumValid())
                 {
-                    get_MonitorInfo = new DdpmJsonCommon.Monitor();
-                    string capability = string.Empty;
-                    string capability_all = _VcpCorePlugin.GetVCPCapabilities(item).Result;
-                    if (capability_all != null && capability_all != string.Empty)
+                    DdpmJsonCommon.Monitor get_MonitorInfo = new DdpmJsonCommon.Monitor();
+                    if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
                     {
-                        JObject json_capability = JObject.Parse(capability_all);
-                        capability = (string)json_capability["CapabilityString"];
+                        _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
                     }
-                    //Console.WriteLine("Capability Length : " + capability_all.Length.ToString());
-                    get_MonitorInfo.Index = item.Index;
-                    get_MonitorInfo.ModelName = item.modelName;
-                    get_MonitorInfo.SerialNumber = item.edid.SerialNumber;
-                    get_MonitorInfo.ServiceTag = item.edid.ServiceTag;
-                    get_MonitorInfo.DeviceName = item.DisplayName;
-                    get_MonitorInfo.CapabilityString = capability;
-                    get_MonitorInfo.LimitedSW = !item.DDCisON;//0708 fix data to invert value
-                    get_MonitorInfo.iMST = false;
-                    get_MONITORINFO_R.Monitors.Add(get_MonitorInfo);
-                    get_MONITORINFO_R.Checksum = get_MONITORINFO_R.CalculateChecksum();
+                    get_MONITORINFO_R.cid = get_MONITOR_INFO.cid;
+                    if (_AllInfoMonitors.Count != 0)
+                    {
+                        get_MONITORINFO_R.Success = true;
+                        foreach (var item in _AllInfoMonitors)
+                        {
+                            get_MonitorInfo = new DdpmJsonCommon.Monitor();
+                            string capability = string.Empty;
+                            string capability_all = _VcpCorePlugin.GetVCPCapabilities(item).Result;
+                            if (capability_all != null && capability_all != string.Empty)
+                            {
+                                JObject json_capability = JObject.Parse(capability_all);
+                                capability = (string)json_capability["CapabilityString"];
+                            }
+                            //Console.WriteLine("Capability Length : " + capability_all.Length.ToString());
+                            get_MonitorInfo.Index = item.Index;
+                            get_MonitorInfo.ModelName = item.modelName;
+                            get_MonitorInfo.SerialNumber = item.edid.SerialNumber;
+                            get_MonitorInfo.ServiceTag = item.edid.ServiceTag;
+                            get_MonitorInfo.DeviceName = item.DisplayName;
+                            get_MonitorInfo.CapabilityString = capability;
+                            get_MonitorInfo.LimitedSW = !item.DDCisON;//0708 fix data to invert value
+                            get_MonitorInfo.iMST = false;
+                            get_MONITORINFO_R.Monitors.Add(get_MonitorInfo);
+                        }
+                        get_MONITORINFO_R.Checksum = get_MONITORINFO_R.CalculateChecksum();
+                        if (get_MONITORINFO_R.ToJson() != string.Empty)
+                        {
+                            _ = WriteAsync(get_MONITORINFO_R.ToJson());
+                        }
+                        return Task.CompletedTask;
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[NetworkKVM] No Monitor....");
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
                 }
             }
             else
             {
-                _logs.DebugMsg("[NetworkKVM] No Monitor....");
-                get_MONITORINFO_R.Success = false;
-                get_MONITORINFO_R.Monitors = null;
-                get_MONITORINFO_R.Checksum = get_MONITORINFO_R.CalculateChecksum();
+                _logs.DebugMsg("[NetworkKVM] Not GET_MONITOR_INFO....");
             }
-            return get_MONITORINFO_R.ToJson();
+            get_MONITORINFO_R.Success = false;
+            get_MONITORINFO_R.Monitors = null;
+            get_MONITORINFO_R.Checksum = get_MONITORINFO_R.CalculateChecksum();
+            if (get_MONITORINFO_R.ToJson() != string.Empty)
+            {
+                _ = WriteAsync(get_MONITORINFO_R.ToJson());
+            }
+            return Task.CompletedTask;
         }
 
-        private async Task<string> GetCurrentMonitorIndex(JObject json)
+        private Task GetCurrentMonitorIndex(string jsonstring)
         {
+            _logs.DebugMsg("[NetworkKVM] GetCurrentMonitorIndex....");
             GET_CURRENT_MONITOR_INDEX_RESPONSE get_CURRENT_MONITOR_INDEX_R = new GET_CURRENT_MONITOR_INDEX_RESPONSE();
-            MonitorInfo monitorInfo = new MonitorInfo();
-            if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+            GET_CURRENT_MONITOR_INDEX get_CURRENT_MONITOR_INDEX = new GET_CURRENT_MONITOR_INDEX();
+            get_CURRENT_MONITOR_INDEX = JsonConvert.DeserializeObject<GET_CURRENT_MONITOR_INDEX>(jsonstring);
+            if (get_CURRENT_MONITOR_INDEX != null)
             {
-                _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
-            }
-            get_CURRENT_MONITOR_INDEX_R.cid = (int)json["cid"];
-            //get_CURRENT_MONITOR_INDEX_R.type = (string)json["type"] + "_RESPONSE";
-            if (_AllInfoMonitors.Count != 0)
-            {
-                monitorInfo = _AllInfoMonitors.Find(x => (x.Index == 0));
-                get_CURRENT_MONITOR_INDEX_R.Success = true;
-                get_CURRENT_MONITOR_INDEX_R.MonitorIndex = monitorInfo.Index;
-                get_CURRENT_MONITOR_INDEX_R.Checksum = get_CURRENT_MONITOR_INDEX_R.CalculateChecksum();
+                if (get_CURRENT_MONITOR_INDEX.IsChecksumValid())
+                {
+                    MonitorInfo monitorInfo = new MonitorInfo();
+                    if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+                    {
+                        _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
+                    }
+                    get_CURRENT_MONITOR_INDEX_R.cid = get_CURRENT_MONITOR_INDEX.cid;
+                    //get_CURRENT_MONITOR_INDEX_R.type = (string)json["type"] + "_RESPONSE";
+                    if (_AllInfoMonitors.Count != 0)
+                    {
+                        monitorInfo = _AllInfoMonitors.Find(x => (x.Index == 0));
+                        get_CURRENT_MONITOR_INDEX_R.Success = true;
+                        get_CURRENT_MONITOR_INDEX_R.MonitorIndex = monitorInfo.Index;
+                        get_CURRENT_MONITOR_INDEX_R.Checksum = get_CURRENT_MONITOR_INDEX_R.CalculateChecksum();
+                        if (get_CURRENT_MONITOR_INDEX_R.ToJson() != string.Empty)
+                        {
+                            _ = WriteAsync(get_CURRENT_MONITOR_INDEX_R.ToJson());
+                        }
+                        return Task.CompletedTask;
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[NetworkKVM] No Monitor....");
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
+                }
             }
             else
             {
-                get_CURRENT_MONITOR_INDEX_R.Success = false;
-                get_CURRENT_MONITOR_INDEX_R.MonitorIndex = -1;
-                get_CURRENT_MONITOR_INDEX_R.Checksum = get_CURRENT_MONITOR_INDEX_R.CalculateChecksum();
+                _logs.DebugMsg("[NetworkKVM] Not GET_CURRENT_MONITOR_INDEX....");
             }
-            return get_CURRENT_MONITOR_INDEX_R.ToJson();
+            get_CURRENT_MONITOR_INDEX_R.Success = false;
+            get_CURRENT_MONITOR_INDEX_R.MonitorIndex = -1;
+            get_CURRENT_MONITOR_INDEX_R.Checksum = get_CURRENT_MONITOR_INDEX_R.CalculateChecksum();
+            if (get_CURRENT_MONITOR_INDEX_R.ToJson() != string.Empty)
+            {
+                _ = WriteAsync(get_CURRENT_MONITOR_INDEX_R.ToJson());
+            }
+            return Task.CompletedTask;
         }
 
         private async Task<string> DisconnectNamedPipe()
         {
-            //cid = cid + 1;
             DISCONNECT _COMMAND = new DISCONNECT();
             _COMMAND.Checksum = _COMMAND.CalculateChecksum();
-            //_COMMAND.cid = cid;
-            //_COMMAND.type = "DISCONNECT";
 
             return _COMMAND.ToJson();
         }
 
-        private async Task<string> NotFindType(JObject json)
+        private Task NotFindType(JObject json)
         {
+            _logs.DebugMsg("[NetworkKVM] NotFindType....");
             DDM_RESPONSE _RESPONSE = new DDM_RESPONSE();
             _RESPONSE.Success = false;
             _RESPONSE.cid = (int)json["cid"];
             _RESPONSE.Checksum = _RESPONSE.CalculateChecksum();
             //_RESPONSE.type = (string)json["type"] + "_RESPONSE";
-            return _RESPONSE.ToJson();
+            if (_RESPONSE.ToJson() != string.Empty)
+            {
+                _ = WriteAsync(_RESPONSE.ToJson());
+            }
+            return Task.CompletedTask;
         }
 
         private async Task<bool> ResponseSucces(JObject json)
@@ -1289,15 +1450,20 @@ namespace NetworkKVM.Plugins
             return false;
         }
 
-        private async Task<string> ResponseSupportedMonitor()
+        private Task ResponseSupportedMonitor()
         {
+            _logs.DebugMsg("[NetworkKVM] ResponseSupportedMonitor....");
             cid = cid + 1;
             UPDATE_SUPPORTED_MONITOR_LIST SUPPORTED_MONITOR_LIST = new UPDATE_SUPPORTED_MONITOR_LIST();
             SUPPORTED_MONITOR_LIST.cid = cid;
             //SUPPORTED_MONITOR_LIST.type = "UPDATE_SUPPORTED_MONITOR_LIST";
             SUPPORTED_MONITOR_LIST.Monitors = _SupportedMonitors;
             SUPPORTED_MONITOR_LIST.Checksum = SUPPORTED_MONITOR_LIST.CalculateChecksum();
-            return SUPPORTED_MONITOR_LIST.ToJson();
+            if (SUPPORTED_MONITOR_LIST.ToJson() != string.Empty)
+            {
+                _ = WriteAsync(SUPPORTED_MONITOR_LIST.ToJson());
+            }
+            return Task.CompletedTask;
         }
 
         private bool IsSupportNKVM(string s)
@@ -1329,82 +1495,140 @@ namespace NetworkKVM.Plugins
             }
         }
 
-        private async Task<string> isHotkeyAvailable(string jsonstring)
+        private Task isHotkeyAvailable(string jsonstring)
         {
             _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable....");
+            IS_HOTKEY_AVAILABLE_RESPONSE is_HOTKEY_AVAILABLE_RESPONSE = new IS_HOTKEY_AVAILABLE_RESPONSE();
             IS_HOTKEY_AVAILABLE is_HOTKEY_AVAILABLE = new IS_HOTKEY_AVAILABLE();
             is_HOTKEY_AVAILABLE = JsonConvert.DeserializeObject<IS_HOTKEY_AVAILABLE>(jsonstring);
-            IS_HOTKEY_AVAILABLE_RESPONSE is_HOTKEY_AVAILABLE_RESPONSE = new IS_HOTKEY_AVAILABLE_RESPONSE();
-            is_HOTKEY_AVAILABLE_RESPONSE.cid = is_HOTKEY_AVAILABLE.cid;
-            HotkeyWinform jsonHotkey = is_HOTKEY_AVAILABLE.Hotkey;
-            is_HOTKEY_AVAILABLE_RESPONSE.Hotkey = jsonHotkey;
-            if (_HotkeySettings != null)
+            if (is_HOTKEY_AVAILABLE != null)
             {
-                _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
-                if (_HotkeySettings.Count > 0)
+                if (is_HOTKEY_AVAILABLE.IsChecksumValid())
                 {
-                    foreach (HotkeySettings hotkeySettings in _HotkeySettings)
+                    is_HOTKEY_AVAILABLE_RESPONSE.cid = is_HOTKEY_AVAILABLE.cid;
+                    HotkeyWinform jsonHotkey = is_HOTKEY_AVAILABLE.Hotkey;
+                    is_HOTKEY_AVAILABLE_RESPONSE.Hotkey = jsonHotkey;
+                    if (_HotkeySettings != null)
                     {
-                        foreach (HotkeyInfo hotkeyInfo in hotkeySettings.HotkeyInfo)
+                        _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
+                        if (_HotkeySettings.Count > 0)
                         {
-                            if (jsonHotkey.Control == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Control) &&
-                                jsonHotkey.Alt == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Menu) &&
-                                jsonHotkey.Shift == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Shift))
+                            foreach (HotkeySettings hotkeySettings in _HotkeySettings)
                             {
-                                _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable false");
-                                //VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey((Key)jsonHotkey.Key);
-                                int index = hotkeyInfo.Hotkey.FindIndex(x => (x == (VirtualKey)jsonHotkey.Key));
-                                if (index != -1)
+                                foreach (HotkeyInfo hotkeyInfo in hotkeySettings.HotkeyInfo)
                                 {
-                                    is_HOTKEY_AVAILABLE_RESPONSE.Available = false;
-                                    is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
-                                    is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
-                                    return is_HOTKEY_AVAILABLE_RESPONSE.ToJson();
+                                    if (jsonHotkey.Control == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Control) &&
+                                        jsonHotkey.Alt == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Menu) &&
+                                        jsonHotkey.Shift == hotkeyInfo.Hotkey.Exists(x => x == VirtualKey.Shift))
+                                    {
+                                        _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable false");
+                                        //VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey((Key)jsonHotkey.Key);
+                                        int index = hotkeyInfo.Hotkey.FindIndex(x => (x == (VirtualKey)jsonHotkey.Key));
+                                        if (index != -1)
+                                        {
+                                            is_HOTKEY_AVAILABLE_RESPONSE.Available = false;
+                                            is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
+                                            is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
+                                            if (is_HOTKEY_AVAILABLE_RESPONSE.ToJson() != string.Empty)
+                                            {
+                                                _ = WriteAsync(is_HOTKEY_AVAILABLE_RESPONSE.ToJson());
+                                            }
+                                            return Task.CompletedTask;
+                                        }
+                                    }
                                 }
                             }
+                            _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable true");
+                            is_HOTKEY_AVAILABLE_RESPONSE.Available = true;
+                            is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
+                            is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
+                            if (is_HOTKEY_AVAILABLE_RESPONSE.ToJson() != string.Empty)
+                            {
+                                _ = WriteAsync(is_HOTKEY_AVAILABLE_RESPONSE.ToJson());
+                            }
+                            return Task.CompletedTask;
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable true");
+                            is_HOTKEY_AVAILABLE_RESPONSE.Available = true;
+                            is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
+                            is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
+                            if (is_HOTKEY_AVAILABLE_RESPONSE.ToJson() != string.Empty)
+                            {
+                                _ = WriteAsync(is_HOTKEY_AVAILABLE_RESPONSE.ToJson());
+                            }
+                            return Task.CompletedTask;
                         }
                     }
-                    _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable true");
-                    is_HOTKEY_AVAILABLE_RESPONSE.Available = true;
-                    is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
+                    else
+                    {
+                        _logs.DebugMsg("[NetworkKVM] _HotkeySettings is null....");
+                    }
                 }
                 else
                 {
-                    _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable true");
-                    is_HOTKEY_AVAILABLE_RESPONSE.Available = true;
-                    is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
+                    _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
                 }
             }
             else
             {
-                is_HOTKEY_AVAILABLE_RESPONSE.Available = false;
-                is_HOTKEY_AVAILABLE_RESPONSE.Success = true;
-
+                _logs.DebugMsg("[NetworkKVM] Not IS_HOTKEY_AVAILABLE....");
             }
+            is_HOTKEY_AVAILABLE_RESPONSE.Available = false;
+            is_HOTKEY_AVAILABLE_RESPONSE.Success = false;
             is_HOTKEY_AVAILABLE_RESPONSE.Checksum = is_HOTKEY_AVAILABLE_RESPONSE.CalculateChecksum();
-            return is_HOTKEY_AVAILABLE_RESPONSE.ToJson();
+            if (is_HOTKEY_AVAILABLE_RESPONSE.ToJson() != string.Empty)
+            {
+                _ = WriteAsync(is_HOTKEY_AVAILABLE_RESPONSE.ToJson());
+            }
+            return Task.CompletedTask;
         }
 
-        private async Task<string> GetSendHotkey(string jsonstring)
+        private Task GetSendHotkey(string jsonstring)
         {
             _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable....");
             SET_HOTKEY set_HOTKEY = new SET_HOTKEY();
             set_HOTKEY = JsonConvert.DeserializeObject<SET_HOTKEY>(jsonstring);
             SET_HOTKEY_RESPONSE set_HOTKEY_RESPONSE = new SET_HOTKEY_RESPONSE();
-            set_HOTKEY_RESPONSE.cid = set_HOTKEY.cid;
-            set_HOTKEY_RESPONSE.Hotkey = set_HOTKEY.Hotkey;
-            if (_HotkeySettings != null)
+            if (set_HOTKEY != null)
             {
-                _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
-                set_HOTKEY_RESPONSE.Success = true;
+                if (set_HOTKEY.IsChecksumValid())
+                {
+                    set_HOTKEY_RESPONSE.cid = set_HOTKEY.cid;
+                    set_HOTKEY_RESPONSE.Hotkey = set_HOTKEY.Hotkey;
+                    if (_HotkeySettings != null)
+                    {
+                        _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
+                        set_HOTKEY_RESPONSE.Success = true;
+                        set_HOTKEY_RESPONSE.Checksum = set_HOTKEY_RESPONSE.CalculateChecksum();
+                        if (set_HOTKEY_RESPONSE.ToJson() != string.Empty)
+                        {
+                            _ = WriteAsync(set_HOTKEY_RESPONSE.ToJson());
+                        }
+                        return Task.CompletedTask;
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[NetworkKVM] _HotkeySettings is null");
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
+                }
             }
             else
             {
-                set_HOTKEY_RESPONSE.Success = false;
+                _logs.DebugMsg("[NetworkKVM] Not SET_HOTKEY");
             }
-            set_HOTKEY_RESPONSE.Checksum = set_HOTKEY.CalculateChecksum();
-
-            return set_HOTKEY_RESPONSE.ToJson();
+            set_HOTKEY_RESPONSE.Success = false;
+            set_HOTKEY_RESPONSE.Checksum = set_HOTKEY_RESPONSE.CalculateChecksum();
+            if (set_HOTKEY_RESPONSE.ToJson() != string.Empty)
+            {
+                _ = WriteAsync(set_HOTKEY_RESPONSE.ToJson());
+            }
+            return Task.CompletedTask;
         }
 
         private void SendChangeLimitedSW(MonitorInfo monitorInfo, bool isON)
@@ -1426,24 +1650,20 @@ namespace NetworkKVM.Plugins
             WriteAsync(chanage_LIMITED_SW.ToJson()).Wait();
         }
 
-        private void VCPchangedEvent(object sender, VCPchangedEventArgs e)
-        {
-            _logs.DebugMsg("[NetworkKVM] VCPchangedEvent.....");
-            if (e.vcpcode.Equals("60") || e.vcpcode.Equals("E8") || e.vcpcode.Equals("E9") || e.vcpcode.Equals("E5") || e.vcpcode.Equals("04"))
-            {
-                _logs.DebugMsg("[NetworkKVM] VCPchanged " + e.vcpcode);
-                try
-                {
-                    int vcpcode = Convert.ToInt32(e.vcpcode);
-                    int value = Convert.ToInt32(e.value);
-                    SetVCPNotify(e.monitor, vcpcode, value);
-                }
-                catch
-                {
-                    ;
-                }
-            }
-        }
+        //private void GetVersionResponse(string jsonstring)
+        //{
+        //    GET_NKVM_VERSION get_NKVM_VERSION = new GET_NKVM_VERSION();
+        //    GET_NKVM_VERSION_RESPONSE get_NKVM_VERSION_RESPONSE = new GET_NKVM_VERSION_RESPONSE();
+        //    get_NKVM_VERSION = JsonConvert.DeserializeObject<GET_NKVM_VERSION>(jsonstring);
+        //    if (get_NKVM_VERSION != null)
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        _logs.DebugMsg("[NetworkKVM] Not GET_NKVM_VERSION....");
+        //    }
+        //}
 
         #endregion Private Methods
 
@@ -1452,6 +1672,8 @@ namespace NetworkKVM.Plugins
         public delegate void NKVMPluginEventHandler(object sender, EventArgsjson eventArgsjson);
 
         public event NKVMPluginEventHandler NKVMPluginEvent;
+
+        public event EventHandler NKVMCLIEvent;
 
         public class EventArgsjson : EventArgs
         {
@@ -1486,6 +1708,27 @@ namespace NetworkKVM.Plugins
             if (e.ChangedPlugins.Any() == false)
                 return;
         }
+
+        private void VCPchangedEvent(object sender, VCPchangedEventArgs e)
+        {
+            _logs.DebugMsg("[NetworkKVM] VCPchangedEvent.....");
+            if (e.vcpcode.Equals("60") || e.vcpcode.Equals("E8") || e.vcpcode.Equals("E9") || e.vcpcode.Equals("E5") || e.vcpcode.Equals("04"))
+            {
+                _logs.DebugMsg("[NetworkKVM] VCPchanged " + e.vcpcode);
+                try
+                {
+                    int vcpcode = Convert.ToInt32(e.vcpcode);
+                    int value = Convert.ToInt32(e.value);
+                    SetVCPNotify(e.monitor, vcpcode, value);
+                }
+                catch
+                {
+                    ;
+                }
+            }
+        }
+
+        //public
 
         #endregion Event Handler
     }

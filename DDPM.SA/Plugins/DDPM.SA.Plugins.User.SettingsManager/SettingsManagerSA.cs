@@ -99,7 +99,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _colorsettings_path { get; set; }
         private string _appiconfolder_path { get; set; }
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
-        private Dictionary<string, List<DDPMMonitorSettings>> _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+        private Dictionary<string, List<DDPMMonitorSettings>>? _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
         private string _display_path { get; set; }
         private List<ColorPresetSettings> _preset_settings = new List<ColorPresetSettings>();//Dean 0626 fix SAST issue
 
@@ -361,77 +361,77 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
         }
 
-        public Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname)
+        public Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname, out bool binit)
         {
-            string folder = GetActiveUserLocalAppDataPath();
-            WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
-            string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
-            //create display folder if not exist
-            _display_path = folder_appdatapath_display;
+            binit = false;
             List<DDPMMonitorSettings> monitorSettingList = new List<DDPMMonitorSettings>();
-            try
-            {
-                if (!Directory.Exists(_display_path))
+            //if (!relay_registered && _SysSettingsPlugin != null)
+            //{
+                string folder = GetActiveUserLocalAppDataPath();
+                WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
+                string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
+                //create display folder if not exist
+                _display_path = folder_appdatapath_display;
+                try
                 {
-                    DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
-                    WriteLog($"create folder {_display_path} success");
-                }
-            }
-            catch
-            {
-                WriteLog($"CreateDirectory with {_display_path} failed.");
-                _AllMonitorSettings = null;
-                return Task.FromResult(monitorSettingList);
-            }
-
-            //Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFolderPathValid(_display_path, out FileInfo))
-            {
-                WriteLog($"{nameof(InitDDPMMonitorConfigFile)} {FileInfo}");
-                return Task.FromResult(monitorSettingList);
-            }
-
-            //create monitor setting file if not exist
-            string file_monitorconfig_path = _display_path + "\\" + modelname + ".json";
-            WriteLog($"_monitorSettings_path is {file_monitorconfig_path}.");
-            //string info;
-            if (File.Exists(file_monitorconfig_path))
-            {
-                monitorSettingList = ReloadMonitorSettings(modelname).Result;
-                if (_AllMonitorSettings != null)
-                {
-                    //find monitor settings
-                    if (_AllMonitorSettings.ContainsKey(modelname))
+                    if (!Directory.Exists(_display_path))
                     {
-                        _AllMonitorSettings[modelname] = monitorSettingList;
+                        DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
+                        WriteLog($"create folder {_display_path} success");
+                    }
+                }
+                catch
+                {
+                    WriteLog($"CreateDirectory with {_display_path} failed.");
+                    _AllMonitorSettings = null;
+                    binit = false;
+                    return Task.FromResult(monitorSettingList);
+                }
+                //create monitor setting file if not exist
+                string file_monitorconfig_path = _display_path + "\\" + modelname + ".json";
+                WriteLog($"_monitorSettings_path is {file_monitorconfig_path}.");
+                if (File.Exists(file_monitorconfig_path))
+                {
+                    monitorSettingList = ReloadMonitorSettings(modelname).Result;
+                    if (_AllMonitorSettings != null)
+                    {
+                        //find monitor settings
+                        if (_AllMonitorSettings.ContainsKey(modelname))
+                        {
+                            _AllMonitorSettings[modelname] = monitorSettingList;
+                            binit = true;
+                        }
+                        else
+                        {
+                            _AllMonitorSettings.Add(modelname, monitorSettingList);
+                            binit = true;
+                        }
                     }
                     else
                     {
+                        _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
                         _AllMonitorSettings.Add(modelname, monitorSettingList);
+                        binit = true;
                     }
                 }
                 else
                 {
-                    _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
-                    _AllMonitorSettings.Add(modelname, monitorSettingList);
+                    FileInfo fileInfo = new FileInfo(file_monitorconfig_path);
+                    fileInfo.Create().Close();
+                    WriteLog("[InitMonitorConfigFile] settings file not exist, new an object");
+                    //init data to file
+                    if (WriteMonitorSettings(modelname, monitorSettingList).Result)
+                    {
+                        WriteLog("[InitMonitorConfigFile] Monitor settings file create and write success");
+                        binit = true;
+                    }
+                    else
+                    {
+                        WriteLog("[InitMonitorConfigFile] Monitor settings file create and write failed");
+                        binit = false;
+                    }
                 }
-            }
-            else
-            {
-                FileInfo fileInfo = new FileInfo(file_monitorconfig_path);
-                fileInfo.Create().Close();
-                WriteLog("[InitMonitorConfigFile] settings file not exist, new an object");
-                //init data to file
-                if (WriteMonitorSettings(modelname, monitorSettingList).Result)
-                {
-                    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write success");
-                }
-                else
-                {
-                    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write failed");
-                }
-            }
+            //}
             return Task.FromResult(monitorSettingList);
         }
 
@@ -508,8 +508,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname)
         {
             List<DDPMMonitorSettings> monitorSettings = new List<DDPMMonitorSettings>();
-            //Robert_Lin, 2024-9-10 fix. _settings_path is null, check _display_path instead
-            //if (!string.IsNullOrEmpty(_settings_path))
             if (!string.IsNullOrEmpty(_display_path))
             {
                     string monitorSettings_path = _display_path + "\\" + modelname + ".json";
@@ -541,6 +539,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         ;
                     }
                 }
+            }
+            else 
+            {
+                WriteLog("ReloadMonitorSettings, but _display_path is not exist");
             }
             return Task.FromResult(monitorSettings);
         }
