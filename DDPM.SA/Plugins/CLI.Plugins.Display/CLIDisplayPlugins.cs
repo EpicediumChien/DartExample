@@ -9239,11 +9239,11 @@ namespace DDPM.CLI.Plugins.Display
         {
             if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
             {
-                return PowerSetting(devMgr, commandLineInput).Result;
+                return PowerSettingv2(devMgr, commandLineInput).Result;
             }
             else if (commandLineInput.Command == "SET" && commandLineInput.Options.Count == 1)
             {
-                return PowerSetting(devMgr, commandLineInput).Result;
+                return PowerSettingv2(devMgr, commandLineInput).Result;
             }
             else
             {
@@ -9359,6 +9359,116 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Value = "OFF";
                         else if ((getcode_e0 == 0x00) && (getcode_e1 == 0x01))
                             cli_Response.Value = "STANDBY";
+                    }
+                }
+                else
+                    somethingfail |= 0x10;
+
+                if (retcode)
+                {
+                    cli_Response.Result = "PASS";
+                    cli_Response.Message = "N/A";
+                }
+                else
+                {
+                    cli_Response.Result = "FAIL";
+                    if ((somethingfail & 0x01) == 0x01)
+                        cli_Response.Message = $"Unknown value ({commandLineInput.Options[0].Option_Value})";
+                    else if ((somethingfail & 0x10) == 0x10)
+                        cli_Response.Message = $"No Support {commandLineInput.TargetFeature}";
+                    else
+                        cli_Response.Message = $"Set {commandLineInput.Options[0].Option_Value} fail";
+                }
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+            }
+            writelog($"PowerSetting exit return value{output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+        private async Task<(int code, string result)> PowerSettingv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+            int somethingfail = 0;
+            ObjGetVCP rc = new ObjGetVCP();
+
+            List<int> _monitorIndeies = new List<int>();
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = devMgr.GetMonitors().Result;
+            _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+            foreach (int idx in _monitorIndeies)
+            {
+                writelog($"PowerSetting entry");
+                MonitorInfo monitor = _AllInfoMonitors[idx];
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Command = commandLineInput.Command;
+                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                cli_Response.Model = monitor.AliasDeviceName;
+                cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                string capability = monitor.CapabilityString;
+                if (capability.Contains("D6("))
+                {
+                    if (commandLineInput.Command == "SET")
+                    {
+                        writelog($"PowerSetting set entry");
+                        string[] ss = capability.Split("D6(");
+                        ss = ss[1].Split(")");
+                        ss = ss[0].Split(" ");
+                        Trace.WriteLine($"ss[0]:{ss[0]}, ss[1]:{ss[1]}, ss[2]:{ss[2]}");
+                        if (ss[0] == "01" && ss[1] == "04" && ss[2] == "05")
+                        {
+                            switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                            {
+                                case "OFF":
+                                    writelog($"PowerSetting D6 set off");
+                                    retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x05").Result;
+                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                    break;
+
+                                case "ON":
+                                    writelog($"PowerSetting D6 set on");
+                                    retcode = SetVCPCode(devMgr, monitor, "0xD0", "0x01").Result;
+                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                    break;
+
+                                case "STANDBY":
+                                    writelog($"PowerSetting D6 set standby");
+                                    retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x04").Result;
+                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                    break;
+                                default:
+
+                                    cli_Response.Command = commandLineInput.Command;
+                                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                                    cli_Response.Result = "FAIL";
+                                    cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+
+                                    break;
+                            }
+                        }
+                        else
+                            somethingfail |= 0x10;
+                    }
+                    else if (commandLineInput.Command == "GET")
+                    {
+                        writelog($"PowerSetting get entry");
+                        retcode = true;
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                        rc = GetVCPCode(devMgr, monitor, "0xD6").Result;
+                        if (rc != null && rc.value.ToString() == "1")
+                            cli_Response.Value = "ON";
+                        else if (rc != null && rc.value.ToString() == "4")
+                            cli_Response.Value = "STANDBY";
+                        else if (rc != null && rc.value.ToString() == "5")
+                            cli_Response.Value = "OFF";
+                        else
+                            cli_Response.Value = "Get VCP fail";
                     }
                 }
                 else
@@ -11308,7 +11418,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             writelog($"Networkkvmaccessreset exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
-            
+
         }
         #endregion Malik
     }
