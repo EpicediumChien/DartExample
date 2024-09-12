@@ -31,6 +31,12 @@
 	  <ProjectReference Include="..\NGA.Resources\NGA.Resources.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="DDPM.SA.Common">
+	    <HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<NoWarn>1701;1702;CA1416;</NoWarn>
 	</PropertyGroup>

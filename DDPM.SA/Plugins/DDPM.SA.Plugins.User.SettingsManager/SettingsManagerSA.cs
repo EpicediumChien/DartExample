@@ -6,6 +6,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -34,7 +35,6 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private const string publisherCompany = "Wistron";
         private const string publisherWebsite = "https://www.wistron.com";
         private const string publisherSupport = "This plugin implements User.SettingsManager.Plugin.";
-
         private IAgent _agent;
 
         private enum log_type
@@ -383,6 +383,15 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 _AllMonitorSettings = null;
                 return Task.FromResult(monitorSettingList);
             }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFolderPathValid(_display_path, out FileInfo))
+            {
+                WriteLog($"{nameof(InitDDPMMonitorConfigFile)} {FileInfo}");
+                return Task.FromResult(monitorSettingList);
+            }
+
             //create monitor setting file if not exist
             string file_monitorconfig_path = _display_path + "\\" + modelname + ".json";
             WriteLog($"_monitorSettings_path is {file_monitorconfig_path}.");
@@ -499,9 +508,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname)
         {
             List<DDPMMonitorSettings> monitorSettings = new List<DDPMMonitorSettings>();
-            if (!string.IsNullOrEmpty(_settings_path))
+            //Robert_Lin, 2024-9-10 fix. _settings_path is null, check _display_path instead
+            //if (!string.IsNullOrEmpty(_settings_path))
+            if (!string.IsNullOrEmpty(_display_path))
             {
-                string monitorSettings_path = _display_path + "\\" + modelname + ".json";
+                    string monitorSettings_path = _display_path + "\\" + modelname + ".json";
                 if (File.Exists(monitorSettings_path))
                 {
                     if (_AllMonitorSettings != null)
@@ -716,6 +727,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
         {
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            {
+                WriteLog($"{nameof(ImportPowerNapSettings)} {FileInfo}");
+                return Task.FromResult(_present_powerNap_settings);
+            }
+
             string strReadJson = string.Empty;
             using (var reader = new StreamReader(filePath))
             {
@@ -847,6 +866,15 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 path = path + ".json";
             }
+
+            //Dean 0912 file not ready at here, remove check
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(DisplayExportSettings)} {FileInfo}");
+            //    return Task.FromResult<bool>(false);
+            //}
 
             foreach (DDPMMonitorSettings _settings in monitorSettings)
             {
@@ -1000,6 +1028,15 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private string RunSerializeObject(List<PowerNapSetting> powerNapSettings, string filePath)
         {
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
+
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(powerNapSettings);
             using (StreamWriter writer = new StreamWriter(filePath))
@@ -1015,6 +1052,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(powerNapSettings);
             string jsonpath = _powerNapsettings_path;
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(jsonpath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
             using (StreamWriter writer = new StreamWriter(jsonpath))
             {
                 writer.Write(jsonString);
@@ -1048,6 +1093,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(hotkeySettings);
             string jsonpath = _hotkeysettings_path;
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(jsonpath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
             using (StreamWriter writer = new StreamWriter(jsonpath))
             {
                 writer.Write(jsonString);
@@ -1090,6 +1143,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             jsonString = JsonConvert.SerializeObject(colorPresetSettings);
             string jsonpath = _colorsettings_path;// GetMonitorColorPresetJsonPath();
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(jsonpath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
             using (StreamWriter writer = new StreamWriter(jsonpath))
             {
                 writer.Write(jsonString);
@@ -1130,6 +1191,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string jsonString = string.Empty;
             string monitorSettings_path = _display_path + "\\" + modelname + ".json";
             jsonString = JsonConvert.SerializeObject(monitorSettings);
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(monitorSettings_path, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
             using (StreamWriter writer = new StreamWriter(monitorSettings_path))
             {
                 writer.Write(jsonString);
@@ -1180,6 +1249,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(impExpSettings);
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
             using (StreamWriter writer = new StreamWriter(path))
             {
                 writer.Write(jsonString);
@@ -1230,10 +1307,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private DDPMImpExpSettings ReadImportSettingsFile(string path)
         {
             DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
+
             if (!string.IsNullOrEmpty(path))
             {
                 if (File.Exists(path))
                 {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        WriteLog($"{nameof(ReadImportSettingsFile)} {FileInfo}");
+                        return ImpSettings;
+                    }
                     string strReadJson = string.Empty;
                     using (var reader = new StreamReader(path))
                     {
@@ -1264,8 +1349,16 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<GlobalSettingParam> ReadGlobalSettings()
         {
             string strFilePath = _GlobalSetting_path;
+
             if (File.Exists(strFilePath))
             {
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
+                {
+                    WriteLog($"{nameof(ReadGlobalSettings)} {FileInfo}");
+                    return Task.FromResult(_GlobalSettingParam);
+                }
                 string strReadJson = string.Empty;
                 using (var reader = new StreamReader(strFilePath))
                 {
@@ -1308,6 +1401,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(globalSettingParam);
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
             using (StreamWriter writer = new StreamWriter(filePath))
             {
                 writer.Write(jsonString);
@@ -1319,6 +1420,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(globalSettingParam);
             string jsonpath = _GlobalSetting_path;
+            //[Dean 0912] file could be not exist at here, avoid settings fail
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(jsonpath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
+            //    return string.Empty;
+            //}
             using (StreamWriter writer = new StreamWriter(jsonpath))
             {
                 writer.Write(jsonString);
@@ -1427,6 +1536,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 _colorPresetSettings = null;
                 return null;
             }
+            // Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFolderPathValid(folder_applist_path, out FileInfo))
+            {
+                WriteLog($"{nameof(InitColorPresetConfigFile)} {FileInfo}");
+                return null;
+            }
+
             //create app icon folder if not exist
             string folder_appicon_path = folder_applist_path + "\\" + folder_localappdata_Appicon;
             try
@@ -1442,7 +1559,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 _colorPresetSettings = null;
                 return null;
             }
-
+            // Elsa Add Security
+            if (!DDPMFileSecurity.IsFolderPathValid(folder_appicon_path, out FileInfo))
+            {
+                WriteLog($"{nameof(InitColorPresetConfigFile)} {FileInfo}");
+                return null;
+            }
             //create colorpreset setting file if not exist
             string file_colorconfig_path = folder_applist_path + "\\" + filename_colorpreset_peruser;
             _colorsettings_path = file_colorconfig_path;
@@ -1502,11 +1624,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string file_hotkeyconfig_path = folder_applist_path + "\\" + filename_hotkey_peruser;
             _hotkeysettings_path = file_hotkeyconfig_path;
             WriteLog($"_hotkeysettings_path is {_hotkeysettings_path}.");
-
             List<HotkeySettings> hotkeySettings = new List<HotkeySettings>();
 
             if (File.Exists(_hotkeysettings_path))
+            {
+                // Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(_hotkeysettings_path, out FileInfo))
+                {
+                    WriteLog($"{nameof(InitHotkeyConfigFile)} {FileInfo}");
+                    return null;
+                }
                 hotkeySettings = ReadHotkeySettings().Result;
+            }
             else
             {
                 FileInfo fileInfo = new FileInfo(_hotkeysettings_path);
@@ -1558,6 +1688,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             _powerNapsettings_path = file_powernapconfig_path;
             WriteLog($"_powerNapsettings_path is {_powerNapsettings_path}.");
 
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFolderPathValid(folder_applist_path, out FileInfo))
+            {
+                WriteLog($"{nameof(InitPowerNapConfigFile)} {FileInfo}");
+                return null;
+            }
+
             List<PowerNapSetting> powerNapSettings = new List<PowerNapSetting>();
 
             if (File.Exists(_powerNapsettings_path))
@@ -1605,7 +1743,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             catch
             {
                 WriteLog($"CreateDirectory with {folder_applist_path} failed.");
-                _powerNapSettings = null;
+                _GlobalSetting_path = null;
                 return null;
             }
             //create powernap setting file if not exist
@@ -1613,7 +1751,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             _GlobalSetting_path = file_path;
             WriteLog($"_GlobalSetting_path is {_GlobalSetting_path}.");
 
-
+            // Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(_GlobalSetting_path, out FileInfo))
+            {
+                WriteLog($"{nameof(InitGlobalSettingConfigFile)} {FileInfo}");
+                File.Delete(_GlobalSetting_path);
+            }
             if (File.Exists(_GlobalSetting_path))
                 _GlobalSettingParam = ReadGlobalSettings().Result;
             else

@@ -93,7 +93,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private readonly object _PluginConditionLock_ScheduleManager = new object();
         private readonly object _PluginConditionLock_DTPProxy = new object();
         private DisplayChange displayChange;
-
+        //private static Dell.Client.Framework.Common.Log _log;
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
 
@@ -603,6 +603,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("null/empty iconFolder in _SettingsPlugin [AddColorPresetForMonitorConfig]");
                 return Task.FromResult(false);
             }
+
+            // Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFolderPathValid(iconFolder, out FileInfo))
+            {
+                writelog($"{nameof(AddColorPresetForMonitorConfig)} {FileInfo}");
+                return Task.FromResult(false);
+            }
+
             _ColorPresetPlugin.SetAppIconFolder(iconFolder);
             if (!int.TryParse(index_monitor, out int idx))
             {
@@ -3369,6 +3378,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
                         }
+
+                        //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
+                        //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
+                        // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+                        //
+                        // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
+                        // {
+                        //    your handler code
+                        // }
+                        //
+                        if (_agent != null)
+                            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
                     }
                 });
             }
