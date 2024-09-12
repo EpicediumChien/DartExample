@@ -74,8 +74,33 @@
                 <Setter Property="Height" Value="68" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                <!--
+                <Setter Property="Template">
+                <Setter.Value>
+                <ControlTemplate TargetType="ContentControl">
+                <Border BorderBrush="{StaticResource SplitListViewItem_SelectedBdkColor}"
+                CornerRadius="6" Padding="4">
+                <Border.Style>
+                <Style TargetType="Border">
+                <Setter Property="BorderThickness" Value="0" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding DataContext.IsVertical, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                <Setter Property="BorderThickness" Value="1.5" />
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Yellow" />
+                </Trigger>
+                </Style.Triggers>
+                </Style>
+                </Border.Style>
+                <ContentPresenter />
+                </Border>
+                </ControlTemplate>
+                </Setter.Value>
+                </Setter>
+                -->
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsVertical}" Value="True">
                         <Setter Property="Width" Value="68"/>
                         <Setter Property="Height" Value="80"/>
                     </DataTrigger>

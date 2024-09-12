@@ -688,17 +688,17 @@ namespace DDPM.UI.Common.ViewModels
                 if (rightHeader != null)
                 {
                     rightHeader.IsShown = homeDev.HasCapability_PipPbp;
+                }
 
-                    //If PIP/PBP is not shown, AND current selected module is PIP/PBP
-                    if ((!rightHeader.IsShown) && (mg.HeaderSelectedIndex == 1))
+                //If CurrentSelected module is "PIP/PBP" 
+                if (mg.HeaderSelectedIndex == 1)
+                {
+                    //Need update the index to 0 (InputSource)
+                    mg.HeaderSelectedIndex = 0;
+
+                    if (SelectedGroup == mg)
                     {
-                        //Need update the index to 0 (InputSource)
-                        mg.HeaderSelectedIndex = 0;
-
-                        if (SelectedGroup == mg)
-                        {
-                            RightViewHeaderSelectedIndex = mg.HeaderSelectedIndex;
-                        }
+                        RightViewHeaderSelectedIndex = mg.HeaderSelectedIndex;
                     }
                 }
             }
