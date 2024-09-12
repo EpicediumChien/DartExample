@@ -361,7 +361,10 @@ namespace DDPM.SA.Common
         Task<List<ColorPresetSettings>> ReadColorPresetSettings();
 
         Task<bool> WriteColorPresetSettings(List<ColorPresetSettings> colorPresetSettings);
-
+        
+        Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
+        
+        Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
         #endregion public for settings
 
         #region public for hotkey

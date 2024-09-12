@@ -1759,6 +1759,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
+                //Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newMuteStatus));
             }
         }
 
@@ -1885,6 +1886,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
+                //Task.Run(async () =>_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newValue));
             }
         }
 
