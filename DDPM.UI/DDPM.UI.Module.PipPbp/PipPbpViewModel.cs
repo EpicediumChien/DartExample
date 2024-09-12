@@ -151,9 +151,7 @@ namespace DDPM.UI.Module.PipPbp
                 {
                     foreach (var item in inputList)
                     {
-                        //Robert_Lin, 2024-9-11, Fix for InputInfo class has added VCP Code by Jason.
-                        //InputSourceObj inputObj = new InputSourceObj(item.Value.InputName);
-                        InputSourceObj inputObj = new InputSourceObj((UInt16)item.Value.Code, item.Value.InputName);
+                        InputSourceObj inputObj = new InputSourceObj(item.Value.InputName);
                         inputSourceList.Add(inputObj);
                         str1 += item.Value.InputName;
                         str1 += ", ";

@@ -8,7 +8,6 @@
 
 #endregion
 
-using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.Common;
 using Dell.Client.Framework.UX.Common.DataModel;
@@ -20,7 +19,6 @@ using NGA.BaseClientCore;
 using NGA.Common;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
 
 namespace NGA.ThickClientCore

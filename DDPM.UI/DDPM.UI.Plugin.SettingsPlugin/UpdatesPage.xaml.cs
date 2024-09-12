@@ -1,7 +1,6 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
-using Dell.Client.Framework.Common;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
@@ -15,7 +14,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class UpdatesPage : UserControl
     {
-        private static Log _log;
         public UpdatesPage()
         {
             InitializeComponent();
