@@ -133,6 +133,101 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(appIconFolderPath_, Is.EqualTo(GetAppIconFolderPathResult));
         }
 
+        [Test]
+        public void TestInitColorPresetConfigFile()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var result = privateSettingsManagerObject.Invoke("InitColorPresetConfigFile");
+            var InitColorPresetSettings = privateSettingsManagerObject.GetFieldOrProperty("_colorPresetSettings");
+            Assert.IsNotNull(result);
+            Assert.That(InitColorPresetSettings, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadColorPresetSettings()
+        {
+            string colorsettings_path1_ = "test_colorsettingPath.json";
+            string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
+            //string jsonData = "[{'DeviceInfo':null,'RunType':0,'AppInfo':null,'PresetForManual':'TestManual'}]";
+            string presetForManual_ = "TestManual";
+            List<ColorPresetSettings> preset_settings1_ = new List<ColorPresetSettings>();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorsettings_path1_);
+            privateSettingsManagerObject.SetFieldOrProperty("_preset_settings", preset_settings1_);
+            if (!File.Exists(colorsettings_path1_))
+            {
+                var ReadColorPresetSettingsResult1 = SettingsManagerSAPlugin.ReadColorPresetSettings().Result;  // strFilePath is not Exists colorsettings_path ColorSetting.json"
+                Assert.That(preset_settings1_, Is.EqualTo(ReadColorPresetSettingsResult1)); //run finnish will create colorsettings_path1_
+            }
+
+            if (File.Exists(colorsettings_path1_))
+            {
+                File.WriteAllText(colorsettings_path1_, jsonData); // mock data to temp data
+                var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadColorPresetSettings().Result;
+                Assert.Greater(ReadColorPresetSettingsResult2.Count, 0);
+                Assert.That(presetForManual_, Is.EqualTo(ReadColorPresetSettingsResult2[0].PresetForManual));
+                File.Delete(colorsettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestWriteColorPresetSettings()
+        {
+            bool writeColorPresetSettings_ = false;
+            bool writeColorPresetSettings_succeed = true;
+            List<ColorPresetSettings> colorPresetSettingsConfigsNull = null;
+            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { } };
+            string colorsettings_path1_ = "test_writeCroPresetpath.json";
+            string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
+            File.WriteAllText(colorsettings_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorsettings_path1_);
+            if (colorPresetSettingsConfigsNull == null)
+            {
+                var WriteColorPresetSettingsResult1 = SettingsManagerSAPlugin.WriteColorPresetSettings(colorPresetSettingsConfigsNull).Result;
+                Assert.That(writeColorPresetSettings_, Is.EqualTo(WriteColorPresetSettingsResult1));
+            }
+
+            if (colorPresetSettingsConfigs != null)
+            {
+                var WriteColorPresetSettingsResult2 = SettingsManagerSAPlugin.WriteColorPresetSettings(colorPresetSettingsConfigs).Result;
+                Assert.That(writeColorPresetSettings_succeed, Is.EqualTo(WriteColorPresetSettingsResult2));
+                File.Delete(colorsettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestRunDeserializeColorPresetSettingsObject()
+        {
+            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID(), RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(), PresetForManual = "testpre" } };
+            string colorpresettingsObject_path1_ = "test_writeCroPresetpath.json";
+            string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
+            File.WriteAllText(colorpresettingsObject_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorpresettingsObject_path1_);
+            //using (var reader = new StreamReader(colorpresettingsObject_path1_))
+            //{
+            //    colorpresettingsObject_path1_ = reader.ReadToEnd();
+            //}
+            var RunSerializeObjectResult = (List<ColorPresetSettings>)privateSettingsManagerObject.Invoke("RunDeserializeObject", jsonData);
+            Assert.Greater(RunSerializeObjectResult.Count, 0);
+            File.Delete(colorpresettingsObject_path1_);
+        }
+
+        [Test]
+        public void TestRunSerializeColorPresetSettingsObject()
+        {
+            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID(), RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(), PresetForManual = "testpre" } };
+            string colorpresettingsObject_path1_ = "test_writeCroPresetpath.json";
+            string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
+            File.WriteAllText(colorpresettingsObject_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorpresettingsObject_path1_);
+            var RunSerializeObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", colorPresetSettingsConfigs);
+            Assert.Greater(RunSerializeObjectResult.Length, 0);
+            File.Delete(colorpresettingsObject_path1_);
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {
