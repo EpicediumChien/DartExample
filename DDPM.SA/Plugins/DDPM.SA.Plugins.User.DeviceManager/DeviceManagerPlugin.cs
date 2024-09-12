@@ -93,7 +93,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private readonly object _PluginConditionLock_ScheduleManager = new object();
         private readonly object _PluginConditionLock_DTPProxy = new object();
         private DisplayChange displayChange;
-
+        //private static Dell.Client.Framework.Common.Log _log;
         // ColorPreset objects
         private Dictionary<string, InstalledAppInfo> _AllAppData_tmp = new Dictionary<string, InstalledAppInfo>();
 
@@ -288,7 +288,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return Task.FromResult(_ICC_Metadata);
-        }      
+        }
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m)
         {
@@ -420,17 +420,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //if (colorPresetRunType == 0)
             //{
-                //data process
-             if (colorPresetRunType == (int)ColorPresetRunType.Auto )
+            //data process
+            if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                 r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, null, colorPresetRunType).Result;
             else
-                r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin,colorPresetRunType).Result;
-                //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
+                r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin, colorPresetRunType).Result;
+            //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
-                //write back to settings
-                //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
+            //write back to settings
+            //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-                //Thread.Sleep(100);
+            //Thread.Sleep(100);
             //}
 
             //show OSD over colorpreset plugin
@@ -535,7 +535,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //if (r)
             //{
-                //write VCP over display manager
+            //write VCP over display manager
             //    r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
             //}
 
@@ -605,6 +605,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("null/empty iconFolder in _SettingsPlugin [AddColorPresetForMonitorConfig]");
                 return Task.FromResult(false);
             }
+
+            // Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFolderPathValid(iconFolder, out FileInfo))
+            {
+                writelog($"{nameof(AddColorPresetForMonitorConfig)} {FileInfo}");
+                return Task.FromResult(false);
+            }
+
             _ColorPresetPlugin.SetAppIconFolder(iconFolder);
             if (!int.TryParse(index_monitor, out int idx))
             {
@@ -741,7 +750,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this).Result;
 
-            return Task.FromResult(temp);         
+            return Task.FromResult(temp);
         }
 
         /// <summary>
@@ -3452,6 +3461,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             _DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
                         }
+
+                        //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
+                        //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
+                        // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+                        //
+                        // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
+                        // {
+                        //    your handler code
+                        // }
+                        //
+                        if (_agent != null)
+                            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
                     }
                 });
             }
@@ -4311,7 +4332,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             break;
                         }
-                        else if ( (config.ColorManagement_Status == (int)ColorManagementStatus.On) && (config.ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor) )
+                        else if ((config.ColorManagement_Status == (int)ColorManagementStatus.On) && (config.ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor))
                         {
                             writelog("CheckAutoColorManagementEnableOnStartedCondition, config.ColorManagement_Status is ColorManagementStatus.On  config.ColorManagement_RunType is ColorManagementRunType.Bymonitor");
 
@@ -4787,9 +4808,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<HotkeyWarning> GetHotkeyConflicts(HotkeyInfo hotkeyInfo)
         {
             //single key
-            if (hotkeyInfo.Hotkey.Count == 1)
+            if (hotkeyInfo.Hotkey.Count == 1 && hotkeyInfo.Hotkey[0] != VirtualKey.None)
             {
                 return Task.FromResult(HotkeyWarning.SingleKey);
+            }
+            if (hotkeyInfo.Hotkey.Count == 1 && hotkeyInfo.Hotkey[0] == VirtualKey.None)
+            {
+                return Task.FromResult(HotkeyWarning.None);
             }
             if (_SettingsPlugin != null)
             {
@@ -5183,7 +5208,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //hotkey.InputSource Count must not 0
                 return;
             }
-            string crtInput = GetCurrentInputSource(monitorInfo);
+            string crtInput = monitorInfo.inputSource;
             // InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
             string nextInput = string.Empty;
             List<string> inputsList = hotkey.InputSource.OrderBy(x => x.Name).Select(input => input.Name).ToList();
@@ -5310,7 +5335,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //hotkey.InputSource Count must not 0
                 return;
             }
-            string crtInput = GetCurrentInputSource(monitorInfo);
+            string crtInput = monitorInfo.inputSource;
             InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
             if (switchTo != null)
             {
@@ -5332,7 +5357,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Dictionary<string, InputInfo> result = GetInputSourcelist(monitorInfo).Result;
             string nextInput = string.Empty;
             //get current main input source
-            string crtInput = GetCurrentInputSource(monitorInfo);
+            string crtInput = monitorInfo.inputSource;
             List<KeyValuePair<string, InputInfo>> list = result.OrderBy(x => x.Key).ToList();
             for (int i = 0; i < list.Count; i++)
             {
