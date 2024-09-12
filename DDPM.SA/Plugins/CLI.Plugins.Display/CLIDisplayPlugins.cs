@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
+using Windows.Foundation.Collections;
 using static DDPM.SA.Common.ICLICommandTable;
 using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using Console = System.Console;
@@ -3368,17 +3369,11 @@ namespace DDPM.CLI.Plugins.Display
         //06.07 Jason
         private async Task<(int code, string result)> InputSource(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            //CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
-            //if (devMgr == null)
-            //{
-            //    writelog("SetVCPCode: input null IDeviceManagerSA");
-            //    return (int)CLI_ExitCode.null_device_manager;
-            //}
-
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
             bool ispass = true;
+            DDPMSettings data = devMgr.ReloadAppConfigData().Result;
 
             if (commandLineInput.Command == "SET")
             {
@@ -3401,7 +3396,22 @@ namespace DDPM.CLI.Plugins.Display
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                            string get_inputvpccode = get_inputsource_type(commandLineInput.Options[0].Option_Value);
+                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                            
+                            foreach (string v in op_values)
+                            {
+                                switch (v.ToUpper())
+                                {
+                                    case "LOCK":
+                                    case "UNLOCK":
+                                        if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
+                                        if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
+                                        await devMgr.SetAppConfigData(data);
+                                        break;
+                                }
+                            }
+                            string get_inputvpccode = get_inputsource_type(op_values[0]);
                             int getvcp = get_inputsource_vcp(get_inputvpccode);
 
                             if (getvcp != 0)
@@ -3412,7 +3422,7 @@ namespace DDPM.CLI.Plugins.Display
                                     if (!retcode) ispass = false;
 
                                     //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
-                                    _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                    _Input_RESPONSE.Value = op_values[0];
                                     if (!ispass)
                                     {
                                         _Input_RESPONSE.Result = "FAIL";
@@ -3423,6 +3433,7 @@ namespace DDPM.CLI.Plugins.Display
                                     else
                                     {
                                         _Input_RESPONSE.Result = "PASS";
+                                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                         output += "\n" + _Input_RESPONSE.ToJson();
                                     }
@@ -3449,7 +3460,7 @@ namespace DDPM.CLI.Plugins.Display
                                 //_Input_RESPONSE.ActiveInputSource = String.Empty;
                                 _Input_RESPONSE.Result = "FAIL";
                                 _Input_RESPONSE.Message = "Wrong option value: ";
-                                _Input_RESPONSE.Message += $"{commandLineInput.Options[0].Option_Value}";//add error message if option value not exist in input source list
+                                _Input_RESPONSE.Message += $"{op_values[0]}";//add error message if option value not exist in input source list
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                                 writelog($"ActiveInputSource set fail {output}");
@@ -3471,7 +3482,22 @@ namespace DDPM.CLI.Plugins.Display
                             _Input_RESPONSE.Command = commandLineInput.Command;
                             _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                            string get_inputvpccode = get_inputsource_type(commandLineInput.Options[0].Option_Value);
+                            commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                            string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                            
+                            foreach (string v in op_values)
+                            {
+                                switch (v.ToUpper())
+                                {
+                                    case "LOCK":
+                                    case "UNLOCK":
+                                        if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
+                                        if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
+                                        await devMgr.SetAppConfigData(data);
+                                        break;
+                                }
+                            }
+                            string get_inputvpccode = get_inputsource_type(op_values[0]);
                             int getvcp = get_inputsource_vcp(get_inputvpccode);
 
                             if (getvcp != 0)
@@ -3481,7 +3507,7 @@ namespace DDPM.CLI.Plugins.Display
                                     bool retcode = SetVCPCode(devMgr, monitor, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
                                     if (!retcode) ispass = false;
                                     //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
-                                    _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                    _Input_RESPONSE.Value = op_values[0];
                                     if (!ispass)
                                     {
                                         _Input_RESPONSE.Result = "FAIL";
@@ -3492,6 +3518,7 @@ namespace DDPM.CLI.Plugins.Display
                                     else
                                     {
                                         _Input_RESPONSE.Result = "PASS";
+                                        _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                                         System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                         output += "\n" + _Input_RESPONSE.ToJson();
                                     }
@@ -3542,7 +3569,22 @@ namespace DDPM.CLI.Plugins.Display
                                 _Input_RESPONSE.Command = commandLineInput.Command;
                                 _Input_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
 
-                                string get_inputvpccode = get_inputsource_type(commandLineInput.Options[0].Option_Value);
+                                commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                                string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
+                                
+                                foreach (string v in op_values)
+                                {
+                                    switch (v.ToUpper())
+                                    {
+                                        case "LOCK":
+                                        case "UNLOCK":
+                                            if (v.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Display_ActiveInputSource = true;
+                                            if (v.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Display_ActiveInputSource = false;
+                                            await devMgr.SetAppConfigData(data);
+                                            break;
+                                    }
+                                }
+                                string get_inputvpccode = get_inputsource_type(op_values[0]);
                                 int getvcp = get_inputsource_vcp(get_inputvpccode);
 
                                 if (getvcp != 0)
@@ -3550,7 +3592,7 @@ namespace DDPM.CLI.Plugins.Display
                                     if (commandLineInput.Options.Count == 1)
                                     {
                                         //_Input_RESPONSE.ActiveInputSource = commandLineInput.Options[0].Option_Value;
-                                        _Input_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                        _Input_RESPONSE.Value = op_values[0];
                                         bool retcode = SetVCPCode(devMgr, mo.Index, "0x60", "0x" + get_inputsource_vcp(get_inputvpccode).ToString("X2")).Result;
                                         if (!retcode) ispass = false;
                                         if (!ispass)
@@ -3563,6 +3605,7 @@ namespace DDPM.CLI.Plugins.Display
                                         else
                                         {
                                             _Input_RESPONSE.Result = "Pass";
+                                            _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                                             System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                             output += "\n" + _Input_RESPONSE.ToJson();
                                         }
@@ -3602,7 +3645,7 @@ namespace DDPM.CLI.Plugins.Display
                 writelog($"ActiveInputSource set exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
-            else //Get
+            else if(commandLineInput.Command == "GET")
             {
                 if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
                 {
@@ -3632,6 +3675,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 _Input_RESPONSE.Result = "PASS";
+                                _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                             }
@@ -3677,6 +3721,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 _Input_RESPONSE.Result = "PASS";
+                                _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                             }
@@ -3724,6 +3769,7 @@ namespace DDPM.CLI.Plugins.Display
                                 else
                                 {
                                     _Input_RESPONSE.Result = "PASS";
+                                    _Input_RESPONSE.Value += "," + (data.LockSettings.Lock_Display_ActiveInputSource ? "LOCK" : "UNLOCK");
                                     System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                     output += "\n" + _Input_RESPONSE.ToJson();
                                 }
@@ -3744,6 +3790,12 @@ namespace DDPM.CLI.Plugins.Display
                 writelog($"ActiveInputSource get exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
+            CLI_InputList_RESPONSE temp = new CLI_InputList_RESPONSE();
+            temp.Command = commandLineInput.Command;
+            temp.TargetFeature = commandLineInput.TargetFeature;
+            temp.Result = "Un-supported command";
+            temp.Message = "Un-supported command";
+            return ((int)CLI_ExitCode.command_not_support, temp.ToJson());
         }
 
         //06.07 Jason

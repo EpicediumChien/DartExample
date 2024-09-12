@@ -754,7 +754,7 @@ namespace DDPM.SA.Common.CLI
 
                 op.Option_Value.Replace(".", ",");
                 List<string> values = op.Option_Value.Split(",").ToList();
-                List<string> inputsourcelist = new List<string>()
+                List<string> inputSourceList = new List<string>()
                 {
                     "HDMI",                    
                     "DP",                    
@@ -805,7 +805,6 @@ namespace DDPM.SA.Common.CLI
                                 data_IT.Lock_Display_PowerNap = target;
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Display_PowerNap = target;
-                            Debug.WriteLine($"Debug-1");
                         }
                         else if (commandLineInput.TargetFeature.Equals("RESOLUTIONREFRESHRATE"))
                         {
@@ -833,6 +832,7 @@ namespace DDPM.SA.Common.CLI
                     }
                     else
                     {
+                        //Judgement the user action here, if the value is supported then bypass this loop. (the data store should be processed at user proxy plugin)
                         if(commandLineInput.TargetFeature.Equals("POWERNAP"))
                         {
                             if (value.ToUpper().Equals("OFF") || value.ToUpper().Equals("SLEEP") || value.ToUpper().Equals("REDUCEBRIGHTNESS"))
@@ -850,12 +850,13 @@ namespace DDPM.SA.Common.CLI
                         }
                         else if (commandLineInput.TargetFeature.Equals("ACTIVEINPUTSOURCE"))
                         {
-                            //foreach (string inpoutsource in values)
+                            if (inputSourceList.FindIndex(x => value.ToUpper().Trim().Contains(x.ToUpper().Trim())) >= 0)
                             {
-                                //if (inputsourcelist.Contains(inpoutsource))
-                                    continue;
+                                WriteLog(Log, $"[IT]Feature:{commandLineInput.TargetFeature} get the value [{value}] indeed in support list");
+                                continue;
                             }
                         }
+                        //No pre-definition be found, means fail
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
                         Debug.WriteLine(response.Message);
                         Console.WriteLine(response.Message);

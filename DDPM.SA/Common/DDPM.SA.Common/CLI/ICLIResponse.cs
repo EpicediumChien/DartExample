@@ -167,7 +167,7 @@ namespace DDPM.SA.Common
 
     public class CLI_Input_RESPONSE : CLI_RESPONSE
     {
-        public string ActiveInputSource { get; set; }
+        //public string ActiveInputSource { get; set; }
     }
 
     public class CLI_InputList_RESPONSE : CLI_RESPONSE
