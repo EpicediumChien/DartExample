@@ -3368,17 +3368,11 @@ namespace DDPM.CLI.Plugins.Display
         //06.07 Jason
         private async Task<(int code, string result)> InputSource(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            //CLI_Input_RESPONSE _Input_RESPONSE = new CLI_Input_RESPONSE();
-            //if (devMgr == null)
-            //{
-            //    writelog("SetVCPCode: input null IDeviceManagerSA");
-            //    return (int)CLI_ExitCode.null_device_manager;
-            //}
-
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors(); //_DisplayPlugin.GetMonitors();
             string output = string.Empty;
             bool ispass = true;
+            DDPMSettings data = devMgr.ReloadAppConfigData().Result;
 
             if (commandLineInput.Command == "SET")
             {
@@ -3602,7 +3596,7 @@ namespace DDPM.CLI.Plugins.Display
                 writelog($"ActiveInputSource set exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
-            else //Get
+            else if(commandLineInput.Command == "GET")
             {
                 if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
                 {
@@ -3632,6 +3626,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 _Input_RESPONSE.Result = "PASS";
+                                _Input_RESPONSE.Value += data.LockSettings.Lock_Display_ActiveInputSource ? ",Lock" : "Unlock";
                                 System.Console.WriteLine(_Input_RESPONSE.ToJson());
                                 output += "\n" + _Input_RESPONSE.ToJson();
                             }
@@ -3744,6 +3739,12 @@ namespace DDPM.CLI.Plugins.Display
                 writelog($"ActiveInputSource get exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
+            CLI_InputList_RESPONSE temp = new CLI_InputList_RESPONSE();
+            temp.Command = commandLineInput.Command;
+            temp.TargetFeature = commandLineInput.TargetFeature;
+            temp.Result = "Un-supported command";
+            temp.Message = "Un-supported command";
+            return ((int)CLI_ExitCode.command_not_support, temp.ToJson());
         }
 
         //06.07 Jason
