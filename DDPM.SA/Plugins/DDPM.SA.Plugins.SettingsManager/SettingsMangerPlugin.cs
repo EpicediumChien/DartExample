@@ -57,7 +57,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
-        private static Dell.Client.Framework.Common.Log _log;
+        //private static Dell.Client.Framework.Common.Log _log;
         private enum log_type
         {
             info = 0,
