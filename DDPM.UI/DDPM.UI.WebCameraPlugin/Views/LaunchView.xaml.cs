@@ -53,8 +53,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly WebCameraViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = new int[] { 0, 483, 483, 483, 483, 483 };
-        //private readonly string Restore = "Restore to default";
-        //private readonly string Unpair = "Unpair";
         private readonly string CameraControl = Strings.CameraControl;
         private readonly string ColorandImage = Strings.ColorandImage;
         private readonly string PresenceDetection = Strings.PresenceDetection;
@@ -62,7 +60,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly string Microphone = Strings.Microphone;
 
         // 20240731
-        private DispatcherTimer _timer;
+        private DispatcherTimer _timer = new();
 
         private int _countdownValue;
 
@@ -78,6 +76,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DataContext = _vm;
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 BuildModuleGroups();
+
+                txtPreset.Text = UI.Resources.Helper.LangHelper.Instance["Webcamera.0"];
             }
         }
 
@@ -178,6 +178,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
+
+            if (newItem.Text == UI.Resources.Helper.LangHelper.Instance["Camera.4"])
+            {
+                _ = CleanupMediaCaptureAsync();
+                imgDevice.Visibility = Visibility.Visible;
+                gridPreview.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                Preview();
+                imgDevice.Visibility = Visibility.Hidden;
+                gridPreview.Visibility = Visibility.Visible;
+            }
         }
 
         #endregion Vbar
@@ -233,26 +246,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.VbarSelectedIndex = -1;
             _vm.SetLadningMode(true);
             _vm.SelectVBar();
-        }
 
-        private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
-            {
-                restoreModalDialog.Owner = parentWindow;
-            }
-
-            bool? dialogResult = restoreModalDialog.ShowDialog();
-            if (dialogResult == true)
-            {
-                //MessageBox.Show("OK button was clicked");
-            }
-        }
-
-        private void LargeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
+            _ = CleanupMediaCaptureAsync();
+            imgDevice.Visibility = Visibility.Visible;
+            gridPreview.Visibility = Visibility.Hidden;
         }
 
         MediaCaptureFailedEventHandler handler = (sender, e) =>
@@ -263,9 +260,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             });
         };
 
-
         // 20240626 jim add
-        private async void Button_Preview_Click(object sender, RoutedEventArgs e)
+        private async void Preview()
         {
             if (_vm!.captureManagerInitialized)
             { return; }
@@ -309,7 +305,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 MediaFrameSourceInfo frameSourceInfo = selectedFrameSourceGroup.SourceInfos[0];
 
-                _vm._mediaCapture = new MediaCapture();
+                _vm!._mediaCapture = new MediaCapture();
                 _vm._mediaCapture.Failed += handler;
 
                 try
@@ -410,7 +406,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _countdownValue = 3; // 設置倒數起始值
                 CountdownText.Text = _countdownValue.ToString();
 
-                _timer = new DispatcherTimer();
                 _timer.Interval = TimeSpan.FromSeconds(1);
                 _timer.Tick += Timer_Tick;
                 _timer.Start();
@@ -529,7 +524,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // 20240626 jim add
         private async Task CleanupMediaCaptureAsync()
         {
-            if (_vm._mediaCapture != null)
+            if (_vm!._mediaCapture != null)
             {
                 using (var mediaCapture = _vm._mediaCapture)
                 {
