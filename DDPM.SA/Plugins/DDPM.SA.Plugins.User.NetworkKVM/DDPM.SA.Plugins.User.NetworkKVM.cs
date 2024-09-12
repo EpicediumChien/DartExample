@@ -5,6 +5,7 @@ using DdpmJsonCommon;
 using Dell.Client.Framework.Agent;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Newtonsoft.Json;
@@ -789,9 +790,12 @@ namespace NetworkKVM.Plugins
                 {
                     foreach (Process process in processes)
                     {
-                        NkvmdHandle = process.Handle;
-                        Console.WriteLine($"Process ID: {process.Id}, Handle: {NkvmdHandle}");
-                        break;
+                        if (process.ProcessName == processName)
+                        {
+                            NkvmdHandle = process.Handle;
+                            Console.WriteLine($"Process ID: {process.Id}, Handle: {NkvmdHandle}");
+                            break;
+                        }
                     }
                 }
 
@@ -1148,6 +1152,10 @@ namespace NetworkKVM.Plugins
                         break;
 
                     case "GET_NKVM_VERSION_RESPONSE":
+                        if (ResponseSucces(json).Result)
+                        {
+                            GetVersionResponse(jsonstring);
+                        }
                         break;
 
                     default:
@@ -1650,20 +1658,22 @@ namespace NetworkKVM.Plugins
             WriteAsync(chanage_LIMITED_SW.ToJson()).Wait();
         }
 
-        //private void GetVersionResponse(string jsonstring)
-        //{
-        //    GET_NKVM_VERSION get_NKVM_VERSION = new GET_NKVM_VERSION();
-        //    GET_NKVM_VERSION_RESPONSE get_NKVM_VERSION_RESPONSE = new GET_NKVM_VERSION_RESPONSE();
-        //    get_NKVM_VERSION = JsonConvert.DeserializeObject<GET_NKVM_VERSION>(jsonstring);
-        //    if (get_NKVM_VERSION != null)
-        //    {
-
-        //    }
-        //    else
-        //    {
-        //        _logs.DebugMsg("[NetworkKVM] Not GET_NKVM_VERSION....");
-        //    }
-        //}
+        private void GetVersionResponse(string jsonstring)
+        {
+            GET_NKVM_VERSION_RESPONSE get_NKVM_VERSION_RESPONSE = new GET_NKVM_VERSION_RESPONSE();
+            get_NKVM_VERSION_RESPONSE = JsonConvert.DeserializeObject<GET_NKVM_VERSION_RESPONSE>(jsonstring);
+            if (get_NKVM_VERSION_RESPONSE != null)
+            {
+                NKVMRespone CLIrespone = new NKVMRespone();
+                CLIrespone.CLIName = get_NKVM_VERSION_RESPONSE.type;
+                CLIrespone.Respone = get_NKVM_VERSION_RESPONSE.Version;
+                ToNKVMCLI(CLIrespone);
+            }
+            else
+            {
+                _logs.DebugMsg("[NetworkKVM] Not GET_NKVM_VERSION....");
+            }
+        }
 
         #endregion Private Methods
 
@@ -1673,7 +1683,7 @@ namespace NetworkKVM.Plugins
 
         public event NKVMPluginEventHandler NKVMPluginEvent;
 
-        public event EventHandler NKVMCLIEvent;
+        public event EventHandler<NKVMRespone> NKVMCLIEvent;
 
         public class EventArgsjson : EventArgs
         {
@@ -1728,7 +1738,10 @@ namespace NetworkKVM.Plugins
             }
         }
 
-        //public
+        public void ToNKVMCLI(NKVMRespone response)
+        {
+            NKVMCLIEvent?.AsyncFireAndForget(this, response, System.Threading.CancellationToken.None);
+        }
 
         #endregion Event Handler
     }
