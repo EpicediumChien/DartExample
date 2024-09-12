@@ -364,32 +364,32 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname, out bool binit)
         {
             binit = false;
-            string folder = GetActiveUserLocalAppDataPath();
-            WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
-            string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
-            //create display folder if not exist
-            _display_path = folder_appdatapath_display;
             List<DDPMMonitorSettings> monitorSettingList = new List<DDPMMonitorSettings>();
-            try
-            {
-                if (!Directory.Exists(_display_path))
+            //if (!relay_registered && _SysSettingsPlugin != null)
+            //{
+                string folder = GetActiveUserLocalAppDataPath();
+                WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
+                string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
+                //create display folder if not exist
+                _display_path = folder_appdatapath_display;
+                try
                 {
-                    DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
-                    WriteLog($"create folder {_display_path} success");
+                    if (!Directory.Exists(_display_path))
+                    {
+                        DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
+                        WriteLog($"create folder {_display_path} success");
+                    }
                 }
-            }
-            catch
-            {
-                WriteLog($"CreateDirectory with {_display_path} failed.");
-                _AllMonitorSettings = null;
-                binit = false;
-                return Task.FromResult(monitorSettingList);
-            }
-            //create monitor setting file if not exist
-            string file_monitorconfig_path = _display_path + "\\" + modelname + ".json";
-            WriteLog($"_monitorSettings_path is {file_monitorconfig_path}.");
-            if (!string.IsNullOrEmpty(_settings_path))
-            {
+                catch
+                {
+                    WriteLog($"CreateDirectory with {_display_path} failed.");
+                    _AllMonitorSettings = null;
+                    binit = false;
+                    return Task.FromResult(monitorSettingList);
+                }
+                //create monitor setting file if not exist
+                string file_monitorconfig_path = _display_path + "\\" + modelname + ".json";
+                WriteLog($"_monitorSettings_path is {file_monitorconfig_path}.");
                 if (File.Exists(file_monitorconfig_path))
                 {
                     monitorSettingList = ReloadMonitorSettings(modelname).Result;
@@ -431,12 +431,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         binit = false;
                     }
                 }
-            }
-            else
-            {
-                WriteLog("[InitMonitorConfigFile] No _settings_path");
-                binit = false;
-            }
+            //}
             return Task.FromResult(monitorSettingList);
         }
 
@@ -513,7 +508,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname)
         {
             List<DDPMMonitorSettings> monitorSettings = new List<DDPMMonitorSettings>();
-            if (!string.IsNullOrEmpty(_settings_path))
+            if (!string.IsNullOrEmpty(_display_path))
             {
                 string monitorSettings_path = _display_path + "\\" + modelname + ".json";
                 if (File.Exists(monitorSettings_path))
@@ -544,6 +539,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         ;
                     }
                 }
+            }
+            else 
+            {
+                WriteLog("ReloadMonitorSettings, but _display_path is not exist");
             }
             return Task.FromResult(monitorSettings);
         }
