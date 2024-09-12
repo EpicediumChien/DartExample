@@ -252,7 +252,6 @@ namespace DDPM.SA.Common.CLI
             {
                 "GET",
                 "SET",
-                "CONFIGURE",
             };
 
             //if (!commandLineInput.Command.Equals("CONFIGURE") && !commandLineInput.Command.Equals("GET"))
@@ -718,6 +717,10 @@ namespace DDPM.SA.Common.CLI
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_PowerNap}");
                         response.Value = (data_IT.Lock_Display_PowerNap ? "Lock" : "Unlock");
                         break;
+                    case "RESOLUTIONREFRESHRATE": //assume only IT command enter here
+                        Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ResolutionRefreshRate}");
+                        response.Value = (data_IT.Lock_Display_ResolutionRefreshRate ? "Lock" : "Unlock");
+                        break;
                     default:
                         return CLI_Response_TypeNotSupport(commandLineInput, result);
                 }                
@@ -783,6 +786,14 @@ namespace DDPM.SA.Common.CLI
                                 data_IT.Lock_Display_PowerNap = target;
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Display_PowerNap = target;
+                            Debug.WriteLine($"Debug-1");
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("RESOLUTIONREFRESHRATE"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_ResolutionRefreshRate = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_ResolutionRefreshRate = target;
                         }
                         else
                             return CLI_Response_TypeNotSupport(commandLineInput, result);
@@ -792,6 +803,11 @@ namespace DDPM.SA.Common.CLI
                         if(commandLineInput.TargetFeature.Equals("POWERNAP"))
                         {
                             if (value.ToUpper().Equals("OFF") || value.ToUpper().Equals("SLEEP") || value.ToUpper().Equals("REDUCEBRIGHTNESS"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("RESOLUTIONREFRESHRATE"))
+                        {
+                            if (value.ToUpper().Contains("X") && value.Contains("@"))
                                 continue;
                         }
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
@@ -814,6 +830,9 @@ namespace DDPM.SA.Common.CLI
                                 break;
                             case "POWERNAP":
                                 status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_PowerNap" }).Result;
+                                break;
+                            case "RESOLUTIONREFRESHRATE":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_ResolutionRefreshRate" }).Result;
                                 break;
                         }
                     }

@@ -5891,7 +5891,7 @@ namespace DDPM.CLI.Plugins.Display
                     try
                     {
                         //CLI: Terry update 0723
-                        if (commandLineInput.Command.ToUpper().Trim().Equals("CONFIGURE"))
+                        if (commandLineInput.Command.ToUpper().Trim().Equals("SET"))
                         {
                             writelog("RESOLUTIONREFRESHRATE get entry");
                             if (commandLineInput.Options.Count > 1)//not allow more than one command code, print redundant commanmd
@@ -5914,9 +5914,25 @@ namespace DDPM.CLI.Plugins.Display
                             if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("VALUE")) //ex: /set -name=Display.Brightness -index=[0] -value=60
                             {
                                 cLI_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
+                                string value = commandLineInput.Options[0].Option_Value;
+                                string frequency = null;
+                                //Debug.WriteLine($"{commandLineInput.Options[0].Option_Value}");
                                 string[] ss = commandLineInput.Options[0].Option_Value.Split("X");
+                                //Debug.WriteLine($"width: {ss[0]}, {ss[1]}");
                                 string[] sss = ss[1].Split("@");
-                                displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(sss[1]) };
+                                //Debug.WriteLine($"high: {sss[0]}, {sss[1]}");
+                                sss[1].Replace(".", ",");
+                                if (sss[1].Contains(","))
+                                {
+                                    string[] ssss = sss[1].Split(",");
+                                    frequency = ssss[0];
+                                    string lock_option = ssss[1];
+                                }
+                                else
+                                    frequency = sss[1];
+
+                                //Debug.WriteLine($"frequency: {ssss[0]}, {ssss[1]}");
+                                displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(sss[0]), Frequency = int.Parse(frequency) };
                                 ret = _devMgr.SetDisplayPropertiest(monitorInfo,
                                     displayProperties,
                                     displayPropertiesInfo.CurrentOrientation).Result;
@@ -8074,7 +8090,7 @@ namespace DDPM.CLI.Plugins.Display
             string restult_onoff = string.Empty;
 
             writelog($"Autocolorpreset Entry");
-            if (commandLineInput.Command == "CONFIGURE")
+            if (commandLineInput.Command == "SET")
             {
                 if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
                 {
@@ -8085,7 +8101,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                        S_Autocolorpreset_RESPONSE.Command = "SET";
                         S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
 
                         switch (commandLineInput.Options[0].Option_Value)
@@ -8115,7 +8131,7 @@ namespace DDPM.CLI.Plugins.Display
                             default:
                                 {
                                     writelog($"Autocolorpreset default Entry");
-                                    S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                                    S_Autocolorpreset_RESPONSE.Command = "SET";
                                     S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                                     S_Autocolorpreset_RESPONSE.Result = "FAIL";
                                     S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
@@ -8137,7 +8153,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                        S_Autocolorpreset_RESPONSE.Command = "SET";
                         S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
 
                         switch (commandLineInput.Options[0].Option_Value)
@@ -8167,7 +8183,7 @@ namespace DDPM.CLI.Plugins.Display
                             default:
                                 {
                                     writelog($"Autocolorpreset default Entry");
-                                    S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                                    S_Autocolorpreset_RESPONSE.Command = "SET";
                                     S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                                     S_Autocolorpreset_RESPONSE.Result = "FAIL";
                                     S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
@@ -8189,7 +8205,7 @@ namespace DDPM.CLI.Plugins.Display
                             S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                             S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                             S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.Command = "SET";
                             S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
 
                             switch (commandLineInput.Options[0].Option_Value)
@@ -8219,7 +8235,7 @@ namespace DDPM.CLI.Plugins.Display
                                 default:
                                     {
                                         writelog($"Autocolorpreset default Entry");
-                                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                                        S_Autocolorpreset_RESPONSE.Command = "SET";
                                         S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                                         S_Autocolorpreset_RESPONSE.Result = "FAIL";
                                         S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
@@ -8244,7 +8260,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                        S_Autocolorpreset_RESPONSE.Command = "SET";
                         S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
 
                         writelog($"Autocolorpreset GET Entry");
@@ -8265,7 +8281,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             writelog($"Autocolorpreset fail");
-                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.Command = "SET";
                             S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                             S_Autocolorpreset_RESPONSE.Result = "FAIL";
                             S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
@@ -8285,7 +8301,7 @@ namespace DDPM.CLI.Plugins.Display
                         S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                         S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                         S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                        S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                        S_Autocolorpreset_RESPONSE.Command = "SET";
                         S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
 
                         writelog($"Autocolorpreset GET idx Entry");
@@ -8306,7 +8322,7 @@ namespace DDPM.CLI.Plugins.Display
                         else
                         {
                             writelog($"Autocolorpreset fail");
-                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.Command = "SET";
                             S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                             S_Autocolorpreset_RESPONSE.Result = "FAIL";
                             S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
@@ -8326,7 +8342,7 @@ namespace DDPM.CLI.Plugins.Display
                             S_Autocolorpreset_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                             S_Autocolorpreset_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                             S_Autocolorpreset_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                            S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                            S_Autocolorpreset_RESPONSE.Command = "SET";
                             S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
 
                             writelog($"Autocolorpreset GET Entry");
@@ -8347,7 +8363,7 @@ namespace DDPM.CLI.Plugins.Display
                             else
                             {
                                 writelog($"Autocolorpreset fail");
-                                S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                                S_Autocolorpreset_RESPONSE.Command = "SET";
                                 S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                                 S_Autocolorpreset_RESPONSE.Result = "FAIL";
                                 S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
@@ -8361,7 +8377,7 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                S_Autocolorpreset_RESPONSE.Command = "CONFIGURE";
+                S_Autocolorpreset_RESPONSE.Command = "SET";
                 S_Autocolorpreset_RESPONSE.TargetFeature = "AUTOCOLORPRESET";
                 S_Autocolorpreset_RESPONSE.Result = "FAIL";
                 S_Autocolorpreset_RESPONSE.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
@@ -10119,7 +10135,7 @@ namespace DDPM.CLI.Plugins.Display
         private (int code, string result) EasyarrangeX(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
 
-            if (commandLineInput.Command == "GET" || commandLineInput.Command == "CONFIGURE")
+            if (commandLineInput.Command == "GET" || commandLineInput.Command == "SET")
             {
                 return Easyarrange(devMgr, commandLineInput).Result;
             }
@@ -10192,7 +10208,7 @@ namespace DDPM.CLI.Plugins.Display
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
-            if (commandLineInput.Command == "CONFIGURE")
+            if (commandLineInput.Command == "SET")
             {
 
                 writelog("Easyarrange configure entry");
@@ -10599,7 +10615,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) Networkkvmx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")
             {
                 return Networkkvm(devMgr, commandLineInput).Result;
             }
@@ -10622,7 +10638,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
 
                 List<int> _monitorIndeies = new List<int>();
@@ -10708,7 +10724,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) Networkkvmautoconnectx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")
             {
                 return Networkkvmautoconnect(devMgr, commandLineInput).Result;
             }
@@ -10731,7 +10747,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
 
@@ -10814,7 +10830,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) Networkkvmcontenttransferx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")
             {
                 return Networkkvmcontenttransfer(devMgr, commandLineInput).Result;
             }
@@ -10837,7 +10853,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
 
@@ -10922,7 +10938,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) Networkkvmincomingportx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")
             {
                 return Networkkvmincomingport(devMgr, commandLineInput).Result;
             }
@@ -10945,7 +10961,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
 
@@ -11019,7 +11035,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) Networkkvmoutgoingportx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")
             {
                 return Networkkvmoutgoingport(devMgr, commandLineInput).Result;
             }
@@ -11042,7 +11058,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
                 List<int> _monitorIndeies = new List<int>();
                 if (_AllInfoMonitors == null)
@@ -11113,7 +11129,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) Networkkvmcontenttransferportx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")
             {
                 return Networkkvcontenttransferport(devMgr, commandLineInput).Result;
             }
@@ -11136,7 +11152,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.Command == "CONFIGURE" && commandLineInput.Options[0].Option_Value != null)
+            if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
 
                 List<int> _monitorIndeies = new List<int>();
@@ -11213,7 +11229,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private (int code, string result) Networkkvmaccessresetx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-            if (commandLineInput.Command == "CONFIGURE" || commandLineInput.Command == "GET")
+            if (commandLineInput.Command == "SET" || commandLineInput.Command == "GET")
             {
                 return Networkkvmaccessreset(devMgr, commandLineInput).Result;
             }
@@ -11236,7 +11252,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
-            if (commandLineInput.Command == "CONFIGURE")
+            if (commandLineInput.Command == "SET")
             {
                 List<int> _monitorIndeies = new List<int>();
 

@@ -115,6 +115,23 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(InitDDPMSettings,Is.EqualTo(result));
         }
 
+        [Test]
+        public void TestGetActiveUserLocalAppDataPath()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var result = (string)privateSettingsManagerObject.Invoke("GetActiveUserLocalAppDataPath");
+            Assert.That(!string.IsNullOrEmpty(result));
+        }
+
+        [Test]
+        public void TestGetAppIconFolderPath()
+        {
+            string appIconFolderPath_ = "test_path";
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_appiconfolder_path", appIconFolderPath_);
+            var GetAppIconFolderPathResult = SettingsManagerSAPlugin.GetAppIconFolderPath().Result;
+            Assert.That(appIconFolderPath_, Is.EqualTo(GetAppIconFolderPathResult));
+        }
 
         [OneTimeTearDown]
         public void TearDown()
