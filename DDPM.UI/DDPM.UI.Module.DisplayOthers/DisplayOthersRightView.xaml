@@ -193,5 +193,21 @@
                 </Border>
             </StackPanel>
         </UXControls:UXScrollViewer>
+        <Border Name="DisableAll" Background="#4C24273C">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <!-- Add a UXBusyIndicator from Robert -->
+            <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                IsActive="{Binding IsBusy}" />
+        </Border>
     </Grid>
 </UserControl>

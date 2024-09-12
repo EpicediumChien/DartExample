@@ -99,7 +99,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _colorsettings_path { get; set; }
         private string _appiconfolder_path { get; set; }
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
-        private Dictionary<string, List<DDPMMonitorSettings>> _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+        private Dictionary<string, List<DDPMMonitorSettings>>? _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
         private string _display_path { get; set; }
         private List<ColorPresetSettings> _preset_settings = new List<ColorPresetSettings>();//Dean 0626 fix SAST issue
 
@@ -358,8 +358,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
         }
 
-        public Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname)
+        public Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname, out bool binit)
         {
+            binit = false;
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
             string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
@@ -378,47 +379,60 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 WriteLog($"CreateDirectory with {_display_path} failed.");
                 _AllMonitorSettings = null;
+                binit = false;
                 return Task.FromResult(monitorSettingList);
             }
             //create monitor setting file if not exist
             string file_monitorconfig_path = _display_path + "\\" + modelname + ".json";
             WriteLog($"_monitorSettings_path is {file_monitorconfig_path}.");
-            //string info;
-            if (File.Exists(file_monitorconfig_path))
+            if (!string.IsNullOrEmpty(_settings_path))
             {
-                monitorSettingList = ReloadMonitorSettings(modelname).Result;
-                if (_AllMonitorSettings != null)
+                if (File.Exists(file_monitorconfig_path))
                 {
-                    //find monitor settings
-                    if (_AllMonitorSettings.ContainsKey(modelname))
+                    monitorSettingList = ReloadMonitorSettings(modelname).Result;
+                    if (_AllMonitorSettings != null)
                     {
-                        _AllMonitorSettings[modelname] = monitorSettingList;
+                        //find monitor settings
+                        if (_AllMonitorSettings.ContainsKey(modelname))
+                        {
+                            _AllMonitorSettings[modelname] = monitorSettingList;
+                            binit = true;
+                        }
+                        else
+                        {
+                            _AllMonitorSettings.Add(modelname, monitorSettingList);
+                            binit = true;
+                        }
                     }
                     else
                     {
+                        _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
                         _AllMonitorSettings.Add(modelname, monitorSettingList);
+                        binit = true;
                     }
                 }
                 else
                 {
-                    _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
-                    _AllMonitorSettings.Add(modelname, monitorSettingList);
+                    FileInfo fileInfo = new FileInfo(file_monitorconfig_path);
+                    fileInfo.Create().Close();
+                    WriteLog("[InitMonitorConfigFile] settings file not exist, new an object");
+                    //init data to file
+                    if (WriteMonitorSettings(modelname, monitorSettingList).Result)
+                    {
+                        WriteLog("[InitMonitorConfigFile] Monitor settings file create and write success");
+                        binit = true;
+                    }
+                    else
+                    {
+                        WriteLog("[InitMonitorConfigFile] Monitor settings file create and write failed");
+                        binit = false;
+                    }
                 }
             }
             else
             {
-                FileInfo fileInfo = new FileInfo(file_monitorconfig_path);
-                fileInfo.Create().Close();
-                WriteLog("[InitMonitorConfigFile] settings file not exist, new an object");
-                //init data to file
-                if (WriteMonitorSettings(modelname, monitorSettingList).Result)
-                {
-                    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write success");
-                }
-                else
-                {
-                    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write failed");
-                }
+                WriteLog("[InitMonitorConfigFile] No _settings_path");
+                binit = false;
             }
             return Task.FromResult(monitorSettingList);
         }

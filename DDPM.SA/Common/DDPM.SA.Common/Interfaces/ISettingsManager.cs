@@ -55,7 +55,7 @@ namespace DDPM.SA.Common
 
         Task<string> GetAppIconFolderPath();
 
-        Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname);
+        Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname, out bool binit);
 
         Task<List<DDPMMonitorSettings>> ReloadMonitorSettings(string modelname);
 

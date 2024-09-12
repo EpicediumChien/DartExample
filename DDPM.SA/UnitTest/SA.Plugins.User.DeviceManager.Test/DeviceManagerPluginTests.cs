@@ -524,7 +524,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
-            _SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
+            //_SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
             result = deviceMangerPlugin.GetMonitors(false).Result;
             Assert.Greater(result.Count, 0);
@@ -625,7 +625,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
-            _SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
+            //_SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
             result = deviceMangerPlugin.SetVCPCapability(monitorInfo, funtionName, val).Result;
             Assert.IsTrue(result);

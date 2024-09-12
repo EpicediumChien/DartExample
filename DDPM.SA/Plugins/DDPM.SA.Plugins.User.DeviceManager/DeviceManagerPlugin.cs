@@ -158,6 +158,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
 
+        private bool isInitMonitorSettings = false;
+
         #endregion
 
         #region Constructor
@@ -878,24 +880,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //review monitor list to check duplicated data
                 ReviewAllMonitorToAvoidDuplicatedInfo();
 
-                List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-                foreach (MonitorInfo m in _AllInfoMonitors)
-                {
-                    monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName).Result;
-                    if (monitorSettingsList == null)
-                    {
-                        monitorSettingsList = new List<DDPMMonitorSettings>();
-                    }
-                    if (monitorSettingsList.Count == 0)
-                    {
-                        DDPMMonitorSettings settings = new DDPMMonitorSettings();
-                        settings.Model = m.modelName;
-                        settings.ServiceTag = m.edid.ServiceTag;
-                        settings.VCPs = GetAllVCPcode(m);
-                        monitorSettingsList.Add(settings);
-                    }
-                    bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
-                }
+                InitMonitorSettings();
+                //List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
+                //foreach (MonitorInfo m in _AllInfoMonitors)
+                //{
+                //    monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
+                //    if (isInitMonitorSettings)
+                //    {
+                //        if (monitorSettingsList == null)
+                //        {
+                //            monitorSettingsList = new List<DDPMMonitorSettings>();
+                //        }
+                //        if (monitorSettingsList.Count == 0 || monitorSettingsList.FindIndex(x => x.ServiceTag == m.edid.ServiceTag) == -1)
+                //        {
+                //            DDPMMonitorSettings settings = new DDPMMonitorSettings();
+                //            settings.Model = m.modelName;
+                //            settings.ServiceTag = m.edid.ServiceTag;
+                //            settings.VCPs = GetAllVCPcode(m);
+                //            monitorSettingsList.Add(settings);
+                //            bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+                //        }
+                        
+                //    }
+                //}
 
                 /*
                 _ = Task.Run(async () =>
@@ -2535,6 +2542,78 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;
         }
 
+        public Task GetNKVMVersion()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.GetNKVMVersion();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMStatus()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.GetNKVMStatus();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMAutoConnect()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.GetNKVMAutoConnect();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMContentTransfer()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.GetNKVMContentTransfer();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMIncommingPort()
+        {  
+            if (_NKVMPlugin != null)
+            { 
+                _NKVMPlugin.GetNKVMIncommingPort();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMOutgoingPort()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.GetNKVMOutgoingPort();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMContentTransferPort()
+        {
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.GetNKVMContentTransferPort();
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task GetNKVMSettings()
+        {
+            if (_NKVMPlugin != null) 
+            {
+                _NKVMPlugin.GetNKVMSettings();
+            }
+            return Task.CompletedTask;
+        }
+
         public Task NKVM_State(bool state)
         {
             if (_NKVMPlugin != null)
@@ -3346,6 +3425,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void SettingsReady(object o, EventArgs eventArgs)
         {
             LoadGlobalSettingParam();
+            if (!isInitMonitorSettings)
+            {
+                InitMonitorSettings();
+            }
         }
         #endregion
 
@@ -5891,6 +5974,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //{
                 Task<bool> b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]);
                 //}
+            }
+        }
+
+        private void InitMonitorSettings()
+        {
+            List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
+            foreach (MonitorInfo m in _AllInfoMonitors)
+            {
+                monitorSettingsList = _SettingsPlugin.InitDDPMMonitorConfigFile(m.modelName, out isInitMonitorSettings).Result;
+                if (isInitMonitorSettings)
+                {
+                    if (monitorSettingsList == null)
+                    {
+                        monitorSettingsList = new List<DDPMMonitorSettings>();
+                    }
+                    if (monitorSettingsList.Count == 0 || !monitorSettingsList.Exists(x => x.ServiceTag == m.edid.ServiceTag))
+                    {
+                        DDPMMonitorSettings settings = new DDPMMonitorSettings();
+                        settings.Model = m.modelName;
+                        settings.ServiceTag = m.edid.ServiceTag;
+                        settings.VCPs = GetAllVCPcode(m);
+                        monitorSettingsList.Add(settings);
+                        bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+                    }
+
+                }
             }
         }
 
