@@ -319,10 +319,18 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "USBCPRIORITIZATION":       //USBCPrioritization        DDPMW-1345
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "ACTIVEINPUTSOURCE":        //ActiveInputSource         DDPMW-1346
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
-                case "USBKVM":                   //USBKVM                    DDPMW-1347
+                case "INAPPUSBKVM":                   //InAppUSBKVM                    DDPMW-1347
                     break;
                 case "INAPPNETWORKKVM":          //InAppNetworkKVM           DDPMW-1599
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
