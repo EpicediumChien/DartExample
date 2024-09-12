@@ -57,7 +57,7 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
-
+        //private static Dell.Client.Framework.Common.Log _log;
         private enum log_type
         {
             info = 0,
@@ -66,7 +66,6 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         //Basic
         private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-
         private static string folder_product = "Dell Display and Peripheral Manager";
         private static string filename_appsettings_IT = "DDPM.Configs.json";
 
@@ -158,6 +157,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"WriteITConfigData: write failed. Info({info})");
                 return Task.FromResult(false);
             }
+
             if (IT_Feature_list != null && IT_Feature_list.Count > 0)
             {
                 ITSettingEventArgs e = new ITSettingEventArgs();
@@ -261,121 +261,6 @@ namespace DDPM.SA.Plugins.SettingsManager
                 Log.Error(text);
         }
 
-        /*private enum WTS_INFO_CLASS
-        {
-            WTSUserName = 5,
-            WTSDomainName = 7,
-        }
-
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern int WTSGetActiveConsoleSessionId();
-
-        private static int _WTSGetActiveConsoleSessionId()
-        {
-            return WTSGetActiveConsoleSessionId();
-        }
-
-        [DllImport("Wtsapi32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
-
-        private static bool _WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
-        {
-            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
-        }
-
-        [DllImport("Wtsapi32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern void WTSFreeMemory(IntPtr pointer);
-
-        private static void _WTSFreeMemory(IntPtr pointer)
-        {
-            WTSFreeMemory(pointer);
-        }
-
-        private string GetUserSid(string userName)
-        {
-            NTAccount f_normal, f_domain = null;
-            string accountName = $"{Environment.MachineName}\\{userName}";
-            f_normal = new NTAccount(accountName);
-            WriteLog($"GetUserSid: Machine name: {Environment.MachineName}, User name:{userName}");
-            if (!string.IsNullOrEmpty(Environment.UserDomainName))
-            {
-                accountName = $"{Environment.UserDomainName}\\{userName}";
-                WriteLog($"GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
-                f_domain = new NTAccount(Environment.UserDomainName, userName);
-            }
-            //NTAccount f = new NTAccount(accountName);
-            //writelog($"GetUserSid: final using: {accountName}");
-            String sidString;
-            try
-            {
-                SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
-                sidString = s.ToString();
-                WriteLog($"GetUserSid(normal user): SID: {sidString}");
-            }
-            catch (Exception ex)
-            {
-                sidString = null;
-                WriteLog($"GetUserSid(normal user): try translate fail: {ex.Message}");
-
-                //0724 add code that translate normal user and do translate domain user if fail.
-                if (f_domain != null)
-                {
-                    try
-                    {
-                        SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
-                        sidString = s.ToString();
-                        WriteLog($"GetUserSid(domain user): SID: {sidString}");
-                    }
-                    catch (Exception e)
-                    {
-                        sidString = null;
-                        WriteLog($"GetUserSid(domain user): try translate fail: {e.Message}");
-                    }
-                }
-            }
-            return sidString;
-        }
-
-        private string GetActiveUserLocalAppDataPath()
-        {
-            IntPtr buffer;
-            int bytesReturned = 0;
-            int sessionId = _WTSGetActiveConsoleSessionId(); // This gets the session ID of the user logged into the console
-            WriteLog($"WTSGetActiveConsoleSessionId: {sessionId}");
-
-            if (_WTSQuerySessionInformation(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
-            {
-                string userName = Marshal.PtrToStringAnsi(buffer);
-                _WTSFreeMemory(buffer);
-                WriteLog($"WTSQuerySessionInformation: user name ({userName})");
-
-                if (!string.IsNullOrEmpty(userName))
-                {
-                    string userSid = GetUserSid(userName);
-                    if (!string.IsNullOrEmpty(userSid))
-                    {
-                        string regKey = $@"HKEY_USERS\{userSid}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders";
-                        string localAppDataPath = (string)Registry.GetValue(regKey, "Local AppData", null);
-                        WriteLog($"Local app data from registry: {localAppDataPath}");
-                        return localAppDataPath;
-                    }
-                }
-                else
-                {
-                    WriteLog("Got null user name");
-                }
-            }
-            else
-            {
-                WriteLog("WTSQuerySessionInformation: return false");
-            }
-
-            return null;
-        }*/
-
         private DDPMITConfig InitDDPMITConfigFile()
         {
             string folder = path_programdata + "\\" + folder_product;
@@ -391,8 +276,19 @@ namespace DDPM.SA.Plugins.SettingsManager
                 _settings = null;
                 return null;
             }
+
+            //Dean: below code has creation procedure, no need file path check at here
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFolderPathValid(folder, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(InitDDPMITConfigFile)} {FileInfo}");
+            //    return null;
+            //}
+
             //check if setting file contain illegal privilege
             //if yes, delete file and then apply right ACL
+            //Apply symlink check here as well [Dean 0912]
             if (Directory.Exists(folder))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(folder);
@@ -451,7 +347,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                         WriteLog("File ACLs for system setting contained unprivileged write access for one or more identity");
                         File.Delete(_settings_path);
                         WriteLog("Exist file deleted.");
-                    }
+                    }                    
                 }
             }
 

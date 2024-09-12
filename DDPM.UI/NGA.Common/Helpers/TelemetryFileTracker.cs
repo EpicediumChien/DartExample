@@ -6,6 +6,7 @@
 //
 #endregion
 
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Exceptions;
 using Dell.Client.Framework.Security;
@@ -65,6 +66,14 @@ namespace NGA.Common.Helpers
                     return response;
                 }
 
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+                {
+                    log.Info($"{nameof(ParseTelemetryFiles)} {FileInfo}");
+                    return response;
+                }
+
                 string xmlText = ReadFile(log, fileSystem, filePath);
                 var xFile = XDocument.Parse(xmlText);
 
@@ -114,6 +123,14 @@ namespace NGA.Common.Helpers
                 return false;
             }
 
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(csupFile, out FileInfo))
+            {
+                log.Info($"{nameof(ParseCsupFile)} {FileInfo}");
+                return false;
+            }
+
             var text = ReadFile(log, fileSystem, csupFile);
 
             var date = DateTime.ParseExact(text.Trim(), DataFormat,
@@ -131,7 +148,7 @@ namespace NGA.Common.Helpers
             var result = PathHelper.ValidateFilePath(file, PathCheckOption.IgnoreFileExists);
             if (result != PathCheckErrorCodes.SUCCESS)
                 throw new ArgumentException($"{nameof(file)} is not a valid path. Received the following " +
-                    $"error code while validating: {result}", nameof(file));
+                                            $"error code while validating: {result}", nameof(file));
 
             var redirectionReturnCode = PathHelper.CheckPathRedirection(file);
             if (redirectionReturnCode != PathRedirectionReturn.PathIsNormal && redirectionReturnCode != PathRedirectionReturn.PathDoesNotExist)
