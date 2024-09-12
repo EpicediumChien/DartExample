@@ -313,6 +313,10 @@ namespace DDPM.SA.Plugin.CLIManager
                 case "SCREENNOTIFICATION":       //ScreenNotification        DDPMW-1901
                     break;
                 case "RESOLUTIONREFRESHRATE":    //ResolutionRefreshRate     DDPMW-1344
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "USBCPRIORITIZATION":       //USBCPrioritization        DDPMW-1345
                     break;

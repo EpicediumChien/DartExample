@@ -2980,6 +2980,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region DTPProxy implementation
 
+        public async Task<string> GetProfileName(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
+        }
+
         public async Task<int> GetDpiValueByDTP(string itemID)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(itemID));
@@ -3102,10 +3107,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        // Webcam
-        public async Task<int> GetBrightnessValueByDTP(string itemID)
+        #region Webcam
+        public async Task<int> GetBrightness(string itemID)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetBrightnessValue(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetBrightness(itemID));
         }
 
         public Task SetBrightnessValueByDTP(string itemID, int newValue)
@@ -3189,6 +3194,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+
+        public Task SetIsMicEnumerationOn(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsMicEnumerationOn requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsMicEnumerationOn(guid, newValue);
+            return Task.FromResult(true);
+        }
+        #endregion
 
 
         #endregion

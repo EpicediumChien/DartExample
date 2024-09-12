@@ -529,8 +529,9 @@ namespace DDPM.SA.Common
 
         Task SetTipSensitivity(string itemID, int newValue);
 
-        // Webcam
-        Task<int> GetBrightnessValueByDTP(string itemID);
+        #region Webcam
+        Task<string> GetProfileName(string Guid);
+        Task<int> GetBrightness(string Guid);
 
         Task SetBrightnessValueByDTP(string itemID, int newValue);
 
@@ -557,7 +558,9 @@ namespace DDPM.SA.Common
         Task<bool> GetIsAutoFramingOnValueByDTP(string itemID);
 
         Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
+        Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
+        #endregion
 
         #endregion public for DTPProxy
 
@@ -572,6 +575,8 @@ namespace DDPM.SA.Common
         Task ShowOSD(object monitorInfo, OSDType type);
 
         #endregion OSD
+
+
 
         #region GlobalSetting
         Task<GlobalSettingParam> GetGlobalSettingParam();
