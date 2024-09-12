@@ -784,7 +784,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
+                    Debug.WriteLine($"{newValue}");
                     _iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.IsMicEnumerationOn = newValue;
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {

@@ -49,9 +49,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
         {
             DeviceInfos.Clear();
-            foreach(DeviceInfo deviceInfo in deviceInfos)
+            foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if(deviceInfo.LogicalDeviceType.Contains("Pen"))
+                if (deviceInfo.LogicalDeviceType.Contains("Pen"))
                 {
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }
@@ -60,7 +60,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public override bool SetCurrentDevice(string deviceID)
         {
-            if(!base.SetCurrentDevice(deviceID))
+            if (!base.SetCurrentDevice(deviceID))
                 return false;
 
             TiltSensitivity = CurrentDeviceInfo!.TiltSensitivity <= 0 ? 0 : (CurrentDeviceInfo.TiltSensitivity >= 2 ? 2 : 1);
@@ -74,7 +74,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues));
             JsonElement jsonObject2 = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.SideTopSwitchSinglePressSetting));
-            foreach(var jo in jsonObject.EnumerateArray())
+            foreach (var jo in jsonObject.EnumerateArray())
             {
 
             }
@@ -106,47 +106,47 @@ namespace DDPM.UI.Plugin.ViewModels
             PenButtonName _btnName = (PenButtonName)Enum.Parse(typeof(PenButtonName), btnName, true);
             var property = typeof(PenViewModel).GetProperty($"{btnName}ImageFile");
             int btnType = 1;
-            switch(_btnName)
+            switch (_btnName)
             {
                 case PenButtonName.TopButton:
                     btnType = 1;
                     break;
 
                 default:
-                    if(Model == "PN7522W")
+                    if (Model == "PN7522W")
                         btnType = 2;
-                    else if(Model == "PN9315A")
+                    else if (Model == "PN9315A")
                         btnType = 3;
-                    else if(Model == "PN5122W")
+                    else if (Model == "PN5122W")
                         btnType = 4;
                     break;
             }
 
             var IsDefault = false;
-            if(_btnName == PenButtonName.TopButton && PenAction.TopButtonClickAction.DefaultActionID == PenAction.TopButtonClickAction.AssignedAction.ID
+            if (_btnName == PenButtonName.TopButton && PenAction.TopButtonClickAction.DefaultActionID == PenAction.TopButtonClickAction.AssignedAction.ID
                && PenAction.TopButtonDoubleClickAction.DefaultActionID == PenAction.TopButtonDoubleClickAction.AssignedAction.ID
                && PenAction.TopButtonPressHoldAction.DefaultActionID == PenAction.TopButtonPressHoldAction.AssignedAction.ID)
             {
                 IsDefault = true;
             }
-            else if(_btnName == PenButtonName.TopBarrelButton && PenAction.TopBarrelButtonClickAction.DefaultActionID == PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
+            else if (_btnName == PenButtonName.TopBarrelButton && PenAction.TopBarrelButtonClickAction.DefaultActionID == PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
             {
                 IsDefault = true;
             }
-            else if(_btnName == PenButtonName.BottomBarrelButton && PenAction.BottomBarrelButtonClickAction.DefaultActionID == PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
+            else if (_btnName == PenButtonName.BottomBarrelButton && PenAction.BottomBarrelButtonClickAction.DefaultActionID == PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
             {
                 IsDefault = true;
             }
 
-            if(IsDefault)
+            if (IsDefault)
             {
-                if(IsSelected)
+                if (IsSelected)
                 {
                     property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}5.png");
                 }
                 else
                 {
-                    if(IsHover)
+                    if (IsHover)
                     {
                         property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}2.png");
                     }
@@ -158,13 +158,13 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             else
             {
-                if(IsSelected)
+                if (IsSelected)
                 {
                     property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}6.png");
                 }
                 else
                 {
-                    if(IsHover)
+                    if (IsHover)
                     {
                         property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}4.png");
                     }
@@ -183,23 +183,23 @@ namespace DDPM.UI.Plugin.ViewModels
         private void CheckRestoreStatus(bool? status = null)
         {
             IsRestoreEnable = false;
-            if(PenAction.TopButtonClickAction.DefaultActionID != PenAction.TopButtonClickAction.AssignedAction.ID)
+            if (PenAction.TopButtonClickAction.DefaultActionID != PenAction.TopButtonClickAction.AssignedAction.ID)
             {
                 IsRestoreEnable = true;
             }
-            else if(PenAction.TopButtonDoubleClickAction.DefaultActionID != PenAction.TopButtonDoubleClickAction.AssignedAction.ID)
+            else if (PenAction.TopButtonDoubleClickAction.DefaultActionID != PenAction.TopButtonDoubleClickAction.AssignedAction.ID)
             {
                 IsRestoreEnable = true;
             }
-            else if(PenAction.TopButtonPressHoldAction.DefaultActionID != PenAction.TopButtonPressHoldAction.AssignedAction.ID)
+            else if (PenAction.TopButtonPressHoldAction.DefaultActionID != PenAction.TopButtonPressHoldAction.AssignedAction.ID)
             {
                 IsRestoreEnable = true;
             }
-            else if(PenAction.TopBarrelButtonClickAction.DefaultActionID != PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
+            else if (PenAction.TopBarrelButtonClickAction.DefaultActionID != PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
             {
                 IsRestoreEnable = true;
             }
-            else if(PenAction.BottomBarrelButtonClickAction.DefaultActionID != PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
+            else if (PenAction.BottomBarrelButtonClickAction.DefaultActionID != PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
             {
                 IsRestoreEnable = true;
             }
@@ -210,10 +210,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             base.HandleNotification(changeType, di, property);
 
-            switch(changeType)
+            switch (changeType)
             {
                 case DeviceChangedType.Peripherals_SettingsChange:
-                    if(DeviceInfos.ContainsKey(di.ID))
+                    if (DeviceInfos.ContainsKey(di.ID))
                     {
                         DeviceInfos.Remove(di.ID);
                         DeviceInfos.Add(di.ID, di);
@@ -222,10 +222,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         return;
                     }
-                    if(di.ID == CurrentDeviceID)
+                    if (di.ID == CurrentDeviceID)
                     {
                         CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-                        switch(property)
+                        switch (property)
                         {
                             //case "MousePrimaryButtonChanged":
                             //  PrimaryButtonIndex = (int)di.MousePrimaryButton;
@@ -253,10 +253,10 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _tipSensitivity;
             set
             {
-                if(_tipSensitivity != value)
+                if (_tipSensitivity != value)
                 {
                     _tipSensitivity = value;
-                    if(!IsSliderDragging)
+                    if (!IsSliderDragging)
                     {
                         SetTipSensitivity();
                     }
@@ -266,7 +266,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetTipSensitivity()
         {
-            if(_tipSensitivity != CurrentDeviceInfo!.TipSensitivity)
+            if (_tipSensitivity != CurrentDeviceInfo!.TipSensitivity)
                 _deviceManager.SetTipSensitivity(itemID, _tipSensitivity);
         }
 
@@ -276,10 +276,10 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _tiltSensitivity;
             set
             {
-                if(_tiltSensitivity != value)
+                if (_tiltSensitivity != value)
                 {
                     _tiltSensitivity = value;
-                    if(!IsSliderDragging)
+                    if (!IsSliderDragging)
                     {
                         SetTiltSensitivity();
                     }
@@ -289,7 +289,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetTiltSensitivity()
         {
-            if(_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
+            if (_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
                 _deviceManager.SetTiltSensitivity(itemID, _tiltSensitivity);
         }
 
@@ -353,11 +353,11 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllButtonsVisible == Visibility.Hidden)
+                if (IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
                     //return PenAction.Buttons.Contains(PenButtonName.TopButton);
-                    return Model!="PN5122W";
+                    return Model != "PN5122W";
             }
             set
             {
@@ -369,7 +369,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllButtonsVisible == Visibility.Hidden)
+                if (IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
                     return true;
@@ -384,7 +384,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(IsAllButtonsVisible == Visibility.Hidden)
+                if (IsAllButtonsVisible == Visibility.Hidden)
                     return false;
                 else
                     return true;
@@ -402,12 +402,12 @@ namespace DDPM.UI.Plugin.ViewModels
                 //var tp1 = "";
                 string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
                 string parameter1 = PenAction.TopButtonClickAction.AssignedAction.Parameter;
-                if(parameter1 != "")
+                if (parameter1 != "")
                 {
                     var arr = parameter1.Split('|');
-                    if(int.TryParse(arr[0], out int id))
+                    if (int.TryParse(arr[0], out int id))
                     {
-                        if(id == 1)
+                        if (id == 1)
                         {
                             tooltip1 = $"{tooltip1} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
                         }
@@ -421,17 +421,17 @@ namespace DDPM.UI.Plugin.ViewModels
                         tooltip1 = $"{tooltip1} : {parameter1}";
                     }
                 }
-                if(SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
+                if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                     return $"{Strings.PenButtonClickOnce}: {tooltip1}";
 
                 string tooltip2 = Actions.PenActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
                 string parameter2 = PenAction.TopButtonDoubleClickAction.AssignedAction.Parameter;
-                if(parameter2 != "")
+                if (parameter2 != "")
                 {
                     var arr = parameter2.Split('|');
-                    if(int.TryParse(arr[0], out int id))
+                    if (int.TryParse(arr[0], out int id))
                     {
-                        if(id == 1)
+                        if (id == 1)
                         {
                             tooltip2 = $"{tooltip2} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
                         }
@@ -445,17 +445,17 @@ namespace DDPM.UI.Plugin.ViewModels
                         tooltip2 = $"{tooltip2} : {parameter2}";
                     }
                 }
-                if(SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
+                if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
                     return $"{Strings.PenButtonDoubleClick}: {tooltip2}";
 
                 string tooltip3 = Actions.PenActions[PenAction.TopButtonPressHoldAction.AssignedAction.ID].Caption;
                 string parameter3 = PenAction.TopButtonPressHoldAction.AssignedAction.Parameter;
-                if(parameter3 != "")
+                if (parameter3 != "")
                 {
                     var arr = parameter3.Split('|');
-                    if(int.TryParse(arr[0], out int id))
+                    if (int.TryParse(arr[0], out int id))
                     {
-                        if(id == 1)
+                        if (id == 1)
                         {
                             tooltip3 = $"{tooltip3} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
                         }
@@ -469,7 +469,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         tooltip3 = $"{tooltip3} : {parameter3}";
                     }
                 }
-                if(SelectedBehavior == ButtonBehavior.PressAndHold.ToString())
+                if (SelectedBehavior == ButtonBehavior.PressAndHold.ToString())
                     return $"{Strings.PenButtonPressHold}: {tooltip3}";
 
                 return $"{Strings.PenButtonClickOnce}: {tooltip1}\n{Strings.PenButtonDoubleClick}: {tooltip2}\n{Strings.PenButtonPressHold}: {tooltip3}";
@@ -481,12 +481,12 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
                 string parameter = PenAction.TopBarrelButtonClickAction.AssignedAction.Parameter;
-                if(parameter != "")
+                if (parameter != "")
                 {
                     var arr = parameter.Split('|');
-                    if(int.TryParse(arr[0], out int id))
+                    if (int.TryParse(arr[0], out int id))
                     {
-                        if(id == 1)
+                        if (id == 1)
                         {
                             return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
                         }
@@ -509,12 +509,12 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
                 string parameter = PenAction.BottomBarrelButtonClickAction.AssignedAction.Parameter;
-                if(parameter != "")
+                if (parameter != "")
                 {
                     var arr = parameter.Split('|');
-                    if(int.TryParse(arr[0], out int id))
+                    if (int.TryParse(arr[0], out int id))
                     {
-                        if(id == 1)
+                        if (id == 1)
                         {
                             return $"{tooltip} : {Actions.OpenRunActions[id]} \"{arr[1]}\"";
                         }
@@ -533,7 +533,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void ClearSelectedButton()
         {
-            if(SelectedButton != "")
+            if (SelectedButton != "")
             {
                 RefreshButtonImageFile(SelectedButton);
                 SelectedButton = "";
@@ -561,22 +561,22 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void UpdateAction(int actionID, string parameter = "")
         {
-            if(SelectedButton != "")
+            if (SelectedButton != "")
             {
                 SelectedAction!.AssignedAction.ID = actionID;
                 SelectedAction.AssignedAction.Parameter = parameter;
                 RefreshButtonInfo();
                 CheckRestoreStatus();
-                switch(SelectedButton)
+                switch (SelectedButton)
                 {
                     case "TopButton":
-                        if(SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
+                        if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                         {
                             var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
                             byte[] newValue = Encoding.UTF8.GetBytes(value);
                             _deviceManager.SetEraserSinglePressSetting(itemID, newValue);
                         }
-                        else if(SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
+                        else if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
                         {
                             var value = $"{{\"actionId\":91,\"actionName\":\"Windows 搜尋\"}}";
                             byte[] newValue = Encoding.UTF8.GetBytes(value);
@@ -619,20 +619,20 @@ namespace DDPM.UI.Plugin.ViewModels
             get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn);
             set
             {
-                if(SelectedButton == PenButtonName.TopBarrelButton.ToString())
+                if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
                 {
                     _deviceManager.SetIsSideTopButtonHoverClick(itemID, value);
                     PenAction.IsTopBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
-                if(SelectedButton == PenButtonName.BottomBarrelButton.ToString())
+                if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
                 {
                     _deviceManager.SetIsSideBottomButtonHoverClick(itemID, value);
                     PenAction.IsBottomBarrelHoverClickOn = value;
                     ActionList.ExportActionList(PenAction, "PEN");
                 }
                 OnPropertyChanged();
-                //IsHoverClickToggleText = value ? Strings.On : Strings.Off;
+                //IsMicEnumerationOnText = value ? Strings.On : Strings.Off;
                 OnPropertyChanged(nameof(IsHoverClickToggleText));
             }
         }

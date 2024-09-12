@@ -669,7 +669,8 @@ namespace DDPM.UI.Common.Models
 
         private void SetBLConnectionStatus_Mouse()
         {
-            if (DeviceInfo == null) return;
+            if (DeviceInfo == null)
+                return;
 
             //Determine current connected host index: 1,2, or 3
             var hostIndex = DeviceInfo.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (DeviceInfo.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
@@ -781,7 +782,8 @@ namespace DDPM.UI.Common.Models
 
         private void SetBLConnectionStatus_Keyboard()
         {
-            if (DeviceInfo == null) return;
+            if (DeviceInfo == null)
+                return;
 
             var hostIndex = DeviceInfo.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (DeviceInfo.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
 
@@ -861,7 +863,8 @@ namespace DDPM.UI.Common.Models
         //Currently, we will show only one host.
         private void SetBLConnectionStatus_Audio()
         {
-            if (DeviceInfo == null) return;
+            if (DeviceInfo == null)
+                return;
 
             string hostName = Dns.GetHostName();
 
@@ -902,7 +905,8 @@ namespace DDPM.UI.Common.Models
 
         private void SetBLConnectionStatus_IO()
         {
-            if (DeviceInfo == null) return;
+            if (DeviceInfo == null)
+                return;
 
             string hostName = Dns.GetHostName();
 
@@ -1020,6 +1024,8 @@ namespace DDPM.UI.Common.Models
             */
             switch (deviceInfo.PhysicalDeviceType)
             {
+                case DeviceType.PhysicalWebcam:
+                    return "Wired";
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:
                     return deviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "").Replace("Audio", "");
@@ -1247,11 +1253,13 @@ namespace DDPM.UI.Common.Models
             //Part II. Maskable
             if (!mask.Contains("DDCisON", StringComparison.OrdinalIgnoreCase))
             {
-                if (mi1.DDCisON != mi2.DDCisON) return false;
+                if (mi1.DDCisON != mi2.DDCisON)
+                    return false;
             }
             if (!mask.Contains("inputSource", StringComparison.OrdinalIgnoreCase))
             {
-                if (mi1.inputSource != mi2.inputSource) return false;
+                if (mi1.inputSource != mi2.inputSource)
+                    return false;
             }
             if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase))
             {
@@ -1266,7 +1274,8 @@ namespace DDPM.UI.Common.Models
         #region Dump Info to Log
         public void DumpInfoToLog(ILog? log)
         {
-            if (log == null) return;
+            if (log == null)
+                return;
 
             log.Info($"HomeDevice, DeviceCategory=[{DeviceCategory}], DisplayName=[{DisplayName}]");
             if (MonitorInfo != null)
