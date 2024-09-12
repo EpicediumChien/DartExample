@@ -1,5 +1,4 @@
 using DDPM.SA.Common;
-using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;

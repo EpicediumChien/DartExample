@@ -1,5 +1,4 @@
 ﻿using DDPM.SA.Common;
-using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.UX.WPF;
