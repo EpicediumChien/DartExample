@@ -11,7 +11,6 @@
 #endregion
 
 using DDPM.SA.Common;
-using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;

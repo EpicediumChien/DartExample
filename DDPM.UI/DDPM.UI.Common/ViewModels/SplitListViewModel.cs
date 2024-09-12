@@ -131,8 +131,6 @@ namespace DDPM.UI.Common.ViewModels
                     if ((spItem.CellCount == spj.CellCount) && (spItem.SplitKey == spj.SplitKey))
                         return spItem;
                 }
-                else
-                    return spItem;
             }
             return null;
         }

@@ -29,7 +29,7 @@ namespace NGA.Common.Helpers
         private const string CsupFileName = "csup.txt";
         private const string DataFormat = "MM-dd-yyyy";
         private static readonly DateTime ReferenceDate = new(2021, 11, 24);
-        private static Log _log;
+
         /// <summary>
         /// Parse system files to identify user consent for telemetry preferences.
         /// </summary>
@@ -70,7 +70,7 @@ namespace NGA.Common.Helpers
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
                 {
-                    _log.Info($"{nameof(ParseTelemetryFiles)} {FileInfo}");
+                    log.Info($"{nameof(ParseTelemetryFiles)} {FileInfo}");
                     return response;
                 }
 
@@ -127,7 +127,7 @@ namespace NGA.Common.Helpers
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(csupFile, out FileInfo))
             {
-                _log.Info($"{nameof(ParseCsupFile)} {FileInfo}");
+                log.Info($"{nameof(ParseCsupFile)} {FileInfo}");
                 return false;
             }
 
@@ -147,11 +147,8 @@ namespace NGA.Common.Helpers
 
             var result = PathHelper.ValidateFilePath(file, PathCheckOption.IgnoreFileExists);
             if (result != PathCheckErrorCodes.SUCCESS)
-            {
-                _log.Info($"{nameof(ReadFile)} --is not a valid path");
                 throw new ArgumentException($"{nameof(file)} is not a valid path. Received the following " +
-    $"error code while validating: {result}", nameof(file));
-            }
+                                            $"error code while validating: {result}", nameof(file));
 
             var redirectionReturnCode = PathHelper.CheckPathRedirection(file);
             if (redirectionReturnCode != PathRedirectionReturn.PathIsNormal && redirectionReturnCode != PathRedirectionReturn.PathDoesNotExist)

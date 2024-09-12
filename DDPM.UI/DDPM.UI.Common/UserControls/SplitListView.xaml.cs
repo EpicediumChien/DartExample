@@ -54,11 +54,7 @@ namespace DDPM.UI.Common.UserControls
 
         public void ClearList()
         {
-            DataContext = null;
             vm.ClearList();
-            DataContext = vm;
-            vm.RefreshDisplayItems();
-            vm.RefreshPrevNextButtons();
         }
         #endregion SplitList
 
@@ -91,10 +87,6 @@ namespace DDPM.UI.Common.UserControls
             {
                 spItem.IsEditEnabled = true;
             }
-
-            if (spItem.ISplitCtrl != null)
-                spItem.ISplitCtrl.IsVertical = IsVertical;
-
             vm.AddSplitItemToList(spItem);
             return spItem;
         }
@@ -336,9 +328,6 @@ namespace DDPM.UI.Common.UserControls
                 spItem.IsEditEnabled = true;
             }
 
-            if (spItem.ISplitCtrl != null)
-                spItem.ISplitCtrl.IsVertical = IsVertical;
-
             DataContext = null;
             vm.SplitList.Insert(1, spItem);
             DataContext = vm;
@@ -366,15 +355,7 @@ namespace DDPM.UI.Common.UserControls
         public bool IsVertical
         {
             get { return vm.IsVertical; }
-            set 
-            {
-                vm.IsVertical = value; 
-                foreach(SplitItem spItem in vm.SplitList)
-                {
-                    if (spItem.ISplitCtrl != null)
-                        spItem.ISplitCtrl.IsVertical = vm.IsVertical;
-                }
-            }
+            set { vm.IsVertical = value; }
         }
 
         #endregion Screen Orientation
