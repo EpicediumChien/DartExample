@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -80,7 +81,7 @@ namespace DDPM.SA.Common
         Task<bool> Notify_refresh_app_list();
 
         //Jim add 20240801
-        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");      
+        Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
 
         //Jim add 20240904
         Task<string> GetAutoColorPresetStatus(MonitorInfo m);
@@ -530,6 +531,7 @@ namespace DDPM.SA.Common
         Task SetTipSensitivity(string itemID, int newValue);
 
         #region Webcam
+        Task<JArray> GetPresetProfiles(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 

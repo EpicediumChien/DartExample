@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -295,7 +296,7 @@ namespace DDPM.SA.Common
         {
             get
             {
-                switch(_logicalDeviceType)
+                switch (_logicalDeviceType)
                 {
                     case "LogicalMouse":
                         DeviceName = "Mouse Settings";
@@ -1104,7 +1105,13 @@ namespace DDPM.SA.Common
         public int PanMax { get; set; }
         public int PanMin { get; set; }
         public int PanSteppingDelta { get; set; }
-        public IWebcamProfileManager ProfileManager { get; set; }
+        //public ProfileManager ProfileManager;
+        public JArray PresetProfiles { get; set; }
+        public JArray CustomProfiles { get; set; }
+        //public JArray CurrentSelectedProfile { get; set; }
+        public string Profile { get; set; }
+        public string ProfileName { get; set; }
+        public string ProfileDescription { get; set; }
         public int SaturationMax { get; set; }
         public int SaturationMin { get; set; }
         public int SaturationSteppingDelta { get; set; }
@@ -1407,7 +1414,7 @@ namespace DDPM.SA.Common
 
         private void ToggleOption(object parameter)
         {
-            if(parameter != null && bool.TryParse(parameter.ToString(), out bool isChecked))
+            if (parameter != null && bool.TryParse(parameter.ToString(), out bool isChecked))
             {
                 IsCollaborationKeyEnable = isChecked;
                 // Perform any other actions here based on the checkbox state.

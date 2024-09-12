@@ -11,6 +11,7 @@
 #endregion
 
 using Dell.Client.Framework.Common;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -45,6 +46,7 @@ namespace DDPM.SA.Common
         Task SetTipSensitivity(string itemID, int newValue);
 
         // webcam
+        Task<JArray> GetPresetProfiles(string Guid);
         Task<string> GetProfileName(string Guid);
         Task<int> GetBrightness(string Guid);
 
