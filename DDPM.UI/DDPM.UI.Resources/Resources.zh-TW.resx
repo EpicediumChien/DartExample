@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value>關於</value>
+  </data>
   <data name="Display" xml:space="preserve">
     <value>顯示器</value>
     <comment>Display</comment>
@@ -161,7 +164,8 @@
     <value>其他</value>
     <comment>Others</comment>
   </data>
-  <data name="About" xml:space="preserve">
-    <value>關於</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="WebCameraMicrophone.3" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

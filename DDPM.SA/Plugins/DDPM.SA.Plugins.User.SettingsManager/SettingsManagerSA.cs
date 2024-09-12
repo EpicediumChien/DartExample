@@ -216,10 +216,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             text = "[User.SettingsManager] " + text;
             Console.WriteLine(text);
-            if (log_type == log_type.info)
-                Log.Info(text);
-            else
-                Log.Error(text);
+            if (Log != null)
+            {
+                if (log_type == log_type.info)
+                    Log.Info(text);
+                else
+                    Log.Error(text);
+            }
         }
 
         private void InitializeSysSettingsPlugin()

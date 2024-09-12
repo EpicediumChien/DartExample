@@ -111,6 +111,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Thread newWindowThread_AutoSetColorPresetForMonitorConfig = null;
 
+        /// <summary>
+        /// Colorpreset Manual change event，return Colorpreset name
+        /// </summary>
+        public event EventHandler<string> Coloreset_manual_ChangeEvent;
+
         //Monitor objects
         private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>();
 
@@ -283,34 +288,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return Task.FromResult(_ICC_Metadata);
-        }
-
-        public Task<bool> ColorManagement_Off(MonitorInfo m)
-        {
-            DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
-            setting.UserSettings.ColorManagement_off = true;
-            _SettingsPlugin.SetAppConfigData(setting);
-
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> ColorManagement_Bymonitor(MonitorInfo m)
-        {
-            DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
-            setting.UserSettings.ColorManagement_bymonitor = true;
-            _SettingsPlugin.SetAppConfigData(setting);
-
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> ColorManagement_Byhost(MonitorInfo m)
-        {
-            DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
-            setting.UserSettings.ColorManagement_byhost = true;
-            _SettingsPlugin.SetAppConfigData(setting);
-
-            return Task.FromResult(true);
-        }
+        }      
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m)
         {
@@ -371,6 +349,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(temp.ToString());
         }
 
+        public Task<string> GetColorManagementStatus(MonitorInfo m)
+        {
+            writelog("DeviceManagerPlugin received GetColorManagementStatus requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - GetColorManagementStatus]");
+                return Task.FromResult("OFF");
+            }
+
+            var temp = _ColorPresetPlugin.GetColorManagementStatus(m, _SettingsPlugin).Result;
+
+
+            return Task.FromResult(temp.ToString());
+        }
+
         public Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name)
         {
             bool blRet = true;
@@ -412,7 +406,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         // 20240619 jim modify
-        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int ColorPresetRunType = 0)
+        public async Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0)
         {
             writelog("DeviceManagerPlugin received WriteColorPreset requested ...");
 
@@ -424,17 +418,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return r;
             }
 
-            if (ColorPresetRunType == 0)
-            {
+            //if (colorPresetRunType == 0)
+            //{
                 //data process
-                var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
+             if (colorPresetRunType == (int)ColorPresetRunType.Auto )
+                r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, null, colorPresetRunType).Result;
+            else
+                r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin,colorPresetRunType).Result;
+                //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
                 //write back to settings
-                r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
+                //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-                Thread.Sleep(100);
-            }
-
+                //Thread.Sleep(100);
+            //}
 
             //show OSD over colorpreset plugin
             _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
@@ -526,21 +523,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             //data process
-            var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
+            //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
             //write back to settings
-            r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
+            //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-            Thread.Sleep(100);
+            //Thread.Sleep(100);
 
             //show OSD over colorpreset plugin
-            _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
+            //_ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
 
-            if (r)
-            {
+            //if (r)
+            //{
                 //write VCP over display manager
-                r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
-            }
+            //    r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
+            //}
 
             return Task.FromResult(r);
         }
@@ -732,10 +729,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="mo"></param> 螢幕資訊
         /// <param name="on_off"></param> 啟用/關閉 自動根據App name 去設定 color preset
-        //public void AutoSetColorPresetForMonitorConfig(string index_monitor, string on_off, bool Islock = false)
         public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, bool Islock = false)
         {
-            //writelog("ColorPresetPlugin received AutoSetColorPresetForMonitorConfig requested ...");
             writelog("DeviceManagerPlugin received AutoSetColorPresetForMonitorConfig requested ...");
 
             if (_ColorPresetPlugin == null)
@@ -746,67 +741,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this).Result;
 
+            return Task.FromResult(temp);         
+        }
+
+        /// <summary>
+        /// Auto turn on when Bymonitor and Byhost values are sent
+        /// </summary>
+        /// <param name="monitorInfo"></param> 螢幕資訊
+        /// <param name="off_bymonitor_byhost"></param> off - turn off Auto Color Management
+        /// <param name="off_bymonitor_byhost"></param> Bymonitor - automatically adjust the ICC color profile based on monitor color preset
+        /// <param name="off_bymonitor_byhost"></param> Byhost - Automatically adjust the monitor color preset based on ICC color profile 
+        public Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, string ColorPreset_Name = "", string ICC_profile_Name = "")
+        {
+            writelog("DeviceManagerPlugin received AutoColorManagementForMonitorConfig requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - AutoColorManagementForMonitorConfig]");
+                return Task.FromResult(false);
+            }
+
+            var temp = _ColorPresetPlugin.AutoColorManagementForMonitorConfig(monitorInfo, off_bymonitor_byhost, _SettingsPlugin, ColorPreset_Name, ICC_profile_Name).Result;
+
             return Task.FromResult(temp);
-
-            //DDPMSettings setting = _SettingsPlugin.ReloadAppConfigData().Result;
-            //setting.UserSettings.IsAutoColorPreset_Lock = Islock;
-            //_SettingsPlugin.SetAppConfigData(setting);
-
-            /*
-            if(on_off.Equals("ON", StringComparison.OrdinalIgnoreCase))
-            {
-                var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin , this).Result;
-                _SettingsPlugin.WriteColorPresetSettings(temp);
-                Thread.Sleep(100);
-
-                if (newWindowThread_AutoSetColorPresetForMonitorConfig == null)
-                {
-                    // create a thread
-                    newWindowThread_AutoSetColorPresetForMonitorConfig = new Thread(new ThreadStart(() =>
-                    {
-                        // create and show the window
-                        Launch_MonitorBorker(mo);
-
-                        // start the Dispatcher processing
-                        // 啟動消息循環
-                        System.Windows.Threading.Dispatcher.Run();
-                    }));
-
-                    // set the apartment state
-                    // 設定為單線程單元（STA），WPF需要STA模式
-                    newWindowThread_AutoSetColorPresetForMonitorConfig.SetApartmentState(ApartmentState.STA);
-
-                    // make the thread a background thread
-                    newWindowThread_AutoSetColorPresetForMonitorConfig.IsBackground = true;
-
-                    // start the thread
-                    // 啟動執行緒
-                    newWindowThread_AutoSetColorPresetForMonitorConfig.Start();
-                }
-                else
-                {
-                    // jim add 20240605
-                    if (MonitorBorkerWin != null) // jim add 20240809
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
-                }
-            }
-            else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
-            {
-                // jim modify 20240605
-                if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
-                {
-                    // 20240620 jim add back the code
-                    var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
-                    _SettingsPlugin.WriteColorPresetSettings(temp);
-                    Thread.Sleep(100);
-
-                    if (MonitorBorkerWin != null) // jim add 20240809
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false);
-                }
-            }
-            */
-
-            //return;
         }
 
         /// <summary>
@@ -3102,6 +3059,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region DTPProxy implementation
 
+        public async Task<string> GetProfileName(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
+        }
+
         public async Task<int> GetDpiValueByDTP(string itemID)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetDpiValue(itemID));
@@ -3224,10 +3186,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
-        // Webcam
-        public async Task<int> GetBrightnessValueByDTP(string itemID)
+        #region Webcam
+        public async Task<int> GetBrightness(string itemID)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetBrightnessValue(itemID));
+            return await Task.Run(() => _DTPProxyPlugin.GetBrightness(itemID));
         }
 
         public Task SetBrightnessValueByDTP(string itemID, int newValue)
@@ -3311,6 +3273,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+
+        public Task SetIsMicEnumerationOn(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsMicEnumerationOn requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsMicEnumerationOn(guid, newValue);
+            return Task.FromResult(true);
+        }
+        #endregion
 
 
         #endregion
@@ -4175,12 +4147,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //_ColorPresetPluginCondition = pluginCondition;
                         _ColorPresetPlugin.VCPchanged += show_colorpreset;
 
+                        _ColorPresetPlugin.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
+
                         if (_SettingsPlugin != null)
                         {
                             _AllAppData = _ColorPresetPlugin.GetInstalledAppsList().Result;//_ColorPresetPlugin.FindAppsbyShell().Result;
                         }
 
-                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);                 
+                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
                     }
                     /*
                     else if(pluginCondition is PluginStartedCondition)
@@ -4227,8 +4202,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void CheckAutoColorPresetEnableOnStartedCondition(List<MonitorInfo> _AllInfoMonitors)
         {
-            bool r = false;
-
             if (_SettingsPlugin == null)
             {
                 writelog("CheckAutoColorPresetEnableOnStartedCondition, _SettingsPlugin == null");
@@ -4289,6 +4262,100 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         }
 
+        private void CheckAutoColorManagementEnableOnStartedCondition(List<MonitorInfo> _AllInfoMonitors)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("CheckAutoColorManagementEnableOnStartedCondition, _SettingsPlugin == null");
+                return;
+            }
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("CheckAutoColorManagementEnableOnStartedCondition, _ColorPresetPlugin == null");
+                return;
+            }
+
+
+            writelog("CheckAutoColorManagementEnableOnStartedCondition, Enter");
+
+            List<ColorPresetSettings> appconfigs = ReadColorPresetSettings().Result;
+
+            foreach (var config in appconfigs)
+            {
+                if (config.AppInfo == null || config.AppInfo.Count <= 0)
+                {
+                    //Trace.WriteLine("config.AppInfo.Count = " +  config.AppInfo.Count.ToString());
+                    writelog("CheckAutoColorManagementEnableOnStartedCondition, appconfigs.Count = " + appconfigs.Count.ToString());
+                    continue;
+                }
+
+                foreach (var _InfoMonitors in _AllInfoMonitors)
+                {
+                    //Check if actived monitor has its color preset section in config file
+                    if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.DeviceInfo.ModelName.Trim()) >= 0 &&
+                         _InfoMonitors.edid.SerialNumber.Trim() == config.DeviceInfo.SerialNumber.Trim())
+                    {
+                        if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
+                        {
+                            writelog("CheckAutoColorManagementEnableOnStartedCondition, config.ColorManagement_Status is ColorManagementStatus.Off");
+
+                            _ = Task.Run(async () =>
+                            {
+                                await AutoColorManagementForMonitorConfig(_InfoMonitors, "OFF").ConfigureAwait(false);
+
+                            });
+
+
+                            writelog("CheckAutoColorManagementEnableOnStartedCondition, AutoColorManagementForMonitorConfig(_InfoMonitors, \"OFF\")");
+
+                            break;
+                        }
+                        else if ( (config.ColorManagement_Status == (int)ColorManagementStatus.On) && (config.ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor) )
+                        {
+                            writelog("CheckAutoColorManagementEnableOnStartedCondition, config.ColorManagement_Status is ColorManagementStatus.On  config.ColorManagement_RunType is ColorManagementRunType.Bymonitor");
+
+                            _ = Task.Run(async () =>
+                            {
+                                await AutoColorManagementForMonitorConfig(_InfoMonitors, "BYMONITOR").ConfigureAwait(false);
+
+                            });
+
+
+                            writelog("CheckAutoColorManagementEnableOnStartedCondition, AutoColorManagementForMonitorConfig(_InfoMonitors, \"BYMONITOR\")");
+
+                            break;
+
+                        }
+                        else if ((config.ColorManagement_Status == (int)ColorManagementStatus.On) && (config.ColorManagement_RunType == (int)ColorManagementRunType.Byhost))
+                        {
+                            writelog("CheckAutoColorManagementEnableOnStartedCondition, config.ColorManagement_Status is ColorManagementStatus.On  config.ColorManagement_RunType is ColorManagementRunType.Byhost");
+
+                            _ = Task.Run(async () =>
+                            {
+                                await AutoColorManagementForMonitorConfig(_InfoMonitors, "BYHOST").ConfigureAwait(false);
+
+                            });
+
+
+                            writelog("CheckAutoColorManagementEnableOnStartedCondition, AutoColorManagementForMonitorConfig(_InfoMonitors, \"BYHOST\")");
+
+                            break;
+
+                        }
+
+                    }
+                }
+
+                writelog("CheckAutoColorManagementEnableOnStartedCondition, exit(break) for foreach (var _InfoMonitors in _AllInfoMonitors)");
+
+
+            }
+
+            writelog("CheckAutoColorManagementEnableOnStartedCondition, Exit");
+
+        }
+
         private void GetCurrentSettingsPluginCondition()
         {
             _ = Task.Run(async () =>
@@ -4322,7 +4389,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
 
                         CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
-
+                        CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
 
                     }
                     else
@@ -6139,6 +6206,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (e.ChangedPlugins.OfType<IDTPProxyPlugin>().Any())
                 InitializeDTPProxyPlugin();
         }
+
+        //Jim, 2024-09-05 add new event
+        private void OnColoresetManualChangeHandler(object sender, string e)
+        {
+            Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+        }
+
 
         #endregion
 

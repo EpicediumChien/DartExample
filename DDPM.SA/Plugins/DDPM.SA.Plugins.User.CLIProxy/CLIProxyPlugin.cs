@@ -397,6 +397,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     "INAPPAUTOBRITEMP",
                     "INAPPNETWORKKVM",
                     "INAPPCOLORPRESET",
+                    //"POWERNAP", //do not add powernap here, go throw normal process via CLI Display plugin as well
                 };
 
                 //Do command line action
@@ -433,7 +434,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         }
                         else
                             cliEventResult = _CLIPeripherals.SetCommandArgs(e, _DevManagerPlugin);
-                    }                    
+                    }
                     else
                     {
                         WriteLog($"{nameof(ICLIPeripherals)} was missing.");
@@ -463,9 +464,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_update, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             //if (cliEventResult.ExitCode == (int)CLI_ExitCode.success)
                             //{
-                                //UpdateUINotify no = new UpdateUINotify();
-                                //no.UI_Field_Name = "INAPPUPDATE";
-                                //_DevManagerPlugin.OnUIUpdateNotify(no);
+                            //UpdateUINotify no = new UpdateUINotify();
+                            //no.UI_Field_Name = "INAPPUPDATE";
+                            //_DevManagerPlugin.OnUIUpdateNotify(no);
                             //}
                             break;
                         case "INAPPEXPORTSETTINGS":
@@ -478,6 +479,12 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             DDPMSettings data_restoredefaults = _DevManagerPlugin.ReloadAppConfigData().Result;
                             cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_restoredefaults, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                            break;
+                        case "DEVICEDATA":
+                        case "APPLYCONFIGURATION":
+                        case "CONNECTEDDEVICES":
+                            //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
+                            cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                             break;
 
                         default:

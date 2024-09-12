@@ -376,7 +376,8 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
         [Test]
         public void TestWriteColorPreset()
         {
-            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard', 'Movie','Game','Custom Color']}}";
+            bool writeColorPreset1_res = true;
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard/Native', 'Movie','Game','Custom Color']}}";
             monitorInfo1.CapabilityString = colorpreset;
             List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
             string colorPreset_Name = "Movie";
@@ -387,18 +388,27 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             int runType = 0; //Manual 0,auto 1
             List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
             int count = 0;
-            if (index_config >= 0)
+            Mock<ISettingsManagerDev> SettingsManagerPluginService = new Mock<ISettingsManagerDev>();
+            var settingsPluginManagerDev_ = SettingsManagerPluginService.Object;
+            ////SettingsManagerDevService.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(WriteColorPresetSettings));
+            ISettingsManagerDev settingsPlugin_ = null;
+            int colorPresetRunType_ = 0;
+            if (settingsPlugin_ == null)
             {
-                var WriteColorPreset_resullt = colorPresetPlugin.WriteColorPreset(monitorInfo1, colorPreset_Name, monitorConfigs1).Result; //write colorpreset to Manual Standard to movie
-                Assert.IsNotNull(WriteColorPreset_resullt);
-                Assert.That(runType, Is.EqualTo(WriteColorPreset_resullt[0].RunType));
-                Assert.That(colorPreset_Name, Is.EqualTo(WriteColorPreset_resullt[0].PresetForManual));
+                var WriteColorPreset_resullt = colorPresetPlugin.WriteColorPreset(monitorInfo1, colorPreset_Name, settingsPlugin_, colorPresetRunType_).Result;
+                Assert.That(writeColorPreset1_res, Is.EqualTo(WriteColorPreset_resullt));
             }
-            else
+
+            if (settingsPluginManagerDev_ != null)
             {
-                var WriteColorPreset_resullt = colorPresetPlugin.WriteColorPreset(monitorInfo1, colorPreset_Name, monitorConfigs2).Result;
-                Assert.IsNotNull(WriteColorPreset_resullt);
-                Assert.That(count, Is.EqualTo(WriteColorPreset_resullt.Count));
+                SettingsManagerPluginService.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(monitorConfigs1));
+                PrivateObject colorPresetprivateObject = new PrivateObject(colorPresetPlugin);
+                colorPresetprivateObject.SetFieldOrProperty("_SettingsPlugin", settingsPluginManagerDev_);
+                if (index_config >= 0)
+                {
+                    var WriteColorPreset_resullt2 = colorPresetPlugin.WriteColorPreset(monitorInfo1, colorPreset_Name, settingsPluginManagerDev_, colorPresetRunType_).Result;
+                    Assert.That(writeColorPreset1_res, Is.EqualTo(WriteColorPreset_resullt2));
+                }
             }
         }
 
@@ -551,6 +561,21 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             {
                 Assert.Fail("not invoked");
             }
+        }
+
+        [Test]
+        public void TestSetMonitorProfile()
+        {
+            IIC_Metadata ICC_metadata_ = new IIC_Metadata();
+            string colorpreset = "{'CapsDataMap' : {'ColorPreset': ['Standard/Native', 'Movie','Game','Custom Color']}}";
+            monitorInfo1.CapabilityString = colorpreset;
+            List<ColorPresetSettings> monitorConfigs2 = new List<ColorPresetSettings>();
+            string supported_preset = monitorInfo1.CapabilityString;
+            Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
+            appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            var result = colorPresetPlugin.SetMonitorProfile(monitorInfo1, colorpreset).Result;
+            Assert.That(result, Is.EqualTo(true));
         }
 
     }

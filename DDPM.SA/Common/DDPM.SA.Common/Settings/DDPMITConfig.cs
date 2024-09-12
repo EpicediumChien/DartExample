@@ -18,7 +18,8 @@
         public bool Lock_Display_AutoBriTemp { get; set; } = false;
         public bool Lock_Display_NetworkKVM { get; set; } = false;
         public bool Lock_Display_ColorPreset { get; set; } = false;
-
+        public bool Lock_Display_PowerNap { get; set; } = false;
+        public bool Lock_Display_ResolutionRefreshRate { get; set; } = false;
         #endregion Display Setting
 
         #region Peripheral Setting

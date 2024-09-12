@@ -93,9 +93,9 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void CheckMultiDevice()
         {
-            foreach(var info in DeviceInfos.Values)
+            foreach (var info in DeviceInfos.Values)
             {
-                if(info.ModelNumber == Model && info.ID != CurrentDeviceID)
+                if (info.ModelNumber == Model && info.ID != CurrentDeviceID)
                 {
                     MultiDevicesInfoVisibility = Visibility.Visible;
                     OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
@@ -111,7 +111,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public virtual bool SetCurrentDevice(string deviceID)
         {
             IsIDInvalid = false;
-            if(deviceID.Substring(deviceID.Length - 2, 1) == "-")
+            if (deviceID.Substring(deviceID.Length - 2, 1) == "-")
             {
                 instenceNo = deviceID.Substring(deviceID.Length - 1, 1);
                 deviceID = deviceID.Substring(0, deviceID.Length - 2);
@@ -122,15 +122,15 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             CurrentDeviceID = new Guid(deviceID);
 
-            if(DeviceInfos.ContainsKey(CurrentDeviceID))
+            if (DeviceInfos.ContainsKey(CurrentDeviceID))
             {
                 var di = DeviceInfos[CurrentDeviceID];
                 CurrentInstanceID = di.InstanceId;
-                if(di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalDongle || di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalAudioDongle)
+                if (di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalDongle || di.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalAudioDongle)
                 {
-                    foreach(var info in DeviceInfos.Values)
+                    foreach (var info in DeviceInfos.Values)
                     {
-                        if(info.InstanceId == CurrentInstanceID && info.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalBluetooth)
+                        if (info.InstanceId == CurrentInstanceID && info.PhysicalDeviceType == DPeMPublic.Common.Enums.DeviceType.PhysicalBluetooth)
                             CurrentDeviceID = info.ID;
                     }
                 }
@@ -145,7 +145,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
             {
                 var arr = CurrentDeviceInfo.Name.Split(' ');
-                if(arr.Length > 0)
+                if (arr.Length > 0)
                 {
                     Model = arr[arr.Length - 1];
                 }
@@ -156,7 +156,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //Name = CurrentDeviceInfo.Name.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
                 Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
             }
-            if(instenceNo == "")
+            if (instenceNo == "")
             {
                 Model2 = Model;
             }
@@ -174,8 +174,11 @@ namespace DDPM.UI.Plugin.ViewModels
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
             //ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString() == "PhysicalDongle" ? "Dongle" : "Bluetooth";
-            switch(CurrentDeviceInfo.PhysicalDeviceType)
+            switch (CurrentDeviceInfo.PhysicalDeviceType)
             {
+                case DeviceType.PhysicalWebcam:
+                    ConnectionType = "Wired";
+                    break;
                 case DeviceType.PhysicalAudioDongle:
                 case DeviceType.PhysicalBluetoothAudio:
                     ConnectionType = CurrentDeviceInfo.PhysicalDeviceType.ToString().Replace("Physical", "").Replace("Audio", "");
@@ -191,15 +194,15 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 //0617 Bruce 新增Dock連線方式的濾字串的方式
                 case DeviceType.PhysicalWiredDock:
-                    if(CurrentDeviceInfo.ModelNumber.ToString().Contains("TB 5"))
+                    if (CurrentDeviceInfo.ModelNumber.ToString().Contains("TB 5"))
                     {
                         ConnectionType = "USB-C (TB 5)";
                     }
-                    else if(CurrentDeviceInfo.ModelNumber.ToString().Contains("TB4"))
+                    else if (CurrentDeviceInfo.ModelNumber.ToString().Contains("TB4"))
                     {
                         ConnectionType = "USB-C (TB 4)";
                     }
-                    else if(CurrentDeviceInfo.ModelNumber.ToString().Contains("DCS"))
+                    else if (CurrentDeviceInfo.ModelNumber.ToString().Contains("DCS"))
                     {
                         ConnectionType = "Dual USB-C (DP 1.4)";
                     }
@@ -233,18 +236,20 @@ namespace DDPM.UI.Plugin.ViewModels
 
             CheckMultiDevice();
             GenerateInfo();
+
+            CurrentCursor = Cursors.Arrow;
             return true;
         }
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            switch(changeType)
+            switch (changeType)
             {
                 case DeviceChangedType.Peripherals_PlugIn:
-                    if(DeviceInfos.ContainsKey(di.ID))
+                    if (DeviceInfos.ContainsKey(di.ID))
                     { DeviceInfos.Remove(di.ID); }
                     DeviceInfos.Add(di.ID, di);
-                    if(CurrentInstanceID == di.InstanceId)
+                    if (CurrentInstanceID == di.InstanceId)
                     {
                         CurrentDeviceID = di.ID;
                         SetCurrentDevice(CurrentDeviceID.ToString());
@@ -254,19 +259,19 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 case DeviceChangedType.Peripherals_UnPlug:
                     CheckMultiDevice();
-                    if(CurrentInstanceID == di.InstanceId)
+                    if (CurrentInstanceID == di.InstanceId)
                     {
                         //Thread.Sleep(5000);
                         var hasDevice = false;
-                        foreach(var info in DeviceInfos.Values)
+                        foreach (var info in DeviceInfos.Values)
                         {
-                            if(info.InstanceId == CurrentInstanceID && info.IsConnected)
+                            if (info.InstanceId == CurrentInstanceID && info.IsConnected)
                             {
                                 CurrentDeviceID = info.ID;
                                 hasDevice = true;
                             }
                         }
-                        if(hasDevice)
+                        if (hasDevice)
                         {
                             SetCurrentDevice(CurrentDeviceID.ToString());
                         }
@@ -278,7 +283,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
 
                 case DeviceChangedType.Peripherals_SettingsChange:
-                    if(DeviceInfos.Keys.Contains(di.ID))
+                    if (DeviceInfos.Keys.Contains(di.ID))
                     {
                         DeviceInfos.Remove(di.ID);
                         DeviceInfos.Add(di.ID, di);
@@ -287,17 +292,17 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         return;
                     }
-                    if(di.ID == CurrentDeviceID)
+                    if (di.ID == CurrentDeviceID)
                     {
                         CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-                        switch(property)
+                        switch (property)
                         {
                             case "BatteryStatusChanged":
                                 BatteryStatus = di.BatteryStatus;
                                 break;
 
                             case "BatteryLevelChanged":
-                                if(BatteryLevel == -1)
+                                if (BatteryLevel == -1)
                                     SetCurrentDevice(CurrentDeviceID.ToString());
                                 else
                                     BatteryLevel = di.BatteryLevel;
@@ -316,7 +321,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            if(!DeviceInfos.ContainsKey(CurrentDeviceID))
+            if (!DeviceInfos.ContainsKey(CurrentDeviceID))
                 OnGoBackClicked();
             timer.Stop();
         }
@@ -324,7 +329,7 @@ namespace DDPM.UI.Plugin.ViewModels
         protected void GenerateInfo()
         {
             StringBuilder DeviceInfo = new();
-            if(CurrentDeviceInfo!.Name.ToUpper().Contains("HEADSET"))
+            if (CurrentDeviceInfo!.Name.ToUpper().Contains("HEADSET"))
             {
                 DeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
                 DeviceInfo.Append(Environment.NewLine);
@@ -413,7 +418,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 DeviceInfo.Append($"WearDetection : {CurrentDeviceInfo.WearDetection}");
                 DeviceInfo.Append(Environment.NewLine);
             }
-            else if(CurrentDeviceInfo!.Name.ToUpper().Contains("SPEAKER"))
+            else if (CurrentDeviceInfo!.Name.ToUpper().Contains("SPEAKER"))
             {
                 DeviceInfo.Append($"ID : {CurrentDeviceInfo!.ID}");
                 DeviceInfo.Append(Environment.NewLine);
@@ -616,7 +621,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _name;
             set
             {
-                if(_name != value)
+                if (_name != value)
                 {
                     _name = value;
                     OnPropertyChanged();
@@ -629,7 +634,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _model;
             set
             {
-                if(_model != value)
+                if (_model != value)
                 {
                     _model = value;
                     OnPropertyChanged();
@@ -637,7 +642,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public string Model2 { get; set; }
+        public string Model2 { get; set; } = "";
 
         public string? DeviceInfo { get; set; }
         public Guid CurrentDeviceID { get; set; }
@@ -671,7 +676,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _firmwareVersion;
             set
             {
-                if(_firmwareVersion != value)
+                if (_firmwareVersion != value)
                 {
                     _firmwareVersion = value;
                     OnPropertyChanged();
@@ -684,7 +689,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _firmwareVersion2;
             set
             {
-                if(_firmwareVersion2 != value)
+                if (_firmwareVersion2 != value)
                 {
                     _firmwareVersion2 = value;
                     OnPropertyChanged();
@@ -697,7 +702,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _rightFrameVisibility;
             set
             {
-                if(_rightFrameVisibility != value)
+                if (_rightFrameVisibility != value)
                 {
                     _rightFrameVisibility = value;
                     OnPropertyChanged();
@@ -710,7 +715,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _batteryLevel;
             set
             {
-                if(_batteryLevel != value)
+                if (_batteryLevel != value)
                 {
                     _batteryLevel = value;
                     OnPropertyChanged();
@@ -723,7 +728,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _batteryStatus;
             set
             {
-                if(_batteryStatus != value)
+                if (_batteryStatus != value)
                 {
                     _batteryStatus = value;
                     OnPropertyChanged();
@@ -766,7 +771,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(CurrentDeviceInfo != null)
+                if (CurrentDeviceInfo != null)
                 {
                     return !CurrentDeviceInfo.IsBatteryLevelSupported;
                 }
@@ -806,7 +811,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 //Validate value, allow set to -1 for reset to Landing mode, but should avoid
                 //to access to Groups
-                if((_groupSelIdx < 0) || (_groupSelIdx >= GroupCount))
+                if ((_groupSelIdx < 0) || (_groupSelIdx >= GroupCount))
                     return;
 
                 //When ModuleGroup selection changed, need to update Headers and its selection,
@@ -844,9 +849,9 @@ namespace DDPM.UI.Plugin.ViewModels
             _vbarItems.Clear();
 
             int idx = 0;
-            foreach(ModuleGroup mg in ModuleGroups)
+            foreach (ModuleGroup mg in ModuleGroups)
             {
-                if(mg.GroupIcon != null)
+                if (mg.GroupIcon != null)
                 {
                     VbarItem vbarItem = new(idx, mg.GroupIcon, mg.GroupName)
                     {
@@ -872,7 +877,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 SetProperty(ref _vbarSelectedIndex, value);
                 OnPropertyChanged(nameof(ConnectionPopupMargin));
 
-                if((value < 0) || (value >= GroupCount))
+                if ((value < 0) || (value >= GroupCount))
                     return;
 
                 ModuleGroup mg = ModuleGroups[VbarSelectedIndex];
@@ -915,17 +920,17 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(_leftView == null)
+                if (_leftView == null)
                     return DefaultLeftView;
 
                 ModuleGroup? selGroup = SelectedGroup;
-                if(selGroup != null)
+                if (selGroup != null)
                 {
                     RightViewHeader selHeader = selGroup.Headers[RightViewHeaderSelectedIndex];
-                    if(selHeader != null)
+                    if (selHeader != null)
                     {
                         IDdpmModule? mod = selHeader.DdpmModule;
-                        if(mod != null)
+                        if (mod != null)
                             return mod?.GetLeftView();
                     }
                 }
@@ -972,13 +977,13 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 ModuleGroup? selGroup = SelectedGroup;
-                if(selGroup != null)
+                if (selGroup != null)
                 {
                     RightViewHeader selHeader = selGroup.Headers[RightViewHeaderSelectedIndex];
-                    if(selHeader != null)
+                    if (selHeader != null)
                     {
                         IDdpmModule? mod = selHeader.DdpmModule;
-                        if(mod != null)
+                        if (mod != null)
                             ActiveModule = mod;
                         return mod?.GetRightView();
                     }
@@ -997,9 +1002,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 RightViewHeader? header = SelRightViewHeader;
-                if(header != null)
+                if (header != null)
                 {
-                    if(header.DdpmModule != null)
+                    if (header.DdpmModule != null)
                         return header.DdpmModule.ModuleName;
                 }
                 return "(ERROR)";
@@ -1015,7 +1020,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 ModuleGroup? selGroup = SelectedGroup;
-                if(selGroup != null)
+                if (selGroup != null)
                 {
                     return selGroup.HeaderSelectedIndex;
                 }
@@ -1024,7 +1029,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 ModuleGroup? selGroup = SelectedGroup;
-                if(selGroup != null)
+                if (selGroup != null)
                 {
                     selGroup.HeaderSelectedIndex = value;
                 }
@@ -1038,7 +1043,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(SelectedGroup != null)
+                if (SelectedGroup != null)
                 {
                     return SelectedGroup.Headers[SelectedGroup.HeaderSelectedIndex];
                 }
@@ -1071,13 +1076,13 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(_rightViewHeaders.Count == 0)
+                if (_rightViewHeaders.Count == 0)
                 {
                     //If _vbarItems is empty, will build the list from ModuleGroups
-                    if((_rightViewHeaders.Count == 0) && (ModuleGroups.Count > 0))
+                    if ((_rightViewHeaders.Count == 0) && (ModuleGroups.Count > 0))
                     {
                         //Get the selected ModuleGroup
-                        if((VbarSelectedIndex >= 0) || (VbarSelectedIndex < (ModuleGroups.Count)))
+                        if ((VbarSelectedIndex >= 0) || (VbarSelectedIndex < (ModuleGroups.Count)))
                         {
                             ModuleGroup mg = ModuleGroups[VbarSelectedIndex];
                             _rightViewHeaders = mg.Headers;
@@ -1099,10 +1104,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if(ModuleGroups.Count <= 0)
+                if (ModuleGroups.Count <= 0)
                     return null;
 
-                if((VbarSelectedIndex >= 0) && (VbarSelectedIndex < (ModuleGroups.Count)))
+                if ((VbarSelectedIndex >= 0) && (VbarSelectedIndex < (ModuleGroups.Count)))
                 {
                     return ModuleGroups[VbarSelectedIndex];
                 }
@@ -1112,7 +1117,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void Reset()
         {
-            foreach(ModuleGroup mg in _moduleGroups)
+            foreach (ModuleGroup mg in _moduleGroups)
             {
                 mg.Headers.Clear();
             }
@@ -1123,7 +1128,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void SetLadningMode(bool isLandingMode)
         {
-            foreach(VbarItem vbarItem in _vbarItems)
+            foreach (VbarItem vbarItem in _vbarItems)
             {
                 vbarItem.SetLadningMode(isLandingMode);
             }
@@ -1131,9 +1136,23 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void SelectVBar()
         {
-            foreach(VbarItem vbarItem in _vbarItems)
+            foreach (VbarItem vbarItem in _vbarItems)
             {
                 vbarItem.IsSelected = vbarItem.Id == VbarSelectedIndex;
+            }
+        }
+
+        private Cursor _currentCursor = Cursors.Arrow;
+        public Cursor CurrentCursor
+        {
+            get { return _currentCursor; }
+            set
+            {
+                if (_currentCursor != value)
+                {
+                    _currentCursor = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -1146,9 +1165,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _activeModule;
             set
             {
-                if(_activeModule == value)
+                if (_activeModule == value)
                     return;
-                if(_activeModule != null)
+                if (_activeModule != null)
                     _activeModule.OnDeactivated();
                 SetProperty(ref _activeModule, value);
                 _activeModule?.OnActivated();
