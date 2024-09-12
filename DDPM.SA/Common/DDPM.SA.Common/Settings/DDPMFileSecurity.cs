@@ -1,5 +1,4 @@
-using Dell.Client.Framework.Common;
-﻿using DDPM.SA.Obfuscation;
+using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Microsoft.Win32;
@@ -14,11 +13,8 @@ using System.Security;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
-using System.Text.RegularExpressions;
-using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
 {

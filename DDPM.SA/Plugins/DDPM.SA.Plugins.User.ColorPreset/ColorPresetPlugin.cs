@@ -19,11 +19,8 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
-using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
-using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.PortableDevices.ResourceSystem;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -43,7 +40,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using VcpCore.Common;
 using WinCopies.Util;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace ColorPreset.Plugins
 {
@@ -94,7 +90,7 @@ namespace ColorPreset.Plugins
         //20240830 Jim add
         IIC_Metadata _ICC_Metadata = new IIC_Metadata();
         private Download? download = null;
-        private Logs _logs;
+        //private Logs _logs;
 
         //20240905 Jim add
         MonitorInfo Active_monitorInfo = null;
@@ -104,7 +100,7 @@ namespace ColorPreset.Plugins
         /// <summary>
         /// Colorpreset Manual change event，return Colorpreset name
         /// </summary>
-        public event EventHandler<string>? Coloreset_manual_ChangeEvent;
+        public event EventHandler<string>? Coloreset_manual_ChangeEvent;        
 
         private enum log_type
         {
@@ -116,6 +112,7 @@ namespace ColorPreset.Plugins
 
         private static ShowOSDWin OsdWin = null;
         private string iconFolderPath = string.Empty;
+        private VcpCore.Common.Logs _logs;
 
         #endregion
 
@@ -1363,17 +1360,16 @@ namespace ColorPreset.Plugins
 
                         if (System.IO.File.Exists(strFilePath))
                         {
-<<<<<<< HEAD
                             //Elsa Add Security
                             string FileInfo;
                             if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
                             {
-                                _logs.Info($"{nameof(DownloadICCData)} {FileInfo}");
-                                return null;
+                                writelog($"[DownloadICCData] {FileInfo}");
+                                //return null;
+                                return Task.FromResult(_ICC_Metadata);
                             }
-=======
+
                             CheckICC_JSON_Security(strFilePath);
->>>>>>> 816905a6d692579cfffa20ea5e72188e979c7f2a
 
                             string strReadJson = string.Empty;
                             using (var reader = new StreamReader(strFilePath))

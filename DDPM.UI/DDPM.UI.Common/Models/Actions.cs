@@ -1,5 +1,4 @@
 ﻿using DDPM.SA.Common.Settings;
-using Dell.Client.Framework.Common;
 using Newtonsoft.Json;
 using System.IO;
 
@@ -262,7 +261,6 @@ namespace DDPM.UI.Common
 
     public static class ActionList
     {
-        private static Log _log;
         public static bool ExportActionList(object actions, string model, int instanceID = 0)
         {
             try
@@ -272,16 +270,17 @@ namespace DDPM.UI.Common
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
 
+                //File.WriteAllText(Path.Combine(fileFolder, $"{model}_{instanceID}.json"), json);
+                File.WriteAllText(Path.Combine(fileFolder, $"{model}.json"), json);
+
                 //Elsa Add Security
                 string FileInfo;
                 if (!DDPMFileSecurity.IsFolderPathValid(fileFolder, out FileInfo))
                 {
-                    _log.Info($"{nameof(ExportActionList)} {FileInfo}");
+                    //_log.Info($"{nameof(ExportActionList)} {FileInfo}");
                     return false;
                 }
 
-                //File.WriteAllText(Path.Combine(fileFolder, $"{model}_{instanceID}.json"), json);
-                File.WriteAllText(Path.Combine(fileFolder, $"{model}.json"), json);
                 return true;
             }
             catch (Exception)
@@ -296,12 +295,12 @@ namespace DDPM.UI.Common
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
             //Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
-            {
-                _log.Info($"{nameof(ImportActionList)} {FileInfo}");
-                return false;
-            }
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(ImportActionList)} {FileInfo}");
+            //    return false;
+            //}
             switch (type)
             {
                 case eDeviceCategory.KB:
