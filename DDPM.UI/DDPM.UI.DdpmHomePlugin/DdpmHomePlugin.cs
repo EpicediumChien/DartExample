@@ -5,6 +5,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
+using DDPM.UI.WalkThroughData;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -12,14 +13,19 @@ using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using VcpCore.Common;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Input;
+using static Dell.Client.Framework.Security.LocalAccounts;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using DDPMConstants = DDPM.UI.Common.Constants;
 
 //using VcpCore.Interfaces;
@@ -78,7 +84,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private bool _disposed;
         private bool _HasRegisted = false;
         private DdpmHomePageViewModel? _viewModel;
-        private List<DeviceInfo> deviceInfosForWalkThrough = new List<DeviceInfo>();
+
+
+        // For WalkThrough
+        public static Queue<DeviceInfo> WalkThroughQueue { get; private set; } = new Queue<DeviceInfo>();
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -190,31 +199,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 _log.Error($"{nameof(PluginManager_PluginsStarted)} ISettingsManagerDev Plugin is null");
                                 return;
                             }
-                       
-                            object value = _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\S-1-5-21-1955305480-2923385767-3602544926-1001", "IsFirstTimeNotificationDone_com.dell.DPM.Plugin.LogicalDevice.WL5024").Result;
-                            switch (value)
-                            {
-                                case int intValue:
-                                    Console.WriteLine("Integer value: " + intValue);
-                                    break;
-                                case string stringValue:
-                                    Console.WriteLine("String value: " + stringValue);
-                                    break;
-                                case byte[] byteArray:
-                                    Console.WriteLine("Byte array value: " + BitConverter.ToString(byteArray));
-                                    break;
-                                case string[] stringArray:
-                                    Console.WriteLine("String array value: " + string.Join(", ", stringArray));
-                                    break;
-                                case long longValue:
-                                    Console.WriteLine("Long value: " + longValue);
-                                    break;
-                                default:
-                                    Console.WriteLine("Unknown type: " + value.GetType());
-                                    break;
-                            }
-                            //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
-                            //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId, deviceInfosForWalkThrough[0].ModelNumber.ToString());
+                            //Wayn 2024-09-04 For WalkThrough
+                            await CollectAndCompareDevicesAsync();
 
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
@@ -241,7 +227,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
-        private void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
+        private async void _deviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
             _log.Info("DdpmHomePlugin._deviceManager_DeviceChanged() executed");
 
@@ -251,7 +237,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _log.Info($"@ ChangedProperty=[{e.changedProperty}], ChangedType=[{e.type}] DeviceID=[{e.deviceID}]");
                 if (e.device_peripherals != null)
                 {
+                    // Check and handle new inserted devices
+                    await CheckAndQueueDevice(e.device_peripherals);
                     _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
+                }
+                //// Check Queue¡Afirst use device need to show WalkThroughPage
+                if (WalkThroughQueue.Count > 0)
+                {
+                    _log.Info($"WalkThroughQueue has items, showing WalkThroughPage.");
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
                 }
                 //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
                 //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
@@ -269,7 +263,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     if (_deviceManager != null)
                         _ = GetDdpmDevicesAsync(_deviceManager);
 
-                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                    //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
 
                     if (e.type == DeviceChangedType.NotifyOnly)
                     {
@@ -399,7 +393,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
                 {
                     deviceInfos = deviceHelper.deviceInfo;
-                    deviceInfosForWalkThrough = deviceHelper.deviceInfo;
                 }
                 _log.Info($"Peripheral count is ${deviceInfos.Count}");
 
@@ -729,5 +722,211 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         #endregion SW/FW Update
+
+        #region WalkThrough
+        private enum WTS_INFO_CLASS
+        {
+            WTSUserName = 5,
+            WTSDomainName = 7,
+        }
+        [DllImport("Kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int WTSGetActiveConsoleSessionId();
+
+        private int WTSGetActiveConsoleSessionId_Public()
+        {
+            return WTSGetActiveConsoleSessionId();
+        }
+        [DllImport("Wtsapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern void WTSFreeMemory(IntPtr pointer);
+
+        private void WTSFreeMemory_Public(IntPtr pointer)
+        {
+            WTSFreeMemory(pointer);
+        }
+        [DllImport("Wtsapi32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
+
+        private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
+        {
+            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
+        }
+        /// <summary>
+        /// From SA code
+        /// </summary>
+        /// <returns>User Sid</returns>
+        public string GetActiveUserID()
+        {
+            IntPtr buffer;
+            int bytesReturned = 0;
+            int sessionId = WTSGetActiveConsoleSessionId_Public(); // This gets the session ID of the user logged into the console
+            Console.WriteLine($"[Walkthrough] WTSGetActiveConsoleSessionId: {sessionId}");
+            _log.Info($"[Walkthrough] WTSGetActiveConsoleSessionId: {sessionId}");
+            if (WTSQuerySessionInformation_Public(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
+            {
+                string userName = Marshal.PtrToStringAnsi(buffer);
+                WTSFreeMemory_Public(buffer);
+                Console.WriteLine($"[Walkthrough] WTSQuerySessionInformation: user name ({userName})");
+                _log.Info($"[Walkthrough] WTSQuerySessionInformation: user name ({userName})");
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    string userSid = GetUserSid(userName);
+                    if (!string.IsNullOrEmpty(userSid))
+                    {
+#if DEBUG
+                        Console.WriteLine($"[Walkthrough] User ID from registry: {userSid}");
+                        _log.Info($"[Walkthrough] User ID from registry: {userSid}");
+#endif
+                        return userSid;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("[Walkthrough] Got null user id");
+                    _log.Info($"[Walkthrough] Got null user id");
+                }
+            }
+            else
+            {
+                Console.WriteLine("[Walkthrough] WTSQuerySessionInformation: return false");
+                _log.Info($"[Walkthrough] WTSQuerySessionInformation: return false");
+            }
+            return null;
+        }
+        /// <summary>
+        /// Get User Sid. From SA code
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns>User Sid</returns>
+        private string GetUserSid(string userName)
+        {
+            _log.Info($"[Walkthrough]{nameof(GetUserSid)} Start");
+            NTAccount f_normal, f_domain = null;
+            string accountName = $"{Environment.MachineName}\\{userName}";
+            f_normal = new NTAccount(accountName);
+            Console.WriteLine($"[Walkthrough] GetUserSid: Machine name: {Environment.MachineName}, User name:{userName}");
+            if (!string.IsNullOrEmpty(Environment.UserDomainName))
+            {
+                accountName = $"{Environment.UserDomainName}\\{userName}";
+                Console.WriteLine($"[Walkthrough] GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
+                f_domain = new NTAccount(Environment.UserDomainName, userName);
+            }
+            String sidString;
+            try
+            {
+                SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
+                sidString = s.ToString();
+                Console.WriteLine($"[Walkthrough] GetUserSid(normal user): SID: {sidString}");
+            }
+            catch (Exception ex)
+            {
+                sidString = null;
+                Console.WriteLine($"[Walkthrough] GetUserSid(normal user): try translate fail: {ex.Message}");
+
+                //0724 add code that translate normal user and do translate domain user if fail.
+                if (f_domain != null)
+                {
+                    try
+                    {
+                        SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
+                        sidString = s.ToString();
+                        Console.WriteLine($"[Walkthrough] GetUserSid(domain user): SID: {sidString}");
+                    }
+                    catch (Exception e)
+                    {
+                        sidString = null;
+                        Console.WriteLine($"[Walkthrough] GetUserSid(domain user): try translate fail: {e.Message}");
+                        _log.Error($"[Walkthrough] GetUserSid(domain user): try translate fail: {e.Message}");
+                    }
+                }
+            }
+            return sidString;
+        }
+
+        /// <summary>
+        /// Check if the device has completed the WalkThrough, and add new devices to the queue
+        /// </summary>
+        /// <param name="device">DeviceInfo list</param>
+        /// <returns>Task</returns>
+        private async Task CheckAndQueueDevice(DeviceInfo device)
+        {
+            _log.Info($"[Walkthrough]{nameof(CheckAndQueueDevice)} Start");
+            string _userId = GetActiveUserID();
+            string regPath = $@"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\{_userId}";
+            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{device.ModelNumber}";
+
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
+
+            try
+            {
+                if (!devicePages.ContainsKey(device.ModelNumber))
+                {
+                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+                    _log.Info($"Device {device.ModelNumber} Can not find ModelNumber in WalkThroughData.");
+                    return;
+                }
+
+                // read reg
+                object regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+
+                // mean null or ""
+                if (regValue == null || regValue is string strValue && string.IsNullOrEmpty(strValue))
+                {
+                    // No reg, add into queue, then set true
+                    WalkThroughQueue.Enqueue(device); // add
+                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);                   
+                    _log.Info($"Device {device.ModelNumber} added to the queue and registry value updated to true.");
+                }
+                else if (!Convert.ToBoolean(regValue))
+                {
+                    // reg false, add into queue, then set true
+                    WalkThroughQueue.Enqueue(device); // add
+                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+                    _log.Info($"Device {device.ModelNumber} added to the queue and registry value updated to true.");
+                }
+                else if (Convert.ToBoolean(regValue))
+                {
+                    // Reg true, skip
+                    _log.Info($"Device {device.ModelNumber} already processed, skipping.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"[Walkthrough] Error processing device {device.ModelNumber}: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Collect currently connected devices
+        /// </summary>
+        /// <returns></returns>
+        public async Task CollectAndCompareDevicesAsync()
+        {
+            _log.Info($"[Walkthrough]{nameof(CollectAndCompareDevicesAsync)} Start");
+            try
+            {
+                var deviceHelper = await _deviceManager.GetDevices();
+                if (deviceHelper?.deviceInfo != null)
+                {
+                    foreach (var device in deviceHelper.deviceInfo)
+                    {
+                        _log.Info($"[Walkthrough] CheckAndQueueDevice Start");
+                        await CheckAndQueueDevice(device);
+                    }
+                }
+                if(WalkThroughQueue.Count != 0)
+                {
+                    _log.Info($"[Walkthrough] ShowPluginById Start");
+                    _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"[Walkthrough]{nameof(CollectAndCompareDevicesAsync)} Error collecting devices: {ex.Message}");
+            }
+        }
+        #endregion WalkThrough
     }
 }
