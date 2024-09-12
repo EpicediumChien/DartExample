@@ -73,6 +73,7 @@
 
 
         //d3 11 37 9e ee 0e 4a 4a d0 b1 39 43 a2 39 06 72 54 92 dd 29
+        // Dell CI/CD cer thumbprint.
         private static readonly byte[] DELL_CICD_Hash = new byte[]
         {
             //d311379eee0e4a4ad0b13943a23906725492dd29
