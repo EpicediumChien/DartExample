@@ -1,7 +1,6 @@
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
-using Dell.Client.Framework.Common;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using VcpCore.Common;
@@ -11,7 +10,6 @@ namespace DDPM.UI.Module.Color
     public partial class AddAppFullPageCtrl : UserControl
     {
         private List<string> _supported_preset = new List<string>();
-        private static Log _log;
         public AddAppFullPageCtrl()
         {
             InitializeComponent();
@@ -30,11 +28,11 @@ namespace DDPM.UI.Module.Color
                 System.IO.Directory.CreateDirectory(strFolder);
 
             //Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFolderPathValid(strFolder, out FileInfo))
-            {
-                _log.Info($"{nameof(UserControl_Loaded)} {FileInfo}");
-            }
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFolderPathValid(strFolder, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(UserControl_Loaded)} {FileInfo}");
+            //}
 
             foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
             {

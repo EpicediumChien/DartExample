@@ -1091,7 +1091,7 @@ namespace DDPM.SA.Common.Settings
 
             try
             {
-                //Dean 0911: only load file's cert, return null if fail as well
+                //Dean 0911: only load file's cert, basic function
                 //Elsa Add Security
                 //string FileInfo;
                 //if (!IsFilePathValid(filePath, out FileInfo))
