@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -94,12 +95,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {
-                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID)
                     {
-                        _viewModel.OnGoBackClicked();
-                        return;
+                        if (_viewModel.IsMicEnumerationOnEnabled)
+                        {
+                            _viewModel!.OnGoBackClicked();
+                        }
                     }
-                    GetPeripheralsAsync();
+                    return;
+                }
+                if (e.type == DeviceChangedType.Peripherals_PlugIn)
+                {
+                    if (e.device_peripherals.Name == _viewModel!.CurrentDeviceInfo!.Name)
+                    {
+                        GetPeripheralsAsync();
+                        _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
+                        Mouse.OverrideCursor = null;
+                    }
+                    return;
                 }
                 _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
@@ -212,6 +225,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
+            var GetBrightness = _deviceManagerPlugin!.GetBrightness(parameter).Result;
+            var ProfileName = _deviceManagerPlugin!.GetProfileName(parameter).Result;
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
             { }
             Mouse.OverrideCursor = null;

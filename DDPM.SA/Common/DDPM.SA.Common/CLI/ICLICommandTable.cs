@@ -74,7 +74,6 @@ namespace DDPM.SA.Common
         {
             "GET",
             "SET",
-            "CONFIGURE",
             "HELP"
         };
 

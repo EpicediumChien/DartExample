@@ -109,14 +109,14 @@ namespace DDPM.SA.Common
         void SetWearDetection(int newValue, Guid deviceId);
 
         void SetWearDetectionForCLI(int newValue, Guid deviceId);
-        
+
         void SetBusyLight(bool newValue, Guid deviceId);
 
         void SetVoiceGuidance(bool newValue, Guid deviceId);
 
         void SetMicNCIncoming(bool newValue, Guid deviceId);
 
-        public void SetIsMicEnumerationOn(bool newValue, Guid deviceId);
+        void SetIsMicEnumerationOn(bool newValue, Guid deviceId);
 
         void SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId);
     }
