@@ -29,6 +29,7 @@
     <None Remove="Resources\Images\CameraColorImage.png" />
     <None Remove="Resources\Images\CameraControl.png" />
     <None Remove="Resources\Images\CameraPresenceDetection.png" />
+    <None Remove="Resources\Images\CameraPreset.png" />
     <None Remove="Resources\Images\Chat.png" />
     <None Remove="Resources\Images\ChatC.png" />
     <None Remove="Resources\Images\CheckOK.png" />
@@ -42,6 +43,7 @@
     <None Remove="Resources\Images\DownloadTileA.png" />
     <None Remove="Resources\Images\DownloadTileG.png" />
     <None Remove="Resources\Images\EOLDongle.png" />
+    <None Remove="Resources\Images\Folder.png" />
     <None Remove="Resources\Images\G.png" />
     <None Remove="Resources\Images\GearConnection.png" />
     <None Remove="Resources\Images\Group 1010105297.png" />
@@ -144,6 +146,7 @@
     <None Remove="Resources\Images\MS7421W_1.png" />
     <None Remove="Resources\Images\MS900.png" />
     <None Remove="Resources\Images\MultiDevice.png" />
+    <None Remove="Resources\Images\P2424HEB.png" />
     <None Remove="Resources\Images\PairTile.png" />
     <None Remove="Resources\Images\PButton11.png" />
     <None Remove="Resources\Images\PButton12.png" />
@@ -191,6 +194,7 @@
     <None Remove="Resources\Images\R1.png" />
     <None Remove="Resources\Images\R2.png" />
     <None Remove="Resources\Images\R3.png" />
+    <None Remove="Resources\Images\RedCircle.png" />
     <None Remove="Resources\Images\Right.png" />
     <None Remove="Resources\Images\SB3022.png" />
     <None Remove="Resources\Images\SB522A.png" />
@@ -234,6 +238,9 @@
     <None Remove="Resources\Images\Usb24.png" />
     <None Remove="Resources\Images\Video.png" />
     <None Remove="Resources\Images\Warring.png" />
+    <None Remove="Resources\Images\WB3023.png" />
+    <None Remove="Resources\Images\WB5023.png" />
+    <None Remove="Resources\Images\WB7022.png" />
     <None Remove="Resources\Images\WD19DCS.png" />
     <None Remove="Resources\Images\WD19S_130W.png" />
     <None Remove="Resources\Images\WD19S_180W.png" />
@@ -244,17 +251,14 @@
     <None Remove="Resources\Images\WD25Z.png" />
     <None Remove="Resources\Images\WebCamera.png" />
     <None Remove="Resources\Images\WebCamModel_P2424HEB_Large.png" />
-    <None Remove="Resources\Images\WebCamModel_P2424HEB_Small.png" />
     <None Remove="Resources\Images\WebCamModel_U3223QZ_Large.png" />
     <None Remove="Resources\Images\WebCamModel_U3223QZ_Small.png" />
     <None Remove="Resources\Images\WebCamModel_U3224KB_Large.png" />
     <None Remove="Resources\Images\WebCamModel_U3224KB_Small.png" />
     <None Remove="Resources\Images\WebCamModel_WB3023_Large.png" />
-    <None Remove="Resources\Images\WebCamModel_WB3023_Small.png" />
     <None Remove="Resources\Images\WebCamModel_WB5023_Large.png" />
     <None Remove="Resources\Images\WebCamModel_WB5023_Small.png" />
     <None Remove="Resources\Images\WebCamModel_WB7022_Large.png" />
-    <None Remove="Resources\Images\WebCamModel_WB7022_Small.png" />
     <None Remove="Resources\Images\WH3024.png" />
     <None Remove="Resources\Images\WH5024.png" />
     <None Remove="Resources\Images\WindowsSettings.png" />
@@ -300,6 +304,7 @@
     <Resource Include="Resources\Images\CameraPresenceDetection.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\CameraPreset.png" />
     <Resource Include="Resources\Images\Chat.png" />
     <Resource Include="Resources\Images\ChatC.png" />
     <Resource Include="Resources\Images\CheckOK.png" />
@@ -313,6 +318,7 @@
     <Resource Include="Resources\Images\DownloadTileA.png" />
     <Resource Include="Resources\Images\DownloadTileG.png" />
     <Resource Include="Resources\Images\EOLDongle.png" />
+    <Resource Include="Resources\Images\Folder.png" />
     <Resource Include="Resources\Images\G.png" />
     <Resource Include="Resources\Images\GearConnection.png" />
     <Resource Include="Resources\Images\HandTouch.png" />
@@ -326,6 +332,7 @@
     <Resource Include="Resources\Images\HeadsetModel_7024-mall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\RedCircle.png" />
     <Resource Include="Resources\Images\SD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -431,6 +438,7 @@
     <Resource Include="Resources\Images\SB522A.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\WB5023.png" />
     <Resource Include="Resources\Images\WD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -585,7 +593,7 @@
     <Resource Include="Resources\Images\WebCamModel_P2424HEB_Large.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\WebCamModel_P2424HEB_Small.png">
+    <Resource Include="Resources\Images\P2424HEB.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\WebCamModel_U3223QZ_Large.png">
@@ -603,19 +611,16 @@
     <Resource Include="Resources\Images\WebCamModel_WB3023_Large.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\WebCamModel_WB3023_Small.png">
+    <Resource Include="Resources\Images\WB3023.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\WebCamModel_WB5023_Large.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\WebCamModel_WB5023_Small.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Resources\Images\WebCamModel_WB7022_Large.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\WebCamModel_WB7022_Small.png">
+    <Resource Include="Resources\Images\WB7022.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\WindowsSettings.png" />

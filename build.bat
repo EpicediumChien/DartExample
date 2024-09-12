@@ -1,4 +1,6 @@
 @echo OFF
+start /wait /B cmd.exe /C .\del_files.bat
+
 set NET=net8.0
 :: dotnet.exe build -c "Debug" /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
 :: dotnet.exe build -c "Debug" /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
@@ -14,9 +16,7 @@ set ConfigType=%1
 :: Call msbuild environment.
 :: start /B cmd.exe /C .\SetVSBuildEnvironment.bat
 
-RD /S /Q "_BIN"
-del /Q /F /s "obj"
-del /Q /F /s "bin"
+
 ::goto FileCopy
 
 

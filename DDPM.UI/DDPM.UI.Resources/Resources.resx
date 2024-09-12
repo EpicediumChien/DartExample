@@ -1420,7 +1420,7 @@
     <value>Brightness/Contrast</value>
   </data>
   <data name="DisplayProperties" xml:space="preserve">
-    <value>Display Properties</value>
+    <value>Properties</value>
   </data>
   <data name="Layout" xml:space="preserve">
     <value>Layout</value>
@@ -1604,5 +1604,11 @@
   </data>
   <data name="ITLockToolTip.0" xml:space="preserve">
     <value>This setting is locked by your IT admin.</value>
+  </data>
+  <data name="WebCameraMicrophone.3" xml:space="preserve">
+    <value>Enables your camera's microphone. Camera will restart quickly when turning ON/OFF this feature.</value>
+  </data>
+  <data name="Webcamera.0" xml:space="preserve">
+    <value>Select an option</value>
   </data>
 </root>

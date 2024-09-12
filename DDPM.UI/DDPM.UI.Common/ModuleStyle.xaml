@@ -347,7 +347,7 @@
         <Grid x:Name="templateRoot">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="7" />
+                <RowDefinition Height="0" />
                 <!--  [1]  -->
             </Grid.RowDefinitions>
 
@@ -356,11 +356,11 @@
                 Name="PART_Popup"
                 Grid.Row="1"
                 MinWidth="{Binding ActualWidth, ElementName=templateRoot}"
-                Margin="0,30,0,0"
+                Margin="0,0,0,0"
                 AllowsTransparency="True"
                 Focusable="False"
                 IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                Placement="Bottom"
+                Placement="Bottom" VerticalOffset="8"
                 PopupAnimation="Slide">
 
                 <Border

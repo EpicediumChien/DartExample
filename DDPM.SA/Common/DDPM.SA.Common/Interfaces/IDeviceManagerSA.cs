@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -46,13 +47,16 @@ namespace DDPM.SA.Common
 
         #region public for ColorPreset
 
+        event EventHandler<string> Coloreset_manual_ChangeEvent;
+
         Task<Dictionary<string, InstalledAppInfo>> FindAppsbyShell(bool isReload = false);
 
         void ShowOSD_ColoPreset(MonitorInfo m, string strMsg);
 
         Task<List<string>> ReadColorPreset(MonitorInfo m);
-     
-        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int ColorPresetRunType = 0);
+
+        //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
+        Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
 
@@ -79,15 +83,13 @@ namespace DDPM.SA.Common
         //Jim add 20240801
         Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "");
 
-        //Jim add 20240820
-        Task<bool> ColorManagement_Off(MonitorInfo mo);
-
-        Task<bool> ColorManagement_Bymonitor(MonitorInfo mo);
-
-        Task<bool> ColorManagement_Byhost(MonitorInfo mo);
-
         //Jim add 20240904
         Task<string> GetAutoColorPresetStatus(MonitorInfo m);
+
+        //Jim add 20240905
+        Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, string ColorPreset_Name = "", string ICC_profile_Name = "");
+
+        Task<string> GetColorManagementStatus(MonitorInfo m);
 
         #endregion public for ColorPreset
 
@@ -410,6 +412,8 @@ namespace DDPM.SA.Common
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
         Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "");
+        Task<FWUErrorCode> Install(string installPath);
+
 
         void SetUILockStatus(bool isLockFWU_UI);
 
@@ -448,6 +452,22 @@ namespace DDPM.SA.Common
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
 
+        Task GetNKVMVersion();
+
+        Task GetNKVMStatus();
+
+        Task GetNKVMAutoConnect();
+
+        Task GetNKVMContentTransfer();
+
+        Task GetNKVMIncommingPort();
+
+        Task GetNKVMOutgoingPort();
+
+        Task GetNKVMContentTransferPort();
+
+        Task GetNKVMSettings();
+
         Task NKVM_State(bool state);
 
         Task CallNKVMConnent();
@@ -466,7 +486,7 @@ namespace DDPM.SA.Common
 
         Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
 
-        Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, string path);
+        Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
 
         #endregion public for ImpExpSettings
 
@@ -529,8 +549,10 @@ namespace DDPM.SA.Common
 
         Task SetTipSensitivity(string itemID, int newValue);
 
-        // Webcam
-        Task<int> GetBrightnessValueByDTP(string itemID);
+        #region Webcam
+        Task<JArray> GetPresetProfiles(string Guid);
+        Task<string> GetProfileName(string Guid);
+        Task<int> GetBrightness(string Guid);
 
         Task SetBrightnessValueByDTP(string itemID, int newValue);
 
@@ -557,7 +579,9 @@ namespace DDPM.SA.Common
         Task<bool> GetIsAutoFramingOnValueByDTP(string itemID);
 
         Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
+        Task SetIsMicEnumerationOn(string Guid, bool newValue);
 
+        #endregion
 
         #endregion public for DTPProxy
 
@@ -572,6 +596,8 @@ namespace DDPM.SA.Common
         Task ShowOSD(object monitorInfo, OSDType type);
 
         #endregion OSD
+
+
 
         #region GlobalSetting
         Task<GlobalSettingParam> GetGlobalSettingParam();

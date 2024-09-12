@@ -1,11 +1,16 @@
 using Microsoft.Win32;
 using System.ComponentModel;
+using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using static System.Windows.Forms.Design.AxImporter;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Reflection;
 
-namespace RegistryUtils
+namespace DDPM.SA.Common
 {
     /// Monitor NightLight on/off if changed
     public class RegistryMonitor_NightLight : IDisposable
@@ -226,10 +231,13 @@ namespace RegistryUtils
                     _thread = new Thread(new ThreadStart(MonitorThread));
                     _thread.IsBackground = true;
 
-                    dispatcher.BeginInvoke((Action)delegate ()
-                    {
-                        _thread.Start();
-                    });
+                    //dispatcher.BeginInvoke((Action)delegate ()
+                    //{
+                        Task.Run(() =>
+                        {
+                            _thread.Start();
+                        });
+                    //});
                 }
             }
         }
@@ -525,10 +533,15 @@ namespace RegistryUtils
                     _thread = new Thread(new ThreadStart(MonitorThread));
                     _thread.IsBackground = true;
 
-                    dispatcher.BeginInvoke((Action)delegate ()
+                    //dispatcher.BeginInvoke((Action)delegate ()
+                    //{
+
+                    Task.Run(() =>
                     {
                         _thread.Start();
-                    });
+                    });                   
+                        
+                    //});
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿using DDPM.SA.Obfuscation;
+using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using Microsoft.Win32;
@@ -13,10 +13,8 @@ using System.Security;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -35,6 +33,7 @@ namespace DDPM.SA.Common.Settings
 
     public class DDPMFileSecurity
     {
+        //private static Log _log;
         /// <summary>
         /// Using DPAPI to protect data
         /// </summary>
@@ -95,6 +94,14 @@ namespace DDPM.SA.Common.Settings
                 info = "Null json content as input";
                 return false;
             }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!IsFilePathValid(target_file, out FileInfo))
+            {
+                info = $"[SetJsonContentFromSerializedString] {FileInfo}";
+                return false;
+            }
             string signature;
             try
             {
@@ -104,7 +111,7 @@ namespace DDPM.SA.Common.Settings
                 //signature = Encoding.UTF8.GetString(hash_sign);
 
                 //0905 apply DDPM private key rule
-                if(accessInfo == null || accessInfo.Length < 32)
+                if (accessInfo == null || accessInfo.Length < 32)
                 {
                     info = "DDPM AccessInfo value is abnormal";
                     return false;
@@ -171,6 +178,7 @@ namespace DDPM.SA.Common.Settings
             info = "Success";
             if (!IsFilePathValid(filePath, out info))
             {
+                info = $"[GetSerializedJsonString] {info}";
                 return string.Empty;
             }
             if (accessInfo == null || accessInfo.Length < 32)
@@ -298,6 +306,14 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    info = $"[Json_ExportSettingsToFileWithCheckSum] {FileInfo}";
+                    return false;
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -323,6 +339,14 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    info = $"[Json_ExportSettingsToFileWithCheckSum] {FileInfo}";
+                    return false;
+                }
+                
                 return true;
             }
             catch (Exception ex)
@@ -355,6 +379,13 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    info = $"[Json_ExportSettingsToFileWithSha512] {FileInfo}";
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -378,6 +409,13 @@ namespace DDPM.SA.Common.Settings
                     fileStream.Flush();
                     fileStream.Close();
                 }
+                //Elsa Add Security
+                string FileInfo;
+                if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                {
+                    info = $"[Json_ExportSettingsToFileWithoutSignature] {FileInfo}";
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)
@@ -395,6 +433,13 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        info = $"[Json_ImportSettingsWithoutSignature] {FileInfo}";
+                        return null;
+                    }
                     int num = (int)new FileInfo(path).Length;
                     if (num > 0)
                     {
@@ -429,6 +474,14 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        info = $"[Json_ImportSettingsAndCheckCheckSum] {FileInfo}";
+                        return null;
+                    }
+
                     int num = (int)new FileInfo(path).Length;
                     if (num > 4)
                     {
@@ -471,6 +524,13 @@ namespace DDPM.SA.Common.Settings
             {
                 if (File.Exists(path))
                 {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        info = $"[Json_ImportSettingsAndCheckSha512] {FileInfo}";
+                        return null;
+                    }
                     int num = (int)new FileInfo(path).Length;
                     if (num > 64)
                     {
@@ -641,7 +701,7 @@ namespace DDPM.SA.Common.Settings
             }
             return true;
         }
-        
+
         /// <summary>
         /// Normal user only can read but admin has full right
         /// </summary>
@@ -664,6 +724,13 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
 
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
+            {
+                info = $"[ApplyFileACLUserReadOnly] {FileInfo}";
+                return false;
+            }
             FileInfo fileInfo = new FileInfo(fileName);
 
             // Get file's security content
@@ -717,6 +784,14 @@ namespace DDPM.SA.Common.Settings
             if (File.Exists(fileName) == false)
             {
                 info = $"[ApplyFileACLNormalUser] file ({fileName}) not exist";
+                return false;
+            }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
+            {
+                info = $"[ApplyFileACLNormalUser] {FileInfo}";
                 return false;
             }
 
@@ -793,6 +868,13 @@ namespace DDPM.SA.Common.Settings
                 info = $"CheckFileACL: {filePath} isn't exist.";
                 return false;
             }
+            //Elsa Add Security
+            string FileInfo;
+            if (!IsFilePathValid(filePath, out FileInfo))
+            {
+                info = $"{nameof(CheckFileACL)} {FileInfo}";                
+                return false;
+            }
             FileInfo fileInfo = new FileInfo(filePath);
             try
             {
@@ -850,6 +932,14 @@ namespace DDPM.SA.Common.Settings
                 info = $"CheckFolderACL: {folderPath} isn't exist.";
                 return false;
             }
+
+            //Elsa Add Security
+            string FileInfo;
+            if (!IsFolderPathValid(folderPath, out FileInfo))
+            {
+                info = info = $"{nameof(CheckFolderACL)} {FileInfo}";
+                return false;
+            }
             DirectoryInfo folderInfo = new DirectoryInfo(folderPath);
             // verify the ACLs using the ACLChecker class
             try
@@ -893,7 +983,44 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
-        public static bool CheckIfFileCanBeExecuted_Secure(string executablePath, bool NeedElevated = false)
+        //
+        //The caller should use try-catch to catch exception and avoid crash
+        public static void SetFolderPermissions_UserReadAndExecute(string folderPath)
+        {
+            // Elsa Add Security
+            string FileInfo;
+            if (!IsFolderPathValid(folderPath, out FileInfo))
+            {
+                //_log.Info($"{nameof(SetFolderPermissions_UserReadAndExecute)} {FileInfo}");
+                throw new SecurityException($"{FileInfo}"); 
+            }
+            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+            DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
+
+            // Admin - full control
+            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+            FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(adminRule);
+
+            // System - full control
+            SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+            FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(systemRule);
+
+            // normal user - read and execute (w/o write)
+            SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+            FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+            directorySecurity.AddAccessRule(usersRule);
+
+            // normal user - read write deny
+            FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
+            directorySecurity.AddAccessRule(denyWriteRule);
+
+            // apply change
+            directoryInfo.SetAccessControl(directorySecurity);
+        }
+
+        /*public static bool CheckIfFileCanBeExecuted_Secure(string executablePath, bool NeedElevated = false)
         {
             if (string.IsNullOrEmpty(executablePath))
             {
@@ -906,24 +1033,28 @@ namespace DDPM.SA.Common.Settings
                 // Check if file path is valid
                 if (string.IsNullOrWhiteSpace(filePath) || !Path.IsPathRooted(filePath) || filePath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Invalid file path.");
                     throw new ArgumentException("Invalid file path.");
                 }
 
                 // Check if file exist
                 if (!File.Exists(filePath))
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- File isn't exist.");
                     throw new ArgumentException("File isn't exist. ");
                 }
 
                 // Perform Input Validation: check file path
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Invalid file path string - {filePath}");
                     throw new ArgumentException($"Invalid file path string - {filePath}");
                 }
 
                 // Prevent Path Traversal: check redirection
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
                 {
+                    _log.Info($"{nameof(CheckIfFileCanBeExecuted_Secure)} -- Redirection detected along file path - {filePath}");
                     throw new PathCheckRedirectionException($"Redirection detected along file path - {filePath}");
                 }
 
@@ -948,10 +1079,11 @@ namespace DDPM.SA.Common.Settings
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                throw new SecurityException(ex.Message);
+                //throw new SecurityException(ex.Message);
+                return false;
             }
             return true;
-        }
+        }*/
 
         private static X509Certificate2 GetCertificate(string filePath)
         {
@@ -959,11 +1091,20 @@ namespace DDPM.SA.Common.Settings
 
             try
             {
+                //Dean 0911: only load file's cert, basic function
+                //Elsa Add Security
+                //string FileInfo;
+                //if (!IsFilePathValid(filePath, out FileInfo))
+                //{
+                //    _log.Info($"{nameof(GetCertificate)} {FileInfo}");
+                //    return cert;
+                //}
+
                 // Load the executable into a byte array
-                byte[] fileBytes = File.ReadAllBytes(filePath);
+                //byte[] fileBytes = File.ReadAllBytes(filePath);
 
                 // Load the executable as an X509Certificate2 object
-                cert = new X509Certificate2(fileBytes);
+                cert = new X509Certificate2(filePath); //fileBytes);
 
                 // Validate the certificate
                 if (!cert.Verify())
@@ -982,7 +1123,7 @@ namespace DDPM.SA.Common.Settings
         //Hard code for test
         //private static string _Sha256SubjectPublicKeyInfoHash = "1d58d1d2bbebc4f3c8169c17c75086b38348e1bcfe0210b21518d32e1301d763";
 
-        public static bool CheckIsValidFile_Secure(string JsonPath)//, string rsa_key_public)
+        /*public static bool CheckIsValidFile_Secure(string JsonPath)//, string rsa_key_public)
         {
             if (string.IsNullOrEmpty(JsonPath))
             {
@@ -992,11 +1133,11 @@ namespace DDPM.SA.Common.Settings
             {
                 string filePath = JsonPath.Trim();
 
-                /*
-                *   STEP 1: Create our Authenticode signature verifier
-                *
-                *   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
-                */
+                //
+                //   STEP 1: Create our Authenticode signature verifier
+                //
+                //   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
+                //
                 VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;     // fails validation on all errors or if the signing certificate was self signed
 
                 SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);     // object for storing our SHA256 subject public key info hash
@@ -1013,49 +1154,51 @@ namespace DDPM.SA.Common.Settings
                     Constraints = constraints     // pass in our LeafCertConstraints that contains our pre-computed sha256 subject public key info hash
                 };
 
-                /*
-                *   STEP 2: Check our path string for invalid characters, null value, empty value, etc.
-                *
-                *   SDL Checklist: Perform Input Validation
-                */
+                //
+                //   STEP 2: Check our path string for invalid characters, null value, empty value, etc.
+                //
+                //   SDL Checklist: Perform Input Validation
+                //
                 if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
+                    _log.Info($"{nameof(CheckIsValidFile_Secure)} -- Invalid file path string - {filePath}");
                     throw new ArgumentException($"Invalid file path string - {filePath}");
                 }
 
-                /*
-                *   STEP 3: Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
-                *
-                *   SDL Checklist: Prevent Path Traversal
-                */
+                //
+                //   STEP 3: Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
+                //
+                //   SDL Checklist: Prevent Path Traversal
+                //
                 if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
                 {
+                    _log.Info($"{nameof(CheckIsValidFile_Secure)} -- Redirection detected along file path - {filePath}");
                     throw new PathCheckRedirectionException($"Redirection detected along file path - {filePath}");
                 }
 
-                /*
-                *   STEP 4: Lock the file using Security Library FileLock class
-                *
-                *   SDL Checklist: Ensure Authorization and Access Controls (takes care of TOCTOU), Protect Against Brute Force Attacks
-                */
+                //
+                //   STEP 4: Lock the file using Security Library FileLock class
+                //
+                //   SDL Checklist: Ensure Authorization and Access Controls (takes care of TOCTOU), Protect Against Brute Force Attacks
+                //
                 using (FileLock fileLock = new FileLock(filePath, PathCheckOption.None, lockNow: true))     // file lock protects us from TOCTOU attacks
                 {
-                    /*
-                    *   STEP 5: Verify file ACLs
-                    *
-                    *   SDL Checklist: Ensure Authorization and Access Controls
-                    */
+                    //
+                    //   STEP 5: Verify file ACLs
+                    //
+                    //   SDL Checklist: Ensure Authorization and Access Controls
+                    //
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
                         throw new SecurityException($"File ACLs for {filePath} contained unprivileged write access for one or more identity");
                     }
 
-                    /*
-                    *   STEP 6: Verify signature of signing certificate
-                    *
-                    *   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
-                    */
+                    //
+                    //   STEP 6: Verify signature of signing certificate
+                    //
+                    //   SDL Checklist: Follow Best Practices for Crypto and Security Protocols, Ensure Proper Authentication
+                    //
                     var result = verifier.Verify(fileLock);
                     if (result != Win32ErrorCodes.ERROR_SUCCESS)
                     {
@@ -1070,14 +1213,15 @@ namespace DDPM.SA.Common.Settings
             }
 
             return true;
-        }
+        }*/
 
-        public static byte[] GetFileSHA_256(string filePath, out string info)
+        public static string GetFileSHA_256(string filePath, out string info)
         {
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+                //_log.Info(info);
                 return null;
             }
 
@@ -1085,6 +1229,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+                //_log.Info(info);
                 return null;
             }
             byte[] data = File.ReadAllBytes(filePath);
@@ -1093,17 +1238,38 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            //Bruce 0909 modify
+            //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha256);
+            string result = CalculateFileSHA256(filePath);
             info = "Complete";
+            if (string.IsNullOrEmpty(result))
+            {
+                info = "Calculate fail.";
+            }
             return result;
         }
+        static string CalculateFileSHA256(string filePath)
+        {
+            string ret = string.Empty;
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] hashBytes = sha256.ComputeHash(fileStream);
 
-        public static byte[] GetFileSHA_512(string filePath, out string info)
+                    // 將計算的雜湊值轉換為十六進制字符串
+                    ret = BitConverter.ToString(hashBytes);
+                }
+            }
+            return ret;
+        }
+        public static string GetFileSHA_512(string filePath, out string info)
         {
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+               // _log.Info(info);
                 return null;
             }
 
@@ -1111,6 +1277,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+               // _log.Info(info);
                 return null;
             }
             byte[] data = File.ReadAllBytes(filePath);
@@ -1119,9 +1286,30 @@ namespace DDPM.SA.Common.Settings
                 info = $"Read data from file path - {filePath}, failed";
                 return null;
             }
-            byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            //Bruce 0909 modify
+            //byte[] result = CryptoHelper.GenerateHashBytes(data, HashType.Sha512);
+            string result = CalculateFileSHA512(filePath);
             info = "Complete";
+            if (string.IsNullOrEmpty(result))
+            {
+                info = "Calculate fail.";
+            }
             return result;
+        }
+        static string CalculateFileSHA512(string filePath)
+        {
+            string ret = string.Empty;
+            using (FileStream fileStream = File.OpenRead(filePath))
+            {
+                using (SHA512 sha512 = SHA512.Create())
+                {
+                    byte[] hashBytes = sha512.ComputeHash(fileStream);
+
+                    // 將計算的雜湊值轉換為十六進制字符串
+                    ret = BitConverter.ToString(hashBytes);
+                }
+            }
+            return ret;
         }
 
         /*public static bool IsContainValidDigitalSignature(string filePath, out string info)
@@ -1131,6 +1319,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
                 info = $"Invalid file path string - {filePath}";
+                _log.Info(info);
                 return false;
             }
 
@@ -1138,6 +1327,7 @@ namespace DDPM.SA.Common.Settings
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
                 info = $"Redirection detected along file path - {filePath}";
+                _log.Info(info);
                 return false;
             }
 
@@ -1363,7 +1553,7 @@ namespace DDPM.SA.Common.Settings
         public static bool VerifyFileCertWithThumbprint(string filePath, out string info)
         {
             info = "success";
-            if(!IsFilePathValid(filePath, out info))
+            if (!IsFilePathValid(filePath, out info))
             {
                 Console.WriteLine(info);
                 return false;
@@ -1399,12 +1589,12 @@ namespace DDPM.SA.Common.Settings
         public static bool VerifyFileCertWithThumbprint(string filePath, string targetThumbprint, out string info)
         {
             info = "success";
-            if(!IsFilePathValid(filePath, out info))
+            if (!IsFilePathValid(filePath, out info))
             {
                 Console.WriteLine(info);
                 return false;
             }
-            if(string.IsNullOrEmpty(targetThumbprint))
+            if (string.IsNullOrEmpty(targetThumbprint))
             {
                 info = "Abnormal thumbprint as input";
                 return false;
@@ -1434,6 +1624,7 @@ namespace DDPM.SA.Common.Settings
 
             }
             return true;
+
         }
 
         #region Bruce 0814 Move this method to DDPM.SA.Common

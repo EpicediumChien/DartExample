@@ -20,7 +20,7 @@ namespace DDPM.UI.Module.Color
         //  Jim remove 20240604
         //private List<string> _Support_DeviceName  = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW" , "UP2720Q" , "UP3221Q" };
 
-        
+        //private static Log _log;
 
         public ColorRightView()
         {
@@ -186,7 +186,7 @@ namespace DDPM.UI.Module.Color
 
             if (vm.registryMonitor_NightLight == null)
             {
-                vm.registryMonitor_NightLight = new RegistryUtils.RegistryMonitor_NightLight(keyName);
+                vm.registryMonitor_NightLight = new RegistryMonitor_NightLight(keyName);
                 vm.registryMonitor_NightLight.RegChanged += new EventHandler(vm.OnRegChanged_NightLight);
                 vm.registryMonitor_NightLight.Error += new System.IO.ErrorEventHandler(vm.OnError_NightLight);
                 vm.registryMonitor_NightLight.Start();
@@ -244,15 +244,14 @@ namespace DDPM.UI.Module.Color
 
         private void Color_Management_Switch_Click(object sender, RoutedEventArgs e)
         {
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-
             ColorViewModel vm = (ColorViewModel)DataContext;
             if ((bool)ColorManagement_ToggleSwitch.IsChecked)
             {
-                setting.UserSettings.ColorManagement_off = false;
-
                 rb_ICCprofile_based_Colorpreset.IsEnabled = true;
                 rb_Colorpreset_based_ICCprofile.IsEnabled = true;
+
+                DdpmCommonHelper.DeviceManagerSA.AutoColorManagementForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "ON");
+
                 //Dean add for ALS
                 if (vm != null)
                 {
@@ -262,20 +261,10 @@ namespace DDPM.UI.Module.Color
             }
             else
             {
-                setting.UserSettings.ColorManagement_off = true;
-
                 rb_ICCprofile_based_Colorpreset.IsEnabled = false;
-                rb_Colorpreset_based_ICCprofile.IsEnabled = false;               
+                rb_Colorpreset_based_ICCprofile.IsEnabled = false;
 
-                if (vm._ICC_Metadata.Is_Support_ICC_DeviceName)
-                {
-                    if (vm.registryMonitor_ICC != null)
-                    {
-                        if (vm.registryMonitor_ICC.IsMonitoring)
-                            vm.registryMonitor_ICC.Dispose();
-                        vm.registryMonitor_ICC = null;
-                    }                
-                }
+                DdpmCommonHelper.DeviceManagerSA.AutoColorManagementForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF");
 
                 //Dean Add For ALS
                 if (vm != null)
@@ -283,89 +272,33 @@ namespace DDPM.UI.Module.Color
                     vm.ColorManagement_isChecked = false;
                     vm.ICCprofile_based_Colorpreset_enable = false;
                 }
-            }
-
-            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
+            }          
         }
 
         private void rb_ICCprofile_based_Colorpreset_click(object sender, RoutedEventArgs e)
         {
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DdpmCommonHelper.DeviceManagerSA.AutoColorManagementForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "BYMONITOR");
 
             if ((bool)rb_Colorpreset_based_ICCprofile.IsChecked)
-            {
-                setting.UserSettings.ColorManagement_bymonitor = true;
-                setting.UserSettings.ColorManagement_byhost = false;
-
+            { 
                 rb_Colorpreset_based_ICCprofile.IsChecked = false;
-
-                ColorViewModel vm = (ColorViewModel)DataContext;
-
-                if (vm._ICC_Metadata.Is_Support_ICC_DeviceName)
-                {
-                    if (vm.registryMonitor_ICC != null)
-                    {
-                        if (vm.registryMonitor_ICC.IsMonitoring)
-                            vm.registryMonitor_ICC.Dispose();
-                        vm.registryMonitor_ICC = null;
-                    }
-
-                    int count = vm._ICC_Metadata._match_ICC_DeviceName.Count;
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._match_ICC_DeviceName[i].File);
-                    }
-                }
-            }
-
-            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
+            }        
         }
 
         private void rb_Colorpreset_based_ICCprofile_click(object sender, RoutedEventArgs e)
         {
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DdpmCommonHelper.DeviceManagerSA.AutoColorManagementForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "BYHOST");
 
             ColorViewModel vm = (ColorViewModel)DataContext;
 
             if ((bool)rb_ICCprofile_based_Colorpreset.IsChecked)
-            {
-                setting.UserSettings.ColorManagement_bymonitor = false;
-                setting.UserSettings.ColorManagement_byhost = true;
-
+            {             
                 rb_ICCprofile_based_Colorpreset.IsChecked = false;
+
                 //Dean 0612 add
                 if (vm != null)
                     vm.ICCprofile_based_Colorpreset_enable = false;
-            }
-
-            //ColorViewModel vm = (ColorViewModel)DataContext;
-
-            //Robert_Lin, 2024-6-26, fix SAST issue: [Bug] 'vm' is null on at least one execution path.
-            //OLD Code:
-            //  if (vm.Is_Support_ICC_DeviceName)
-            //NEW Code:
-            if ((vm != null) && (vm._ICC_Metadata.Is_Support_ICC_DeviceName))
-            {
-                if (vm._ICC_Metadata._match_ICC_DeviceName != null)
-                {
-                    int count = vm._ICC_Metadata._match_ICC_DeviceName.Count;
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        MonitorProfile.IntsallMonitorProfile(vm._ICC_Metadata.strICC_Folder + vm._ICC_Metadata._match_ICC_DeviceName[i].File);
-                    }
-
-                    string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
-
-                    vm.registryMonitor_ICC = new RegistryUtils.RegistryMonitor_ICC(keyName);
-                    vm.registryMonitor_ICC.RegChanged += new EventHandler(vm.OnRegChanged_ICC);
-                    vm.registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(vm.OnError_ICC);
-                    vm.registryMonitor_ICC.Start();
-                }
-            }
-
-            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
+            } 
         }
 
         private void lb_AppList_PreviewDragEnter(object sender, System.Windows.DragEventArgs e)
@@ -389,6 +322,14 @@ namespace DDPM.UI.Module.Color
             }
         
             string targetPath = dropFileNames[0];
+
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(targetPath, out FileInfo))
+            //{
+            //    _log.Info($"{nameof(lb_AppList_PreviewDragEnter)} {FileInfo}");
+            //    return;
+            //}
 
             if (targetPath.EndsWith(".lnk")  || targetPath.EndsWith(".exe"))
             {     
@@ -471,6 +412,12 @@ namespace DDPM.UI.Module.Color
 
                         if (!System.IO.Directory.Exists(strFolder))
                             System.IO.Directory.CreateDirectory(strFolder);
+
+                        //Elsa Add Security
+                        //if (!DDPMFileSecurity.IsFolderPathValid(strFolder, out FileInfo))
+                        //{
+                        //    _log.Info($"{nameof(lb_AppList_PreviewDragEnter)} {FileInfo}");
+                        //}
 
                         if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
                         {

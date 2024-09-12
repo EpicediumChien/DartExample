@@ -84,8 +84,10 @@
                                          IconAnimation="Move"
                                          Click="BackMKFullView"
                                          Margin="0" Padding="16,8" Foreground="#F5F6F7"
-                                         Content=" ⭠ " FontSize="14" BorderBrush="#F5F6F7"
-                                         Visibility="{Binding SetPXP}" />
+                                         FontSize="14" BorderBrush="#F5F6F7"
+                                         Visibility="{Binding SetPXP}">
+                        <Path Data="M0.620372 7.67441L0.341461 7.9998L0.620372 8.3252L6.62037 15.3252L7.37963 14.6744L2.08711 8.4998L18 8.4998L18 7.4998L2.08711 7.4998L7.37963 1.3252L6.62037 0.674405L0.620372 7.67441Z" Fill="#F5F6F7"/>
+                    </UXControls:UXButton>
                     <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                          ButtonType="Primary" Padding="40, 8"
                                          ButtonSize="Medium" VerticalContentAlignment="Center"

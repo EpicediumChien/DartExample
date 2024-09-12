@@ -592,10 +592,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
             if (_console != null)
             {
-                _console.RegisterForEvent("ShowAddDevicePlugin", ShowAddDevicePlugin);
-                _console.RegisterForEvent("ShowSettingsPlugin", ShowSettingsPlugin);
-                _console.RegisterForEvent("StartGlowEffectOnGearIcon", StartGlowEffectOnGearIcon);
-                _console.RegisterForEvent("StopGlowEffectOnGearIcon", StopGlowEffectOnGearIcon);
+                _console.RegisterForEvent(ConsoleEventNames.Masthead_ShowAddDevicePlugin, ShowAddDevicePlugin);
+                _console.RegisterForEvent(ConsoleEventNames.Masthead_ShowSettingsPlugin, ShowSettingsPlugin);
+                _console.RegisterForEvent(ConsoleEventNames.Masthead_StartGlowEffectOnGearIcon, StartGlowEffectOnGearIcon);
+                _console.RegisterForEvent(ConsoleEventNames.Masthead_StopGlowEffectOnGearIcon, StopGlowEffectOnGearIcon);
+                _console.RegisterForEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, Handler_ShowAddDeviceIcon);
+                _console.RegisterForEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, Handler_ShowSettingsIcon);
             }
         }
 
@@ -603,15 +605,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             EventManagerArgs args = new EventManagerArgs();
             if (_console != null)
-                _console.RaiseEvent("ShowSettingsPlugin", this, args);
-            //_console.ShowPluginById(DDPMConstants.SettingsPluginId);
+                _console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsPlugin, this, args);
         }
 
         private void OnAddIconClicked()
         {
             EventManagerArgs args = new EventManagerArgs();
             if (_console != null)
-                _console.RaiseEvent("ShowAddDevicePlugin", this, args);
+                _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDevicePlugin, this, args);
         }
 
         private void ShowAddDevicePlugin(object sender, EventManagerArgs e)
@@ -658,6 +659,59 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_iconAddDevice != null)
                 _iconAddDevice.Visibility = Visibility.Visible;
         }
+
+        /// <summary>
+        /// Show/Hide the AddDevice icon
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Put a bool value to e.Tag, True=Show; False=Hide</param>
+        private void Handler_ShowAddDeviceIcon(object sender, EventManagerArgs e)
+        {
+            if (e.Tag != null)
+            {
+                if (e.Tag is bool)
+                {
+                    bool isShow = (bool)e.Tag;
+                    if (isShow)
+                    {
+                        if (_iconAddDevice != null)
+                            _iconAddDevice.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        if (_iconAddDevice != null)
+                            _iconAddDevice.Visibility = Visibility.Collapsed;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Show/Hide the Settings icon
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Put a bool value to e.Tag, True=Show; False=Hide</param>
+        private void Handler_ShowSettingsIcon(object sender, EventManagerArgs e)
+        {
+            if (e.Tag != null)
+            {
+                if (e.Tag is bool)
+                {
+                    bool isShow = (bool)e.Tag;
+                    if (isShow)
+                    {
+                        if (_iconGear != null)
+                            _iconGear.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        if (_iconGear != null)
+                            _iconGear.Visibility = Visibility.Collapsed;
+                    }
+                }
+            }
+        }
+
         #endregion Icons on Masthead
 
         #region IDispose

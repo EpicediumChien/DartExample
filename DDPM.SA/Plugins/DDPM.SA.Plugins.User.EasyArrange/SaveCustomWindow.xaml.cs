@@ -145,5 +145,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
             }
         }
+
+        private void closeGrid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (CancelButtonClick != null)
+            {
+                CancelButtonClick(this, "");
+            }
+        }
     }
 }

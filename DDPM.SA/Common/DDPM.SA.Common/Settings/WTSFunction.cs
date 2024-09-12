@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using Microsoft.Win32.SafeHandles;
 using Windows.Devices.Geolocation;
+using System.IO;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -251,6 +252,89 @@ namespace DDPM.SA.Common.Settings
                 CloseHandle(userToken);
             }
             return obj;
+        }
+        [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);
+        private static bool _CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation)
+        {
+            return CreateProcessAsUser(hToken, lpApplicationName, lpCommandLine, lpProcessAttributes, lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, ref lpStartupInfo, out lpProcessInformation);
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        private struct STARTUPINFO
+        {
+            public int cb;
+            public string lpReserved;
+            public string lpDesktop;
+            public string lpTitle;
+            public int dwX;
+            public int dwY;
+            public int dwXSize;
+            public int dwYSize;
+            public int dwXCountChars;
+            public int dwYCountChars;
+            public int dwFillAttribute;
+            public int dwFlags;
+            public short wShowWindow;
+            public short cbReserved2;
+            public IntPtr lpReserved2;
+            public IntPtr hStdInput;
+            public IntPtr hStdOutput;
+            public IntPtr hStdError;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        private struct PROCESS_INFORMATION
+        {
+            public IntPtr hProcess;
+            public IntPtr hThread;
+            public uint dwProcessId;
+            public uint dwThreadId;
+        }
+        public static void RunElevatedProcess(string applicationPath, string arguments)
+        {
+            uint sessionId = (uint)_WTSGetActiveConsoleSessionId();
+            if (sessionId == 0xFFFFFFFF)
+            {
+                throw new InvalidOperationException("No active session found.");
+            }
+
+            if (WTSQueryUserToken(sessionId, out IntPtr userToken))
+            {
+                if (_DuplicateTokenEx(userToken, 0xF01FF, IntPtr.Zero, 2, 1, out IntPtr duplicatedToken))
+                {
+                    STARTUPINFO startupInfo = new STARTUPINFO();
+                    PROCESS_INFORMATION processInfo = new PROCESS_INFORMATION();
+
+                    bool result = _CreateProcessAsUser(
+                        duplicatedToken,
+                        applicationPath,
+                        arguments,
+                        IntPtr.Zero,
+                        IntPtr.Zero,
+                        false,
+                        0,
+                        IntPtr.Zero,
+                        Path.GetDirectoryName(applicationPath),
+                        ref startupInfo,
+                        out processInfo);
+
+                    if (!result)
+                    {
+                        int errorCode = Marshal.GetLastWin32Error();
+                        throw new System.ComponentModel.Win32Exception(errorCode);
+                    }
+
+                    CloseHandle(processInfo.hProcess);
+                    CloseHandle(processInfo.hThread);
+                    CloseHandle(duplicatedToken);
+                }
+                CloseHandle(userToken);
+            }
+            else
+            {
+                int errorCode = Marshal.GetLastWin32Error();
+                throw new System.ComponentModel.Win32Exception(errorCode);
+            }
         }
     }
 }

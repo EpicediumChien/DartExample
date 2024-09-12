@@ -78,6 +78,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     else
                         _workingSplit.Settings = settings;
                     _workingSplit.IsEditable = false;
+                    _workingSplit.IsVertical = IsVertical;
                     splitCtrl.Content = _workingSplit;
                 }
                 else
@@ -90,6 +91,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     fadeSplit.SplitMode = eSplitModes.Work;
                     fadeSplit.Settings = new List<double>(_workingSplit.Settings);
                     fadeSplit.IsEditable = false;
+                    fadeSplit.IsVertical = IsVertical;
                     fadeOutCtrl.Content = fadeSplit;
                 }
 
@@ -340,11 +342,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 VM.RefreshCellRects();
                 this.IsFading = false;
+                fadeOutGrid.Visibility = Visibility.Collapsed;
                 //Visibility = Visibility.Hidden;
                 //gridSplitCtrl.Opacity = 1;
             };
 
             IsFading = true;
+            fadeOutGrid.Visibility = Visibility.Visible;
             //gridSplitCtrl.Opacity = 1;
             sb.Begin();
             // });
@@ -364,5 +368,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #endregion FadeOut Storyboard
+
+        #region Screen Orientation
+
+        private bool isVertical = false;
+
+        public bool IsVertical
+        {
+            get { return isVertical; }
+            set { isVertical = value; }
+        }
+
+        #endregion Screen Orientation
+
     }
 }

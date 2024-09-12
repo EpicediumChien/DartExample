@@ -22,11 +22,13 @@
             <Border Background="#99132F54"
                     CornerRadius="13">
                 <StackPanel>
-                    <Grid Margin="14,16,14,16">
+                    <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="Widget Settings"
+                                                FontSize="20"
+                                                TextBlockType="Header1"
                                                 Style="{StaticResource ModuleCaptionStyle}" />
                     </Grid>
-                    <Grid Margin="14,16,14,16">
+                    <Grid Margin="20,20,8,8">
                         <Border Background="#132F54"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"

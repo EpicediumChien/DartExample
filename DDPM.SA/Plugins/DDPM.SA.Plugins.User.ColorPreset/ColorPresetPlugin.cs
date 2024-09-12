@@ -16,11 +16,11 @@ using DDPM.SA.Common.Method;
 using DDPM.ShowOSD;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
+using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.PortableDevices.ResourceSystem;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -90,7 +90,17 @@ namespace ColorPreset.Plugins
         //20240830 Jim add
         IIC_Metadata _ICC_Metadata = new IIC_Metadata();
         private Download? download = null;
-        private Logs _logs;
+        //private Logs _logs;
+
+        //20240905 Jim add
+        MonitorInfo Active_monitorInfo = null;
+        public RegistryMonitor_ICC registryMonitor_ICC = null;
+
+
+        /// <summary>
+        /// Colorpreset Manual change event，return Colorpreset name
+        /// </summary>
+        public event EventHandler<string>? Coloreset_manual_ChangeEvent;        
 
         private enum log_type
         {
@@ -102,6 +112,7 @@ namespace ColorPreset.Plugins
 
         private static ShowOSDWin OsdWin = null;
         private string iconFolderPath = string.Empty;
+        private VcpCore.Common.Logs _logs;
 
         #endregion
 
@@ -175,9 +186,11 @@ namespace ColorPreset.Plugins
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
                 {
                     DeviceInfo = mo.edid,
-                    RunType = (int)ColorPresetRunType.Auto,
+                    RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native"
+                    PresetForManual = "Standard/Native",
+                    ColorManagement_Status = (int)ColorManagementStatus.Off,
+                    ColorManagement_RunType = (int)ColorManagementRunType.Off
                 });
 
                 index = get_index_of_json_config_for_cur_monitor(mo);
@@ -226,9 +239,11 @@ namespace ColorPreset.Plugins
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
                 {
                     DeviceInfo = mo.edid,
-                    RunType = (int)ColorPresetRunType.Auto,
+                    RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native"
+                    PresetForManual = "Standard/Native",
+                    ColorManagement_Status = (int)ColorManagementStatus.Off,
+                    ColorManagement_RunType = (int)ColorManagementRunType.Off
                 });
 
                 index = get_index_of_json_config_for_cur_monitor(mo);
@@ -341,8 +356,7 @@ namespace ColorPreset.Plugins
 
             return;
         }
-
-        //public Task<List<ColorPresetSettings>> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, List<ColorPresetSettings> config)
+        
         public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin)
         {
             List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
@@ -416,8 +430,221 @@ namespace ColorPreset.Plugins
             }
 
             return Task.FromResult(true);
+        }
 
-            //return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+        public Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, ISettingsManagerDev _SettingsPlugin, string ColorPreset_Name = "", string ICC_profile_Name = "")
+        {
+            bool blRet = true;
+            Active_monitorInfo = monitorInfo;
+            List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
+
+            if (off_bymonitor_byhost.Equals("ON", StringComparison.OrdinalIgnoreCase))
+            {
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
+
+                int index = get_index_of_json_config_for_cur_monitor(monitorInfo);
+
+                if (index >= 0)
+                {
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = (int)ColorManagementStatus.On;
+                }
+
+                _SettingsPlugin.WriteColorPresetSettings(config);
+                Thread.Sleep(100);
+
+                if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor)
+                {
+                    if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                    {
+                        if (registryMonitor_ICC != null)
+                        {
+                            if (registryMonitor_ICC.IsMonitoring)
+                                registryMonitor_ICC.Dispose();
+                            registryMonitor_ICC = null;
+                        }
+
+                        int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                        for (int i = 0; i < count; i++)
+                        {
+                            MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                        }
+                    }
+                }
+                else if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Byhost)
+                {
+                    if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                    {
+                        if (_ICC_Metadata._match_ICC_DeviceName != null)
+                        {
+                            int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                            for (int i = 0; i < count; i++)
+                            {
+                                MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                            }
+
+                            string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
+
+                            registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
+                            registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
+                            registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
+                            registryMonitor_ICC.Start();
+                        }
+                    }
+
+                }
+
+            }
+            else if (off_bymonitor_byhost.Equals("OFF", StringComparison.OrdinalIgnoreCase))
+            {
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
+
+                int index = get_index_of_json_config_for_cur_monitor(monitorInfo);
+
+                if (index >= 0)
+                {
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = (int)ColorManagementStatus.Off;
+                }
+
+                _SettingsPlugin.WriteColorPresetSettings(config);
+                Thread.Sleep(100);
+
+                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                {
+                    
+                    if (registryMonitor_ICC != null)
+                    {
+                        if (registryMonitor_ICC.IsMonitoring)
+                            registryMonitor_ICC.Dispose();
+                        registryMonitor_ICC = null;
+                    }
+                    
+                }
+            }
+            else if (off_bymonitor_byhost.Equals("BYMONITOR", StringComparison.OrdinalIgnoreCase))
+            {
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
+
+                int index = get_index_of_json_config_for_cur_monitor(monitorInfo);
+
+                if (index >= 0)
+                {
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = (int)ColorManagementStatus.On;
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType = (int)ColorManagementRunType.Bymonitor;
+                }
+
+                _SettingsPlugin.WriteColorPresetSettings(config);
+                Thread.Sleep(100);
+
+                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                {                    
+                    if (registryMonitor_ICC != null)
+                    {
+                        if (registryMonitor_ICC.IsMonitoring)
+                            registryMonitor_ICC.Dispose();
+                        registryMonitor_ICC = null;
+                    }                    
+
+                    int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                    }
+                }
+            }
+            else if (off_bymonitor_byhost.Equals("BYHOST", StringComparison.OrdinalIgnoreCase))
+            {
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
+
+                int index = get_index_of_json_config_for_cur_monitor(monitorInfo);
+
+                if (index >= 0)
+                {
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = (int)ColorManagementStatus.On;
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType = (int)ColorManagementRunType.Byhost;
+                }
+
+                _SettingsPlugin.WriteColorPresetSettings(config);
+                Thread.Sleep(100);
+
+                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                {
+                    if (_ICC_Metadata._match_ICC_DeviceName != null)
+                    {
+                        int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                        for (int i = 0; i < count; i++)
+                        {
+                            MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
+                        }
+
+                        string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
+
+                        registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
+                        registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
+                        registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
+                        registryMonitor_ICC.Start();
+                    }
+                }
+
+            }
+
+            return Task.FromResult(blRet);
+        }
+
+        public void OnRegChanged_ICC(object sender, EventArgs e)
+        {
+            string Key_Profile_Name = string.Empty;
+            Key_Profile_Name = MonitorProfile.GetMonitorProfile(Active_monitorInfo.DisplayName);
+           
+            int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+            
+            for (int i = 0; i < count; i++)
+            {
+                if (string.Equals(Key_Profile_Name, _ICC_Metadata._match_ICC_DeviceName[i].File, StringComparison.OrdinalIgnoreCase))
+                {
+                    // 20240619 jim modify
+
+                    //string strICC_ColorPreset = _ICC_Metadata._support_ICC_DeviceName[MyModule.SelectedHomeDevice.MonitorInfo.modelName][i].ColorPreset;
+
+                    string[] separators = { "," };
+                    string[] strICC_ColorPresets = _ICC_Metadata._match_ICC_DeviceName[i].ColorPreset.Split(separators, StringSplitOptions.None);
+
+                    if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
+                        WriteColorPreset(Active_monitorInfo, "Standard/Native");
+                    else if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
+                        WriteColorPreset(Active_monitorInfo, "Game/Game1");
+                    else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase))
+                        WriteColorPreset(Active_monitorInfo, "Rec. 709 / BT.709");
+                    else
+                    WriteColorPreset(Active_monitorInfo, strICC_ColorPresets[0]);
+
+                Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                    
+                break;
+                }
+            }             
+
+            return;
+        }
+
+        public void StopRegistryMonitor()
+        {  
+            if (registryMonitor_ICC != null)
+            {
+                registryMonitor_ICC.Stop();
+                registryMonitor_ICC.RegChanged -= new EventHandler(OnRegChanged_ICC);
+                registryMonitor_ICC.Error -= new System.IO.ErrorEventHandler(OnError_ICC);
+                registryMonitor_ICC = null;
+            }
+        }
+
+        // add jim 20240604
+        public void OnError_ICC(object sender, ErrorEventArgs e)
+        {
+            StopRegistryMonitor();
         }
 
         public Task<string> GetAutoColorPresetStatus(MonitorInfo mo, ISettingsManagerDev _SettingsPlugin)
@@ -434,6 +661,27 @@ namespace ColorPreset.Plugins
                     return Task.FromResult("ON");
                else
                     return Task.FromResult("OFF");
+            }
+
+            return Task.FromResult("OFF");
+        }
+
+        public Task<string> GetColorManagementStatus(MonitorInfo mo, ISettingsManagerDev _SettingsPlugin)
+        {
+            List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
+
+            Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
+
+            int index = get_index_of_json_config_for_cur_monitor(mo);
+
+            if (index >= 0)
+            {
+                if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.Off)
+                    return Task.FromResult("OFF");
+                else if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor)
+                        return Task.FromResult("BYMONITOR");
+                else if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Byhost)
+                    return Task.FromResult("BYHOST");
             }
 
             return Task.FromResult("OFF");
@@ -459,7 +707,7 @@ namespace ColorPreset.Plugins
                     {
                         if (OsdWin != null)
                         {
-                            OsdWin.Close();
+                            //OsdWin.Close();
                         }
 
                         OsdWin = new ShowOSDWin(strMsg, 40);
@@ -562,6 +810,60 @@ namespace ColorPreset.Plugins
             return Task.FromResult(ColorPresetSupportList);
         }
 
+        public Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, ISettingsManagerDev _SettingsPlugin = null, int colorPresetRunType = 0)
+        {
+            if (Log != null)
+            {
+                Log.Info($"WriteColorPreset requested ...");
+            }
+
+            if (_SettingsPlugin != null)
+            {
+                List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
+
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
+
+                int index = get_index_of_json_config_for_cur_monitor(m);
+
+                /*
+                if (colorPresetRunType == (int)ColorPresetRunType.Manual)
+                {
+                    if (index >= 0)
+                    {
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Manual;
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+                    }
+                }
+                else if (colorPresetRunType == (int)ColorPresetRunType.Auto)
+                {
+                    if (index >= 0)
+                    {
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+                    }
+
+                }
+                
+
+                _SettingsPlugin.WriteColorPresetSettings(config);
+                Thread.Sleep(100);
+                */
+                if (index >= 0)
+                {
+                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.On &&
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor)
+                    {
+                        SetMonitorProfile(m, ColorPreset_Name);
+                    }
+                } 
+
+            }   
+
+            return Task.FromResult(true);
+            //return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+        }
+
+        /*
         public Task<List<ColorPresetSettings>> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, List<ColorPresetSettings> config)
         {
             if (Log != null)
@@ -581,6 +883,7 @@ namespace ColorPreset.Plugins
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
         }
+        */
 
         public Task<List<ColorPresetSettings>> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name, List<ColorPresetSettings> config)
         {
@@ -660,7 +963,7 @@ namespace ColorPreset.Plugins
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
-        }
+        }      
 
         private void LoadInstalledAppList(bool renew_data = false)
         {
@@ -971,6 +1274,11 @@ namespace ColorPreset.Plugins
             }
         }
 
+        bool CheckICC_JSON_Security(string filepath)
+        {
+            return true;
+        }
+
         /// <summary>
         /// 從伺服端下載ICC.json檔，下載後會 Run Deserialize接續下載ICC profile .icm檔
         /// </summary>
@@ -978,7 +1286,6 @@ namespace ColorPreset.Plugins
         /// <returns> Run Deserialize ICC.json後的 object   </returns>
         public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, string savelPath = "")
         {
-            //IIC_Metadata _ICC_Metadata = new IIC_Metadata();
             try
             {
                 // ICC profiles mapping schema
@@ -986,22 +1293,7 @@ namespace ColorPreset.Plugins
                 FileStream fileStream_ICM;
 
                 _ICC_Metadata.Is_Support_ICC_DeviceName = false;
-
-                /*int index_Support_ICC_DeviceName = -1;
-
-                foreach (string strDeviceName in Support_ICC_DeviceName)
-                {
-                    index_Support_ICC_DeviceName++;
-
-                    if (m.modelName.ToUpper().Contains(strDeviceName.ToUpper()))
-                    {
-                        _ICC_Metadata.Is_Support_ICC_DeviceName = true;
-                        break;
-                    }
-                }*/
-
-                //if (_ICC_Metadata.Is_Support_ICC_DeviceName)
-                //{
+              
                 string strICC_Folder;
                 if (string.IsNullOrEmpty(savelPath))
                 {
@@ -1056,8 +1348,6 @@ namespace ColorPreset.Plugins
                     string str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
                     str_url_prefix += str_IncludeTestPath;
                     str_url_prefix += @"/Windows/Display/ICC/";
-                    //str_url_prefix += m.modelName;
-                    //str_url_prefix += @"/ICC.json";
                     str_url_prefix += @"icc_profile_sha256_new.json";
 
                     url = str_url_prefix;
@@ -1066,44 +1356,32 @@ namespace ColorPreset.Plugins
                     {
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
-                        download.DownloadFile(url, strFilePath, out downloadInfo);
-
-                        //for (int x = 0; x < Issuer.Length; x++)
-                        //{
-                        //    Issuers = Issuer[x].Split(",");
-                        //    Subjects = Subject[x].Split(",");
-                        //}
-
-                        // 向遠端伺服器發送請求
-                        //if (CheckCA(url))
-                        //{
-                        //HttpClient httpClient = new HttpClient();
-                        // 取得回應標頭
-                        //var header = httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        // 取得檔案大小
-                        //var size = header.Content.Headers.ContentLength;
-
-                        //var stream = httpClient.GetStreamAsync(url).Result;
-                        //fileStream = System.IO.File.Create(Path.Combine(strICC_Folder, Path.GetFileName(url)));
-                        //stream.CopyToAsync(fileStream).Wait();
-                        //fileStream.Close();
-
-                        //strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+                        //download.DownloadFile(url, strFilePath, out downloadInfo);                        
 
                         if (System.IO.File.Exists(strFilePath))
                         {
+                            //Elsa Add Security
+                            string FileInfo;
+                            if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
+                            {
+                                writelog($"[DownloadICCData] {FileInfo}");
+                                //return null;
+                                return Task.FromResult(_ICC_Metadata);
+                            }
+
+                            CheckICC_JSON_Security(strFilePath);
+
                             string strReadJson = string.Empty;
                             using (var reader = new StreamReader(strFilePath))
                             {
                                 strReadJson = reader.ReadToEnd();
                             }
 
-                            ///if (strReadJson == string.Empty || strReadJson.Length == 0)
-                            //return Task.FromResult(_preset_settings);
+                            if (strReadJson == string.Empty || strReadJson.Length == 0)
+                                return Task.FromResult(_ICC_Metadata);
 
                             try
-                            {
-                                //_ICC_Metadata._supportDeviceName.Add("U3224KB",);
+                            {                               
 
                                 _ICC_Metadata = RunDeserializeObject(strReadJson);
                                 _ICC_Metadata.strICC_Folder = strICC_Folder;
@@ -1138,12 +1416,10 @@ namespace ColorPreset.Plugins
                             _ICC_Metadata._match_ICC_DeviceName.Clear();
                             _ICC_Metadata.Is_Support_ICC_DeviceName = false;
                         }
-
-                        //int count = _ICC_Metadata._support_ICC_DeviceName[m.modelName].Count;
+                        
                         int count = _ICC_Metadata._match_ICC_DeviceName.Count;
 
                         // 20240725 jim add
-
                         str_url_prefix = string.Empty;
 
                         str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
@@ -1155,27 +1431,12 @@ namespace ColorPreset.Plugins
                         for (int i = 0; i < count; i++)
                         {
                             url = string.Empty;
-
-                            //url = str_url_prefix + _ICC_Metadata._support_ICC_DeviceName[m.modelName][i].File;
-                            url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
-
-                            // 向遠端伺服器發送請求
-                            //if (CheckCA(url))
-                            //{
-                            //HttpClient httpClient_ICM = new HttpClient();
-                            // 取得回應標頭
-                            //var header_ICM = httpClient_ICM.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                            // 取得檔案大小
-                            //var size_ICM = header_ICM.Content.Headers.ContentLength;
-
-                            //var stream_ICM = httpClient_ICM.GetStreamAsync(url).Result;
-                            //fileStream_ICM = System.IO.File.Create(Path.Combine(strICC_Folder, Path.GetFileName(url)));
-                            //stream_ICM.CopyToAsync(fileStream_ICM).Wait();
-                            //fileStream_ICM.Close();
+                            
+                            url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;                        
 
                             strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
-                            download.DownloadFile(url, strFilePath, out downloadInfo);
+                            //download.DownloadFile(url, strFilePath, out downloadInfo);
 
                             string txtSha256 = BytesToString(GetHashSha256(strFilePath));
 
@@ -1183,12 +1444,12 @@ namespace ColorPreset.Plugins
                             {
                                 writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} SHA256 error: icc profile sha256 download = {txtSha256} , icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256}");
                             }
-                            //}
+                            
                         }
-                        //}
+                        
                     }
                 }
-                //}
+                
 
                 return Task.FromResult(_ICC_Metadata);
             }

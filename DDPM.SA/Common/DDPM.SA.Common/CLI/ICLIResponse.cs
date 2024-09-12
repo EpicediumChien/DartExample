@@ -88,15 +88,56 @@ namespace DDPM.SA.Common
         //public string FWVer { get; set; } = "N/A";
     }
 
-    public class ConnectedDevices : CLI_RESPONSE
+    public class ConnectedDevices
     {
-        //public string ID { get; set; }
-        public string Manufacturer { get; set; }
-
+        public string Index { get; set; }
+        public string DeviceType { get; set; }
+        public string Model { get; set; }
         public string PID { get; set; }
-        public string ManufacturingYear { get; set; }
-        public string ManufacturingWeek { get; set; }
-        public string FirmwareVersion { get; set; }
+        public string ServiceTag { get; set; }
+        public string PPID { get; set; }
+        public string SerialNumber { get; set; }
+        public string Result { get; set; }
+        public string Message { get; set; }
+
+        public ConnectedDevices()
+        {
+            Index = "N/A";
+            DeviceType = "Display";
+            Model = "N/A";
+            PID = "N/A";
+            ServiceTag = "N/A";
+            PPID = "N/A";
+            SerialNumber = "N/A";
+            ServiceTag = "N/A";
+            Result = "N/A";
+            Message = "N/A";
+
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public string OutputLog(object o, CommandLineInput commandLineInput)
+        {
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                }
+            }
+            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+            return JsonConvert.SerializeObject(o, Formatting.Indented);
+        }
+
     }
 
     public class CLI_Get_MONITORS_RESPONSE : CLI_RESPONSE
@@ -126,7 +167,7 @@ namespace DDPM.SA.Common
 
     public class CLI_Input_RESPONSE : CLI_RESPONSE
     {
-        public string ActiveInputSource { get; set; }
+        //public string ActiveInputSource { get; set; }
     }
 
     public class CLI_InputList_RESPONSE : CLI_RESPONSE
@@ -307,8 +348,13 @@ namespace DDPM.SA.Common
 
     #endregion Pxp - Robert_Lin added 2024-6-12
 
-    public class Get_DeviceData : CLI_RESPONSE
+    public class Get_DeviceData
     {
+        public string Index { get; set; }
+        public string DeviceType { get; set; } = "Display";
+        public string Model { get; set; }
+        public string SerialNumber { get; set; }
+        public string ServiceTag { get; set; }
         public string Manufacturer { get; set; } = "N/A";
         public string ManufacturingYear { get; set; } = "N/A";
         public string ManufacturingWeek { get; set; } = "N/A";
@@ -338,6 +384,109 @@ namespace DDPM.SA.Common
         public string PowerNap { get; set; } = "N/A";
         public string OSD_language { get; set; } = "N/A";
         public string PID { get; set; } = "N/A";
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public string OutputLog(object o, CommandLineInput commandLineInput)
+        {
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                }
+            }
+            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+            return JsonConvert.SerializeObject(o, Formatting.Indented);
+        }
+    }
+
+    public class CLI_RESPONSE2
+    {
+        public string Index { get; set; }
+        public string FirmwareVersion { get; set; }
+        public string Model { get; set; }
+        public string Connectiontype { get; set; }
+        public string BatteryStatus { get; set; }
+
+        public CLI_RESPONSE2()
+        {
+            Index = "N/A";
+            FirmwareVersion = "N/A";
+            Model = "N/A";
+            Connectiontype = "N/A";
+            BatteryStatus = "N/A";
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public string OutputLog(object o, CommandLineInput commandLineInput)
+        {
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                }
+            }
+            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+            return JsonConvert.SerializeObject(o, Formatting.Indented);
+        }
+    }
+
+    public class CLI_RESPONSE3
+    {
+        public string Command { get; set; }
+        public string TargetFeature { get; set; }
+        public string Result { get; set; }
+        public string Message { get; set; }
+
+        public CLI_RESPONSE3()
+        {
+            Command = "N/A";
+            TargetFeature = "N/A";
+            Result = "N/A";
+            Message = "N/A";
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
+
+        public string OutputLog(object o, CommandLineInput commandLineInput)
+        {
+            if (!string.IsNullOrEmpty(commandLineInput.LogPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(commandLineInput.LogPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(commandLineInput.LogPath));
+                }
+                using (StreamWriter sw = new StreamWriter(commandLineInput.LogPath, true))// 'true':新建或附加.'false',或沒填:新建或覆蓋.
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+                }
+            }
+            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+            return JsonConvert.SerializeObject(o, Formatting.Indented);
+        }
     }
 
     public class Get_Capabilitystring : CLI_RESPONSE

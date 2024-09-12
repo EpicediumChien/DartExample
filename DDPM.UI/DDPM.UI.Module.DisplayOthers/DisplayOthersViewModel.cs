@@ -94,6 +94,20 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public System.Windows.Media.Brush PowerNap_Color { get; set; }
 
+        public bool AutoApply_Checked { get; set; }
+
+        #region UI Enable Flags
+
+        private bool _isBusy = false;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        #endregion UI Enable Flags
+
         public void Invoke_RefreshData()
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -151,6 +165,7 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public bool ExportSettings()
         {
+            IsBusy = true;
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
             saveFileDialog.Filter = "json files (*.json)|*.json";
@@ -160,25 +175,30 @@ namespace DDPM.UI.Module.DisplayOthers
                 bool b = DdpmCommonHelper.DeviceManagerSA.DisplayExportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, filename).Result;
                 if (b)
                 {
+                    IsBusy = false;
                     return true;
                 }
             }
+            IsBusy = false;
             return false;
         }
         public bool ImportSettings()
         {
+            IsBusy = true;
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.Filter = "jason files (*.json)|*.json";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
-                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, filename).Result;
+                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, filename).Result;
                 if (b) 
                 {
+                    IsBusy = false;
                     return true;
                 }
             }
+            IsBusy = false;
             return false;
         }
     }

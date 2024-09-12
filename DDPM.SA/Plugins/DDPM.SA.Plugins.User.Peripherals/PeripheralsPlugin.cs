@@ -17,6 +17,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -784,7 +785,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
+                    Debug.WriteLine($"{newValue}");
                     _iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
+                    //_iLogicalDeviceWebcam.IsMicEnumerationOn = newValue;
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -1045,7 +1048,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         info.PanMin = _iLogicalDeviceWebcam.PanMin;
                         info.PanSteppingDelta = _iLogicalDeviceWebcam.PanSteppingDelta;
                         info.ParentDevInstanceId = _iLogicalDeviceWebcam.ParentDevInstanceId;
-                        //info.ProfileManager = _iLogicalDeviceWebcam.ProfileManager;
+                        //info.ProfileManager = new(_iLogicalDeviceWebcam.ProfileManager);
+                        info.PresetProfiles = JArray.FromObject(_iLogicalDeviceWebcam.ProfileManager.PresetProfiles);
+                        info.CustomProfiles = JArray.FromObject(_iLogicalDeviceWebcam.ProfileManager.CustomProfiles);
+                        info.Profile = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Id;
+                        info.ProfileDescription = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Description;
+                        info.ProfileName = _iLogicalDeviceWebcam.ProfileManager.CurrentSelectedProfile.Name;
                         info.SaturationMax = _iLogicalDeviceWebcam.SaturationMax;
                         info.SaturationMin = _iLogicalDeviceWebcam.SaturationMin;
                         info.SaturationSteppingDelta = _iLogicalDeviceWebcam.SaturationSteppingDelta;

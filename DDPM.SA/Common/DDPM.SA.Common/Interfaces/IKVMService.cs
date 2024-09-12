@@ -45,6 +45,22 @@ namespace DDPM.SA.Common
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
 
+        Task GetNKVMVersion();
+
+        Task GetNKVMStatus();
+
+        Task GetNKVMAutoConnect();
+
+        Task GetNKVMContentTransfer();
+
+        Task GetNKVMIncommingPort();
+
+        Task GetNKVMOutgoingPort();
+
+        Task GetNKVMContentTransferPort();
+
+        Task GetNKVMSettings();
+
         Task NKVM_State(bool state);
 
         Task CallNKVMConnent();

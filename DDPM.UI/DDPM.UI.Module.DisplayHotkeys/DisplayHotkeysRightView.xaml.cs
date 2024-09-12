@@ -15,7 +15,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
     /// </summary>
     public partial class DisplayHotkeysRightView : UserControl
     {
-        private string _strTbToggleInputSourcePreviousKey = string.Empty;
+        /*private string _strTbToggleInputSourcePreviousKey = string.Empty;
         private string _strTbFavoriteInputSourcePreviousKey = string.Empty;
         private string _strTbSwitchInputSourcePreviousKey = string.Empty;
         private string _strTbSwapPIPPBPInputSourcePreviousKey = string.Empty;
@@ -25,10 +25,12 @@ namespace DDPM.UI.Module.DisplayHotkeys
         private List<VirtualKey> FavoriteInputSourceNewKeys = new List<VirtualKey>();
         private List<VirtualKey> SwitchInputSourceNewKeys = new List<VirtualKey>();
         private List<VirtualKey> SwapPIPPBPInputSourceNewKeys = new List<VirtualKey>();
-        private List<VirtualKey> ChangePIPPositionNewKeys = new List<VirtualKey>();
+        private List<VirtualKey> ChangePIPPositionNewKeys = new List<VirtualKey>();*/
 
-        private bool updateKeys = false;
+        private bool alphabetKey = false;
+        private string _strPreviousKey = string.Empty;
         private List<VirtualKey> newKeys = new List<VirtualKey>();
+        private List<VirtualKey> BundleNewKeys = new List<VirtualKey>();
 
         private DisplayHotkeysViewModel vm
         {
@@ -43,7 +45,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbToggleInputSource_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);
+            KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbToggleInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -61,7 +63,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbFavoriteInputSource_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);
+            KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbFavoriteInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -79,7 +81,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbSwitchInputSource_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);
+            KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbSwitchInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -97,7 +99,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbSwapPIPPBPInputSource_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);
+            KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbSwapPIPPBPInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -115,7 +117,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbChangePIPPosition_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            setUXTextBoxPreviewKey(sender, e);
+            KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
         private void tbChangePIPPosition_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -136,10 +138,13 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
             {
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
-                _strTbToggleInputSourcePreviousKey = vm.ToggleInputSourceKey;
-                vm.ToggleInputSourceKey = string.Empty;
+                //_strTbToggleInputSourcePreviousKey = vm.ToggleInputSourceKey;
+                _strPreviousKey = vm.ToggleInputSourceKey;
+                //vm.ToggleInputSourceKey = string.Empty;
+                var texBox = (sender as UXTextBox);
+                texBox?.Select(vm.ToggleInputSourceKey.Length, 1);
             }
         }
 
@@ -148,10 +153,13 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
             {
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
-                _strTbFavoriteInputSourcePreviousKey = vm.FavoriteInputSourceKey;
-                vm.FavoriteInputSourceKey = string.Empty;
+                //_strTbFavoriteInputSourcePreviousKey = vm.FavoriteInputSourceKey;
+                _strPreviousKey = vm.FavoriteInputSourceKey;
+                //vm.FavoriteInputSourceKey = string.Empty;
+                var texBox = (sender as UXTextBox);
+                texBox?.Select(vm.FavoriteInputSourceKey.Length, 1);
             }
         }
 
@@ -160,10 +168,12 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
             {
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
-                _strTbSwitchInputSourcePreviousKey = vm.SwitchInputSourceKey;
-                vm.SwitchInputSourceKey = string.Empty;
+                _strPreviousKey = vm.SwitchInputSourceKey;
+                //vm.SwitchInputSourceKey = string.Empty;
+                var texBox = (sender as UXTextBox);
+                texBox?.Select(vm.FavoriteInputSourceKey.Length, 1);
             }
         }
 
@@ -172,10 +182,12 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
             {
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
-                _strTbSwapPIPPBPInputSourcePreviousKey = vm.SwapPIPPBPInputSourceKey;
-                vm.SwapPIPPBPInputSourceKey = string.Empty;
+                _strPreviousKey = vm.SwapPIPPBPInputSourceKey;
+                //vm.SwapPIPPBPInputSourceKey = string.Empty;
+                var texBox = (sender as UXTextBox);
+                texBox?.Select(vm.FavoriteInputSourceKey.Length, 1);
             }
         }
 
@@ -184,10 +196,12 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
             if (isUnhook)
             {
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
-                _strTbChangePIPPositionPreviousKey = vm.ChangePIPPositionKey;
-                vm.ChangePIPPositionKey = string.Empty;
+                _strPreviousKey = vm.ChangePIPPositionKey;
+                //vm.ChangePIPPositionKey = string.Empty;
+                var texBox = (sender as UXTextBox);
+                texBox?.Select(vm.FavoriteInputSourceKey.Length, 1);
             }
         }
 
@@ -228,91 +242,29 @@ namespace DDPM.UI.Module.DisplayHotkeys
             keys.Clear();
         }
 
-        private void SaveHotkeysSetting(string preKey, string crtKey, HotkeyType hotkeyType, ref List<VirtualKey> keys, string des)
-        {
-            List<HotkeyInfo> hotkeyInfoList = new List<HotkeyInfo>();
-            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid).Result;
-            List<HotkeySettings> List = new List<HotkeySettings>();
-            List<InputSourceObj> inputSourceList = new List<InputSourceObj>();
 
-            switch (hotkeyType)
-            {
-                case HotkeyType.FavoriteInputSource:
-                    inputSourceList.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputDisplayText));
-                    break;
-
-                case HotkeyType.SwitchInputSource:
-                    inputSourceList.Add(new InputSourceObj(vm.SwitchInput1_Selected.inputDisplayText));
-                    inputSourceList.Add(new InputSourceObj(vm.SwitchInput2_Selected.inputDisplayText));
-                    break;
-            }
-
-            /* _FavoriteInputSelect = vm.InputsList.Find(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
-             _swapInput1Select = _inputsList.Find(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
-             _swapInput2Select = _inputsList.Where(x => x.inputDisplayText != _swapInput1Select.inputDisplayText).First();*/
-
-            HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(hotkeyType));
-            var hotkeys = keys.Distinct().ToList();
-            hotkeys = hotkeys.Count > 0 ? hotkeys : new List<VirtualKey>() { VirtualKey.None };
-            if (!preKey.Equals(crtKey))
-            {
-                if (hotkeyInfo != null)
-                {
-                    hotkeyInfo.Hotkey = hotkeys;
-                    hotkeyInfo.InputSource = inputSourceList;
-                    List.Add(curHotkey);
-                }
-                else
-                {
-                    HotkeyInfo newhotkeyInfo = new HotkeyInfo
-                    {
-                        Description = $"Input Source> Hotkeys > {des}",
-                        Hotkey = hotkeys,
-                        Job = hotkeyType,
-                        Status = HotkeyStatus.Registered,
-                        InputSource = inputSourceList
-                    };
-
-                    if (curHotkey.HotkeyInfo.Count != 0)
-                    {
-                        curHotkey.HotkeyInfo.Add(newhotkeyInfo);
-                        List.Add(curHotkey);
-                    }
-                    else
-                    {
-                        hotkeyInfoList.Add(newhotkeyInfo);
-                        HotkeySettings hotkeySettings = new HotkeySettings();
-                        hotkeySettings.HotkeyInfo = hotkeyInfoList;
-                        hotkeySettings.DeviceInfo = vm.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid;
-                        List.Add(hotkeySettings);
-                    }
-                }
-                DdpmCommonHelper.DeviceManagerSA.WriteHotkeySettings(List);
-                DdpmCommonHelper.DeviceManagerSA.ReloadHotkeyConfigData();
-                Keyboard.ClearFocus();
-            }
-        }
 
         private void tbToggleInputSource_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (ToggleInputSourceNewKeys.Count == 0)
+            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
             {
-                vm.ToggleInputSourceKey = _strTbToggleInputSourcePreviousKey;
+                //vm.ToggleInputSourceKey = _strTbToggleInputSourcePreviousKey;
+                vm.ToggleInputSourceKey = _strPreviousKey;
+                BundleNewKeys.Clear();
             }
             else
             {
                 //for single key
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
 
                 //save hotkey
-                //SaveHotkeysSetting(_strTbFavoriteInputSourcePreviousKey, vm.ToggleInputSourceKey, HotkeyType.ToggleInputSource, ref ToggleInputSourceNewKeys, "Toggle to next input source");
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.ToggleInputSource;
-                hotkeyInfo.Hotkey = ToggleInputSourceNewKeys.Distinct().ToList();
+                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "ToggleInputSource";
-                doLostFocus(hotkeyInfo, _strTbToggleInputSourcePreviousKey, vm.ToggleInputSourceKey, ref ToggleInputSourceNewKeys);
-                ToggleInputSourceNewKeys.Clear();
+                doLostFocus(hotkeyInfo, _strPreviousKey, vm.ToggleInputSourceKey, ref BundleNewKeys);
+                BundleNewKeys.Clear();
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
@@ -320,24 +272,24 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbFavoriteInputSource_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (FavoriteInputSourceNewKeys.Count == 0)
+            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
             {
-                vm.FavoriteInputSourceKey = _strTbFavoriteInputSourcePreviousKey;
+                vm.FavoriteInputSourceKey = _strPreviousKey;
+                BundleNewKeys.Clear();
             }
             else
             {
                 //for single key
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
                 //save hotkey
-                //SaveHotkeysSetting(_strTbFavoriteInputSourcePreviousKey, vm.FavoriteInputSourceKey, HotkeyType.FavoriteInputSource, ref FavoriteInputSourceNewKeys, "Favorite input source");
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.FavoriteInputSource;
-                hotkeyInfo.Hotkey = FavoriteInputSourceNewKeys.Distinct().ToList();
+                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.InputSource.Add(new InputSourceObj(vm.FavoriteInput_Selected.inputDisplayText));
                 hotkeyInfo.Description = "FavoriteInputSource";
-                doLostFocus(hotkeyInfo, _strTbFavoriteInputSourcePreviousKey, vm.FavoriteInputSourceKey, ref FavoriteInputSourceNewKeys);
-                FavoriteInputSourceNewKeys.Clear();
+                doLostFocus(hotkeyInfo, _strPreviousKey, vm.FavoriteInputSourceKey, ref BundleNewKeys);
+                BundleNewKeys.Clear();
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
@@ -345,25 +297,25 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbSwitchInputSource_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (SwitchInputSourceNewKeys.Count == 0)
+            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
             {
-                vm.SwitchInputSourceKey = _strTbSwitchInputSourcePreviousKey;
+                vm.SwitchInputSourceKey = _strPreviousKey;
+                BundleNewKeys.Clear();
             }
             else
             {
                 //for single key
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
                 //save hotkey
-                //SaveHotkeysSetting(_strTbSwitchInputSourcePreviousKey, vm.SwitchInputSourceKey, HotkeyType.SwitchInputSource, ref SwitchInputSourceNewKeys, "Swap between 2 inout sources");
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.SwitchInputSource;
-                hotkeyInfo.Hotkey = SwitchInputSourceNewKeys.Distinct().ToList();
+                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.InputSource.Add(new InputSourceObj(vm.SwitchInput1_Selected.inputDisplayText));
                 hotkeyInfo.InputSource.Add(new InputSourceObj(vm.SwitchInput2_Selected.inputDisplayText));
                 hotkeyInfo.Description = "SwitchInputSource";
-                doLostFocus(hotkeyInfo, _strTbSwitchInputSourcePreviousKey, vm.SwitchInputSourceKey, ref SwitchInputSourceNewKeys);
-                SwitchInputSourceNewKeys.Clear();
+                doLostFocus(hotkeyInfo, _strPreviousKey, vm.SwitchInputSourceKey, ref BundleNewKeys);
+                BundleNewKeys.Clear();
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
@@ -371,23 +323,23 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbSwapPIPPBPInputSource_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (SwapPIPPBPInputSourceNewKeys.Count == 0)
+            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
             {
-                vm.SwapPIPPBPInputSourceKey = _strTbSwapPIPPBPInputSourcePreviousKey;
+                vm.SwapPIPPBPInputSourceKey = _strPreviousKey;
+                BundleNewKeys.Clear();
             }
             else
             {
                 //for single key
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
                 //save hotkey
-                //SaveHotkeysSetting(_strTbSwapPIPPBPInputSourcePreviousKey, vm.SwapPIPPBPInputSourceKey, HotkeyType.SwapIputPIPPBP, ref SwapPIPPBPInputSourceNewKeys, "swap 2 inuts of PIP/PBP");
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.SwapIputPIPPBP;
-                hotkeyInfo.Hotkey = SwapPIPPBPInputSourceNewKeys.Distinct().ToList();
+                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "SwapPIPPBPInputSource";
-                doLostFocus(hotkeyInfo, _strTbSwapPIPPBPInputSourcePreviousKey, vm.SwapPIPPBPInputSourceKey, ref SwapPIPPBPInputSourceNewKeys);
-                SwapPIPPBPInputSourceNewKeys.Clear();
+                doLostFocus(hotkeyInfo, _strPreviousKey, vm.SwapPIPPBPInputSourceKey, ref BundleNewKeys);
+                BundleNewKeys.Clear();
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
@@ -395,129 +347,27 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void tbChangePIPPosition_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (ChangePIPPositionNewKeys.Count == 0)
+            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
             {
-                vm.ChangePIPPositionKey = _strTbChangePIPPositionPreviousKey;
+                vm.ChangePIPPositionKey = _strPreviousKey;
+                BundleNewKeys.Clear();
             }
             else
             {
                 //for single key
-                updateKeys = false;
+                alphabetKey = false;
                 newKeys.Clear();
                 //save hotkey
-                //SaveHotkeysSetting(_strTbChangePIPPositionPreviousKey, vm.ChangePIPPositionKey, HotkeyType.ChangePIPPosition, ref ChangePIPPositionNewKeys, "Change PIP position");
                 HotkeyInfo hotkeyInfo = new HotkeyInfo();
                 hotkeyInfo.Job = HotkeyType.ChangePIPPosition;
-                hotkeyInfo.Hotkey = ChangePIPPositionNewKeys.Distinct().ToList();
+                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "ChangePIPPosition";
-                doLostFocus(hotkeyInfo, _strTbChangePIPPositionPreviousKey, vm.ChangePIPPositionKey, ref ChangePIPPositionNewKeys);
-                ChangePIPPositionNewKeys.Clear();
+                doLostFocus(hotkeyInfo, _strPreviousKey, vm.ChangePIPPositionKey, ref BundleNewKeys);
+                BundleNewKeys.Clear();
             }
             //hook
             bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
-        private void setUXTextBoxPreviewKey(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-            newKeys = newKeys.Distinct().ToList();
-            if (newKeys.Count >= 4) return;
-            var texBox = (sender as UXTextBox);
-            var texBoxName = texBox?.Name;
-            if (string.IsNullOrEmpty(texBoxName)) return;
-            Debug.WriteLine($"{texBoxName}_PreviewKeyDown---Key---{e.Key}");
-            Debug.WriteLine($"{texBoxName}_PreviewKeyDown---SystemKey---{e.SystemKey}");
-            VirtualKey thisVirtualKey;
-            VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.SystemKey);
-            if (thisVirtualKey_system != VirtualKey.None)
-            {
-                thisVirtualKey = thisVirtualKey_system;
-            }
-            else
-            {
-                thisVirtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.Key);
-            }
-            //if the key will be processed by an Input Method Editor (IME), then return ?
-            //Object v;
-            // Enum.TryParse(typeof(VirtualKey), e.Key.ToString(), out v);
-            bool r = Enum.IsDefined(typeof(VirtualKey), thisVirtualKey);
-            if (!r) return;
-            if (BlockKeys.isBlocked(thisVirtualKey)) return;
-            if (newKeys.Count > 0 && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift) || (x == VirtualKey.Menu)))
-            {
-                //second single key
-                return;
-            }
-            if (newKeys.Count == 2 && newKeys.Any(x => (x == VirtualKey.Menu)) && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift)))
-            {
-                //second Alt+ (key)
-                return;
-            }
-            if (thisVirtualKey == VirtualKey.LeftControl || thisVirtualKey == VirtualKey.RightControl)
-            {
-                thisVirtualKey = VirtualKey.Control;
-            }
-            else if (thisVirtualKey == VirtualKey.LeftShift || thisVirtualKey == VirtualKey.RightShift)
-            {
-                thisVirtualKey = VirtualKey.Shift;
-            }
-            else if (thisVirtualKey == VirtualKey.LeftMenu || thisVirtualKey == VirtualKey.RightMenu)
-            {
-                thisVirtualKey = VirtualKey.Menu;
-            }
-            if (!updateKeys)
-            {
-                newKeys.Clear();
-                updateKeys = true;
-                newKeys.Add(thisVirtualKey);
-            }
-
-            Debug.WriteLine($"{texBoxName}_PreviewKeyDown-NewKeys-----{string.Join(",", newKeys)}");
-            if (!newKeys.Contains(thisVirtualKey))
-            {
-                newKeys.Add(thisVirtualKey);
-                /*if ((thisVirtualKey == VirtualKey.Menu) ||
-                    (thisVirtualKey == VirtualKey.Control) ||
-                    (thisVirtualKey == VirtualKey.Shift) ||
-                    (thisVirtualKey >= VirtualKey.Number0 && thisVirtualKey <= VirtualKey.F24))
-                {
-                    newKeys.Add(thisVirtualKey);
-                }
-
-                if ((thisVirtualKey >= VirtualKey.Number0 && thisVirtualKey <= VirtualKey.Number9) ||
-                    (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z) ||
-                    (thisVirtualKey >= VirtualKey.F1 && thisVirtualKey <= VirtualKey.F24) ||
-                    (thisVirtualKey >= VirtualKey.NumberPad0 && thisVirtualKey <= VirtualKey.Divide))
-                {
-                    newKeys.Add(thisVirtualKey);
-                }*/
-            }
-            string swHortcutText = string.Empty;
-            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref newKeys);
-            texBox.Text = swHortcutText;
-            texBox.Select(swHortcutText.Length, 1);
-            switch (texBoxName)
-            {
-                case "tbToggleInputSource":
-                    ToggleInputSourceNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbFavoriteInputSource":
-                    FavoriteInputSourceNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbSwitchInputSource":
-                    SwitchInputSourceNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbSwapPIPPBPInputSource":
-                    SwapPIPPBPInputSourceNewKeys.AddRange(newKeys);
-                    break;
-
-                case "tbChangePIPPosition":
-                    ChangePIPPositionNewKeys.AddRange(newKeys);
-                    break;
-            }
-        }
     }
 }

@@ -7,9 +7,11 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -94,12 +96,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {
-                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID)
                     {
-                        _viewModel.OnGoBackClicked();
-                        return;
+                        if (_viewModel.IsMicEnumerationOnEnabled)
+                        {
+                            _viewModel!.OnGoBackClicked();
+                        }
                     }
-                    GetPeripheralsAsync();
+                    return;
+                }
+                if (e.type == DeviceChangedType.Peripherals_PlugIn)
+                {
+                    if (e.device_peripherals.Name == _viewModel!.CurrentDeviceInfo!.Name)
+                    {
+                        GetPeripheralsAsync();
+                        _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
+                        Mouse.OverrideCursor = null;
+                    }
+                    return;
                 }
                 _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }

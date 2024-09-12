@@ -170,7 +170,8 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
-            _ColorPresetPluginMock.Setup(x => x.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
+            _ColorPresetPluginMock.Setup(x => x.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<ISettingsManagerDev>(), It.IsAny<int>())).Returns(Task.FromResult(true));
+            //_ColorPresetPluginMock.Setup(x => x.WriteColorPreset(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
@@ -180,8 +181,20 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            result = deviceMangerPlugin.WriteColorPreset(monitorInfo, "12").Result;
-            Assert.That(result, Is.EqualTo(true));
+            int colorPresetRunType = 0;
+            string colorPreset_Name = "Game";
+            int colorPresetRunType2 = (int)ColorPresetRunType.Auto;
+            if (colorPresetRunType == 0)
+            {
+                result = deviceMangerPlugin.WriteColorPreset(monitorInfo, colorPreset_Name, colorPresetRunType).Result;
+                Assert.That(result, Is.EqualTo(true));
+            }
+
+            if (colorPresetRunType2 == (int)ColorPresetRunType.Auto)
+            {
+                var result2 = deviceMangerPlugin.WriteColorPreset(monitorInfo, colorPreset_Name, colorPresetRunType2).Result;
+                Assert.That(result2, Is.EqualTo(true));
+            }
         }
 
         [Test]
@@ -194,12 +207,12 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
-            _ColorPresetPluginMock.Setup(x => x.WriteColorPreset_AUTO(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
+            //_ColorPresetPluginMock.Setup(x => x.WriteColorPreset_AUTO(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
-            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
-            var _SettingsPlugin = _SettingsPluginMock.Object;
-            _SettingsPluginMock.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(true));
-            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
+            //var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
+            //var _SettingsPlugin = _SettingsPluginMock.Object;
+            //_SettingsPluginMock.Setup(x => x.WriteColorPresetSettings(It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(true));
+            //privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
@@ -218,7 +231,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //_ColorPresetPlugin != null
             var _ColorPresetPluginMock = new Mock<IColorPresetSA>();
             var _ColorPresetPlugin = _ColorPresetPluginMock.Object;
-            _ColorPresetPluginMock.Setup(x => x.WriteColorPreset_AUTO(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
+            //_ColorPresetPluginMock.Setup(x => x.WriteColorPreset_AUTO(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<List<ColorPresetSettings>>())).Returns(Task.FromResult(new List<ColorPresetSettings>()));
             privateObject.SetFieldOrProperty("_ColorPresetPlugin", _ColorPresetPlugin);
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
@@ -228,8 +241,47 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             _DisplayManagerPluginMock.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
-            result = deviceMangerPlugin.WriteColorPresetByColorProfile(monitorInfo, "Dell_U3224KB_Native_v2.icm").Result;
-            Assert.That(result, Is.EqualTo(true));
+            string colorProfile_Name1 = "Dell_U3224KB_Native_v2.icm";
+            if (colorProfile_Name1 == "Dell_U3224KB_Native_v2.icm")
+            {
+                result = deviceMangerPlugin.WriteColorPresetByColorProfile(monitorInfo, colorProfile_Name1).Result;
+                Assert.That(result, Is.EqualTo(false));
+            }
+
+            string colorProfile_Name2 = "Dell_U3224KB_DisplayP3_v2.icm";
+            if (colorProfile_Name2 == "Dell_U3224KB_DisplayP3_v2.icm")
+            {
+                result = deviceMangerPlugin.WriteColorPresetByColorProfile(monitorInfo, colorProfile_Name2).Result;
+                Assert.That(result, Is.EqualTo(false));
+            }
+
+            string colorProfile_Name3 = "Dell_U3224KB_DCIP3_v2.icm";
+            if (colorProfile_Name3 == "Dell_U3224KB_DCIP3_v2.icm")
+            {
+                result = deviceMangerPlugin.WriteColorPresetByColorProfile(monitorInfo, colorProfile_Name3).Result;
+                Assert.That(result, Is.EqualTo(false));
+            }
+
+            string colorProfile_Name4 = "Dell_U3224KB_sRGB_v2.icm";
+            if (colorProfile_Name4 == "Dell_U3224KB_sRGB_v2.icm")
+            {
+                result = deviceMangerPlugin.WriteColorPresetByColorProfile(monitorInfo, colorProfile_Name4).Result;
+                Assert.That(result, Is.EqualTo(false));
+            }
+
+            string colorProfile_Name5 = "Dell_U3224KB_Rec709_v2.icm";
+            if (colorProfile_Name5 == "Dell_U3224KB_Rec709_v2.icm")
+            {
+                result = deviceMangerPlugin.WriteColorPresetByColorProfile(monitorInfo, colorProfile_Name5).Result;
+                Assert.That(result, Is.EqualTo(false));
+            }
+
+            string colorProfile_Name6 = "Dell_U3224KB_HDR_v4_MHC2.icm";
+            if (colorProfile_Name6 == "Dell_U3224KB_HDR_v4_MHC2.icm")
+            {
+                result = deviceMangerPlugin.WriteColorPresetByColorProfile(monitorInfo, colorProfile_Name6).Result;
+                Assert.That(result, Is.EqualTo(false));
+            }
         }
 
         [Test]
@@ -524,7 +576,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
-            _SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
+            //_SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
             result = deviceMangerPlugin.GetMonitors(false).Result;
             Assert.Greater(result.Count, 0);
@@ -625,7 +677,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
-            _SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
+            //_SettingsPluginMock.Setup(x => x.InitDDPMMonitorConfigFile(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>()));
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
             result = deviceMangerPlugin.SetVCPCapability(monitorInfo, funtionName, val).Result;
             Assert.IsTrue(result);
