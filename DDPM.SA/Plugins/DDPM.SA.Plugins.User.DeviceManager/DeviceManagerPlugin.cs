@@ -3071,6 +3071,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region DTPProxy implementation
 
+        public async Task<JArray> GetPresetProfiles(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetPresetProfiles(Guid));
+        }
+
         public async Task<string> GetProfileName(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetProfileName(Guid));
@@ -6270,25 +6275,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.BatteryLow:
+                    {
+                        if (Device is OSDType_Device.Headset)
                         {
-                            if (Device is OSDType_Device.Headset)
-                            {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Keyboard)
-                            {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
-                                return Task.CompletedTask;
-                            }
-                            else if (Device is OSDType_Device.Mouse)
-                            {
-                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
-                                return Task.CompletedTask;
-                            }
-                            else
-                                return Task.CompletedTask;
+                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                            return Task.CompletedTask;
                         }
+                        else if (Device is OSDType_Device.Keyboard)
+                        {
+                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                            return Task.CompletedTask;
+                        }
+                        else if (Device is OSDType_Device.Mouse)
+                        {
+                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                            return Task.CompletedTask;
+                        }
+                        else
+                            return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6304,10 +6309,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Mute:
-                        {
-                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6323,20 +6328,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.ScrollLock:
-                        {
-                            _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.NumLock:
-                        {
-                            _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.CapsLock:
-                        {
-                            _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6352,25 +6357,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Fingerprint:
-                        {
-                            _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
+                        return Task.CompletedTask;
+                    }
                     case OSDType.DisplayChanged:
                         {
                             _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
                             return Task.CompletedTask;
                         }
                     case OSDType.WalkAwayLock:
-                        {
-                            _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
+                        return Task.CompletedTask;
+                    }
                     case OSDType.StartRecording:
-                        {
-                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                            return Task.CompletedTask;
-                        }
+                    {
+                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                        return Task.CompletedTask;
+                    }
                     default:
                         return Task.CompletedTask;
                 }
