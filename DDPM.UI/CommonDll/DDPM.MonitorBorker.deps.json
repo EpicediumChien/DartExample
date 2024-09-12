@@ -18,21 +18,21 @@
           "Newtonsoft.Json": "13.0.3",
           "System.Drawing.Common": "8.0.7",
           "System.Management": "8.0.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
         },
         "runtime": {
           "DDPM.MonitorBorker.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.31"
+            "fileVersion": "10.0.19041.34"
           },
           "WinRT.Runtime.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.4.44211"
+            "fileVersion": "2.0.8.46841"
           }
         }
       },
@@ -606,7 +606,6 @@
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.1.0",
           "DCF.UX.WPF": "2.2.4.1",
-          "DDPM.SA.Obfuscation": "1.0.0",
           "Dell.RPC.Transport": "1.5.1",
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "DellClientFramework": "6.4.5.1",
@@ -616,11 +615,6 @@
         },
         "runtime": {
           "DDPM.SA.Common.dll": {}
-        }
-      },
-      "DDPM.SA.Obfuscation/1.0.0": {
-        "runtime": {
-          "DDPM.SA.Obfuscation.dll": {}
         }
       },
       "DDPM.ShowOsd/2.0.0.5": {
@@ -633,9 +627,6 @@
         }
       },
       "DDPM.Win32Lib/2.0.0.5": {
-        "dependencies": {
-          "DDPM.SA.Common": "2.0.0.5"
-        },
         "runtime": {
           "DDPM.Win32Lib.dll": {}
         }
@@ -665,19 +656,11 @@
           }
         }
       },
-      "DPeMClientBroker/0.0.0.0": {
+      "DDPM.SA.Obfuscation/1.0.0.0": {
         "runtime": {
-          "DPeMClientBroker.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "DPeMClientRpcHelper/1.7.0.0": {
-        "runtime": {
-          "DPeMClientRpcHelper.dll": {
-            "assemblyVersion": "1.7.0.0",
-            "fileVersion": "0.0.0.0"
+          "DDPM.SA.Obfuscation.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       }
@@ -689,7 +672,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -1110,11 +1093,6 @@
       "serviceable": false,
       "sha512": ""
     },
-    "DDPM.SA.Obfuscation/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
     "DDPM.ShowOsd/2.0.0.5": {
       "type": "project",
       "serviceable": false,
@@ -1140,12 +1118,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "DPeMClientBroker/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "DPeMClientRpcHelper/1.7.0.0": {
+    "DDPM.SA.Obfuscation/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
