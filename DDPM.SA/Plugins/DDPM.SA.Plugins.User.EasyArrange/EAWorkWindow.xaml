@@ -17,7 +17,9 @@
                              From="1.0" To="0" FillBehavior="HoldEnd" />
         </Storyboard>
 
+        <!-- 
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        -->
     </Window.Resources>
 
     <Grid Name="rootGrid2">
@@ -42,7 +44,7 @@
         <Grid Name="splitGrid">
             <Grid.Style>
                 <Style TargetType="Grid">
-                    <Setter Property="Visibility" Value="Hidden" />
+                    <Setter Property="Visibility" Value="Hidden"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsWorkUIShowing}" Value="True">
                             <Setter Property="Visibility" Value="Visible" />
@@ -53,8 +55,10 @@
             </Grid.Style>
             <ContentControl Name="splitCtrl" />
         </Grid>
-        <Grid Name="fadeOutGrid"
+        <!-- 
               Visibility="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}">
+        -->
+        <Grid Name="fadeOutGrid" Visibility="Hidden">
             <!-- 
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -70,10 +74,5 @@
             -->
             <ContentControl Name="fadeOutCtrl" />
         </Grid>
-        <WrapPanel Visibility="Collapsed">
-            <TextBlock Text="IsFading = " Foreground="Blue" />
-            <TextBlock Text="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}}"
-                       Foreground="Blue" />
-        </WrapPanel>
-    </Grid>
+     </Grid>
 </Window>
