@@ -3405,7 +3405,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             commandLineInput.Options[0].Option_Value.Replace(".", ",");
                             string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
-                            
+
                             foreach (string v in op_values)
                             {
                                 switch (v.ToUpper())
@@ -3491,7 +3491,7 @@ namespace DDPM.CLI.Plugins.Display
 
                             commandLineInput.Options[0].Option_Value.Replace(".", ",");
                             string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
-                            
+
                             foreach (string v in op_values)
                             {
                                 switch (v.ToUpper())
@@ -3578,7 +3578,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                 commandLineInput.Options[0].Option_Value.Replace(".", ",");
                                 string[] op_values = commandLineInput.Options[0].Option_Value.Split(",");
-                                
+
                                 foreach (string v in op_values)
                                 {
                                     switch (v.ToUpper())
@@ -3652,7 +3652,7 @@ namespace DDPM.CLI.Plugins.Display
                 writelog($"ActiveInputSource set exit return value {output}");
                 return ((int)CLI_ExitCode.success, output);
             }
-            else if(commandLineInput.Command == "GET")
+            else if (commandLineInput.Command == "GET")
             {
                 if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
                 {
@@ -7498,10 +7498,10 @@ namespace DDPM.CLI.Plugins.Display
             bool recode_per = false;
 
             List<int> _monitorIndeies = new List<int>();
-            _deviceHelper = new DeviceHelper
+            /*_deviceHelper = new DeviceHelper
             {
                 deviceInfo = new List<DeviceInfo>()
-            };
+            };*/
 
             List<DeviceInfo> _deviceinfo = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
@@ -7649,8 +7649,8 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                     int getvalue = Convert.ToInt32(rc.value);
-                    get_DeviceData.SpeakerVolume = ((getvalue & 0x8000) == 0x8000) ? "lock," : "unlock,";
-                    get_DeviceData.SpeakerVolume += ((getvalue & 0x4000) == 0x4000) ? "enable" : "disable";
+                    get_DeviceData.SpeakerVolume = ((getvalue & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
+                    get_DeviceData.SpeakerVolume += ((getvalue & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
                 }
                 else
                     get_DeviceData.SpeakerMicrophone = "N/A";
@@ -7661,8 +7661,8 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                     int getvalue = Convert.ToInt32(rc.value);
-                    if ((getvalue & 0xFF) == 0xFF) get_DeviceData.SpeakerVolume = "mute";
-                    if ((getvalue & 0xFF) == 0xFE) get_DeviceData.SpeakerVolume = "unmute";
+                    if ((getvalue & 0xFF) == 0xFF) get_DeviceData.SpeakerVolume = "OSDENABLE";
+                    if ((getvalue & 0xFF) == 0xFE) get_DeviceData.SpeakerVolume = "OSDDISABLE";
                     if ((getvalue & 0xFF) != 0xFE && (getvalue & 0xFF) != 0xFF) get_DeviceData.SpeakerVolume = $"{getvalue}";
                 }
                 else
@@ -7674,8 +7674,8 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                     int getvalue = Convert.ToInt32(rc.value);
-                    if ((getvalue & 0x03) == 0x01) get_DeviceData.MicrophoneControl = "mute";
-                    if ((getvalue & 0x03) == 0x02) get_DeviceData.MicrophoneControl = "unmute";
+                    if ((getvalue & 0x03) == 0x01) get_DeviceData.MicrophoneControl = "OSDENABLE";
+                    if ((getvalue & 0x03) == 0x02) get_DeviceData.MicrophoneControl = "OSDDISABLE";
                 }
                 else
                     get_DeviceData.MicrophoneControl = "N/A";
@@ -8935,8 +8935,9 @@ namespace DDPM.CLI.Plugins.Display
             StreamReader r = new StreamReader(commandLineInput.Options[0].Option_Value);
             string jsonString = r.ReadToEnd();
             r.Close();
+            string[] jsonString_2 = jsonString.Split("\"Device\":");
 
-            if (string.IsNullOrWhiteSpace(jsonString))
+            if (string.IsNullOrWhiteSpace(jsonString_2[0]))
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                 cli_Response.Command = commandLineInput.Command;
@@ -8945,7 +8946,7 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Message = "file format is not valid.";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
-            Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString);
+            Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString_2[0]);
 
             bool ispass = true;
             //string[] not_support_list = new string[] { "ColorPreset", "ColorManagement"};
@@ -9048,11 +9049,11 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     rc = GetVCPCode(devMgr, monitor, "0x62").Result;
                     int getvalue = Convert.ToInt32(rc.value);
-                    retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerVolume(devicedata.SpeakerMicrophone, getvalue)).Result;
+                    retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(devicedata.SpeakerMicrophone, getvalue)).Result;
 
                     rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
                     int getvalue2 = Convert.ToInt32(rc.value);
-                    bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_MicrophoneControl(devicedata.SpeakerMicrophone, getvalue2)).Result;
+                    bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(devicedata.SpeakerMicrophone, getvalue2)).Result;
 
                     if (!retcode && !retcode2) ispass = false;
                     else ApplyConfiguration.SpeakerMicrophone = devicedata.SpeakerMicrophone;
