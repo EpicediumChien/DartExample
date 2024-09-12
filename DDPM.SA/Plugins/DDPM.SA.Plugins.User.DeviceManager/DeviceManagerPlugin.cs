@@ -1823,7 +1823,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return Task.FromResult(_SettingsPlugin.SetAppConfigData(data).Result);
         }
-
+        public Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName)
+        {
+            object settings = _SettingsPlugin.ReadRegistryData(hive, keyPath, keyName).Result;
+            return Task.FromResult(settings);
+        }
+        public Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value)
+        {
+            bool settings = _SettingsPlugin.WriteRegistryData(hive, keyPath, keyName, value).Result;
+            return Task.FromResult(settings);
+        }
         #endregion
 
         #region PIP/PBP Manager

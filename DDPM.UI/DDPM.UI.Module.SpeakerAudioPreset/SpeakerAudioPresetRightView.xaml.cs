@@ -14,7 +14,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
     public partial class SpeakerAudioPresetRightView : UserControl, INotifyPropertyChanged
     {
         private bool isDragging = false;
-        private Image currentNode;
+        private Image? currentNode;
         private Point clickPosition;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -133,7 +133,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         /// <param name="show">True or False</param>
         private void ShowNodeValue(Image node, bool show)
         {
-            Border textBackground = null;
+            Border? textBackground = null;
             if (node == Node1)
                 textBackground = Node1TextBackground;
             else if (node == Node2)
