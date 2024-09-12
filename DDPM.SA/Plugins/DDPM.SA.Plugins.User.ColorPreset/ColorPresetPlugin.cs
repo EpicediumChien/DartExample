@@ -1363,7 +1363,6 @@ namespace ColorPreset.Plugins
 
                         if (System.IO.File.Exists(strFilePath))
                         {
-<<<<<<< HEAD
                             //Elsa Add Security
                             string FileInfo;
                             if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
@@ -1371,9 +1370,9 @@ namespace ColorPreset.Plugins
                                 _logs.Info($"{nameof(DownloadICCData)} {FileInfo}");
                                 return null;
                             }
-=======
+
                             CheckICC_JSON_Security(strFilePath);
->>>>>>> 816905a6d692579cfffa20ea5e72188e979c7f2a
+
 
                             string strReadJson = string.Empty;
                             using (var reader = new StreamReader(strFilePath))

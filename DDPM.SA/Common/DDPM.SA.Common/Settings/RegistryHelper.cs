@@ -56,14 +56,6 @@ namespace DDPM.SA.Common.Settings
             {
                 throw new ArgumentException("Key name cannot be null or empty.");
             }
-
-            //Elsa Add Security
-            string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(keyPath, out FileInfo))
-            {
-                _log.Info($"{nameof(ValidateInput)} {FileInfo}");
-                throw new ArgumentException($"Invalid file path string - {keyPath}");
-            }
             return true;
         }
 
