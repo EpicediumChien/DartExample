@@ -51,6 +51,7 @@ using Windows.System;
 using DDPM.SA.Common.Screen;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
+using Microsoft.WindowsAPICodePack.Win32Native;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -2933,29 +2934,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ImportVCP importVCP = new ImportVCP();
             if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCP> vcps).Result)
             {
-                //set ImportVCPSequence
-                SetVCPSequence(monitorInfo, vcps);
-                foreach (VCP code in vcps)
+                if (vcps != null)
                 {
-                    if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                        importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                    //set ImportVCPSequence
+                    SetVCPSequence(monitorInfo, vcps);
+                    foreach (VCP code in vcps)
                     {
-                        writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                        bool b = false;
-                        ObjGetVCP objGetVCP = new ObjGetVCP();
-                        //SHR on/off need load settings
-                        //if (code.Code == 0xF0)
-                        //{
-                        //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                        //}
-                        //get vcp code
-                        objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                        if (objGetVCP.result && (int)objGetVCP.value != (int)(uint)code.Value[0])
+                        if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                            importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                         {
-                            //set vcp code
-                            b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                            bool b = false;
+                            ObjGetVCP objGetVCP = new ObjGetVCP();
+                            //SHR on/off need load settings
+                            //if (code.Code == 0xF0)
+                            //{
+                            //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                            //}
+                            //get vcp code
+                            objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                            if (objGetVCP.result && (int)objGetVCP.value != (int)(uint)code.Value[0])
+                            {
+                                //set vcp code
+                                b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                            }
                         }
                     }
+                }
+                else
+                {
+                    writelog("[DisplayImportSettings] VCPs List is null");
                 }
             }
             return Task.FromResult(false);

@@ -212,7 +212,12 @@ namespace DDPM.UI.Module.DisplayOthers
                 ImpExpSettings("Exp", filename);
                 return true;
             }
-            //IsBusy = false;
+            else 
+            {
+                IsBusy = false;
+                OnPropertyChanged("IsBusy");
+            }
+
             return false;
         }
         public bool ImportSettings()
@@ -228,7 +233,12 @@ namespace DDPM.UI.Module.DisplayOthers
                 ImpExpSettings("Imp", filename);
                 return true;
             }
-            //IsBusy = false;
+            else
+            {
+                IsBusy = false;
+                OnPropertyChanged("IsBusy");
+            }
+
             return false;
         }
     }
