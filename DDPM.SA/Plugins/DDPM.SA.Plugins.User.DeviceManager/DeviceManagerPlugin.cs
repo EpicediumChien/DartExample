@@ -276,6 +276,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         public event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
 
+        public event EventHandler<NKVMRespone> NKVMCLIRespone;
+
         #endregion
 
         #region ColorPreset implementation
@@ -2896,7 +2898,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     byte b_vcpcode = Convert.ToByte(vcp.Code);
                                     //object value = cacheTable[b_vcpcode];
                                     ObjGetVCP objGet = GetVCPCapability(monitorInfo, b_vcpcode).Result;
-                                    if (objGet.result)
+                                    if (objGet.result && vcp.Value.FindIndex(x => x == (int)(uint)objGet.value) == -1)
                                     {
                                         writelog($"VCP code: {vcp.Code.ToString()}, value:{objGet.value.ToString()}");
                                         vcp.Value.Add((int)(uint)objGet.value);
@@ -2912,6 +2914,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+            }
+            else
+            {
+                writelog("[DisplayExportSettings]settings is null");
             }
 
             //expot settings
@@ -2936,13 +2942,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
                         bool b = false;
+                        ObjGetVCP objGetVCP = new ObjGetVCP();
                         //SHR on/off need load settings
                         //if (code.Code == 0xF0)
                         //{
                         //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
                         //}
-                        //set vcp code
-                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                        //get vcp code
+                        objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                        if (objGetVCP.result && (int)objGetVCP.value != (int)(uint)code.Value[0])
+                        {
+                            //set vcp code
+                            b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                        }
                     }
                 }
             }
@@ -4611,6 +4623,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a running condition");
                         //_NKVMPluginCondition = pluginCondition;
+                        _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -4618,6 +4631,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a started condition");
                         //_NKVMPluginCondition = pluginCondition;
+                        _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -6121,6 +6135,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null && _NKVMPlugin != null)
             {
                 read = ReadHotkeySettings().Result;
+            }
+        }
+
+        private void NKVMCLIEvent(object sender, NKVMRespone e)
+        {
+            SendCLINKVMRespone(e);
+        }
+
+        private void SendCLINKVMRespone(NKVMRespone e)
+        {
+            EventHandler<NKVMRespone> handler = NKVMCLIRespone;
+            if (handler != null)
+            {
+                handler.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
             }
         }
 
