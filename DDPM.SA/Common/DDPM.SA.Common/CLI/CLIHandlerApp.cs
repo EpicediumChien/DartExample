@@ -799,7 +799,7 @@ namespace DDPM.SA.Common.CLI
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Settings_TelemetryConsent = target;
                         }
-                        if (commandLineInput.TargetFeature.Equals("POWERNAP"))
+                        else if (commandLineInput.TargetFeature.Equals("POWERNAP"))
                         {
                             if (data_IT != null)
                                 data_IT.Lock_Display_PowerNap = target;

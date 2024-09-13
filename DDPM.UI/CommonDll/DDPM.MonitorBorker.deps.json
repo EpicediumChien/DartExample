@@ -633,9 +633,6 @@
         }
       },
       "DDPM.Win32Lib/2.0.0.5": {
-        "dependencies": {
-          "DDPM.SA.Common": "2.0.0.5"
-        },
         "runtime": {
           "DDPM.Win32Lib.dll": {}
         }
