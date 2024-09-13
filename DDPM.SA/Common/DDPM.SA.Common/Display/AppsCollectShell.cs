@@ -74,7 +74,7 @@ namespace DDPM.SA.Common
 
     public class AppListDictionary
     {
-        private static readonly string storageFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell Display and Peripheral Manager";
+        private static readonly string storageFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager";
 
         private static string user = Environment.UserName;// Dean 0626 SAST issue
 
@@ -148,7 +148,7 @@ namespace DDPM.SA.Common
 
     public class AppsCollectShell
     {
-        private static string RootColorPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell Display and Peripheral Manager\\AppLibrary";
+        private static string RootColorPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager\\AppLibrary";
 
         //private static string IconFolder = RootColorPath + Environment.UserName + "\\Icon\\";
         private static string IconFolder = RootColorPath + "\\Icons\\";

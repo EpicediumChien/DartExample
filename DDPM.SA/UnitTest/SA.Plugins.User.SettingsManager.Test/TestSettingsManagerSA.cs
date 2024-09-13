@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Windows.Devices.Display.Core;
 using Windows.Globalization;
 using static DDPM.SA.Common.Settings.DDPMUserSettings;
+using DDPM.SA.Common.Display;
 
 namespace DDPM.SA.Plugins.User.SettingsManager.Test
 {
@@ -227,6 +228,95 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.Greater(RunSerializeObjectResult.Length, 0);
             File.Delete(colorpresettingsObject_path1_);
         }
+
+        [Test]
+        public void TestInitHotkeyConfigFile()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var result = privateSettingsManagerObject.Invoke("InitHotkeyConfigFile");
+            var InitHotkeySettings = privateSettingsManagerObject.GetFieldOrProperty("_hotkeySettings");
+            Assert.That(InitHotkeySettings, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadHotkeySettings()
+        {
+            string hotkeysettings_path1_ = "test_hotkeyPath.json";
+            string jsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
+            List<HotkeySettings> presetHotkey_settings_ = new List<HotkeySettings>();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", hotkeysettings_path1_);
+            privateSettingsManagerObject.SetFieldOrProperty("_present_hotkey_settings", presetHotkey_settings_);
+            if (!File.Exists(hotkeysettings_path1_))
+            {
+                var ReadHotkeySettingssResult1 = SettingsManagerSAPlugin.ReadHotkeySettings().Result;  // strFilePath is not Exists hotkeysettings_path1_ 
+                Assert.That(presetHotkey_settings_, Is.EqualTo(ReadHotkeySettingssResult1)); //run finnish will create hotkeysettings_path1_
+            }
+
+            if (File.Exists(hotkeysettings_path1_))
+            {
+                File.WriteAllText(hotkeysettings_path1_, jsonData);
+                var ReadHotkeySettingssResult2 = SettingsManagerSAPlugin.ReadHotkeySettings().Result;
+                Assert.That(presetHotkey_settings_, Is.EqualTo(ReadHotkeySettingssResult2));
+                File.Delete(hotkeysettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestWriteHotkeySettings()
+        {
+            bool writeHotkeySettings_ = false;
+            bool writeHotkeySettingsSettings_succeed = true;
+            List<HotkeySettings> hotkeySettingsNull = null;
+            List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { new HotkeySettings() { DeviceInfo = new EDID(), HotkeyInfo = new List<HotkeyInfo>(), HotkeyOptions = new List<HotkeyOption>() } };
+            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { } };
+            string WriteHotkeySettings_path1_ = "test_WriteHotkeySettingspath.json";
+            string jsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
+            File.WriteAllText(WriteHotkeySettings_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", WriteHotkeySettings_path1_);
+            if (hotkeySettingsNull == null)
+            {
+                var WriteHotkeySettingssResult1 = SettingsManagerSAPlugin.WriteHotkeySettings(hotkeySettingsNull).Result;
+                Assert.That(writeHotkeySettings_, Is.EqualTo(WriteHotkeySettingssResult1));
+            }
+
+            if (hotkeySettingsConfig != null)
+            {
+                var WriteHotkeySettingssResult2 = SettingsManagerSAPlugin.WriteHotkeySettings(hotkeySettingsConfig).Result;
+                Assert.That(writeHotkeySettingsSettings_succeed, Is.EqualTo(WriteHotkeySettingssResult2));
+                File.Delete(WriteHotkeySettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestRunSerializehotkeySettingsObject()
+        {
+            List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { new HotkeySettings() { DeviceInfo = new EDID(), HotkeyInfo = new List<HotkeyInfo>(), HotkeyOptions = new List<HotkeyOption>() } };
+            string RunSerializehotkeySettingsObject_path1_ = "test_WriteHotkeySettingspath.json";
+            string jsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
+            File.WriteAllText(RunSerializehotkeySettingsObject_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", RunSerializehotkeySettingsObject_path1_);
+            var RunSerializeObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", hotkeySettingsConfig);
+            Assert.Greater(RunSerializeObjectResult.Length, 0);
+            File.Delete(RunSerializehotkeySettingsObject_path1_);
+        }
+
+        [Test]
+        public void TestRunHotkeyDeserializeObject()
+        {
+            List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { };
+            string DeserializehotkeySettingsObject_path1_ = "test_RunHotkeyDeserializeObjectpath.json";
+            string hotkeyjsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
+            File.WriteAllText(DeserializehotkeySettingsObject_path1_, hotkeyjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", DeserializehotkeySettingsObject_path1_);
+            var RunHotkeyDeserializeObjectResult = (List<HotkeySettings>)privateSettingsManagerObject.Invoke("RunHotkeyDeserializeObject", hotkeyjsonData);
+            Assert.That(hotkeySettingsConfig, Is.EqualTo(RunHotkeyDeserializeObjectResult));
+            File.Delete(DeserializehotkeySettingsObject_path1_);
+        }
+
 
         [OneTimeTearDown]
         public void TearDown()

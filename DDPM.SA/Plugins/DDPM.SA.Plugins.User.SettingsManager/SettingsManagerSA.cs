@@ -112,6 +112,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
+        private static string _settingsAccessInfoAddr = string.Empty;
 
         private string _GlobalSetting_path;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
@@ -280,6 +281,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
             _settingsAccessInfoVer = _SysSettingsPlugin.QueryAccessInfoVer().Result;
+            _settingsAccessInfoAddr = _SysSettingsPlugin.QueryAccessInfoAddr().Result;
             InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
@@ -1002,7 +1004,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private string GetActiveUserLocalAppDataPath()
         {
-            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
             Console.WriteLine("Local App Data Path: " + localAppDataPath);
             return localAppDataPath;
         }
