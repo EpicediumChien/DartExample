@@ -18,7 +18,7 @@ namespace DDPM.SA.Common
 
         Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName);
 
-        Task<bool> SetDisplayPropertiest(string DisplayName, Properties properties, DisplayOrientation orientation);
+        Task<bool> SetDisplayPropertiest(string DisplayName, Properties properties, DisplayOrientation orientation, string ModelName);
 
         Task<bool> CallWindowsDisplaySetting();
 

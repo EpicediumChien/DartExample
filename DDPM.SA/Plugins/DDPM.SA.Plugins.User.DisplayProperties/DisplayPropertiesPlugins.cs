@@ -81,7 +81,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     HDRSetting hDRSetting = new HDRSetting();
                     Properties currentProperties = new Properties();
                     displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
-                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
+                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation, monitorInfo.modelName))
                     {
                         return Task.FromResult(new DisplaySupportedProperties());
                     }
@@ -128,7 +128,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     HDRSetting hDRSetting = new HDRSetting();
                     Properties currentProperties = new Properties();
                     displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
-                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
+                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation, monitorInfo.modelName))
                     {
                         return false;
                     }
@@ -233,7 +233,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="Resolution">回傳值:解析度</param>
         /// <param name="displayOrientation">回傳值:畫面旋轉角</param>
         /// <returns>是否成功取得</returns>
-        private bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation)
+        private bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation, string ModelName)
         {
             DEVMODE devMode = new DEVMODE();
             if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
@@ -246,6 +246,17 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     BitsPerPixel = devMode.dmBitsPerPel
                 };
                 displayOrientation = (DisplayOrientation)devMode.dmDisplayOrientation;
+                if (JudgmentList.AutoRotateOSMonitorList.Contains(ModelName.ToUpper()))
+                {
+                    if (properties.Resolutions_Width < properties.Resolutions_High && displayOrientation == DisplayOrientation.Angle0)
+                    {
+                        displayOrientation = DisplayOrientation.Angle90;
+                    }
+                    else
+                    {
+                        displayOrientation = DisplayOrientation.Angle0;
+                    }
+                }
                 return true;
             }
             properties = new Properties();
@@ -363,13 +374,15 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="width">要設定的解析度寬</param>
         /// <param name="height">要設定的解析度高</param>
         /// <param name="orientation">要設定的畫面旋轉角</param>
-        public Task<bool> SetDisplayPropertiest(string DisplayName, Properties properties, DisplayOrientation orientation)
+        public Task<bool> SetDisplayPropertiest(string DisplayName, Properties properties, DisplayOrientation orientation, string ModelName)
         {
             try
             {
+                _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " start");
+                _logs?.DebugMsg_1($"Setting param: MN:{ModelName} DN:{DisplayName}:{properties.Resolutions_Width}x{properties.Resolutions_High} Orientation:{orientation.ToString()}");
                 DEVMODE devMode = new DEVMODE();
                 devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
-
+                bool isPassOrientation = false;
                 if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
                 {
                     int w = properties.Resolutions_Width, h = properties.Resolutions_High;
@@ -378,7 +391,12 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         w = devMode.dmPelsWidth;
                         h = devMode.dmPelsHeight;
                     }
-                    if ((int)orientation < 0)
+                    if (JudgmentList.AutoRotateOSMonitorList.Contains(ModelName.ToUpper()))
+                    {
+                        _logs?.DebugMsg_1($"MN:{ModelName} DN:{DisplayName} is pass set orientation");
+                        isPassOrientation = true;
+                    }
+                    if ((int)orientation < 0 || isPassOrientation)
                     {
                         orientation = (DisplayOrientation)devMode.dmDisplayOrientation;
                     }
@@ -443,8 +461,25 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         devMode.dmPelsWidth = w;
                         devMode.dmPelsHeight = h;
                     }
-
-                    int result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
+                    int result = -2;
+                    int retryCount = 0;
+                    do
+                    {
+                        result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
+                        _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} retry:{retryCount}");
+                        _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
+                        if (result != DISP_CHANGE_SUCCESSFUL)
+                        {
+                            int temp = devMode.dmPelsWidth;
+                            devMode.dmPelsWidth = devMode.dmPelsHeight;
+                            devMode.dmPelsHeight = temp;
+                        }
+                        retryCount++;
+                    } while (result != DISP_CHANGE_SUCCESSFUL && retryCount <= 2);
+                    result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
+                    _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} set result:{result}");
+                    _logs?.DebugMsg_1($"devMode param: {DisplayName}:{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
+                    _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " done");
                     if (result == DISP_CHANGE_SUCCESSFUL)
                     {
                         return Task.FromResult(true);
