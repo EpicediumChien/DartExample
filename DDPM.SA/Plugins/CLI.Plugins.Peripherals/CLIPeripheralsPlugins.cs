@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
@@ -84,7 +85,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (_commandLineInput.PluginsType.Equals("AUDIO"))
                     _commandLineInput.PluginsType = "HEADSET";
 
-                if (commandLineInput.Command.Equals("SET") || commandLineInput.Command.Equals("CONFIGURE"))
+                if (commandLineInput.Command.Equals("SET"))
                 {
                     exitcode = SetPeripheralProperty();
                     string json = JsonConvert.SerializeObject(SetResults, Formatting.Indented);
@@ -182,14 +183,15 @@ namespace DDPM.CLI.Plugins.Peripherals
 
             if (_commandLineInput.GuidString.Count == 0)
             {
+                Debug.WriteLine($"{_commandLineInput.PluginsType}");
                 _deviceinfo.ForEach(x =>
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
-                        if (_commandLineInput.TargetFeature == "HDR" || _commandLineInput.TargetFeature == "ANTIFLICKER" || _commandLineInput.TargetFeature == "AIAUTOFRAMING")
+                        //if (_commandLineInput.TargetFeature == "HDR" || _commandLineInput.TargetFeature == "ANTIFLICKER" || _commandLineInput.TargetFeature == "AIAUTOFRAMING")
                             GetResults.Add(new CLI_PeripheralRESPONSE(_devMgr, x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
-                        else
-                            GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+                        //else
+                            //GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
 
                     }
                 });
@@ -207,7 +209,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         else
                         {
-                            GetResults.Add(new CLI_PeripheralRESPONSE(di, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+                            GetResults.Add(new CLI_PeripheralRESPONSE(_devMgr, di, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                         }
                     }
                     else
@@ -226,6 +228,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             bool bl = false;
             string ItemId = string.Empty;
             bool retcode = false;
+            //bool target = false;
+            DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
 
             if (_devMgr == null)
             {
@@ -280,44 +284,56 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 if (op.Option_Name.ToUpper() == "VALUE")
                 {
-                    value = op.Option_Value;
-                    if (value == null) // if there is no option value
+                    op.Option_Value.Replace(".", ",");
+                    List<string> op_value = op.Option_Value.Split(",").ToList();
+                    //value = op_value[0];
+                    foreach (var value in op_value)
                     {
-                        SetFailResults("no setting value");
-                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                    }
-                    else if ( int.TryParse(value, out int tmp)) // for the function argument is number
-                    {
-                        val = tmp;
-                    }
-                    else //for the function argument is int(0/1) or bool
-                    {
-                        switch (value)
+                        Debug.WriteLine($"{value}, { _commandLineInput.Options[0].Option_Value}");
+                        if (value == null) // if there is no option value
                         {
-                            case "ENABLE": //spec is only defined enable/disable, on/off
-                            case "ON":
-                                val = 1;
-                                bl = true;
-                                break;
-                            case "DISABLE":
-                            case "OFF":
-                                val = 0;
-                                bl = false;
-                                break;
-                            default: // currently, CLI peripheral didn't accept others setting type
-                                if (int.TryParse(value, out val))
-                                    break;
-                                else
-                                {
-                                    SetFailResults("Invalid setting value");
-                                    return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
-                                }
+                            SetFailResults("no setting value");
+                            return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                         }
-                    }
+                        else if (int.TryParse(value, out int tmp)) // for the function argument is number
+                        {
+                            val = tmp;
+                        }
+                        else //for the function argument is int(0/1) or bool
+                        {
+                            switch (value)
+                            {
+                                case "ENABLE": //spec is only defined enable/disable, on/off
+                                case "ON":
+                                    val = 1;
+                                    bl = true;
+                                    break;
+                                case "DISABLE":
+                                case "OFF":
+                                    val = 0;
+                                    bl = false;
+                                    break;
+                                case "LOCK":
+                                case "UNLOCK":
+                                    if (value.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Keyboard_CollabScreenShare = true;
+                                    if (value.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Keyboard_CollabScreenShare = false;
+                                    _devMgr.SetAppConfigData(data);
+                                    break;
+                                default: // currently, CLI peripheral didn't accept others setting type
+                                    if (int.TryParse(value, out val))
+                                        break;
+                                    else
+                                    {
+                                        SetFailResults("Invalid setting value");
+                                        return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
+                                    }
+                            }
+                        }
+                    }                                  
                     break;
                 }
             }
-            if (_commandLineInput.TargetFeature != "UNPAIR" && value == "")
+            if (_commandLineInput.TargetFeature != "UNPAIR" && _commandLineInput.Options[0].Option_Value == "")
             {
                 SetResults.ForEach(x =>
                         {
@@ -656,7 +672,7 @@ namespace DDPM.CLI.Plugins.Peripherals
         {
             SetResults.ForEach(x =>
             {
-                x.Value = value;
+                x.Value = _commandLineInput.Options[0].Option_Value;
                 if (x.Result == "")
                 {
                     var result = RunAsyncTimeout(taskA(val, Guid.Parse(x.Guid))).Result;
@@ -683,7 +699,7 @@ namespace DDPM.CLI.Plugins.Peripherals
         {
             SetResults.ForEach(x =>
             {
-                x.Value = value;
+                x.Value = _commandLineInput.Options[0].Option_Value;
                 if (x.Result == "")
                 {
                     var result = RunAsyncTimeout(taskB(val, Guid.Parse(x.Guid))).Result;
@@ -710,7 +726,7 @@ namespace DDPM.CLI.Plugins.Peripherals
         {
             SetResults.ForEach(x =>
             {
-                x.Value = value;
+                x.Value = _commandLineInput.Options[0].Option_Value;
                 if (x.Result == "")
                 {
                     var result = RunAsyncTimeout(taskC(val, Guid.Parse(x.Guid), str)).Result;

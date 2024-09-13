@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DDPM.SA.Common.Settings;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -42,6 +43,8 @@ namespace DDPM.SA.Common
             Model = di.ModelNumber;
             Guid = di.ID.ToString();
             Command = "GET";
+            DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
+
             switch (targetFeature)
             {
                 case "FIELDOFVIEW":
@@ -59,7 +62,6 @@ namespace DDPM.SA.Common
                         Result = "FAIL";
                         Message = "Webcam not support Filed of View";
                     }
-                    return;
                     return;
                 case "HDR":
                     if (_devMgr.CheckIsPropertyHDRSupportedByDTP(Guid).Result)
@@ -110,7 +112,56 @@ namespace DDPM.SA.Common
                         Message = "Webcam not support AI AutoFraming";
                     }
                     return;
+                case "FWVERSION":
+                    TargetFeature = "FIRMWAREVERSION";
+                    break;
+                case "COLLABCAMERAENABLE":
+                    TargetFeature = "ISCOLLABORATIONCAMERAENABLE";
+                    break;
+                case "COLLABMICMUTE":
+                    TargetFeature = "ISCOLLABORATIONMICENABLE";
+                    break;
+                case "COLLABSCREENSHARE":
+                    TargetFeature = "ISCOLLABORATIONSCREENSHAREENABLE";
+                    break;
+                case "COLLABCHATENABLE":
+                    TargetFeature = "ISCOLLABORATIONCHATENABLE";
+                    break;
+                default:
+                    TargetFeature = targetFeature;
+                    break;
             }
+            Debug.WriteLine($"Target: {TargetFeature}, target: {targetFeature}");
+            var properties = Property.DeviceProperties[deviceType];
+            if (properties.Contains(TargetFeature))
+            {
+                Result = "PASS";
+                Message = "N/A";
+
+                var type = di.GetType();
+                foreach (var prop in type.GetProperties())
+                {
+                    if (prop.Name.ToUpper() == TargetFeature)
+                    {
+                        if (prop.GetValue(di).ToString().Equals("1") || prop.GetValue(di).ToString().ToUpper().Equals("TRUE"))
+                            Value = "ENABLE";
+                        else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
+                            Value = "DISABLE";
+                        else
+                        {
+                            Value = prop.GetValue(di).ToString() ?? "";
+                        }
+                    }
+                }
+                if (targetFeature.Equals("COLLABSCREENSHARE"))
+                    Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
+            }
+            else
+            {
+                Result = "FAIL";
+                Message = "invalid TargetFeature";
+            }
+            TargetFeature = targetFeature;
         }
 
         public CLI_PeripheralRESPONSE(DeviceInfo di, string deviceType, string targetFeature)
@@ -119,22 +170,24 @@ namespace DDPM.SA.Common
             Model = di.ModelNumber;
             Guid = di.ID.ToString();
             Command = "GET";
+            DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
+
             switch (targetFeature)
             {
                 case "FWVERSION":
                     TargetFeature = "FIRMWAREVERSION";
                     break;
                 case "COLLABCAMERAENABLE":
-                    TargetFeature = "_isCollaborationCameraEnable";
+                    TargetFeature = "ISCOLLABORATIONCAMERAENABLE";
                     break;
                 case "COLLABMICMUTE":
-                    TargetFeature = "_isCollaborationCameraEnable";
+                    TargetFeature = "ISCOLLABORATIONMICENABLE";
                     break;
                 case "COLLABSCREENSHARE":
-                    TargetFeature = "_isCollaborationCameraEnable";
+                    TargetFeature = "ISCOLLABORATIONSCREENSHAREENABLE";
                     break;
                 case "COLLABCHATENABLE":
-                    TargetFeature = "_isCollaborationCameraEnable";
+                    TargetFeature = "ISCOLLABORATIONCHATENABLE";
                     break;
                 default:
                     TargetFeature = targetFeature;
@@ -162,13 +215,15 @@ namespace DDPM.SA.Common
                         }
                     }
                 }
-                TargetFeature = targetFeature;
+                if (targetFeature.Equals("COLLABSCREENSHARE"))
+                    Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
             }
             else
             {
                 Result = "FAIL";
                 Message = "invalid TargetFeature";
             }
+            TargetFeature = targetFeature;
         }
     }
 

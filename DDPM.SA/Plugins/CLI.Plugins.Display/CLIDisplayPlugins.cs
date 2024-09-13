@@ -10990,7 +10990,10 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
-                    cli_Response.Value = rc.ToString();
+                    if (rc.ToString() == "True")
+                        cli_Response.Value = "EANBLE";
+                    else
+                        cli_Response.Value = "DISABLE";
 
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
