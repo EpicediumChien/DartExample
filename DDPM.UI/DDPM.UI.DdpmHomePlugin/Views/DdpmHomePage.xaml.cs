@@ -736,16 +736,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
                 _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SoundBarPluginId, selectedHomeDevice.DeviceInfo.ID.ToString() + instanceNo);
             }
-            //0901 Wayn 新增WalkThrough UI
-            if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.WalkThrough)
-            {
-                //Check if it's fake device
-                if (selectedHomeDevice.DeviceInfo == null)
-                    return;
-
-                IShowPluginManager? _showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
-                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId, selectedHomeDevice.DeviceInfo.ID.ToString());
-            }
         }
 
         #endregion HomeDevice Selection and Navigate to Landing Page

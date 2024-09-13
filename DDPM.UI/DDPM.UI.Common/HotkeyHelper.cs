@@ -1,5 +1,8 @@
 ﻿using DDPM.SA.Common.Display;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.Diagnostics;
 using System.Text;
+using System.Windows.Input;
 using Windows.System;
 
 namespace DDPM.UI.Common
@@ -11,14 +14,14 @@ namespace DDPM.UI.Common
         static BlockKeys()
         {
             blockKeysList = new List<VirtualKey>();
-            blockKeysList.Add(VirtualKey.Escape);
+            //blockKeysList.Add(VirtualKey.Escape);
             blockKeysList.Add(VirtualKey.Tab);
             blockKeysList.Add(VirtualKey.CapitalLock);
             blockKeysList.Add(VirtualKey.Enter);
             blockKeysList.Add(VirtualKey.LeftWindows);
             blockKeysList.Add(VirtualKey.RightWindows);
             blockKeysList.Add(VirtualKey.NumberKeyLock);
-            blockKeysList.Add(VirtualKey.Back);
+            //blockKeysList.Add(VirtualKey.Back);
             blockKeysList.Add(VirtualKey.Scroll);
             blockKeysList.Add(VirtualKey.Pause);
             blockKeysList.Add(VirtualKey.Snapshot);
@@ -103,6 +106,136 @@ namespace DDPM.UI.Common
             return result;
         }
 
+        public static void setUXTextBoxPreviewKey(object sender, System.Windows.Input.KeyEventArgs e, ref List<VirtualKey> newKeys, ref List<VirtualKey> BundleNewKeys, ref bool alphabetKey)
+        {
+            e.Handled = true;
+            newKeys = newKeys.Distinct().ToList();
+            BundleNewKeys = BundleNewKeys.Distinct().ToList();
+            if (newKeys.Count >= 4) return;
+            var texBox = (sender as UXTextBox);
+            if (texBox == null) return;
+            var texBoxName = texBox?.Name;
+            if (string.IsNullOrEmpty(texBoxName)) return;
+            Debug.WriteLine($"{texBoxName}_PreviewKeyDown---Key---{e.Key}");
+            Debug.WriteLine($"{texBoxName}_PreviewKeyDown---SystemKey---{e.SystemKey}");
+            VirtualKey thisVirtualKey;
+            VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.SystemKey);
+            if (thisVirtualKey_system != VirtualKey.None)
+            {
+                thisVirtualKey = thisVirtualKey_system;
+            }
+            else
+            {
+                thisVirtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.Key);
+            }
+            //if the key will be processed by an Input Method Editor (IME), then return ?
+            //Object v;
+            // Enum.TryParse(typeof(VirtualKey), e.Key.ToString(), out v);
+            bool r = Enum.IsDefined(typeof(VirtualKey), thisVirtualKey);
+            if (!r) return;
+            if (BlockKeys.isBlocked(thisVirtualKey)) return;
+            string swHortcutText = string.Empty;
+            //Esc and Backspace clear hotkey setting
+            if (BundleNewKeys.Count == 1 && BundleNewKeys[0] == VirtualKey.None) BundleNewKeys.Clear();
+            if ((thisVirtualKey == VirtualKey.Escape) || (thisVirtualKey == VirtualKey.Back))
+            {
+                newKeys.Clear();
+                BundleNewKeys.Clear();
+                BundleNewKeys.Add(VirtualKey.None);
+                alphabetKey = false;
+                swHortcutText = string.Empty;
+                KeysHelper.ReSetHotKeyText(ref swHortcutText, ref BundleNewKeys);
+                texBox.Text = swHortcutText;
+                texBox.Select(swHortcutText.Length, 1);
+                return;
+            }
+
+            if (newKeys.Count > 0 && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift) || (x == VirtualKey.Menu)))
+            {
+                //second single key
+                return;
+            }
+            if (newKeys.Count == 2 && newKeys.Any(x => (x == VirtualKey.Menu)) && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift)))
+            {
+                //second Alt+ (key)
+                return;
+            }
+            if (thisVirtualKey == VirtualKey.LeftControl || thisVirtualKey == VirtualKey.RightControl)
+            {
+                thisVirtualKey = VirtualKey.Control;
+            }
+            else if (thisVirtualKey == VirtualKey.LeftShift || thisVirtualKey == VirtualKey.RightShift)
+            {
+                thisVirtualKey = VirtualKey.Shift;
+            }
+            else if (thisVirtualKey == VirtualKey.LeftMenu || thisVirtualKey == VirtualKey.RightMenu)
+            {
+                thisVirtualKey = VirtualKey.Menu;
+            }
+
+            //only on alphabet Key
+            if (alphabetKey) return;
+            if (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z)
+            {
+                alphabetKey = true;
+            }
+
+            /*  if (!alphabetKey)
+              {
+                  newKeys.Clear();
+                  alphabetKey = true;
+                  newKeys.Add(thisVirtualKey);
+              }*/
+
+            Debug.WriteLine($"{texBoxName}_PreviewKeyDown-NewKeys-----{string.Join(",", newKeys)}");
+            if (!newKeys.Contains(thisVirtualKey))
+            {
+                //newKeys.Add(thisVirtualKey);
+                if ((thisVirtualKey == VirtualKey.Menu) ||
+                    (thisVirtualKey == VirtualKey.Control) ||
+                    (thisVirtualKey == VirtualKey.Shift) ||
+                    (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z))
+                {
+                    newKeys.Add(thisVirtualKey);
+                }
+
+                /* if ((thisVirtualKey >= VirtualKey.Number0 && thisVirtualKey <= VirtualKey.Number9) ||
+                     (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z) ||
+                     (thisVirtualKey >= VirtualKey.F1 && thisVirtualKey <= VirtualKey.F24) ||
+                     (thisVirtualKey >= VirtualKey.NumberPad0 && thisVirtualKey <= VirtualKey.Divide))
+                 {
+                     newKeys.Add(thisVirtualKey);
+                 }*/
+            }
+            //string swHortcutText = string.Empty;
+            if (newKeys.Count == 0) return;
+            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref newKeys);
+            texBox.Text = swHortcutText;
+            texBox.Select(swHortcutText.Length, 1);
+            BundleNewKeys.AddRange(newKeys);
+            /*switch (texBoxName)
+            {
+                case "tbToggleInputSource":
+                    ToggleInputSourceNewKeys.AddRange(newKeys);
+                    break;
+
+                case "tbFavoriteInputSource":
+                    FavoriteInputSourceNewKeys.AddRange(newKeys);
+                    break;
+
+                case "tbSwitchInputSource":
+                    SwitchInputSourceNewKeys.AddRange(newKeys);
+                    break;
+
+                case "tbSwapPIPPBPInputSource":
+                    SwapPIPPBPInputSourceNewKeys.AddRange(newKeys);
+                    break;
+
+                case "tbChangePIPPosition":
+                    ChangePIPPositionNewKeys.AddRange(newKeys);
+                    break;
+            }*/
+        }
         public static void ReSetHotKeyText(ref string strShortCutText, ref List<VirtualKey> newHotKeys)
         {
             string strTmpKey = string.Empty;

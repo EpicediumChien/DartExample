@@ -36,12 +36,14 @@
                     </Grid>
                     <ComboBox Name="cbNames" Height="40" Margin="0,8,0,16"
                               Style="{StaticResource DdpmComboBoxStyle}"
-                              IsEditable="True" Loaded="cbNames_Loaded" />
+                              IsEditable="True" Loaded="cbNames_Loaded" 
+                              TextBoxBase.TextChanged="cbNames_TextChanged">
+                    </ComboBox>
 
                     <StackPanel Orientation="Horizontal" Margin="0">
                         <Button Content="Cancel" Style="{StaticResource SecondaryButtonStyle}"
                                 Click="cancelButton_Click" />
-                        <Button Content="Save"  Style="{StaticResource PrimaryButtonStyle}"
+                        <Button Name="saveBtn" Content="Save"  Style="{StaticResource PrimaryButtonStyle}"
                                 Margin="7,0,0,0" Click="saveButton_Click" />
                     </StackPanel>
                 </StackPanel>

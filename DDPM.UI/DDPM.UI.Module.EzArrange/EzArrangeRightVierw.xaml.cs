@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Windows.Media.AppRecording;
+using static DDPM.UI.Common.User32;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.EzArrange
@@ -32,6 +33,7 @@ namespace DDPM.UI.Module.EzArrange
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
+        private const string CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
         #endregion Private Members
 
         #region ctor
@@ -85,18 +87,12 @@ namespace DDPM.UI.Module.EzArrange
 
             splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
-            splitListView_Recent.IsVertical = _vm.IsVertical;
-            splitListView_Custom.IsVertical = _vm.IsVertical;
-            splitListView_2w.IsVertical = _vm.IsVertical;
-            splitListView_3w.IsVertical = _vm.IsVertical;
-            splitListView_4w.IsVertical = _vm.IsVertical;
-            splitListView_5w.IsVertical = _vm.IsVertical;
-            splitListView_6w.IsVertical = _vm.IsVertical;
-            splitListView_7w.IsVertical = _vm.IsVertical;
 
 
             //InitRecentListView();
             InitListViewItems();
+
+            customListTooltipText.Text = CustomListTooltipText;
         }
         #endregion ctor
 
@@ -116,8 +112,22 @@ namespace DDPM.UI.Module.EzArrange
             if (_deviceManagerSA == null) return;
 
             EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_homeDevice.MonitorInfo).Result;
+
             Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
+
+            DisplayOrientation orient = GetDisplayOrientation(_homeDevice.MonitorInfo.DisplayName);
+            _vm.IsVertical = (orient == DisplayOrientation.Angle90) || (orient == DisplayOrientation.Angle270);
+
+            //Update IsVertical to listViews
+            splitListView_Recent.IsVertical = _vm.IsVertical;
+            splitListView_Custom.IsVertical = _vm.IsVertical;
+            splitListView_2w.IsVertical = _vm.IsVertical;
+            splitListView_3w.IsVertical = _vm.IsVertical;
+            splitListView_4w.IsVertical = _vm.IsVertical;
+            splitListView_5w.IsVertical = _vm.IsVertical;
+            splitListView_6w.IsVertical = _vm.IsVertical;
+            splitListView_7w.IsVertical = _vm.IsVertical;
 
             //A Build WindowLists
             //
@@ -429,7 +439,7 @@ namespace DDPM.UI.Module.EzArrange
             {
                 ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
                 _vm.SelectedSplitItem = spItem;
-                _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey);
+                _vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
 
                 splitListView_Recent.MoveSelectedItemToSecondPosition();
                 SaveEaSettings();
@@ -606,6 +616,9 @@ namespace DDPM.UI.Module.EzArrange
                 }
                 else
                 {
+                    //Returned layout do not have same CustomName item in CustomList
+                    //We will add a new one or replace to first one if reach the maximum count
+
                     if (splitListView_Custom.ItemCount < EAEMConstants.MaxCustomItems)
                     {
                         //Create a custom item
@@ -614,7 +627,8 @@ namespace DDPM.UI.Module.EzArrange
 
                         ispCustom.Settings = e.Settings;
                         ispCustom.FriendlyName = e.CustomName;
-                        itemCustom = splitListView_Custom.AddItemToList(ispCustom.UC);
+                        //Insert to the first (DDPMW-861)
+                        itemCustom = splitListView_Custom.InsertSplitCtrlToList(ispCustom, 0);
                         itemCustom.CustomId = GenerateCustomId();
 
                         //Add a Buddy to Recent List
@@ -867,6 +881,17 @@ namespace DDPM.UI.Module.EzArrange
         private Screen? GetAttachedScreen(string deviceName)
         {
             return Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(deviceName));
+        }
+
+        private static DisplayOrientation GetDisplayOrientation(string deviceName) 
+        {
+            int ENUM_CURRENT_SETTINGS = -1;
+            DEVMODE devMode = new DEVMODE();
+            if (User32._EnumDisplaySettings(deviceName, ENUM_CURRENT_SETTINGS, ref devMode))
+            {
+                return (DisplayOrientation)devMode.dmDisplayOrientation;
+            }
+            return DisplayOrientation.Unknow;
         }
         #endregion
     }

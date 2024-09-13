@@ -18,7 +18,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private ArrangeVM VM;
         private MonitorInfo _mi;
-        private readonly Screen _scr;
+        private Screen _screen;
         private readonly List<MonitorInfo> _monitors;
 
         #endregion Private members
@@ -29,10 +29,21 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             InitializeComponent();
             VM = vm;
-            _scr = scr;
+            _screen = scr;
             _monitors = monitors;
             DataContext = vm;
             VM.IsMovingChanged += VM_IsMovingChanged;
+        }
+        public EAWorkWindow(ArrangeVM vm)
+        {
+            InitializeComponent();
+            VM = vm;
+            DataContext = vm;
+            VM.IsMovingChanged += VM_IsMovingChanged;
+            Left = -99999;
+            Top = -99999;
+            Width = 10;
+            Height = 10;
         }
 
         private void VM_IsMovingChanged(object? sender, bool e)
@@ -52,6 +63,23 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion Init
 
+        #region Screen
+        public void SetScreen(Screen screen)
+        {
+            _screen = screen;
+            IsVertical = (_screen.Bounds.Width < _screen.Bounds.Height);
+
+        }
+        public string ScreenDeviceName
+        {
+            get
+            {
+                if (_screen == null) return "";
+                return _screen.DeviceName;
+            }
+        }
+        #endregion
+
         #region Working SplitCtrl
 
         private ISplitCtrl? _workingSplit = null;
@@ -64,6 +92,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 if ((cellCount == 0) && (splitKey == 'A'))
                 {
                     _workingSplit = null;
+                    splitCtrl.Content = null;
+                    fadeOutCtrl.Content = null;
                     return;
                 }
                 else
@@ -76,7 +106,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     if (settings == null)
                         _workingSplit.Settings = new List<double>();
                     else
-                        _workingSplit.Settings = settings;
+                        _workingSplit.Settings = new List<double>(settings);
                     _workingSplit.IsEditable = false;
                     _workingSplit.IsVertical = IsVertical;
                     splitCtrl.Content = _workingSplit;
@@ -89,10 +119,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 if (fadeSplit != null)
                 {
                     fadeSplit.SplitMode = eSplitModes.Work;
-                    fadeSplit.Settings = new List<double>(_workingSplit.Settings);
+                    if (settings == null)
+                        fadeSplit.Settings = new List<double>();
+                    else
+                        fadeSplit.Settings = new List<double>(settings);
                     fadeSplit.IsEditable = false;
                     fadeSplit.IsVertical = IsVertical;
                     fadeOutCtrl.Content = fadeSplit;
+                }
+                else
+                {
+                    fadeOutCtrl.Content = null;
                 }
 
                 InvokeFadeOutAnimation();
@@ -115,9 +152,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 if (String.IsNullOrEmpty(_displayName))
                 {
-                    if (_scr != null)
+                    if (_screen != null)
                     {
-                        _displayName = _scr.DeviceName.Replace("\\", "");
+                        _displayName = _screen.DeviceName.Replace("\\", "");
                         _displayName = _displayName.Replace(".", "");
                     }
                 }
@@ -195,20 +232,23 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_workingSplit == null)
                 return;
 
-            DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
-            double scale = dpiScale.PixelsPerDip;
-            VM.ScreenScale = scale;
-            Trace.WriteLine($"WorkWin.Scale={scale}");
-
-            foreach (CellObj objCell in _workingSplit.CellList)
+            this.Dispatcher.Invoke(() =>
             {
-                if (objCell.bd == null)
-                    continue;
+                //DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
+                //double scale = dpiScale.PixelsPerDip;
+                //VM.ScreenScale = scale;
+                //Trace.WriteLine($"WorkWin.Scale={scale}");
 
-                objCell.rc = GetBorderRect(objCell.bd);
+                foreach (CellObj objCell in _workingSplit.CellList)
+                {
+                    if (objCell.bd == null)
+                        continue;
 
-                Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
-            }
+                    objCell.rc = GetBorderRect(objCell.bd);
+
+                    Trace.WriteLine($"Cell({objCell.Name})={ArrangeVM.FormatRect(objCell.rc)}");
+                }
+            });
         }
 
         private Rect GetBorderRect(Border ctrl)
@@ -302,6 +342,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     Width = width;
                 if (height != 0)
                     Height = height;
+                IsVertical = (Width < Height);
+
+                if (_workingSplit != null)
+                {
+                    _workingSplit.IsVertical = IsVertical;
+                }
             });
         }
 
@@ -376,10 +422,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public bool IsVertical
         {
             get { return isVertical; }
-            set { isVertical = value; }
+            set 
+            {
+                isVertical = value; 
+                if (_workingSplit != null)
+                {
+                    _workingSplit.IsVertical = value;
+                }
+            }
         }
 
         #endregion Screen Orientation
 
+        public bool IsUsed { get; set; }  = false;
     }
 }

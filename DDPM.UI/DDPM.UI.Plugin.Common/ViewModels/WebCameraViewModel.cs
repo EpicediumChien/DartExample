@@ -3,6 +3,8 @@ using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Buffers;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -129,6 +131,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
             if (!base.SetCurrentDevice(deviceID))
             { return false; }
+
+            List<WebcamProfile>? PresetProfiles = CurrentDeviceInfo!.PresetProfiles!.ToObject<List<WebcamProfile>>();
 
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));

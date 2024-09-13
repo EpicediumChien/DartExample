@@ -38,11 +38,19 @@
         <Setter Property="BorderBrush" Value="#1B385F" />
       </Style>
       <Style x:Key="Border2" TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="#293B4D" />
-        <Setter Property="Border.CornerRadius" Value="2" />
+        <Setter Property="Background" Value="#283547" />
+        <Setter Property="Border.CornerRadius" Value="4" />
         <Setter Property="Width" Value="184" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#40586D" />
+        <Setter Property="BorderBrush" Value="#31A2E3" />
+      </Style>
+      <Style x:Key="TextBlockStyle1" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -73,9 +81,9 @@
           <Viewbox Name="largeImage" Margin="30,0" MaxHeight="500">
             <Grid>
               <Grid>
-                <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
+                <Image Name="imgDevice" Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
               </Grid>
-              <Grid Width="704" Height="396">
+              <Grid Width="704" Height="396" x:Name="gridPreview">
                 <StackPanel ZIndex ="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                   <TextBlock Name="CountdownText" Foreground="WhiteSmoke" FontSize="120" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
@@ -178,13 +186,17 @@
             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedCircle.png" Stretch="Fill" Width="17" Height="16" />
           </Border>
           <StackPanel Orientation="Vertical">
-            <Border Margin="8,10,0,70" Style="{StaticResource Border2}" Cursor="Hand" Visibility="Visible" x:Name="btnPreset">
-              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" />
+            <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" Visibility="Visible" x:Name="btnPreset">
+              <Grid>
+                <Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />
+                <UXControls:UXTextBlock Name="txtPreset" Margin="35,0,0,0" Style="{StaticResource TextBlockStyle1}" />
+                <Image Name="imgClickOnce" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
+                       Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>
+              </Grid>
             </Border>
 
 
           </StackPanel>
-          <Button Content="Previw" Click="Button_Preview_Click" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75" />
         </StackPanel>
       </Grid>
     </Grid>
