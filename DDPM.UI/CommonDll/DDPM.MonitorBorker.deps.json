@@ -18,21 +18,21 @@
           "Newtonsoft.Json": "13.0.3",
           "System.Drawing.Common": "8.0.7",
           "System.Management": "8.0.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
         },
         "runtime": {
           "DDPM.MonitorBorker.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.34"
+            "fileVersion": "10.0.19041.31"
           },
           "WinRT.Runtime.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.8.46841"
+            "fileVersion": "2.0.4.44211"
           }
         }
       },
@@ -599,10 +599,7 @@
           "WinCopies.WindowsAPICodePack.Shell": "2.12.0.2"
         },
         "runtime": {
-          "DDPM.ColorApp.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.ColorApp.dll": {}
         }
       },
       "DDPM.SA.Common/2.0.0.5": {
@@ -618,18 +615,12 @@
           "WinCopies.Util": "3.21.0"
         },
         "runtime": {
-          "DDPM.SA.Common.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.SA.Common.dll": {}
         }
       },
       "DDPM.SA.Obfuscation/1.0.0": {
         "runtime": {
-          "DDPM.SA.Obfuscation.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "DDPM.SA.Obfuscation.dll": {}
         }
       },
       "DDPM.ShowOsd/2.0.0.5": {
@@ -638,18 +629,12 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "DDPM.ShowOsd.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.ShowOsd.dll": {}
         }
       },
       "DDPM.Win32Lib/2.0.0.5": {
         "runtime": {
-          "DDPM.Win32Lib.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "DDPM.Win32Lib.dll": {}
         }
       },
       "VcpCore.Common/2.0.0.5": {
@@ -657,10 +642,7 @@
           "DellClientFramework": "6.4.5.1"
         },
         "runtime": {
-          "VcpCore.Common.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "VcpCore.Common.dll": {}
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
@@ -669,16 +651,29 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {
-            "assemblyVersion": "2.0.0.5",
-            "fileVersion": "2.0.0.5"
-          }
+          "VcpCore.Interfaces.dll": {}
         }
       },
       "DPeMPublic.Common/0.0.0.0": {
         "runtime": {
           "DPeMPublic.Common.dll": {
             "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "DPeMClientBroker/0.0.0.0": {
+        "runtime": {
+          "DPeMClientBroker.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "DPeMClientRpcHelper/1.7.0.0": {
+        "runtime": {
+          "DPeMClientRpcHelper.dll": {
+            "assemblyVersion": "1.7.0.0",
             "fileVersion": "0.0.0.0"
           }
         }
@@ -691,7 +686,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -1138,6 +1133,16 @@
       "sha512": ""
     },
     "DPeMPublic.Common/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DPeMClientBroker/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DPeMClientRpcHelper/1.7.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

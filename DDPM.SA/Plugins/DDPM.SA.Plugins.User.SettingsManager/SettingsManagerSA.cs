@@ -928,6 +928,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             DDPMImpExpSettings ImpExpSettings = ReadImportSettingsFile(path);
+            vcps = new List<VCP>();
             if (ImpExpSettings != null)
             {
                 DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
@@ -938,44 +939,62 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 if (File.Exists(monitorSettings_path))
                 {
                     monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
-                    foreach (DDPMMonitorSettings settings in monitorSettingsList)
+                    if (monitorSettingsList != null)
                     {
-                        if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
+                        if (monitorSettingsList.Count != 0)
                         {
-                            settings.Input = monitorSettings.Input;
-                            settings.KVM = monitorSettings.KVM;
-                            settings.VCPs = monitorSettings.VCPs;
-                            settings.EA = monitorSettings.EA;
-                            if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                            foreach (DDPMMonitorSettings settings in monitorSettingsList)
                             {
-                                vcps = monitorSettings.VCPs;
-                                if (!isSameModel)
+                                if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
                                 {
-                                    return Task.FromResult<bool>(true);
+                                    settings.Input = monitorSettings.Input;
+                                    settings.KVM = monitorSettings.KVM;
+                                    settings.VCPs = monitorSettings.VCPs;
+                                    settings.EA = monitorSettings.EA;
+                                    if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                                    {
+                                        vcps = monitorSettings.VCPs;
+                                        if (!isSameModel)
+                                        {
+                                            return Task.FromResult<bool>(true);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
+                                        WriteLog("[DisplayImportSettings] Import settings Fail...");
+                                        if (!isSameModel)
+                                        {
+                                            break;
+                                        }
+                                    }
                                 }
                             }
-                            else
+                            if (isSameModel)
                             {
-                                WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
-                                WriteLog("[DisplayImportSettings] Import settings Fail...");
-                                if (!isSameModel)
-                                {
-                                    break;
-                                }
+                                return Task.FromResult(true);
                             }
                         }
+                        else
+                        {
+                            WriteLog("[DisplayImportSettings] monitorSettingsList Count = 0...");
+                        }
+                    }
+                    else
+                    {
+                        WriteLog("[DisplayImportSettings] monitorSettingsList is null...");
                     }
                 }
                 else
                 {
-                    WriteLog("[DisplayImportSettings] Not Find Fail...");
+                    WriteLog("[DisplayImportSettings] Find monitor settings Fail...");
                 }
             }
             else
             {
                 WriteLog("[DisplayImportSettings] Settings is null...");
             }
-            vcps = new List<VCP>();
+            
             return Task.FromResult<bool>(false);
         }
 
