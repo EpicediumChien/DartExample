@@ -41,7 +41,6 @@ Dell SE Series Monitors
 • SE2219HX
 • SE2222H
 • SE2222HV
-• SE2225H
 • SE2419H
 • SE2419HR
 • SE2419HX
@@ -50,7 +49,6 @@ Dell SE Series Monitors
 • SE2422HR
 • SE2422HX
 • SE2423DS
-• SE2425H
 • SE2719H
 • SE2719HR
 • SE2719HX
@@ -58,7 +56,6 @@ Dell SE Series Monitors
 • SE2722HR
 • SE2722HX
 • SE2723DS
-• SE2725H
 • SE3223Q
 Dell P Series Monitors
 • P1424H

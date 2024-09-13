@@ -1888,7 +1888,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
             isSWSetOrientation = true;
             SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-            bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
+            bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation, monitorInfos.modelName).Result;
             isSWSetOrientation = false;
             return Task.FromResult(ret);
         }
@@ -2605,6 +2605,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 string firmwareVersion = "N/A";
                 string connection = "DisplayPort";
                 string serialNumber = "N/A";
+                string optimalResolution = "N/A";
                 if (monitorInfo != null)
                 {
                     modelName = monitorInfo.modelName;
@@ -2637,6 +2638,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     technologyType = "CRT";
                 }
+                if (Resolutions_Width > 0 && Resolutions_High > 0 && Frequency > 0)
+                {
+                    optimalResolution = $"{Resolutions_Width}x{Resolutions_High} at {Frequency}Hz";
+                }
                 ret.Add(new MonitorAssetReport()
                 {
                     ModelName = modelName,
@@ -2653,7 +2658,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     ControllerID = controllerId,
                     FirmwareVersion = firmwareVersion,
                     PowerState = powerStatus,
-                    OptimalResolution = $"{Resolutions_Width}x{Resolutions_High} at {Frequency}Hz",
+                    OptimalResolution = optimalResolution,
                     OptimalAspectRatio = Preferred_Detailed_Timing.Active_Ratio(edid_byte),
                     Connection = connection
                 });

@@ -169,7 +169,7 @@
                     <Grid Margin="16,0,16,10">
                         <Border Background="#99132F54" CornerRadius="6">
                             <StackPanel Orientation="Vertical" Margin="18,22,0,18">
-                                <UXControls:UXCheckBox Margin="0,0,0,8" Content="{Binding [WebCameraCapture.0], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding Countdown_IsChecked}" Foreground="#F5F6F7" />
+                                <UXControls:UXCheckBox Name="ckboxCountdown" Margin="0,0,0,8" Content="{Binding [WebCameraCapture.0], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding Countdown_IsChecked}" Foreground="#F5F6F7" Checked="ChkBoxCountdown_Checked" Unchecked="ChkBoxCountdown_Unchecked" />
                                 <UXControls:UXCheckBox Name="ckboxFramingGrid" Margin="0,8,0,8" Content="{Binding [WebCameraCapture.1], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding FramingGrid_IsChecked}" Foreground="#F5F6F7" Checked="ChkBoxFramingGrid_Checked" Unchecked="ChkBoxFramingGrid_Unchecked" />
                             </StackPanel>
                         </Border>
@@ -182,7 +182,7 @@
                                         <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Margin="15,15,15,0">
-                                        <UXControls:UXTextBox Grid.Column="0" AutomationProperties.Name="TextBoxDefault" Width="165" Height="40" Background="#141D28" Foreground="#7E7E7E" IsReadOnly="True" />
+                                        <UXControls:UXTextBox Grid.Column="0" Name="tbx_media_file_location" AutomationProperties.Name="TextBoxDefault" Width="165" Height="40" Background="#141D28" Foreground="#7E7E7E" IsReadOnly="True" />
                                         <UXControls:UXButton Grid.Column="1" Margin="8,0,8,0" ButtonType="Secondary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Click="Open_Click" Content="{Binding [WebCameraCapture.2], Source={x:Static lang:LangHelper.Instance}}" Width="112" Height="40" Foreground="White" BorderBrush="White" />
                                         <UXControls:UXButton Grid.Column="2" ButtonType="Primary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Click="Change_Click" Content="{Binding [WebCameraCapture.3], Source={x:Static lang:LangHelper.Instance}}" Width="112" Height="40" />
                                     </StackPanel>

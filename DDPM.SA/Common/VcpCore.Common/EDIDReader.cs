@@ -55,10 +55,14 @@ namespace VcpCore.Common
         /// <returns></returns>
         public static string Ratio(int num1, int num2)
         {
-            int X = MaximumCommonDivisor(num1, num2);
-            return string.Format("{0}:{1}", num1 / X, num2 / X); ;
-            //Console.WriteLine("{0}和{1}的最大公约数为：{2}", num1, num2, a);
-            // Console.WriteLine("{0}和{1}的最小公倍数为：{2}", num1, num2, num1 * num2 / a);
+            if (num1 > 0 && num2 > 0)
+            {
+                int X = MaximumCommonDivisor(num1, num2);
+                return string.Format("{0}:{1}", num1 / X, num2 / X);
+                //Console.WriteLine("{0}和{1}的最大公约数为：{2}", num1, num2, a);
+                // Console.WriteLine("{0}和{1}的最小公倍数为：{2}", num1, num2, num1 * num2 / a);
+            }
+            return "N/A";
         }
 
         public static char ToCharByASCIIShort(int a)
@@ -366,18 +370,26 @@ namespace VcpCore.Common
 
             public static string Max_Horizontal_Image_Size(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return "N/A";
 
                 int w = EDID[21] * 10;
-                return w.ToString();
+                if (w > 0)
+                {
+                    return w.ToString();
+                }
+                return "N/A";
             }
 
             public static string Max_Vertical_Image_Size(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return "N/A";
 
                 int h = EDID[22] * 10;
-                return h.ToString();
+                if (h > 0)
+                {
+                    return h.ToString();
+                }
+                return "N/A";
             }
 
             public static string Image_Size_Ratio(byte[] EDID)
@@ -391,14 +403,34 @@ namespace VcpCore.Common
 
             public static string Max_Display_Size(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
-                return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
+                if (EDID == null || EDID.Length < 128)
+                {
+                    return "N/A";
+                }
+                if (EDID[21] > 0 && EDID[22] > 0)
+                {
+                    return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
+                }
+                else
+                {
+                    return "N/A";
+                }
             }
 
             public static string Max_Display_Size_CH(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
-                return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
+                if (EDID == null || EDID.Length < 128)
+                {
+                    return "N/A";
+                }
+                if (EDID[21] > 0 && EDID[22] > 0)
+                {
+                    return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
+                }
+                else
+                {
+                    return "N/A";
+                }
             }
         }
 
@@ -693,8 +725,10 @@ namespace VcpCore.Common
             public static (int, int, double) GetResolutionAndRefreshRate(byte[] edidData)
             {
                 // Pixel Clock (in kHz) is located at bytes 54-55
-                if (edidData.Length < 56)
-                    throw new ArgumentException("EDID data length is insufficient");
+                if (edidData.Length < 128)
+                {
+                    return (0, 0, 0);
+                }
 
                 double pixelClockMHz = Pixel_Clock(edidData); // Convert to MHz
                 // Horizontal Total (in pixels) is located at bytes 56-57
@@ -706,7 +740,9 @@ namespace VcpCore.Common
                 int vBlanking = Vertical_Blanking(edidData);
                 int vTotal = v + vBlanking;
                 if (hTotal == 0 || vTotal == 0)
-                    throw new ArgumentException("Invalid Horizontal or Vertical Total");
+                {
+                    return (0, 0, 0);
+                }
 
                 // Calculate Refresh Rate
                 double refreshRate = pixelClockMHz / (hTotal * vTotal) * 1000000;

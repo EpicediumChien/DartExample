@@ -96,11 +96,15 @@ namespace DDPM.SA.Common.Settings
             }
 
             //Elsa Add Security
-            string FileInfo;
-            if (!IsFilePathValid(target_file, out FileInfo))
+            //Dean 0913 if file not exist, this check will cause the fail and never init
+            if (File.Exists(target_file))
             {
-                info = $"[SetJsonContentFromSerializedString] {FileInfo}";
-                return false;
+                string FileInfo;
+                if (!IsFilePathValid(target_file, out FileInfo))
+                {
+                    info = $"[SetJsonContentFromSerializedString] {FileInfo}";
+                    return false;
+                }
             }
             string signature;
             try

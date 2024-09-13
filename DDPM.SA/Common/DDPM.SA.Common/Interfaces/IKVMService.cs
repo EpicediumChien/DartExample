@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using Dell.Client.Framework.Common;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -15,6 +16,8 @@ namespace DDPM.SA.Common
 
     public interface INKVMService : IFrameworkPlugin
     {
+        event EventHandler<NKVMRespone> NKVMCLIEvent;
+
         Task CreatNewNamedpipe();
 
         Task<bool> IsNamedpipeConnected();

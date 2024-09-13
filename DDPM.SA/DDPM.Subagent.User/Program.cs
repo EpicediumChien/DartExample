@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using DDPM.SA.Obfuscation;
+using System.IO;
 
 namespace DDPM.Subagent.User
 {
@@ -58,6 +59,9 @@ namespace DDPM.Subagent.User
         ///     application. This should be unique to your product.
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_USER_MUTEX_ID);
+
+        //SDL to require log folder locate at user profile (user mode subagent)
+        private static readonly string LogLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell\\Dell Display and Peripheral Manager\\Log\\DDPM.Subagent.User");
 
         private static void Main(string[] args)
         {
@@ -147,7 +151,10 @@ namespace DDPM.Subagent.User
                  * Agent implementation will check this value and throw an exception if agent behavior is not the expected one
                  * More info: https://confluence.cpg.dell.com/display/DCF/DCF+%7C+Support+User-Mode%2C+Multi-Session+and+Dual-Execution+Agents
                  */
-                MultiSessionAgent = true
+                MultiSessionAgent = true,
+
+                //SDL requirement to set logs folder at user profile.
+                LogDirectory = LogLocation
 #if RELEASE
                 ,
                 ValidCertificateHashes = ThumbprintHash.certificateHash

@@ -51,6 +51,7 @@ using Windows.System;
 using DDPM.SA.Common.Screen;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
+using Microsoft.WindowsAPICodePack.Win32Native;
 using System.Xml;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.IO.Compression;
@@ -278,6 +279,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// gaming parameter changes event，return gaming parameter
         /// </summary>
         public event EventHandler<GamingDisplayPropertiesInfo> GamingChangeEvent;
+
+        public event EventHandler<NKVMRespone> NKVMCLIRespone;
 
         #endregion
 
@@ -2899,7 +2902,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     byte b_vcpcode = Convert.ToByte(vcp.Code);
                                     //object value = cacheTable[b_vcpcode];
                                     ObjGetVCP objGet = GetVCPCapability(monitorInfo, b_vcpcode).Result;
-                                    if (objGet.result)
+                                    if (objGet.result && vcp.Value.FindIndex(x => x == (int)(uint)objGet.value) == -1)
                                     {
                                         writelog($"VCP code: {vcp.Code.ToString()}, value:{objGet.value.ToString()}");
                                         vcp.Value.Add((int)(uint)objGet.value);
@@ -2916,6 +2919,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
+            else
+            {
+                writelog("[DisplayExportSettings]settings is null");
+            }
 
             //expot settings
             if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)
@@ -2930,23 +2937,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ImportVCP importVCP = new ImportVCP();
             if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCP> vcps).Result)
             {
-                //set ImportVCPSequence
-                SetVCPSequence(monitorInfo, vcps);
-                foreach (VCP code in vcps)
+                if (vcps != null)
                 {
-                    if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                        importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                    //set ImportVCPSequence
+                    SetVCPSequence(monitorInfo, vcps);
+                    foreach (VCP code in vcps)
                     {
-                        writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                        bool b = false;
-                        //SHR on/off need load settings
-                        //if (code.Code == 0xF0)
-                        //{
-                        //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                        //}
-                        //set vcp code
-                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                        if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                            importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                        {
+                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                            bool b = false;
+                            ObjGetVCP objGetVCP = new ObjGetVCP();
+                            //SHR on/off need load settings
+                            //if (code.Code == 0xF0)
+                            //{
+                            //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                            //}
+                            //get vcp code
+                            objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                            {
+                                //set vcp code
+                                writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                            }
+                        }
                     }
+                    return Task.FromResult(true);
+                }
+                else
+                {
+                    writelog("[DisplayImportSettings] VCPs List is null");
                 }
             }
             return Task.FromResult(false);
@@ -3430,6 +3452,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void SettingsReady(object o, EventArgs eventArgs)
         {
             LoadGlobalSettingParam();
+
+            CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+            CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
         }
         #region OutReport
         public Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath)
@@ -4748,8 +4773,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             ToNKVM_initHotKeys();
                         }
 
-                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
-                        CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
 
                     }
                     else
@@ -4867,6 +4892,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a running condition");
                         //_NKVMPluginCondition = pluginCondition;
+                        _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -4874,6 +4900,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a started condition");
                         //_NKVMPluginCondition = pluginCondition;
+                        _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -6380,6 +6407,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        private void NKVMCLIEvent(object sender, NKVMRespone e)
+        {
+            SendCLINKVMRespone(e);
+        }
+
+        private void SendCLINKVMRespone(NKVMRespone e)
+        {
+            EventHandler<NKVMRespone> handler = NKVMCLIRespone;
+            if (handler != null)
+            {
+                handler.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+            }
+        }
+
         #endregion
 
         #region Settings
@@ -6401,10 +6442,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             foreach (int code in importVCP.ImportVCPSequence)
             {
                 VCP vcp = vcps.Find(x => x.Code == code);
-                //if (code == 16 || code == 18)
-                //{
-                Task<bool> b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]);
-                //}
+                writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
+                ObjGetVCP objGetVCP = new ObjGetVCP();
+                objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                {
+                    writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
+                    bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                }
             }
         }
 
