@@ -1,6 +1,6 @@
 ﻿namespace DDPM.SA.Common
 {
-    internal class USBKVMInfo
+    internal class KVMInfo
     {
     }
 
@@ -9,5 +9,11 @@
         public string InputType { get; set; }
         public string InputName { get; set; }
         public string USBUpstream { get; set; }
+    }
+
+    public class NKVMRespone
+    {
+        public string CLIName { get; set; }
+        public string Respone { get; set; }
     }
 }
