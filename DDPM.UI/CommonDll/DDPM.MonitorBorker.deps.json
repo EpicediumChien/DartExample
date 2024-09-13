@@ -661,22 +661,6 @@
             "fileVersion": "0.0.0.0"
           }
         }
-      },
-      "DPeMClientBroker/0.0.0.0": {
-        "runtime": {
-          "DPeMClientBroker.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "DPeMClientRpcHelper/1.7.0.0": {
-        "runtime": {
-          "DPeMClientRpcHelper.dll": {
-            "assemblyVersion": "1.7.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
       }
     }
   },
@@ -1133,16 +1117,6 @@
       "sha512": ""
     },
     "DPeMPublic.Common/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "DPeMClientBroker/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "DPeMClientRpcHelper/1.7.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

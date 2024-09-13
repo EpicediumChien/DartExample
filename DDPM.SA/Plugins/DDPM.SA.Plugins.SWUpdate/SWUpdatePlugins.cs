@@ -384,7 +384,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 if (string.IsNullOrEmpty(installPath))
                 {
-                    savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\" + "Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                    savePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
                 }
                 else
                 {
