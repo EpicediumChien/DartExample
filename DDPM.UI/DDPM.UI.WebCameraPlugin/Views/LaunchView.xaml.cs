@@ -77,7 +77,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 BuildModuleGroups();
 
-                txtPreset.Text = UI.Resources.Helper.LangHelper.Instance["Webcamera.0"];
+                txtPreset.Text = UI.Resources.Helper.LangHelper.Instance["Camera.6"];
+                txtAddPreset.Text = UI.Resources.Helper.LangHelper.Instance["Camera.5"];
             }
         }
 
@@ -544,6 +545,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             StartRecord();
+        }
+
+        private void PresetLoaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void PresetClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
         }
     }
 }

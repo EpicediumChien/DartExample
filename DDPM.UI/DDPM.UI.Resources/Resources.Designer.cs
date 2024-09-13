@@ -988,6 +988,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Add new preset 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_5 {
+            get {
+                return ResourceManager.GetString("Camera.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Select an option 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_6 {
+            get {
+                return ResourceManager.GetString("Camera.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Cancel 的當地語系化字串。
         /// </summary>
         internal static string Cancel {
@@ -3873,15 +3891,6 @@ namespace DDPM.UI.Resources {
         internal static string VisionEngine {
             get {
                 return ResourceManager.GetString("VisionEngine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查詢類似 Select an option 的當地語系化字串。
-        /// </summary>
-        internal static string Webcamera_0 {
-            get {
-                return ResourceManager.GetString("Webcamera.0", resourceCulture);
             }
         }
         

@@ -44,6 +44,13 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="#31A2E3" />
       </Style>
+      <Style x:Key="Border3" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="#283547" />
+        <Setter Property="Border.CornerRadius" Value="4" />
+        <Setter Property="Width" Value="184" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#324255" />
+      </Style>
       <Style x:Key="TextBlockStyle1" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontFamily" Value="Roboto" />
@@ -179,14 +186,34 @@
       <Grid VerticalAlignment="Bottom">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
           <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder">
+          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom">
             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />
           </Border>
-          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click">
+          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click" Height="40" VerticalAlignment="Bottom">
             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedCircle.png" Stretch="Fill" Width="17" Height="16" />
           </Border>
           <StackPanel Orientation="Vertical">
-            <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" Visibility="Visible" x:Name="btnPreset">
+            <StackPanel Name="spPresets" Orientation="Vertical" Visibility="Collapsed">
+              <Border Margin="8,0,0,12" Style="{StaticResource Border3}">
+                <DockPanel Name="SearchPanel" Margin="15,12,15,12">
+                  <UXControls:UXScrollViewer x:Name="svAction" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl Name="OpenRunItems">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <StackPanel Orientation="Horizontal">
+                            <UXControls:UXTextBlock  Margin="0" MouseLeftButtonDown="PresetClick" Loaded="PresetLoaded" />
+                          </StackPanel>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </UXControls:UXScrollViewer>
+                </DockPanel>
+              </Border>
+              <Border Margin="8,0,0,12" Style="{StaticResource Border3}" Cursor="Hand" Height="36">
+                <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" />
+              </Border>
+            </StackPanel>
+            <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" x:Name="btnPreset">
               <Grid>
                 <Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />
                 <UXControls:UXTextBlock Name="txtPreset" Margin="35,0,0,0" Style="{StaticResource TextBlockStyle1}" />
@@ -194,8 +221,6 @@
                        Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>
               </Grid>
             </Border>
-
-
           </StackPanel>
         </StackPanel>
       </Grid>

@@ -1608,7 +1608,10 @@
   <data name="WebCameraMicrophone.3" xml:space="preserve">
     <value>Enables your camera's microphone. Camera will restart quickly when turning ON/OFF this feature.</value>
   </data>
-  <data name="Webcamera.0" xml:space="preserve">
+  <data name="Camera.6" xml:space="preserve">
     <value>Select an option</value>
+  </data>
+  <data name="Camera.5" xml:space="preserve">
+    <value>Add new preset</value>
   </data>
 </root>
