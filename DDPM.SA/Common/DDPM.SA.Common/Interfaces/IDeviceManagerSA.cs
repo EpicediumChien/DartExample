@@ -434,6 +434,7 @@ namespace DDPM.SA.Common
         #endregion public ALS functions
 
         #region for NKVM
+        event EventHandler<NKVMRespone> NKVMCLIRespone;
         Task CreatNewNamedpipe();
 
         Task<bool> IsNamedpipeConnected();
