@@ -37,7 +37,15 @@ namespace NGA.Common
                 throw new ArgumentNullException(paramName: nameof(processFullPath), $"{nameof(processFullPath)} is cannot be null or empty.");
             if (string.IsNullOrEmpty(appWindowTitle))
                 throw new ArgumentNullException(paramName: nameof(appWindowTitle), $"{nameof(appWindowTitle)} is cannot be null or empty.");
-
+            //[Dean 0912] assume this is basic function, no need check at here
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
+            //{
+            //    if(Log != null)
+            //        log.Info($"{nameof(CloseProcessAsync)} {FileInfo}");
+            //    throw new ArgumentNullException(paramName: nameof(processFullPath), $"{nameof(processFullPath)} is Invalid.");
+            //}
             return CloseProcessInternalAsync(processFullPath, appWindowTitle, log);
         }
 
@@ -63,6 +71,15 @@ namespace NGA.Common
 
             if (pluginManager == null)
                 throw new ArgumentNullException(nameof(pluginManager));
+
+            //[Dean 0912] below has checking function, it duplicated.
+            //Elsa Add Security
+            //string FileInfo;
+            //if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
+            //{
+            //    log.Info($"{nameof(ValidateAndStartAppProcess)} {FileInfo}");
+            //    return false;
+            //}
 
             try
             {
@@ -151,6 +168,13 @@ namespace NGA.Common
             {
                 try
                 {
+                    //[Dean] basic function, drop this check
+                    //Elsa Add Security
+                    //string FileInfo;
+                    //if (!DDPMFileSecurity.IsFilePathValid(processFullPath, out FileInfo))
+                    //{
+                    //    log.Info($"{nameof(CloseProcessInternalAsync)} {FileInfo}");
+                    //}
                     var appName = Path.GetFileName(processFullPath);
 
                     // Check whether NGA App is running for current user

@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Settings;
+﻿using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
@@ -8,6 +9,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
+using VcpCore.Common;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Common.CLI
@@ -97,6 +99,7 @@ namespace DDPM.SA.Common.CLI
             response.TargetFeature = commandLineInput.TargetFeature;
             response.Command = commandLineInput.Command;
             response.Result = "FAIL";
+            Debug.WriteLine($"debug");
             response.Message = $"Option value [{op.Option_Value}] not support";
             response.Value = "N/A";
             rst.ExitCode = (int)CLI_ExitCode.fail_option_value;
@@ -250,7 +253,6 @@ namespace DDPM.SA.Common.CLI
             {
                 "GET",
                 "SET",
-                "CONFIGURE",
             };
 
             //if (!commandLineInput.Command.Equals("CONFIGURE") && !commandLineInput.Command.Equals("GET"))
@@ -397,6 +399,9 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             data_IT.Lock_Display_ColorPreset = true;
                             break;
+                        //case "POWERNAP":
+                            //data_IT.Lock_Display_PowerNap = true;
+                            //break;
                     }
                 }
                 if (data_user != null)
@@ -444,6 +449,9 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             data_user.LockSettings.Lock_Display_ColorPreset = true;
                             break;
+                        //case "POWERNAP":
+                            //data_user.LockSettings.Lock_Display_PowerNap = true;
+                            //break;
                     }
                 }
             }
@@ -494,7 +502,11 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             data_IT.Lock_Display_ColorPreset = false;
                             break;
-                    }                }
+                        //case "POWERNAP":
+                            //data_IT.Lock_Display_PowerNap = false;
+                            //break;
+                    }                
+                }
                 if (data_user != null)
                 {
                     switch (commandLineInput.TargetFeature)
@@ -540,6 +552,9 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             data_user.LockSettings.Lock_Display_ColorPreset = false;
                             break;
+                        //case "POWERNAP":
+                            //data_user.LockSettings.Lock_Display_PowerNap = false;
+                            //break;
                     }
                 }
             }
@@ -586,7 +601,7 @@ namespace DDPM.SA.Common.CLI
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Setting_RestoreDefaults" }).Result;
                             break;
                         case "INAPPBRICONT":
-                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_BriCont" }).Result;
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_BriCont" }).Result; 
                             break;
                         case "INAPPAUTOBRITEMP":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_AutoBriTemp" }).Result;
@@ -597,6 +612,9 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPCOLORPRESET":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_ColorPreset" }).Result;
                             break;
+                        //case "POWERNAP":
+                            //status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_PowerNap" }).Result;
+                            //break;
                     }
                 }
                 Debug.WriteLine($"{status}");
@@ -659,14 +677,14 @@ namespace DDPM.SA.Common.CLI
             //GET is for user mode using
             if (commandLineInput.Command.Equals("GET")) //ex: cli.exe /get -app=TelemetryConsent
             {
-                if (data_user == null)
+                if (data_user == null && data_IT == null)
                 {
                     response.Message = "Fail to read application setting";
                     result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                     result.ExitCode = (int)CLI_ExitCode.fail_read_settings;
                     return result;
                 }
-                if (data_user.UserSettings == null || data_user.LockSettings == null)
+                if (data_user != null && (data_user.UserSettings == null || data_user.LockSettings == null))
                 {
                     response.Message = "Got empty setting";
                     result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
@@ -680,13 +698,37 @@ namespace DDPM.SA.Common.CLI
                     result.ExitCode = (int)CLI_ExitCode.fail_analytics_option_notsupport;
                     return result;
                 }
-
-                Console.WriteLine($"{commandLineInput.TargetFeature}: is function enable? => {data_user.UserSettings.isTelemetryConsentOn}");
-                Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_user.LockSettings.Lock_Settings_TelemetryConsent}");
+                
                 switch(commandLineInput.TargetFeature)
                 {
                     case "TELEMETRYCONSENT":
-                        response.Value = (data_user.UserSettings.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
+                        DDPMITConfig tmp;
+                        if (data_user != null)
+                        {
+                            Console.WriteLine($"{commandLineInput.TargetFeature}: is function enable? => {data_user.UserSettings.isTelemetryConsentOn}");
+                            response.Value = (data_user.UserSettings.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
+                        }
+                        else//IT
+                        {
+                            Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Settings_TelemetryConsent}");
+                            response.Value = (data_IT.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
+                        }
+                        break;
+                    case "POWERNAP": //assume only IT command enter here
+                        Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_PowerNap}");
+                        response.Value = (data_IT.Lock_Display_PowerNap ? "Lock" : "Unlock");
+                        break;
+                    case "RESOLUTIONREFRESHRATE": //assume only IT command enter here
+                        Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ResolutionRefreshRate}");
+                        response.Value = (data_IT.Lock_Display_ResolutionRefreshRate ? "Lock" : "Unlock");
+                        break;
+                    case "USBCPRIORITIZATION": //assume only IT command enter here
+                        Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBCPrioritization}");
+                        response.Value = (data_IT.Lock_Display_USBCPrioritization ? "Lock" : "Unlock");
+                        break;
+                    case "ACTIVEINPUTSOURCE": //assume only IT command enter here
+                        Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ActiveInputSource}");
+                        response.Value = (data_IT.Lock_Display_ActiveInputSource ? "Lock" : "Unlock");
                         break;
                     default:
                         return CLI_Response_TypeNotSupport(commandLineInput, result);
@@ -694,7 +736,7 @@ namespace DDPM.SA.Common.CLI
                 response.Result = "Completed";
                 result.serialize_Json_response = JsonConvert.SerializeObject(response, Formatting.Indented);
                 result.ExitCode = (int)CLI_ExitCode.success;
-
+                
                 return result;
             }
             //ex: cli.exe /set -app=TelemetryConsent -value=true / false <= for user
@@ -706,12 +748,22 @@ namespace DDPM.SA.Common.CLI
 
                 if (!op.Option_Name.ToUpper().Equals("VALUE"))
                 {
-                    WriteLog(Log, $"Telemetry Consent: option name [{op.Option_Name}] not support");
+                    WriteLog(Log, $"{commandLineInput.TargetFeature}: option name [{op.Option_Name}] not support");
                     return CLI_Response_OptionNameNotSupport(commandLineInput, result, op);
                 }
 
                 op.Option_Value.Replace(".", ",");
                 List<string> values = op.Option_Value.Split(",").ToList();
+                List<string> inputSourceList = new List<string>()
+                {
+                    "HDMI",                    
+                    "DP",                    
+                    "DISPLAYPORT",                    
+                    "USBC",                    
+                    "USB-C",                    
+                    "TBT",                    
+                    "THUNDERBOLT",                    
+                };
 
                 foreach (string value in values)
                 {
@@ -747,12 +799,66 @@ namespace DDPM.SA.Common.CLI
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Settings_TelemetryConsent = target;
                         }
+                        else if (commandLineInput.TargetFeature.Equals("POWERNAP"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_PowerNap = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_PowerNap = target;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("RESOLUTIONREFRESHRATE"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_ResolutionRefreshRate = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_ResolutionRefreshRate = target;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("USBCPRIORITIZATION"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_USBCPrioritization = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_USBCPrioritization = target;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("ACTIVEINPUTSOURCE"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_ActiveInputSource = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_ActiveInputSource = target;
+                        }
                         else
                             return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
                     else
                     {
-                        response.Message = $"Telemetry Consent: value format error with [{value}]";
+                        //Judgement the user action here, if the value is supported then bypass this loop. (the data store should be processed at user proxy plugin)
+                        if(commandLineInput.TargetFeature.Equals("POWERNAP"))
+                        {
+                            if (value.ToUpper().Equals("OFF") || value.ToUpper().Equals("SLEEP") || value.ToUpper().Equals("REDUCEBRIGHTNESS"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("RESOLUTIONREFRESHRATE"))
+                        {
+                            if (value.ToUpper().Contains("X") && value.ToUpper().Contains("@"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("USBCPRIORITIZATION"))
+                        {
+                            if (value.ToUpper().Equals("HIGHSPEED") || value.ToUpper().Equals("HIGHRESOLUTION"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("ACTIVEINPUTSOURCE"))
+                        {
+                            if (inputSourceList.FindIndex(x => value.ToUpper().Trim().Contains(x.ToUpper().Trim())) >= 0)
+                            {
+                                WriteLog(Log, $"[IT]Feature:{commandLineInput.TargetFeature} get the value [{value}] indeed in support list");
+                                continue;
+                            }
+                        }
+                        //No pre-definition be found, means fail
+                        response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
+                        Debug.WriteLine(response.Message);
                         Console.WriteLine(response.Message);
                         WriteLog(Log, response.Message);
                         return CLI_Response_OptionValueNotSupport(commandLineInput, result, op);
@@ -763,7 +869,26 @@ namespace DDPM.SA.Common.CLI
                 if (_SettingsPluginIT != null)
                 {
                     if (data_IT != null)
-                        status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Settings_TelemetryConsent" }).Result;
+                    {
+                        switch (commandLineInput.TargetFeature)
+                        {
+                            case "TELEMETRYCONSENT":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Settings_TelemetryConsent" }).Result;
+                                break;
+                            case "POWERNAP":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_PowerNap" }).Result;
+                                break;
+                            case "RESOLUTIONREFRESHRATE":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_ResolutionRefreshRate" }).Result;
+                                break;
+                            case "USBCPRIORITIZATION":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_USBCPrioritization" }).Result;
+                                break;
+                            case "ACTIVEINPUTSOURCE":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_ActiveInputSource" }).Result;
+                                break;
+                        }
+                    }
                 }
                 if (_DeviceManagerPlugin != null)
                 {

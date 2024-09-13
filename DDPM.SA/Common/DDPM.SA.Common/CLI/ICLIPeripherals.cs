@@ -20,6 +20,8 @@ namespace DDPM.SA.Common
         public string Result { get; set; } = "";
         public string Message { get; set; } = "";
 
+        private IDeviceManagerSA _devMgr;
+
         public CLI_PeripheralRESPONSE(string id, string command, string targetFeature, string result = "", string message = "", string name = "", string model = "")
         {
             Guid = id;
@@ -29,6 +31,86 @@ namespace DDPM.SA.Common
             Message = message;
             Name = name;
             Model = model;
+        }
+
+        public CLI_PeripheralRESPONSE(IDeviceManagerSA devMgr, DeviceInfo di, string deviceType, string targetFeature)
+        {
+            _devMgr = devMgr;
+            bool retcode = false;
+            int retvalue = 0;
+            Name = di.Name;
+            Model = di.ModelNumber;
+            Guid = di.ID.ToString();
+            Command = "GET";
+            switch (targetFeature)
+            {
+                case "FIELDOFVIEW":
+                    if (_devMgr.CheckIsPropertyFOVSupportedByDTP(Guid).Result)
+                    {
+                        retvalue = _devMgr.GetFieldOfViewValueByDTP(Guid).Result;
+                        Value = retvalue.ToString();
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support Filed of View";
+                    }
+                    return;
+                    return;
+                case "HDR":
+                    if (_devMgr.CheckIsPropertyHDRSupportedByDTP(Guid).Result)
+                    {
+                        retcode = _devMgr.GetIsHDROnValueByDTP(Guid).Result;
+                        Value = (retcode) ? "on" : "off";
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support HDR";
+                    }
+                    return;
+                case "ANTIFLICKER":
+
+                    if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(Guid).Result)
+                    {
+                        retvalue = _devMgr.GetAntiFlickerValueByDTP(Guid).Result;
+                        Value = retvalue.ToString();
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support AntiFlicker";
+                    }
+                    return;
+                case "AIAUTOFRAMING":
+                    if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(Guid).Result)
+                    {
+                        retcode = _devMgr.GetIsAutoFramingOnValueByDTP(Guid).Result;
+                        Value = (retcode) ? "on" : "off";
+                        Result = "PASS";
+                        Message = "N/A";
+                        TargetFeature = targetFeature;
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Webcam not support AI AutoFraming";
+                    }
+                    return;
+            }
         }
 
         public CLI_PeripheralRESPONSE(DeviceInfo di, string deviceType, string targetFeature)
@@ -199,10 +281,7 @@ namespace DDPM.SA.Common
             "FIRMWAREVERSION",
             "INSTANCEID",
             "ISBATTERYLEVELSUPPORTED",
-            "",
-            "",
-            "",
-        };
+         };
 
         internal static readonly List<string> Pen = new()
         {

@@ -1,5 +1,6 @@
 ﻿using DDPM.UI.Plugin.ViewModels;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.WebCameraMicrophone
 {
@@ -14,6 +15,12 @@ namespace DDPM.UI.Module.WebCameraMicrophone
         {
             InitializeComponent();
             _vm = vm;
+        }
+
+        private void UXToggleSwitch_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            _vm.CurrentCursor = Cursors.Wait;
+            _vm.IsMicEnumerationOnEnabled = false;
         }
     }
 }

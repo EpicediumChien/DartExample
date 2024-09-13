@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WinCopies;
 using static DDPM.SA.Common.ICLICommandTable;
 using Console = System.Console;
 
@@ -185,7 +186,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
-                        GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+                        if (_commandLineInput.TargetFeature == "HDR" || _commandLineInput.TargetFeature == "ANTIFLICKER" || _commandLineInput.TargetFeature == "AIAUTOFRAMING")
+                            GetResults.Add(new CLI_PeripheralRESPONSE(_devMgr, x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+                        else
+                            GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+
                     }
                 });
             }
@@ -219,6 +224,9 @@ namespace DDPM.CLI.Plugins.Peripherals
             SetResults.Clear();
             int val = 0;
             bool bl = false;
+            string ItemId = string.Empty;
+            bool retcode = false;
+
             if (_devMgr == null)
             {
                 writelog("SetPeripheralProperty: input null IDeviceManagerSA");
@@ -237,6 +245,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     if (x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType))
                     {
                         SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
+                        ItemId = x.ID.ToString();
                     }
                 });
             }
@@ -253,6 +262,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
                         found = true;
+                        ItemId = x.ID.ToString();
                     }
                 });
                         if (!found)
@@ -295,8 +305,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 bl = false;
                                 break;
                             default: // currently, CLI peripheral didn't accept others setting type
-                                SetFailResults("Invalid setting value");
-                                return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
+                                if (int.TryParse(value, out val))
+                                    break;
+                                else
+                                {
+                                    SetFailResults("Invalid setting value");
+                                    return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
+                                }
                         }
                     }
                     break;
@@ -510,6 +525,127 @@ namespace DDPM.CLI.Plugins.Peripherals
                     taskB = _devMgr.SetIsMicEnumerationOn;
                     RunTaskB(bl);
                     return (int)CLI_ExitCode.success;
+
+                case "HDR":
+                    if (_devMgr.CheckIsPropertyHDRSupportedByDTP(ItemId).Result)
+                    {
+                        SetResults.ForEach(x =>
+                        {
+                            x.Value = "";
+                            if (x.Result == "")
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetIsHDROnValueByDTP(ItemId, bl)).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                        });
+                        return (retcode)?(int)CLI_ExitCode.success: (int)CLI_ExitCode.functional_error;
+                    }
+                    else
+                    {
+                        SetResults.ForEach(x =>
+                        {
+                            x.Value = "N/A";
+                            x.Result = "FAIL";
+                            x.Message = "Webcam not support HDR";
+                        });
+                        return (int)CLI_ExitCode.command_targetfeature_not_support;
+                    }
+
+                case "ANTIFLICKER":
+                    if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(ItemId).Result)
+                    {
+                        SetResults.ForEach(x =>
+                        {
+                            x.Value = "";
+                            if (x.Result == "")
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetAntiFlickerValueByDTP(ItemId, val)).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                        });
+                        return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    }
+                    else
+                    {
+                        SetResults.ForEach(x =>
+                        {
+                            x.Value = "N/A";
+                            x.Result = "FAIL";
+                            x.Message = "Webcam not support AntiFlicker";
+                        });
+                        return (int)CLI_ExitCode.command_targetfeature_not_support;
+                    }
+
+                case "AIAUTOFRAMING":
+                    if(_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(ItemId).Result)
+                    {
+                        SetResults.ForEach(x =>
+                        {
+                            x.Value = "";
+                            if (x.Result == "")
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetIsAutoFramingOnValueByDTP(ItemId, bl)).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                        });
+                        return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
+                    }
+                    else
+                    {
+                        SetResults.ForEach(x =>
+                        {
+                            x.Value = "N/A";
+                            x.Result = "FAIL";
+                            x.Message = "Webcam not support AI AutoFraming";
+                        });
+                        return (int)CLI_ExitCode.command_targetfeature_not_support;
+                    }
+
                 default:
                     SetFailResults("Invalid TargetFeature");
                     return (int)CLI_ExitCode.fail_SetPeripheralProperty_Property;

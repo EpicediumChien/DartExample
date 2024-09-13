@@ -104,15 +104,15 @@ namespace DDPM.UI.Common
         private void UpdateConnectionType()
         {
             //0617 Bruce 新增如判斷為有線也跟使用Port的圖片
-            if (ConnectionType == "Port" || ConnectionType == "Wired" || ConnectionType == "WiredAudio"|| ConnectionType.Contains("USB"))
+            if (ConnectionType == "Port" || ConnectionType == "Wired" || ConnectionType == "WiredAudio" || ConnectionType.Contains("USB"))
             {
                 ConnectionTypeImage.Source = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Port.png");
                 stackPanel.Visibility = Visibility.Collapsed;
                 if (ConnectionType == "Wired" || ConnectionType == "WiredAudio")
                 {
-                    txt1.Text = Strings.Wired;
+                    txt1.Text = DDPM.UI.Resources.Helper.LangHelper.Instance["Wired"];
                 }
-                else if(ConnectionType.Contains("USB"))
+                else if (ConnectionType.Contains("USB"))
                 {
                     if (ConnectionType.Contains("TB 5"))
                     {

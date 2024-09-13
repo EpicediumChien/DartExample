@@ -1,4 +1,5 @@
-﻿using Dell.Client.Framework.Security;
+﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Security;
 using Dell.Client.Framework.Security.Interfaces;
 using System;
 using System.IO;
@@ -19,6 +20,15 @@ namespace DDPM.SA.Common.Method
 
         public bool ExecuteUnzip(string zipFilePath, string extractPath, out string exeFilePath)
         {
+            //Elsa Add Security
+            string FileInfo;
+            if (!DDPMFileSecurity.IsFilePathValid(zipFilePath, out FileInfo))
+            {
+                _logs.Info($"{nameof(ExecuteUnzip)} {FileInfo}");
+                exeFilePath = "";
+                return false;
+            }
+
             try
             {
                 _logs.DebugMsg_1(nameof(Unzip) + " start");
