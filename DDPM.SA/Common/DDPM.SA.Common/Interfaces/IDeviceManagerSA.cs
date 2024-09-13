@@ -608,6 +608,9 @@ namespace DDPM.SA.Common
         Task<bool> Set_GlobalSetting_DisplayColorPresetAndEasyMemory(bool isDisplay);
         Task<bool> Set_GlobalSetting_EnableQuickAccessWidget(bool isEnable);
         Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable);
+        #region OutReport
+        Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
+        #endregion
         #endregion
     }
 }

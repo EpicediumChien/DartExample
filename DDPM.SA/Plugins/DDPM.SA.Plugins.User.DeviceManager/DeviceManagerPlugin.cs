@@ -33,6 +33,8 @@ using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
@@ -42,10 +44,12 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using System.Xml.Linq;
 using VcpCore.Common;
 using WinCopies.Util;
 using Windows.System;
 using DDPM.SA.Common.Screen;
+using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
@@ -3423,11 +3427,70 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void SettingsReady(object o, EventArgs eventArgs)
         {
             LoadGlobalSettingParam();
-            if (!isInitMonitorSettings)
-            {
-                InitMonitorSettings();
-            }
         }
+        #region OutReport
+        public Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath)
+        {
+            bool ret = false;
+            if (_DisplayManagerPlugin != null)
+            {
+                List<MonitorAssetReport> monitorAssetReports = _DisplayManagerPlugin.GetMonitorAssetReport(monitorInfos).Result;
+                if (monitorAssetReports != null && monitorAssetReports.Count > 0)
+                {
+                    ret = SaveMonitorAssetReport(monitorAssetReports, savePath);
+                }
+            }
+            return Task.FromResult(ret);
+        }
+        private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
+        {
+            bool ret = false;
+            try
+            {
+                string filePath = savePath;
+                // 如果檔案路徑不以 .mif 結尾，則附加 .mif 副檔名
+                if (!filePath.EndsWith(".mif", StringComparison.OrdinalIgnoreCase))
+                {
+                    Debug.Write(filePath);
+                    filePath = filePath.Substring(0, filePath.IndexOf("."));
+                    Debug.Write(filePath);
+                    filePath += ".mif";
+                }
+                string contentToSave = "";
+                contentToSave += "Start Component\r\n";
+                contentToSave += $"  Name = \"Machine\"\r\n";
+                for (int i = 0; i < monitorAssetReports.Count; i++)
+                {
+                    MonitorAssetReport report = monitorAssetReports[i];
+                    Type type = report.GetType();
+                    PropertyInfo[] properties = type.GetProperties();
+                    contentToSave += $"  Start Group\r\n";
+                    contentToSave += $"    Name = \"Monitor Information\"\r\n";
+                    contentToSave += $"    ID = {i + 1}\r\n";
+                    contentToSave += $"    Class = \"Dell|Monitor Information|2.0\"\r\n";
+                    for (int j = 0; j < properties.Length; j++)
+                    {
+                        PropertyInfo property = properties[j];
+                        contentToSave += $"    Start Attribute\r\n";
+                        string propertyName = property.Name;
+                        contentToSave += $"      Name = \"{propertyName}\"\r\n";
+                        contentToSave += $"      ID = {j + 1}\r\n";
+                        contentToSave += $"      Type = String\r\n";
+                        contentToSave += $"      Storage = Specific\r\n";
+                        object value = property.GetValue(report);
+                        contentToSave += $"      Value = \"{value}\"\r\n";
+                        contentToSave += $"    End Attribute\r\n";
+                    }
+                    contentToSave += $"  End Group\r\n";
+                }
+                File.WriteAllText(filePath, contentToSave);
+            }
+            catch
+            {
+            }
+            return ret;
+        }
+        #endregion
         #endregion
 
         #endregion

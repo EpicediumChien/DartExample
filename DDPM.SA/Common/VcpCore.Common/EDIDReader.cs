@@ -1,6 +1,11 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace VcpCore.Plugins
+namespace VcpCore.Common
 {
     public class EDIDReader
     {
@@ -8,8 +13,8 @@ namespace VcpCore.Plugins
         {
             string displaySize = Display_Parameters.Max_Display_Size_CH(EDID);
             string manufacturerName = Vendor_Product_Identification.Manufacturer_Name(EDID);
-            string year = Vendor_Product_Identification.Year_Of_Manufacture(EDID);
-            string week = Vendor_Product_Identification.Week_Of_Manufacture(EDID);
+            int year = Vendor_Product_Identification.Year_Of_Manufacture(EDID);
+            int week = Vendor_Product_Identification.Week_Of_Manufacture(EDID);
             string Image_Size_Ratio = Preferred_Detailed_Timing.Active_Ratio(EDID);
             string Max_Horizontal_Image_Size = Display_Parameters.Max_Horizontal_Image_Size(EDID);
             string Max_Vertical_Image_Size = Display_Parameters.Max_Vertical_Image_Size(EDID);
@@ -144,18 +149,18 @@ namespace VcpCore.Plugins
                 return ManufacturerInt.ToString("X");
             } // 0
 
-            public static string Week_Of_Manufacture(byte[] EDID)
+            public static int Week_Of_Manufacture(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return 0;
 
-                return EDID[16].ToString();
+                return EDID[16];
             }
 
-            public static string Year_Of_Manufacture(byte[] EDID)
+            public static int Year_Of_Manufacture(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return 0;
 
-                return (EDID[17] + 1990).ToString();
+                return (EDID[17] + 1990);
             }
 
             public static string EDIDVersion(byte[] EDID)
@@ -364,7 +369,7 @@ namespace VcpCore.Plugins
                 if (EDID == null || EDID.Length < 128) return "";
 
                 int w = EDID[21] * 10;
-                return w + " mm";
+                return w.ToString();
             }
 
             public static string Max_Vertical_Image_Size(byte[] EDID)
@@ -372,7 +377,7 @@ namespace VcpCore.Plugins
                 if (EDID == null || EDID.Length < 128) return "";
 
                 int h = EDID[22] * 10;
-                return h + " mm";
+                return h.ToString();
             }
 
             public static string Image_Size_Ratio(byte[] EDID)
@@ -387,13 +392,13 @@ namespace VcpCore.Plugins
             public static string Max_Display_Size(byte[] EDID)
             {
                 if (EDID == null || EDID.Length < 128) return "";
-                return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0") + " inches";
+                return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
             }
 
             public static string Max_Display_Size_CH(byte[] EDID)
             {
                 if (EDID == null || EDID.Length < 128) return "";
-                return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0") + "(寸)";
+                return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
             }
         }
 
@@ -685,6 +690,30 @@ namespace VcpCore.Plugins
 
         public class Preferred_Detailed_Timing
         {
+            public static (int, int, double) GetResolutionAndRefreshRate(byte[] edidData)
+            {
+                // Pixel Clock (in kHz) is located at bytes 54-55
+                if (edidData.Length < 56)
+                    throw new ArgumentException("EDID data length is insufficient");
+
+                double pixelClockMHz = Pixel_Clock(edidData); // Convert to MHz
+                // Horizontal Total (in pixels) is located at bytes 56-57
+                int h = Horizontal_Active(edidData);
+                int hBlanking = Horizontal_Blanking(edidData);
+                int hTotal = h + hBlanking;
+                // Vertical Total (in pixels) is located at bytes 58-59
+                int v = Vertical_Active(edidData);
+                int vBlanking = Vertical_Blanking(edidData);
+                int vTotal = v + vBlanking;
+                if (hTotal == 0 || vTotal == 0)
+                    throw new ArgumentException("Invalid Horizontal or Vertical Total");
+
+                // Calculate Refresh Rate
+                double refreshRate = pixelClockMHz / (hTotal * vTotal) * 1000000;
+                refreshRate = Math.Round(refreshRate, 2);
+                // Convert to Hz
+                return (h, v, refreshRate);
+            }
             public static string Active_Ratio(byte[] EDID)
             {
                 if (EDID == null || EDID.Length < 128) return "";
@@ -693,25 +722,25 @@ namespace VcpCore.Plugins
                 return Ratio(vaH, vaV);
             }
 
-            public static string Pixel_Clock(byte[] EDID)
+            public static double Pixel_Clock(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return 0;
                 double val = (((int)EDID[55] << 8) | (int)EDID[54]) / 100.0d;
-                return val.ToString("0.00") + "MHz";
+                return val;
             }
 
-            public static string Horizontal_Active(byte[] EDID)
+            public static int Horizontal_Active(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return 0;
                 int val = ((((int)EDID[58] << 4) & 0x0F00) | (int)EDID[56]);
-                return val.ToString() + " pixels";
+                return val;
             }
 
-            public static string Horizontal_Blanking(byte[] EDID)
+            public static int Horizontal_Blanking(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return 0;
                 int val = ((((int)EDID[58] << 8) & 0x0F00) | (int)EDID[57]);
-                return val.ToString() + " pixels";
+                return val;
             }
 
             public static string Horizontal_Sync_Offset(byte[] EDID)
@@ -740,18 +769,18 @@ namespace VcpCore.Plugins
                 return val.ToString() + " mm";
             }
 
-            public static string Vertical_Active(byte[] EDID)
+            public static int Vertical_Active(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return 0;
                 int val = ((((int)EDID[61] << 4) & 0x0F00) | (int)EDID[59]);
-                return val.ToString() + " lines";
+                return val;
             }
 
-            public static string Vertical_Blanking(byte[] EDID)
+            public static int Vertical_Blanking(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return 0;
                 int val = ((((int)EDID[61] << 8) & 0x0F00) | (int)EDID[60]);
-                return val.ToString() + " lines";
+                return val;
             }
 
             public static string Vertical_Sync_Offset(byte[] EDID)
