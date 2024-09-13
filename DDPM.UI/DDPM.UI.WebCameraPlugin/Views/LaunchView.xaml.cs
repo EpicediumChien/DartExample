@@ -8,10 +8,13 @@ using DDPM.UI.Module.WebCameraPresenceDetection;
 using DDPM.UI.Module.WebCameraSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -24,6 +27,7 @@ using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Windows.UI.Popups;
 using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
+using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -59,10 +63,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly string Capture = Strings.Capture;
         private readonly string Microphone = Strings.Microphone;
 
-        // 20240731
         private DispatcherTimer _timer = new();
-
         private int _countdownValue;
+        private bool IsPresetOpen = false;
+
+        //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
+        private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
 
         public LaunchView()
         {
@@ -77,8 +83,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 BuildModuleGroups();
 
-                txtPreset.Text = UI.Resources.Helper.LangHelper.Instance["Camera.6"];
-                txtAddPreset.Text = UI.Resources.Helper.LangHelper.Instance["Camera.5"];
+                //txtPreset.Text = $"{LangHelper.Instance["Camera.7"]} {_vm.CurrentProfileName}";
+                txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
+                txtAddPreset.Text = LangHelper.Instance["Camera.5"];
+
+                //ProfileItems.ItemsSource = _vm.ProfileNames;
+                ProfileItems.ItemsSource = _vm.ProfileItems;
             }
         }
 
@@ -180,7 +190,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
 
-            if (newItem.Text == UI.Resources.Helper.LangHelper.Instance["Camera.4"])
+            if (newItem.Text == LangHelper.Instance["Camera.4"])
             {
                 _ = CleanupMediaCaptureAsync();
                 imgDevice.Visibility = Visibility.Visible;
@@ -192,6 +202,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 imgDevice.Visibility = Visibility.Hidden;
                 gridPreview.Visibility = Visibility.Visible;
             }
+            if (IsPresetOpen)
+            { btnPreset_Click(this, null); }
         }
 
         #endregion Vbar
@@ -251,6 +263,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _ = CleanupMediaCaptureAsync();
             imgDevice.Visibility = Visibility.Visible;
             gridPreview.Visibility = Visibility.Hidden;
+            if (IsPresetOpen)
+            { btnPreset_Click(this, null); }
         }
 
         MediaCaptureFailedEventHandler handler = (sender, e) =>
@@ -547,12 +561,63 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             StartRecord();
         }
 
-        private void PresetLoaded(object sender, RoutedEventArgs e)
+        private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            _vm.CurrentProfileName = ((UXTextBlock)sender).Text;
+            btnPreset_Click(this, null);
+
+        }
+
+        private void btnPreset_Click(object sender, System.Windows.Input.MouseButtonEventArgs? e)
+        {
+            var img = (Image)FindName($"imgDown");
+            DoubleAnimation rotateAnimation;
+            var AnimatedPanel = (StackPanel)FindName("spPresets");
+            if (IsPresetOpen)
+            {
+                var txt = $"{Strings.Preset}: {_vm!.CurrentProfileName}";
+                if (!PresetNames.Contains(_vm!.CurrentProfileName))
+                {
+                    txt = UI.Common.Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 100, 14);
+                }
+                txtPreset.Text = txt;
+                rotateAnimation = new()
+                {
+                    From = 180,
+                    To = 0,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+                };
+                AnimatedPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                txtPreset.Text = LangHelper.Instance["Camera.6"];
+                rotateAnimation = new()
+                {
+                    From = 0,
+                    To = 180,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+                };
+                AnimatedPanel.Visibility = Visibility.Visible;
+                DoubleAnimation visibilityAnimation = new()
+                {
+                    From = 0,
+                    To = 1,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3))
+                };
+                AnimatedPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
+            }
+            img.RenderTransform = new RotateTransform();
+            img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+            IsPresetOpen = !IsPresetOpen;
+        }
+
+        private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
         }
 
-        private void PresetClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
         }

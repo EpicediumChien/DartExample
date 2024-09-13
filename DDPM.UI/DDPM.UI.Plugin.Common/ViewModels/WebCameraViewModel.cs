@@ -1,11 +1,13 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Buffers;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -13,6 +15,7 @@ using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Storage;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -20,20 +23,14 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         #region Variables
         private readonly ILog _log;
-        //private readonly IDeviceManagerSA _deviceManager;
-        public readonly IDeviceManagerSA _deviceManager;
+        private readonly IDeviceManagerSA _deviceManager;
+
+        private readonly ObservableCollection<ProfileItem> _profileItems = new();
+        private readonly Dictionary<string, WebcamProfile> Profiles = new();
 
         #endregion Variables
 
-        public string TouchScrollCaption { get; set; } = "";
-        public string TouchScrollInfoTip { get; set; } = "";
-        public string WebCameraSettingCaption { get; set; } = "";
-        public string PrimaryButtonCaption { get; set; } = "";
-        public string DPISettingCaption { get; set; } = "";
-        public string PollingRateCaption { get; set; } = "";
-        public string PollingRateInfoTip { get; set; } = "";
-        public int ButtonCount { get; set; } = 0;
-        public int AppSelectedIndex { get; set; } = 0;
+        public string CurrentProfileName = "";
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
@@ -46,64 +43,6 @@ namespace DDPM.UI.Plugin.ViewModels
             _deviceManager = deviceManager;
 
             IsChecked_FramingGrid = Visibility.Hidden;
-
-            //Hz125ClickedCommand = new RelayCommand(OnHz125Clicked);
-            //Hz133ClickedCommand = new RelayCommand(OnHz133Clicked);
-            //Hz2501ClickedCommand = new RelayCommand(OnHz2501Clicked);
-            //Hz2502ClickedCommand = new RelayCommand(OnHz2502Clicked);
-            //Hz333ClickedCommand = new RelayCommand(OnHz333Clicked);
-        }
-
-        private void SwitchPollingRate(int index, int hz = 0, bool NeedSetting = false)
-        {
-            switch (index)
-            {
-                case 0:
-                    Hz125Focused = true;
-                    Hz250Focused = false;
-                    Hz333Focused = false;
-                    OnPropertyChanged(nameof(Hz125Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    OnPropertyChanged(nameof(Hz333Focused));
-                    break;
-
-                case 1:
-                    Hz125Focused = false;
-                    Hz250Focused = true;
-                    Hz333Focused = false;
-                    OnPropertyChanged(nameof(Hz125Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    OnPropertyChanged(nameof(Hz333Focused));
-                    break;
-
-                case 2:
-                    Hz125Focused = false;
-                    Hz250Focused = false;
-                    Hz333Focused = true;
-                    OnPropertyChanged(nameof(Hz125Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    OnPropertyChanged(nameof(Hz333Focused));
-                    break;
-
-                case 3:
-                    Hz133Focused = true;
-                    Hz250Focused = false;
-                    OnPropertyChanged(nameof(Hz133Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    OnPropertyChanged(nameof(Hz333Focused));
-                    break;
-
-                case 4:
-                    Hz133Focused = false;
-                    Hz250Focused = true;
-                    OnPropertyChanged(nameof(Hz133Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    break;
-            }
-            if (NeedSetting)
-            {
-                //_deviceManager.SetBackLightingControls(hz, CurrentDeviceInfo.ID);
-            }
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -115,12 +54,8 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfos.Clear();
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                //if(deviceInfo.LogicalDeviceType.Contains("Pen")){
-                // 20240627 jim modify
                 if (deviceInfo.LogicalDeviceType.Contains("Webcam"))
                 {
-                    //deviceInfo.Name = "Dell Premier Rechargeable Active WebCamera";
-                    //deviceInfo.ModelNumber = "WB7022";
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }
             }
@@ -132,7 +67,76 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
             { return false; }
 
-            List<WebcamProfile>? PresetProfiles = CurrentDeviceInfo!.PresetProfiles!.ToObject<List<WebcamProfile>>();
+            _profileItems.Clear();
+            Profiles.Clear();
+            foreach (var profile in CurrentDeviceInfo!.CustomProfiles.ToObject<List<WebcamProfile>>()!)
+            {
+                Profiles.Add(profile.Name, profile);
+            }
+            _profileItems.Add(new ProfileItem
+            {
+                Caption = "Custom Profile: Profile 1",
+                Tooltip = "",
+                TooltipVisibility = Visibility.Collapsed,
+                ButtonVisibility = Visibility.Visible
+            });
+            _profileItems.Add(new ProfileItem
+            {
+                Caption = "Custom Profile: Profile 2",
+                Tooltip = "",
+                TooltipVisibility = Visibility.Collapsed,
+                ButtonVisibility = Visibility.Visible
+            });
+            _profileItems.Add(new ProfileItem
+            {
+                Caption = "Custom Profile: Profile 3",
+                Tooltip = "",
+                TooltipVisibility = Visibility.Collapsed,
+                ButtonVisibility = Visibility.Visible
+            });
+            _profileItems.Add(new ProfileItem
+            {
+                Caption = "Custom Profile: Profile 4",
+                Tooltip = "",
+                TooltipVisibility = Visibility.Collapsed,
+                ButtonVisibility = Visibility.Visible
+            });
+
+
+            foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
+            {
+                Profiles.Add(profile.Name, profile);
+            }
+            _profileItems.Add(new ProfileItem
+            {
+                Caption = LangHelper.Instance["Default"],
+                Tooltip = Strings.DefaultProfileTooltip,
+                TooltipVisibility = Visibility.Visible,
+                ButtonVisibility = Visibility.Collapsed
+            });
+            _profileItems.Add(new ProfileItem
+            {
+                Caption = Strings.Smooth,
+                Tooltip = Strings.SmoothProfileTooltip,
+                TooltipVisibility = Visibility.Visible,
+                ButtonVisibility = Visibility.Collapsed
+            });
+            _profileItems.Add(new ProfileItem
+            {
+                Caption = Strings.Vibrant,
+                Tooltip = Strings.VibrantProfileTooltip,
+                TooltipVisibility = Visibility.Visible,
+                ButtonVisibility = Visibility.Collapsed
+            });
+            _profileItems.Add(new ProfileItem
+            {
+                Caption = Strings.Warm,
+                Tooltip = Strings.WarmProfileTooltip,
+                TooltipVisibility = Visibility.Visible,
+                ButtonVisibility = Visibility.Collapsed
+            });
+
+            CurrentProfileName = CurrentDeviceInfo.ProfileName;
 
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
@@ -183,29 +187,13 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public bool IsDongleRateVisible { get; set; }
-        public bool IsBluetoothRateVisible { get; set; }
-        public int ReportRate { get; set; }
-        public bool Hz125Focused { get; set; }
-        public bool Hz133Focused { get; set; }
-        public bool Hz250Focused { get; set; }
-        public bool Hz333Focused { get; set; }
-
-        // 20240628 jim add
-        // MediaCapture and its state variables
         public MediaCapture? _mediaCapture;
         public MediaFrameReader _mediaFrameReader;
 
-        // 20240628 jim add
         public bool captureManagerInitialized = false;
         public bool _running = false;
         public bool _isRecording;
-
-        // 20240628 jim add
-        // Folder in which the captures will be stored (initialized in SetupUiAsync)
         public StorageFolder _captureFolder;
-
-        //20240702
         private bool isChecked_Autofocus;
 
         public bool IsChecked_Autofocus
@@ -314,5 +302,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
             }
         }
+        public ObservableCollection<ProfileItem> ProfileItems { get => _profileItems; }
+    }
+
+    public class ProfileItem
+    {
+        public required string Caption { get; set; }
+        public required string Tooltip { get; set; }
+        public required Visibility TooltipVisibility { get; set; }
+        public required Visibility ButtonVisibility { get; set; }
     }
 }
