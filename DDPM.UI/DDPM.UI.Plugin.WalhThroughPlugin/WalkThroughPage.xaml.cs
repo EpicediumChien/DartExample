@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.UX.WPF;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -26,7 +27,9 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
             {
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Dequeue();
+
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
+
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
                     ViewModel.InitializeDeviceFromQueue();
@@ -45,7 +48,6 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.NextPage();
-            //ViewModel.UpdateButtonVisibility();
             DoProgressAnimation(true);
         }
 
@@ -54,11 +56,13 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             ViewModel.PreviousPage();
             DoProgressAnimation(false);
         }
+
         private void EndWalkThrough()
         {
             IConsole? console = WalkThroughPlugin.PluginIoc.GetService<IConsole>();
             console?.ShowHomePage();
         }
+
         private void DoProgressAnimation(bool isForward)
         {
             double newProgressValue;
@@ -70,13 +74,13 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             else
             {
                 // Back
-                newProgressValue = Math.Max(ViewModel.ProgressValue - 1, 1); 
+                newProgressValue = Math.Max(ViewModel.ProgressValue - 1, 1);
             }
 
             DoubleAnimation progressAnimation = new DoubleAnimation
             {
-                From = ViewModel.ProgressValue,  
-                To = newProgressValue,           
+                From = ViewModel.ProgressValue,
+                To = newProgressValue,
                 Duration = new Duration(TimeSpan.FromSeconds(0.5)), // Time
                 FillBehavior = FillBehavior.HoldEnd
             };
@@ -86,6 +90,5 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             // refresh ProgressValue
             ViewModel.ProgressValue = newProgressValue;
         }
-
     }
 }

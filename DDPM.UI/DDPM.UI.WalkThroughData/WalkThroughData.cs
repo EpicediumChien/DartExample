@@ -50,6 +50,33 @@ namespace DDPM.UI.WalkThroughData
                     }
                 },
                 
+                // U2724DE For Test
+                { "U2724DE", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = "Customize your View", SubText = "Personalize your viewing experience by adjusting your brightness/contrast levels, color profiles, and more", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                        new WalkThroughPageData { MainText = "Easy Arrange", SubText = "Spend less time resizing your multiple windows. Choose an Easy Arrange layout then click and drag your windows into place. If you would like to reuse this specific arrangement of windows, save it with Easy Memory", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                        new WalkThroughPageData { MainText = "Manage your Inputs", SubText = "Easily use your monitor with multiple PCs through Input Source or USB/Network KVM settings. Additionally, connect your mouse, keyboard, and accessories to your monitor via USB to use them with your multiple PCs", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                    }
+                },
+
+                // U2723DE For Test
+                { "U2723DE", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = "Customize your View", SubText = "Personalize your viewing experience by adjusting your brightness/contrast levels, color profiles, and more", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                        new WalkThroughPageData { MainText = "Easy Arrange", SubText = "Spend less time resizing your multiple windows. Choose an Easy Arrange layout then click and drag your windows into place. If you would like to reuse this specific arrangement of windows, save it with Easy Memory", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                        new WalkThroughPageData { MainText = "Manage your Inputs", SubText = "Easily use your monitor with multiple PCs through Input Source or USB/Network KVM settings. Additionally, connect your mouse, keyboard, and accessories to your monitor via USB to use them with your multiple PCs", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                    }
+                },
+
+                // E2422H For Test
+                { "E2422H", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = "Customize your View", SubText = "Personalize your viewing experience by adjusting your brightness/contrast levels, color profiles, and more", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                        new WalkThroughPageData { MainText = "Easy Arrange", SubText = "Spend less time resizing your multiple windows. Choose an Easy Arrange layout then click and drag your windows into place. If you would like to reuse this specific arrangement of windows, save it with Easy Memory", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                        new WalkThroughPageData { MainText = "Manage your Inputs", SubText = "Easily use your monitor with multiple PCs through Input Source or USB/Network KVM settings. Additionally, connect your mouse, keyboard, and accessories to your monitor via USB to use them with your multiple PCs", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                    }
+                },
+
                 // U3225QE
                 { "U3225QE", new List<WalkThroughPageData>
                     {
