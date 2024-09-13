@@ -33,8 +33,8 @@ namespace DDPM.UI.Common
                     {
                         if(vm.Text1.Equals(Strings.RightViewHeader_BrightnessContrast))
                         {
-                            vm.Locker1 = data.LockSettings.Lock_Settings_TelemetryConsent ? Visibility.Visible : Visibility.Collapsed;
-                            Trace.WriteLine($"[SettingsPage] Apply Brightness (lock) : {data.LockSettings.Lock_Settings_TelemetryConsent}");
+                            vm.Locker1 = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
+                            Trace.WriteLine($"[SettingsPage] Apply Brightness (lock) : {data.LockSettings.Lock_Display_BriCont}");
                         }
                     }
                 }));
@@ -56,7 +56,7 @@ namespace DDPM.UI.Common
                 Trace.WriteLine("Got [SettingsPage][DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
                 return;
             }
-            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Settings_TelemetryConsent"));
+            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Display_BriCont"));
             if (idx >= 0)
             {
                 string feature = e.IT_Feature_TriggerList[idx];
@@ -70,7 +70,7 @@ namespace DDPM.UI.Common
                         if (vm.Text1.Equals(Strings.RightViewHeader_BrightnessContrast))
                         {
                             vm.Locker1 = (bool)propertyInfo.GetValue(e.target_object) ? Visibility.Visible : Visibility.Collapsed;
-                            Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(Lock) : {propertyInfo.GetValue(e.target_object)}");
+                            Trace.WriteLine($"[SettingsPage] Apply Display_BriCont(Lock) : {propertyInfo.GetValue(e.target_object)}");
                         }
                     }
                 }));
