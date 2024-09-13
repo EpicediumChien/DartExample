@@ -2915,6 +2915,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
+            else
+            {
+                writelog("[DisplayExportSettings]settings is null");
+            }
 
             //expot settings
             if (_SettingsPlugin.DisplayExportSettings(monitorInfo.modelName, monitorInfo.edid.ServiceTag, path).Result)

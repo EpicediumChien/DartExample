@@ -855,50 +855,67 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path)
         {
+            WriteLog("[ExportSettingsFile] modelname: " + modelname);
+            WriteLog("[ExportSettingsFile] seriveTag: " + seriveTag);
+            WriteLog("[ExportSettingsFile] FilePath: " + path);
+
             DDPMImpExpSettings impexpSettings = new DDPMImpExpSettings();
 
             DDPMSettings settings = ReloadAppConfigData().Result;
-
-            impexpSettings.AppSettings = settings.AppSettings;
-            impexpSettings.UserSettings = settings.UserSettings;
-
-            List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
-
-            if (path.Substring(path.Length - 5, 5) != ".json")
+            if (settings != null)
             {
-                path = path + ".json";
-            }
+                impexpSettings.AppSettings = settings.AppSettings;
+                impexpSettings.UserSettings = settings.UserSettings;
 
-            //Dean 0912 file not ready at here, remove check
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
-            //{
-            //    _log.Info($"{nameof(DisplayExportSettings)} {FileInfo}");
-            //    return Task.FromResult<bool>(false);
-            //}
+                List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
 
-            foreach (DDPMMonitorSettings _settings in monitorSettings)
-            {
-                if (_settings.ServiceTag == seriveTag)
+                if (monitorSettings != null)
                 {
-                    impexpSettings.MonitorSettings = _settings;
-
-                    //export file
-                    FileInfo fileInfo = new FileInfo(path);
-                    fileInfo.Create().Close();
-                    //init data to file
-                    if (WriteImpExpSettings(path, impexpSettings))
+                    if (path.Substring(path.Length - 5, 5) != ".json")
                     {
-                        WriteLog("[ExportSettingsFile] Monitor settings file create and write success");
-                        return Task.FromResult<bool>(true);
+                        path = path + ".json";
                     }
-                    else
+
+                    //Dean 0912 file not ready at here, remove check
+                    //Elsa Add Security
+                    //string FileInfo;
+                    //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    //{
+                    //    _log.Info($"{nameof(DisplayExportSettings)} {FileInfo}");
+                    //    return Task.FromResult<bool>(false);
+                    //}
+
+                    foreach (DDPMMonitorSettings _settings in monitorSettings)
                     {
-                        WriteLog("[ExportSettingsFile] Monitor settings file create and write failed");
-                        return Task.FromResult<bool>(false);
+                        if (_settings.ServiceTag == seriveTag)
+                        {
+                            impexpSettings.MonitorSettings = _settings;
+
+                            //export file
+                            FileInfo fileInfo = new FileInfo(path);
+                            fileInfo.Create().Close();
+                            //init data to file
+                            if (WriteImpExpSettings(path, impexpSettings))
+                            {
+                                WriteLog("[ExportSettingsFile] Monitor settings file create and write success");
+                                return Task.FromResult<bool>(true);
+                            }
+                            else
+                            {
+                                WriteLog("[ExportSettingsFile] Monitor settings file create and write failed");
+                                return Task.FromResult<bool>(false);
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    WriteLog("[ExportSettingsFile] monitorSettings file is null");
+                }
+            }
+            else
+            {
+                WriteLog("[ExportSettingsFile] Usersettings file is null");
             }
 
             return Task.FromResult<bool>(false);
