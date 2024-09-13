@@ -4,6 +4,7 @@ using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 using DDPM.UI.WalkThroughData;
 using Dell.Client.Framework.Common;
@@ -87,7 +88,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
 
         // For WalkThrough
-        public static Queue<DeviceInfo> WalkThroughQueue { get; private set; } = new Queue<DeviceInfo>();
+        public static bool _showPluginById = false;
+        public static List<WalkThroughInfo> WalkThroughQueue { get; private set; } = new List<WalkThroughInfo>();
+        private static readonly Dictionary<string, int> ModelTypeMapping = new Dictionary<string, int>
+        {
+            { "Displays", 1 },
+            { "Webcam", 2 },
+            { "Keyboard", 3 },
+            { "Mice", 4 },
+            { "Stylus", 5 },
+            { "Headset", 6 },
+            { "Speakerphone", 7 },
+            { "Soundbar", 8 },
+            { "Audio", 9 },
+            { "Docks", 10 }
+        };
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -200,6 +215,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 return;
                             }
                             //Wayn 2024-09-04 For WalkThrough
+                            _log.Info($"[Walkthrough] {nameof(GetCurrentDeviceManagerPluginPluginCondition)} Start");
                             await CollectAndCompareDevicesAsync();
 
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
@@ -238,14 +254,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (e.device_peripherals != null)
                 {
                     // Check and handle new inserted devices
-                    await CheckAndQueueDevice(e.device_peripherals);
+                    //await CheckAndQueueDevice(e.device_peripherals);
                     _log.Info($"@ DeviceName=[{e.device_peripherals.Name}]");
                 }
+                _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
+                await CollectAndCompareDevicesAsync();
                 //// Check Queue，first use device need to show WalkThroughPage
-                if (WalkThroughQueue.Count > 0)
+                if (WalkThroughQueue.Count > 0 && _showPluginById == false)
                 {
-                    _log.Info($"WalkThroughQueue has items, showing WalkThroughPage.");
+                    _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                    _showPluginById = true;
                 }
                 //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
                 //2024-07-02, Elie, we only handle remove and add event on the DdpmHomePlugin.
@@ -263,9 +282,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     if (_deviceManager != null)
                         _ = GetDdpmDevicesAsync(_deviceManager);
 
-                    //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
-
-                    if (e.type == DeviceChangedType.NotifyOnly)
+                    if (e.type == DeviceChangedType.NotifyOnly && WalkThroughQueue.Count == 0)
                     {
                         _log.Info($"CALL ShowDdpmHome(), when e.type == DeviceChangedType.NotifyOnly.");
                         ShowDdpmHome();
@@ -429,6 +446,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        private async Task DeviceSort(WalkThroughInfo device)
+        {
+            _log.Info($"[Walkthrough] DeviceSort {device.ModelName} with ModelType {device.ModelType} Start");
+
+            // Sort
+            WalkThroughQueue.Sort((device1, device2) =>
+            {
+                int device1Order = ModelTypeMapping.ContainsKey(device1.ModelType) ? ModelTypeMapping[device1.ModelType] : int.MaxValue;
+                int device2Order = ModelTypeMapping.ContainsKey(device2.ModelType) ? ModelTypeMapping[device2.ModelType] : int.MaxValue;
+                return device1Order.CompareTo(device2Order);
+            });
+
+            _log.Info($"[Walkthrough] DeviceSort End.");
+        }
         //Unused
         /// <summary>
         /// Method to show <see cref="DdpmHomePage"/>
@@ -856,7 +892,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <returns>User Sid</returns>
         private string GetUserSid(string userName)
         {
-            _log.Info($"[Walkthrough]{nameof(GetUserSid)} Start");
+            _log.Info($"[Walkthrough] {nameof(GetUserSid)} Start");
             NTAccount f_normal, f_domain = null;
             string accountName = $"{Environment.MachineName}\\{userName}";
             f_normal = new NTAccount(accountName);
@@ -904,51 +940,49 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// </summary>
         /// <param name="device">DeviceInfo list</param>
         /// <returns>Task</returns>
-        private async Task CheckAndQueueDevice(DeviceInfo device)
+        private async Task CheckAndQueueDevice(String modelNumber, String modelType)
         {
-            _log.Info($"[Walkthrough]{nameof(CheckAndQueueDevice)} Start");
+            _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
+
             string _userId = GetActiveUserID();
             string regPath = $@"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\{_userId}";
-            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{device.ModelNumber}";
+            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
 
             var devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
 
             try
             {
-                if (!devicePages.ContainsKey(device.ModelNumber))
+                // If the device is not supported, directly update the registry to true and return
+                if (!devicePages.ContainsKey(modelNumber))
                 {
                     await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-                    _log.Info($"Device {device.ModelNumber} Can not find ModelNumber in WalkThroughData.");
+                    _log.Info($"[Walkthrough] Device {modelNumber} not found in devicePages, skipping.");
                     return;
                 }
 
                 // read reg
                 object regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
 
-                // mean null or ""
-                if (regValue == null || regValue is string strValue && string.IsNullOrEmpty(strValue))
+                // mean null or "" or is false, add to the queue and set it to true
+                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
                 {
-                    // No reg, add into queue, then set true
-                    WalkThroughQueue.Enqueue(device); // add
-                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);                   
-                    _log.Info($"Device {device.ModelNumber} added to the queue and registry value updated to true.");
-                }
-                else if (!Convert.ToBoolean(regValue))
-                {
-                    // reg false, add into queue, then set true
-                    WalkThroughQueue.Enqueue(device); // add
+                    // Add the device to the queue and update the registry
+                    lock (WalkThroughQueue)
+                    {
+                        WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType));
+                    }
                     await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-                    _log.Info($"Device {device.ModelNumber} added to the queue and registry value updated to true.");
+                    await DeviceSort(new WalkThroughInfo(modelNumber, modelType));
+                    _log.Info($"[Walkthrough] Device {modelNumber} added to the queue and registry value updated to true.");
                 }
-                else if (Convert.ToBoolean(regValue))
+                else
                 {
-                    // Reg true, skip
-                    _log.Info($"Device {device.ModelNumber} already processed, skipping.");
+                    _log.Info($"[Walkthrough] Device {modelNumber} reg is true, skipping.");
                 }
             }
             catch (Exception ex)
             {
-                _log.Error($"[Walkthrough] Error processing device {device.ModelNumber}: {ex.Message}");
+                _log.Error($"[Walkthrough] Error processing device {modelNumber}: {ex.Message}");
             }
         }
 
@@ -958,27 +992,35 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <returns></returns>
         public async Task CollectAndCompareDevicesAsync()
         {
-            _log.Info($"[Walkthrough]{nameof(CollectAndCompareDevicesAsync)} Start");
+            _log.Info($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} Start");
             try
             {
-                var deviceHelper = await _deviceManager.GetDevices();
-                if (deviceHelper?.deviceInfo != null)
+                List<MonitorInfo> monitorInfos = _deviceManager.GetMonitors().Result;
+                var deviceHelper = _deviceManager.GetDevices().Result;
+
+                // 轉成 WalkThroughInfo 並加入
+                foreach (var monitor in monitorInfos)
                 {
-                    foreach (var device in deviceHelper.deviceInfo)
-                    {
-                        _log.Info($"[Walkthrough] CheckAndQueueDevice Start");
-                        await CheckAndQueueDevice(device);
-                    }
+                    _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Monitor)");
+                    await CheckAndQueueDevice(monitor.modelName, "Displays");
                 }
-                if(WalkThroughQueue.Count != 0)
+
+                foreach (var device in deviceHelper.deviceInfo)
                 {
-                    _log.Info($"[Walkthrough] ShowPluginById Start");
+                    _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
+                    await CheckAndQueueDevice(device.ModelNumber, device.PhysicalDeviceType.ToString());
+                }
+
+                if (WalkThroughQueue.Count != 0 && _showPluginById == false)
+                {
+                    _log.Info($"[Walkthrough] WalkThroughQueue.Count != 0, ShowPluginById Start");
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                    _showPluginById = true;
                 }
             }
             catch (Exception ex)
             {
-                _log.Error($"[Walkthrough]{nameof(CollectAndCompareDevicesAsync)} Error collecting devices: {ex.Message}");
+                _log.Error($"[Walkthrough] {nameof(CollectAndCompareDevicesAsync)} Error collecting devices: {ex.Message}");
             }
         }
         #endregion WalkThrough
