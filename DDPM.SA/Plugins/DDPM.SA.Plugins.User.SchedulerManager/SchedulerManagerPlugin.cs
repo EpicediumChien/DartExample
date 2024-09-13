@@ -140,17 +140,19 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                     Count++;
                 } while ((Count < 3) && (_DDPMSettings == null));
 
-                var ScheduleMaps_string = _DDPMSettings.UserSettings.Schedule;
+                var ScheduleMaps_string = _DDPMSettings.UserSettings.Schedule ?? string.Empty;
 
                 if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
+                {
                     _ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
+                    _logs.DebugMsg_1("_ScheduleMaps count : " + _ScheduleMaps.Count);
+                }
                 else
                 {
                     if (_ScheduleMaps != null) _ScheduleMaps.Clear();
                     else _ScheduleMaps = new List<scheduleInfo>();
+                    _logs.DebugMsg_1("ScheduleMaps setting is null");
                 }
-
-                _logs.DebugMsg_1("_ScheduleMaps count : " + _ScheduleMaps.Count);
             }
         }
 
