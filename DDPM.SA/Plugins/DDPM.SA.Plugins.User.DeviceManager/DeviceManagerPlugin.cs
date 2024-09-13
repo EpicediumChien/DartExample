@@ -53,6 +53,7 @@ using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 using System.Xml;
 using static System.Reflection.Metadata.BlobBuilder;
+using System.IO.Compression;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -3446,12 +3447,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         public Task<bool> SaveLogFile(string saveFolderPath)
         {
+            writelog($"{nameof(SaveLogFile)} start");
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
-                string logFileName = "EventLog.evtx";
-                string logFilePath = Path.Combine(saveFolderPath, logFileName);
-                string zipFilePath = Path.Combine(saveFolderPath, ".zip");
                 // 確保資料夾存在
                 if (!Directory.Exists(saveFolderPath))
                 {
@@ -3485,27 +3484,87 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 } while (!folderValid && count < 2);
 
+                string DDPMSubagentLogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
+                if (DirectoryContainsFiles(DDPMSubagentLogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string savePath=Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                }
+                string DDPMSubagent_UserLogFolder = "C:\\ProgramData\\Dell.UserMode\\DDPM Subagent User";
+                if (DirectoryContainsFiles(DDPMSubagent_UserLogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(DDPMSubagent_UserLogFolder, savePath);
+                }
+                string DDPMLogFolder = "C:\\ProgramData\\Dell.UserMode\\DDPM2.0";
+                if (DirectoryContainsFiles(DDPMLogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                }
+                string DTHLogFolder = "C:\\ProgramData\\Dell\\Dell TechHub";
+                if (DirectoryContainsFiles(DTHLogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                }
+                string DTPLogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
+                if (DirectoryContainsFiles(DTPLogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                }
+                string DTPLogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
+                if (DirectoryContainsFiles(DTPLogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                }
+                string logFileName = "EventLog.evtx";
+                string logFilePath = Path.Combine(saveFolderPath, logFileName);
                 ExecuteWevtutilCommand(logFilePath);
 
-                string DDPMSubagentLogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
-                string DDPMSubagentLogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
-                string DTHLogFolder = "C:\\ProgramData\\Dell\\Dell TechHub";
-                string DTPLogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
-                string DDPMSubagentLogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
-                // 複製指定的 log 文件到選擇的資料夾
-                CopyLogFolder(selectedFolderPath);
-
-                // 匯出事件日誌到指定路徑
-                Console.WriteLine("Exporting events...");
-                ExportEvents("Application", logFilePath);
-
+                string zipFilePath = Path.Combine(saveFolderPath, ".zip");
                 // 壓縮資料夾
-                Console.WriteLine("Creating ZIP file...");
-                CreateZipFile(selectedFolderPath, zipFilePath);
-
-                Console.WriteLine($"Log files and ZIP file have been created in: {folderDialog.SelectedPath}");
+                CreateZipFile(saveFolderPath, zipFilePath);
             }
+            writelog($"{nameof(SaveLogFile)} end");
             return Task.FromResult(ret);
+        }
+        void CreateZipFile(string folderPath, string zipFilePath)
+        {
+            writelog($"{nameof(CreateZipFile)} start");
+            try
+            {
+                if (File.Exists(zipFilePath))
+                {
+                    File.Delete(zipFilePath);
+                }
+                ZipFile.CreateFromDirectory(folderPath, zipFilePath, CompressionLevel.Fastest, includeBaseDirectory: true);
+            }
+            catch (Exception ex)
+            {
+                writelog($"{nameof(CreateZipFile)} Exception occurred while creating ZIP file: {ex.Message}");
+            }
+            writelog($"{nameof(CreateZipFile)} end");
         }
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
         {
@@ -3608,6 +3667,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 Console.WriteLine($"Exception occurred: {ex.Message}");
             }
+        }
+        string GetFolderName(string path)
+        {
+            try
+            {
+                string folderName = System.IO.Path.GetFileName(path.TrimEnd(System.IO.Path.DirectorySeparatorChar));
+                return folderName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+        bool DirectoryContainsFiles(string folderPath)
+        {
+            bool ret = false;
+            try
+            {
+                // 確保資料夾存在
+                if (Directory.Exists(folderPath))
+                {
+                    // 檢查資料夾是否包含檔案
+                    string[] files = Directory.GetFiles(folderPath);
+                    ret = files.Length > 0;
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
         }
         void CopyLogFolder(string sourceFolder, string destinationFolder)
         {
