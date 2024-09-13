@@ -1888,7 +1888,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
             isSWSetOrientation = true;
             SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-            bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
+            bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation, monitorInfos.modelName).Result;
             isSWSetOrientation = false;
             return Task.FromResult(ret);
         }
