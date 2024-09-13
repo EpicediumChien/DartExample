@@ -3490,38 +3490,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return ret;
         }
-        byte[] HexStringToByteArray(string hex)
-        {
-            if (hex.Length % 2 != 0)
-            {
-                throw new ArgumentException("String format error");
-            }
-            byte[] bytes = new byte[hex.Length / 2];
-            for (int i = 0; i < hex.Length; i += 2)
-            {
-                string hexPair = hex.Substring(i, 2);
-                bytes[i / 2] = Convert.ToByte(hexPair, 16);
-            }
-            return bytes;
-        }
-        int DaysBetweenWeekStartAndToday(int year, int weekOfYear)
-        {
-            // 獲取當前日期
-            DateTime today = DateTime.Today;
-            // 創建 CultureInfo 物件，用於計算週數
-            CultureInfo ci = CultureInfo.CurrentCulture;
-            Calendar calendar = ci.Calendar;
-            // 獲取該年的第一個日期
-            DateTime jan1 = new DateTime(year, 1, 1);
-            // 計算該年第一週的第一天
-            DateTime jan1WeekStart = calendar.AddWeeks(jan1, 1 - (int)calendar.GetWeekOfYear(jan1, ci.DateTimeFormat.CalendarWeekRule, ci.DateTimeFormat.FirstDayOfWeek));
-            // 計算指定週的第一天
-            DateTime weekStart = jan1WeekStart.AddDays((weekOfYear - 1) * 7);
-            // 計算從該週第一天到今天的天數
-            int daysBetween = (int)(today - weekStart).TotalDays;
-            return daysBetween;
-        }
-
         #endregion
         #endregion
 
