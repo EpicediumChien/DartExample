@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="WalkThroughInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="asset\Product_KB900.png" />
     <None Remove="asset\Product_Mouse.png" />
   </ItemGroup>
@@ -25,6 +29,7 @@
     <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
+    <ProjectReference Include="..\DDPM.UI.WalkThroughData\DDPM.UI.WalkThroughData.csproj" />
   </ItemGroup>
 
   <ItemGroup>

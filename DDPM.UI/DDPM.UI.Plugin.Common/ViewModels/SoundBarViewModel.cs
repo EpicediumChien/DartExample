@@ -84,23 +84,23 @@ namespace DDPM.UI.Plugin.ViewModels
                 switch (btnName)
                 {
                     case "MicrosoftTeams":
-                        ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022_AllLight.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022_AllLight.png";
                         break;
 
                     case "Zoom":
-                        ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022_FourLight.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022_FourLight.png";
                         break;
 
                     case "GoogleMeet":
-                        ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022_TwoLight.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022_TwoLight.png";
                         break;
 
                     case "SkypeforBusiness":
-                        ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022_RedLight.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022_RedLight.png";
                         break;
 
                     default:
-                        ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SP3022.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SP3022.png";
                         break;
                 }
             }
@@ -109,15 +109,15 @@ namespace DDPM.UI.Plugin.ViewModels
                 switch (btnName)
                 {
                     case "MicrosoftTeams":
-                        ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SB522A_AllLight.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_AllLight.png";
                         break;
 
                     case "Zoom":
-                        ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_SB522A_TwoLight.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A_TwoLight.png";
                         break;
 
                     default:
-                        ImageFilePath = "/DDPM.UI.Resources;component/Resources/Images/Speaker_u2723qe.png";
+                        ImageFilePath = "/DDPM.UI.Common;component/Resources/Speaker_SB522A.png";
                         break;
                 }
             }
