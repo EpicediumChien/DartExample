@@ -55,10 +55,14 @@ namespace VcpCore.Common
         /// <returns></returns>
         public static string Ratio(int num1, int num2)
         {
-            int X = MaximumCommonDivisor(num1, num2);
-            return string.Format("{0}:{1}", num1 / X, num2 / X); ;
-            //Console.WriteLine("{0}和{1}的最大公约数为：{2}", num1, num2, a);
-            // Console.WriteLine("{0}和{1}的最小公倍数为：{2}", num1, num2, num1 * num2 / a);
+            if (num1 > 0 && num2 > 0)
+            {
+                int X = MaximumCommonDivisor(num1, num2);
+                return string.Format("{0}:{1}", num1 / X, num2 / X);
+                //Console.WriteLine("{0}和{1}的最大公约数为：{2}", num1, num2, a);
+                // Console.WriteLine("{0}和{1}的最小公倍数为：{2}", num1, num2, num1 * num2 / a);
+            }
+            return "N/A";
         }
 
         public static char ToCharByASCIIShort(int a)
@@ -399,14 +403,34 @@ namespace VcpCore.Common
 
             public static string Max_Display_Size(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
-                return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
+                if (EDID == null || EDID.Length < 128)
+                {
+                    return "N/A";
+                }
+                if (EDID[21] > 0 && EDID[22] > 0)
+                {
+                    return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
+                }
+                else
+                {
+                    return "N/A";
+                }
             }
 
             public static string Max_Display_Size_CH(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
-                return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
+                if (EDID == null || EDID.Length < 128)
+                {
+                    return "N/A";
+                }
+                if (EDID[21] > 0 && EDID[22] > 0)
+                {
+                    return ToCinch_By_ABcm(EDID[21], EDID[22]).ToString("00.0");
+                }
+                else
+                {
+                    return "N/A";
+                }
             }
         }
 
