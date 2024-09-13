@@ -331,7 +331,8 @@ namespace SA.Plugins.User.DeviceManager.Test
             result = deviceMangerPlugin.AddColorPresetForMonitorConfig("0", "name1", "c1").Result;
             Assert.That(result, Is.EqualTo(false));
 
-            _SettingsPluginMock.Setup(x => x.GetAppIconFolderPath()).Returns(Task.FromResult("hh"));
+            string iconFolder = "C:\\Windows";
+            _SettingsPluginMock.Setup(x => x.GetAppIconFolderPath()).Returns(Task.FromResult(iconFolder));
             result = deviceMangerPlugin.AddColorPresetForMonitorConfig("a", "name1", "c1").Result;
             Assert.That(result, Is.EqualTo(false));
 
