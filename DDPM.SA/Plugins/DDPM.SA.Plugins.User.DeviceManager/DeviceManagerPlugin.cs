@@ -51,6 +51,8 @@ using Windows.System;
 using DDPM.SA.Common.Screen;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
+using System.Xml;
+using static System.Reflection.Metadata.BlobBuilder;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -873,7 +875,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //            monitorSettingsList.Add(settings);
                 //            bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                 //        }
-                        
+
                 //    }
                 //}
 
@@ -2561,9 +2563,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         public Task GetNKVMIncommingPort()
-        {  
+        {
             if (_NKVMPlugin != null)
-            { 
+            {
                 _NKVMPlugin.GetNKVMIncommingPort();
             }
             return Task.CompletedTask;
@@ -2589,7 +2591,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task GetNKVMSettings()
         {
-            if (_NKVMPlugin != null) 
+            if (_NKVMPlugin != null)
             {
                 _NKVMPlugin.GetNKVMSettings();
             }
@@ -3442,6 +3444,69 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(ret);
         }
+        public Task<bool> SaveLogFile(string saveFolderPath)
+        {
+            bool ret = false;
+            if (_DisplayManagerPlugin != null)
+            {
+                string logFileName = "EventLog.evtx";
+                string logFilePath = Path.Combine(saveFolderPath, logFileName);
+                string zipFilePath = Path.Combine(saveFolderPath, ".zip");
+                // 確保資料夾存在
+                if (!Directory.Exists(saveFolderPath))
+                {
+                    Directory.CreateDirectory(saveFolderPath);
+                }
+                //0913 Bruce Add Security
+                string FolderInfo;
+                string PathSymbolicLinInfo;
+                int count = 0;
+                bool folderValid = false;
+                do
+                {
+                    FolderInfo = string.Empty;
+                    PathSymbolicLinInfo = string.Empty;
+                    folderValid = false;
+                    folderValid = DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
+                    if (!folderValid)
+                    {
+                        writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
+                        //Do remove Symbolic Link than delete folder
+                        Directory.Delete(saveFolderPath, true);
+                        Directory.CreateDirectory(saveFolderPath);
+                    }
+                    folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo) && folderValid;
+                    if (!folderValid)
+                    {
+                        writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
+                        //Do remove Symbolic Link than delete folder
+                        Directory.Delete(saveFolderPath, true);
+                        Directory.CreateDirectory(saveFolderPath);
+                    }
+                } while (!folderValid && count < 2);
+
+                ExecuteWevtutilCommand(logFilePath);
+
+                string DDPMSubagentLogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
+                string DDPMSubagentLogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
+                string DTHLogFolder = "C:\\ProgramData\\Dell\\Dell TechHub";
+                string DTPLogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
+                string DDPMSubagentLogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
+                // 複製指定的 log 文件到選擇的資料夾
+                CopyLogFolder(selectedFolderPath);
+
+                // 匯出事件日誌到指定路徑
+                Console.WriteLine("Exporting events...");
+                ExportEvents("Application", logFilePath);
+
+                // 壓縮資料夾
+                Console.WriteLine("Creating ZIP file...");
+                CreateZipFile(selectedFolderPath, zipFilePath);
+
+                Console.WriteLine($"Log files and ZIP file have been created in: {folderDialog.SelectedPath}");
+            }
+            return Task.FromResult(ret);
+        }
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
         {
             bool ret = false;
@@ -3489,6 +3554,100 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
             }
             return ret;
+        }
+        void ExecuteWevtutilCommand(string exportFilePath)
+        {
+            try
+            {
+                // 設定要查詢的日誌名稱
+                string logName = "Application"; // 可選擇 "Application", "System", "Security"
+
+                // 獲取當前時間
+                DateTime now = DateTime.UtcNow;
+
+                // 設定開始和結束時間範圍（UTC）
+                DateTime endTime = now;
+                DateTime startTime = endTime.AddDays(-1);
+
+                // 生成查詢語句
+                string query = $"*[System[TimeCreated[@SystemTime>='{startTime:yyyy-MM-ddTHH:mm:ss.fffZ}' and @SystemTime<='{endTime:yyyy-MM-ddTHH:mm:ss.fffZ}']]]";
+                // 建立我們要執行的命令
+                string command = $"epl {logName} \"{exportFilePath}\" /ow:true /q:\"{query}\"";
+                // 設定 ProcessStartInfo
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "wevtutil",
+                    Arguments = command,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                // 開啟進程
+                using (Process process = Process.Start(startInfo))
+                {
+                    // 讀取標準輸出和錯誤輸出
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    // 等待進程結束
+                    process.WaitForExit();
+
+                    // 輸出結果
+                    if (process.ExitCode == 0)
+                    {
+                        Console.WriteLine("Events have been exported successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error exporting events: {error}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+            }
+        }
+        void CopyLogFolder(string sourceFolder, string destinationFolder)
+        {
+            try
+            {
+                if (Directory.Exists(sourceFolder))
+                {
+                    // 複製資料夾及其內容
+                    DirectoryCopy(sourceFolder, destinationFolder, true);
+                    Console.WriteLine("Log folder copied successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Source folder does not exist.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred while copying log folder: {ex.Message}");
+            }
+        }
+        void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            // 確保目標資料夾存在
+            Directory.CreateDirectory(destDirName);
+            // 複製檔案
+            foreach (string file in Directory.GetFiles(sourceDirName))
+            {
+                string destFile = Path.Combine(destDirName, Path.GetFileName(file));
+                File.Copy(file, destFile, true);
+            }
+            // 複製子資料夾
+            if (copySubDirs)
+            {
+                foreach (string subDir in Directory.GetDirectories(sourceDirName))
+                {
+                    string destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
+                    DirectoryCopy(subDir, destSubDir, true);
+                }
+            }
         }
         #endregion
         #endregion
@@ -6347,25 +6506,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.BatteryLow:
-                    {
-                        if (Device is OSDType_Device.Headset)
                         {
-                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
-                            return Task.CompletedTask;
+                            if (Device is OSDType_Device.Headset)
+                            {
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Keyboard)
+                            {
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Mouse)
+                            {
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                return Task.CompletedTask;
+                            }
+                            else
+                                return Task.CompletedTask;
                         }
-                        else if (Device is OSDType_Device.Keyboard)
-                        {
-                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
-                            return Task.CompletedTask;
-                        }
-                        else if (Device is OSDType_Device.Mouse)
-                        {
-                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
-                            return Task.CompletedTask;
-                        }
-                        else
-                            return Task.CompletedTask;
-                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6381,10 +6540,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Mute:
-                    {
-                        _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6400,20 +6559,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.ScrollLock:
-                    {
-                        _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.NumLock:
-                    {
-                        _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.CapsLock:
-                    {
-                        _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6429,25 +6588,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Fingerprint:
-                    {
-                        _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.DisplayChanged:
                         {
                             _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
                             return Task.CompletedTask;
                         }
                     case OSDType.WalkAwayLock:
-                    {
-                        _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
+                            return Task.CompletedTask;
+                        }
                     case OSDType.StartRecording:
-                    {
-                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
