@@ -3427,6 +3427,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void SettingsReady(object o, EventArgs eventArgs)
         {
             LoadGlobalSettingParam();
+
+            CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+            CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
         }
         #region OutReport
         public Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath)
@@ -4489,8 +4492,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             ToNKVM_initHotKeys();
                         }
 
-                        CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
-                        CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
 
                     }
                     else

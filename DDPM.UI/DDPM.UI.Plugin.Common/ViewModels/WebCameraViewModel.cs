@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -12,6 +13,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
+using Windows.Media.MediaProperties;
 using Windows.Storage;
 
 namespace DDPM.UI.Plugin.ViewModels
@@ -22,6 +24,15 @@ namespace DDPM.UI.Plugin.ViewModels
         private readonly ILog _log;
         //private readonly IDeviceManagerSA _deviceManager;
         public readonly IDeviceManagerSA _deviceManager;
+
+        // Query all properties [resolution and frame rate] of the webcam device
+        public IEnumerable<StreamResolution> allProperties;
+
+        public bool[] Resolution_IsSelected { get; set; } = new bool[3];
+        public bool[] FPS_IsSelected { get; set; } = new bool[3];
+
+        private int _tipSensitivity = 75;
+        private int _tiltSensitivity = 20;
 
         #endregion Variables
 
@@ -47,11 +58,37 @@ namespace DDPM.UI.Plugin.ViewModels
 
             IsChecked_FramingGrid = Visibility.Hidden;
 
+            strCurrent_Resolution = "1920x1080";
+            strCurrent_Framerate = "30FPS";
+
+            SetResolution_Selected(1);
+            SetFPS_Selected(1);
+
             //Hz125ClickedCommand = new RelayCommand(OnHz125Clicked);
             //Hz133ClickedCommand = new RelayCommand(OnHz133Clicked);
             //Hz2501ClickedCommand = new RelayCommand(OnHz2501Clicked);
             //Hz2502ClickedCommand = new RelayCommand(OnHz2502Clicked);
             //Hz333ClickedCommand = new RelayCommand(OnHz333Clicked);
+        }
+
+        public void SetResolution_Selected(int index)
+        {
+            for (int j = 0; j < Resolution_IsSelected.Length; j++)
+            {
+                Resolution_IsSelected[j] = false;
+            }
+            Resolution_IsSelected[index] = true;
+            OnPropertyChanged("Resolution_IsSelected");
+        }
+
+        public void SetFPS_Selected(int index)
+        {
+            for (int j = 0; j < FPS_IsSelected.Length; j++)
+            {
+                FPS_IsSelected[j] = false;
+            }
+            FPS_IsSelected[index] = true;
+            OnPropertyChanged("FPS_IsSelected");
         }
 
         private void SwitchPollingRate(int index, int hz = 0, bool NeedSetting = false)
@@ -203,7 +240,15 @@ namespace DDPM.UI.Plugin.ViewModels
 
         // 20240628 jim add
         // Folder in which the captures will be stored (initialized in SetupUiAsync)
+
+        // 20240910 jim add
         public StorageFolder _captureFolder;
+
+        // 20240911 jim add
+        public string strCurrent_Resolution;
+        public string strCurrent_Framerate;
+
+
 
         //20240702
         private bool isChecked_Autofocus;
@@ -289,6 +334,31 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged("FramingGrid_IsChecked");
             }
         }
+
+        private bool countdown_isChecked;
+
+        public bool Countdown_IsChecked
+        {
+            get { return countdown_isChecked; }
+            set
+            {
+                countdown_isChecked = value;
+                OnPropertyChanged("Countdown_IsChecked");
+            }
+        }
+
+        private string media_file_location;
+
+        public string Media_File_Location
+        {
+            get { return media_file_location; }
+            set
+            {
+                media_file_location = value;
+                OnPropertyChanged("Media_File_Location");
+            }
+        }
+
         public string IsMicEnumerationOnText
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;
@@ -314,5 +384,108 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
             }
         }
+    }
+
+    public class StreamResolution
+    {
+        private IMediaEncodingProperties _properties;
+
+        public StreamResolution(IMediaEncodingProperties properties)
+        {
+            if (properties == null)
+            {
+                throw new ArgumentNullException(nameof(properties));
+            }
+
+            // Only handle ImageEncodingProperties and VideoEncodingProperties, which are the two types that GetAvailableMediaStreamProperties can return
+            if (!(properties is ImageEncodingProperties) && !(properties is VideoEncodingProperties))
+            {
+                throw new ArgumentException("Argument is of the wrong type. Required: " + typeof(ImageEncodingProperties).Name
+                    + " or " + typeof(VideoEncodingProperties).Name + ".", nameof(properties));
+            }
+
+            // Store the actual instance of the IMediaEncodingProperties for setting them later
+            _properties = properties;
+        }
+
+        public uint Width
+        {
+            get
+            {
+                if (_properties is ImageEncodingProperties)
+                {
+                    return (_properties as ImageEncodingProperties).Width;
+                }
+                else if (_properties is VideoEncodingProperties)
+                {
+                    return (_properties as VideoEncodingProperties).Width;
+                }
+
+                return 0;
+            }
+        }
+
+        public uint Height
+        {
+            get
+            {
+                if (_properties is ImageEncodingProperties)
+                {
+                    return (_properties as ImageEncodingProperties).Height;
+                }
+                else if (_properties is VideoEncodingProperties)
+                {
+                    return (_properties as VideoEncodingProperties).Height;
+                }
+
+                return 0;
+            }
+        }
+
+        public uint FrameRate
+        {
+            get
+            {
+                if (_properties is VideoEncodingProperties)
+                {
+                    if ((_properties as VideoEncodingProperties).FrameRate.Denominator != 0)
+                    {
+                        return (_properties as VideoEncodingProperties).FrameRate.Numerator / (_properties as VideoEncodingProperties).FrameRate.Denominator;
+                    }
+                }
+
+                return 0;
+            }
+        }
+
+        public double AspectRatio
+        {
+            get { return Math.Round((Height != 0) ? (Width / (double)Height) : double.NaN, 2); }
+        }
+
+        public IMediaEncodingProperties EncodingProperties
+        {
+            get { return _properties; }
+        }
+
+        /// <summary>
+        /// Output properties to a readable format for UI purposes
+        /// eg. 1920x1080 [1.78] 30fps MPEG
+        /// </summary>
+        /// <returns>Readable string</returns>
+        public string GetFriendlyName(bool showFrameRate = true)
+        {
+            if (_properties is ImageEncodingProperties ||
+                !showFrameRate)
+            {
+                return Width + "x" + Height + " [" + AspectRatio + "] " + _properties.Subtype;
+            }
+            else if (_properties is VideoEncodingProperties)
+            {
+                return Width + "x" + Height + " [" + AspectRatio + "] " + FrameRate + "FPS " + _properties.Subtype;
+            }
+
+            return String.Empty;
+        }        
     }
 }
