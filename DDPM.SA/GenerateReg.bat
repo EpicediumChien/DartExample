@@ -88,6 +88,8 @@ echo "{D034EE8F-7C8A-4296-8B5B-33B4E978C6B5}"="%BaseDir%\\bin\\DDPM.Subagent.Use
 echo.>>%OutFile%
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{21A24609-08A2-423E-80DE-4D33A933F1A1}]>>%OutFile%
 echo "DisplayName"="Dell Display and Peripheral Manager">>%OutFile%
+echo "DisplayVersion"="2.0.0.40">>%OutFile%
+echo "InstallLocation"="C:\\Program Files\\Dell\\Dell Display and Peripheral Manager">>%OutFile%
 echo.>>%OutFile%
 
 
