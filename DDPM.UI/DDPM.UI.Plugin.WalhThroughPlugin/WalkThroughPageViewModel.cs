@@ -2,13 +2,14 @@
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.UX.WPF;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using static DDPM.UI.WalkThroughData.WalkThroughData;
 
 namespace DDPM.UI.Plugin.WalkThroughPlugin
 {
-
     public class WalkThroughPageViewModel : ObservableObject
     {
         private List<HomeDevice> _homeDevices = new List<HomeDevice>();
@@ -20,7 +21,6 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public WalkThroughPageViewModel()
         {
-            //_devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
             InitializeDeviceFromQueue();
             UpdateButtonVisibility();
         }
@@ -30,18 +30,18 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             // Check WalkThroughQueue
             while (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
             {
-                var device = DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Peek();
+                var device = DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.First();
 
                 // If _devicePages ContainsKey ModelNumber
-                if (_devicePages.ContainsKey(device.ModelNumber))
+                if (_devicePages.ContainsKey(device.ModelName))
                 {
-                    InitializeDevice(device.ModelNumber);
-                    break; 
+                    InitializeDevice(device.ModelName);
+                    break;
                 }
                 else
                 {
                     // If _devicePages No ModelNumber, remove and next 
-                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Dequeue();
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 }
             }
 
@@ -55,7 +55,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             _currentDeviceModel = deviceModel;
             _currentPageIndex = 0;
-            //ProgressValue = 1;
+
             if (_devicePages.ContainsKey(deviceModel))
             {
                 CurrentAnimationPage = _devicePages[deviceModel].Count;
@@ -82,6 +82,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource(pageData.MainImageSource!, "DDPM.UI.WalkThroughData");
             }
         }
+
         /// <summary>
         /// Next Page
         /// </summary>
@@ -94,7 +95,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
             else
             {
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Dequeue();
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
                     ProgressValue = 0;// second round set 0
@@ -107,6 +108,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
             UpdateButtonVisibility(); // refresh button
         }
+
         /// <summary>
         /// Previous Page
         /// </summary>
@@ -122,6 +124,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void EndWalkThrough()
         {
+            DdpmHomePlugin.DdpmHomePlugin._showPluginById = false;
             IConsole? console = WalkThroughPlugin.PluginIoc.GetService<IConsole>();
             console?.ShowHomePage();
         }
@@ -177,12 +180,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 OnPropertyChanged(nameof(ProgressValue));
             }
         }
+
         private int _currentAnimationPage;
         public int CurrentAnimationPage
         {
             get => _currentAnimationPage;
             set => SetProperty(ref _currentAnimationPage, value);
         }
+
         private string _mainText = string.Empty;
         public string MainText
         {

@@ -16,6 +16,7 @@ using Dell.UnifiedAgent.RemotePlugin.Client.Console;
 using NGA.ThickClient.Interfaces;
 using NGA.ThickClientCore;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using Constants = NGA.Common.Constants;
@@ -88,7 +89,8 @@ namespace NGA.ThickClient
                 AutoLoadPlugins = true,
                 SuiteName = SuiteName,
                 LogFileScheme = LogFileWriter.RolloverScheme.CreateArchives,
-                DisplayLanguage = DisplayLanguageEnum.GlobalizationPreferences
+                DisplayLanguage = DisplayLanguageEnum.GlobalizationPreferences,
+                LogRootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell\\Dell Display and Peripheral Manager\\Log\\DDPM.GUI")
             };
         }
 
