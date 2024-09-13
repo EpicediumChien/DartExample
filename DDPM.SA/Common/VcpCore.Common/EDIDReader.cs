@@ -366,18 +366,26 @@ namespace VcpCore.Common
 
             public static string Max_Horizontal_Image_Size(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return "N/A";
 
                 int w = EDID[21] * 10;
-                return w.ToString();
+                if (w > 0)
+                {
+                    return w.ToString();
+                }
+                return "N/A";
             }
 
             public static string Max_Vertical_Image_Size(byte[] EDID)
             {
-                if (EDID == null || EDID.Length < 128) return "";
+                if (EDID == null || EDID.Length < 128) return "N/A";
 
                 int h = EDID[22] * 10;
-                return h.ToString();
+                if (h > 0)
+                {
+                    return h.ToString();
+                }
+                return "N/A";
             }
 
             public static string Image_Size_Ratio(byte[] EDID)
@@ -693,8 +701,10 @@ namespace VcpCore.Common
             public static (int, int, double) GetResolutionAndRefreshRate(byte[] edidData)
             {
                 // Pixel Clock (in kHz) is located at bytes 54-55
-                if (edidData.Length < 56)
-                    throw new ArgumentException("EDID data length is insufficient");
+                if (edidData.Length < 128)
+                {
+                    return (0, 0, 0);
+                }
 
                 double pixelClockMHz = Pixel_Clock(edidData); // Convert to MHz
                 // Horizontal Total (in pixels) is located at bytes 56-57
@@ -706,7 +716,9 @@ namespace VcpCore.Common
                 int vBlanking = Vertical_Blanking(edidData);
                 int vTotal = v + vBlanking;
                 if (hTotal == 0 || vTotal == 0)
-                    throw new ArgumentException("Invalid Horizontal or Vertical Total");
+                {
+                    return (0, 0, 0);
+                }
 
                 // Calculate Refresh Rate
                 double refreshRate = pixelClockMHz / (hTotal * vTotal) * 1000000;
