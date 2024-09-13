@@ -16,15 +16,12 @@ namespace DDPM.SA.Common.Security
         private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
         private string[] Issuer = new string[] { "Entrust Certification Authority - L1F" };
         private string[] Subject = new string[] { "content-cdn.dell.com", "*.dell.com" };
-        public bool CheckFile_SHA512(string CertificateFilePath, string Stande_SHA512, string Stande_Thumbprint, out string Info)
+        public bool CheckFile_SHA512(string CertificateFilePath, string Stande_SHA512, out string Info)
         {
             bool ret = false;
             Info = "";
             try
             {
-                // 讀取憑證檔案並創建 X509Certificate2 物件
-                X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
-                ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
                 string info = string.Empty;
                 ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out info).ToLower().Equals(Stande_SHA512.ToLower()) && ret;
             }
@@ -34,7 +31,22 @@ namespace DDPM.SA.Common.Security
             }
             return ret;
         }
-        public bool CheckFile_SHA256(string CertificateFilePath, string Stande_SHA256, string Stande_Thumbprint, out string Info)
+        public bool CheckFile_SHA256(string CertificateFilePath, string Stande_SHA256, out string Info)
+        {
+            bool ret = false;
+            Info = "";
+            try
+            {
+                string info = string.Empty;
+                ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out info).ToLower().Equals(Stande_SHA256.ToLower()) && ret;
+            }
+            catch (Exception ex)
+            {
+                Info = "No signature Ex:" + ex.ToString();
+            }
+            return ret;
+        }
+        public bool CheckFile_Thumbprint(string CertificateFilePath, string Stande_Thumbprint, out string Info)
         {
             bool ret = false;
             Info = "";
@@ -43,8 +55,6 @@ namespace DDPM.SA.Common.Security
                 // 讀取憑證檔案並創建 X509Certificate2 物件
                 X509Certificate2 certificate = new X509Certificate2(CertificateFilePath);
                 ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
-                string info = string.Empty;
-                ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out info).ToLower().Equals(Stande_SHA256.ToLower()) && ret;
             }
             catch (Exception ex)
             {

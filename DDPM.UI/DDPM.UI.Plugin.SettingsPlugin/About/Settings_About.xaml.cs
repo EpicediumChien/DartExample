@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,18 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void LearnMore_Click(object sender, MouseButtonEventArgs e)
         {
-
+            string url = "https://www.dell.com/support/home";
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch
+            {
+            }
         }
     }
 }

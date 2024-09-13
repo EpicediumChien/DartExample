@@ -730,6 +730,10 @@ namespace DDPM.SA.Common.CLI
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ActiveInputSource}");
                         response.Value = (data_IT.Lock_Display_ActiveInputSource ? "Lock" : "Unlock");
                         break;
+                    case "COLLABSCREENSHARE": //assume only IT command enter here
+                        Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Keyboard_CollabScreenShare}");
+                        response.Value = (data_IT.Lock_Keyboard_CollabScreenShare ? "Lock" : "Unlock");
+                        break;
                     default:
                         return CLI_Response_TypeNotSupport(commandLineInput, result);
                 }                
@@ -799,7 +803,7 @@ namespace DDPM.SA.Common.CLI
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Settings_TelemetryConsent = target;
                         }
-                        if (commandLineInput.TargetFeature.Equals("POWERNAP"))
+                        else if (commandLineInput.TargetFeature.Equals("POWERNAP"))
                         {
                             if (data_IT != null)
                                 data_IT.Lock_Display_PowerNap = target;
@@ -826,6 +830,13 @@ namespace DDPM.SA.Common.CLI
                                 data_IT.Lock_Display_ActiveInputSource = target;
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Display_ActiveInputSource = target;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("COLLABSCREENSHARE"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Keyboard_CollabScreenShare = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Keyboard_CollabScreenShare = target;
                         }
                         else
                             return CLI_Response_TypeNotSupport(commandLineInput, result);
@@ -855,6 +866,11 @@ namespace DDPM.SA.Common.CLI
                                 WriteLog(Log, $"[IT]Feature:{commandLineInput.TargetFeature} get the value [{value}] indeed in support list");
                                 continue;
                             }
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("COLLABSCREENSHARE"))
+                        {
+                            if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
+                                continue;
                         }
                         //No pre-definition be found, means fail
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
@@ -886,6 +902,9 @@ namespace DDPM.SA.Common.CLI
                                 break;
                             case "ACTIVEINPUTSOURCE":
                                 status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_ActiveInputSource" }).Result;
+                                break;
+                            case "COLLABSCREENSHARE":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Keyboard_CollabScreenShare" }).Result;
                                 break;
                         }
                     }

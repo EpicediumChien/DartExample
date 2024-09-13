@@ -1356,7 +1356,7 @@ namespace ColorPreset.Plugins
                     {
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
-                        //download.DownloadFile(url, strFilePath, out downloadInfo);                        
+                        download.DownloadFile(url, strFilePath, out downloadInfo);                        
 
                         if (System.IO.File.Exists(strFilePath))
                         {
@@ -1436,7 +1436,7 @@ namespace ColorPreset.Plugins
 
                             strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
-                            //download.DownloadFile(url, strFilePath, out downloadInfo);
+                            download.DownloadFile(url, strFilePath, out downloadInfo);
 
                             string txtSha256 = BytesToString(GetHashSha256(strFilePath));
 

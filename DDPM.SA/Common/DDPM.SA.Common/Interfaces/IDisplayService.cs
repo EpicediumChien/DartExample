@@ -158,5 +158,9 @@ namespace DDPM.SA.Common
         Task<bool> SetGaming_VisionEngineEnableType(MonitorInfo monitorInfo, bool[] VisionEngineEnableType);
         Task<bool> SwitchGaming_VisionEngineType(MonitorInfo monitorInfo, Gaming_VisionEngineType VisionEngineType);
         #endregion Gaming
+
+        #region OutReport
+        Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos);
+        #endregion
     }
 }
