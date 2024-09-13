@@ -24,6 +24,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Dell.TechHub.Commodity.Peripheral;
+using Newtonsoft.Json.Linq;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -151,6 +152,25 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
         #region Webcam
+        public async Task<JArray> GetPresetProfiles(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return (JArray)""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "PresetProfiles");
+                Debug.WriteLine($"{value}");
+                return (JArray)value;
+            }
+            else
+            {
+                Console.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                return (JArray)"";
+            }
+        }
+
         public async Task<string> GetProfileName(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))

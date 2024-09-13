@@ -1,5 +1,5 @@
 @echo OFF
-start /wait /B cmd.exe /C .\del_files.bat
+:: start /wait /B cmd.exe /C .\del_files.bat
 
 set NET=net8.0
 :: dotnet.exe build -c "Debug" /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"

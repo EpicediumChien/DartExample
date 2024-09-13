@@ -197,6 +197,7 @@
     <None Remove="Resources\Images\RedCircle.png" />
     <None Remove="Resources\Images\Right.png" />
     <None Remove="Resources\Images\SB3022.png" />
+    <None Remove="Resources\Images\SB522A.png" />
     <None Remove="Resources\Images\ScrollButton1.png" />
     <None Remove="Resources\Images\ScrollButton2.png" />
     <None Remove="Resources\Images\SD25.png" />
@@ -233,7 +234,6 @@
     <None Remove="Resources\Images\TopButton4.png" />
     <None Remove="Resources\Images\TopButton5.png" />
     <None Remove="Resources\Images\TopButton6.png" />
-    <None Remove="Resources\Images\u2723qe.png" />
     <None Remove="Resources\Images\Up.png" />
     <None Remove="Resources\Images\Usb24.png" />
     <None Remove="Resources\Images\Video.png" />
@@ -435,7 +435,7 @@
     <Resource Include="Resources\Images\Speaker_VectorRight.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\u2723qe.png">
+    <Resource Include="Resources\Images\SB522A.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\WB5023.png" />

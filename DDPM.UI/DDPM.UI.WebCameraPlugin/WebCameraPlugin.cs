@@ -7,6 +7,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
@@ -225,8 +226,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            var GetBrightness = _deviceManagerPlugin!.GetBrightness(parameter).Result;
-            var ProfileName = _deviceManagerPlugin!.GetProfileName(parameter).Result;
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
             { }
             Mouse.OverrideCursor = null;

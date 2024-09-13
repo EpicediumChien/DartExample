@@ -37,7 +37,6 @@ namespace DDPM.UI.Common.UserControls
         }
         #endregion SplitOwner
 
-
         #region SplitList
         public ObservableCollection<SplitItem> SplitList
         {
@@ -54,7 +53,11 @@ namespace DDPM.UI.Common.UserControls
 
         public void ClearList()
         {
+            DataContext = null;
             vm.ClearList();
+            DataContext = vm;
+            vm.RefreshDisplayItems();
+            vm.RefreshPrevNextButtons();
         }
         #endregion SplitList
 
@@ -87,9 +90,49 @@ namespace DDPM.UI.Common.UserControls
             {
                 spItem.IsEditEnabled = true;
             }
+
+            if (spItem.ISplitCtrl != null)
+                spItem.ISplitCtrl.IsVertical = IsVertical;
+
             vm.AddSplitItemToList(spItem);
             return spItem;
         }
+
+        public SplitItem InsertSplitCtrlToList(ISplitCtrl isp, int index)
+        {
+            //Validate index
+            if (index < 0)
+                index = 0; //Insert to the first
+            else if (index > ItemCount)
+                index = ItemCount; //Insert to the end
+
+            SplitItem spItem = new SplitItem();
+            spItem.InnerContent = isp.UC;
+            spItem.SplitOwner = vm.SplitOwner;
+            spItem.ClickCommand = new RelayCommand<SplitItem>(HandleSplitItemClickCommand);
+            spItem.EditClickCommand = new RelayCommand<SplitItem>(HandleSplitItemEditClickCommand);
+            spItem.DeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
+
+            if (vm.SplitOwner == eSplitOwner.EaCustom)
+            {
+                spItem.IsDeleteEnabled = true;
+                spItem.IsEditEnabled = true;
+            }
+            else if (vm.SplitOwner == eSplitOwner.EaWin)
+            {
+                spItem.IsEditEnabled = true;
+            }
+
+            if (spItem.ISplitCtrl != null)
+                spItem.ISplitCtrl.IsVertical = IsVertical;
+
+            DataContext = null;
+            vm.SplitList.Insert(index, spItem);
+            DataContext = vm;
+            vm.RefreshDisplayItems();
+            return spItem;
+        }
+
         #endregion Add Item
 
         #region Split List Operations
@@ -328,6 +371,9 @@ namespace DDPM.UI.Common.UserControls
                 spItem.IsEditEnabled = true;
             }
 
+            if (spItem.ISplitCtrl != null)
+                spItem.ISplitCtrl.IsVertical = IsVertical;
+
             DataContext = null;
             vm.SplitList.Insert(1, spItem);
             DataContext = vm;
@@ -355,7 +401,15 @@ namespace DDPM.UI.Common.UserControls
         public bool IsVertical
         {
             get { return vm.IsVertical; }
-            set { vm.IsVertical = value; }
+            set 
+            {
+                vm.IsVertical = value; 
+                foreach(SplitItem spItem in vm.SplitList)
+                {
+                    if (spItem.ISplitCtrl != null)
+                        spItem.ISplitCtrl.IsVertical = vm.IsVertical;
+                }
+            }
         }
 
         #endregion Screen Orientation

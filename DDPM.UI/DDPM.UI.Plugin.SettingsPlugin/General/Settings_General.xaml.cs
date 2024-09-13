@@ -1,19 +1,24 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VcpCore.Common;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -57,6 +62,29 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void SaveMonitorAssetReport_Click(object sender, MouseButtonEventArgs e)
         {
+            SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "MIF Files (*.mif)|*.mif|All Files (*.*)|*.*"; // 檔案類型過濾
+                saveFileDialog.Title = "Save Monitor Asset Report";
+                saveFileDialog.DefaultExt = "mif";
+
+                // 顯示對話框並檢查用戶是否按了「儲存」按鈕
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // 獲取選擇的檔案路徑
+                    string filePath = saveFileDialog.FileName;
+                    // 如果檔案路徑不以 .mif 結尾，則附加 .mif 副檔名
+                    if (!filePath.EndsWith(".mif", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Debug.Write(filePath);
+                        filePath = filePath.Substring(0, filePath.IndexOf("."));
+                        Debug.Write(filePath);
+                        filePath += ".mif";
+                    }
+                    vm.SaveMonitorAssetReport(filePath);
+                }
+            }
         }
     }
 }
