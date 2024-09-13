@@ -2953,13 +2953,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //}
                             //get vcp code
                             objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                            if (objGetVCP.result && (int)objGetVCP.value != (int)(uint)code.Value[0])
+                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
                             {
                                 //set vcp code
+                                writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
                                 b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
                             }
                         }
                     }
+                    return Task.FromResult(true);
                 }
                 else
                 {
@@ -6181,10 +6183,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             foreach (int code in importVCP.ImportVCPSequence)
             {
                 VCP vcp = vcps.Find(x => x.Code == code);
-                //if (code == 16 || code == 18)
-                //{
-                Task<bool> b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]);
-                //}
+                writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
+                ObjGetVCP objGetVCP = new ObjGetVCP();
+                objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                {
+                    writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
+                    bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                }
             }
         }
 
