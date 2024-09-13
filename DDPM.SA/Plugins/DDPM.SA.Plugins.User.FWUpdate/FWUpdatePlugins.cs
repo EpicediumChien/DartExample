@@ -549,20 +549,29 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 //0909 Bruce Add Security
                 string FolderInfo;
+                string PathSymbolicLinInfo;
                 int count = 0;
                 bool folderValid = false;
                 do
                 {
                     FolderInfo = string.Empty;
-                    folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo);
+                    PathSymbolicLinInfo = string.Empty;
+                    folderValid = false;
+                    folderValid = DDPMFileSecurity.IsPathSymbolicLinked(savePath, out PathSymbolicLinInfo);//0913 Bruce Add Security
+                    if (!folderValid)
+                    {
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
+                        //Do remove Symbolic Link than delete folder
+                        Directory.Delete(savePath, true);
+                        Directory.CreateDirectory(savePath);
+                    }
+                    folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo) && folderValid;
                     if (!folderValid)
                     {
                         _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                        if (Directory.Exists(savePath))
-                        {
-                            Directory.Delete(savePath, true);
-                            Directory.CreateDirectory(savePath);
-                        }
+                        //Do remove Symbolic Link than delete folder
+                        Directory.Delete(savePath, true);
+                        Directory.CreateDirectory(savePath);
                     }
                 } while (!folderValid && count < 2);
                 if (!folderValid)
@@ -595,16 +604,25 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     string url = fwUpdateInfos[i].ServerPath;
                     //0909 Bruce Add Security
-                    FolderInfo = string.Empty;
                     count = 0;
-                    folderValid = false;
                     do
                     {
                         FolderInfo = string.Empty;
-                        folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo);
+                        PathSymbolicLinInfo = string.Empty;
+                        folderValid = false;
+                        folderValid = DDPMFileSecurity.IsPathSymbolicLinked(savePath, out PathSymbolicLinInfo);//0913 Bruce Add Security
+                        if (!folderValid)
+                        {
+                            _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
+                            //Do remove Symbolic Link than delete folder
+                            Directory.Delete(savePath, true);
+                            Directory.CreateDirectory(savePath);
+                        }
+                        folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo) && folderValid;
                         if (!folderValid)
                         {
                             _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
+                            //Do remove Symbolic Link than delete folder
                             Directory.Delete(savePath, true);
                             Directory.CreateDirectory(savePath);
                         }
