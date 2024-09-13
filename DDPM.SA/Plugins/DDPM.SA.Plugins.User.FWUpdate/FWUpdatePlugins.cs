@@ -698,6 +698,27 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
+                    
+                    CertificateCheck certificateCheck = new CertificateCheck();
+                    bool isCheckSHA = false;
+                    string FileCAInfo = string.Empty;
+                    //Bruce 0913 Add zip file check SHA512, SHA256.
+                    if (!string.IsNullOrEmpty(fwUpdateInfos[i].SHA512))
+                    {
+                        isCheckSHA = certificateCheck.CheckFile_SHA512(_installationFileStoragePath, fwUpdateInfos[i].SHA512, out FileCAInfo);
+                    }
+                    else
+                    {
+                        isCheckSHA = certificateCheck.CheckFile_SHA256(_installationFileStoragePath, fwUpdateInfos[i].SHA256, out FileCAInfo);
+                    }
+                    if (!isCheckSHA)
+                    {
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FileCheckFail;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " File check fail. Ex:" + FileCAInfo);
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
+                        continue;
+                    }
                     string exeFilePath;
                     Unzip unzip = new Unzip(_logs);
                     if (!unzip.ExecuteUnzip(_installationFileStoragePath, extractPath, out exeFilePath))
@@ -708,18 +729,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
-                    //Bruce 0909 Add check SHA512, SHA256 and Thumbprint.
-                    CertificateCheck certificateCheck = new CertificateCheck();
-                    bool isCheckSHA = false;
-                    string FileCAInfo = string.Empty;
-                    if (!string.IsNullOrEmpty(fwUpdateInfos[i].SHA512))
-                    {
-                        isCheckSHA = certificateCheck.CheckFile_SHA512(exeFilePath, fwUpdateInfos[i].SHA512, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
-                    }
-                    else
-                    {
-                        isCheckSHA = certificateCheck.CheckFile_SHA256(exeFilePath, fwUpdateInfos[i].SHA256, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
-                    }
+                    //Bruce 0913 Add exe file check Thumbprint.
+                    isCheckSHA = false;
+                    FileCAInfo = string.Empty;
+                    isCheckSHA = certificateCheck.CheckFile_Thumbprint(exeFilePath, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
                     if (isCheckSHA)
                     {
                         fwUpdateInfos[i].InstallPaths = exeFilePath;
@@ -1092,18 +1105,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}  {nameof(Install)}  start");
-                //Bruce 0909 Add check SHA512, SHA256 and Thumbprint.
+                //Bruce 0913 Add exe file check Thumbprint.
                 CertificateCheck certificateCheck = new CertificateCheck();
                 bool isCheckSHA = false;
                 string FileCAInfo = string.Empty;
-                if (!string.IsNullOrEmpty(fwUpdateInfo.SHA512))
-                {
-                    isCheckSHA = certificateCheck.CheckFile_SHA512(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA512, fwUpdateInfo.Thumbprint, out FileCAInfo);
-                }
-                else
-                {
-                    isCheckSHA = certificateCheck.CheckFile_SHA256(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA256, fwUpdateInfo.Thumbprint, out FileCAInfo);
-                }
+                isCheckSHA = certificateCheck.CheckFile_Thumbprint(fwUpdateInfo.InstallPaths, fwUpdateInfo.Thumbprint, out FileCAInfo);
                 if (!isCheckSHA)
                 {
                     _notificationStr = $"Firmware update unsuccessful.";
