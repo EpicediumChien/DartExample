@@ -14,6 +14,10 @@ namespace DDPM.UI.Common
         private int _externalIndex2 = -1;
         private int _externalIndex3 = -1;
 
+        private Visibility _Locker1 = Visibility.Collapsed;
+        private Visibility _Locker2 = Visibility.Collapsed;
+        private Visibility _Locker3 = Visibility.Collapsed;
+
         private int _itemCount = 0;
         private int _shownCount = 0;
 
@@ -35,6 +39,24 @@ namespace DDPM.UI.Common
         {
             get => _text3;
             set => SetProperty(ref _text3, value);
+        }
+
+        public Visibility Locker1
+        {
+            get => _Locker1;
+            set => SetProperty(ref _Locker1, value);
+        }
+
+        public Visibility Locker2
+        {
+            get => _Locker2;
+            set => SetProperty(ref _Locker1, value);
+        }
+
+        public Visibility Locker3
+        {
+            get => _Locker3;
+            set => SetProperty(ref _Locker1, value);
         }
 
         public int ItemCount
