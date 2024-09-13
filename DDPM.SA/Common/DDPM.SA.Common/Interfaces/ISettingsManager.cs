@@ -40,6 +40,7 @@ namespace DDPM.SA.Common
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
         Task<string> QueryAccessInfo();
         Task<string> QueryAccessInfoVer();
+        Task<string> QueryNKVMLog();
     }
 
     /// <summary>
@@ -88,6 +89,7 @@ namespace DDPM.SA.Common
         Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps);
 
         //GlobalSettings
+        Task<string> GetNKVMLogInfo();
         Task<GlobalSettingParam> ReadGlobalSettings();
         Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam);
 

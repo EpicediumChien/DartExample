@@ -54,6 +54,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         private const string publisherSupport = "This plugin implements Settings Manager Plugin.";
         private static string _settingsAccess = SettingsAccess.AppAccessInfo;
         private static string _settingsAccessVer = SettingsAccess.AppAccessVer;
+        private static string _NKVM_Log_GUID = SettingsAccess.NKVM_Log;
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
@@ -116,6 +117,11 @@ namespace DDPM.SA.Plugins.SettingsManager
         public Task<string> QueryAccessInfoVer()
         {
             return Task.FromResult(_settingsAccessVer);
+        }
+        //0913 Add by Bruce
+        public Task<string> QueryNKVMLog()
+        {
+            return Task.FromResult(_NKVM_Log_GUID);
         }
         #endregion
 

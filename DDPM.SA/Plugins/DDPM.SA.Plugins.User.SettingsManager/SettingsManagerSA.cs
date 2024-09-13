@@ -112,6 +112,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
+        private static string _NKVMLogInfo = string.Empty;
 
         private string _GlobalSetting_path;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
@@ -280,6 +281,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
             _settingsAccessInfoVer = _SysSettingsPlugin.QueryAccessInfoVer().Result;
+            _NKVMLogInfo = _SysSettingsPlugin.QueryNKVMLog().Result;
             InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
@@ -1348,6 +1350,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         #endregion ImpExpSettings
 
         #region Global settings
+        public Task<string> GetNKVMLogInfo()
+        {
+            return Task.FromResult(_NKVMLogInfo);
+        }
         public Task<GlobalSettingParam> ReadGlobalSettings()
         {
             string strFilePath = _GlobalSetting_path;

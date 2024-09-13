@@ -117,5 +117,33 @@ namespace DDPM.SA.Obfuscation
             }
             return (string.Empty, string.Empty);
         }
+        public static string NKVM_Log { get; } = QueryNKVMLogInfo();
+        private static string QueryNKVMLogInfo()
+        {
+            string ret = string.Empty;
+            // target registry path
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
+            try
+            {
+                // open and sequential read to compare.
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+                {
+                    if (key != null)
+                    {
+                        // get value from GUID
+                        string GUID = key.GetValue("GUID") as string;
+                        if (GUID != null)
+                        {
+                            ret = GUID;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
+        }
     }
 }

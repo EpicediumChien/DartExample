@@ -3484,59 +3484,68 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 } while (!folderValid && count < 2);
 
-                string DDPMSubagentLogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
-                if (DirectoryContainsFiles(DDPMSubagentLogFolder))
+                string LogFolder = "C:\\ProgramData\\Dell\\DDPM Subagent";
+                if (DirectoryContainsFiles(LogFolder))
                 {
                     // 取得資料夾名稱
-                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string folderName = GetFolderName(LogFolder);
                     string savePath=Path.Combine(saveFolderPath, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                    CopyLogFolder(LogFolder, savePath);
                 }
-                string DDPMSubagent_UserLogFolder = "C:\\ProgramData\\Dell.UserMode\\DDPM Subagent User";
-                if (DirectoryContainsFiles(DDPMSubagent_UserLogFolder))
+                LogFolder = "C:\\ProgramData\\Dell.UserMode\\DDPM Subagent User";
+                if (DirectoryContainsFiles(LogFolder))
                 {
                     // 取得資料夾名稱
-                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string folderName = GetFolderName(LogFolder);
                     string savePath = Path.Combine(saveFolderPath, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(DDPMSubagent_UserLogFolder, savePath);
+                    CopyLogFolder(LogFolder, savePath);
                 }
-                string DDPMLogFolder = "C:\\ProgramData\\Dell.UserMode\\DDPM2.0";
-                if (DirectoryContainsFiles(DDPMLogFolder))
+                LogFolder = "C:\\ProgramData\\Dell.UserMode\\DDPM2.0";
+                if (DirectoryContainsFiles(LogFolder))
                 {
                     // 取得資料夾名稱
-                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string folderName = GetFolderName(LogFolder);
                     string savePath = Path.Combine(saveFolderPath, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                    CopyLogFolder(LogFolder, savePath);
                 }
-                string DTHLogFolder = "C:\\ProgramData\\Dell\\Dell TechHub";
-                if (DirectoryContainsFiles(DTHLogFolder))
+                LogFolder = "C:\\ProgramData\\Dell\\Dell TechHub";
+                if (DirectoryContainsFiles(LogFolder))
                 {
                     // 取得資料夾名稱
-                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string folderName = GetFolderName(LogFolder);
                     string savePath = Path.Combine(saveFolderPath, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                    CopyLogFolder(LogFolder, savePath);
                 }
-                string DTPLogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
-                if (DirectoryContainsFiles(DTPLogFolder))
+                LogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
+                if (DirectoryContainsFiles(LogFolder))
                 {
                     // 取得資料夾名稱
-                    string folderName = GetFolderName(DDPMSubagentLogFolder);
-                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    string folderName = "DTP_Log";
+                    string savePath = Path.Combine(LogFolder, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                    CopyLogFolder(LogFolder, savePath);
                 }
-                string DTPLogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
-                if (DirectoryContainsFiles(DTPLogFolder))
+                LogFolder = "C:\\ProgramData\\Dell\\Dell Peripheral Manager\\DPMService\\Log";
+                if (DirectoryContainsFiles(LogFolder))
                 {
                     // 取得資料夾名稱
-                    string folderName = GetFolderName(DDPMSubagentLogFolder);
+                    string folderName = "DPMService_Log";
                     string savePath = Path.Combine(saveFolderPath, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(DDPMSubagentLogFolder, savePath);
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                LogFolder = "C:\\ProgramData\\Dell\\Dell Peripheral Manager\\DPM\\Log";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = "DPM_Log";
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
                 }
                 string logFileName = "EventLog.evtx";
                 string logFilePath = Path.Combine(saveFolderPath, logFileName);
