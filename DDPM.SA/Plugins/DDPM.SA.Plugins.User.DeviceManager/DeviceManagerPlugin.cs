@@ -31,6 +31,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
@@ -40,9 +42,11 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using System.Xml.Linq;
 using VcpCore.Common;
 using WinCopies.Util;
 using Windows.System;
+using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
@@ -286,7 +290,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return Task.FromResult(_ICC_Metadata);
-        }      
+        }
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m)
         {
@@ -418,17 +422,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //if (colorPresetRunType == 0)
             //{
-                //data process
-             if (colorPresetRunType == (int)ColorPresetRunType.Auto )
+            //data process
+            if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                 r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, null, colorPresetRunType).Result;
             else
-                r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin,colorPresetRunType).Result;
-                //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
+                r = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin, colorPresetRunType).Result;
+            //var tmp = _ColorPresetPlugin.WriteColorPreset(m, ColorPreset_Name, _SettingsPlugin.ReadColorPresetSettings().Result).Result;
 
-                //write back to settings
-                //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
+            //write back to settings
+            //r = _SettingsPlugin.WriteColorPresetSettings(tmp).Result;
 
-                //Thread.Sleep(100);
+            //Thread.Sleep(100);
             //}
 
             //show OSD over colorpreset plugin
@@ -533,7 +537,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //if (r)
             //{
-                //write VCP over display manager
+            //write VCP over display manager
             //    r = SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result;
             //}
 
@@ -739,7 +743,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this).Result;
 
-            return Task.FromResult(temp);         
+            return Task.FromResult(temp);
         }
 
         /// <summary>
@@ -3304,6 +3308,101 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             LoadGlobalSettingParam();
         }
+        #region OutReport
+        public Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath)
+        {
+            bool ret = false;
+            if (_DisplayManagerPlugin != null)
+            {
+                List<MonitorAssetReport> monitorAssetReports = _DisplayManagerPlugin.GetMonitorAssetReport(monitorInfos).Result;
+                if (monitorAssetReports != null && monitorAssetReports.Count > 0)
+                {
+                    ret = SaveMonitorAssetReport(monitorAssetReports, savePath);
+                }
+            }
+            return Task.FromResult(ret);
+        }
+        private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
+        {
+            bool ret = false;
+            try
+            {
+                string filePath = savePath;
+                // 如果檔案路徑不以 .mif 結尾，則附加 .mif 副檔名
+                if (!filePath.EndsWith(".mif", StringComparison.OrdinalIgnoreCase))
+                {
+                    Debug.Write(filePath);
+                    filePath = filePath.Substring(0, filePath.IndexOf("."));
+                    Debug.Write(filePath);
+                    filePath += ".mif";
+                }
+                string contentToSave = "";
+                contentToSave += "Start Component\r\n";
+                contentToSave += $"  Name = \"Machine\"\r\n";
+                for (int i = 0; i < monitorAssetReports.Count; i++)
+                {
+                    MonitorAssetReport report = monitorAssetReports[i];
+                    Type type = report.GetType();
+                    PropertyInfo[] properties = type.GetProperties();
+                    contentToSave += $"  Start Group\r\n";
+                    contentToSave += $"    Name = \"Monitor Information\"\r\n";
+                    contentToSave += $"    ID = {i + 1}\r\n";
+                    contentToSave += $"    Class = \"Dell|Monitor Information|2.0\"\r\n";
+                    for (int j = 0; j < properties.Length; j++)
+                    {
+                        PropertyInfo property = properties[j];
+                        contentToSave += $"    Start Attribute\r\n";
+                        string propertyName = property.Name;
+                        contentToSave += $"      Name = \"{propertyName}\"\r\n";
+                        contentToSave += $"      ID = {j + 1}\r\n";
+                        contentToSave += $"      Type = String\r\n";
+                        contentToSave += $"      Storage = Specific\r\n";
+                        object value = property.GetValue(report);
+                        contentToSave += $"      Value = \"{value}\"\r\n";
+                        contentToSave += $"    End Attribute\r\n";
+                    }
+                    contentToSave += $"  End Group\r\n";
+                }
+                File.WriteAllText(filePath, contentToSave);
+            }
+            catch
+            {
+            }
+            return ret;
+        }
+        byte[] HexStringToByteArray(string hex)
+        {
+            if (hex.Length % 2 != 0)
+            {
+                throw new ArgumentException("String format error");
+            }
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < hex.Length; i += 2)
+            {
+                string hexPair = hex.Substring(i, 2);
+                bytes[i / 2] = Convert.ToByte(hexPair, 16);
+            }
+            return bytes;
+        }
+        int DaysBetweenWeekStartAndToday(int year, int weekOfYear)
+        {
+            // 獲取當前日期
+            DateTime today = DateTime.Today;
+            // 創建 CultureInfo 物件，用於計算週數
+            CultureInfo ci = CultureInfo.CurrentCulture;
+            Calendar calendar = ci.Calendar;
+            // 獲取該年的第一個日期
+            DateTime jan1 = new DateTime(year, 1, 1);
+            // 計算該年第一週的第一天
+            DateTime jan1WeekStart = calendar.AddWeeks(jan1, 1 - (int)calendar.GetWeekOfYear(jan1, ci.DateTimeFormat.CalendarWeekRule, ci.DateTimeFormat.FirstDayOfWeek));
+            // 計算指定週的第一天
+            DateTime weekStart = jan1WeekStart.AddDays((weekOfYear - 1) * 7);
+            // 計算從該週第一天到今天的天數
+            int daysBetween = (int)(today - weekStart).TotalDays;
+            return daysBetween;
+        }
+
+        #endregion
         #endregion
 
         #endregion
@@ -4213,7 +4312,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             break;
                         }
-                        else if ( (config.ColorManagement_Status == (int)ColorManagementStatus.On) && (config.ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor) )
+                        else if ((config.ColorManagement_Status == (int)ColorManagementStatus.On) && (config.ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor))
                         {
                             writelog("CheckAutoColorManagementEnableOnStartedCondition, config.ColorManagement_Status is ColorManagementStatus.On  config.ColorManagement_RunType is ColorManagementRunType.Bymonitor");
 

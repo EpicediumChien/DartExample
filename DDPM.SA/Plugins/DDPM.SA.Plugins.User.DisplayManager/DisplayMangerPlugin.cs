@@ -14,12 +14,14 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using DDPM.SA.Common.Method;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,7 @@ using VcpCore.Common;
 using VcpCore.Interfaces;
 using WinCopies.Util.Commands.Primitives;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -2573,6 +2576,205 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        #endregion
+
+        #region OutReport
+        public Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos)
+        {
+            _logs.DebugMsg($"{nameof(GetMonitorAssetReport)} start");
+            List<MonitorAssetReport> ret = new List<MonitorAssetReport>();
+            List<byte[]> currentMnoitorByteArr = GetCurrentMonitorEdid();
+            for (int i = 0; i < currentMnoitorByteArr.Count; i++)
+            {
+                EDID edid_FromeVCP = CommonFun.getEDID(currentMnoitorByteArr[i]);
+                byte[] edid_byte = currentMnoitorByteArr[i];
+                var (Resolutions_Width, Resolutions_High, Frequency) = Preferred_Detailed_Timing.GetResolutionAndRefreshRate(edid_byte);
+                int daysBetween = DaysBetweenWeekStartAndToday(edid_FromeVCP.Year, edid_FromeVCP.Week);
+                string manufacturer_Name = Vendor_Product_Identification.Manufacturer_Name(edid_byte);
+                string product_Id = Vendor_Product_Identification.Product_Id(edid_byte).PadLeft(4, '0');
+                MonitorInfo? monitorInfo = monitorInfos.Find(o => BitConverter.ToString((byte[])currentMnoitorByteArr[i]).Replace("-", "").StartsWith(o.edid.Edid));
+                Debug.WriteLine(monitorInfos[0].edid.Edid);
+                Debug.WriteLine(BitConverter.ToString((byte[])currentMnoitorByteArr[i]).Replace("-", ""));
+                string modelName = $"{manufacturer_Name} {manufacturer_Name + product_Id}";
+                string manufacturer = manufacturer_Name;
+                string orientation = "N/A";
+                string activeHour = "N/A";
+                string powerStatus = "N/A";
+                string technologyType = "N/A";
+                string controllerId = "N/A";
+                string firmwareVersion = "N/A";
+                string connection = "DisplayPort";
+                string serialNumber = "N/A";
+                if (monitorInfo != null)
+                {
+                    modelName = monitorInfo.modelName;
+                    if (modelName.StartsWith("AW"))
+                    {
+                        modelName = $"Alienware {modelName}";
+                    }
+                    else
+                    {
+                        modelName = $"Dell {modelName}";
+                    }
+                    manufacturer = manufacturer_Name.Equals("DEL") ? "Dell" : "";
+                    orientation = GetOSDOrientation(monitorInfo).Result;
+                    if (string.IsNullOrEmpty(orientation))
+                    {
+                        orientation = "N/A";
+                    }
+                    activeHour = $"{GetActiveHour(monitorInfo)} hours";
+                    powerStatus = GetPowerStatus(monitorInfo);
+                    controllerId = GetControllerID(monitorInfo);
+                    firmwareVersion = monitorInfo.FwVersion;
+                    connection = monitorInfo.inputSource;
+                    serialNumber = $"{edid_FromeVCP.ServiceTag}-{edid_FromeVCP.SerialNumber}";
+                }
+                if (Frequency == 60)
+                {
+                    technologyType = "LCD";
+                }
+                else if (Frequency == 75 || Frequency == 85)
+                {
+                    technologyType = "CRT";
+                }
+                ret.Add(new MonitorAssetReport()
+                {
+                    ModelName = modelName,
+                    Manufacturer = manufacturer,
+                    PlugandPlayID = manufacturer_Name + product_Id,
+                    SerialNumber = serialNumber,
+                    DateOfManufacture = $"{edid_FromeVCP.Year} ISO week {edid_FromeVCP.Week}",
+                    Age = $"{daysBetween.ToString()} days",
+                    ScreenSize = $"{Display_Parameters.Max_Horizontal_Image_Size(edid_byte)} x {Display_Parameters.Max_Vertical_Image_Size(edid_byte)} mm ({Display_Parameters.Max_Display_Size(edid_byte)} in)",
+                    InputFrequency = "N/A",
+                    PhysicalOrientation = orientation,
+                    TechnologyType = technologyType,
+                    UsageTime = activeHour,
+                    ControllerID = controllerId,
+                    FirmwareVersion = firmwareVersion,
+                    PowerState = powerStatus,
+                    OptimalResolution = $"{Resolutions_Width}x{Resolutions_High} at {Frequency}Hz",
+                    OptimalAspectRatio = Preferred_Detailed_Timing.Active_Ratio(edid_byte),
+                    Connection = connection
+                });
+            }
+            _logs.DebugMsg($"{nameof(GetMonitorAssetReport)} end");
+            return Task.FromResult(ret);
+        }
+        List<byte[]> GetCurrentMonitorEdid()
+        {
+            _logs.DebugMsg($"{nameof(GetCurrentMonitorEdid)} start");
+            List<byte[]> ret_Edie_Byt = new List<byte[]>();
+            try
+            {
+                // Open the Display Reg-Key
+                RegistryKey actiyDisplayRegistry = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\monitor\Enum");
+                actiyDisplayRegistry.GetSubKeyNames();
+                int count = int.Parse(actiyDisplayRegistry.GetValue("Count").ToString());
+                List<string> displayPath = new List<string>();
+                for (int i = 0; i < count; i++)
+                {
+                    displayPath.Add($"SYSTEM\\CurrentControlSet\\Enum\\{actiyDisplayRegistry.GetValue(i.ToString()).ToString()}\\Device Parameters");
+                }
+                for (int i = 0; i < displayPath.Count; i++)
+                {
+                    RegistryKey a = Registry.LocalMachine.OpenSubKey(displayPath[i]);
+                    byte[] edidObj = (byte[])a.GetValue("EDID");
+                    ret_Edie_Byt.Add(edidObj);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg($"{nameof(GetCurrentMonitorEdid)} error:{ex.ToString()}");
+            }
+            _logs.DebugMsg($"{nameof(GetCurrentMonitorEdid)} end");
+            return ret_Edie_Byt;
+        }
+        int DaysBetweenWeekStartAndToday(int year, int weekOfYear)
+        {
+            // 獲取當前日期
+            DateTime today = DateTime.Today;
+            // 創建 CultureInfo 物件，用於計算週數
+            CultureInfo ci = CultureInfo.CurrentCulture;
+            Calendar calendar = ci.Calendar;
+            // 獲取該年的第一個日期
+            DateTime jan1 = new DateTime(year, 1, 1);
+            // 計算該年第一週的第一天
+            DateTime jan1WeekStart = calendar.AddWeeks(jan1, 1 - (int)calendar.GetWeekOfYear(jan1, ci.DateTimeFormat.CalendarWeekRule, ci.DateTimeFormat.FirstDayOfWeek));
+            // 計算指定週的第一天
+            DateTime weekStart = jan1WeekStart.AddDays((weekOfYear - 1) * 7);
+            // 計算從該週第一天到今天的天數
+            int daysBetween = (int)(today - weekStart).TotalDays;
+            return daysBetween;
+        }
+        string GetActiveHour(MonitorInfo monitorInfo)
+        {
+            string ret = "N/A";
+            try
+            {
+                ObjGetVCP rc = GetVCPCapability(monitorInfo, 0xC0).Result;
+                if (rc.result)
+                {
+                    ret = rc.value.ToString();
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
+        }
+        string GetPowerStatus(MonitorInfo monitorInfo)
+        {
+            string ret = "N/A";
+            try
+            {
+                ObjGetVCP rc = GetVCPCapability(monitorInfo, 0xD6).Result;
+                if (rc.result)
+                {
+                    Debug.WriteLine((uint)rc.value);
+                    uint ret_uint = (uint)rc.value;
+                    switch (ret_uint)
+                    {
+                        case 0x01:
+                            ret = "On";
+                            break;
+                        case 0x04:
+                            ret = "Saving";
+                            break;
+                        case 0x05:
+                            ret = "Off";
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
+        }
+        string GetControllerID(MonitorInfo monitorInfo)
+        {
+            string ret = "N/A";
+            try
+            {
+                ObjGetVCP rc = GetVCPCapability(monitorInfo, 0xC8).Result;
+                if (rc.result)
+                {
+                    uint controllerId = ((uint)rc.value & 0xff);
+                    if (VcpCodeList.VCPC8.ContainsKey(controllerId))
+                    {
+                        ret = VcpCodeList.VCPC8[controllerId];
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
+        }
         #endregion
 
         #region Gaming

@@ -1,5 +1,6 @@
-﻿using static VcpCore.Plugins.EDIDReader;
-using static VcpCore.Plugins.EDIDReader.Monitor_Range_Limit;
+﻿using VcpCore.Common;
+using static VcpCore.Common.EDIDReader;
+using static VcpCore.Common.EDIDReader.Monitor_Range_Limit;
 
 namespace VcpCore.Plugins.Test.ParserTest
 {
@@ -223,13 +224,13 @@ namespace VcpCore.Plugins.Test.ParserTest
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
                 var result = Vendor_Product_Identification.Week_Of_Manufacture(InvalidEdid);
-                Assert.That(Week_Of_Manufacture1, Is.EqualTo(result));
+                Assert.That(Week_Of_Manufacture1, Is.EqualTo(result.ToString()));
             }
 
             if (validEdid != null || validEdid.Length >= 128)
             {
                 var result = Vendor_Product_Identification.Week_Of_Manufacture(validEdid);  //0x16=22
-                Assert.That(Week_Of_Manufacture2, Is.EqualTo(result));
+                Assert.That(Week_Of_Manufacture2, Is.EqualTo(result.ToString()));
             }
         }
 
@@ -247,13 +248,13 @@ namespace VcpCore.Plugins.Test.ParserTest
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
                 var result = Vendor_Product_Identification.Year_Of_Manufacture(InvalidEdid);
-                Assert.That(Year_Of_Manufacture1, Is.EqualTo(result));
+                Assert.That(Year_Of_Manufacture1, Is.EqualTo(result.ToString()));
             }
 
             if (validEdid != null || validEdid.Length >= 128)
             {
                 var result = Vendor_Product_Identification.Year_Of_Manufacture(validEdid);  //0x21=33,33+1990=2023
-                Assert.That(Year_Of_Manufacture2, Is.EqualTo(result));
+                Assert.That(Year_Of_Manufacture2, Is.EqualTo(result.ToString()));
             }
         }
 
@@ -1393,13 +1394,13 @@ namespace VcpCore.Plugins.Test.ParserTest
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
                 var result = Preferred_Detailed_Timing.Pixel_Clock(InvalidEdid);
-                Assert.That(Pixel_Clock1, Is.EqualTo(result));
+                Assert.That(Pixel_Clock1, Is.EqualTo(result.ToString()));
             }
 
             if (validEdid.Length >= 128)
             {
                 var result = Preferred_Detailed_Timing.Pixel_Clock(validEdid);
-                Assert.That(Pixel_Clock2, Is.EqualTo(result));
+                Assert.That(Pixel_Clock2, Is.EqualTo(result.ToString()));
             }
         }
 
@@ -1417,13 +1418,13 @@ namespace VcpCore.Plugins.Test.ParserTest
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
                 var result = Preferred_Detailed_Timing.Horizontal_Active(InvalidEdid);
-                Assert.That(Horizontal_Active1, Is.EqualTo(result));
+                Assert.That(Horizontal_Active1, Is.EqualTo(result.ToString()));
             }
 
             if (validEdid.Length >= 128)
             {
                 var result = Preferred_Detailed_Timing.Horizontal_Active(validEdid);
-                Assert.That(Horizontal_Active2, Is.EqualTo(result));
+                Assert.That(Horizontal_Active2, Is.EqualTo(result.ToString()));
             }
         }
 
@@ -1441,13 +1442,13 @@ namespace VcpCore.Plugins.Test.ParserTest
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
                 var result = Preferred_Detailed_Timing.Horizontal_Blanking(InvalidEdid);
-                Assert.That(Horizontal_Blanking1, Is.EqualTo(result));
+                Assert.That(Horizontal_Blanking1, Is.EqualTo(result.ToString()));
             }
 
             if (validEdid.Length >= 128)
             {
                 var result = Preferred_Detailed_Timing.Horizontal_Blanking(validEdid);
-                Assert.That(Horizontal_Blanking2, Is.EqualTo(result));
+                Assert.That(Horizontal_Blanking2, Is.EqualTo(result.ToString()));
             }
         }
 
@@ -1547,13 +1548,13 @@ namespace VcpCore.Plugins.Test.ParserTest
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
                 var result = Preferred_Detailed_Timing.Vertical_Active(InvalidEdid);
-                Assert.That(Vertical_Active1, Is.EqualTo(result));
+                Assert.That(Vertical_Active1, Is.EqualTo(result.ToString()));
             }
 
             if (validEdid.Length >= 128)
             {
                 var result = Preferred_Detailed_Timing.Vertical_Active(validEdid);
-                Assert.That(Vertical_Active2, Is.EqualTo(result));
+                Assert.That(Vertical_Active2, Is.EqualTo(result.ToString()));
             }
         }
 
@@ -1571,13 +1572,13 @@ namespace VcpCore.Plugins.Test.ParserTest
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
                 var result = Preferred_Detailed_Timing.Vertical_Blanking(InvalidEdid);
-                Assert.That(Vertical_Blanking1, Is.EqualTo(result));
+                Assert.That(Vertical_Blanking1, Is.EqualTo(result.ToString()));
             }
 
             if (validEdid.Length >= 128)
             {
                 var result = Preferred_Detailed_Timing.Vertical_Blanking(validEdid);
-                Assert.That(Vertical_Blanking2, Is.EqualTo(result));
+                Assert.That(Vertical_Blanking2, Is.EqualTo(result.ToString()));
             }
         }
 
