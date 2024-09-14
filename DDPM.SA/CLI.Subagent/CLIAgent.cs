@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static DDPM.SA.Common.ICLICommandTable;
 using DDPM.SA.Obfuscation;
+using System.IO;
 
 namespace CLI.Subagent
 {
@@ -48,6 +49,9 @@ namespace CLI.Subagent
 
         private const int TIMEOUT_IN_SECONDS = 30;
         private int _exitcode = (int)CLI_ExitCode.unknow_command;
+
+        //SDL to require log folder locate at user profile (user mode subagent)
+        private static readonly string LogLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell\\DDPM.CLI");
 
         #endregion
 
@@ -86,7 +90,8 @@ namespace CLI.Subagent
                 //new Guid(IDs.CLI_Plugin_Display), new Guid(IDs.CLI_Plugin_Peripherals),
                 //},
                 AllowUnelevatedExecution = true,
-                MultiSessionAgent = true
+                MultiSessionAgent = true,
+                LogDirectory = LogLocation
 #if RELEASE
                 ,
                 ValidCertificateHashes = ThumbprintHash.certificateHash

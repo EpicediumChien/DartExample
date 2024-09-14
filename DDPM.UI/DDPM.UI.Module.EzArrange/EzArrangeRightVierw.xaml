@@ -47,7 +47,19 @@
                             <StackPanel Orientation="Horizontal" Height="40" Margin="0,16,0,0">
                                 <UXControls:UXTextBlock Text="{Binding [Custom], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource UXTextBlock_Caption}" />
                                 <Viewbox Width="16" Height="16" Stretch="Uniform">
-                                    <Grid Width="16" Height="16">
+                                    <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
+                                        <Grid.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
+                                                    MaxWidth="360">
+                                                    <Grid>
+                                                        <TextBlock Name="customListTooltipText"
+                                                               Style="{StaticResource Tooltip_TextBlockStyle}"
+                                                               TextWrapping="Wrap"/>
+                                                    </Grid>
+                                                </Border>
+                                            </ToolTip>
+                                        </Grid.ToolTip>
                                         <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
                                               Fill="#FFB6B6B6" />
                                         <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"

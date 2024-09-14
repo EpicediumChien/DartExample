@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.UnitTestShared.Tests;
+using VcpCore.Common;
 
 namespace DDPM.SA.Plugins.User.DisplayProperties.Test
 {
@@ -145,8 +146,9 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             EdidParser edidparser = new EdidParser();
             PrivateObject privateObject = new PrivateObject(edidparser);
             int Month_ = 10;
+            int Week_ = 0;
             privateObject.SetFieldOrProperty("HexString", hexString);
-            var result = edidparser.GetManufactureYearAndMonth(ref Month_);
+            var result = edidparser.GetManufactureYearAndMonth(ref Month_, ref Week_);
             int expectedManufactureYear = 2023;
             int actualManufactureYear = result;
             int expectedManufactureMonth = 5;

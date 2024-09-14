@@ -4,8 +4,14 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DPeMPublic.Common.Enums;
+using Microsoft.Win32;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using VcpCore.Common;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -52,7 +58,20 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             IsSelected[index] = true;
             OnPropertyChanged("IsSelected");
         }
+        #region UI Enable Flags
 
+        private bool _isBusy = false;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                SetProperty(ref _isBusy, value);
+            }
+        }
+
+        #endregion UI Enable Flags
         public void OpenFullView(ContentControl content)
         {
             //if (OpenFullViewCommand != null)
@@ -65,7 +84,33 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             FullView = null;
         }
-
+        #region General
+        public void SaveMonitorAssetReport(string filePath)
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += Set_SaveMonitorAssetReport_Dowork;
+            bw.RunWorkerCompleted += Set_SaveMonitorAssetReport_Done;
+            bw.RunWorkerAsync(filePath);
+            IsBusy = true;
+            OnPropertyChanged("IsBusy");
+        }
+        private void Set_SaveMonitorAssetReport_Dowork(object sender, DoWorkEventArgs e)
+        {
+            string filePath = e.Argument.ToString();
+            List<MonitorInfo> monitorInfos = DdpmCommonHelper.DeviceManagerSA.GetMonitors().Result;
+            bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.ExportMonitorAssetReport(monitorInfos, filePath).Result;
+        }
+        private void Set_SaveMonitorAssetReport_Done(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            OnPropertyChanged("IsBusy");
+        }
+        #endregion
+        #region Update
         public FWUpdateInfoPackage FWUpdateInfoPackage { get; set; }
         public SWUpdateInfoPackage SWUpdateInfoPackage { get; set; }
         public List<UIUpdateInfo> Critical_UpdateList_UI { get; set; }
@@ -169,37 +214,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
         }
 
-        public void RefreshUI()
-        {
-            OnPropertyChanged("Critical_UpdateList_UI");
-            OnPropertyChanged("Recommended_UpdateList_UI");
-            OnPropertyChanged("Optional_UpdateList_UI");
-            OnPropertyChanged("LastCheckDate");
-            OnPropertyChanged("UpdatesPageUI_Enable");
-            OnPropertyChanged("NoUpdateAlert");
-            OnPropertyChanged("NoNetwork");
-            OnPropertyChanged("Critical_UpdateList");
-            OnPropertyChanged("Recommended_UpdateList");
-            OnPropertyChanged("Optional_UpdateList");
-            OnPropertyChanged("IsAnyUpdate");
-            OnPropertyChanged("LockMaskVisible");
-            OnPropertyChanged("LockMaskVisible_Updates");
-            OnPropertyChanged("GlobalSettingParam");
-            OnPropertyChanged("EnableQuickAccessWidget_String");
-            OnPropertyChanged("EnableQuickAccessWidget_Reminder_String");
-            OnPropertyChanged("SWVersion");
-            OnPropertyChanged("DriverVersion");
-        }
-
-        public void RefreshProcessUI()
-        {
-            OnPropertyChanged("UpdateTitle");
-            OnPropertyChanged("UpdateVersion");
-            OnPropertyChanged("ProgressValue");
-            OnPropertyChanged("Progress_IsAnimated");
-            OnPropertyChanged("ProgressStr");
-        }
-
         public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage)
         {
             LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
@@ -282,8 +296,37 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             SWUpdateInfoPackage.SWUpdateInfo.Clear();
             SWUpdateInfoPackage.SWUpdateInfo = swUpdateInfos;
         }
+        #endregion
+        public void RefreshUI()
+        {
+            OnPropertyChanged("Critical_UpdateList_UI");
+            OnPropertyChanged("Recommended_UpdateList_UI");
+            OnPropertyChanged("Optional_UpdateList_UI");
+            OnPropertyChanged("LastCheckDate");
+            OnPropertyChanged("UpdatesPageUI_Enable");
+            OnPropertyChanged("NoUpdateAlert");
+            OnPropertyChanged("NoNetwork");
+            OnPropertyChanged("Critical_UpdateList");
+            OnPropertyChanged("Recommended_UpdateList");
+            OnPropertyChanged("Optional_UpdateList");
+            OnPropertyChanged("IsAnyUpdate");
+            OnPropertyChanged("LockMaskVisible");
+            OnPropertyChanged("LockMaskVisible_Updates");
+            OnPropertyChanged("GlobalSettingParam");
+            OnPropertyChanged("EnableQuickAccessWidget_String");
+            OnPropertyChanged("EnableQuickAccessWidget_Reminder_String");
+            OnPropertyChanged("SWVersion");
+            OnPropertyChanged("DriverVersion");
+        }
+        public void RefreshProcessUI()
+        {
+            OnPropertyChanged("UpdateTitle");
+            OnPropertyChanged("UpdateVersion");
+            OnPropertyChanged("ProgressValue");
+            OnPropertyChanged("Progress_IsAnimated");
+            OnPropertyChanged("ProgressStr");
+        }
     }
-
     public class UIUpdateInfo
     {
         public bool IsCheckUpdate { get; set; }

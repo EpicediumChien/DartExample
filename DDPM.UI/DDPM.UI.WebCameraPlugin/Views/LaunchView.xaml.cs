@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.WebCameraCapture;
@@ -339,6 +340,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     Debug.WriteLine("MediaCapture initiate fail: " + ex.Message);
                     return;
                 }
+
                 MediaFrameSource mediaFrameSource = _vm._mediaCapture.FrameSources[frameSourceInfo.Id];
 
                 // 20240626 jim modify
@@ -348,8 +350,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 await _vm._mediaFrameReader.StartAsync();
 
+                // Query all properties [resolution and frame rate] of the webcam device
+                _vm.allProperties = _vm._mediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
+
+                // Order them by resolution then frame rate
+                _vm.allProperties = _vm.allProperties.OrderByDescending(x => x.Height * x.Width).ThenByDescending(x => x.FrameRate);
+
                 // jim add 20240626
                 _vm.captureManagerInitialized = true;
+
+                _vm.SetResolution_Selected(1);
+                _vm.SetFPS_Selected(1);
+
             }
             catch (Exception Exc)
             {
@@ -418,15 +430,27 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (!_vm._isRecording)
             {
-                _countdownValue = 3; // 設置倒數起始值
-                CountdownText.Text = _countdownValue.ToString();
+                if (_vm.Countdown_IsChecked)
+                {
+                    _countdownValue = 3; // 設置倒數起始值
+                    CountdownText.Text = _countdownValue.ToString();
 
-                _timer.Interval = TimeSpan.FromSeconds(1);
-                _timer.Tick += Timer_Tick;
-                _timer.Start();
+
+                    _timer = new DispatcherTimer();
+                    _timer.Interval = TimeSpan.FromSeconds(1);
+                    _timer.Tick += Timer_Tick;
+                    _timer.Start();
+                }
+                else
+                    StartRecordingAsync().RunSynchronously();
+
+                //_timer.Interval = TimeSpan.FromSeconds(1);
+                //_timer.Tick += Timer_Tick;
+                //_timer.Start();
 
                 //System.Threading.Thread.Sleep(3000);
                 //await StartRecordingAsync();
+
             }
             else
             {
@@ -457,9 +481,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             try
             {
-                var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
+                //var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
                 // Fall back to the local app storage if the Pictures Library is not available
-                _vm._captureFolder = picturesLibrary.SaveFolder ?? ApplicationData.Current.LocalFolder;
+                //_vm._captureFolder = picturesLibrary.SaveFolder ?? ApplicationData.Current.LocalFolder;
+                _vm._captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm.Media_File_Location); 
 
                 // Create storage file for the capture
                 var videoFile = await _vm._captureFolder.CreateFileAsync("SimpleVideo.mp4", CreationCollisionOption.GenerateUniqueName);
@@ -500,6 +525,42 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 await _vm._mediaCapture.StopRecordAsync();
 
             Debug.WriteLine("Stopped recording!");
+
+        }
+
+        /// <summary>
+        /// Resume recording a video
+        /// </summary>
+        /// <returns></returns>
+        private async Task ResumeRecordingAsync()
+        {
+            Debug.WriteLine("Resuming recording...");
+
+            _vm._isRecording = true;
+
+            if (_vm._mediaCapture != null)
+                await _vm._mediaCapture.ResumeRecordAsync();
+
+            Debug.WriteLine("Resume recording!");
+        }
+
+        /// <summary>
+        /// Pause recording a video
+        /// </summary>
+        /// <returns></returns>
+        private async Task PauseRecordingAsync()
+        {
+            Debug.WriteLine("Pausing recording...");
+
+            _vm._isRecording = true;
+
+            if (_vm._mediaCapture != null)
+            {
+                MediaCapturePauseResult result =
+                await _vm._mediaCapture.PauseRecordWithResultAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);               
+            }
+
+            Debug.WriteLine("Pause recording!");
         }
 
         /// <summary>

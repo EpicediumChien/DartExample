@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              d:DesignHeight="60" d:DesignWidth="600"
              Visibility="{Binding CtrlVisibility}">
@@ -43,7 +44,31 @@
 
                 <!-- Header[0] -->
                 <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown">
-                    <TextBlock Text="{Binding Text1, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                        <Image Grid.Column="1" Visibility="{Binding Locker1}" Margin="0,0,20,0"
+                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                            <Image.ToolTip>
+                                <ToolTip>
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+                    </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />
@@ -58,7 +83,31 @@
 
                 <!-- Header[1] -->
                 <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown">
-                    <TextBlock Text="{Binding Text2, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                        <Image Grid.Column="1" Visibility="{Binding Locker2}" Margin="0,0,20,0"
+                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                            <Image.ToolTip>
+                                <ToolTip>
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+                    </Grid>                    
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />
@@ -73,7 +122,31 @@
 
                 <!-- Header[2] -->
                 <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown">
-                    <TextBlock Text="{Binding Text3, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}" Style="{StaticResource TextBlock_HeaderTextStyle}" />
+                        <Image Grid.Column="1" Visibility="{Binding Locker3}" Margin="0,0,20,0"
+                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                            <Image.ToolTip>
+                                <ToolTip>
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+                    </Grid>                    
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />

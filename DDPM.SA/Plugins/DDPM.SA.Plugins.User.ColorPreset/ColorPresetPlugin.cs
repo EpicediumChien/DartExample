@@ -1297,7 +1297,7 @@ namespace ColorPreset.Plugins
                 string strICC_Folder;
                 if (string.IsNullOrEmpty(savelPath))
                 {
-                    strICC_Folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\" + "Dell Display and Peripheral Manager" + @"\ICC\";
+                    strICC_Folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager" + @"\ICC\";
                 }
                 else
                 {
@@ -1356,7 +1356,7 @@ namespace ColorPreset.Plugins
                     {
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
-                        //download.DownloadFile(url, strFilePath, out downloadInfo);                        
+                        download.DownloadFile(url, strFilePath, out downloadInfo);                        
 
                         if (System.IO.File.Exists(strFilePath))
                         {
@@ -1436,7 +1436,7 @@ namespace ColorPreset.Plugins
 
                             strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
-                            //download.DownloadFile(url, strFilePath, out downloadInfo);
+                            download.DownloadFile(url, strFilePath, out downloadInfo);
 
                             string txtSha256 = BytesToString(GetHashSha256(strFilePath));
 

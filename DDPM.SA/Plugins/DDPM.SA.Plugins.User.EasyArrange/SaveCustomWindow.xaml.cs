@@ -28,6 +28,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public SaveCustomWindow()
         {
             InitializeComponent();
+           // Owner = owner;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -151,6 +152,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (CancelButtonClick != null)
             {
                 CancelButtonClick(this, "");
+            }
+        }
+
+        private void cbNames_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            string custName = cbNames.Text;
+            if (String.IsNullOrWhiteSpace(custName))
+            {
+                saveBtn.IsEnabled = false;
+            }
+            else
+            {
+                saveBtn.IsEnabled = true;
             }
         }
     }

@@ -54,6 +54,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         private const string publisherSupport = "This plugin implements Settings Manager Plugin.";
         private static string _settingsAccess = SettingsAccess.AppAccessInfo;
         private static string _settingsAccessVer = SettingsAccess.AppAccessVer;
+        private static string _settingsAccessAddr = SettingsAccess.AppAccessAddr;
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
@@ -65,7 +66,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         }
 
         //Basic
-        private static string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        private static string path_programdata = Path.Combine( Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell");
         private static string folder_product = "Dell Display and Peripheral Manager";
         private static string filename_appsettings_IT = "DDPM.Configs.json";
 
@@ -116,6 +117,11 @@ namespace DDPM.SA.Plugins.SettingsManager
         public Task<string> QueryAccessInfoVer()
         {
             return Task.FromResult(_settingsAccessVer);
+        }
+        
+        public Task<string> QueryAccessInfoAddr()
+        {
+            return Task.FromResult(_settingsAccessAddr);
         }
         #endregion
 

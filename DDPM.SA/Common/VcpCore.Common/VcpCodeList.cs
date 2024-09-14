@@ -407,6 +407,39 @@ namespace VcpCore.Common
             { "BT.709", 26 },
             { "Rec709", 26 }
         };
+        public static Dictionary<uint, string> VCPC8 = new Dictionary<uint, string>
+        {
+            { 0x00, "Reserved" }, 
+            { 0x01, "Conexant" },
+            { 0x02, "Genesis Microchip" },
+            { 0x03, "Macronix" },
+            { 0x04, "IDT (Integrated Device Technology)" },
+            { 0x05, "Mstar Semiconductor" },
+            { 0x06, "Myson" },
+            { 0x07, "Philips" },
+            { 0x08, "PixelWorks" },
+            { 0x09, "RealTek Semiconductor" },
+            { 0x0A, "Sage" },
+            { 0x0B, "Silicon Image" },
+            { 0x0C, "SmartASIC" },
+            { 0X0D, "STMicroelectronics" },
+            { 0X0E, "Topro" },
+            { 0X0F, "Trumpion" },
+            { 0X10, "Welltrend" },
+            { 0X11, "Samsung" },
+            { 0X12, "Novatek Microelectronics" },
+            { 0X13, "STK" },
+            { 0X14, "Silicon Optix Inc" },
+            { 0X15, "Texas Instruments" },
+            { 0X16, "Analogix Semiconductor" },
+            { 0X17, "Quantum Data" },
+            { 0X18, "NXP Semiconductors" },
+            { 0X19, "Chrontel" },
+            { 0X1A, "Parade Technologies" },
+            { 0X1B, "THine Electronics" },
+            { 0X1C, "Trident" },
+            { 0X1D, "Micronas" }
+        };
 
         public struct VcpValue
         {

@@ -205,7 +205,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             var displayName = monitorInfo1.DisplayName;
             var properties = new Properties { Resolutions_Width = 1920, Resolutions_High = 1080, Frequency = 60 };
             var orientation = DisplayOrientation.Angle0;
-            var result = displayPropertiesPlugin.SetDisplayPropertiest(displayName, properties, orientation).Result;
+            var result = displayPropertiesPlugin.SetDisplayPropertiest(displayName, properties, orientation, monitorInfo1.modelName).Result;
             Assert.IsNotNull(result);
             Assert.IsFalse(result);
         }
