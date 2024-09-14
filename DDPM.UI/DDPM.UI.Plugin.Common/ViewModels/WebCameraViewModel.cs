@@ -371,6 +371,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
             }
         }
+        public ObservableCollection<ProfileItem> ProfileItems { get => _profileItems; }
     }
 
     public class StreamResolution
@@ -472,10 +473,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 return Width + "x" + Height + " [" + AspectRatio + "] " + FrameRate + "FPS " + _properties.Subtype;
             }
 
-            return String.Empty;
-        }        
+            return string.Empty;
         }
-        public ObservableCollection<ProfileItem> ProfileItems { get => _profileItems; }
     }
 
     public class ProfileItem

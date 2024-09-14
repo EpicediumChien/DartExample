@@ -639,7 +639,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 var txt = $"{Strings.Preset}: {_vm!.CurrentProfileName}";
                 if (!PresetNames.Contains(_vm!.CurrentProfileName))
                 {
-                    txt = UI.Common.Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 100, 14);
+                    txt = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 100, 14);
                 }
                 txtPreset.Text = txt;
                 rotateAnimation = new()
