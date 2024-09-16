@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace VcpCore.Plugins
+namespace VcpCore.Common
 {
     public class EdidParser
     {

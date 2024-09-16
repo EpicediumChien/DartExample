@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Management;
-using VcpCore.Common;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using static VcpCore.Common.EDIDReader;
 
-namespace DDPM.SA.Plugins.User.DisplayProperties
+[assembly: InternalsVisibleTo("VcpCore.Common.Test")]
+
+namespace VcpCore.Common
 {
     public class CommonFun
     {
@@ -17,8 +23,8 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("Root\\WMI", "SELECT * FROM WmiMonitorDescriptorMethods");
                 foreach (ManagementObject TempMonitor in searcher.Get())
                 {
-                    string? InstanceName = TempMonitor.GetPropertyValue("InstanceName").ToString();
-                    if (string.IsNullOrEmpty(InstanceName) || InstanceName.Split("\\").Length < 1 || InstanceName.Split("\\")[1] != MontitorID.Split("\\")[1])
+                    string InstanceName = TempMonitor.GetPropertyValue("InstanceName").ToString();
+                    if (InstanceName.Split("\\").Count() < 1 || InstanceName.Split("\\")[1] != MontitorID.Split("\\")[1])
                     {
                         continue;
                     }
@@ -31,13 +37,16 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         ManagementBaseObject managementBaseObject = TempMonitor.InvokeMethod("WmiGetMonitorRawEEdidV1Block", methodParameters, null);
 
                         byte[] blocks = (byte[])managementBaseObject["BlockContent"];
+                        edid.VideoInputType = Display_Parameters.Video_Input_Definition(blocks);
+                        edid.EdidVersion = Vendor_Product_Identification.EDIDVersion(blocks);
                         classEdidParser.Push(blocks);
                         edid.Edid = classEdidParser.HexString;
                         edid.ManufactureID = classEdidParser.GetManufacturerID();
                         edid.VendorID = classEdidParser.GetVendorID();
+                        edid.PID = classEdidParser.GetPID(blocks);
                         //  string text2 = classEdidParser.GetManufacturerID() + classEdidParser.GetVendorID();
                         edid.SerialNumber = classEdidParser.GetSerialNum();
-                        edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid.Month);
+                        edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid.Month, ref edid.Week);
                         edid.ServiceTag = classEdidParser.GetServiceTag();
                         edid.ModelName = classEdidParser.GetModelName();
                         edid.Size = classEdidParser.GetScreenSize();
@@ -45,25 +54,48 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         try
                         {
                             var strEDID = BitConverter.ToString(StringToByteArray(edid.Edid));
-                            //Console.WriteLine($"    printEDID without Extension : {strEDID}");
                         }
-                        catch (Exception)// ex)
+                        catch (Exception) { }
+
                         {
-                            //Console.WriteLine($"    printEDID without Extension ERROR : {ex.ToString()}");
+                            result = true;
                         }
-                        result = true;
                     }
-                    catch (Exception)// ex2)
-                    {
-                        //Console.WriteLine("ERROR2:" + ex2.Message.ToString());
-                    }
+                    catch (Exception) { }
                 }
             }
-            catch (Exception)// ex)
-            {
-                result = false;
-            }
+            catch (Exception) { result = false; }
+
             return result;
+        }
+        public static EDID getEDID(byte[] edid_byte)
+        {
+            EDID edid = new EDID();
+            try
+            {
+                EdidParser classEdidParser = new EdidParser();
+                edid.VideoInputType = Display_Parameters.Video_Input_Definition(edid_byte);
+                edid.EdidVersion = Vendor_Product_Identification.EDIDVersion(edid_byte);
+                classEdidParser.Push(edid_byte);
+                edid.Edid = classEdidParser.HexString;
+                edid.ManufactureID = classEdidParser.GetManufacturerID();
+                edid.VendorID = classEdidParser.GetVendorID();
+                edid.PID = classEdidParser.GetPID(edid_byte);
+                edid.SerialNumber = classEdidParser.GetSerialNum();
+                edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid.Month, ref edid.Week);
+                edid.ServiceTag = classEdidParser.GetServiceTag();
+                edid.ModelName = classEdidParser.GetModelName();
+                edid.Size = classEdidParser.GetScreenSize();
+                try
+                {
+                    var strEDID = BitConverter.ToString(StringToByteArray(edid.Edid));
+                }
+                catch (Exception) { }
+
+            }
+            catch (Exception) { }
+
+            return edid;
         }
 
         public static string ConvertManufacturerID(string hexManufacturerID)

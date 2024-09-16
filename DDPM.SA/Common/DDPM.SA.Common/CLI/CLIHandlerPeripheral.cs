@@ -16,5 +16,7 @@ namespace DDPM.SA.Common.CLI
     {
         public static CLIEventResult CLI_Peripheral_RestoreFactoryDefault(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
        => CLIHandlerApp.CLI_App_LockUnlock(Log, inputData, settingsPlugin, commandLineInput, action_guid);
+        public static CLIEventResult CLI_Peripheral_LockUlockWithUserAction(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+       => CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, inputData, settingsPlugin, commandLineInput, action_guid);
     }
 }

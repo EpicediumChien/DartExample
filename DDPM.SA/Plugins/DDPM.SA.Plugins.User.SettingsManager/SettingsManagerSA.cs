@@ -112,6 +112,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
+        private static string _settingsAccessInfoAddr = string.Empty;
 
         private string _GlobalSetting_path;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
@@ -280,6 +281,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
             _settingsAccessInfoVer = _SysSettingsPlugin.QueryAccessInfoVer().Result;
+            _settingsAccessInfoAddr = _SysSettingsPlugin.QueryAccessInfoAddr().Result;
             InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
@@ -855,50 +857,67 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path)
         {
+            WriteLog("[ExportSettingsFile] modelname: " + modelname);
+            WriteLog("[ExportSettingsFile] seriveTag: " + seriveTag);
+            WriteLog("[ExportSettingsFile] FilePath: " + path);
+
             DDPMImpExpSettings impexpSettings = new DDPMImpExpSettings();
 
             DDPMSettings settings = ReloadAppConfigData().Result;
-
-            impexpSettings.AppSettings = settings.AppSettings;
-            impexpSettings.UserSettings = settings.UserSettings;
-
-            List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
-
-            if (path.Substring(path.Length - 5, 5) != ".json")
+            if (settings != null)
             {
-                path = path + ".json";
-            }
+                impexpSettings.AppSettings = settings.AppSettings;
+                impexpSettings.UserSettings = settings.UserSettings;
 
-            //Dean 0912 file not ready at here, remove check
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
-            //{
-            //    _log.Info($"{nameof(DisplayExportSettings)} {FileInfo}");
-            //    return Task.FromResult<bool>(false);
-            //}
+                List<DDPMMonitorSettings> monitorSettings = ReloadMonitorSettings(modelname).Result;
 
-            foreach (DDPMMonitorSettings _settings in monitorSettings)
-            {
-                if (_settings.ServiceTag == seriveTag)
+                if (monitorSettings != null)
                 {
-                    impexpSettings.MonitorSettings = _settings;
-
-                    //export file
-                    FileInfo fileInfo = new FileInfo(path);
-                    fileInfo.Create().Close();
-                    //init data to file
-                    if (WriteImpExpSettings(path, impexpSettings))
+                    if (path.Substring(path.Length - 5, 5) != ".json")
                     {
-                        WriteLog("[ExportSettingsFile] Monitor settings file create and write success");
-                        return Task.FromResult<bool>(true);
+                        path = path + ".json";
                     }
-                    else
+
+                    //Dean 0912 file not ready at here, remove check
+                    //Elsa Add Security
+                    //string FileInfo;
+                    //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    //{
+                    //    _log.Info($"{nameof(DisplayExportSettings)} {FileInfo}");
+                    //    return Task.FromResult<bool>(false);
+                    //}
+
+                    foreach (DDPMMonitorSettings _settings in monitorSettings)
                     {
-                        WriteLog("[ExportSettingsFile] Monitor settings file create and write failed");
-                        return Task.FromResult<bool>(false);
+                        if (_settings.ServiceTag == seriveTag)
+                        {
+                            impexpSettings.MonitorSettings = _settings;
+
+                            //export file
+                            FileInfo fileInfo = new FileInfo(path);
+                            fileInfo.Create().Close();
+                            //init data to file
+                            if (WriteImpExpSettings(path, impexpSettings))
+                            {
+                                WriteLog("[ExportSettingsFile] Monitor settings file create and write success");
+                                return Task.FromResult<bool>(true);
+                            }
+                            else
+                            {
+                                WriteLog("[ExportSettingsFile] Monitor settings file create and write failed");
+                                return Task.FromResult<bool>(false);
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    WriteLog("[ExportSettingsFile] monitorSettings file is null");
+                }
+            }
+            else
+            {
+                WriteLog("[ExportSettingsFile] Usersettings file is null");
             }
 
             return Task.FromResult<bool>(false);
@@ -909,6 +928,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             DDPMImpExpSettings ImpExpSettings = ReadImportSettingsFile(path);
+            vcps = new List<VCP>();
             if (ImpExpSettings != null)
             {
                 DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
@@ -919,44 +939,62 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 if (File.Exists(monitorSettings_path))
                 {
                     monitorSettingsList = ReloadMonitorSettings(monitorSettings.Model).Result;
-                    foreach (DDPMMonitorSettings settings in monitorSettingsList)
+                    if (monitorSettingsList != null)
                     {
-                        if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
+                        if (monitorSettingsList.Count != 0)
                         {
-                            settings.Input = monitorSettings.Input;
-                            settings.KVM = monitorSettings.KVM;
-                            settings.VCPs = monitorSettings.VCPs;
-                            settings.EA = monitorSettings.EA;
-                            if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                            foreach (DDPMMonitorSettings settings in monitorSettingsList)
                             {
-                                vcps = monitorSettings.VCPs;
-                                if (!isSameModel)
+                                if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
                                 {
-                                    return Task.FromResult<bool>(true);
+                                    settings.Input = monitorSettings.Input;
+                                    settings.KVM = monitorSettings.KVM;
+                                    settings.VCPs = monitorSettings.VCPs;
+                                    settings.EA = monitorSettings.EA;
+                                    if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                                    {
+                                        vcps = monitorSettings.VCPs;
+                                        if (!isSameModel)
+                                        {
+                                            return Task.FromResult<bool>(true);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
+                                        WriteLog("[DisplayImportSettings] Import settings Fail...");
+                                        if (!isSameModel)
+                                        {
+                                            break;
+                                        }
+                                    }
                                 }
                             }
-                            else
+                            if (isSameModel)
                             {
-                                WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
-                                WriteLog("[DisplayImportSettings] Import settings Fail...");
-                                if (!isSameModel)
-                                {
-                                    break;
-                                }
+                                return Task.FromResult(true);
                             }
                         }
+                        else
+                        {
+                            WriteLog("[DisplayImportSettings] monitorSettingsList Count = 0...");
+                        }
+                    }
+                    else
+                    {
+                        WriteLog("[DisplayImportSettings] monitorSettingsList is null...");
                     }
                 }
                 else
                 {
-                    WriteLog("[DisplayImportSettings] Not Find Fail...");
+                    WriteLog("[DisplayImportSettings] Find monitor settings Fail...");
                 }
             }
             else
             {
                 WriteLog("[DisplayImportSettings] Settings is null...");
             }
-            vcps = new List<VCP>();
+            
             return Task.FromResult<bool>(false);
         }
 
@@ -966,7 +1004,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private string GetActiveUserLocalAppDataPath()
         {
-            string localAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
             Console.WriteLine("Local App Data Path: " + localAppDataPath);
             return localAppDataPath;
         }

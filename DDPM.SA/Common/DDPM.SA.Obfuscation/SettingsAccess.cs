@@ -54,20 +54,21 @@ namespace DDPM.SA.Obfuscation
             }
         }
 
-        private static (string id, string ver) AppInfo { get; } = QueryAppAccessInfo();
+        private static (string id, string ver, string location) AppInfo { get; } = QueryAppAccessInfo();
         public static string AppAccessInfo { get; } = AppInfo.id;
         public static string AppAccessVer { get; } = AppInfo.ver;
+        public static string AppAccessAddr { get; } = AppInfo.location;
 
         // ***Important***
         //This function require system/admin privilege
         //And return the setting file's private key for signature generate
-        private static (string id, string ver) QueryAppAccessInfo()//out string info)
+        private static (string id, string ver, string location) QueryAppAccessInfo()
         {
             //info = string.Empty;
             if(!IsUserElevated())
             {
                 //info = "Caller doesn't has elevated privilege";
-                return (string.Empty, string.Empty);
+                return (string.Empty, string.Empty, string.Empty);
             }
 
             string softwareName = "Dell Display and Peripheral Manager";
@@ -101,7 +102,8 @@ namespace DDPM.SA.Obfuscation
                                             if (output != null && output.Length == 32)
                                             {
                                                 string ver = subkey.GetValue("DisplayVersion") as string;
-                                                return (GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName), ver); //this id is used as DDPM settings private key
+                                                string addr = subkey.GetValue("InstallLocation") as string;
+                                                return (GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName), ver, addr); //this id is used as DDPM settings private key
                                             }
                                         }
                                     }
@@ -115,7 +117,7 @@ namespace DDPM.SA.Obfuscation
                     }
                 }
             }
-            return (string.Empty, string.Empty);
+            return (string.Empty, string.Empty,string.Empty);
         }
     }
 }
