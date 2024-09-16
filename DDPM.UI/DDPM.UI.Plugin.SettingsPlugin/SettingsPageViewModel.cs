@@ -98,11 +98,29 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             IsBusy = true;
             OnPropertyChanged("IsBusy");
         }
+        public void SaveDiagnosticReport(string filePath)
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += Set_SaveDiagnosticReport_Dowork;
+            bw.RunWorkerCompleted += Set_SaveMonitorAssetReport_Done;
+            bw.RunWorkerAsync(filePath);
+            IsBusy = true;
+            OnPropertyChanged("IsBusy");
+        }
         private void Set_SaveMonitorAssetReport_Dowork(object sender, DoWorkEventArgs e)
         {
             string filePath = e.Argument.ToString();
             List<MonitorInfo> monitorInfos = DdpmCommonHelper.DeviceManagerSA.GetMonitors().Result;
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.ExportMonitorAssetReport(monitorInfos, filePath).Result;
+        }
+        private void Set_SaveDiagnosticReport_Dowork(object sender, DoWorkEventArgs e)
+        {
+            string filePath = e.Argument.ToString();
+            bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile( filePath).Result;
         }
         private void Set_SaveMonitorAssetReport_Done(object sender, RunWorkerCompletedEventArgs e)
         {

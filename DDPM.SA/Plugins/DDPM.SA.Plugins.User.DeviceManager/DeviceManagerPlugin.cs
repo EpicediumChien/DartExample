@@ -3514,7 +3514,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     // 取得資料夾名稱
                     string folderName = GetFolderName(LogFolder);
-                    string savePath=Path.Combine(saveFolderPath, folderName);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
                     CopyLogFolder(LogFolder, savePath);
                 }
@@ -3545,12 +3545,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     // 複製指定的 log 文件到選擇的資料夾
                     CopyLogFolder(LogFolder, savePath);
                 }
-                LogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
+                //LogFolder = "C:\\ProgramData\\Dell\\DTP\\Logs";
+                //if (DirectoryContainsFiles(LogFolder))
+                //{
+                //    // 取得資料夾名稱
+                //    string folderName = "DTP_Log";
+                //    string savePath = Path.Combine(LogFolder, folderName);
+                //    // 複製指定的 log 文件到選擇的資料夾
+                //    CopyLogFolder(LogFolder, savePath);
+                //}
+                LogFolder = $"C:\\ProgramData\\{_SettingsPlugin.GetNKVMLogInfo}";
                 if (DirectoryContainsFiles(LogFolder))
                 {
                     // 取得資料夾名稱
-                    string folderName = "DTP_Log";
-                    string savePath = Path.Combine(LogFolder, folderName);
+                    string folderName = "NKVM";
+                    string savePath = Path.Combine(saveFolderPath, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
                     CopyLogFolder(LogFolder, savePath);
                 }
@@ -3576,7 +3585,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string logFilePath = Path.Combine(saveFolderPath, logFileName);
                 ExecuteWevtutilCommand(logFilePath);
 
-                string zipFilePath = Path.Combine(saveFolderPath, ".zip");
+                string zipFilePath = saveFolderPath + ".zip";
                 // 壓縮資料夾
                 CreateZipFile(saveFolderPath, zipFilePath);
             }
@@ -3720,12 +3729,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool ret = false;
             try
             {
-                // 確保資料夾存在
                 if (Directory.Exists(folderPath))
                 {
                     // 檢查資料夾是否包含檔案
                     string[] files = Directory.GetFiles(folderPath);
-                    ret = files.Length > 0;
+                    // 檢查資料夾是否包含子資料夾
+                    string[] directories = Directory.GetDirectories(folderPath);
+
+                    // 如果檔案或子資料夾數量大於0，則返回 true
+                    ret = files.Length > 0 || directories.Length > 0;
                 }
             }
             catch
