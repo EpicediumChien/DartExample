@@ -1750,6 +1750,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             displayInOut = true;
             return Task.FromResult(result);
         }
+        public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
+        {
+            displayInOut = false;
+            bool result = _DisplayManagerPlugin.SetResolutions(monitorInfos, properties).Result;
+            displayInOut = true;
+            return Task.FromResult(result);
+        }
+        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
+        {
+            displayInOut = false;
+            bool result = _DisplayManagerPlugin.SetOrientation(monitorInfos, orientation).Result;
+            displayInOut = true;
+            return Task.FromResult(result);
+        }
 
         public Task<bool> CallWindowsDisplaySetting()
         {

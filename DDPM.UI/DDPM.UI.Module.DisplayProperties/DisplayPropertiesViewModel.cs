@@ -28,9 +28,8 @@ namespace DDPM.UI.Module.DisplayProperties
             set
             {
                 SetProperty(ref _selectedResolution, value);
-                DdpmCommonHelper.DeviceManagerSA.SetDisplayPropertiest(MyModule.SelectedHomeDevice.MonitorInfo,
-                    _selectedResolution.Properties,
-                    _selectedOrientation.Orientation
+                DdpmCommonHelper.DeviceManagerSA.SetResolutions(MyModule.SelectedHomeDevice.MonitorInfo,
+                    _selectedResolution.Properties
                     ).Wait();
             }
         }
@@ -43,10 +42,25 @@ namespace DDPM.UI.Module.DisplayProperties
             set
             {
                 SetProperty(ref _selectedOrientation, value);
-                DdpmCommonHelper.DeviceManagerSA.SetDisplayPropertiest(MyModule.SelectedHomeDevice.MonitorInfo,
-                    _selectedResolution.Properties,
+                if (DdpmCommonHelper.DeviceManagerSA.SetOrientation(MyModule.SelectedHomeDevice.MonitorInfo,
                     _selectedOrientation.Orientation
-                    ).Wait();
+                    ).Result)
+                {
+                    DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    Resolution_ItemsCollection.Clear();
+                    MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                    {
+                        foreach (Properties Properties in displayPropertiesInfo.SupportedProperties.Properties)
+                        {
+                            Resolution_ItemsCollection.Add(new UI_Properties
+                            {
+                                Properties = Properties
+                            });
+                        }
+                    }));
+                    _selectedResolution = Resolution_ItemsCollection.Find(x => (x.Properties.isCurrent));
+                    RefreshUI();
+                }
             }
         }
 

@@ -1262,7 +1262,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetField("_DisplayPropertiesPlugin", displayPropertiesServiceObject);
 
             bool ActualResult = true;
-            DisplayPropertiesService.Setup(x => x.SetDisplayPropertiest(It.IsAny<string>(), It.IsAny<Properties>(), It.IsAny<DisplayOrientation>(), It.IsAny<string>())).Returns(Task.FromResult(ActualResult));
+            DisplayPropertiesService.Setup(x => x.SetDisplayPropertiest(It.IsAny<string>(), It.IsAny<Properties>(), It.IsAny<DisplayOrientation>())).Returns(Task.FromResult(ActualResult));
             var displayPropertiesServiceObject1 = DisplayPropertiesService.Object;
             privatedispalypluginObject.SetField("_DisplayPropertiesPlugin", displayPropertiesServiceObject1);
 
@@ -1297,7 +1297,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
         public void TestSetDisplayPropertiest()
         {
             bool ActualResult = true;
-            DisplayPropertiesService.Setup(x => x.SetDisplayPropertiest(It.IsAny<string>(), It.IsAny<Properties>(), It.IsAny<DisplayOrientation>(), It.IsAny<string>())).Returns(Task.FromResult(ActualResult));
+            DisplayPropertiesService.Setup(x => x.SetDisplayPropertiest(It.IsAny<string>(), It.IsAny<Properties>(), It.IsAny<DisplayOrientation>())).Returns(Task.FromResult(ActualResult));
             var displayPropertiesServiceObject = DisplayPropertiesService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_DisplayPropertiesPlugin", displayPropertiesServiceObject);
@@ -2201,7 +2201,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 monitor = monitorInfo1
             };
             bool ActualResult = true;
-            DisplayPropertiesService.Setup(x => x.SetDisplayPropertiest(It.IsAny<string>(), It.IsAny<Properties>(), It.IsAny<DisplayOrientation>(), It.IsAny<string>())).Returns(Task.FromResult(ActualResult));
+            DisplayPropertiesService.Setup(x => x.SetDisplayPropertiest(It.IsAny<string>(), It.IsAny<Properties>(), It.IsAny<DisplayOrientation>())).Returns(Task.FromResult(ActualResult));
             var displayPropertiesServiceObject = DisplayPropertiesService.Object;
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             privatedispalypluginObject.SetField("_DisplayPropertiesPlugin", displayPropertiesServiceObject);

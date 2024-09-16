@@ -55,7 +55,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         }
 
         /// <summary>
-        /// 取得螢幕屬性(現在解析度、刷新率)
+        /// 取得螢幕屬性(現在解析度、刷新率,螢幕所支援的解析度,HDR狀態, USBCPrioritization狀態)
         /// </summary>
         /// <param name="monitorInfo">螢幕資訊</param>
         /// <param name="s">傳入VCP的字串，用於解析是否支援HDR</param>
@@ -70,28 +70,30 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             return Task.FromResult(new DisplayPropertiesInfo());
         }
 
+        /// <summary>
+        /// 取得螢幕所支援的解析度
+        /// </summary>
+        /// <param name="monitorInfo">螢幕資訊</param>
+        /// <returns>支援的解析度列表</returns>
         public Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo)
         {
             try
             {
                 _logs?.DebugMsg_1(nameof(GetDisplaySupportedProperties) + " start");
-                _displayPropertiesInfo = new DisplayPropertiesInfo();
+                DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
+                HDRSetting hDRSetting = new HDRSetting();
+                Properties currentProperties = new Properties();
+                displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
+                if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation, monitorInfo.modelName))
                 {
-                    DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
-                    HDRSetting hDRSetting = new HDRSetting();
-                    Properties currentProperties = new Properties();
-                    displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
-                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation, monitorInfo.modelName))
-                    {
-                        return Task.FromResult(new DisplaySupportedProperties());
-                    }
-                    displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
-                    displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
-                    {
-                    DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
-                    };
-                    _displayPropertiesInfo = (displayPropertiesInfo);
+                    return Task.FromResult(new DisplaySupportedProperties());
                 }
+                displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
+                displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
+                {
+                    DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
+                };
+                _displayPropertiesInfo = (displayPropertiesInfo);
                 _logs?.DebugMsg_1(nameof(GetDisplaySupportedProperties) + " done");
                 return Task.FromResult(_displayPropertiesInfo.SupportedProperties);
             }
@@ -116,257 +118,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             return Task.FromResult(DisplayOrientation.Unknow);
         }
 
-        private bool RefreshDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType)
-        {
-            //Bruce 0605 修改註記:因讀取時間過長(約5000mS)，故修改軟體目前降至(約2800mS)
-            try
-            {
-                _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " start");
-                _displayPropertiesInfo = new DisplayPropertiesInfo();
-                {
-                    DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
-                    HDRSetting hDRSetting = new HDRSetting();
-                    Properties currentProperties = new Properties();
-                    displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
-                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation, monitorInfo.modelName))
-                    {
-                        return false;
-                    }
-                    displayPropertiesInfo.SupportedHDR = isSupportedHDR;
-                    hDRSetting.GetWindowsHDRStatus(monitorInfo.edid, out displayPropertiesInfo.isHDREnable);
-                    /*if (!displayPropertiesInfo.isHDREnable)
-                    {
-                        if (!hDRSetting.SetWindowsHDRStatus(monitorInfo.edid, false))
-                        {
-                            displayPropertiesInfo.SupportedHDR = false;
-                        }
-                    }
-                    else
-                    {
-                        if (!isHDREnable)
-                        {
-                            displayPropertiesInfo.isHDREnable = false;
-                        }
-                    }*/
-                    displayPropertiesInfo.SupportedUSBCPrioritization = isSupportUSBCPrioritization;
-                    displayPropertiesInfo.USBCPrioritizationType = USBCPrioritizationType;
-                    displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
-                    displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
-                    {
-                    DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
-                    };
-                    _displayPropertiesInfo = (displayPropertiesInfo);
-                }
-                _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " done");
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 取得螢幕的所有可支援的解析度
-        /// </summary>
-        /// <param name="monitorInfo">螢幕資訊</param>
-        /// <param name="currentProperties">現在的螢幕解析度屬性</param>
-        /// <param name="currentOrientation">現在的螢幕畫面方向</param>
-        /// <returns></returns>
-        private List<Properties> GetSupportedResolutions(MonitorInfo monitorInfo, Properties currentProperties, DisplayOrientation currentOrientation)
-        {
-            SortedList<(int, int, int), Properties> resolutions = new SortedList<(int, int, int), Properties>(Comparer<(int, int, int)>.Create((x, y) =>
-            {
-                if (x.Item1 != y.Item1)
-                    return y.Item1.CompareTo(x.Item1); // Width descending
-                if (x.Item2 != y.Item2)
-                    return y.Item2.CompareTo(x.Item2); // Height descending
-                return y.Item3.CompareTo(x.Item3); // Frequency descending
-            }));
-            DEVMODE devMode = new DEVMODE();
-            int i = 0;
-            bool found_Current = false, found_Recommended = false;
-            while (_EnumDisplaySettings(monitorInfo.DisplayName, i, ref devMode))
-            {
-                if (!(devMode.dmPelsWidth >= 800 && devMode.dmPelsHeight >= 600) &&
-                    !(devMode.dmPelsWidth >= 600 && devMode.dmPelsHeight >= 800))
-                {
-                    i++;
-                    continue;
-                }
-                Properties resolution = new Properties
-                {
-                    Resolutions_Width = devMode.dmPelsWidth,
-                    Resolutions_High = devMode.dmPelsHeight,
-                    Frequency = devMode.dmDisplayFrequency
-                };
-                if (!resolutions.ContainsKey((resolution.Resolutions_Width, resolution.Resolutions_High, resolution.Frequency)))
-                {
-                    if (!found_Recommended)
-                    {
-                        if (GetOptimalScreenResolution(monitorInfo, resolution, currentOrientation))
-                        {
-                            resolution.isRecommended = true;
-                            found_Recommended = true;
-                        }
-                    }
-                    if (!found_Current)
-                    {
-                        if (resolution.Equals(currentProperties))
-                        {
-                            resolution.isCurrent = true;
-                            found_Current = true;
-                        }
-                    }
-                    resolution.BitsPerPixel = currentProperties.BitsPerPixel;
-                    resolutions.Add((resolution.Resolutions_Width, resolution.Resolutions_High, resolution.Frequency), resolution);
-                }
-                i++;
-            }
-            return resolutions.Values.ToList();
-        }
-
-        /// <summary>
-        /// 取得螢幕設定檔
-        /// </summary>
-        /// <param name="DisplayName">要取得的螢幕</param>
-        /// <param name="Resolution">回傳值:解析度</param>
-        /// <param name="displayOrientation">回傳值:畫面旋轉角</param>
-        /// <returns>是否成功取得</returns>
-        private bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation, string ModelName)
-        {
-            DEVMODE devMode = new DEVMODE();
-            if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
-            {
-                properties = new Properties()
-                {
-                    Resolutions_Width = devMode.dmPelsWidth,
-                    Resolutions_High = devMode.dmPelsHeight,
-                    Frequency = devMode.dmDisplayFrequency,
-                    BitsPerPixel = devMode.dmBitsPerPel
-                };
-                displayOrientation = (DisplayOrientation)devMode.dmDisplayOrientation;
-                if (JudgmentList.AutoRotateOSMonitorList.Contains(ModelName.ToUpper()))
-                {
-                    if (properties.Resolutions_Width < properties.Resolutions_High && displayOrientation == DisplayOrientation.Angle0)
-                    {
-                        displayOrientation = DisplayOrientation.Angle90;
-                    }
-                    else
-                    {
-                        displayOrientation = DisplayOrientation.Angle0;
-                    }
-                }
-                return true;
-            }
-            properties = new Properties();
-            displayOrientation = DisplayOrientation.Unknow;
-            return false;
-        }
-
-        /// <summary>
-        /// 比對傳入的螢幕屬性並比對，用於找出建議解析度、頻率
-        /// </summary>
-        /// <param name="monitorInfo">要取得的螢幕資訊</param>
-        /// <param name="Properties">要比對的螢幕參數</param>
-        /// <param name="displayOrientation">現在螢幕的畫面方向，因涉及寬高的數值</param>
-        /// <returns>如果比對成功則回傳true代表傳入的螢幕參數是建議值，否則false</returns>
-        private bool GetOptimalScreenResolution(MonitorInfo monitorInfo, Properties Properties, DisplayOrientation displayOrientation)
-        {
-            int numPathArrayElements = 0;
-            int numModeInfoArrayElements = 0;
-            if (_GetDisplayConfigBufferSizes(QDC.QDC_ALL_PATHS,
-                    out numPathArrayElements,
-                    out numModeInfoArrayElements) == 0)
-            {
-                DISPLAYCONFIG_PATH_INFO[] array = new DISPLAYCONFIG_PATH_INFO[numPathArrayElements];
-                DISPLAYCONFIG_MODE_INFO[] modeInfoArray = new DISPLAYCONFIG_MODE_INFO[numModeInfoArrayElements];
-                var queryDisplayConfig = _QueryDisplayConfig(QDC.QDC_ALL_PATHS,
-                    ref numPathArrayElements, array, ref numModeInfoArrayElements, modeInfoArray,
-                    DISPLAYCONFIG_TOPOLOGY_ID.Zero);
-
-                if (queryDisplayConfig == 0)
-                {
-                    int num2 = 0;
-                    LUID adapterId = default(LUID);
-                    uint id = 0u;
-                    for (num2 = 0; num2 < numPathArrayElements; num2++)
-                    {
-                        adapterId = array[num2].targetInfo.adapterId;
-                        id = array[num2].targetInfo.id;
-                        DISPLAYCONFIG_TARGET_DEVICE_NAME deviceName = default(DISPLAYCONFIG_TARGET_DEVICE_NAME);
-                        deviceName.header.size = Marshal.SizeOf(typeof(DISPLAYCONFIG_TARGET_DEVICE_NAME));
-                        deviceName.header.adapterId = adapterId;
-                        deviceName.header.id = id;
-                        deviceName.header.type = DISPLAYCONFIG_DEVICE_INFO_TYPE.DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
-                        if (_DisplayConfigGetDeviceInfo(ref deviceName) == 0)
-                        {
-                            string monitorFriendlyDeviceName = deviceName.monitorFriendlyDeviceName;
-                            int edidProductCodeId = deviceName.edidProductCodeId;
-                            if (monitorFriendlyDeviceName != "" && monitorInfo.AliasDeviceName.ToUpper().Contains(monitorFriendlyDeviceName.ToUpper()))
-                            {
-                                DISPLAYCONFIG_TARGET_PREFERRED_MODE pref = default(DISPLAYCONFIG_TARGET_PREFERRED_MODE);
-                                pref.header.size = Marshal.SizeOf(typeof(DISPLAYCONFIG_TARGET_PREFERRED_MODE));
-                                pref.header.adapterId = adapterId;
-                                pref.header.id = id;
-                                pref.header.type = DISPLAYCONFIG_DEVICE_INFO_TYPE
-                                    .DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_PREFERRED_MODE;
-                                if (_DisplayConfigGetDeviceInfo(ref pref) == 0)
-                                {
-                                    var Width = pref.width;
-                                    var Height = pref.height;
-
-                                    if (displayOrientation == DisplayOrientation.Angle90 || displayOrientation == DisplayOrientation.Angle270)
-                                    {
-                                        Width = pref.height;
-                                        Height = pref.width;
-                                    }
-                                    var integerFrequency = 0;
-                                    GetMaxRefreshRateByWidthAndHeight(monitorInfo.DisplayName, Width, Height, out integerFrequency);
-                                    if (Properties.Equals(new Properties()
-                                    {
-                                        Resolutions_Width = Width,
-                                        Resolutions_High = Height,
-                                        Frequency = integerFrequency
-                                    }))
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 取得螢幕在特定解析度下的最高刷新率，用於找到建議值
-        /// </summary>
-        /// <param name="deviceName">要計算的螢幕</param>
-        /// <param name="dispWidth">要計算的螢幕的解析度寬</param>
-        /// <param name="dispHeight">要計算的螢幕的解析度高</param>
-        /// <param name="refreshRate">回傳該螢幕該解析度下最高的刷新率值</param>
-        private void GetMaxRefreshRateByWidthAndHeight(string deviceName, int dispWidth, int dispHeight, out int refreshRate)
-
-        {
-            refreshRate = 0;
-
-            DEVMODE deviceMode = new DEVMODE();
-
-            for (int i = 0; _EnumDisplaySettings(deviceName, i, ref deviceMode) != false; i++)
-            {
-                if (deviceMode.dmDisplayFrequency >= refreshRate &&
-
-                    (deviceMode.dmPelsWidth == dispWidth && deviceMode.dmPelsHeight == dispHeight))
-
-                {
-                    refreshRate = deviceMode.dmDisplayFrequency;
-                }
-            }
-        }
-
         /// <summary>
         /// 設定螢幕的解析度和畫面旋轉角
         /// </summary>
@@ -374,105 +125,38 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
         /// <param name="width">要設定的解析度寬</param>
         /// <param name="height">要設定的解析度高</param>
         /// <param name="orientation">要設定的畫面旋轉角</param>
-        public Task<bool> SetDisplayPropertiest(string DisplayName, Properties properties, DisplayOrientation orientation, string ModelName)
+        public Task<bool> SetDisplayPropertiest(string DisplayName, Properties properties, DisplayOrientation orientation)
         {
+            int result = DISP_CHANGE_BADMODE;
             try
             {
                 _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " start");
-                _logs?.DebugMsg_1($"Setting param: MN:{ModelName} DN:{DisplayName}:{properties.Resolutions_Width}x{properties.Resolutions_High} Orientation:{orientation.ToString()}");
+                _logs?.DebugMsg_1($"Setting param: {DisplayName}:{properties.Resolutions_Width}x{properties.Resolutions_High} Orientation:{orientation.ToString()}");
                 DEVMODE devMode = new DEVMODE();
                 devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
-                bool isPassOrientation = false;
                 if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
                 {
-                    int w = properties.Resolutions_Width, h = properties.Resolutions_High;
-                    if (properties.Resolutions_Width <= 0 && properties.Resolutions_High <= 0)
+                    if (properties.Resolutions_Width > 0 && properties.Resolutions_High > 0)
                     {
-                        w = devMode.dmPelsWidth;
-                        h = devMode.dmPelsHeight;
+                        devMode.dmPelsWidth = properties.Resolutions_Width;
+                        devMode.dmPelsHeight = properties.Resolutions_High;
                     }
-                    if (JudgmentList.AutoRotateOSMonitorList.Contains(ModelName.ToUpper()))
-                    {
-                        _logs?.DebugMsg_1($"MN:{ModelName} DN:{DisplayName} is pass set orientation");
-                        isPassOrientation = true;
-                    }
-                    if ((int)orientation < 0 || isPassOrientation)
-                    {
-                        orientation = (DisplayOrientation)devMode.dmDisplayOrientation;
-                    }
-                    else
-                    {
-                        devMode.dmDisplayOrientation = (int)orientation;
-                    }
-                    switch (orientation)
-                    {
-                        case DisplayOrientation.Angle90:
-                            if (w > h)
-                            {
-                                int tmp = w;
-                                w = h;
-                                h = tmp;
-                            }
-                            break;
-
-                        case DisplayOrientation.Angle180:
-                            if (w < h)
-                            {
-                                int tmp = w;
-                                w = h;
-                                h = tmp;
-                            }
-                            break;
-
-                        case DisplayOrientation.Angle270:
-                            if (w > h)
-                            {
-                                int tmp = w;
-                                w = h;
-                                h = tmp;
-                            }
-
-                            break;
-
-                        default:
-                            if (w < h)
-                            {
-                                int tmp = w;
-                                w = h;
-                                h = tmp;
-                            }
-                            break;
-                    }
-                    if (w > 0 && h > 0 && properties.Frequency <= 0)
-                    {
-                        int rate = 0;
-                        GetMaxRefreshRateByWidthAndHeight(DisplayName, w, h, out rate);
-                        if (rate > 0)
-                        {
-                            devMode.dmDisplayFrequency = rate;
-                        }
-                    }
-                    else if (properties.Frequency > 0)
+                    if (properties.Frequency > 0)
                     {
                         devMode.dmDisplayFrequency = properties.Frequency;
                     }
-                    if (w > 0 && h > 0)
-                    {
-                        devMode.dmPelsWidth = w;
-                        devMode.dmPelsHeight = h;
-                    }
-                    int result = -2;
-                    int retryCount = 0;
+                    int retryCount = 1;
                     do
                     {
                         result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
-                        _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} retry:{retryCount}");
+                        _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
                         _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         if (result != DISP_CHANGE_SUCCESSFUL)
                         {
                             int temp = devMode.dmPelsWidth;
                             devMode.dmPelsWidth = devMode.dmPelsHeight;
                             devMode.dmPelsHeight = temp;
+                            devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
                         }
                         retryCount++;
                     } while (result != DISP_CHANGE_SUCCESSFUL && retryCount <= 2);
@@ -480,29 +164,124 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} set result:{result}");
                     _logs?.DebugMsg_1($"devMode param: {DisplayName}:{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                     _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " done");
-                    if (result == DISP_CHANGE_SUCCESSFUL)
-                    {
-                        return Task.FromResult(true);
-                        //Console.WriteLine("display changed successfully。");
-                    }
-                    else
-                    {
-                        return Task.FromResult(false);
-                        //Console.WriteLine("display changed fail。Error code: " + result);
-                    }
-                }
-                else
-                {
-                    return Task.FromResult(false);
-                    //Console.WriteLine("Can't to get current display settings。");
                 }
             }
             catch
             {
+            }
+            if (result == DISP_CHANGE_SUCCESSFUL)
+            {
+                return Task.FromResult(true);
+            }
+            else
+            {
                 return Task.FromResult(false);
             }
         }
-
+        public Task<bool> SetResolutions(string DisplayName, Properties properties)
+        {
+            int result = DISP_CHANGE_BADMODE;
+            try
+            {
+                _logs?.DebugMsg_1(nameof(SetResolutions) + " start");
+                _logs?.DebugMsg_1($"Setting param:  DN:{DisplayName}:{properties.Resolutions_Width}x{properties.Resolutions_High}");
+                DEVMODE devMode = new DEVMODE();
+                devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
+                if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
+                {
+                    if (properties.Resolutions_Width > 0 && properties.Resolutions_High > 0)
+                    {
+                        devMode.dmPelsWidth = properties.Resolutions_Width;
+                        devMode.dmPelsHeight = properties.Resolutions_High;
+                    }
+                    if (properties.Frequency > 0)
+                    {
+                        devMode.dmDisplayFrequency = properties.Frequency;
+                    }
+                    int retryCount = 1;
+                    do
+                    {
+                        result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
+                        _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
+                        _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
+                        if (result != DISP_CHANGE_SUCCESSFUL)
+                        {
+                            int temp = devMode.dmPelsWidth;
+                            devMode.dmPelsWidth = devMode.dmPelsHeight;
+                            devMode.dmPelsHeight = temp;
+                            devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
+                        }
+                        retryCount++;
+                    } while (result != DISP_CHANGE_SUCCESSFUL && retryCount <= 2);
+                    result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
+                    _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} set result:{result}");
+                    _logs?.DebugMsg_1($"devMode param: {DisplayName}:{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
+                    _logs?.DebugMsg_1(nameof(SetResolutions) + " done");
+                }
+                else
+                {
+                }
+            }
+            catch
+            {
+            }
+            if (result == DISP_CHANGE_SUCCESSFUL)
+            {
+                return Task.FromResult(true);
+            }
+            else
+            {
+                return Task.FromResult(false);
+            }
+        }
+        public Task<bool> SetOrientation(string DisplayName, DisplayOrientation orientation)
+        {
+            int result = DISP_CHANGE_BADMODE;
+            try
+            {
+                _logs?.DebugMsg_1(nameof(SetOrientation) + " start");
+                _logs?.DebugMsg_1($"Setting param:  DN:{DisplayName} Orientation:{orientation.ToString()}");
+                DEVMODE devMode = new DEVMODE();
+                devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
+                if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
+                {
+                    if ((int)orientation >= 0)
+                    {
+                        devMode.dmDisplayOrientation = (int)orientation;
+                    }
+                    int retryCount = 1;
+                    do
+                    {
+                        result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
+                        _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
+                        _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
+                        if (result != DISP_CHANGE_SUCCESSFUL)
+                        {
+                            (devMode.dmPelsWidth, devMode.dmPelsHeight) = GetBestResolution(DisplayName, orientation);
+                        }
+                        retryCount++;
+                    } while (result != DISP_CHANGE_SUCCESSFUL && retryCount <= 2);
+                    result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
+                    _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} set result:{result}");
+                    _logs?.DebugMsg_1($"devMode param: {DisplayName}:{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
+                    _logs?.DebugMsg_1(nameof(SetOrientation) + " done");
+                }
+                else
+                {
+                }
+            }
+            catch
+            {
+            }
+            if (result == DISP_CHANGE_SUCCESSFUL)
+            {
+                return Task.FromResult(true);
+            }
+            else
+            {
+                return Task.FromResult(false);
+            }
+        }
         /// <summary>
         /// 呼叫windows的顯示器設定畫面
         /// </summary>
@@ -636,6 +415,233 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 //monitors.Clear(); //Dean 0626 fix SAST issue, remove this line since the object just created and it's empty
                 return new List<MonitorInfo>();
             }
+        }
+        /// <summary>
+        /// 刷新螢幕屬性
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="s"></param>
+        /// <param name="isSupportedHDR"></param>
+        /// <param name="isHDREnable"></param>
+        /// <param name="isSupportUSBCPrioritization"></param>
+        /// <param name="USBCPrioritizationType"></param>
+        /// <returns></returns>
+        private bool RefreshDisplayPropertiesInfo(MonitorInfo monitorInfo, string s, bool isSupportedHDR, bool isHDREnable, bool isSupportUSBCPrioritization, USBCPrioritizationType USBCPrioritizationType)
+        {
+            //Bruce 0605 修改註記:因讀取時間過長(約5000mS)，故修改軟體目前降至(約2800mS)
+            try
+            {
+                _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " start");
+                _displayPropertiesInfo = new DisplayPropertiesInfo();
+                {
+                    DisplayPropertiesInfo displayPropertiesInfo = new DisplayPropertiesInfo();
+                    HDRSetting hDRSetting = new HDRSetting();
+                    Properties currentProperties = new Properties();
+                    displayPropertiesInfo.DisplayName = monitorInfo.DisplayName;
+                    if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation, monitorInfo.modelName))
+                    {
+                        return false;
+                    }
+                    displayPropertiesInfo.SupportedHDR = isSupportedHDR;
+                    hDRSetting.GetWindowsHDRStatus(monitorInfo.edid, out displayPropertiesInfo.isHDREnable);
+                    /*if (!displayPropertiesInfo.isHDREnable)
+                    {
+                        if (!hDRSetting.SetWindowsHDRStatus(monitorInfo.edid, false))
+                        {
+                            displayPropertiesInfo.SupportedHDR = false;
+                        }
+                    }
+                    else
+                    {
+                        if (!isHDREnable)
+                        {
+                            displayPropertiesInfo.isHDREnable = false;
+                        }
+                    }*/
+                    displayPropertiesInfo.SupportedUSBCPrioritization = isSupportUSBCPrioritization;
+                    displayPropertiesInfo.USBCPrioritizationType = USBCPrioritizationType;
+                    displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
+                    displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
+                    {
+                    DisplayOrientation.Angle0,DisplayOrientation.Angle90,DisplayOrientation.Angle180,DisplayOrientation.Angle270
+                    };
+                    _displayPropertiesInfo = (displayPropertiesInfo);
+                }
+                _logs?.DebugMsg_1(nameof(RefreshDisplayPropertiesInfo) + " done");
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// 取得螢幕的所有可支援的解析度
+        /// </summary>
+        /// <param name="monitorInfo">螢幕資訊</param>
+        /// <param name="currentProperties">現在的螢幕解析度屬性</param>
+        /// <param name="currentOrientation">現在的螢幕畫面方向</param>
+        /// <returns></returns>
+        private List<Properties> GetSupportedResolutions(MonitorInfo monitorInfo, Properties currentProperties, DisplayOrientation currentOrientation)
+        {
+            SortedList<(int, int, int), Properties> resolutions = new SortedList<(int, int, int), Properties>(Comparer<(int, int, int)>.Create((x, y) =>
+            {
+                if (x.Item1 != y.Item1)
+                    return y.Item1.CompareTo(x.Item1); // Width descending
+                if (x.Item2 != y.Item2)
+                    return y.Item2.CompareTo(x.Item2); // Height descending
+                return y.Item3.CompareTo(x.Item3); // Frequency descending
+            }));
+            DEVMODE devMode = new DEVMODE();
+            int i = 0;
+            bool found_Current = false, found_Recommended = false;
+            while (_EnumDisplaySettings(monitorInfo.DisplayName, i, ref devMode))
+            {
+                if (!(devMode.dmPelsWidth >= 800 && devMode.dmPelsHeight >= 600) &&
+                    !(devMode.dmPelsWidth >= 600 && devMode.dmPelsHeight >= 800))
+                {
+                    i++;
+                    continue;
+                }
+                Properties resolution = new Properties
+                {
+                    Resolutions_Width = devMode.dmPelsWidth,
+                    Resolutions_High = devMode.dmPelsHeight,
+                    Frequency = devMode.dmDisplayFrequency
+                };
+                if (!resolutions.ContainsKey((resolution.Resolutions_Width, resolution.Resolutions_High, resolution.Frequency)))
+                {
+                    if (!found_Recommended)
+                    {
+                        if (GetOptimalScreenResolution(monitorInfo, resolution, currentOrientation))
+                        {
+                            resolution.isRecommended = true;
+                            found_Recommended = true;
+                        }
+                    }
+                    if (!found_Current)
+                    {
+                        if (resolution.Equals(currentProperties))
+                        {
+                            resolution.isCurrent = true;
+                            found_Current = true;
+                        }
+                    }
+                    resolution.BitsPerPixel = currentProperties.BitsPerPixel;
+                    resolutions.Add((resolution.Resolutions_Width, resolution.Resolutions_High, resolution.Frequency), resolution);
+                }
+                i++;
+            }
+            return resolutions.Values.ToList();
+        }
+        /// <summary>
+        /// 取得螢幕現在屬性
+        /// </summary>
+        /// <param name="DisplayName">要取得的螢幕</param>
+        /// <param name="Resolution">回傳值:解析度</param>
+        /// <param name="displayOrientation">回傳值:畫面旋轉角</param>
+        /// <returns>是否成功取得</returns>
+        private bool GetCurrentDisplaySetting(string DisplayName, out Properties properties, out DisplayOrientation displayOrientation, string ModelName)
+        {
+            DEVMODE devMode = new DEVMODE();
+            if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
+            {
+                properties = new Properties()
+                {
+                    Resolutions_Width = devMode.dmPelsWidth,
+                    Resolutions_High = devMode.dmPelsHeight,
+                    Frequency = devMode.dmDisplayFrequency,
+                    BitsPerPixel = devMode.dmBitsPerPel
+                };
+                displayOrientation = (DisplayOrientation)devMode.dmDisplayOrientation;
+                if (JudgmentList.AutoRotateOSMonitorList.Contains(ModelName.ToUpper()))
+                {
+                    if (properties.Resolutions_Width < properties.Resolutions_High && displayOrientation == DisplayOrientation.Angle0)
+                    {
+                        displayOrientation = DisplayOrientation.Angle90;
+                    }
+                    else
+                    {
+                        displayOrientation = DisplayOrientation.Angle0;
+                    }
+                }
+                return true;
+            }
+            properties = new Properties();
+            displayOrientation = DisplayOrientation.Unknow;
+            return false;
+        }
+        /// <summary>
+        /// 比對傳入的螢幕屬性並比對，用於找出建議解析度、頻率
+        /// </summary>
+        /// <param name="monitorInfo">要取得的螢幕資訊</param>
+        /// <param name="Properties">要比對的螢幕參數</param>
+        /// <param name="displayOrientation">現在螢幕的畫面方向，因涉及寬高的數值</param>
+        /// <returns>如果比對成功則回傳true代表傳入的螢幕參數是建議值，否則false</returns>
+        private bool GetOptimalScreenResolution(MonitorInfo monitorInfo, Properties Properties, DisplayOrientation displayOrientation)
+        {
+            var (Width, Height) = GetBestResolution(monitorInfo.DisplayName, displayOrientation);
+            int integerFrequency = GetMaxRefreshRateByWidthAndHeight(monitorInfo.DisplayName, Width, Height);
+            if (Properties.Equals(new Properties()
+            {
+                Resolutions_Width = Width,
+                Resolutions_High = Height,
+                Frequency = integerFrequency
+            }))
+            {
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 取得螢幕在特定解析度下的最高刷新率，用於找到建議值
+        /// </summary>
+        /// <param name="deviceName">要計算的螢幕</param>
+        /// <param name="dispWidth">要計算的螢幕的解析度寬</param>
+        /// <param name="dispHeight">要計算的螢幕的解析度高</param>
+        /// /// <returns>回傳該螢幕該解析度下最高的刷新率值</returns>
+        private int GetMaxRefreshRateByWidthAndHeight(string deviceName, int dispWidth, int dispHeight)
+        {
+            int refreshRate = 0;
+            DEVMODE deviceMode = new DEVMODE();
+            for (int i = 0; _EnumDisplaySettings(deviceName, i, ref deviceMode) != false; i++)
+            {
+                if (deviceMode.dmDisplayFrequency >= refreshRate &&
+                    (deviceMode.dmPelsWidth == dispWidth && deviceMode.dmPelsHeight == dispHeight))
+                {
+                    refreshRate = deviceMode.dmDisplayFrequency;
+                }
+            }
+            return refreshRate;
+        }
+        /// <summary>
+        /// 取得螢幕在特定畫面方向的最佳解析度，用於找到建議值
+        /// </summary>
+        /// <param name="displayName"></param>
+        /// <param name="orientation"></param>
+        /// <returns></returns>
+        private (int Width, int Height) GetBestResolution(string displayName, DisplayOrientation orientation)
+        {
+            var bestResolution = (0, 0);
+            DEVMODE dm = new DEVMODE();
+            dm.dmSize = (short)Marshal.SizeOf(dm);
+            int modeIndex = 0;
+            List<(int Width, int Height)> resolutions = new List<(int Width, int Height)>();
+            while (_EnumDisplaySettings(displayName, modeIndex, ref dm))
+            {
+                // Check if orientation matches
+                if (dm.dmDisplayOrientation == (int)orientation)
+                {
+                    resolutions.Add((dm.dmPelsWidth, dm.dmPelsHeight));
+                }
+                modeIndex++;
+            }
+            // Find the best resolution based on area
+            if (resolutions.Count > 0)
+            {
+                bestResolution = resolutions.OrderByDescending(r => r.Width).FirstOrDefault();
+            }
+            return bestResolution;
         }
     }
 }
