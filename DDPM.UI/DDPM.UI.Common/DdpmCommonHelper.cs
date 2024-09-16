@@ -3,10 +3,13 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Views;
 using Dell.Client.Framework.UX.WPF;
+using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 
 namespace DDPM.UI.Common
@@ -95,6 +98,25 @@ namespace DDPM.UI.Common
                 words.Add(wValue);
             }
             return words.ToArray();
+        }
+
+        public static bool? GetUINotifyPropertyValue_Boolean(string search_key, ITSettingEventArgs event_object)
+        {
+            if (event_object == null || event_object.IT_Feature_TriggerList == null || event_object.target_object == null)
+            {
+                Trace.WriteLine("Got [SettingsPage][DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
+                return null;
+            }
+            int idx = event_object.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals(search_key));
+            if (idx >= 0)
+            {
+                string feature = event_object.IT_Feature_TriggerList[idx];
+                PropertyInfo propertyInfo = event_object.target_object.GetType().GetProperty(feature);
+                Trace.WriteLine($"Got [SettingsPage][IT settings event] {feature} : {propertyInfo.GetValue(event_object.target_object)}");
+                
+                return (bool?)propertyInfo.GetValue(event_object.target_object);
+            }
+            return null;//null as default if feature not found
         }
     }
 }
