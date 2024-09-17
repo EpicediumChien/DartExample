@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
+using DDPM.UI.Plugin.Common;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -111,28 +112,32 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             _profileItems.Add(new ProfileItem
             {
-                Caption = "Custom Profile: Profile 1",
+                ID = "Custom Profile: Profile 1",
+                Caption = Utility.CheckTextLength("Custom Profile: Profile 1", 130, 14),
                 Tooltip = "",
                 TooltipVisibility = Visibility.Collapsed,
                 ButtonVisibility = Visibility.Visible
             });
             _profileItems.Add(new ProfileItem
             {
-                Caption = "Custom Profile: Profile 2",
+                ID = "Custom Profile: Profile 2",
+                Caption = Utility.CheckTextLength("Custom Profile: Profile 2", 130, 14),
                 Tooltip = "",
                 TooltipVisibility = Visibility.Collapsed,
                 ButtonVisibility = Visibility.Visible
             });
             _profileItems.Add(new ProfileItem
             {
-                Caption = "Custom Profile: Profile 3",
+                ID = "Custom Profile: Profile 3",
+                Caption = Utility.CheckTextLength("Custom Profile: Profile 3", 130, 14),
                 Tooltip = "",
                 TooltipVisibility = Visibility.Collapsed,
                 ButtonVisibility = Visibility.Visible
             });
             _profileItems.Add(new ProfileItem
             {
-                Caption = "Custom Profile: Profile 4",
+                ID = "Custom Profile: Profile 4",
+                Caption = Utility.CheckTextLength("Custom Profile: Profile 4", 130, 14),
                 Tooltip = "",
                 TooltipVisibility = Visibility.Collapsed,
                 ButtonVisibility = Visibility.Visible
@@ -145,6 +150,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             _profileItems.Add(new ProfileItem
             {
+                ID = LangHelper.Instance["Default"],
                 Caption = LangHelper.Instance["Default"],
                 Tooltip = Strings.DefaultProfileTooltip,
                 TooltipVisibility = Visibility.Visible,
@@ -152,6 +158,7 @@ namespace DDPM.UI.Plugin.ViewModels
             });
             _profileItems.Add(new ProfileItem
             {
+                ID = Strings.Smooth,
                 Caption = Strings.Smooth,
                 Tooltip = Strings.SmoothProfileTooltip,
                 TooltipVisibility = Visibility.Visible,
@@ -159,6 +166,7 @@ namespace DDPM.UI.Plugin.ViewModels
             });
             _profileItems.Add(new ProfileItem
             {
+                ID = Strings.Vibrant,
                 Caption = Strings.Vibrant,
                 Tooltip = Strings.VibrantProfileTooltip,
                 TooltipVisibility = Visibility.Visible,
@@ -166,6 +174,7 @@ namespace DDPM.UI.Plugin.ViewModels
             });
             _profileItems.Add(new ProfileItem
             {
+                ID = Strings.Warm,
                 Caption = Strings.Warm,
                 Tooltip = Strings.WarmProfileTooltip,
                 TooltipVisibility = Visibility.Visible,
@@ -479,6 +488,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
     public class ProfileItem
     {
+        public required string ID { get; set; }
         public required string Caption { get; set; }
         public required string Tooltip { get; set; }
         public required Visibility TooltipVisibility { get; set; }

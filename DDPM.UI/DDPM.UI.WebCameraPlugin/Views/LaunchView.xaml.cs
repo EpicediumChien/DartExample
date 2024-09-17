@@ -624,7 +624,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            _vm.CurrentProfileName = ((UXTextBlock)sender).Text;
+            _vm!.CurrentProfileName = ((UXTextBlock)sender).Tag.ToString()!;
             btnPreset_Click(this, null);
 
         }
@@ -639,7 +639,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 var txt = $"{Strings.Preset}: {_vm!.CurrentProfileName}";
                 if (!PresetNames.Contains(_vm!.CurrentProfileName))
                 {
-                    txt = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 100, 14);
+                    txt = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
                 }
                 txtPreset.Text = txt;
                 rotateAnimation = new()

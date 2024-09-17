@@ -153,7 +153,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     Model = CurrentDeviceInfo.ModelNumber;
                 }
-                //Name = CurrentDeviceInfo.Name.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
+                //ID = CurrentDeviceInfo.ID.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
                 Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
             }
             if (instenceNo == "")
