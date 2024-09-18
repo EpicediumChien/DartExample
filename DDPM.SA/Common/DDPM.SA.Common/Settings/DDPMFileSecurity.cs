@@ -876,7 +876,7 @@ namespace DDPM.SA.Common.Settings
             string FileInfo;
             if (!IsFilePathValid(filePath, out FileInfo))
             {
-                info = $"{nameof(CheckFileACL)} {FileInfo}";                
+                info = $"[CheckFileACL] {FileInfo}";                
                 return false;
             }
             FileInfo fileInfo = new FileInfo(filePath);
@@ -941,7 +941,7 @@ namespace DDPM.SA.Common.Settings
             string FileInfo;
             if (!IsFolderPathValid(folderPath, out FileInfo))
             {
-                info = info = $"{nameof(CheckFolderACL)} {FileInfo}";
+                info = $"[CheckFolderACL] {FileInfo}";
                 return false;
             }
             DirectoryInfo folderInfo = new DirectoryInfo(folderPath);
