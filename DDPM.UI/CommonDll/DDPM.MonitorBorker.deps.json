@@ -662,19 +662,35 @@
           }
         }
       },
-      "DPeMClientBroker/0.0.0.0": {
+      "Microsoft.Extensions.Logging.Abstractions/8.0.0.0": {
         "runtime": {
-          "DPeMClientBroker.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
+          "Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
           }
         }
       },
-      "DPeMClientRpcHelper/1.7.0.0": {
+      "Microsoft.Extensions.Logging/8.0.0.0": {
         "runtime": {
-          "DPeMClientRpcHelper.dll": {
-            "assemblyVersion": "1.7.0.0",
-            "fileVersion": "0.0.0.0"
+          "Microsoft.Extensions.Logging.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options/8.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Options.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "Microsoft.Extensions.Primitives/8.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
           }
         }
       }
@@ -1137,12 +1153,22 @@
       "serviceable": false,
       "sha512": ""
     },
-    "DPeMClientBroker/0.0.0.0": {
+    "Microsoft.Extensions.Logging.Abstractions/8.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "DPeMClientRpcHelper/1.7.0.0": {
+    "Microsoft.Extensions.Logging/8.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Options/8.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Primitives/8.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
