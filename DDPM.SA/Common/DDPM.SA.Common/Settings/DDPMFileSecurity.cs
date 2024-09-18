@@ -1803,5 +1803,80 @@ namespace DDPM.SA.Common.Settings
         }
 
         #endregion Bruce 0814 Move this method to DDPM.SA.Common
+	
+	public static bool SRemoveSymbolicFile(string filePath, out string info)
+        {
+            info = "pass";
+            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            {
+                return true;
+            }
+
+            FileAttributes attr = File.GetAttributes(filePath);
+            if (!attr.HasFlag(FileAttributes.Directory))
+            {   // File
+                if (SymlinkHelper.IsFileHasSymlink(filePath, out info)) // is the current file symbolic ?
+                {
+                    if (!SymlinkHelper.RemoveFileSymlink2(filePath, out info))
+                    {
+                        Console.WriteLine($"Delete File failed. ({info})");
+                        return false;
+                    }
+                }
+                else
+                {
+                    info = "The File is not a Symbolic";    // need to check Symbolic in Path folder
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool SRemoveSymbolicFolder(string filePath, out string info)
+        {
+            info = "pass";
+            if (IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            {
+                return true;
+            }
+
+            FileAttributes attr = File.GetAttributes(filePath);
+            if (attr.HasFlag(FileAttributes.Directory))
+            {   // Directory
+                if (SymlinkHelper.IsFolderHasSymlink(filePath, out info)) // is current folder symbolic ? 
+                {
+                    if (!SymlinkHelper.RemoveFolderSymlink2(filePath, out info)) // Remove current symbolic folder
+                    {
+                        Console.WriteLine($"Delete Folder failed. ({info})");
+                        return false;
+                    }
+                    else // check parent folder for symbolic
+                    {
+                        string tmpParentPath = string.Empty;
+                        tmpParentPath = Path.GetDirectoryName(filePath);
+                        if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    info = "The Folder is not a Symbolic";
+                    string tmpParentPath = string.Empty;
+                    tmpParentPath = Path.GetDirectoryName(filePath); // to check parent 
+                    if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 }
