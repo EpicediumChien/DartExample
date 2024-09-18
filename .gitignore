@@ -246,3 +246,7 @@ testcoverage/
 /DDPM.UI/CommonDll/DDPM.OSDs.dll
 /DDPM.UI/CommonDll/DDPM.SA.Obfuscation.dll
 /DDPM.UI/CommonDll/DPeMPublic.Common.dll
+/DDPM.UI/CommonDll/Microsoft.Extensions.Logging.Abstractions.dll
+/DDPM.UI/CommonDll/Microsoft.Extensions.Logging.dll
+/DDPM.UI/CommonDll/Microsoft.Extensions.Options.dll
+/DDPM.UI/CommonDll/Microsoft.Extensions.Primitives.dll
