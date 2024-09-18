@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.HeadsetAudioSettings;
@@ -61,6 +62,43 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             //txtSystemName3.Text = _vm.VisiblePairedHostName1;
             //txtFirmware.Text = "Dongle " + _vm.PhysicalDeviceFWVersion;
             //txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+            }
+
+            DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            if (data != null)
+            {
+                if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                {
+                    RestoreLockIcon.Visibility = Visibility.Visible;
+                    txtRestore.IsEnabled = false;
+                }
+                else
+                {
+                    txtRestore.IsEnabled = !data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
+                    RestoreLockIcon.Visibility = data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+        }
+
+        ~LaunchView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Audio_RestoreFactoryDefaults");
+            Dispatcher.Invoke(new Action(() =>
+            {
+                RestoreLockIcon.Visibility = rst.isLocked;
+                txtRestore.IsEnabled = rst.isEnabled;
+            }));
         }
 
         #region Init for Modules
