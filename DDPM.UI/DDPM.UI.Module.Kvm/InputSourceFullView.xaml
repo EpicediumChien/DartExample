@@ -22,6 +22,20 @@
             <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
             <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+
+            <!-- DataTemplate for displaying text and Path -->
+            <DataTemplate x:Key="ComboBoxItemTemplate">
+                <StackPanel Orientation="Horizontal">
+                    <!-- Path Data binding -->
+                    <Path Data="{Binding PathData}" 
+              Fill="Black" 
+              Width="24" Height="24" 
+              Stretch="Uniform" 
+              Margin="0,0,5,0"/>
+                    <!-- Text binding -->
+                    <TextBlock Text="{Binding Text}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -147,7 +161,7 @@
                                     <ColumnDefinition Width="11*" />
                                 </Grid.ColumnDefinitions>
                                 <ComboBox AutomationProperties.Name="SelectedCheck"
-                                          Style="{StaticResource DdpmComboBoxStyle}"
+                                          Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding PCInputsList}"
                                           SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}"

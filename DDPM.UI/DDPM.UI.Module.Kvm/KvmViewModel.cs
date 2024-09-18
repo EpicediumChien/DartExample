@@ -22,7 +22,8 @@ namespace DDPM.UI.Module.Kvm
 {
     public class InputSourceList
     {
-        public string inputSource = String.Empty;
+        public string inputSource { get; set; } = String.Empty;
+        public string inputPathData { get; set; } = String.Empty;
         public KvmModule kvmModule { get; set; }
 
         public string inputDisplayText
@@ -623,10 +624,24 @@ namespace DDPM.UI.Module.Kvm
                     {
                         if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
                         {
+                            string pathData = string.Empty;
                             foreach (string item in inputList.Keys)
                             {
+                                if (item.StartsWith("HDMI"))
+                                {
+                                    pathData = "M2.5 0.197266C1.39543 0.197266 0.5 1.0927 0.5 2.19727V6.58877C0.5 7.27835 0.855239 7.91929 1.44 8.28477L12.0136 14.8933C12.3315 15.0919 12.6988 15.1973 13.0736 15.1973H39.9264C40.3012 15.1973 40.6685 15.0919 40.9864 14.8933L51.56 8.28477C52.1448 7.91929 52.5 7.27835 52.5 6.58877V2.19727C52.5 1.0927 51.6046 0.197266 50.5 0.197266H2.5ZM14 7.19727C13.7239 7.19727 13.5 7.42112 13.5 7.69727C13.5 7.97341 13.7239 8.19727 14 8.19727H40C40.2761 8.19727 40.5 7.97341 40.5 7.69727C40.5 7.42112 40.2761 7.19727 40 7.19727H14Z";
+                                }
+                                else if (item.StartsWith("USB-C") || item.StartsWith("Thunderbolt"))
+                                {
+                                    pathData = "M6 0.394531C2.96243 0.394531 0.5 2.85697 0.5 5.89453C0.5 8.9321 2.96243 11.3945 6 11.3945H25C28.0376 11.3945 30.5 8.9321 30.5 5.89453C30.5 2.85697 28.0376 0.394531 25 0.394531H6ZM7 5.39453C6.72386 5.39453 6.5 5.61839 6.5 5.89453C6.5 6.17067 6.72386 6.39453 7 6.39453H24C24.2761 6.39453 24.5 6.17067 24.5 5.89453C24.5 5.61839 24.2761 5.39453 24 5.39453H7Z";
+                                }
+                                else if (item.StartsWith("DisplayPort"))
+                                {
+                                    pathData = "M2.5 0.183594C1.39543 0.183594 0.5 1.07902 0.5 2.18359V9.55121C0.5 10.2537 0.868598 10.9048 1.47101 11.2662L7.52498 14.8986C7.83581 15.0851 8.19148 15.1836 8.55397 15.1836H50.5C51.6046 15.1836 52.5 14.2882 52.5 13.1836V7.68359V2.18359C52.5 1.07902 51.6046 0.183594 50.5 0.183594H2.5ZM14 7.18359C13.7239 7.18359 13.5 7.40745 13.5 7.68359C13.5 7.95974 13.7239 8.18359 14 8.18359H40C40.2761 8.18359 40.5 7.95974 40.5 7.68359C40.5 7.40745 40.2761 7.18359 40 7.18359H14Z";
+                                }
                                 _inputsList.Add(new InputSourceList()
                                 {
+                                    inputPathData = pathData,
                                     inputSource = item,
                                     kvmModule = KvmModule
                                 });
