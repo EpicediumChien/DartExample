@@ -1,5 +1,7 @@
-﻿using static VcpCore.Plugins.EDIDReader;
-using static VcpCore.Plugins.EDIDReader.Monitor_Range_Limit;
+﻿using VcpCore.Common;
+using WinCopies;
+using static VcpCore.Common.EDIDReader;
+using static VcpCore.Common.EDIDReader.Monitor_Range_Limit;
 
 namespace VcpCore.Plugins.Test.ParserTest
 {
@@ -53,7 +55,7 @@ namespace VcpCore.Plugins.Test.ParserTest
             validEdid[22] = 0x90; //1440mm
             string Max_Vertical_Image_Size2 = "1440 mm";
 
-            string Information1 = "2023年22周; DEL; 68.1(寸)(960 mm,1440 mm); 133:271;\r\n";
+            string Information1 = "2023年22周; DEL; 68.1(960,1440); 133:271;\r\n";
             var result = EDIDReader.Information(validEdid);
             Assert.That(Information1, Is.EqualTo(result));
         }
@@ -213,12 +215,12 @@ namespace VcpCore.Plugins.Test.ParserTest
         public void TestWeek_Of_Manufacture()
         {
             byte[] InvalidEdid = new byte[] { 0x03, 0x04, 0x05 };
-            string Week_Of_Manufacture1 = "";
+            int Week_Of_Manufacture1 = 0;
 
             byte[] validEdid = new byte[128];
             validEdid[16] = 0x16;
 
-            string Week_Of_Manufacture2 = "22";
+            int Week_Of_Manufacture2 = 22;
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -237,12 +239,12 @@ namespace VcpCore.Plugins.Test.ParserTest
         public void TestYear_Of_Manufacture()
         {
             byte[] InvalidEdid = new byte[] { 0x03, 0x04, 0x05 };
-            string Year_Of_Manufacture1 = "";
+            int Year_Of_Manufacture1 = 0;
 
             byte[] validEdid = new byte[128];
             validEdid[17] = 0x21;
 
-            string Year_Of_Manufacture2 = "2023";
+            int Year_Of_Manufacture2 = 2023;
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -657,11 +659,14 @@ namespace VcpCore.Plugins.Test.ParserTest
         public void TestMax_Horizontal_Image_Size()
         {
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Max_Horizontal_Image_Size1 = "";
+            string Max_Horizontal_Image_Size1 = "N/A";
 
             byte[] validEdid = new byte[128];
             validEdid[21] = 0x20;
-            string Max_Horizontal_Image_Size2 = "320 mm";
+            string Max_Horizontal_Image_Size2 = "320";
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[21] = 0x00;
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -669,22 +674,31 @@ namespace VcpCore.Plugins.Test.ParserTest
                 Assert.That(Max_Horizontal_Image_Size1, Is.EqualTo(result));
             }
 
-            if (validEdid.Length >= 128)
+            if (validEdid.Length >= 128 && validEdid[21] > 0)
             {
                 var result = Display_Parameters.Max_Horizontal_Image_Size(validEdid);
                 Assert.That(Max_Horizontal_Image_Size2, Is.EqualTo(result));
             }
+            if (validEdid2.Length >= 128 && validEdid2[21] <= 0)
+            {
+                var result = Display_Parameters.Max_Horizontal_Image_Size(validEdid2);
+                Assert.That(Max_Horizontal_Image_Size1, Is.EqualTo(result));
+            }
+
         }
 
         [Test]
         public void TestMax_Vertical_Image_Size()
         {
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Max_Vertical_Image_Size1 = "";
+            string Max_Vertical_Image_Size1 = "N/A";
 
             byte[] validEdid = new byte[128];
-            validEdid[22] = 0x60;
-            string Max_Vertical_Image_Size2 = "960 mm";
+            validEdid[22] = 0x80;
+            string Max_Vertical_Image_Size2 = "1280";
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[22] = 0x00;
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -692,10 +706,15 @@ namespace VcpCore.Plugins.Test.ParserTest
                 Assert.That(Max_Vertical_Image_Size1, Is.EqualTo(result));
             }
 
-            if (validEdid.Length >= 128)
+            if (validEdid.Length >= 128 && validEdid[22] > 0)
             {
                 var result = Display_Parameters.Max_Vertical_Image_Size(validEdid);
                 Assert.That(Max_Vertical_Image_Size2, Is.EqualTo(result));
+            }
+            if (validEdid2.Length >= 128 && validEdid2[22] <= 0)
+            {
+                var result = Display_Parameters.Max_Vertical_Image_Size(validEdid2);
+                Assert.That(Max_Vertical_Image_Size1, Is.EqualTo(result));
             }
         }
 
@@ -727,12 +746,16 @@ namespace VcpCore.Plugins.Test.ParserTest
         public void TestMax_Display_Size()
         {
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Max_Display_Size1 = "";
+            string Max_Display_Size1 = "N/A";
 
             byte[] validEdid = new byte[128];
             validEdid[21] = 0x60; //960mm
             validEdid[22] = 0x90; //1440mm
-            string Max_Display_Size2 = "68.1 inches";
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[21] = 0x00; //00mm
+            validEdid2[22] = 0x00; //00mm
+            string Max_Display_Size2 = "68.1";
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -740,10 +763,15 @@ namespace VcpCore.Plugins.Test.ParserTest
                 Assert.That(Max_Display_Size1, Is.EqualTo(result));
             }
 
-            if (validEdid.Length >= 128)
+            if (validEdid.Length >= 128 && validEdid[21] > 0 && validEdid[22] > 0)
             {
                 var result = Display_Parameters.Max_Display_Size(validEdid);
                 Assert.That(Max_Display_Size2, Is.EqualTo(result));
+            }
+            if (validEdid2.Length >= 128 && validEdid2[21] <= 0 && validEdid2[22] <= 0)
+            {
+                var result = Display_Parameters.Max_Display_Size(validEdid2);
+                Assert.That(Max_Display_Size1, Is.EqualTo(result));
             }
         }
 
@@ -751,12 +779,17 @@ namespace VcpCore.Plugins.Test.ParserTest
         public void TestMax_Display_Size_CH()
         {
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Max_Display_Size_CH1 = "";
+            string Max_Display_Size_CH1 = "N/A";
 
             byte[] validEdid = new byte[128];
-            validEdid[21] = 0x60; //960mm
+            validEdid[21] = 0x30; //960mm
             validEdid[22] = 0x90; //1440mm
-            string Max_Display_Size_CH2 = "68.1(寸)";
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[21] = 0x00; //00mm
+            validEdid2[22] = 0x00; //00mm
+
+            string Max_Display_Size_CH2 = "59.8";
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -764,10 +797,15 @@ namespace VcpCore.Plugins.Test.ParserTest
                 Assert.That(Max_Display_Size_CH1, Is.EqualTo(result));
             }
 
-            if (validEdid.Length >= 128)
+            if (validEdid.Length >= 128 && validEdid[21] > 0 && validEdid[22] > 0)
             {
                 var result = Display_Parameters.Max_Display_Size_CH(validEdid);
                 Assert.That(Max_Display_Size_CH2, Is.EqualTo(result));
+            }
+            if (validEdid2.Length >= 128 && validEdid2[21] <= 0 && validEdid2[22] <= 0)
+            {
+                var result = Display_Parameters.Max_Display_Size(validEdid2);
+                Assert.That(Max_Display_Size_CH1, Is.EqualTo(result));
             }
         }
     }
@@ -1378,15 +1416,53 @@ namespace VcpCore.Plugins.Test.ParserTest
         }
 
         [Test]
+        public void TestGetResolutionAndRefreshRate()
+        {
+            byte[] validEdid = new byte[128];
+            validEdid[54] = 0x12;
+            validEdid[55] = 0x34;
+            validEdid[56] = 40;
+            validEdid[57] = 30;
+            validEdid[58] = 80;
+            validEdid[59] = 30;
+            validEdid[60] = 20;
+            validEdid[61] = 60;
+            int validEdidH = 1320;
+            int validEdidV = 798;
+            double validEdidrefreshRate = 25.38;
+
+            byte[] InvalidEdid = new byte[] { 0x20, 0x34, 0x45 }; //Length<128 InvalidEdidresult= (int a=0, int, double);
+            int InvalidEdidH = 0;
+            int InvalidEdidV = 0;
+            double InvalidEdidrefreshRate = 0;
+
+            if (InvalidEdid == null || InvalidEdid.Length < 128)
+            {
+                var (h, v, refreshRate) = Preferred_Detailed_Timing.GetResolutionAndRefreshRate(InvalidEdid);
+                Assert.That(InvalidEdidH, Is.EqualTo(h));
+                Assert.That(InvalidEdidV, Is.EqualTo(v));
+                Assert.That(InvalidEdidrefreshRate, Is.EqualTo(refreshRate));
+            }
+
+            if (InvalidEdid != null && validEdid.Length >= 128)
+            {
+                var (validH, validV, validRefreshRate) = Preferred_Detailed_Timing.GetResolutionAndRefreshRate(validEdid);
+                Assert.That(validEdidH, Is.EqualTo(validH));    //Horizontal bytes 56 - 57
+                Assert.That(validEdidV, Is.EqualTo(validV));    // Vertical  bytes 58-59
+                Assert.That(validEdidrefreshRate, Is.EqualTo(validRefreshRate));
+            }
+        }
+
+        [Test]
         public void TestPixel_Clock()
         {
             byte[] validEdid = new byte[128];
-            validEdid[54] = 60;
-            validEdid[55] = 70;
+            validEdid[54] = 0x12;
+            validEdid[55] = 0x34;
 
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Pixel_Clock1 = "";
-            string Pixel_Clock2 = "179.80MHz";
+            double Pixel_Clock1 = 0;
+            double Pixel_Clock2 = 133.3;
 
             Preferred_Detailed_Timing preferred_Detailed_Timing = new Preferred_Detailed_Timing();
 
@@ -1411,8 +1487,8 @@ namespace VcpCore.Plugins.Test.ParserTest
             validEdid[58] = 80;
 
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Horizontal_Active1 = "";
-            string Horizontal_Active2 = "1320 pixels";
+            int Horizontal_Active1 = 0;
+            int Horizontal_Active2 = 1320;
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -1435,8 +1511,8 @@ namespace VcpCore.Plugins.Test.ParserTest
             validEdid[58] = 70;
 
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Horizontal_Blanking1 = "";
-            string Horizontal_Blanking2 = "1566 pixels";
+            int Horizontal_Blanking1 = 0;
+            int Horizontal_Blanking2 = 1566;
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -1541,8 +1617,8 @@ namespace VcpCore.Plugins.Test.ParserTest
             validEdid[61] = 60;
 
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Vertical_Active1 = "";
-            string Vertical_Active2 = "798 lines";
+            int Vertical_Active1 = 0;
+            int Vertical_Active2 = 798;
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {
@@ -1565,8 +1641,8 @@ namespace VcpCore.Plugins.Test.ParserTest
             validEdid[61] = 90;
 
             byte[] InvalidEdid = new byte[] { 0x01, 0x04, 0x05 };
-            string Vertical_Blanking1 = "";
-            string Vertical_Blanking2 = "2580 lines";
+            int Vertical_Blanking1 = 0;
+            int Vertical_Blanking2 = 2580;
 
             if (InvalidEdid == null || InvalidEdid.Length < 128)
             {

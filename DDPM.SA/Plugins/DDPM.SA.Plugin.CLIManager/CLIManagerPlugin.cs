@@ -363,6 +363,10 @@ namespace DDPM.SA.Plugin.CLIManager
                     return rst;
                     break;
                 case "COLLABSCREENSHARE":        //CollabScreenShare         DDPMW-1843
+                    if (commandLineInput.PluginsType.Equals("KEYBOARD"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "HDR":                      //hdr                       DDPMW-1729
                     break;

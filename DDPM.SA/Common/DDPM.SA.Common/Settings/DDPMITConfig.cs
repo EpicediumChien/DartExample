@@ -30,6 +30,7 @@
         public bool Lock_Keyboard_RestoreFactoryDefaults { get; set; } = false;
         public bool Lock_Mouse_RestoreFactoryDefaults { get; set; } = false;
         public bool Lock_Pen_RestoreFactoryDefaults { get; set; } = false;
+        public bool Lock_Keyboard_CollabScreenShare { get; set; } = false;
         #endregion Peripheral Setting
 
     }

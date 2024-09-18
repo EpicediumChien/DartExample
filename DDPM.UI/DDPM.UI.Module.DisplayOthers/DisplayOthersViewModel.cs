@@ -163,42 +163,82 @@ namespace DDPM.UI.Module.DisplayOthers
             //Handling the result and final process
         }
 
+        #region Imp/Exp Loading
+
+        public void ImpExpSettings(string ImpExp, string path)
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += ImpExpSettings_Dowork;
+            bw.RunWorkerCompleted += ImpExpSettings_Done;
+            string ImpExppath = ImpExp + path;
+            bw.RunWorkerAsync(ImpExppath);
+            //IsBusy = true;
+            //OnPropertyChanged("IsBusy");
+        }
+        private void ImpExpSettings_Dowork(object sender, DoWorkEventArgs e)
+        {
+            string ImpExppath = e.Argument.ToString();
+            if (ImpExppath.Substring(0,3) == "Imp")
+            {
+                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, ImpExppath.Substring(3)).Result;
+            }
+            else if (ImpExppath.Substring(0, 3) == "Exp")
+            {
+                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayExportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, ImpExppath.Substring(3)).Result;
+            }
+        }
+        private void ImpExpSettings_Done(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
+            OnPropertyChanged("IsBusy");
+        }
+
+        #endregion
+
         public bool ExportSettings()
         {
             IsBusy = true;
+            OnPropertyChanged("IsBusy");
             SaveFileDialog saveFileDialog = new SaveFileDialog();
 
             saveFileDialog.Filter = "json files (*.json)|*.json";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = saveFileDialog.FileName;
-                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayExportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, filename).Result;
-                if (b)
-                {
-                    IsBusy = false;
-                    return true;
-                }
+                ImpExpSettings("Exp", filename);
+                return true;
             }
-            IsBusy = false;
+            else 
+            {
+                IsBusy = false;
+                OnPropertyChanged("IsBusy");
+            }
+
             return false;
         }
         public bool ImportSettings()
         {
             IsBusy = true;
+            OnPropertyChanged("IsBusy");
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.Filter = "jason files (*.json)|*.json";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
-                bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, filename).Result;
-                if (b) 
-                {
-                    IsBusy = false;
-                    return true;
-                }
+                ImpExpSettings("Imp", filename);
+                return true;
             }
-            IsBusy = false;
+            else
+            {
+                IsBusy = false;
+                OnPropertyChanged("IsBusy");
+            }
+
             return false;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Dell.Client.Framework.UnitTestShared.Tests;
+using VcpCore.Common;
 
 namespace VcpCore.Plugins.Test.ParserTest
 {
