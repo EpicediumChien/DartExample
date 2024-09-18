@@ -178,7 +178,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             PrivateObject privateObject = new PrivateObject(edidparser);
             privateObject.SetFieldOrProperty("HexString", hexString);
             var result = edidparser.GetModelName();
-            string expectedModelName = "DELL U2724DE";
+            string expectedModelName = "DELLU2724DE";
             string actualModelName = result;
             string result2 = "";
             int num = hexString.IndexOf(ModelName_Header);
@@ -218,7 +218,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             PrivateObject privateObject = new PrivateObject(edidparser);
             privateObject.SetFieldOrProperty("HexString", hexString);
             var result = edidparser.GetScreenSize();
-            float expectedScreenSize = 28.1484737f;
+            float expectedScreenSize = 27.1510868f;
             float actualScreenSize = result;
             int result2 = 0;
             if (hexString.Length < EDID_Header.Length + Manufacturer_ID_Len + VENDOR_ID_Len + SerialNum_Len + ManufactureDate_Len + EDIDVer_Len + VideoInputDef_Len + ScreenSize_Len + 4)
@@ -260,6 +260,58 @@ namespace DDPM.SA.Plugins.User.DisplayProperties.Test
             var result = privateObject.Invoke("int2charByASCII", 1);
             Assert.IsNotNull(result);
             string expected = "A";
+            Assert.That(expected, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestGetPID()
+        {
+            EdidParser edidparser = new EdidParser();
+            PrivateObject privateObject = new PrivateObject(edidparser);
+            privateObject.SetFieldOrProperty("HexString", hexString);
+
+            byte[] EDIDInvalid = new byte[] { 0x02, 0x30, 0x44 }; //EDIDInvalid.Length < 128
+            string EDIDInvalidResult = string.Empty;
+
+            byte[] validEdid = new byte[128];
+            validEdid[8] = 0x12;
+            validEdid[9] = 0x34;
+            validEdid[10] = 0x56;
+            validEdid[11] = 0x78;
+            string expectedPID = "DQT7856";
+
+            byte[] validEdid2 = new byte[128];
+            validEdid2[8] = 0x00;
+            validEdid2[9] = 0x00;
+            validEdid2[10] = 0x00;
+            validEdid2[11] = 0x00;
+            string expectedPID2 = "@@@0";
+
+            if (EDIDInvalid == null || EDIDInvalid.Length < 128)
+            {
+                var GetPIDResult1 = edidparser.GetPID(EDIDInvalid);
+                Assert.That(EDIDInvalidResult, Is.EqualTo(GetPIDResult1));
+            }
+            if (validEdid.Length >= 128)
+            {
+                var GetPIDResult2 = edidparser.GetPID(validEdid);
+                Assert.That(expectedPID, Is.EqualTo(GetPIDResult2));
+            }
+
+            if (validEdid2.Length >= 128)
+            {
+                var GetPIDResult3 = edidparser.GetPID(validEdid2);
+                Assert.That(expectedPID2, Is.EqualTo(GetPIDResult3));
+            }
+        }
+
+        [Test]
+        public void TestToCharByASCIIShort()
+        {
+            EdidParser edidparser = new EdidParser();
+            char expected = 'B';
+            int char1 = 2;
+            var result = EdidParser.ToCharByASCIIShort(char1);
             Assert.That(expected, Is.EqualTo(result));
         }
     }

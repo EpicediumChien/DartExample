@@ -1,4 +1,4 @@
-//#define REMOVE_EA
+#define REMOVE_EA
 //Define this flag will remove EA functions
 
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -140,7 +140,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 #endif
         }
 
-#endregion Overriding methods
+        #endregion Overriding methods
 
         #region PluginManager related
 
@@ -349,7 +349,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             bool res = workWin.SetWorkingSplit(cellCount, splitKey, settings);
             return Task.FromResult(res);
-         }
+        }
 
         //Robert_Lin, 2024-0910, unused method, will be removed
         public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
@@ -710,7 +710,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private SaveCustomWindow? _saveCustomWindow = null;
         private EAArgs _eaArgs;
 
-         public void EABroker_Start()
+        public void EABroker_Start()
         {
             lock (_eaBrokerLock)
             {
@@ -1298,166 +1298,166 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         //private void WinEventHook_Start()
         //{
-            //_winEventHook.OnStartMoving += OnWindowStartMovingProc;
-            //_winEventHook.OnEndMoving += OnWindowEndMovingProc;
-            //_winEventHook.OnLocationChanged += OnLocationChangedProc;
-            //_winEventHook.OnForegroundWindowChanged += OnForegroundWindowChangedProc;
-            //_winEventHook.Hook();
+        //_winEventHook.OnStartMoving += OnWindowStartMovingProc;
+        //_winEventHook.OnEndMoving += OnWindowEndMovingProc;
+        //_winEventHook.OnLocationChanged += OnLocationChangedProc;
+        //_winEventHook.OnForegroundWindowChanged += OnForegroundWindowChangedProc;
+        //_winEventHook.Hook();
         //}
 
         //private void WinEventHook_Stop()
         //{
-            //_winEventHook.Unhook();
-            //_winEventHook.OnStartMoving -= OnWindowStartMovingProc;
-            //_winEventHook.OnEndMoving -= OnWindowEndMovingProc;
-            //_winEventHook.OnLocationChanged -= OnLocationChangedProc;
-            //_winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
+        //_winEventHook.Unhook();
+        //_winEventHook.OnStartMoving -= OnWindowStartMovingProc;
+        //_winEventHook.OnEndMoving -= OnWindowEndMovingProc;
+        //_winEventHook.OnLocationChanged -= OnLocationChangedProc;
+        //_winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
         //}
 
         //private void OnForegroundWindowChangedProc(IntPtr hWndNew, IntPtr hWndOld)
         //{
-            //Noting to do in this project
+        //Noting to do in this project
         //}
 
         //private bool _isDebuggingOnWindowStartMoving_Unused = true;
 
         //private void OnWindowStartMovingProc(IntPtr hWnd)
         //{
-            //if (_isDebuggingOnWindowStartMoving)
-            //    _log?.Info($"Enter OnWindowStartMovingProc(), hWnd=0x{hWnd:X}");
+        //if (_isDebuggingOnWindowStartMoving)
+        //    _log?.Info($"Enter OnWindowStartMovingProc(), hWnd=0x{hWnd:X}");
 
-            //if (!_vmArrange.IsFunctionEnabled)
-            //    return;
+        //if (!_vmArrange.IsFunctionEnabled)
+        //    return;
 
-            //Process process;
-            //string msg;
-            //if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
-            //{
-            //    //Try to get the PathName of the process
-            //    try
-            //    {
-            //        if (process.MainModule != null)
-            //        {
-            //            if (!String.IsNullOrEmpty(process.MainModule.FileName))
-            //            {
-            //                string pathName = process.MainModule.FileName;
-            //                if (_isDebuggingOnWindowStartMoving)
-            //                    _log?.Info($"Process.PathName={pathName}");
-            //            }
-            //        }
-            //    }
-            //    catch (Exception e1)
-            //    {
-            //        _log?.Info($"@OnWindowStartMovingProc, access to process causes an exception, msg: {e1.Message}");
+        //Process process;
+        //string msg;
+        //if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
+        //{
+        //    //Try to get the PathName of the process
+        //    try
+        //    {
+        //        if (process.MainModule != null)
+        //        {
+        //            if (!String.IsNullOrEmpty(process.MainModule.FileName))
+        //            {
+        //                string pathName = process.MainModule.FileName;
+        //                if (_isDebuggingOnWindowStartMoving)
+        //                    _log?.Info($"Process.PathName={pathName}");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e1)
+        //    {
+        //        _log?.Info($"@OnWindowStartMovingProc, access to process causes an exception, msg: {e1.Message}");
 
-            //        //Temporary allow to continue moving
-            //        _vmArrange.IsMoving = true;
-            //        //Robert_Lin Debug, let it contine
-            //        //return;
-            //    }
-            //}
-            //else
-            //{
-            //    _log.Info($"@OnWindowStartMovingProc, GetProcessFromWindowHandle error, msg:{msg}");
-            //}
+        //        //Temporary allow to continue moving
+        //        _vmArrange.IsMoving = true;
+        //        //Robert_Lin Debug, let it contine
+        //        //return;
+        //    }
+        //}
+        //else
+        //{
+        //    _log.Info($"@OnWindowStartMovingProc, GetProcessFromWindowHandle error, msg:{msg}");
+        //}
 
-            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            //var varX = (int)dpiXProperty.GetValue(null, null);
-            //double dpiX = (double)varX / (double)96;
+        //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+        //var varX = (int)dpiXProperty.GetValue(null, null);
+        //double dpiX = (double)varX / (double)96;
 
-            //_vmArrange.ScreenScale = dpiX;
-            //_vmArrange.IsMoving = true;
-            //RefreshCellRects();
+        //_vmArrange.ScreenScale = dpiX;
+        //_vmArrange.IsMoving = true;
+        //RefreshCellRects();
         //}
 
         //private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
         //{
-            //bool isWorkUIShowing = _vmArrange.IsWorkUIShowing;
+        //bool isWorkUIShowing = _vmArrange.IsWorkUIShowing;
 
-            //if (!_vmArrange.IsMoving)
-            //    return;
+        //if (!_vmArrange.IsMoving)
+        //    return;
 
-            //_vmArrange.IsMoving = false;
+        //_vmArrange.IsMoving = false;
 
-            //if (!isWorkUIShowing)
-            //    return;
+        //if (!isWorkUIShowing)
+        //    return;
 
-            //if (_vmArrange.HoveringCellObj == null)
-            //    return;
+        //if (_vmArrange.HoveringCellObj == null)
+        //    return;
 
-            ////Check if user cancel the window moving by pressing [Esc] key
-            ////Assumption:
-            //// When user moving window, the mouse [LeftButton] is pressed and hold.
-            //// When user canceling the moving, he/she press [Esc] key and the
-            ////     mouse [LeftButton] is strll pressed and hold.
-            ////
-            //if (WinEventHook.IsUserCancelMoving())
-            //    return;
+        ////Check if user cancel the window moving by pressing [Esc] key
+        ////Assumption:
+        //// When user moving window, the mouse [LeftButton] is pressed and hold.
+        //// When user canceling the moving, he/she press [Esc] key and the
+        ////     mouse [LeftButton] is strll pressed and hold.
+        ////
+        //if (WinEventHook.IsUserCancelMoving())
+        //    return;
 
-            //Rect rcArrange = _vmArrange.HoveringCellObj.rc;
+        //Rect rcArrange = _vmArrange.HoveringCellObj.rc;
 
-            ////Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
-            //rcArrange.Inflate(6, 6);
-            //WinEventHook.SetWindowPosition(hWnd, rcArrange);
+        ////Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
+        //rcArrange.Inflate(6, 6);
+        //WinEventHook.SetWindowPosition(hWnd, rcArrange);
         //}
 
         //private void OnLocationChangedProc(int x, int y)
         //{
-            //_vmArrange.xCursor = x;
-            //_vmArrange.yCursor = y;
+        //_vmArrange.xCursor = x;
+        //_vmArrange.yCursor = y;
 
-            //if (!_vmArrange.IsWorkUIShowing)
-            //    return;
+        //if (!_vmArrange.IsWorkUIShowing)
+        //    return;
 
-            //CellObj orgCell = _vmArrange.HoveringCellObj;
-            //_vmArrange.HoveringCellObj = DetermineHoveringCellObj(x, y);
+        //CellObj orgCell = _vmArrange.HoveringCellObj;
+        //_vmArrange.HoveringCellObj = DetermineHoveringCellObj(x, y);
 
-            //if (orgCell != _vmArrange.HoveringCellObj)
-            //{
-            //    string strOrg = "null";
-            //    if (orgCell != null)
-            //        strOrg = orgCell.Name;
-            //    string strNew = "null";
-            //    if (_vmArrange.HoveringCellObj != null)
-            //        strNew = _vmArrange.HoveringCellObj.Name;
+        //if (orgCell != _vmArrange.HoveringCellObj)
+        //{
+        //    string strOrg = "null";
+        //    if (orgCell != null)
+        //        strOrg = orgCell.Name;
+        //    string strNew = "null";
+        //    if (_vmArrange.HoveringCellObj != null)
+        //        strNew = _vmArrange.HoveringCellObj.Name;
 
-            //    //Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
-            //}
-            //if (_vmArrange.HoveringCellObj != null)
-            //{
-            //    _vmArrange.HoveringCell = _vmArrange.HoveringCellObj.Name;
-            //}
-            //else
-            //{
-            //    _vmArrange.HoveringCell = "";
-            //}
-            ////if (_workingSplit != null)
-            ////    _workingSplit.VM.HoveringCell = vm.HoveringCell;
+        //    //Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
+        //}
+        //if (_vmArrange.HoveringCellObj != null)
+        //{
+        //    _vmArrange.HoveringCell = _vmArrange.HoveringCellObj.Name;
+        //}
+        //else
+        //{
+        //    _vmArrange.HoveringCell = "";
+        //}
+        ////if (_workingSplit != null)
+        ////    _workingSplit.VM.HoveringCell = vm.HoveringCell;
 
-            ////Set WorkWins to topmost
+        ////Set WorkWins to topmost
         //}
 
         //private void RefreshCellRects()
         //{
-            //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
-            //{
-            //    EAWorkWindow workWin = keyValuePair.Value;
-            //    workWin.Invoke_RefreshCellRects();
-            //}
+        //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+        //{
+        //    EAWorkWindow workWin = keyValuePair.Value;
+        //    workWin.Invoke_RefreshCellRects();
+        //}
         //}
 
         //private CellObj? DetermineHoveringCellObj(int x, int y)
         //{
-            //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
-            //{
-            //    EAWorkWindow workWin = keyValuePair.Value;
-            //    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
-            //    if (cellObj != null)
-            //    {
-            //        return cellObj;
-            //    }
-            //}
-            //return null;
+        //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+        //{
+        //    EAWorkWindow workWin = keyValuePair.Value;
+        //    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
+        //    if (cellObj != null)
+        //    {
+        //        return cellObj;
+        //    }
+        //}
+        //return null;
         //}
 
         #region GetAsyncKeyState

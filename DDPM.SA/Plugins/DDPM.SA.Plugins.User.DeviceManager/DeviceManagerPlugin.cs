@@ -876,7 +876,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //            monitorSettingsList.Add(settings);
                 //            bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                 //        }
-                        
+
                 //    }
                 //}
 
@@ -2564,9 +2564,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         public Task GetNKVMIncommingPort()
-        {  
+        {
             if (_NKVMPlugin != null)
-            { 
+            {
                 _NKVMPlugin.GetNKVMIncommingPort();
             }
             return Task.CompletedTask;
@@ -2592,7 +2592,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task GetNKVMSettings()
         {
-            if (_NKVMPlugin != null) 
+            if (_NKVMPlugin != null)
             {
                 _NKVMPlugin.GetNKVMSettings();
             }
@@ -6179,19 +6179,43 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SetVCPSequence(MonitorInfo monitorInfo, List<VCP> vcps)
         {
-            ImportVCP importVCP = new ImportVCP();
-            foreach (int code in importVCP.ImportVCPSequence)
+            if (vcps.Count != 0)
             {
-                VCP vcp = vcps.Find(x => x.Code == code);
-                writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
-                ObjGetVCP objGetVCP = new ObjGetVCP();
-                objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
-                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                foreach (var item in vcps)
                 {
-                    writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
-                    bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                    Trace.WriteLine($"Code: {item.Code}, Value:{item.Value}");
+
+                }
+
+                ImportVCP importVCP = new ImportVCP();
+                foreach (int code in importVCP.ImportVCPSequence)
+                {
+                    VCP vcp = vcps.Find(x => x.Code == code);
+
+                    if (vcp != null)
+                    {
+                        writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
+                        ObjGetVCP objGetVCP = new ObjGetVCP();
+                        objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                        if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                        {
+                            writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
+                            bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                        }
+                    }
+                    else
+                    {
+                        writelog($"[SetVCPSequence] Code:{code} cannot find in vcps");
+                    }
+
                 }
             }
+            else
+            {
+                writelog("[SetVCPSequence] vcps count = 0");
+            }
+
+
         }
 
         private void InitMonitorSettings()
@@ -6392,25 +6416,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.BatteryLow:
-                    {
-                        if (Device is OSDType_Device.Headset)
                         {
-                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
-                            return Task.CompletedTask;
+                            if (Device is OSDType_Device.Headset)
+                            {
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Keyboard)
+                            {
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Mouse)
+                            {
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                                return Task.CompletedTask;
+                            }
+                            else
+                                return Task.CompletedTask;
                         }
-                        else if (Device is OSDType_Device.Keyboard)
-                        {
-                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
-                            return Task.CompletedTask;
-                        }
-                        else if (Device is OSDType_Device.Mouse)
-                        {
-                            _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
-                            return Task.CompletedTask;
-                        }
-                        else
-                            return Task.CompletedTask;
-                    }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6426,10 +6450,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Mute:
-                    {
-                        _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.Mute, OSDType_Device.Unknown, Content, State);
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6445,20 +6469,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.ScrollLock:
-                    {
-                        _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.ScrollLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.NumLock:
-                    {
-                        _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.NumLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.CapsLock:
-                    {
-                        _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.CapsLock, OSDType_Device.Unknown, string.Empty, State);
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }
@@ -6474,25 +6498,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 switch (type)
                 {
                     case OSDType.Fingerprint:
-                    {
-                        _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.Fingerprint, OSDType_Device.Unknown, string.Empty);
+                            return Task.CompletedTask;
+                        }
                     case OSDType.DisplayChanged:
                         {
                             _showosd(monitorInfo, OSDType.DisplayChanged, OSDType_Device.Unknown, string.Empty);
                             return Task.CompletedTask;
                         }
                     case OSDType.WalkAwayLock:
-                    {
-                        _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.WalkAwayLock, OSDType_Device.Unknown, "5");
+                            return Task.CompletedTask;
+                        }
                     case OSDType.StartRecording:
-                    {
-                        _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
-                        return Task.CompletedTask;
-                    }
+                        {
+                            _showosd(monitorInfo, OSDType.StartRecording, OSDType_Device.Unknown, "3");
+                            return Task.CompletedTask;
+                        }
                     default:
                         return Task.CompletedTask;
                 }

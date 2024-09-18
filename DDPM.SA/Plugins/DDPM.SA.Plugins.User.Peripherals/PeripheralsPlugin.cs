@@ -460,17 +460,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
             foreach (var device in _iDeviceManager.Devices)
             {
-                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
-                if (logicalDevice is ILogicalWiredAudio _logicalWiredAudioDevice)
-                {
-                    //_logicalWiredAudioDevice.SetWiredAudioIMicNSEnable(newValue);
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.IsWiredAudioIMicNSEnable = newValue;
-                        break;
-                    }
-                }
+                //var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                //if (logicalDevice is ILogicalWiredAudio _logicalWiredAudioDevice)
+                //{
+                //    _logicalWiredAudioDevice.SetWiredAudioIMicNSEnable(newValue);
+                //    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                //    if (_deviceInfo != null)
+                //    {
+                //        _deviceInfo.IsWiredAudioIMicNSEnable = newValue;
+                //        break;
+                //    }
+                //}
             }
         }
 
@@ -482,12 +482,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 if (logicalDevice is ILogicalWiredAudio _logicalWiredAudioDevice)
                 {
                     //_logicalWiredAudioDevice.SetWiredAudioMicMuteSoundEnable(newValue);
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.IsWiredAudioMicMuteSoundEnable = newValue;
-                        break;
-                    }
+                    //DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    //if (_deviceInfo != null)
+                    //{
+                    //    _deviceInfo.IsWiredAudioMicMuteSoundEnable = newValue;
+                    //    break;
+                    //}
                 }
             }
         }
@@ -500,12 +500,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 if (logicalDevice is ILogicalWiredAudio _logicalWiredAudioDevice)
                 {
                     //_logicalWiredAudioDevice.SetWiredAudioVolumeAdjustmentTone(newValue);
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
-                    if (_deviceInfo != null)
-                    {
-                        _deviceInfo.WiredAudioVolumeAdjustmentTone = newValue;
-                        break;
-                    }
+                    //DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                    //if (_deviceInfo != null)
+                    //{
+                    //    _deviceInfo.WiredAudioVolumeAdjustmentTone = newValue;
+                    //    break;
+                    //}
                 }
             }
         }
@@ -1001,7 +1001,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     if (item is ILogicalWiredAudio _logicalWiredAudio)
                     {
-                        info.MuteStatus = _logicalWiredAudio.MuteStatus;
+                        //info.MuteStatus = _logicalWiredAudio.MuteStatus;
                         //info.IsWiredAudioIMicNSEnable = _logicalWiredAudio.IsWiredAudioIMicNSEnable();
                         //info.IsWiredAudioMicMuteSoundEnable = _logicalWiredAudio.IsWiredAudioMicMuteSoundEnable();
                         //info.WiredAudioVolumeAdjustmentTone = _logicalWiredAudio.GetWiredAudioVolumeAdjustmentTone();
