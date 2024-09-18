@@ -150,8 +150,8 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     do
                     {
                         result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
+                        _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
-                        _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         if (result != DISP_CHANGE_SUCCESSFUL)
                         {
                             devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
@@ -187,6 +187,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
                 if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
                 {
+                    _logs?.DebugMsg_1($"Current setting param:{DisplayName}--{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                     if (properties.Resolutions_Width > 0 && properties.Resolutions_High > 0)
                     {
                         devMode.dmPelsWidth = properties.Resolutions_Width;
@@ -201,10 +202,13 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     do
                     {
                         result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
+                        _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
-                        _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         if (result != DISP_CHANGE_SUCCESSFUL)
                         {
+                            int temp = devMode.dmPelsWidth;
+                            devMode.dmPelsWidth = devMode.dmPelsHeight;
+                            devMode.dmPelsHeight = temp;
                             devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
                         }
                         retryCount++;
@@ -241,6 +245,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
                 if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
                 {
+                    _logs?.DebugMsg_1($"Current setting param:{DisplayName}--{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                     if ((int)orientation >= 0)
                     {
                         devMode.dmDisplayOrientation = (int)orientation;
@@ -249,16 +254,32 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     do
                     {
                         result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_TEST, IntPtr.Zero);
+                        _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
-                        _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         if (result != DISP_CHANGE_SUCCESSFUL)
                         {
-                            (devMode.dmPelsWidth, devMode.dmPelsHeight) = GetBestResolution(DisplayName, orientation);
-                            (devMode.dmPelsWidth, devMode.dmPelsHeight) = ConfirmResolution(devMode.dmPelsWidth, devMode.dmPelsHeight, (DisplayOrientation)devMode.dmDisplayOrientation);
-                            devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
+                            if (retryCount == 1)
+                            {
+                                int temp = devMode.dmPelsWidth;
+                                devMode.dmPelsWidth = devMode.dmPelsHeight;
+                                devMode.dmPelsHeight = temp;
+                                devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
+                            }
+                            else if (retryCount == 2)
+                            {
+                                (devMode.dmPelsWidth, devMode.dmPelsHeight) = GetBestResolution(DisplayName, orientation);
+                                devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
+                            }
+                            else if (retryCount == 3)
+                            {
+                                int temp = devMode.dmPelsWidth;
+                                devMode.dmPelsWidth = devMode.dmPelsHeight;
+                                devMode.dmPelsHeight = temp;
+                                devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
+                            }
                         }
                         retryCount++;
-                    } while (result != DISP_CHANGE_SUCCESSFUL && retryCount <= 2);
+                    } while (result != DISP_CHANGE_SUCCESSFUL && retryCount <= 3);
                     result = _ChangeDisplaySettingsEx(DisplayName, ref devMode, IntPtr.Zero, ChangeDisplaySettingsFlags.CDS_UPDATEREGISTRY, IntPtr.Zero);
                     _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} set result:{result}");
                     _logs?.DebugMsg_1($"devMode param: {DisplayName}:{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
