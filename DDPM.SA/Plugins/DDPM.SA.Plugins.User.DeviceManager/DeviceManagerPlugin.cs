@@ -2950,32 +2950,39 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (vcps != null)
                 {
-                    //set ImportVCPSequence
-                    SetVCPSequence(monitorInfo, vcps);
-                    foreach (VCP code in vcps)
+                    if (vcps.Count > 0)
                     {
-                        if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                            importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                        //set ImportVCPSequence
+                        SetVCPSequence(monitorInfo, vcps);
+                        foreach (VCP code in vcps)
                         {
                             writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                            bool b = false;
-                            ObjGetVCP objGetVCP = new ObjGetVCP();
-                            //SHR on/off need load settings
-                            //if (code.Code == 0xF0)
-                            //{
-                            //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                            //}
-                            //get vcp code
-                            objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                            if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                             {
-                                //set vcp code
-                                writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                bool b = false;
+                                ObjGetVCP objGetVCP = new ObjGetVCP();
+                                //SHR on/off need load settings
+                                //if (code.Code == 0xF0)
+                                //{
+                                //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                //}
+                                //get vcp code
+                                objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                {
+                                    //set vcp code
+                                    writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                    b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                }
                             }
                         }
+                        return Task.FromResult(true);
                     }
-                    return Task.FromResult(true);
+                    else
+                    {
+                        writelog("[DisplayImportSettings] VCPs List count is 0");
+                    }
                 }
                 else
                 {
@@ -6204,10 +6211,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ImportVCP importVCP = new ImportVCP();
                 foreach (int code in importVCP.ImportVCPSequence)
                 {
-                    VCP vcp = vcps.Find(x => x.Code == code);
-
-                    if (vcp != null)
+                    if (vcps.Exists(x => x.Code == code))
                     {
+                        VCP vcp = vcps.Find(x => x.Code == code);
                         writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
                         ObjGetVCP objGetVCP = new ObjGetVCP();
                         objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
@@ -6228,8 +6234,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog("[SetVCPSequence] vcps count = 0");
             }
-
-
         }
 
         private void InitMonitorSettings()
