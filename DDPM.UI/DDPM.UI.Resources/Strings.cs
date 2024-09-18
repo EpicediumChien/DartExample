@@ -394,6 +394,7 @@ namespace DDPM.UI.Common
         public static readonly string OK = GetString("OK");
         public static readonly string LearnMore = GetString("LearnMore");
         public static readonly string Collaboration = GetString("Collaboration");
+
         //Collaboration
         public static readonly string CollabsCaption = "Collaboration";
         public static readonly string CollaborationToolTip = "Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.";
@@ -413,5 +414,15 @@ namespace DDPM.UI.Common
         public static readonly string ChatCaption = "Chat";
         public static readonly string MicCaption = "Mic";
         public static readonly string OKCaption = "OK";
+
+        //Camera
+        public static readonly string Preset = "Preset";
+        public static readonly string Smooth = "Smooth";
+        public static readonly string Vibrant = "Vibrant";
+        public static readonly string Warm = "Warm";
+        public static readonly string DefaultProfileTooltip = "Default Profile Tooltip";
+        public static readonly string SmoothProfileTooltip = "Smooth Profile Tooltip";
+        public static readonly string VibrantProfileTooltip = "Vibrant Profile Tooltip";
+        public static readonly string WarmProfileTooltip = "Warm Profile Tooltip";
     }
 }

@@ -81,6 +81,7 @@
     <None Remove="Resources\Images\Headset_Transparency.png" />
     <None Remove="Resources\Images\Headset_whitedot.png" />
     <None Remove="Resources\Images\info.png" />
+    <None Remove="Resources\Images\info18.png" />
     <None Remove="Resources\Images\KB3121W.png" />
     <None Remove="Resources\Images\KB500.png" />
     <None Remove="Resources\Images\KB500S.png" />
@@ -234,6 +235,7 @@
     <None Remove="Resources\Images\TopButton4.png" />
     <None Remove="Resources\Images\TopButton5.png" />
     <None Remove="Resources\Images\TopButton6.png" />
+    <None Remove="Resources\Images\TrashCan.png" />
     <None Remove="Resources\Images\Up.png" />
     <None Remove="Resources\Images\Usb24.png" />
     <None Remove="Resources\Images\Video.png" />
@@ -332,6 +334,7 @@
     <Resource Include="Resources\Images\HeadsetModel_7024-mall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\info18.png" />
     <Resource Include="Resources\Images\RedCircle.png" />
     <Resource Include="Resources\Images\SD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -438,6 +441,7 @@
     <Resource Include="Resources\Images\SB522A.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\TrashCan.png" />
     <Resource Include="Resources\Images\WB5023.png" />
     <Resource Include="Resources\Images\WD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
