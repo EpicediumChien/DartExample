@@ -313,7 +313,7 @@
     <value>Connecting your Pen</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>Touch your pen tip to the screen</value>
+    <value>Touch your pen tip to the {0} screen</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
     <value>Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows.</value>
@@ -322,7 +322,7 @@
     <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Select 'Yes' to confirm pairing on the prompt box to pair your pen</value>
+    <value>Select 'Yes' to confirm pairing on the prompt box</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>For USB wireless receiver free and on-the-go connectivity</value>

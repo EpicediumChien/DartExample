@@ -394,6 +394,8 @@ namespace DDPM.UI.Common
         public static readonly string OK = GetString("OK");
         public static readonly string LearnMore = GetString("LearnMore");
         public static readonly string Collaboration = GetString("Collaboration");
+        public static readonly string AddPenOtherStep1 = "a";
+
         //Collaboration
         public static readonly string CollabsCaption = "Collaboration";
         public static readonly string CollaborationToolTip = "Provides quick access to conference controls. Toggling the\nkeys on/off will show or hide them on the keyboard while in\na Microsoft Teams or Zoom call.";

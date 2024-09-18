@@ -43,7 +43,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                         <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                             <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                            <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" Text="{Binding [AddDevice.Pen.1], Source={x:Static lang:LangHelper.Instance}}"/>
+                            <UXControls:UXTextBlock Name="txtStep1" Margin="6,0,0,0" Style="{StaticResource TextStyle1}" TextWrapping="Wrap" Width="400" />
                         </StackPanel>
                     </StackPanel>
                 </Border>
