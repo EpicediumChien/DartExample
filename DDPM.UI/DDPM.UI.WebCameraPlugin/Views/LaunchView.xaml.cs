@@ -91,6 +91,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //ProfileItems.ItemsSource = _vm.ProfileNames;
                 ProfileItems.ItemsSource = _vm.ProfileItems;
             }
+            txtAlert.Text = UI.Resources.Helper.LangHelper.Instance["Camera.Alert.1"];
         }
 
         //  Jim remove 20240626
@@ -484,7 +485,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
                 // Fall back to the local app storage if the Pictures Library is not available
                 //_vm._captureFolder = picturesLibrary.SaveFolder ?? ApplicationData.Current.LocalFolder;
-                _vm._captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm.Media_File_Location); 
+                _vm._captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm.Media_File_Location);
 
                 // Create storage file for the capture
                 var videoFile = await _vm._captureFolder.CreateFileAsync("SimpleVideo.mp4", CreationCollisionOption.GenerateUniqueName);
@@ -557,7 +558,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_vm._mediaCapture != null)
             {
                 MediaCapturePauseResult result =
-                await _vm._mediaCapture.PauseRecordWithResultAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);               
+                await _vm._mediaCapture.PauseRecordWithResultAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);
             }
 
             Debug.WriteLine("Pause recording!");

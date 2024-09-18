@@ -1614,4 +1614,16 @@
   <data name="Camera.5" xml:space="preserve">
     <value>Add new preset</value>
   </data>
+  <data name="Camera.Alert.1" xml:space="preserve">
+    <value>Please wait while we’re applying the changes</value>
+  </data>
+  <data name="Camera.Alert.2" xml:space="preserve">
+    <value>Another application is using your camera</value>
+  </data>
+  <data name="Camera.Alert.3" xml:space="preserve">
+    <value>Please unplug and plug your camera and try again</value>
+  </data>
+  <data name="Camera.Alert.4" xml:space="preserve">
+    <value>Please wait while we remove your camera</value>
+  </data>
 </root>

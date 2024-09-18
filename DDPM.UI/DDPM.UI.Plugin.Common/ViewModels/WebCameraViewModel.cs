@@ -35,7 +35,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool[] FPS_IsSelected { get; set; } = new bool[3];
 
 
-        private readonly ObservableCollection<ProfileItem> _profileItems = new();
+        private ObservableCollection<ProfileItem> _profileItems = new();
         private readonly Dictionary<string, WebcamProfile> Profiles = new();
 
         #endregion Variables
@@ -104,90 +104,94 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
             { return false; }
 
-            _profileItems.Clear();
-            Profiles.Clear();
-            foreach (var profile in CurrentDeviceInfo!.CustomProfiles.ToObject<List<WebcamProfile>>()!)
+            //_profileItems.Clear();
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                Profiles.Add(profile.Name, profile);
-            }
-            _profileItems.Add(new ProfileItem
-            {
-                ID = "Custom Profile: Profile 1",
-                Caption = Utility.CheckTextLength("Custom Profile: Profile 1", 130, 14),
-                Tooltip = "",
-                TooltipVisibility = Visibility.Collapsed,
-                ButtonVisibility = Visibility.Visible
-            });
-            _profileItems.Add(new ProfileItem
-            {
-                ID = "Custom Profile: Profile 2",
-                Caption = Utility.CheckTextLength("Custom Profile: Profile 2", 120, 14),
-                Tooltip = "",
-                TooltipVisibility = Visibility.Collapsed,
-                ButtonVisibility = Visibility.Visible
-            });
-            _profileItems.Add(new ProfileItem
-            {
-                ID = "Custom Profile: Profile 3",
-                Caption = Utility.CheckTextLength("Custom Profile: Profile 3", 120, 14),
-                Tooltip = "",
-                TooltipVisibility = Visibility.Collapsed,
-                ButtonVisibility = Visibility.Visible
-            });
-            _profileItems.Add(new ProfileItem
-            {
-                ID = "Custom Profile: Profile 4",
-                Caption = Utility.CheckTextLength("Custom Profile: Profile 4", 130, 14),
-                Tooltip = "",
-                TooltipVisibility = Visibility.Collapsed,
-                ButtonVisibility = Visibility.Visible
+                _profileItems.Clear();
+                _profileItems.Add(new ProfileItem
+                {
+                    ID = "Custom Profile: Profile 1",
+                    Caption = Utility.CheckTextLength("Custom Profile: Profile 1", 120, 14),
+                    Tooltip = "",
+                    TooltipVisibility = Visibility.Collapsed,
+                    ButtonVisibility = Visibility.Visible
+                });
+                _profileItems.Add(new ProfileItem
+                {
+                    ID = "Custom Profile: Profile 2",
+                    Caption = Utility.CheckTextLength("Custom Profile: Profile 2", 120, 14),
+                    Tooltip = "",
+                    TooltipVisibility = Visibility.Collapsed,
+                    ButtonVisibility = Visibility.Visible
+                });
+                _profileItems.Add(new ProfileItem
+                {
+                    ID = "Custom Profile: Profile 3",
+                    Caption = Utility.CheckTextLength("Custom Profile: Profile 3", 120, 14),
+                    Tooltip = "",
+                    TooltipVisibility = Visibility.Collapsed,
+                    ButtonVisibility = Visibility.Visible
+                });
+                _profileItems.Add(new ProfileItem
+                {
+                    ID = "Custom Profile: Profile 4",
+                    Caption = Utility.CheckTextLength("Custom Profile: Profile 4", 120, 14),
+                    Tooltip = "",
+                    TooltipVisibility = Visibility.Collapsed,
+                    ButtonVisibility = Visibility.Visible
+                });
+                Profiles.Clear();
+                foreach (var profile in CurrentDeviceInfo!.CustomProfiles.ToObject<List<WebcamProfile>>()!)
+                {
+                    Profiles.Add(profile.Name, profile);
+                }
+
+                foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
+                {
+                    Profiles.Add(profile.Name, profile);
+                }
+                _profileItems.Add(new ProfileItem
+                {
+                    ID = LangHelper.Instance["Default"],
+                    Caption = LangHelper.Instance["Default"],
+                    Tooltip = Strings.DefaultProfileTooltip,
+                    TooltipVisibility = Visibility.Visible,
+                    ButtonVisibility = Visibility.Collapsed
+                });
+                _profileItems.Add(new ProfileItem
+                {
+                    ID = Strings.Smooth,
+                    Caption = Strings.Smooth,
+                    Tooltip = Strings.SmoothProfileTooltip,
+                    TooltipVisibility = Visibility.Visible,
+                    ButtonVisibility = Visibility.Collapsed
+                });
+                _profileItems.Add(new ProfileItem
+                {
+                    ID = Strings.Vibrant,
+                    Caption = Strings.Vibrant,
+                    Tooltip = Strings.VibrantProfileTooltip,
+                    TooltipVisibility = Visibility.Visible,
+                    ButtonVisibility = Visibility.Collapsed
+                });
+                _profileItems.Add(new ProfileItem
+                {
+                    ID = Strings.Warm,
+                    Caption = Strings.Warm,
+                    Tooltip = Strings.WarmProfileTooltip,
+                    TooltipVisibility = Visibility.Visible,
+                    ButtonVisibility = Visibility.Collapsed
+                });
+
             });
 
-
-            foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
-            {
-                Profiles.Add(profile.Name, profile);
-            }
-            _profileItems.Add(new ProfileItem
-            {
-                ID = LangHelper.Instance["Default"],
-                Caption = LangHelper.Instance["Default"],
-                Tooltip = Strings.DefaultProfileTooltip,
-                TooltipVisibility = Visibility.Visible,
-                ButtonVisibility = Visibility.Collapsed
-            });
-            _profileItems.Add(new ProfileItem
-            {
-                ID = Strings.Smooth,
-                Caption = Strings.Smooth,
-                Tooltip = Strings.SmoothProfileTooltip,
-                TooltipVisibility = Visibility.Visible,
-                ButtonVisibility = Visibility.Collapsed
-            });
-            _profileItems.Add(new ProfileItem
-            {
-                ID = Strings.Vibrant,
-                Caption = Strings.Vibrant,
-                Tooltip = Strings.VibrantProfileTooltip,
-                TooltipVisibility = Visibility.Visible,
-                ButtonVisibility = Visibility.Collapsed
-            });
-            _profileItems.Add(new ProfileItem
-            {
-                ID = Strings.Warm,
-                Caption = Strings.Warm,
-                Tooltip = Strings.WarmProfileTooltip,
-                TooltipVisibility = Visibility.Visible,
-                ButtonVisibility = Visibility.Collapsed
-            });
-
-            CurrentProfileName = CurrentDeviceInfo.ProfileName;
+            CurrentProfileName = CurrentDeviceInfo!.ProfileName;
 
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
 
             IsMicEnumerationOnEnabled = true;
-
+            AlertVisibility = Visibility.Collapsed;
             return true;
         }
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -377,6 +381,16 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 isMicEnumerationOnEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+        private Visibility alertVisibility = Visibility.Collapsed;
+        public Visibility AlertVisibility
+        {
+            get => alertVisibility;
+            set
+            {
+                alertVisibility = value;
                 OnPropertyChanged();
             }
         }

@@ -81,7 +81,7 @@
         <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" />
       </Grid>
       <!--Layer 2 : Nav and Vbar-->
-      <Grid Grid.Column="0">
+      <Grid Grid.Column="0" Height="auto">
         <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
         <!--Image-->
         <Grid>
@@ -136,9 +136,6 @@
               </Grid>
             </Grid>
           </Viewbox>
-          <Border>
-
-          </Border>
         </Grid>
         <!--Vbar-->
         <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
@@ -171,7 +168,7 @@
           <StackPanel Orientation="Horizontal">
             <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
                                                 Style="{StaticResource ModelNumberTextStyle}" />
-            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
+            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
                                VerticalAlignment="Top" Cursor="" Width="16" Height="16">
               <Image.InputBindings>
                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
@@ -239,6 +236,18 @@
             </Border>
           </StackPanel>
         </StackPanel>
+      </Grid>
+      <!--Alert-->
+      <Grid VerticalAlignment="Center">
+        <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="0" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Width="317" Visibility="{Binding AlertVisibility}" >
+          <StackPanel Orientation="Horizontal">
+            <Image x:Name="InfoIcon" Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
+                               VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
+            </Image>
+            <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="260" 
+                                        VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" LineHeight="19.5" Padding="0,18,0,16" FontFamily="Roboto" FontWeight="Normal" />
+          </StackPanel>
+        </Border>
       </Grid>
     </Grid>
   </Grid>

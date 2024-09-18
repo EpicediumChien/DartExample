@@ -81,6 +81,7 @@
     <None Remove="Resources\Images\Headset_Transparency.png" />
     <None Remove="Resources\Images\Headset_whitedot.png" />
     <None Remove="Resources\Images\info.png" />
+    <None Remove="Resources\Images\info18.png" />
     <None Remove="Resources\Images\KB3121W.png" />
     <None Remove="Resources\Images\KB500.png" />
     <None Remove="Resources\Images\KB500S.png" />
@@ -333,6 +334,7 @@
     <Resource Include="Resources\Images\HeadsetModel_7024-mall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\info18.png" />
     <Resource Include="Resources\Images\RedCircle.png" />
     <Resource Include="Resources\Images\SD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

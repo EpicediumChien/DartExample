@@ -394,7 +394,6 @@ namespace DDPM.UI.Common
         public static readonly string OK = GetString("OK");
         public static readonly string LearnMore = GetString("LearnMore");
         public static readonly string Collaboration = GetString("Collaboration");
-        public static readonly string AddPenOtherStep1 = "a";
 
         //Collaboration
         public static readonly string CollabsCaption = "Collaboration";
