@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.PenButtonSettings;
@@ -48,6 +49,44 @@ namespace DDPM.UI.Plugin.PenPlugin
             }
             _vm!.IsAllButtonsVisible = Visibility.Visible;
             _vm.ActiveModule = null;
+
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+            }
+
+            DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            if (data != null)
+            {
+                if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                {
+                    RestoreLockIcon.Visibility = Visibility.Visible;
+                    txtRestore.IsEnabled = false;
+                }
+                else
+                {
+                    txtRestore.IsEnabled = !data.LockSettings.Lock_Pen_RestoreFactoryDefaults;
+                    RestoreLockIcon.Visibility = data.LockSettings.Lock_Pen_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
+        }
+
+        ~LaunchView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Pen_RestoreFactoryDefaults");
+            Dispatcher.Invoke(new Action(() =>
+            {
+                RestoreLockIcon.Visibility = rst.isLocked;
+                txtRestore.IsEnabled = rst.isEnabled;
+            }));
         }
 
         private void InitializeButtonImage()

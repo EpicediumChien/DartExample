@@ -291,6 +291,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    response.Value = data_IT.Lock_Display_RestoreFactoryDefaults ? "Lock" : "Unlock";
+                                    break;
                                 case "PEN":
                                     response.Value = data_IT.Lock_Pen_RestoreFactoryDefaults ? "Lock" : "Unlock";
                                     break;
@@ -367,6 +370,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    data_IT.Lock_Display_RestoreFactoryDefaults = true;
+                                    break;
                                 case "PEN":
                                     data_IT.Lock_Pen_RestoreFactoryDefaults = true;
                                     break;
@@ -417,6 +423,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    data_user.LockSettings.Lock_Display_RestoreFactoryDefaults = true;
+                                    break;
                                 case "PEN":
                                     data_user.LockSettings.Lock_Pen_RestoreFactoryDefaults = true;
                                     break;
@@ -470,6 +479,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    data_IT.Lock_Display_RestoreFactoryDefaults = false;
+                                    break;
                                 case "PEN":
                                     data_IT.Lock_Pen_RestoreFactoryDefaults = false;
                                     break;
@@ -520,6 +532,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    data_user.LockSettings.Lock_Display_RestoreFactoryDefaults = false;
+                                    break;
                                 case "PEN":
                                     data_user.LockSettings.Lock_Pen_RestoreFactoryDefaults = false;
                                     break;
@@ -580,6 +595,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_RestoreFactoryDefaults" }).Result;
+                                    break;
                                 case "PEN":
                                     status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Pen_RestoreFactoryDefaults" }).Result;
                                     break;

@@ -3,6 +3,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Views;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -117,6 +118,71 @@ namespace DDPM.UI.Common
                 return (bool?)propertyInfo.GetValue(event_object.target_object);
             }
             return null;//null as default if feature not found
+        }
+
+        public static (bool isEnabled, Visibility isLocked) ApplyRestoreFactoryDefaultsEventData(ITSettingEventArgs e, string device_lock_string)
+        {
+            bool isEnabled = false;
+            Visibility visibility = Visibility.Collapsed;
+
+            if (DeviceManagerSA == null)
+                return (isEnabled, visibility);
+            
+            bool? isLocked = GetUINotifyPropertyValue_Boolean("Lock_Setting_RestoreDefaults", e);
+            if (isLocked != null)
+            {
+                isEnabled = !(bool)isLocked;
+                visibility = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                Trace.WriteLine($"Apply Global restore factory default(Lock) : {isLocked}");
+                if ((bool)isLocked == false)
+                {
+                    DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (data != null)// && data.LockSettings.Lock_Audio_RestoreFactoryDefaults)
+                    {
+                        bool retrieve = false;
+                        if (device_lock_string.Equals("Lock_Display_RestoreFactoryDefaults"))//ok
+                            retrieve = data.LockSettings.Lock_Display_RestoreFactoryDefaults;
+                        else if (device_lock_string.Equals("Lock_Audio_RestoreFactoryDefaults"))//ok
+                            retrieve = data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
+                        else if (device_lock_string.Equals("Lock_Webcam_RestoreFactoryDefaults"))//no ui element
+                            retrieve = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
+                        else if (device_lock_string.Equals("Lock_Keyboard_RestoreFactoryDefaults"))//ok
+                            retrieve = data.LockSettings.Lock_Keyboard_RestoreFactoryDefaults;
+                        else if (device_lock_string.Equals("Lock_Mouse_RestoreFactoryDefaults"))//no ui element
+                            retrieve = data.LockSettings.Lock_Mouse_RestoreFactoryDefaults;
+                        else if (device_lock_string.Equals("Lock_Pen_RestoreFactoryDefaults"))
+                            retrieve = data.LockSettings.Lock_Pen_RestoreFactoryDefaults;
+
+                        if (retrieve)
+                        {
+                            visibility = Visibility.Visible;
+                            isEnabled = false;
+                            Trace.WriteLine($"Global restore factory default is unLock, but {device_lock_string} keeping UI lock");
+                        }
+                    }
+                }
+            }
+            isLocked = GetUINotifyPropertyValue_Boolean(device_lock_string, e);// "Lock_Audio_RestoreFactoryDefaults", e);
+            if (isLocked != null)
+            {
+                Trace.WriteLine($"Apply restore factory default(Lock) to feature {device_lock_string} : {isLocked}");
+                DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    {
+                        visibility = Visibility.Visible;
+                        isEnabled = false;
+                        Trace.WriteLine($"Global restore factory default is Lock, keeping UI lock");
+                    }
+                    else
+                    {
+                        isEnabled = !(bool)isLocked;
+                        visibility = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                    }
+                }
+            }
+            return (isEnabled, visibility);
         }
     }
 }
