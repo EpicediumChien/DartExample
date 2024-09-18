@@ -145,6 +145,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     {
                         devMode.dmDisplayFrequency = properties.Frequency;
                     }
+                    (devMode.dmPelsWidth, devMode.dmPelsHeight) = ConfirmResolution(devMode.dmPelsWidth, devMode.dmPelsHeight, orientation);
                     int retryCount = 1;
                     do
                     {
@@ -153,9 +154,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         if (result != DISP_CHANGE_SUCCESSFUL)
                         {
-                            int temp = devMode.dmPelsWidth;
-                            devMode.dmPelsWidth = devMode.dmPelsHeight;
-                            devMode.dmPelsHeight = temp;
                             devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
                         }
                         retryCount++;
@@ -198,6 +196,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     {
                         devMode.dmDisplayFrequency = properties.Frequency;
                     }
+                    (devMode.dmPelsWidth, devMode.dmPelsHeight) = ConfirmResolution(devMode.dmPelsWidth, devMode.dmPelsHeight, (DisplayOrientation)devMode.dmDisplayOrientation);
                     int retryCount = 1;
                     do
                     {
@@ -206,9 +205,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         _logs?.DebugMsg_1($"devMode param: {DisplayName} :{devMode.dmPelsWidth}x{devMode.dmPelsHeight} Orientation:{((DisplayOrientation)devMode.dmDisplayOrientation).ToString()}");
                         if (result != DISP_CHANGE_SUCCESSFUL)
                         {
-                            int temp = devMode.dmPelsWidth;
-                            devMode.dmPelsWidth = devMode.dmPelsHeight;
-                            devMode.dmPelsHeight = temp;
                             devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
                         }
                         retryCount++;
@@ -258,6 +254,8 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         if (result != DISP_CHANGE_SUCCESSFUL)
                         {
                             (devMode.dmPelsWidth, devMode.dmPelsHeight) = GetBestResolution(DisplayName, orientation);
+                            (devMode.dmPelsWidth, devMode.dmPelsHeight) = ConfirmResolution(devMode.dmPelsWidth, devMode.dmPelsHeight, (DisplayOrientation)devMode.dmDisplayOrientation);
+                            devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
                         }
                         retryCount++;
                     } while (result != DISP_CHANGE_SUCCESSFUL && retryCount <= 2);
@@ -554,17 +552,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     BitsPerPixel = devMode.dmBitsPerPel
                 };
                 displayOrientation = (DisplayOrientation)devMode.dmDisplayOrientation;
-                if (JudgmentList.AutoRotateOSMonitorList.Contains(ModelName.ToUpper()))
-                {
-                    if (properties.Resolutions_Width < properties.Resolutions_High && displayOrientation == DisplayOrientation.Angle0)
-                    {
-                        displayOrientation = DisplayOrientation.Angle90;
-                    }
-                    else
-                    {
-                        displayOrientation = DisplayOrientation.Angle0;
-                    }
-                }
                 return true;
             }
             properties = new Properties();
@@ -629,11 +616,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             List<(int Width, int Height)> resolutions = new List<(int Width, int Height)>();
             while (_EnumDisplaySettings(displayName, modeIndex, ref dm))
             {
-                // Check if orientation matches
-                if (dm.dmDisplayOrientation == (int)orientation)
-                {
-                    resolutions.Add((dm.dmPelsWidth, dm.dmPelsHeight));
-                }
+                resolutions.Add((dm.dmPelsWidth, dm.dmPelsHeight));
                 modeIndex++;
             }
             // Find the best resolution based on area
@@ -642,6 +625,26 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 bestResolution = resolutions.OrderByDescending(r => r.Width).FirstOrDefault();
             }
             return bestResolution;
+        }
+        private (int W, int H) ConfirmResolution(int w, int h, DisplayOrientation orientation)
+        {
+            switch (orientation)
+            {
+                case DisplayOrientation.Angle90:
+                case DisplayOrientation.Angle270:
+                    if (w > h)
+                    {
+                        return (h, w);
+                    }
+                    return (w, h);
+                case DisplayOrientation.Angle180:
+                default:
+                    if (w < h)
+                    {
+                        return (h, w);
+                    }
+                    return (w, h);
+            }
         }
     }
 }
