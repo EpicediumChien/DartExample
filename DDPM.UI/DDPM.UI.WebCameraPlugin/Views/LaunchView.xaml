@@ -136,6 +136,9 @@
               </Grid>
             </Grid>
           </Viewbox>
+          <Border>
+
+          </Border>
         </Grid>
         <!--Vbar-->
         <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">

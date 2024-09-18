@@ -121,7 +121,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _profileItems.Add(new ProfileItem
             {
                 ID = "Custom Profile: Profile 2",
-                Caption = Utility.CheckTextLength("Custom Profile: Profile 2", 130, 14),
+                Caption = Utility.CheckTextLength("Custom Profile: Profile 2", 120, 14),
                 Tooltip = "",
                 TooltipVisibility = Visibility.Collapsed,
                 ButtonVisibility = Visibility.Visible
@@ -129,7 +129,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _profileItems.Add(new ProfileItem
             {
                 ID = "Custom Profile: Profile 3",
-                Caption = Utility.CheckTextLength("Custom Profile: Profile 3", 130, 14),
+                Caption = Utility.CheckTextLength("Custom Profile: Profile 3", 120, 14),
                 Tooltip = "",
                 TooltipVisibility = Visibility.Collapsed,
                 ButtonVisibility = Visibility.Visible

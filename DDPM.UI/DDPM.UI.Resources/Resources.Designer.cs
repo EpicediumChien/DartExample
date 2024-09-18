@@ -457,7 +457,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Other 的當地語系化字串。
+        ///   查詢類似 Active Electrostatic 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Type_Other {
             get {

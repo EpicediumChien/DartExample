@@ -250,7 +250,7 @@
     <value>Wired</value>
   </data>
   <data name="AddDevice.Type.Other" xml:space="preserve">
-    <value>Other</value>
+    <value>Active Electrostatic</value>
   </data>
   <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
     <value>Cancel</value>
