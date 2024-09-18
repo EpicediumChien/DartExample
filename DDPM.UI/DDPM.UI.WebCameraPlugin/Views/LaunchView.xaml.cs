@@ -91,7 +91,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //ProfileItems.ItemsSource = _vm.ProfileNames;
                 ProfileItems.ItemsSource = _vm.ProfileItems;
             }
-            txtAlert.Text = UI.Resources.Helper.LangHelper.Instance["Camera.Alert.1"];
         }
 
         //  Jim remove 20240626

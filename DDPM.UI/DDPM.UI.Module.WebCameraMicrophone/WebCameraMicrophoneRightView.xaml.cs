@@ -22,6 +22,7 @@ namespace DDPM.UI.Module.WebCameraMicrophone
         {
             _vm.CurrentCursor = Cursors.Wait;
             _vm.IsMicEnumerationOnEnabled = false;
+            _vm.AlertType = WebcamAlert.Alert1;
             _vm.AlertVisibility = Visibility.Visible;
         }
     }

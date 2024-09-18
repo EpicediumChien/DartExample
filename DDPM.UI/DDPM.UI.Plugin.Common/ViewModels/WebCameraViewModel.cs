@@ -1,24 +1,18 @@
 ﻿using DDPM.SA.Common;
-using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Buffers;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -394,6 +388,25 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
             }
         }
+        private WebcamAlert alertType;
+        public WebcamAlert AlertType
+        {
+            get => alertType;
+            set
+            {
+                alertType = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AlertText));
+            }
+        }
+        public string AlertText => AlertType switch
+        {
+            WebcamAlert.Alert1 => LangHelper.Instance["Camera.Alert.1"],
+            WebcamAlert.Alert2 => LangHelper.Instance["Camera.Alert.2"],
+            WebcamAlert.Alert3 => LangHelper.Instance["Camera.Alert.3"],
+            WebcamAlert.Alert4 => LangHelper.Instance["Camera.Alert.4"],
+            _ => ""
+        };
         public ObservableCollection<ProfileItem> ProfileItems { get => _profileItems; }
     }
 
@@ -507,5 +520,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public required string Tooltip { get; set; }
         public required Visibility TooltipVisibility { get; set; }
         public required Visibility ButtonVisibility { get; set; }
+    }
+    public enum WebcamAlert
+    {
+        Alert1, Alert2, Alert3, Alert4
     }
 }
