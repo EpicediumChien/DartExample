@@ -6197,10 +6197,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ImportVCP importVCP = new ImportVCP();
                 foreach (int code in importVCP.ImportVCPSequence)
                 {
-                    VCP vcp = vcps.Find(x => x.Code == code);
-
-                    if (vcp != null)
+                    if (vcps.Exists(x => x.Code == code))
                     {
+                        VCP vcp = vcps.Find(x => x.Code == code);
                         writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
                         ObjGetVCP objGetVCP = new ObjGetVCP();
                         objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
@@ -6221,8 +6220,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog("[SetVCPSequence] vcps count = 0");
             }
-
-
         }
 
         private void InitMonitorSettings()
