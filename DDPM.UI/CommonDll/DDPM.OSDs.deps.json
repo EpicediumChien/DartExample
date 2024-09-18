@@ -29,7 +29,10 @@
       },
       "DDPM.Win32Lib/2.0.0.5": {
         "runtime": {
-          "DDPM.Win32Lib.dll": {}
+          "DDPM.Win32Lib.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       }
     }
