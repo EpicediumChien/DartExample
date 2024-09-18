@@ -9,6 +9,7 @@ using UserControl = System.Windows.Controls.UserControl;
 using System.IO;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace DDPM.UI.Module.Color
 {
@@ -53,6 +54,12 @@ namespace DDPM.UI.Module.Color
             //    ((UXButton)(this.FindName("btn_AddApp"))).IsEnabled = true;
 
             //}
+
+            //Lock/unlock
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;                
+            }
         }
 
         //  Jim add 20240606
@@ -69,6 +76,29 @@ namespace DDPM.UI.Module.Color
             vm.WatchForProcessEnd_Stop();
 
             vm.StopRegistryMonitor();
+
+            //Lock/unlock
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;    
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    ColorViewModel vm = (ColorViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Color right view(Lock) : {isLocked}");
+                    }
+                }));
+            }
         }
 
         private void RefreshUI()

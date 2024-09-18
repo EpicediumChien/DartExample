@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using Dell.Client.Framework.Common;
@@ -222,6 +223,12 @@ namespace DDPM.UI.Module.DisplayProperties
                     });
                 }
                 _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == displayPropertiesInfo.CurrentOrientation));
+
+                //Lock/unlock UI init data here (user's lock data should be synced up from IT config, so read user's data directly)
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                bool isLocked_RefreshRate = data.LockSettings.Lock_Display_ResolutionRefreshRate;
+                bool isLocked_USBC = data.LockSettings.Lock_Display_USBCPrioritization;
+
                 RefreshUI();
             }
             catch (Exception)
