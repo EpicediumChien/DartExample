@@ -51,7 +51,6 @@ using DDPM.SA.Common.Screen;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 using Microsoft.WindowsAPICodePack.Win32Native;
-using static System.Reflection.Metadata.BlobBuilder;
 using System.IO.Compression;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
