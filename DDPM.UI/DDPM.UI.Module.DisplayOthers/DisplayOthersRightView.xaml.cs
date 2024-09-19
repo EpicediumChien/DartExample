@@ -52,9 +52,7 @@ namespace DDPM.UI.Module.DisplayOthers
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
             //Using user data from config file if need
-            //DDPMSettings data = null;
-            //if (DdpmCommonHelper.DeviceManagerSA != null)
-            //    data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DDPMSettings data = null;            
 
             bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ExportSettings", e);
             if (isLocked != null)
@@ -65,7 +63,7 @@ namespace DDPM.UI.Module.DisplayOthers
                     if (vm != null)
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                        Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) : {isLocked}");
+                        Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) : {isLocked}");                        
                     }
                 }));
             }
@@ -81,6 +79,17 @@ namespace DDPM.UI.Module.DisplayOthers
                         Trace.WriteLine($"[SettingsPage] Apply PowerNap(Lock) : {isLocked}");
                     }
                 }));
+            }
+            //DDPMW-1366 9/7
+            //Functionality: When a 1 or more settings are locked, automatically lock 'export/import'. 
+            if (DdpmCommonHelper.DeviceManagerSA != null && data == null)
+            {
+                data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if(DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                {
+                    //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                    Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
+                }
             }
         }
 
