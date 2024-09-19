@@ -613,6 +613,7 @@ namespace DDPM.SA.Common
         Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable);
         #region OutReport
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
+        Task<bool> SaveLogFile(string saveFolderPath);
         #endregion
         #endregion
     }

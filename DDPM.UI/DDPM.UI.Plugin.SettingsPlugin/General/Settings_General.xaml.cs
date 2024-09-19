@@ -59,6 +59,24 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void SaveDiagnosticReport_Click(object sender, MouseButtonEventArgs e)
         {
+            SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "zip Files (*.zip)|*.zip|All Files (*.*)|*.*"; // 檔案類型過濾
+                saveFileDialog.Title = "Save Diagnostic Report";
+                saveFileDialog.DefaultExt = "zip";
+
+                // 顯示對話框並檢查用戶是否按了「儲存」按鈕
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // 獲取選擇的檔案路徑
+                    string filePath = saveFileDialog.FileName;
+                    Debug.Write(filePath);
+                    filePath = filePath.Substring(0, filePath.IndexOf("."));
+                    Debug.Write(filePath);
+                    vm.SaveDiagnosticReport(filePath);
+                }
+            }
         }
         private void SaveMonitorAssetReport_Click(object sender, MouseButtonEventArgs e)
         {
