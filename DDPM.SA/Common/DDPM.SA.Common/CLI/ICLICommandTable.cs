@@ -43,7 +43,7 @@ namespace DDPM.SA.Common
             "RESOLUTIONREFRESHRATE",    //ResolutionRefreshRate     DDPMW-1344
             "USBCPRIORITIZATION",       //USBCPrioritization        DDPMW-1345
             "ACTIVEINPUTSOURCE",        //ActiveInputSource         DDPMW-1346
-            "USBKVM",                   //USBKVM                    DDPMW-1347
+            "INAPPUSBKVM",              //InAppUSBKVM                    DDPMW-1347
             "INAPPNETWORKKVM",          //InAppNetworkKVM           DDPMW-1599
             "EASYARRANGELAYOUT",        //EasyArrangeLayout         DDPMW-1350
             "INAPPCOLORPRESET",         //InAppColorPreset          DDPMW-1351/1352
@@ -410,6 +410,11 @@ namespace DDPM.SA.Common
                                 //if (value.Trim().ToUpper().Equals("LOCK") || value.Trim().ToUpper().Equals("UNLOCK"))
                                 {
                                     commandInput.isITCommands = true;//recognized has IT command -> CLIManager
+                                    if (value.Trim().ToUpper().Equals("ENABLE") || value.Trim().ToUpper().Equals("DISABLE"))
+                                    {
+                                        commandInput.isNormalCommands = true;
+                                        //break;
+                                    }
                                 }
                                 else
                                 {
@@ -417,7 +422,8 @@ namespace DDPM.SA.Common
                                 }
 
                                 if (commandInput.isNormalCommands == true && commandInput.isITCommands == true)
-                                    break;
+                                    //if (!(commandInput.TargetFeature.ToUpper().Equals("INAPPUSBKVM")))
+                                        break;
                             }
                         }
                         catch (Exception ex)
