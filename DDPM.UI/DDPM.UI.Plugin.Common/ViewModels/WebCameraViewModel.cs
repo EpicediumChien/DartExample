@@ -341,15 +341,16 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private string media_file_location;
+        private string videoCaptureFolder;
 
         public string Media_File_Location
         {
-            get { return media_file_location; }
+            get => DDPMSettings!.UserSettings.VideoCaptureFolder;
             set
             {
-                media_file_location = value;
-                OnPropertyChanged("Media_File_Location");
+                DDPMSettings!.UserSettings.VideoCaptureFolder = value;
+                DdpmCommonHelper.DeviceManagerSA!.SetAppConfigData(DDPMSettings);
+                //OnPropertyChanged("Media_File_Location");
             }
         }
 
@@ -386,7 +387,17 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 alertVisibility = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(FunctionsVisibility));
             }
+        }
+        public Visibility FunctionsVisibility
+        {
+            get => AlertVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            //set
+            //{
+            //    alertVisibility = value;
+            //    OnPropertyChanged();
+            //}
         }
         private WebcamAlert alertType;
         public WebcamAlert AlertType

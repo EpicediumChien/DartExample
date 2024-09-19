@@ -458,6 +458,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
         }
 
+        private void StopRecord()
+        {
+
+        }
         private void Timer_Tick(object sender, EventArgs e)
         {
             _countdownValue--;
@@ -619,7 +623,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            btnPause.Visibility = Visibility.Visible;
+            btnRecord.Visibility = Visibility.Collapsed;
+            btnStop.Visibility = Visibility.Visible;
             StartRecord();
+
+        }
+        private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            btnPause.Visibility = Visibility.Collapsed;
+            btnRecord.Visibility = Visibility.Visible;
+            btnStop.Visibility = Visibility.Collapsed;
+            StopRecord();
         }
 
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)

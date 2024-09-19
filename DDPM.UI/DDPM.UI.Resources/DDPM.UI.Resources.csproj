@@ -149,6 +149,7 @@
     <None Remove="Resources\Images\MultiDevice.png" />
     <None Remove="Resources\Images\P2424HEB.png" />
     <None Remove="Resources\Images\PairTile.png" />
+    <None Remove="Resources\Images\Pause.png" />
     <None Remove="Resources\Images\PButton11.png" />
     <None Remove="Resources\Images\PButton12.png" />
     <None Remove="Resources\Images\PButton13.png" />
@@ -196,6 +197,7 @@
     <None Remove="Resources\Images\R2.png" />
     <None Remove="Resources\Images\R3.png" />
     <None Remove="Resources\Images\RedCircle.png" />
+    <None Remove="Resources\Images\RedSquare.png" />
     <None Remove="Resources\Images\Right.png" />
     <None Remove="Resources\Images\SB3022.png" />
     <None Remove="Resources\Images\SB522A.png" />
@@ -335,7 +337,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\info18.png" />
+    <Resource Include="Resources\Images\Pause.png" />
     <Resource Include="Resources\Images\RedCircle.png" />
+    <Resource Include="Resources\Images\RedSquare.png" />
     <Resource Include="Resources\Images\SD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

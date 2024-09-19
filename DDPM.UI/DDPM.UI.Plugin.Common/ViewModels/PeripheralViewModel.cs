@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.Views;
@@ -51,6 +52,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
         public List<string> EOLList = new() { "WK636", "KM714", "WM126", "WM116", "WM514" };
+        public DDPMSettings? DDPMSettings;
 
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {

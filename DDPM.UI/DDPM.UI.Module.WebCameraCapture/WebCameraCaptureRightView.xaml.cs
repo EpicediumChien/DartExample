@@ -16,17 +16,17 @@ namespace DDPM.UI.Module.WebCameraCapture
     /// </summary>
     public partial class WebCameraCaptureRightView : UserControl
     {
-        private readonly WebCameraViewModel _vm;        
+        private readonly WebCameraViewModel _vm;
 
-        public  WebCameraCaptureRightView(WebCameraViewModel vm)
+        public WebCameraCaptureRightView(WebCameraViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
 
-            var picturesLibrary =  StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
+            var picturesLibrary = StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
             // Fall back to the local app storage if the Pictures Library is not available
             //Windows.Storage.StorageFolder _captureFolder = picturesLibrary. ?? ApplicationData.Current.LocalFolder;
-            tbx_media_file_location.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            tbx_media_file_location.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
             _vm.Media_File_Location = tbx_media_file_location.Text;
         }
 
@@ -94,7 +94,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     }
 
                 }
-            }             
+            }
         }
 
         private void Resolution_HD_Button_Click(object sender, MouseButtonEventArgs e)
@@ -117,7 +117,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     }
 
                 }
-            }           
+            }
         }
 
         private void FPS_24_Button_Click(object sender, MouseButtonEventArgs e)
@@ -141,7 +141,7 @@ namespace DDPM.UI.Module.WebCameraCapture
 
                 }
 
-            }                
+            }
         }
 
         private void FPS_30_Button_Click(object sender, MouseButtonEventArgs e)
@@ -164,7 +164,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     }
 
                 }
-            }            
+            }
         }
 
         private void FPS_60_Button_Click(object sender, MouseButtonEventArgs e)
@@ -186,7 +186,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                         break;
                     }
                 }
-            }           
+            }
         }
 
         private void Open_Click(object sender, RoutedEventArgs e)
@@ -199,7 +199,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             if (folderDialog.ShowDialog() == true)
             {
                 var folderName = folderDialog.FolderName;
-                               
+
                 tbx_media_file_location.Text = folderName;
             }
 
@@ -270,7 +270,7 @@ namespace DDPM.UI.Module.WebCameraCapture
         {
             // Use IsChecked.
             bool flag = checkBox.IsChecked.Value;
-            
+
             _vm.Countdown_IsChecked = flag;
 
             /*
@@ -281,5 +281,5 @@ namespace DDPM.UI.Module.WebCameraCapture
             */
         }
     }
-    
+
 }

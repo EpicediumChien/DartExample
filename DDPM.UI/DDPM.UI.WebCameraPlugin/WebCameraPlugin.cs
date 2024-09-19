@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
@@ -172,7 +174,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             _log.Debug($"GetPeripherals is invoked");
             //_deviceHelper = await peripheralsPlugin.GetDevices();
-            Task<DeviceHelper> task = _deviceManagerPlugin!.GetDevices();
+            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices();
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);
@@ -226,6 +228,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
+            if (_viewModel!.DDPMSettings == null)
+            {
+                _viewModel.DDPMSettings = DdpmCommonHelper.DeviceManagerSA!.ReloadAppConfigData().Result;
+            }
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
             { }
             Mouse.OverrideCursor = null;
