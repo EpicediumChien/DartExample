@@ -109,6 +109,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     {
                         //txtRestore.IsEnabled = !data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
                         //RestoreLockIcon.Visibility = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                        //Lock Functionality 9/7
+                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
+                        if (data.LockSettings != null)
+                        {
+                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                            {
+                                //RestoreLockIcon.Visibility = Visibility.Visible;
+                                //txtRestore.IsEnabled = false;
+                            }
+                        }
                     }
                 }
             }
@@ -130,6 +141,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //no ui element currently
                 //RestoreLockIcon.Visibility = rst.isLocked;
                 //txtRestore.IsEnabled = rst.isEnabled;
+
+                //Lock Functionality 9/7
+                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null && data.LockSettings != null)
+                {
+                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                    {
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
+                    }
+                }
             }));
         }
 

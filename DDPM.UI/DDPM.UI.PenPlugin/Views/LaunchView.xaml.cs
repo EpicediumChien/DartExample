@@ -66,6 +66,17 @@ namespace DDPM.UI.Plugin.PenPlugin
                     {
                         txtRestore.IsEnabled = !data.LockSettings.Lock_Pen_RestoreFactoryDefaults;
                         RestoreLockIcon.Visibility = data.LockSettings.Lock_Pen_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                        //Lock Functionality 9/7
+                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Pen]
+                        if (data.LockSettings != null)
+                        {
+                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Pen"))
+                            {
+                                RestoreLockIcon.Visibility = Visibility.Visible;
+                                txtRestore.IsEnabled = false;
+                            }
+                        }
                     }
                 }
             }
