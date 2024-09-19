@@ -39,7 +39,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using VcpCore.Common;
-using WinCopies.Util;
 
 namespace ColorPreset.Plugins
 {
