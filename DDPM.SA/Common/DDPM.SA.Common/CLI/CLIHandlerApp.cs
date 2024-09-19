@@ -1,7 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
-using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
