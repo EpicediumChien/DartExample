@@ -78,6 +78,17 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     {
                         txtRestore.IsEnabled = !data.LockSettings.Lock_Audio_RestoreFactoryDefaults;
                         RestoreLockIcon.Visibility = data.LockSettings.Lock_Audio_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                        //Lock Functionality 9/7
+                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Audio]
+                        if (data.LockSettings != null)
+                        {
+                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Audio"))
+                            {
+                                RestoreLockIcon.Visibility = Visibility.Visible;
+                                txtRestore.IsEnabled = false;
+                            }
+                        }
                     }
                 }
             }
