@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,9 +21,70 @@ namespace DDPM.UI.Module.DisplayOthers
         {
             InitializeComponent();
             DataContext = vm;
+
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Display_ExportSettings)
+                    {
+                        //Do lock ui init here (direct set or binding via vm)
+                    }
+                    if (data.LockSettings.Lock_Display_PowerNap)
+                    {
+                        //Do lock ui init here (direct set or binding via vm)
+                    }
+                }
+            }
         }
 
-        private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
+        ~DisplayOthersRightView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            //Using user data from config file if need
+            //DDPMSettings data = null;
+            //if (DdpmCommonHelper.DeviceManagerSA != null)
+            //    data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ExportSettings", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) : {isLocked}");
+                    }
+                }));
+            }
+            isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_PowerNap", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply PowerNap(Lock) : {isLocked}");
+                    }
+                }));
+            }
+        }
+
+            private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
         {
             var psi = new System.Diagnostics.ProcessStartInfo();
             psi.FileName = Environment.SystemDirectory + Path.DirectorySeparatorChar + @"rundll32.exe";
