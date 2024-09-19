@@ -3604,6 +3604,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     // 複製指定的 log 文件到選擇的資料夾
                     CopyLogFolder(LogFolder, savePath);
                 }
+                LogFolder = @"C:\ProgramData\Dell\Dell Peripheral Manager\DPeMSDK\Log";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = "DPeMSDK_Log";
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
                 string logFileName = "EventLog.evtx";
                 string logFilePath = Path.Combine(saveFolderPath, logFileName);
                 ExecuteWevtutilCommand(logFilePath);
@@ -3611,6 +3620,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string zipFilePath = saveFolderPath + ".zip";
                 // 壓縮資料夾
                 CreateZipFile(saveFolderPath, zipFilePath);
+                Directory.Delete(saveFolderPath, true);
             }
             writelog($"{nameof(SaveLogFile)} end");
             return Task.FromResult(ret);
