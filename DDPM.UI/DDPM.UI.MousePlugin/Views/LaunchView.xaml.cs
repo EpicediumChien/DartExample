@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.ButtonSettings;
@@ -88,6 +89,47 @@ namespace DDPM.UI.Plugin.MousePlugin
 
             if(_vm.ConnectionType == "Wired")
                 btnUnpair.Visibility = Visibility.Collapsed;
+
+            //lock/unlock, no ui element currently
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    {
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
+                    }
+                    else
+                    {
+                        //txtRestore.IsEnabled = !data.LockSettings.Lock_Mouse_RestoreFactoryDefaults;
+                        //RestoreLockIcon.Visibility = data.LockSettings.Lock_Mouse_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                    }
+                }
+            }
+        }
+
+        ~LaunchView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Mouse_RestoreFactoryDefaults");
+            Dispatcher.Invoke(new Action(() =>
+            {
+                //no ui element currently
+                //RestoreLockIcon.Visibility = rst.isLocked;
+                //txtRestore.IsEnabled = rst.isEnabled;
+            }));
         }
 
         #region Init for Modules

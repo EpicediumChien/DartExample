@@ -78,20 +78,20 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-            }
 
-            DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-            if (data != null)
-            {
-                if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
                 {
-                    RestoreLockIcon.Visibility = Visibility.Visible;
-                    txtRestore.IsEnabled = false;
-                }
-                else
-                {
-                    txtRestore.IsEnabled = !data.LockSettings.Lock_Keyboard_RestoreFactoryDefaults;
-                    RestoreLockIcon.Visibility = data.LockSettings.Lock_Keyboard_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    {
+                        RestoreLockIcon.Visibility = Visibility.Visible;
+                        txtRestore.IsEnabled = false;
+                    }
+                    else
+                    {
+                        txtRestore.IsEnabled = !data.LockSettings.Lock_Keyboard_RestoreFactoryDefaults;
+                        RestoreLockIcon.Visibility = data.LockSettings.Lock_Keyboard_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                    }
                 }
             }
         }
