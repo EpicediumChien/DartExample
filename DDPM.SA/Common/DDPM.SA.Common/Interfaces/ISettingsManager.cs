@@ -41,6 +41,7 @@ namespace DDPM.SA.Common
         Task<string> QueryAccessInfo();
         Task<string> QueryAccessInfoVer();
         Task<string> QueryAccessInfoAddr();
+        Task<string> QueryNKVMLog();
     }
 
     /// <summary>
@@ -89,6 +90,7 @@ namespace DDPM.SA.Common
         Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps);
 
         //GlobalSettings
+        Task<string> GetNKVMLogInfo();
         Task<GlobalSettingParam> ReadGlobalSettings();
         Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam);
 

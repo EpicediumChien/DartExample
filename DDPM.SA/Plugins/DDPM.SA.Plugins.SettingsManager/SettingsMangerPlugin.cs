@@ -55,6 +55,7 @@ namespace DDPM.SA.Plugins.SettingsManager
         private static string _settingsAccess = SettingsAccess.AppAccessInfo;
         private static string _settingsAccessVer = SettingsAccess.AppAccessVer;
         private static string _settingsAccessAddr = SettingsAccess.AppAccessAddr;
+        private static string _NKVM_Log_GUID = SettingsAccess.NKVM_Log;
 
         private IAgent _agent;
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
@@ -122,6 +123,11 @@ namespace DDPM.SA.Plugins.SettingsManager
         public Task<string> QueryAccessInfoAddr()
         {
             return Task.FromResult(_settingsAccessAddr);
+        }
+        //0913 Add by Bruce
+        public Task<string> QueryNKVMLog()
+        {
+            return Task.FromResult(_NKVM_Log_GUID);
         }
         #endregion
 
