@@ -3567,7 +3567,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     // 取得資料夾名稱
                     string folderName = "DTP_Log";
-                    string savePath = Path.Combine(LogFolder, folderName);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
                     // 複製指定的 log 文件到選擇的資料夾
                     CopyLogFolder(LogFolder, savePath);
                 }
