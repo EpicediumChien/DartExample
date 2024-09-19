@@ -1,6 +1,5 @@
 ﻿using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
-using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,6 +17,8 @@ namespace DDPM.SA.Common.CLI
        => CLIHandlerApp.CLI_App_LockUnlock(Log, inputData, settingsPlugin, commandLineInput, action_guid);
         public static CLIEventResult CLI_Display_LockUnlockWithUserAction(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
        => CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, inputData, settingsPlugin, commandLineInput, action_guid);
+        public static CLIEventResult CLI_Display_RestoreFactoryDefault(ILog Log, object inputData, object settingsPlugin, CommandLineInput commandLineInput, string action_guid)
+       => CLIHandlerApp.CLI_App_LockUnlock(Log, inputData, settingsPlugin, commandLineInput, action_guid);
         private static void WriteLog(ILog Log, string text, log_type log_type = log_type.info)
         {
             text = "[CLIHandlerDisplay] " + text;

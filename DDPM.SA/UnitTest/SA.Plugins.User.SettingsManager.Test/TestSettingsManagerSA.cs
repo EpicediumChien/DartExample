@@ -317,6 +317,113 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.Delete(DeserializehotkeySettingsObject_path1_);
         }
 
+        [Test]
+        public void TestInitGlobalSettingConfigFile()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var result = privateSettingsManagerObject.Invoke("InitGlobalSettingConfigFile");
+            var InitGlobalSettingParam = privateSettingsManagerObject.GetFieldOrProperty("_GlobalSettingParam");
+            Assert.That(InitGlobalSettingParam, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadGlobalSettings()
+        {
+            GlobalSettingParam ReadGlobalSettingsResult1;
+            string GlobalSettings_path1_ = "test_ReadGlobalSettingsPath.json";
+            string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
+            GlobalSettingParam globalSettingParam_ = new GlobalSettingParam();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", GlobalSettings_path1_);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSettingParam", globalSettingParam_);
+            if (!File.Exists(GlobalSettings_path1_))
+            {
+                ReadGlobalSettingsResult1 = SettingsManagerSAPlugin.ReadGlobalSettings().Result;  // strFilePath is not Exists GlobalSettings_path1_ GlobalSetting.json"
+                Assert.That(globalSettingParam_, Is.EqualTo(ReadGlobalSettingsResult1)); //run finnish will create path1_
+            }
+
+            if (File.Exists(GlobalSettings_path1_))
+            {
+                File.WriteAllText(GlobalSettings_path1_, jsonData);
+                var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadGlobalSettings().Result;
+                var globalSettingParam = (GlobalSettingParam)privateSettingsManagerObject.GetFieldOrProperty("_GlobalSettingParam");
+                Assert.That(globalSettingParam, Is.EqualTo(ReadColorPresetSettingsResult2));
+                File.Delete(GlobalSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestWriteGlobalSettings()
+        {
+            bool writeGlobalSettings_ = false;
+            bool writeGlobalSettings_2 = true;
+            GlobalSettingParam globalSettingParamNull;
+            globalSettingParamNull = null;
+            GlobalSettingParam globalSettingParam = new GlobalSettingParam()
+            {
+                GlobalSetting_About = new GlobalSetting_About(),
+                GlobalSetting_General = new GlobalSetting_General(),
+                GlobalSetting_WidgetSettings = new GlobalSetting_WidgetSettings()
+            };
+            string writeglobalSettings_path1_ = "test_WriteGlobalSettingsPath.json";
+            string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
+            File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", writeglobalSettings_path1_);
+            if (globalSettingParamNull == null)
+            {
+                var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is not null
+                Assert.That(writeGlobalSettings_, Is.EqualTo(WriteGlobalSettingsResult1));
+            }
+
+            if (globalSettingParam != null)
+            {
+                var WriteGlobalSettingsResult2 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is null
+                Assert.That(writeGlobalSettings_2, Is.EqualTo(WriteGlobalSettingsResult2));
+                File.Delete(writeglobalSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestRunSerializeGlobalSettingObject()
+        {
+            string globalSettings_path1_ = "test_GlobalSettingsPath.json";
+            string GlobalSettingsjsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
+            File.WriteAllText(globalSettings_path1_, GlobalSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", globalSettings_path1_);
+            GlobalSettingParam globalSettingParam = new GlobalSettingParam()
+            {
+                GlobalSetting_About = new GlobalSetting_About(),
+                GlobalSetting_General = new GlobalSetting_General(),
+                GlobalSetting_WidgetSettings = new GlobalSetting_WidgetSettings()
+            };
+            var RunSerializeObjectresult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", globalSettingParam);
+            Assert.Greater(RunSerializeObjectresult.Length, 0);
+            File.Delete(globalSettings_path1_);
+        }
+
+        [Test]
+        public void TestRunGlobalSettinDeserializeObject()
+        {
+            string globalSettingsDes_path1_ = "test_GlobalSettingsPath.json";
+            string GlobalSettingsDesjsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"0000\",\"DriverVersion\":\"0000\"}}";
+            File.WriteAllText(globalSettingsDes_path1_, GlobalSettingsDesjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", globalSettingsDes_path1_);
+            GlobalSettingParam globalSettingParamDes = new GlobalSettingParam()
+            {
+                GlobalSetting_About = new GlobalSetting_About() { SWVersion = "0000", DriverVersion = "0000", },
+                GlobalSetting_General = new GlobalSetting_General() { Low_Battery_Level = true, Keyboard_Lock_Key = false, Webcam_WB7022_Presence_Detection_Sensor_Cover_State = true, Display_Color_Preset_and_Easy_Memory = true, Display_MuteState = true },
+                GlobalSetting_WidgetSettings = new GlobalSetting_WidgetSettings() { EnableQuickAccessWidget = false, EnableQuickAccessWidget_Reminder = false }
+            };
+            var RunGlobalSettinDeserializeObjectResult = (GlobalSettingParam)privateSettingsManagerObject.Invoke("RunGlobalSettinDeserializeObject", GlobalSettingsDesjsonData);
+            Assert.That(globalSettingParamDes.GlobalSetting_About.SWVersion, Is.EqualTo(RunGlobalSettinDeserializeObjectResult.GlobalSetting_About.SWVersion));
+            Assert.That(globalSettingParamDes.GlobalSetting_General.Low_Battery_Level, Is.EqualTo(RunGlobalSettinDeserializeObjectResult.GlobalSetting_General.Low_Battery_Level));
+            Assert.That(globalSettingParamDes.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State, Is.EqualTo(RunGlobalSettinDeserializeObjectResult.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State));
+            Assert.That(globalSettingParamDes.GlobalSetting_WidgetSettings.EnableQuickAccessWidget, Is.EqualTo(RunGlobalSettinDeserializeObjectResult.GlobalSetting_WidgetSettings.EnableQuickAccessWidget));
+            File.Delete(globalSettingsDes_path1_);
+        }
 
         [OneTimeTearDown]
         public void TearDown()

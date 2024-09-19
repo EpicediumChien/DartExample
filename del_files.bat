@@ -1,4 +1,4 @@
-@echo off
+@echo on
 
 setlocal
 
@@ -16,4 +16,4 @@ del /Q /F /s "obj"
 del /Q /F /s "bin"
 
 endlocal
-exit
+::exit

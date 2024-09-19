@@ -10,7 +10,6 @@ using Moq;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using VcpCore.Plugins;
-using WinCopies.Util;
 
 namespace DDPM.SA.Plugins.User.DisplayManager.Test
 {

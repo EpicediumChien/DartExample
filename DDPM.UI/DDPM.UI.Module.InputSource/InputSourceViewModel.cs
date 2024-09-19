@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using System.Collections.ObjectModel;
@@ -247,6 +248,13 @@ namespace DDPM.UI.Module.InputSource
                 }
                 OnPropertyChanged("Items_Selected");
                 OnPropertyChanged("items"); //0607 Jason
+
+                //Lock/unlock data init here
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    bool isLocked_current_input = data.LockSettings.Lock_Display_ActiveInputSource;
+                }
             }
             catch (Exception)
             {

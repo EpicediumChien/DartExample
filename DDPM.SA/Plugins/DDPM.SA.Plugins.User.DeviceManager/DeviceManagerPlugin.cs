@@ -46,7 +46,6 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using VcpCore.Common;
-using WinCopies.Util;
 using Windows.System;
 using DDPM.SA.Common.Screen;
 using static VcpCore.Common.EDIDReader;
@@ -2952,32 +2951,39 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (vcps != null)
                 {
-                    //set ImportVCPSequence
-                    SetVCPSequence(monitorInfo, vcps);
-                    foreach (VCP code in vcps)
+                    if (vcps.Count > 0)
                     {
-                        if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                            importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                        //set ImportVCPSequence
+                        SetVCPSequence(monitorInfo, vcps);
+                        foreach (VCP code in vcps)
                         {
                             writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
-                            bool b = false;
-                            ObjGetVCP objGetVCP = new ObjGetVCP();
-                            //SHR on/off need load settings
-                            //if (code.Code == 0xF0)
-                            //{
-                            //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                            //}
-                            //get vcp code
-                            objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                            if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                            if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                             {
-                                //set vcp code
-                                writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                bool b = false;
+                                ObjGetVCP objGetVCP = new ObjGetVCP();
+                                //SHR on/off need load settings
+                                //if (code.Code == 0xF0)
+                                //{
+                                //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                //}
+                                //get vcp code
+                                objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                {
+                                    //set vcp code
+                                    writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                    b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                }
                             }
                         }
+                        return Task.FromResult(true);
                     }
-                    return Task.FromResult(true);
+                    else
+                    {
+                        writelog("[DisplayImportSettings] VCPs List count is 0");
+                    }
                 }
                 else
                 {
@@ -5692,7 +5698,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //pip/pbp subinput should only one
             List<InputSourceObj> subInputs = GetSubInputs(monitorInfo).Result;
             List<InputSourceObj> allInputs = new List<InputSourceObj>();
-            inputList.ForEach(input => allInputs.Add(new InputSourceObj(input.Value.InputName)));
+            //inputList.ForEach(input => allInputs.Add(new InputSourceObj(input.Value.InputName)));
+            //[Dean] remove WinCopies utilties and fix code conflict
+            foreach (var input in inputList)
+            {
+                allInputs.Add(new InputSourceObj(input.Value.InputName));
+            }
             List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
             if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
             {
@@ -6467,18 +6478,39 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SetVCPSequence(MonitorInfo monitorInfo, List<VCP> vcps)
         {
-            ImportVCP importVCP = new ImportVCP();
-            foreach (int code in importVCP.ImportVCPSequence)
+            if (vcps.Count != 0)
             {
-                VCP vcp = vcps.Find(x => x.Code == code);
-                writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
-                ObjGetVCP objGetVCP = new ObjGetVCP();
-                objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
-                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                foreach (var item in vcps)
                 {
-                    writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
-                    bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                    Trace.WriteLine($"Code: {item.Code}, Value:{item.Value}");
+
                 }
+
+                ImportVCP importVCP = new ImportVCP();
+                foreach (int code in importVCP.ImportVCPSequence)
+                {
+                    if (vcps.Exists(x => x.Code == code))
+                    {
+                        VCP vcp = vcps.Find(x => x.Code == code);
+                        writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
+                        ObjGetVCP objGetVCP = new ObjGetVCP();
+                        objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
+                        if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)vcp.Value[0])
+                        {
+                            writelog("[SetVCPSequence] Set VCP code : " + vcp.Code.ToString());
+                            bool b = SetVCPCapability(monitorInfo, (byte)code, (uint)vcp.Value[0]).Result;
+                        }
+                    }
+                    else
+                    {
+                        writelog($"[SetVCPSequence] Code:{code} cannot find in vcps");
+                    }
+
+                }
+            }
+            else
+            {
+                writelog("[SetVCPSequence] vcps count = 0");
             }
         }
 

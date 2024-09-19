@@ -151,7 +151,7 @@ namespace DDPM.UI.Module.ButtonSettings
         //    RefreshAction("Office");
         //    SectionAction.Visibility = Visibility.Collapsed;
         //    SectionOffice.Visibility = Visibility.Visible;
-        //    OpenSectionPanel(OfficePanel.Name, true);
+        //    OpenSectionPanel(OfficePanel.ID, true);
         //  }
         //}
 

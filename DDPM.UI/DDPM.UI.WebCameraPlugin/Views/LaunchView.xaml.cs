@@ -9,10 +9,13 @@ using DDPM.UI.Module.WebCameraPresenceDetection;
 using DDPM.UI.Module.WebCameraSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -25,6 +28,7 @@ using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Windows.UI.Popups;
 using BitmapEncoder = Windows.Graphics.Imaging.BitmapEncoder;
+using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -60,10 +64,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly string Capture = Strings.Capture;
         private readonly string Microphone = Strings.Microphone;
 
-        // 20240731
         private DispatcherTimer _timer = new();
-
         private int _countdownValue;
+        private bool IsPresetOpen = false;
+
+        //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
+        private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
 
         public LaunchView()
         {
@@ -78,8 +84,53 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 BuildModuleGroups();
 
-                txtPreset.Text = UI.Resources.Helper.LangHelper.Instance["Webcamera.0"];
+                //txtPreset.Text = $"{LangHelper.Instance["Camera.7"]} {_vm.CurrentProfileName}";
+                txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
+                txtAddPreset.Text = LangHelper.Instance["Camera.5"];
+
+                //ProfileItems.ItemsSource = _vm.ProfileNames;
+                ProfileItems.ItemsSource = _vm.ProfileItems;
             }
+
+            //lock/unlock, no ui element currently
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    {
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
+                    }
+                    else
+                    {
+                        //txtRestore.IsEnabled = !data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
+                        //RestoreLockIcon.Visibility = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                    }
+                }
+            }
+        }
+
+        ~LaunchView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Webcam_RestoreFactoryDefaults");
+            Dispatcher.Invoke(new Action(() =>
+            {
+                //no ui element currently
+                //RestoreLockIcon.Visibility = rst.isLocked;
+                //txtRestore.IsEnabled = rst.isEnabled;
+            }));
         }
 
         //  Jim remove 20240626
@@ -180,7 +231,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
 
-            if (newItem.Text == UI.Resources.Helper.LangHelper.Instance["Camera.4"])
+            if (newItem.Text == LangHelper.Instance["Camera.4"])
             {
                 _ = CleanupMediaCaptureAsync();
                 imgDevice.Visibility = Visibility.Visible;
@@ -192,6 +243,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 imgDevice.Visibility = Visibility.Hidden;
                 gridPreview.Visibility = Visibility.Visible;
             }
+            if (IsPresetOpen)
+            { btnPreset_Click(this, null); }
         }
 
         #endregion Vbar
@@ -251,6 +304,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _ = CleanupMediaCaptureAsync();
             imgDevice.Visibility = Visibility.Visible;
             gridPreview.Visibility = Visibility.Hidden;
+            if (IsPresetOpen)
+            { btnPreset_Click(this, null); }
         }
 
         MediaCaptureFailedEventHandler handler = (sender, e) =>
@@ -469,7 +524,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
                 // Fall back to the local app storage if the Pictures Library is not available
                 //_vm._captureFolder = picturesLibrary.SaveFolder ?? ApplicationData.Current.LocalFolder;
-                _vm._captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm.Media_File_Location); 
+                _vm._captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm.Media_File_Location);
 
                 // Create storage file for the capture
                 var videoFile = await _vm._captureFolder.CreateFileAsync("SimpleVideo.mp4", CreationCollisionOption.GenerateUniqueName);
@@ -542,7 +597,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_vm._mediaCapture != null)
             {
                 MediaCapturePauseResult result =
-                await _vm._mediaCapture.PauseRecordWithResultAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);               
+                await _vm._mediaCapture.PauseRecordWithResultAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);
             }
 
             Debug.WriteLine("Pause recording!");
@@ -605,6 +660,67 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             StartRecord();
+        }
+
+        private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            _vm!.CurrentProfileName = ((UXTextBlock)sender).Tag.ToString()!;
+            btnPreset_Click(this, null);
+
+        }
+
+        private void btnPreset_Click(object sender, System.Windows.Input.MouseButtonEventArgs? e)
+        {
+            var img = (Image)FindName($"imgDown");
+            DoubleAnimation rotateAnimation;
+            var AnimatedPanel = (StackPanel)FindName("spPresets");
+            if (IsPresetOpen)
+            {
+                var txt = $"{Strings.Preset}: {_vm!.CurrentProfileName}";
+                if (!PresetNames.Contains(_vm!.CurrentProfileName))
+                {
+                    txt = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+                }
+                txtPreset.Text = txt;
+                rotateAnimation = new()
+                {
+                    From = 180,
+                    To = 0,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+                };
+                AnimatedPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                txtPreset.Text = LangHelper.Instance["Camera.6"];
+                rotateAnimation = new()
+                {
+                    From = 0,
+                    To = 180,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3)),
+                };
+                AnimatedPanel.Visibility = Visibility.Visible;
+                DoubleAnimation visibilityAnimation = new()
+                {
+                    From = 0,
+                    To = 1,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.3))
+                };
+                AnimatedPanel.BeginAnimation(DockPanel.OpacityProperty, visibilityAnimation);
+            }
+            img.RenderTransform = new RotateTransform();
+            img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+            IsPresetOpen = !IsPresetOpen;
+        }
+
+        private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
         }
     }
 }
