@@ -859,6 +859,13 @@ namespace DDPM.SA.Common.CLI
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Keyboard_CollabScreenShare = target;
                         }
+                        else if (commandLineInput.TargetFeature.Equals("MICNOISECANCELLATION"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Audio_micNoiseCancellation = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Audio_micNoiseCancellation = target;
+                        }
                         else
                             return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
@@ -893,6 +900,14 @@ namespace DDPM.SA.Common.CLI
                                 data_user.LockSettings.Lock_Audio_ancMode = target;
                             continue;
                         }
+                        else if (commandLineInput.TargetFeature.Equals("WEARDETECTION"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Audio_wearDetection = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Audio_wearDetection = target;
+                            continue;
+                        }
                     }
                     else
                     {
@@ -924,7 +939,12 @@ namespace DDPM.SA.Common.CLI
                         {
                             if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
                                 continue;
-                        }                       
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("MICNOISECANCELLATION"))
+                        {
+                            if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
+                                continue;
+                        }
                         //No pre-definition be found, means fail
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
                         Debug.WriteLine(response.Message);
@@ -967,6 +987,12 @@ namespace DDPM.SA.Common.CLI
                                 break;
                             case "ANCMODE":
                                 status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_ancMode" }).Result;
+                                break;
+                            case "MICNOISECANCELLATION":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_micNoiseCancellation" }).Result;
+                                break;
+                            case "WEARDETECTION":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_wearDetection" }).Result;
                                 break;
                         }
                     }

@@ -395,8 +395,16 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "MICNOISECANCELLATION":     //micNoiseCancellation      DDPMW-1855
+                    if (commandLineInput.PluginsType.Equals("AUDIO"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "WEARDETECTION":             //wearDetection             DDPMW-2093
+                    if (commandLineInput.PluginsType.Equals("AUDIO"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 default:
                     response.Message = $"Feature {commandLineInput.TargetFeature} doesn't in global setting support list";
