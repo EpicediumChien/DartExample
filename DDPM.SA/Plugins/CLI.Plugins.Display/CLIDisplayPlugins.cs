@@ -8690,20 +8690,7 @@ namespace DDPM.CLI.Plugins.Display
             {
                 if (commandLineInput.Options.Count == 1)
                 {
-                    string filename = commandLineInput.Options[0].Option_Value;
-                    if (!File.Exists(filename))
-                    {
-                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                        cli_Response.Command = commandLineInput.Command;
-                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "file is not exist.";
-                        return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
-                    }
-                    else
-                    {
-                        return DiagnosticReport(devMgr, commandLineInput).Result;
-                    }
+                    return DiagnosticReportv2(devMgr, commandLineInput).Result;
                 }
                 else
                 {
@@ -8780,6 +8767,105 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "PASS";
                         cli_Response.Message = "N/A";
                         output += "\n" + "{" + "\n" + jsonString + "\n" + "}";
+                        output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    }
+                }
+            }
+            return ((int)CLI_ExitCode.success, output);
+        }
+
+        private async Task<(int code, string result)> DiagnosticReportv2(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            string filepath = commandLineInput.Options[0].Option_Value;
+            string filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
+            string file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (!Directory.Exists(filepath))
+            {
+                Directory.CreateDirectory(filepath);
+            }
+
+            if (commandLineInput.DeviceIndex.Count == 0 && commandLineInput.ServiceTag.Count == 0)
+            {
+                foreach (MonitorInfo monitor in _AllInfoMonitors)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    cli_Response.Message = commandLineInput.Options[0].Option_Value;
+                    devMgr.SaveLogFile(filepath_);
+
+                    if (!File.Exists(file))
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "file is not exist.";
+                    }
+                    else
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            else
+            {
+                foreach (string idx in commandLineInput.DeviceIndex)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[Convert.ToInt32(idx)];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base(idx);
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    devMgr.SaveLogFile(filepath_);
+
+                    if (!File.Exists(file))
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "file is not exist.";
+                    }
+                    else
+                    {
+                        cli_Response.Result = "PASS";
+                        cli_Response.Message = "N/A";
+                    }
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+                foreach (string tag in commandLineInput.ServiceTag)
+                {
+                    var tmp = _AllInfoMonitors.FindAll(x => x.edid.ServiceTag.ToUpper().Equals(tag.ToUpper()));
+                    foreach (MonitorInfo monitor in tmp)
+                    {
+                        CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                        cli_Response.Command = commandLineInput.Command;
+                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                        cli_Response.Model = monitor.AliasDeviceName;
+                        cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                        cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                        cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                        devMgr.SaveLogFile(filepath_);
+
+                        if (!File.Exists(file))
+                        {
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "file is not exist.";
+                        }
+                        else
+                        {
+                            cli_Response.Result = "PASS";
+                            cli_Response.Message = "N/A";
+                        }
                         output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                     }
                 }
@@ -10333,6 +10419,8 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
+            DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
+
             if (commandLineInput.Command == "GET")
             {
                 writelog("Easyarrange get entry");
@@ -10374,7 +10462,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax.";
                     }
-
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -10402,10 +10490,17 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
                     if (commandLineInput.Options[0].Option_Value == "ENABLE")
+                    {
                         elable_ea = true;
+                        ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
+                    } 
                     else
+                    {
                         elable_ea = false;
+                        ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = true;
+                    }
 
+                    await devMgr.SetAppConfigData(ddpmSettings);
                     output_ea = devMgr.SetEAFunctionEnabled(elable_ea).Result;
                     if (output_ea != null)
                         retcode = true;
@@ -10424,7 +10519,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax.";
                     }
-
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -10918,6 +11013,8 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
+            DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
+
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
 
@@ -10930,7 +11027,7 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ;
+                    
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
@@ -10944,15 +11041,19 @@ namespace DDPM.CLI.Plugins.Display
                         case "ENABLE":
                             writelog($"InAppUSBkvm on entry");
                             retcode = devMgr.SetOnUSBKVM(monitor, true).Result;
+                            ddpmSettings.LockSettings.Lock_Display_USBKVM = false;
+                            await devMgr.SetAppConfigData(ddpmSettings);
                             cli_Response.Result = "PASS";
-                            cli_Response.Value = "enable";
+                            cli_Response.Value = commandLineInput.Options[0].Option_Value.ToUpper();
                             break;
 
                         case "DISABLE":
                             writelog($"InAppUSBkvm off entry");
                             retcode = devMgr.SetOnUSBKVM(monitor, false).Result;
+                            ddpmSettings.LockSettings.Lock_Display_USBKVM = true;
+                            await devMgr.SetAppConfigData(ddpmSettings);
                             cli_Response.Result = "PASS";
-                            cli_Response.Value = "disable";
+                            cli_Response.Value = commandLineInput.Options[0].Option_Value.ToUpper();
                             break;
 
                         default:
@@ -10964,6 +11065,7 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                             break;
                     }
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -10990,11 +11092,13 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    cli_Response.Result = "PASS";
                     if (rc.ToString() == "True")
-                        cli_Response.Value = "EANBLE";
+                        cli_Response.Value = "ENABLE";
                     else
                         cli_Response.Value = "DISABLE";
 
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }

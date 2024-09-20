@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
@@ -15,6 +16,7 @@ using System.IO;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -37,20 +39,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
     /// </summary>
     public partial class LaunchView : System.Windows.Controls.UserControl
     {
-        /*
-        // MediaCapture and its state variables
-        private MediaCapture? _mediaCapture;
-        private MediaFrameReader _mediaFrameReader;
-
-        // 20240626 jim add
-        private bool captureManagerInitialized = false;
-        private bool _running = false;
-        private bool _isRecording;
-
-        // Folder in which the captures will be stored (initialized in SetupUiAsync)
-        private StorageFolder _captureFolder;
-        */
-
         // Rotation metadata to apply to the preview stream and recorded videos (MF_MT_VIDEO_ROTATION)
         // Reference: http://msdn.microsoft.com/en-us/library/windows/apps/xaml/hh868174.aspx
         private static readonly Guid RotationKey = new Guid("C380465D-2271-428C-9B83-ECEA3B4A85C1");
@@ -58,15 +46,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private readonly WebCameraViewModel? _vm;
 
         private readonly int[] _rightFrameWidth = new int[] { 0, 483, 483, 483, 483, 483 };
-        private readonly string CameraControl = Strings.CameraControl;
-        private readonly string ColorandImage = Strings.ColorandImage;
-        private readonly string PresenceDetection = Strings.PresenceDetection;
-        private readonly string Capture = Strings.Capture;
-        private readonly string Microphone = Strings.Microphone;
+        private readonly string CameraControl = LangHelper.Instance["Camera.0"];
+        private readonly string ColorandImage = LangHelper.Instance["Camera.1"];
+        private readonly string PresenceDetection = LangHelper.Instance["Camera.2"];
+        private readonly string Capture = LangHelper.Instance["Camera.3"];
+        private readonly string Microphone = LangHelper.Instance["Camera.4"];
 
         private DispatcherTimer _timer = new();
         private int _countdownValue;
         private bool IsPresetOpen = false;
+        private Stopwatch stopwatch = new Stopwatch();
+        private DispatcherTimer RecordingTimer;
 
         //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
@@ -84,7 +74,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
                 BuildModuleGroups();
 
-                //txtPreset.Text = $"{LangHelper.Instance["Camera.7"]} {_vm.CurrentProfileName}";
                 txtPreset.Text = $"{Strings.Preset}: {_vm.CurrentProfileName}";
                 txtAddPreset.Text = LangHelper.Instance["Camera.5"];
 
@@ -109,17 +98,30 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     {
                         //txtRestore.IsEnabled = !data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
                         //RestoreLockIcon.Visibility = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                        //Lock Functionality 9/7
+                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
+                        if (data.LockSettings != null)
+                        {
+                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                            {
+                                //RestoreLockIcon.Visibility = Visibility.Visible;
+                                //txtRestore.IsEnabled = false;
+                            }
+                        }
                     }
                 }
             }
+
+            RecordingTimer = new DispatcherTimer();
+            RecordingTimer.Interval = TimeSpan.FromSeconds(1);
+            RecordingTimer.Tick += RecordingTimer_Tick;
+            Preview();
         }
 
-        ~LaunchView()
+        private void RecordingTimer_Tick(object? sender, EventArgs e)
         {
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-            }
+            txtTimer.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -130,12 +132,28 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //no ui element currently
                 //RestoreLockIcon.Visibility = rst.isLocked;
                 //txtRestore.IsEnabled = rst.isEnabled;
+
+                //Lock Functionality 9/7
+                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA!.ReloadAppConfigData().Result;
+                if (data != null && data.LockSettings != null)
+                {
+                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                    {
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
+                    }
+                }
             }));
         }
 
-        //  Jim remove 20240626
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+
             try
             {
                 await CleanupMediaCaptureAsync();
@@ -231,18 +249,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
 
-            if (newItem.Text == LangHelper.Instance["Camera.4"])
-            {
-                _ = CleanupMediaCaptureAsync();
-                imgDevice.Visibility = Visibility.Visible;
-                gridPreview.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                Preview();
-                imgDevice.Visibility = Visibility.Hidden;
-                gridPreview.Visibility = Visibility.Visible;
-            }
+            //if (newItem.Text == LangHelper.Instance["Camera.4"])
+            //{
+            //    _ = CleanupMediaCaptureAsync();
+            //    imgDevice.Visibility = Visibility.Visible;
+            //    gridPreview.Visibility = Visibility.Hidden;
+            //}
+            //else
+            //{
+            //    Preview();
+            //    imgDevice.Visibility = Visibility.Hidden;
+            //    gridPreview.Visibility = Visibility.Visible;
+            //}
             if (IsPresetOpen)
             { btnPreset_Click(this, null); }
         }
@@ -361,12 +379,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 MediaFrameSourceInfo frameSourceInfo = selectedFrameSourceGroup.SourceInfos[0];
 
-                _vm!._mediaCapture = new MediaCapture();
-                _vm._mediaCapture.Failed += handler;
+                _vm!.MediaCapture = new MediaCapture();
+                _vm.MediaCapture.Failed += handler;
 
                 try
                 {
-                    await _vm._mediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
+                    await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
                     {
                         SourceGroup = selectedFrameSourceGroup,
                         SharingMode = MediaCaptureSharingMode.ExclusiveControl,
@@ -381,17 +399,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     return;
                 }
 
-                MediaFrameSource mediaFrameSource = _vm._mediaCapture.FrameSources[frameSourceInfo.Id];
+                MediaFrameSource mediaFrameSource = _vm.MediaCapture.FrameSources[frameSourceInfo.Id];
 
                 // 20240626 jim modify
-                _vm._mediaFrameReader = await _vm._mediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
+                _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
 
-                _vm._mediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
+                _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
 
-                await _vm._mediaFrameReader.StartAsync();
+                await _vm.MediaFrameReader.StartAsync();
 
                 // Query all properties [resolution and frame rate] of the webcam device
-                _vm.allProperties = _vm._mediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
+                _vm.allProperties = _vm.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
 
                 // Order them by resolution then frame rate
                 _vm.allProperties = _vm.allProperties.OrderByDescending(x => x.Height * x.Width).ThenByDescending(x => x.FrameRate);
@@ -401,7 +419,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 _vm.SetResolution_Selected(1);
                 _vm.SetFPS_Selected(1);
-
+                //imgDevice.Visibility = Visibility.Hidden;
+                DoubleAnimation visibilityAnimation = new()
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5))
+                };
+                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
             }
             catch (Exception Exc)
             {
@@ -464,41 +489,29 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             return result;
         }
 
-        private async void StartRecord()
+        private void StartRecord()
         {
-            // jim add 20240625
-
-            if (!_vm._isRecording)
+            if (_vm!.Countdown_IsChecked)
             {
-                if (_vm.Countdown_IsChecked)
-                {
-                    _countdownValue = 3; // 設置倒數起始值
-                    CountdownText.Text = _countdownValue.ToString();
-
-
-                    _timer = new DispatcherTimer();
-                    _timer.Interval = TimeSpan.FromSeconds(1);
-                    _timer.Tick += Timer_Tick;
-                    _timer.Start();
-                }
-                else
-                    StartRecordingAsync().RunSynchronously();
-
+                //_countdownValue = 3; // 設置倒數起始值
+                //CountdownText.Text = _countdownValue.ToString();
+                //_timer = new DispatcherTimer();
                 //_timer.Interval = TimeSpan.FromSeconds(1);
                 //_timer.Tick += Timer_Tick;
                 //_timer.Start();
 
-                //System.Threading.Thread.Sleep(3000);
-                //await StartRecordingAsync();
-
+                DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
+                Thread.Sleep(4000);
             }
-            else
-            {
-                await StopRecordingAsync();
-            }
+            //else
+            StartRecordingAsync().RunSynchronously();
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void StopRecord()
+        {
+            _ = StopRecordingAsync();
+        }
+        private void Timer_Tick(object? sender, EventArgs e)
         {
             _countdownValue--;
             if (_countdownValue > 0)
@@ -519,15 +532,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <returns></returns>
         private async Task StartRecordingAsync()
         {
+            stopwatch.Start();
+            RecordingTimer.Start();
             try
             {
                 //var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
                 // Fall back to the local app storage if the Pictures Library is not available
                 //_vm._captureFolder = picturesLibrary.SaveFolder ?? ApplicationData.Current.LocalFolder;
-                _vm._captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm.Media_File_Location);
+                var captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm.VideoCaptureFolder);
 
                 // Create storage file for the capture
-                var videoFile = await _vm._captureFolder.CreateFileAsync("SimpleVideo.mp4", CreationCollisionOption.GenerateUniqueName);
+                var videoFile = await captureFolder.CreateFileAsync(DateTime.Now.ToString("DDP'M'Videoyyyy-MM-dd-HH-mm-ss.'mp4'"), CreationCollisionOption.GenerateUniqueName);
 
                 var encodingProfile = MediaEncodingProfile.CreateMp4(VideoEncodingQuality.Auto);
 
@@ -537,10 +552,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 Debug.WriteLine("Starting recording to " + videoFile.Path);
 
-                if (_vm._mediaCapture != null)
-                    await _vm._mediaCapture.StartRecordToStorageFileAsync(encodingProfile, videoFile);
+                if (_vm.MediaCapture != null)
+                    await _vm.MediaCapture.StartRecordToStorageFileAsync(encodingProfile, videoFile);
 
-                _vm._isRecording = true;
+                _vm.IsRecording = true;
 
                 Debug.WriteLine("Started recording!");
             }
@@ -559,10 +574,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             Debug.WriteLine("Stopping recording...");
 
-            _vm._isRecording = false;
+            _vm!.IsRecording = false;
 
-            if (_vm._mediaCapture != null)
-                await _vm._mediaCapture.StopRecordAsync();
+            if (_vm.MediaCapture != null)
+                await _vm.MediaCapture.StopRecordAsync();
 
             Debug.WriteLine("Stopped recording!");
 
@@ -572,14 +587,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// Resume recording a video
         /// </summary>
         /// <returns></returns>
-        private async Task ResumeRecordingAsync()
+        private async void ResumeRecordingAsync()
         {
             Debug.WriteLine("Resuming recording...");
 
-            _vm._isRecording = true;
+            _vm.IsRecording = true;
 
-            if (_vm._mediaCapture != null)
-                await _vm._mediaCapture.ResumeRecordAsync();
+            if (_vm.MediaCapture != null)
+                await _vm.MediaCapture.ResumeRecordAsync();
 
             Debug.WriteLine("Resume recording!");
         }
@@ -588,16 +603,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// Pause recording a video
         /// </summary>
         /// <returns></returns>
-        private async Task PauseRecordingAsync()
+        private async void PauseRecordingAsync()
         {
             Debug.WriteLine("Pausing recording...");
 
-            _vm._isRecording = true;
+            _vm.IsRecording = true;
 
-            if (_vm._mediaCapture != null)
+            if (_vm.MediaCapture != null)
             {
                 MediaCapturePauseResult result =
-                await _vm._mediaCapture.PauseRecordWithResultAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);
+                await _vm.MediaCapture.PauseRecordWithResultAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);
             }
 
             Debug.WriteLine("Pause recording!");
@@ -640,15 +655,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // 20240626 jim add
         private async Task CleanupMediaCaptureAsync()
         {
-            if (_vm!._mediaCapture != null)
+            if (_vm!.MediaCapture != null)
             {
-                using (var mediaCapture = _vm._mediaCapture)
+                using (var mediaCapture = _vm.MediaCapture)
                 {
-                    _vm._mediaCapture = null;
-
-                    _vm._mediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-                    await _vm._mediaFrameReader.StopAsync();
-                    _vm._mediaFrameReader.Dispose();
+                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
+                    await _vm.MediaFrameReader.StopAsync();
+                    _vm.MediaFrameReader.Dispose();
+                    _vm.MediaCapture = null;
                 }
             }
 
@@ -659,7 +673,29 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            btnPause.Visibility = Visibility.Visible;
+            btnRecord.Visibility = Visibility.Collapsed;
+            btnStop.Visibility = Visibility.Visible;
+            txtTimer.Visibility = Visibility.Visible;
+            if (IsPresetOpen)
+            { btnPreset_Click(this, null); }
+            btnPreset.IsEnabled = false;
             StartRecord();
+
+        }
+        private void btnStop_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            StopRecord();
+            RecordingTimer.Stop();
+            stopwatch.Stop();
+            stopwatch.Reset();
+            btnPause.Visibility = Visibility.Collapsed;
+            btnRecord.Visibility = Visibility.Visible;
+            btnStop.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Collapsed;
+            txtTimer.Visibility = Visibility.Collapsed;
+            txtTimer.Text = "00:00:00";
+            btnPreset.IsEnabled = true;
         }
 
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -721,6 +757,27 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
+        }
+
+        private void btnPlay_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ResumeRecordingAsync();
+            stopwatch.Start();
+            btnPause.Visibility = Visibility.Visible;
+            btnPlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void btnPause_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            PauseRecordingAsync();
+            stopwatch.Stop();
+            btnPause.Visibility = Visibility.Collapsed;
+            btnPlay.Visibility = Visibility.Visible;
+        }
+
+        private void btnFolder_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Process.Start("explorer.exe", _vm!.VideoCaptureFolder);
         }
     }
 }

@@ -4940,6 +4940,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a running condition");
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
+                        _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -4948,6 +4949,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a started condition");
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
+                        _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -5173,7 +5175,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if (WriteHotkeySettings(saveList).Result)
             {
-                if (_NKVMPlugin != null)
+                if (_NKVMPlugin != null && info.Job != HotkeyType.NkvmConflict)
                 {
                     _NKVMPlugin.ToNKVM_HotkeySettings(saveList).Wait();
                     if (_NKVMPlugin.IsNamedpipeConnected().Result)
@@ -6464,12 +6466,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SendCLINKVMRespone(e);
         }
 
+        private void NKVMSetHotkey(object sender, NKVMSetHotkey e)
+        {
+            SetNKVMHotkey(e);
+        }
+
         private void SendCLINKVMRespone(NKVMRespone e)
         {
             EventHandler<NKVMRespone> handler = NKVMCLIRespone;
             if (handler != null)
             {
                 handler.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+            }
+        }
+
+        private void SetNKVMHotkey(NKVMSetHotkey e)
+        {
+            bool b = SaveHotkeySetting(null, e.HotkeyInfo).Result;
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.SetHotkeyResponse(e.jsonstring, b);
+            }
+            else
+            {
+                writelog("[SetNKVMHotkey] _NKVMPlugin is null");
             }
         }
 

@@ -22,6 +22,20 @@
             <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
             <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+
+            <!-- DataTemplate for displaying text and Path -->
+            <DataTemplate x:Key="ComboBoxItemTemplate">
+                <StackPanel Orientation="Horizontal">
+                    <!-- Path Data binding -->
+                    <Path Data="{Binding PathData}" 
+              Fill="Black" 
+              Width="24" Height="24" 
+              Stretch="Uniform" 
+              Margin="0,0,5,0"/>
+                    <!-- Text binding -->
+                    <TextBlock Text="{Binding Text}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -147,7 +161,7 @@
                                     <ColumnDefinition Width="11*" />
                                 </Grid.ColumnDefinitions>
                                 <ComboBox AutomationProperties.Name="SelectedCheck"
-                                          Style="{StaticResource DdpmComboBoxStyle}"
+                                          Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding PCInputsList}"
                                           SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}"
@@ -166,7 +180,7 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="4*" />
                                 </Grid.ColumnDefinitions>
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Left" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}"
                                           SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}"
@@ -199,7 +213,7 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="3" Margin="16, 2, 16, 8">
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Top"
                                           ItemsSource="{Binding PCInputsList}" Width="103"
                                           SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
@@ -213,7 +227,7 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="5" Margin="16, 2, 16, 16">
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}" Width="103"
                                           SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
@@ -246,7 +260,7 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="3" Margin="16, 2, 16, 8">
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding PCInputsList}" Width="100"
                                           SelectedItem="{Binding PC3Inputs_Selected, Mode=TwoWay}"
@@ -260,7 +274,7 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="5" Margin="16, 2, 16, 16">
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}" Width="103"
                                           SelectedItem="{Binding PC3USB_Selected, Mode=TwoWay}"
@@ -293,7 +307,7 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="3" Margin="16, 2, 16, 8">
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding PCInputsList}"
                                           SelectedItem="{Binding PC4Inputs_Selected, Mode=TwoWay}"
@@ -307,7 +321,7 @@
                                                         HorizontalAlignment="Center" />
                             </Grid>
                             <Grid Grid.Row="5" Margin="16, 2, 16, 16">
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}" Width="103"
                                           SelectedItem="{Binding PC4USB_Selected, Mode=TwoWay}"

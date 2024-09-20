@@ -23,23 +23,17 @@ namespace DDPM.UI.Module.HeadsetAudioSettings.Tests
         private Mock<IConsole>? consoleMock;
         private IConsole? console;
         private PrivateObject? privateObject;
-        private Mock<IModuleOwner>? moduleOwnerMock;
-        private IModuleOwner? moduleOwner;
 
         [SetUp]
         public void Setup()
         {
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerSAMock.Object;
-            //DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             consoleMock = new Mock<IConsole>();
             console = consoleMock.Object;
             vm = new HeadsetViewModel(console, log, deviceManagerSA);
-            //moduleOwnerMock = new Mock<IModuleOwner>();
-            //moduleOwner = moduleOwnerMock!.Object;
-            //DdpmCommonHelper.ModuleOwner = moduleOwner;
             var currentDeviceInfo = new DeviceInfo();
             vm.CurrentDeviceInfo = currentDeviceInfo;
             headsetAudioSettingsRightView = new HeadsetAudioSettingsRightView(vm);

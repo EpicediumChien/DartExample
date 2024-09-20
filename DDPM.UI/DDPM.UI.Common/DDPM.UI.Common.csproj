@@ -410,6 +410,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DDPM.Easy.Common\DDPM.Easy.Common.csproj" />
     <ProjectReference Include="..\DDPM.UI.Resources\DDPM.UI.Resources.csproj" />
+    <ProjectReference Include="..\DDPM.UI.WalkThroughData\DDPM.UI.WalkThroughData.csproj" />
   </ItemGroup>
 
   <ItemGroup>

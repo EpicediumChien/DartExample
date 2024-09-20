@@ -131,7 +131,6 @@ namespace DDPM.SA.Common
                     TargetFeature = targetFeature;
                     break;
             }
-            Debug.WriteLine($"Target: {TargetFeature}, target: {targetFeature}");
             var properties = Property.DeviceProperties[deviceType];
             if (properties.Contains(TargetFeature))
             {
@@ -147,14 +146,30 @@ namespace DDPM.SA.Common
                             Value = "ENABLE";
                         else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
                             Value = "DISABLE";
+                        else if (prop.GetValue(di).ToString().Equals("7"))
+                            if (TargetFeature.ToUpper().Equals("WEARDETECTION"))
+                                Value = "ENABLE";
                         else
                         {
                             Value = prop.GetValue(di).ToString() ?? "";
                         }
                     }
                 }
-                if (targetFeature.Equals("COLLABSCREENSHARE"))
-                    Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
+                switch (targetFeature)
+                {
+                    case "COLLABSCREENSHARE":
+                        Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
+                        break;
+                    case "ANCMODE":
+                        Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
+                        break;
+                    case "MICNOISECANCELLATION":
+                        Value += "," + (data.LockSettings.Lock_Audio_micNoiseCancellation ? "LOCK" : "UNLOCK");
+                        break;
+                    case "WEARDETECTION":
+                        Value += "," + (data.LockSettings.Lock_Audio_wearDetection ? "LOCK" : "UNLOCK");
+                        break;
+                }
             }
             else
             {

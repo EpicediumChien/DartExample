@@ -961,6 +961,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Resume Recording 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_10 {
+            get {
+                return ResourceManager.GetString("Camera.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Stop Recording 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_11 {
+            get {
+                return ResourceManager.GetString("Camera.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Presence Detection 的當地語系化字串。
         /// </summary>
         internal static string Camera_2 {
@@ -1002,6 +1020,33 @@ namespace DDPM.UI.Resources {
         internal static string Camera_6 {
             get {
                 return ResourceManager.GetString("Camera.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Open Media Folder 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_7 {
+            get {
+                return ResourceManager.GetString("Camera.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Start Recording 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_8 {
+            get {
+                return ResourceManager.GetString("Camera.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Pause Recording 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_9 {
+            get {
+                return ResourceManager.GetString("Camera.9", resourceCulture);
             }
         }
         

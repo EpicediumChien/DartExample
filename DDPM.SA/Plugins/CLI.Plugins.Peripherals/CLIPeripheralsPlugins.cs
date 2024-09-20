@@ -219,7 +219,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
             return (int)CLI_ExitCode.success;
         }
-
+        
         private int SetPeripheralProperty()
         {
             SetResults.Clear();
@@ -314,8 +314,30 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     break;
                                 case "LOCK":
                                 case "UNLOCK":
-                                    if (value.ToUpper().Equals("LOCK")) data.LockSettings.Lock_Keyboard_CollabScreenShare = true;
-                                    if (value.ToUpper().Equals("UNLOCK")) data.LockSettings.Lock_Keyboard_CollabScreenShare = false;
+                                    if (value.ToUpper().Equals("LOCK"))
+                                    {
+                                        switch (_commandLineInput.TargetFeature.ToUpper())
+                                        {
+                                            case "COLLABSCREENSHARE":
+                                                data.LockSettings.Lock_Keyboard_CollabScreenShare = true;
+                                                break;
+                                            case "MICNOISECANCELLATION":
+                                                data.LockSettings.Lock_Audio_micNoiseCancellation = true;
+                                                break;
+                                        }
+                                    }
+                                    if (value.ToUpper().Equals("UNLOCK"))
+                                    {
+                                        switch (_commandLineInput.TargetFeature.ToUpper())
+                                        {
+                                            case "COLLABSCREENSHARE":
+                                                data.LockSettings.Lock_Keyboard_CollabScreenShare = false;
+                                                break;
+                                            case "MICNOISECANCELLATION":
+                                                data.LockSettings.Lock_Audio_micNoiseCancellation = false;
+                                                break;
+                                        }
+                                    }
                                     _devMgr.SetAppConfigData(data);
                                     break;
                                 default: // currently, CLI peripheral didn't accept others setting type
@@ -472,6 +494,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                     RunTaskA(val);
                     return (int)CLI_ExitCode.success;
                 case "ANCMODE":
+                    if (val == 1)
+                        data.LockSettings.Lock_Audio_ancMode = false;
+                    else
+                        data.LockSettings.Lock_Audio_ancMode = true;
+                    _devMgr.SetAppConfigData(data);
                     taskA = _devMgr.SetAncMode;
                     RunTaskA(val);
                     return (int)CLI_ExitCode.success;
@@ -508,10 +535,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                     RunTaskA(val);
                     return (int)CLI_ExitCode.success;
                 case "WEARDETECTION":
-                        taskA = _devMgr.SetWearDetectionForCLI;
-                        //taskA = _devMgr.SetWearDetection;
-                        RunTaskA(val);
-                        return (int)CLI_ExitCode.success;
+                    if (val == 1)
+                        data.LockSettings.Lock_Audio_wearDetection = false;
+                    else
+                        data.LockSettings.Lock_Audio_wearDetection = true;
+                    _devMgr.SetAppConfigData(data);
+                    taskA = _devMgr.SetWearDetectionForCLI;
+                    RunTaskA(val);
+                    return (int)CLI_ExitCode.success;
                 case "SETBUSYLIGHT":
                     taskB = _devMgr.SetBusyLight;
                     RunTaskB(bl);
@@ -669,9 +700,14 @@ namespace DDPM.CLI.Plugins.Peripherals
 
         private void RunTaskA(int val)
         {
+            DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
             SetResults.ForEach(x =>
             {
                 x.Value = _commandLineInput.Options[0].Option_Value;
+                if (_commandLineInput.TargetFeature.ToUpper().Equals("ANCMODE"))
+                    x.Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
+                if (_commandLineInput.TargetFeature.ToUpper().Equals("WEARDETECTION"))
+                    x.Value += "," + (data.LockSettings.Lock_Audio_wearDetection ? "LOCK" : "UNLOCK");
                 if (x.Result == "")
                 {
                     var result = RunAsyncTimeout(taskA(val, Guid.Parse(x.Guid))).Result;
