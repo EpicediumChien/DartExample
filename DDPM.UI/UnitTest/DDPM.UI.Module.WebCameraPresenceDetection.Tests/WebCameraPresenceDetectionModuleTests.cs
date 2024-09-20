@@ -32,7 +32,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection.Tests
             log = logMock.Object;
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManager = deviceManagerMock.Object;
-            vm = new WebCameraViewModel(console, log, deviceManager);
+            vm = new WebCameraViewModel(console, log);
             webCameraPresenceDetectionModule = new WebCameraPresenceDetectionModule(vm);
             privateObject = new PrivateObject(webCameraPresenceDetectionModule);
         }
