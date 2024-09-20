@@ -1,10 +1,12 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -20,7 +22,7 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         #region Variables
         private readonly ILog _log;
-        private readonly IDeviceManagerSA _deviceManager;
+        //private readonly IDeviceManagerSA _deviceManager;
 
         // Query all properties [resolution and frame rate] of the webcam device
         public IEnumerable<StreamResolution> allProperties;
@@ -38,13 +40,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public WebCameraViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public WebCameraViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
-            _deviceManager = deviceManager;
+            //_deviceManager = deviceManager;
 
             IsChecked_FramingGrid = Visibility.Hidden;
 
@@ -230,30 +232,24 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public MediaCapture? _mediaCapture;
-        public MediaFrameReader _mediaFrameReader;
+        public MediaCapture? MediaCapture;
+        public MediaFrameReader MediaFrameReader;
 
         public bool captureManagerInitialized = false;
         public bool _running = false;
-        public bool _isRecording;
-        public StorageFolder _captureFolder;
-
-        // 20240911 jim add
+        public bool IsRecording;
         public string strCurrent_Resolution;
         public string strCurrent_Framerate;
 
-
-
-        //20240702
-        private bool isChecked_Autofocus;
+        private bool _isChecked_Autofocus;
 
         public bool IsChecked_Autofocus
         {
-            get { return isChecked_Autofocus; }
+            get { return _isChecked_Autofocus; }
             set
             {
-                isChecked_Autofocus = value;
-                OnPropertyChanged("IsChecked_Autofocus");
+                _isChecked_Autofocus = value;
+                OnPropertyChanged();
             }
         }
 
@@ -341,15 +337,15 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private string media_file_location;
+        private string _videoCaptureFolder;
 
-        public string Media_File_Location
+        public string VideoCaptureFolder
         {
-            get { return media_file_location; }
+            get => DDPMSettings!.UserSettings.VideoCaptureFolder;
             set
             {
-                media_file_location = value;
-                OnPropertyChanged("Media_File_Location");
+                DDPMSettings!.UserSettings.VideoCaptureFolder = value;
+                DdpmCommonHelper.DeviceManagerSA!.SetAppConfigData(DDPMSettings);
             }
         }
 
@@ -363,7 +359,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 //_deviceManager.SetIsMicEnumerationOn(CurrentDeviceInfo!.ID.ToString(), value);
-                _deviceManager.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
@@ -386,7 +382,17 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 alertVisibility = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(FunctionsVisibility));
             }
+        }
+        public Visibility FunctionsVisibility
+        {
+            get => AlertVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            //set
+            //{
+            //    alertVisibility = value;
+            //    OnPropertyChanged();
+            //}
         }
         private WebcamAlert alertType;
         public WebcamAlert AlertType
@@ -408,6 +414,18 @@ namespace DDPM.UI.Plugin.ViewModels
             _ => ""
         };
         public ObservableCollection<ProfileItem> ProfileItems { get => _profileItems; }
+        public override void OnGoBackClicked()
+        {
+            if (MediaCapture != null)
+            {
+                try
+                {
+                    _ = MediaCapture.StopRecordAsync();
+                }
+                catch { }
+            }
+            base.OnGoBackClicked();
+        }
     }
 
     public class StreamResolution

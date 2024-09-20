@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dell.TechHub.Commodity.Peripheral;
 using Newtonsoft.Json.Linq;
+using static Dell.TechHub.Common.PluginInformation;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -70,6 +71,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private MethodInfo _webcamMethodInfo;
 
         private ItemId _itemID;
+        private ICommodity _comdity;
 
         public const string PluginLogId = "DTPProxy";
 
@@ -1070,6 +1072,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     {
                         writelog($"Find IPenCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                     }
+                    _ = RegisterEventAsync();
                 });
             }
             else
@@ -1079,6 +1082,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                     GetCurrentDTPProxyPluginCondition();
                 }
+            }
+        }
+
+        private async Task RegisterEventAsync()
+        {
+            writelog($"Register Commodity event...");
+            _comdity = await _commSdk.GetCommodityAsync<IMouseCommodity>(new ItemId("DellPeripheral.Mouse"), CancellationToken.None);
+            if (_comdity is Dell.TechHub.Commodity.Peripheral.IMouseCommodity _mousecom)
+            {
+                _mousecom.Connected += _comdity_Connected;
+                _mousecom.Disconnected += _comdity_Disconnected;
+                writelog($"Mouse Commodity event registered");
             }
         }
 
@@ -1155,6 +1170,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
             }
+        }
+        private void _comdity_Disconnected(object sender, DisconnectedArgs e)
+        {
+            Console.WriteLine($"Disconnected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
+        }
+
+        private void _comdity_Connected(object sender, ConnectedArgs e)
+        {
+            Console.WriteLine($"Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
     }
 }

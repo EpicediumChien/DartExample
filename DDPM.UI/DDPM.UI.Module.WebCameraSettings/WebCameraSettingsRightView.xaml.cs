@@ -21,19 +21,19 @@ namespace DDPM.UI.Module.WebCameraSettings
         //  Jim add 20240628
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_vm != null && _vm._mediaCapture != null)
+            if (_vm != null && _vm.MediaCapture != null)
             {
-                if (_vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
+                if (_vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
                 {
                     // Unhook the event handler, so that changing properties on the slider won't trigger an API call
                     ZoomSlider.ValueChanged -= ZoomSlider_ValueChanged;
 
-                    //var value = _vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
-                    var zoomControl = _vm._mediaCapture.VideoDeviceController.Zoom;
+                    //var value = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
+                    var zoomControl = _vm.MediaCapture.VideoDeviceController.Zoom;
 
-                    ZoomSlider.Minimum = _vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Min;
-                    ZoomSlider.Maximum = _vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Max;
-                    ZoomSlider.TickFrequency = _vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Step * 100;
+                    ZoomSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Min;
+                    ZoomSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Max;
+                    ZoomSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Step * 100;
                     //ZoomSlider.Value = value;
 
                     double dbvalue = 0.0f;
@@ -46,12 +46,12 @@ namespace DDPM.UI.Module.WebCameraSettings
                     // Unhook the event handler, so that changing properties on the slider won't trigger an API call
                     AutofocusSlider.ValueChanged -= AutofocusSlider_ValueChanged;
 
-                    //var value = _vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
-                    var autofocusControl = _vm._mediaCapture.VideoDeviceController.Focus;
+                    //var value = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
+                    var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
 
-                    AutofocusSlider.Minimum = _vm._mediaCapture.VideoDeviceController.Focus.Capabilities.Min;
-                    AutofocusSlider.Maximum = _vm._mediaCapture.VideoDeviceController.Focus.Capabilities.Max;
-                    AutofocusSlider.TickFrequency = _vm._mediaCapture.VideoDeviceController.Focus.Capabilities.Step * 100;
+                    AutofocusSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min;
+                    AutofocusSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max;
+                    AutofocusSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step * 100;
                     //ZoomSlider.Value = value;
 
                     dbvalue = 0.0f;
@@ -88,15 +88,15 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void SetZoomLevel(float level)
         {
-            if (_vm != null && _vm._mediaCapture != null)
+            if (_vm != null && _vm.MediaCapture != null)
             {
-                var zoomControl = _vm._mediaCapture.VideoDeviceController.Zoom;
+                var zoomControl = _vm.MediaCapture.VideoDeviceController.Zoom;
 
                 // Make sure zoomFactor is within the valid range
-                level = Math.Max(Math.Min(level, (float)_vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Max), (float)_vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Min);
+                level = Math.Max(Math.Min(level, (float)_vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Max), (float)_vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Min);
 
                 // Make sure zoomFactor is a multiple of Step, snap to the next lower step
-                level -= (level % (float)_vm._mediaCapture.VideoDeviceController.Zoom.Capabilities.Step);
+                level -= (level % (float)_vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Step);
 
                 zoomControl.TrySetValue(level);
             }
@@ -110,15 +110,15 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void SetAutofocusLevel(float level)
         {
-            if (_vm != null && _vm._mediaCapture != null)
+            if (_vm != null && _vm.MediaCapture != null)
             {
-                var autofocusControl = _vm._mediaCapture.VideoDeviceController.Focus;
+                var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
 
                 // Make sure zoomFactor is within the valid range
-                level = Math.Max(Math.Min(level, (float)_vm._mediaCapture.VideoDeviceController.Focus.Capabilities.Max), (float)_vm._mediaCapture.VideoDeviceController.Focus.Capabilities.Min);
+                level = Math.Max(Math.Min(level, (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max), (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min);
 
                 // Make sure zoomFactor is a multiple of Step, snap to the next lower step
-                level -= (level % (float)_vm._mediaCapture.VideoDeviceController.Focus.Capabilities.Step);
+                level -= (level % (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step);
 
                 autofocusControl.TrySetValue(level);
             }
@@ -138,9 +138,9 @@ namespace DDPM.UI.Module.WebCameraSettings
                 _vm.AutofocusStatus_String = "OFF";
             }
 
-            if (_vm != null && _vm._mediaCapture != null)
+            if (_vm != null && _vm.MediaCapture != null)
             {
-                var autofocusControl = _vm._mediaCapture.VideoDeviceController.Focus;
+                var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
                 autofocusControl.TrySetAuto((bool)Autofocus_ToggleSwitch.IsChecked);
             }
         }
