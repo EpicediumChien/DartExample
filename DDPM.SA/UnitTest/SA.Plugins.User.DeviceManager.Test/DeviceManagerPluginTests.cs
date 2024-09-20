@@ -2,10 +2,13 @@
 using DDPM.MonitorBorker;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Plugins.PeripheralsPlugin;
 using DDPM.SA.Plugins.User.DeviceManager;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
 using Moq;
+using System.Security.Cryptography;
+using System.Windows.Input;
 using VcpCore.Common;
 
 namespace SA.Plugins.User.DeviceManager.Test
@@ -857,5 +860,190 @@ namespace SA.Plugins.User.DeviceManager.Test
             result = deviceMangerPlugin.USBSwitch(monitorInfo, "inputsource1", "upstream1", "inputsource2", "upstream2").Result;
             Assert.That(result, Is.EqualTo(true));
         }
+
+
+        [Test]
+        public async Task TestGetDevices()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+            await deviceMangerPlugin.GetDevices();
+
+            // Execute and Verify
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await deviceMangerPlugin.GetDevices());
+        }
+
+        [Test]
+        public async Task TestGetCTKMessageHelper()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+            await deviceMangerPlugin.GetCTKMessageHelper();
+
+            // Execute and Verify
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await deviceMangerPlugin.GetCTKMessageHelper());
+        }
+
+        [Test]
+        public async Task TestGetRFDongleDevices()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+            await deviceMangerPlugin.GetRFDongleDevices();
+
+            // Execute and Verify
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await deviceMangerPlugin.GetRFDongleDevices());
+        }
+
+
+
+        [Test]
+        public void TestSetBackLightingControls()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetBackLightingControls(3,Guid.NewGuid()), $"SetBackLightingControls() returns null");
+        }
+
+        [Test]
+        public void TestSetBackLightingLevel()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetBackLightingLevel(3, Guid.NewGuid()), $"SetBackLightingLevel() returns null");
+        }
+
+        [Test]
+        public void TestSetCollaborationBlinkEffectEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetCollaborationBlinkEffectEnable(true, Guid.NewGuid()), $"SetCollaborationBlinkEffectEnable() returns null");
+        }
+
+        [Test]
+        public void TestSetCollaborationCameraEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetCollaborationCameraEnable(true, Guid.NewGuid()), $"SetCollaborationCameraEnable() returns null");
+        }
+
+        [Test]
+        public void TestSetCollaborationChatEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetCollaborationChatEnable(true, Guid.NewGuid()), $"SetCollaborationChatEnable() returns null");
+        }
+
+
+        [Test]
+        public void TestSetCollaborationDoubleTapEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetCollaborationDoubleTapEnable(true, Guid.NewGuid()), $"SetCollaborationDoubleTapEnable() returns null");
+        }
+
+        [Test]
+        public void TestSetCollaborationKeyEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetCollaborationKeyEnable(true, Guid.NewGuid()), $"SetCollaborationKeyEnable() returns null");
+        }
+
+        [Test]
+        public void TestSetCollaborationMicEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetCollaborationMicEnable(true, Guid.NewGuid()), $"SetCollaborationMicEnable() returns null");
+        }
+
+        [Test]
+        public void TestSetCollaborationScreenShareEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetCollaborationScreenShareEnable(true, Guid.NewGuid()), $"SetCollaborationScreenShareEnable() returns null");
+        }
+
+        [Test]
+        public void TestSetDPILevel()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetDPILevel(2, Guid.NewGuid()), $"SetDPILevel() returns null");
+        }
+
+        [Test]
+        public void TestSetDPIValue()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetDPIValue(2, Guid.NewGuid()), $"SetDPIValue() returns null");
+        }
+
+        [Test]
+        public void TestSetPrimaryMouseButton()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetPrimaryMouseButton(DPeMPublic.Common.Enums.MouseButton.Left, Guid.NewGuid()), $"SetPrimaryMouseButton() returns null");
+        }
+
+        [Test]
+        public void TestSetTouchScrollSensitivityLevel()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetTouchScrollSensitivityLevel(2, Guid.NewGuid()), $"SetTouchScrollSensitivityLevel() returns null");
+        }
+
     }
 }
+
