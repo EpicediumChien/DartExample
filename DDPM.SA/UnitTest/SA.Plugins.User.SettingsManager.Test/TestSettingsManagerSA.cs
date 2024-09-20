@@ -425,6 +425,99 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.Delete(globalSettingsDes_path1_);
         }
 
+        [Test]
+        public void TestInitPowerNapConfigFile()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var result = privateSettingsManagerObject.Invoke("InitPowerNapConfigFile");
+            var InitPowerNapSetting = privateSettingsManagerObject.GetFieldOrProperty("_powerNapSettings");
+            Assert.That(InitPowerNapSetting, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadPowerNapSettings()
+        {
+            string ReadPowerNapSettings_path1_ = "test_ReadPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            List<PowerNapSetting> powerNapSettings_ = new List<PowerNapSetting>();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", ReadPowerNapSettings_path1_);
+            privateSettingsManagerObject.SetFieldOrProperty("_present_powerNap_settings", powerNapSettings_);
+            if (!File.Exists(ReadPowerNapSettings_path1_))
+            {
+                var ReadPowerNapSettingsResult1 = SettingsManagerSAPlugin.ReadPowerNapSettings().Result;  // strFilePath is not Exists PowerNapSettings.json"
+                Assert.That(powerNapSettings_, Is.EqualTo(ReadPowerNapSettingsResult1)); //run finnish will create path
+            }
+
+            if (File.Exists(ReadPowerNapSettings_path1_))
+            {
+                File.WriteAllText(ReadPowerNapSettings_path1_, PowerNapSettingsjsonData);
+                var ReadPowerNapSettingsResult2 = SettingsManagerSAPlugin.ReadPowerNapSettings().Result;
+                var powerNap_settings = (List<PowerNapSetting>)privateSettingsManagerObject.GetFieldOrProperty("_present_powerNap_settings");
+                Assert.That(powerNap_settings, Is.EqualTo(ReadPowerNapSettingsResult2));
+                Assert.Greater(ReadPowerNapSettingsResult2.Count, 0);
+                File.Delete(ReadPowerNapSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestWritePowerNapSettings()
+        {
+            bool WritePowerNapSettings_ = false;
+            bool WritePowerNapSettings_succeed = true;
+            List<PowerNapSetting> powerNapSettingsNull;
+            powerNapSettingsNull = null;
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string WritePowerNapSettings_path1_ = "test_WritePowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(WritePowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", WritePowerNapSettings_path1_);
+            if (powerNapSettingsNull == null)
+            {
+                var WritePowerNapSettingsResult1 = SettingsManagerSAPlugin.WritePowerNapSettings(powerNapSettingsNull).Result;
+                Assert.That(WritePowerNapSettings_, Is.EqualTo(WritePowerNapSettingsResult1));
+            }
+
+            if (powerNapSettingsConfig != null)
+            {
+                var WritePowerNapSettingsResult2 = SettingsManagerSAPlugin.WritePowerNapSettings(powerNapSettingsConfig).Result;
+                Assert.That(WritePowerNapSettings_succeed, Is.EqualTo(WritePowerNapSettingsResult2));
+                File.Delete(WritePowerNapSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestRunPowerNapDeserializeObject()
+        {
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string SerializePowerNapSettings_path1_ = "test_SerializePowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(SerializePowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", SerializePowerNapSettings_path1_);
+            var RunDeserialObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", powerNapSettingsConfig);
+            Assert.Greater(RunDeserialObjectResult.Length, 0);
+            File.Delete(SerializePowerNapSettings_path1_);
+        }
+
+        [Test]
+        public void TestRunPowerNapSettingDeserializeObject()
+        {
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string DeserialPowerNapSettings_path1_ = "test_DeserialPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(DeserialPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", DeserialPowerNapSettings_path1_);
+            var RunPowerNapDeserializeObjectResult = (List<PowerNapSetting>)privateSettingsManagerObject.Invoke("RunPowerNapDeserializeObject", PowerNapSettingsjsonData);
+            Assert.Greater(RunPowerNapDeserializeObjectResult.Count, 0);
+            Assert.That(powerNapSettingsConfig[0].ModelName, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].ModelName));
+            Assert.That(powerNapSettingsConfig[0].SerialNumber, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].SerialNumber));
+            Assert.That(powerNapSettingsConfig[0].Status, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].Status));
+            File.Delete(DeserialPowerNapSettings_path1_);
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

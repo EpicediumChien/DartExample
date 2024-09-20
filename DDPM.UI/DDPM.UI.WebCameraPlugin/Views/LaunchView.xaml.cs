@@ -91,6 +91,69 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //ProfileItems.ItemsSource = _vm.ProfileNames;
                 ProfileItems.ItemsSource = _vm.ProfileItems;
             }
+
+            //lock/unlock, no ui element currently
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    {
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
+                    }
+                    else
+                    {
+                        //txtRestore.IsEnabled = !data.LockSettings.Lock_Webcam_RestoreFactoryDefaults;
+                        //RestoreLockIcon.Visibility = data.LockSettings.Lock_Webcam_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                        //Lock Functionality 9/7
+                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
+                        if (data.LockSettings != null)
+                        {
+                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                            {
+                                //RestoreLockIcon.Visibility = Visibility.Visible;
+                                //txtRestore.IsEnabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        ~LaunchView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Webcam_RestoreFactoryDefaults");
+            Dispatcher.Invoke(new Action(() =>
+            {
+                //no ui element currently
+                //RestoreLockIcon.Visibility = rst.isLocked;
+                //txtRestore.IsEnabled = rst.isEnabled;
+
+                //Lock Functionality 9/7
+                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null && data.LockSettings != null)
+                {
+                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
+                    {
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
+                    }
+                }
+            }));
         }
 
         //  Jim remove 20240626

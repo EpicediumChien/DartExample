@@ -1,6 +1,8 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -36,7 +38,48 @@ namespace DDPM.UI.Module.Collaboration
       //bdrVideoShadow.Visibility = _vm.IsCollabShadowVisible ? Visibility.Visible : Visibility.Collapsed;
 
       CheckCTKMessage();
-    }
+
+            //lock/unlock
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Keyboard_CollabScreenShare)
+                    {
+                        //Do lock ui init here (direct set or binding via vm)
+                    }
+                }
+            }
+        }
+
+        ~CollaborationRightView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Keyboard_CollabScreenShare", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    //KeyboardViewModel vm = (KeyboardViewModel)this.DataContext;
+                    //if (vm != null)
+                    if(_vm != null)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply Keyboard CollabScreenShare(Lock) : {isLocked}");
+                    }
+                }));
+            }
+        }
 
     void CheckCTKMessage()
     {

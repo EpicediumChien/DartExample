@@ -33,7 +33,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using WinCopies.Util;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
 using IDs = VcpCore.Common.IDs;
