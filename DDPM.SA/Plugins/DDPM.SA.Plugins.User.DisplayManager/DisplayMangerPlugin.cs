@@ -14,6 +14,7 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using DDPM.SA.Common.Method;
+using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -28,6 +29,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Security.Policy;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
@@ -3267,6 +3270,41 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        #endregion
+
+        #region Display FWU Metadata
+        //private DisplayUpdateHelper GetDisplayFWMetadata()
+        //{
+        //    CertificateCheck certificateCheck = new CertificateCheck();
+        //    if (!certificateCheck.CheckURLCACertificate(URL))
+        //    {
+        //        return new SWUpdateHelper();
+        //    }
+        //    using (HttpClient client = new HttpClient())
+        //    {
+        //        try
+        //        {
+        //            client.Timeout = TimeSpan.FromSeconds(5);
+        //            HttpResponseMessage response = client.GetAsync(URL + "MetaData.json").Result;
+        //            response.EnsureSuccessStatusCode();
+        //            string jsonString = response.Content.ReadAsStringAsync().Result;
+        //            jsonString = jsonString.Replace("%1/", URL);
+        //            SWUpdateHelper data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
+        //            foreach (Software software in data.Softwares)
+        //            {
+        //                string version =
+        //                Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
+        //                software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup_v{version}");
+        //            }
+        //            return data;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine($"An error occurred: {ex.Message}");
+        //        }
+        //    }
+        //    return new SWUpdateHelper();
+        //}
         #endregion
     }
 }

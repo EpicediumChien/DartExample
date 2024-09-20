@@ -278,9 +278,11 @@ namespace DDPM.SA.Plugins.SWUpdate
 
         private SWUpdateHelper GetSWMetadata()
         {
+            _logs.DebugMsg_1(nameof(GetSWMetadata) + " start.");
             CertificateCheck certificateCheck = new CertificateCheck();
             if (!certificateCheck.CheckURLCACertificate(URL))
             {
+                _logs.DebugMsg_1(nameof(GetSWMetadata) + " URL CA check fail");
                 return new SWUpdateHelper();
             }
             using (HttpClient client = new HttpClient())
@@ -299,11 +301,12 @@ namespace DDPM.SA.Plugins.SWUpdate
                         Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
                         software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup_v{version}");
                     }
+                    _logs.DebugMsg_1(nameof(GetSWMetadata) + " done.");
                     return data;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    _logs.DebugMsg_1(nameof(GetSWMetadata) + " error: " + ex.Message);
                 }
             }
             return new SWUpdateHelper();

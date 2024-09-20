@@ -136,4 +136,26 @@ namespace DDPM.SA.Common
         FileCheckFail = 14,
         Unknow = 99
     }
+
+    /// <summary>
+    /// Display FWU Metadata結構
+    /// </summary>
+    public class Firmwares
+    {
+        public string id { get; set; }
+        public string version { get; set; }
+        public string fileName { get; set; }
+        public string SHA256 { get; set; }
+        public string url { get; set; }
+        public string date { get; set; }
+
+    }
+
+    /// <summary>
+    /// Display FWU Metadata結構
+    /// </summary>
+    public class DisplayUpdateHelper
+    {
+        public List<Firmwares> Firmwares { get; set; }
+    }
 }
