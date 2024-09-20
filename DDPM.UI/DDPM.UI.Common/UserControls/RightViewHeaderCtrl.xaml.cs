@@ -50,18 +50,10 @@ namespace DDPM.UI.Common
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
-        {
-            if (e == null || e.IT_Feature_TriggerList == null || e.target_object == null)
+        {            
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_BriCont", e);
+            if (isLocked != null)
             {
-                Trace.WriteLine("Got [SettingsPage][DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
-                return;
-            }
-            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Display_BriCont"));
-            if (idx >= 0)
-            {
-                string feature = e.IT_Feature_TriggerList[idx];
-                PropertyInfo propertyInfo = e.target_object.GetType().GetProperty(feature);
-                Trace.WriteLine($"Got [SettingsPage][IT settings event] {feature} : {propertyInfo.GetValue(e.target_object)}");
                 Dispatcher.Invoke(new Action(() =>
                 {
                     RightViewHeaderCtrlViewModel vm = (RightViewHeaderCtrlViewModel)this.DataContext;
@@ -69,8 +61,8 @@ namespace DDPM.UI.Common
                     {
                         if (vm.Text1.Equals(Strings.RightViewHeader_BrightnessContrast))
                         {
-                            vm.Locker1 = (bool)propertyInfo.GetValue(e.target_object) ? Visibility.Visible : Visibility.Collapsed;
-                            Trace.WriteLine($"[SettingsPage] Apply Display_BriCont(Lock) : {propertyInfo.GetValue(e.target_object)}");
+                            vm.Locker1 = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                            Trace.WriteLine($"[SettingsPage] Apply Display_BriCont(Lock) : {isLocked}");
                         }
                     }
                 }));

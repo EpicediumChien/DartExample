@@ -21,7 +21,9 @@
         public bool Lock_Display_PowerNap { get; set; } = false;
         public bool Lock_Display_ResolutionRefreshRate { get; set; } = false;
         public bool Lock_Display_USBCPrioritization { get; set; } = false;
-        public bool Lock_Display_ActiveInputSource { get; set; } = false;
+        public bool Lock_Display_ActiveInputSource { get; set; } = false;        
+        public bool Lock_Display_RestoreFactoryDefaults { get; set; } = false;
+        public bool Lock_Display_USBKVM { get; set; } = false;
         #endregion Display Setting
 
         #region Peripheral Setting

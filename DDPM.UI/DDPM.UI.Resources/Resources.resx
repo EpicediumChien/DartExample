@@ -250,7 +250,7 @@
     <value>Wired</value>
   </data>
   <data name="AddDevice.Type.Other" xml:space="preserve">
-    <value>Other</value>
+    <value>Active Electrostatic</value>
   </data>
   <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
     <value>Cancel</value>
@@ -313,7 +313,7 @@
     <value>Connecting your Pen</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>Touch your pen tip to the screen</value>
+    <value>Touch your pen tip to the {0} screen</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
     <value>Press and hold the top button for 3 seconds. Wait for the device to be discovered by Windows.</value>
@@ -322,7 +322,7 @@
     <value>Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Select 'Yes' to confirm pairing on the prompt box to pair your pen</value>
+    <value>Select 'Yes' to confirm pairing on the prompt box</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>For USB wireless receiver free and on-the-go connectivity</value>
@@ -1608,7 +1608,22 @@
   <data name="WebCameraMicrophone.3" xml:space="preserve">
     <value>Enables your camera's microphone. Camera will restart quickly when turning ON/OFF this feature.</value>
   </data>
-  <data name="Webcamera.0" xml:space="preserve">
+  <data name="Camera.6" xml:space="preserve">
     <value>Select an option</value>
+  </data>
+  <data name="Camera.5" xml:space="preserve">
+    <value>Add new preset</value>
+  </data>
+  <data name="Camera.Alert.1" xml:space="preserve">
+    <value>Please wait while we’re applying the changes</value>
+  </data>
+  <data name="Camera.Alert.2" xml:space="preserve">
+    <value>Another application is using your camera</value>
+  </data>
+  <data name="Camera.Alert.3" xml:space="preserve">
+    <value>Please unplug and plug your camera and try again</value>
+  </data>
+  <data name="Camera.Alert.4" xml:space="preserve">
+    <value>Please wait while we remove your camera</value>
   </data>
 </root>

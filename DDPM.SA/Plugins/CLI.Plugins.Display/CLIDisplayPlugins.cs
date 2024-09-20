@@ -10918,6 +10918,8 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
+            DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
+
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
 
@@ -10930,7 +10932,7 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ;
+                    
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
@@ -10944,15 +10946,19 @@ namespace DDPM.CLI.Plugins.Display
                         case "ENABLE":
                             writelog($"InAppUSBkvm on entry");
                             retcode = devMgr.SetOnUSBKVM(monitor, true).Result;
+                            ddpmSettings.LockSettings.Lock_Display_USBKVM = false;
+                            await devMgr.SetAppConfigData(ddpmSettings);
                             cli_Response.Result = "PASS";
-                            cli_Response.Value = "enable";
+                            cli_Response.Value = commandLineInput.Options[0].Option_Value.ToUpper();
                             break;
 
                         case "DISABLE":
                             writelog($"InAppUSBkvm off entry");
                             retcode = devMgr.SetOnUSBKVM(monitor, false).Result;
+                            ddpmSettings.LockSettings.Lock_Display_USBKVM = true;
+                            await devMgr.SetAppConfigData(ddpmSettings);
                             cli_Response.Result = "PASS";
-                            cli_Response.Value = "disable";
+                            cli_Response.Value = commandLineInput.Options[0].Option_Value.ToUpper();
                             break;
 
                         default:
@@ -10964,6 +10970,7 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                             break;
                     }
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -10990,11 +10997,13 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.SerialNumber = monitor.edid.SerialNumber;
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    cli_Response.Result = "PASS";
                     if (rc.ToString() == "True")
-                        cli_Response.Value = "EANBLE";
+                        cli_Response.Value = "ENABLE";
                     else
                         cli_Response.Value = "DISABLE";
 
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_USBKVM ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }

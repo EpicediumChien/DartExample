@@ -44,6 +44,13 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="#31A2E3" />
       </Style>
+      <Style x:Key="Border3" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="#283547" />
+        <Setter Property="Border.CornerRadius" Value="4" />
+        <Setter Property="Width" Value="184" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#324255" />
+      </Style>
       <Style x:Key="TextBlockStyle1" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontFamily" Value="Roboto" />
@@ -74,7 +81,7 @@
         <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" />
       </Grid>
       <!--Layer 2 : Nav and Vbar-->
-      <Grid Grid.Column="0">
+      <Grid Grid.Column="0" Height="auto">
         <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
         <!--Image-->
         <Grid>
@@ -161,7 +168,7 @@
           <StackPanel Orientation="Horizontal">
             <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
                                                 Style="{StaticResource ModelNumberTextStyle}" />
-            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
+            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
                                VerticalAlignment="Top" Cursor="" Width="16" Height="16">
               <Image.InputBindings>
                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
@@ -179,25 +186,68 @@
       <Grid VerticalAlignment="Bottom">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
           <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder">
+          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom">
             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />
           </Border>
-          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click">
+          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click" Height="40" VerticalAlignment="Bottom">
             <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedCircle.png" Stretch="Fill" Width="17" Height="16" />
           </Border>
           <StackPanel Orientation="Vertical">
-            <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" Visibility="Visible" x:Name="btnPreset">
+            <StackPanel Name="spPresets" Orientation="Vertical" Visibility="Collapsed">
+              <Border Margin="8,0,0,6" Style="{StaticResource Border3}">
+                <DockPanel Name="SearchPanel" Margin="15,2,2,8" MaxHeight="160">
+                  <UXControls:UXScrollViewer x:Name="svAction" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl Name="ProfileItems">
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <Grid Height="30" Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal" Width="110" HorizontalAlignment="Left">
+                              <UXControls:UXTextBlock Cursor="Hand" Margin="0" Tag="{Binding ID}" Text="{Binding Caption}" HorizontalAlignment="Left" MouseLeftButtonDown="ProfileSelected" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" />
+                              <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset">
+                                <Image.ToolTip>
+                                  <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding Tooltip}"/>
+                                  </ToolTip>
+                                </Image.ToolTip>
+                              </Image>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Visibility="{Binding ButtonVisibility}" HorizontalAlignment="Right">
+                              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" />
+                              <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/TrashCan.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" />
+                            </StackPanel>
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </UXControls:UXScrollViewer>
+                </DockPanel>
+              </Border>
+              <Border Margin="8,0,0,12" Style="{StaticResource Border3}" Cursor="Hand" Height="36">
+                <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" />
+              </Border>
+            </StackPanel>
+            <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click">
               <Grid>
                 <Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />
                 <UXControls:UXTextBlock Name="txtPreset" Margin="35,0,0,0" Style="{StaticResource TextBlockStyle1}" />
-                <Image Name="imgClickOnce" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
+                <Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
                        Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>
               </Grid>
             </Border>
-
-
           </StackPanel>
         </StackPanel>
+      </Grid>
+      <!--Alert-->
+      <Grid VerticalAlignment="Center">
+        <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="0" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Width="317" Visibility="{Binding AlertVisibility}" >
+          <StackPanel Orientation="Horizontal">
+            <Image x:Name="InfoIcon" Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
+                               VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
+            </Image>
+            <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap" Width="260" Text="{Binding AlertText}"
+                                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" LineHeight="19.5" Padding="0,18,0,16" FontFamily="Roboto" FontWeight="Normal" />
+          </StackPanel>
+        </Border>
       </Grid>
     </Grid>
   </Grid>

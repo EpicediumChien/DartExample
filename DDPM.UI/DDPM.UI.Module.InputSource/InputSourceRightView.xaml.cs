@@ -1,5 +1,6 @@
 ﻿using DDPM.UI.Common;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -15,7 +16,39 @@ namespace DDPM.UI.Module.InputSource
         {
             InitializeComponent();
             DataContext = vm;
+
+            //Figma change, drop this field
+            //if (DdpmCommonHelper.DeviceManagerSA != null)
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+            //}
         }
+
+        /*~InputSourceRightView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ActiveInputSource", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    InputSourceViewModel vm = (InputSourceViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //vm.isTabStoppable = !(bool)isLocked;
+                        //vm.ShowLockMask = (bool)isLocked;
+                        Trace.WriteLine($"Apply InputSource(Lock) : {isLocked}");
+                    }
+                }));
+            }
+        }*/
 
         private void UXComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {

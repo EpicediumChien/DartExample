@@ -58,28 +58,17 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }*/
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
-        {
-            if (e == null || e.IT_Feature_TriggerList == null || e.target_object == null)
+        {            
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Settings_Updates", e);
+            if (isLocked != null)
             {
-                Trace.WriteLine("Got [DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
-                return;
-            }
-            int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Settings_Updates"));
-            if (idx >= 0)
-            {
-                string feature = e.IT_Feature_TriggerList[idx];
-                PropertyInfo propertyInfo = e.target_object.GetType().GetProperty(feature);
-                Trace.WriteLine($"Got [IT settings event] {feature} : {propertyInfo.GetValue(e.target_object)}");
                 Dispatcher.Invoke(new Action(() =>
                 {
                     SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.isTabStoppable = !(bool)propertyInfo.GetValue(e.target_object);
-                        //vm.ShowLockMask = (bool)propertyInfo.GetValue(e.target_object);
-                        //Trace.WriteLine($"Apply TelemetryConsent(Lock) : {propertyInfo.GetValue(e.target_object)}");
-
-                        //do your lock UI here
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply FW/SW update(Lock) : {isLocked}");
                     }
                 }));
             }

@@ -151,7 +151,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             lock (_LockPeripheralList)
             {
                 //Robert_Lin 2024-7-10 modify for HomePage Sort and Grouping
-                //Sort the deviceInfos with DeviceInfo.Name (HomeDevice.TooltipModelName)
+                //Sort the deviceInfos with DeviceInfo.ID (HomeDevice.TooltipModelName)
                 deviceInfos.Sort((x, y) => x.Name.CompareTo(y.Name));
 
                 //Determine the SortOrder in the foreach loop.

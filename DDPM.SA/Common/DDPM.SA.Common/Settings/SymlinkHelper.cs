@@ -119,6 +119,27 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+	public static bool RemoveFileSymlink2(string path, out string info)
+        {
+            try
+            {
+                var targetPath = SymlinkHelper.GetTargetPath(path);
+                if (targetPath != null)
+                {
+                    Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
+                    System.IO.File.Delete(path);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+
+            info = "Success";
+            return true;
+        }
+
         public static bool RemoveFolderSymlink(string path, out string info)
         {
             //Dean 0911: basic function, no function mix with other file checking
@@ -146,6 +167,27 @@ namespace DDPM.SA.Common.Settings
                     return false;
                 }
             }
+            info = "Success";
+            return true;
+        }
+
+	public static bool RemoveFolderSymlink2(string path, out string info)
+        {
+            try
+            {
+                var targetPath = SymlinkHelper.GetTargetPath(path);
+                if (targetPath != null)
+                {
+                    Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
+                    System.IO.Directory.Delete(path);
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return false;
+            }
+
             info = "Success";
             return true;
         }

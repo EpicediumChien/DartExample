@@ -571,6 +571,59 @@ namespace DDPM.SA.Common.Settings
             return null;
         }
 
+        public static bool LoadFileToVerifyJson(string jsonfilepath, string publickeyfilepath, out string strJson)
+        {
+            //1.Load public key from file (public_key.txt) --> verify signature with input json file via public key.
+            //2.Load public key from file (public_key.cer, it could be DER or PEM format) --> verify signature with input json file via public key.
+            string json_file = jsonfilepath;
+            string public_key = publickeyfilepath;
+            string info = string.Empty;
+            strJson = string.Empty;
+
+            if (!DDPMFileSecurity.CheckFileACL(json_file, out info, true))
+            {
+                Console.WriteLine($"File: {json_file}\nFail with [{info}]");
+                return false;
+            }
+            if (!File.Exists(public_key))
+            {
+                Console.WriteLine($"Please check if public keys exists");
+                return false;
+            }
+            //Read json content
+            string json_content = File.ReadAllText(json_file);
+
+            // Parse the JSON string into a JObject
+            JObject jObject = JObject.Parse(json_content);
+            string modifiedJson;
+            string signature;
+            try
+            {
+                signature = (string)jObject["Signature"];
+                // Remove the "age" property
+                jObject.Remove("Signature");
+                // Convert the modified JObject back to a JSON string
+                modifiedJson = jObject.ToString();
+                strJson = modifiedJson;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
+                return false;
+            }
+
+            //use signature to verify json
+            if (!DDPMFileSecurity.IsJsonContentValid(modifiedJson, signature, public_key, HashAlgorithmName.SHA512, out info))
+            {
+                 Console.WriteLine($"Validate json content with signature failed\nReason: {info}");
+                 return false;
+            }
+           
+            Console.WriteLine("Operation completed");
+
+            return true;
+        }
+
         public static uint GetCheckSum(byte[] content, int count)
         {
             uint num = 0u;
@@ -1384,7 +1437,7 @@ namespace DDPM.SA.Common.Settings
         }*/
 
         //Using public key and pre-generated signature to validate json file
-        /*public static bool IsJsonContentValid(string json_content, string base64_signature, string public_key_file, HashAlgorithmName algorithm, out string info)
+        public static bool IsJsonContentValid(string json_content, string base64_signature, string public_key_file, HashAlgorithmName algorithm, out string info)
         {
             info = "unknow error";
 
@@ -1422,7 +1475,7 @@ namespace DDPM.SA.Common.Settings
                 info = ex.Message;
                 return false;
             }
-        }*/
+        }
 
         //for test purpose to generate public and private key pair, method 1
         /*public static bool GenerateNewRSAKeyPair(string publicName, string privateName, out string privateKey, out string publicKey)
@@ -1750,5 +1803,80 @@ namespace DDPM.SA.Common.Settings
         }
 
         #endregion Bruce 0814 Move this method to DDPM.SA.Common
+	
+	public static bool SRemoveSymbolicFile(string filePath, out string info)
+        {
+            info = "pass";
+            if (DDPMFileSecurity.IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            {
+                return true;
+            }
+
+            FileAttributes attr = File.GetAttributes(filePath);
+            if (!attr.HasFlag(FileAttributes.Directory))
+            {   // File
+                if (SymlinkHelper.IsFileHasSymlink(filePath, out info)) // is the current file symbolic ?
+                {
+                    if (!SymlinkHelper.RemoveFileSymlink2(filePath, out info))
+                    {
+                        Console.WriteLine($"Delete File failed. ({info})");
+                        return false;
+                    }
+                }
+                else
+                {
+                    info = "The File is not a Symbolic";    // need to check Symbolic in Path folder
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool SRemoveSymbolicFolder(string filePath, out string info)
+        {
+            info = "pass";
+            if (IsPathSymbolicLinked(filePath, out info))  // filePath contain symbolic
+            {
+                return true;
+            }
+
+            FileAttributes attr = File.GetAttributes(filePath);
+            if (attr.HasFlag(FileAttributes.Directory))
+            {   // Directory
+                if (SymlinkHelper.IsFolderHasSymlink(filePath, out info)) // is current folder symbolic ? 
+                {
+                    if (!SymlinkHelper.RemoveFolderSymlink2(filePath, out info)) // Remove current symbolic folder
+                    {
+                        Console.WriteLine($"Delete Folder failed. ({info})");
+                        return false;
+                    }
+                    else // check parent folder for symbolic
+                    {
+                        string tmpParentPath = string.Empty;
+                        tmpParentPath = Path.GetDirectoryName(filePath);
+                        if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
+                        {
+                            Directory.CreateDirectory(filePath);
+                        }
+                        return true;
+                    }
+                }
+                else
+                {
+                    info = "The Folder is not a Symbolic";
+                    string tmpParentPath = string.Empty;
+                    tmpParentPath = Path.GetDirectoryName(filePath); // to check parent 
+                    if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 }

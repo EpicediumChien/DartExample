@@ -1,7 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
-using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -291,6 +290,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    response.Value = data_IT.Lock_Display_RestoreFactoryDefaults ? "Lock" : "Unlock";
+                                    break;
                                 case "PEN":
                                     response.Value = data_IT.Lock_Pen_RestoreFactoryDefaults ? "Lock" : "Unlock";
                                     break;
@@ -367,6 +369,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    data_IT.Lock_Display_RestoreFactoryDefaults = true;
+                                    break;
                                 case "PEN":
                                     data_IT.Lock_Pen_RestoreFactoryDefaults = true;
                                     break;
@@ -417,6 +422,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    data_user.LockSettings.Lock_Display_RestoreFactoryDefaults = true;
+                                    break;
                                 case "PEN":
                                     data_user.LockSettings.Lock_Pen_RestoreFactoryDefaults = true;
                                     break;
@@ -470,6 +478,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    data_IT.Lock_Display_RestoreFactoryDefaults = false;
+                                    break;
                                 case "PEN":
                                     data_IT.Lock_Pen_RestoreFactoryDefaults = false;
                                     break;
@@ -520,6 +531,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    data_user.LockSettings.Lock_Display_RestoreFactoryDefaults = false;
+                                    break;
                                 case "PEN":
                                     data_user.LockSettings.Lock_Pen_RestoreFactoryDefaults = false;
                                     break;
@@ -580,6 +594,9 @@ namespace DDPM.SA.Common.CLI
                         case "RESTOREFACTORYDEFAULTS":
                             switch (commandLineInput.PluginsType.ToUpper())
                             {
+                                case "DISPLAY":
+                                    status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_RestoreFactoryDefaults" }).Result;
+                                    break;
                                 case "PEN":
                                     status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Pen_RestoreFactoryDefaults" }).Result;
                                     break;
@@ -734,6 +751,10 @@ namespace DDPM.SA.Common.CLI
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Keyboard_CollabScreenShare}");
                         response.Value = (data_IT.Lock_Keyboard_CollabScreenShare ? "Lock" : "Unlock");
                         break;
+                    case "INAPPUSBKVM": //assume only IT command enter here
+                        Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBKVM}");
+                        response.Value = (data_IT.Lock_Display_USBKVM ? "Lock" : "Unlock");
+                        break;
                     default:
                         return CLI_Response_TypeNotSupport(commandLineInput, result);
                 }                
@@ -841,10 +862,26 @@ namespace DDPM.SA.Common.CLI
                         else
                             return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
+                    else if (value.ToUpper().Equals("ENABLE") || value.ToUpper().Equals("DISABLE"))
+                    {
+                        bool target = false;
+                        if (value.ToUpper().Equals("DISABLE"))
+                            target = true;
+                        if (value.ToUpper().Equals("ENABLE"))
+                            target = false;
+                        if (commandLineInput.TargetFeature.Equals("INAPPUSBKVM"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_USBKVM = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_USBKVM = target;
+                            continue;
+                        }       
+                    }
                     else
                     {
                         //Judgement the user action here, if the value is supported then bypass this loop. (the data store should be processed at user proxy plugin)
-                        if(commandLineInput.TargetFeature.Equals("POWERNAP"))
+                        if (commandLineInput.TargetFeature.Equals("POWERNAP"))
                         {
                             if (value.ToUpper().Equals("OFF") || value.ToUpper().Equals("SLEEP") || value.ToUpper().Equals("REDUCEBRIGHTNESS"))
                                 continue;
@@ -871,7 +908,7 @@ namespace DDPM.SA.Common.CLI
                         {
                             if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
                                 continue;
-                        }
+                        }                       
                         //No pre-definition be found, means fail
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
                         Debug.WriteLine(response.Message);
@@ -905,6 +942,9 @@ namespace DDPM.SA.Common.CLI
                                 break;
                             case "COLLABSCREENSHARE":
                                 status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Keyboard_CollabScreenShare" }).Result;
+                                break;
+                            case "INAPPUSBKVM":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_USBKVM" }).Result;
                                 break;
                         }
                     }
