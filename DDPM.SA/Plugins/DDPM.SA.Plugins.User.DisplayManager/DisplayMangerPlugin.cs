@@ -29,7 +29,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Security.Policy;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VcpCore.Common;
@@ -3273,38 +3276,140 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region Display FWU Metadata
-        //private DisplayUpdateHelper GetDisplayFWMetadata()
-        //{
-        //    CertificateCheck certificateCheck = new CertificateCheck();
-        //    if (!certificateCheck.CheckURLCACertificate(URL))
-        //    {
-        //        return new SWUpdateHelper();
-        //    }
-        //    using (HttpClient client = new HttpClient())
-        //    {
-        //        try
-        //        {
-        //            client.Timeout = TimeSpan.FromSeconds(5);
-        //            HttpResponseMessage response = client.GetAsync(URL + "MetaData.json").Result;
-        //            response.EnsureSuccessStatusCode();
-        //            string jsonString = response.Content.ReadAsStringAsync().Result;
-        //            jsonString = jsonString.Replace("%1/", URL);
-        //            SWUpdateHelper data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
-        //            foreach (Software software in data.Softwares)
-        //            {
-        //                string version =
-        //                Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
-        //                software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup_v{version}");
-        //            }
-        //            return data;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine($"An error occurred: {ex.Message}");
-        //        }
-        //    }
-        //    return new SWUpdateHelper();
-        //}
+        public Task<DisplayUpdateHelper> GetDisplayFWUpdate()
+        {
+            DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
+            displayUpdateHelper = GetDisplayFWMetadata();
+            return Task.FromResult(displayUpdateHelper);
+        }
+        private string URL = $"https://clientperipherals.dell.com/DDPM/";
+        private string URL_Folder = $"/Windows/Display/Firmware/";
+        private DisplayUpdateHelper GetDisplayFWMetadata()
+        {
+            DisplayUpdateHelper ret = new DisplayUpdateHelper();
+            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+            URL = URL + URL_Folder;
+            if (localKey64 != null)
+            {
+                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
+                if (registryKey != null)
+                {
+                    var obj = registryKey?.GetValue("TestServerURL");
+                    if (obj != null)
+                    {
+                        string s = obj.ToString();
+                        if (!string.IsNullOrEmpty(s))
+                        {
+                            URL = obj + URL_Folder;
+                        }
+                    }
+                }
+            }
+            CertificateCheck certificateCheck = new CertificateCheck();
+            if (!certificateCheck.CheckURLCACertificate(URL))
+            {
+                return ret;
+            }
+            List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
+            monitorInfos = GetMonitors().Result;
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    client.Timeout = TimeSpan.FromSeconds(5);
+                    HttpResponseMessage response = client.GetAsync(URL + "version_sha256.json").Result;
+                    response.EnsureSuccessStatusCode();
+                    string jsonString = response.Content.ReadAsStringAsync().Result;
+                    var data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
+
+                    foreach (MonitorInfo monitorInfo in monitorInfos)
+                    {
+                        string model = data.Keys.ToList().Find(o => o.Equals(monitorInfo.modelName));
+                        if (!string.IsNullOrEmpty(model) && data.ContainsKey(model))
+                        {
+                            Display_Firmwares_item firmwares_item = new Display_Firmwares_item()
+                            {
+                                id = data[model].id,
+                                url = data[model].url,
+                                TheLastVersion = data[model].TheLastVersion,
+                                SHA256 = data[model].SHA256,
+                                SupportedPlatform = data[model].SupportedPlatform,
+                                fileName = data[model].fileName,
+                                date = data[model].date,
+                            };
+                            if (firmwares_item != null)
+                            {
+                                firmwares_item.id = model;
+                                firmwares_item.url = URL + firmwares_item.url;
+                                firmwares_item.CurrentVersion = monitorInfo.FwVersion;
+                                firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                if (firmwares_item.SupportedPlatform != null)
+                                {
+                                    string currentPlatform = GetSystemArchitecture();
+                                    string[] supportedPlatform = firmwares_item.SupportedPlatform.Split(",");
+                                    if (!supportedPlatform.ToList().Contains(currentPlatform))
+                                    {
+                                        continue;
+                                    }
+                                }
+                                int newVersion = -1;
+                                int oldVersion = -1;
+                                for (int j = firmwares_item.TheLastVersion.Length - 1; j >= 0; j--)
+                                {
+                                    if (char.IsLetter(firmwares_item.TheLastVersion[j]))
+                                    {
+                                        int index = j + 1;
+                                        int.TryParse(firmwares_item.TheLastVersion.Substring(index, firmwares_item.TheLastVersion.Length - index), out newVersion);
+                                        break;
+                                    }
+                                }
+                                for (int j = firmwares_item.CurrentVersion.Length - 1; j >= 0; j--)
+                                {
+                                    if (char.IsLetter(firmwares_item.CurrentVersion[j]))
+                                    {
+                                        int index = j + 1;
+                                        int.TryParse(firmwares_item.CurrentVersion.Substring(index, firmwares_item.CurrentVersion.Length - index), out oldVersion);
+                                        break;
+                                    }
+                                }
+                                if (newVersion > oldVersion)
+                                {
+                                    ret.Firmwares.Add(firmwares_item);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                }
+            }
+            return ret;
+        }
+        public string GetSystemArchitecture()
+        {
+            if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+            {
+                return "Intel_x64";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
+            {
+                return "Intel_x86";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm)
+            {
+                return "ARM";
+            }
+            else if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                return "ARM_64";
+            }
+            else
+            {
+                return "Unknow";
+            }
+        }
         #endregion
     }
 }

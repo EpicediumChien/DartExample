@@ -354,12 +354,19 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public SWUpdateInfo SWUpdateInfo { get; set; }
         public Visibility UXAlertItemVisibility { get; set; }
         public string UXAlertItemMessage { get; set; }
+        public Visibility UXAlertItemVisibility_2 { get; set; }
+        public string UXAlertItemMessage_2 { get; set; }
 
         public UIUpdateInfo(FWUpdateInfo fwUpdateInfo)
         {
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷
             DeviceType[] CriticalUpdates = new DeviceType[] { DeviceType.PhysicalAudioDongle, DeviceType.PhysicalDongle },
-                     RecommendedUpdates = new DeviceType[] { DeviceType.LogicalMouse, DeviceType.LogicalKeyboard, DeviceType.LogicalDock, DeviceType.PhysicalPen };
+                     RecommendedUpdates = new DeviceType[] { DeviceType.LogicalMouse, DeviceType.LogicalKeyboard, 
+                         DeviceType.LogicalDock, DeviceType.PhysicalWiredDock,
+                         DeviceType.PhysicalPen, DeviceType.PhysicalPen, 
+                         DeviceType.LogicalWebcam, DeviceType.PhysicalWebcam, 
+                         DeviceType.PhysicalWiredAudio, DeviceType.LogicalWiredAudio, 
+                         DeviceType.LogicalHeadset, DeviceType.PhysicalBluetoothAudio };
             FWUpdateInfo = fwUpdateInfo;
             this.IsCheckUpdate = true;
             this.IsEnableCheckBox = true;
@@ -384,7 +391,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     UXAlertItemVisibility = Visibility.Visible;
                     UXAlertItemMessage = "Battery level on the device is low. Replace/recharge battery to enable this update.";
                     break;
-
                 default:
                     UXAlertItemVisibility = Visibility.Collapsed;
                     UXAlertItemMessage = "";

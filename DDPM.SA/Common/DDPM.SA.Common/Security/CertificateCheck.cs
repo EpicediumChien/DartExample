@@ -22,8 +22,11 @@ namespace DDPM.SA.Common.Security
             Info = "";
             try
             {
-                string info = string.Empty;
-                ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out info).ToLower().Equals(Stande_SHA512.ToLower()) && ret;
+                ret = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA512.ToLower());
+                if (Info.Equals("Complete"))
+                {
+                    Info = ret ? "Check ok" : "Check faile";
+                }
             }
             catch (Exception ex)
             {
@@ -37,8 +40,11 @@ namespace DDPM.SA.Common.Security
             Info = "";
             try
             {
-                string info = string.Empty;
-                ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out info).ToLower().Equals(Stande_SHA256.ToLower()) && ret;
+                ret = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info).ToLower().Equals(Stande_SHA256.ToLower());
+                if (Info.Equals("Complete"))
+                {
+                    Info = ret ? "Check ok" : "Check faile";
+                }
             }
             catch (Exception ex)
             {

@@ -164,5 +164,8 @@ namespace DDPM.SA.Common
         #region OutReport
         Task<List<MonitorAssetReport>> GetMonitorAssetReport(List<MonitorInfo> monitorInfos);
         #endregion
+        #region Display FWU Metadata
+        Task<DisplayUpdateHelper> GetDisplayFWUpdate();
+        #endregion
     }
 }

@@ -1315,7 +1315,7 @@ namespace DDPM.SA.Common.Settings
                     byte[] hashBytes = sha256.ComputeHash(fileStream);
 
                     // 將計算的雜湊值轉換為十六進制字符串
-                    ret = BitConverter.ToString(hashBytes);
+                    ret = BitConverter.ToString(hashBytes).Replace("-", "");
                 }
             }
             return ret;
@@ -1363,7 +1363,7 @@ namespace DDPM.SA.Common.Settings
                     byte[] hashBytes = sha512.ComputeHash(fileStream);
 
                     // 將計算的雜湊值轉換為十六進制字符串
-                    ret = BitConverter.ToString(hashBytes);
+                    ret = BitConverter.ToString(hashBytes).Replace("-", "");
                 }
             }
             return ret;

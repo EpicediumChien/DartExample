@@ -1,6 +1,7 @@
 ﻿using DPeMPublic.Common.Enums;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace DDPM.SA.Common
 {
@@ -70,10 +71,9 @@ namespace DDPM.SA.Common
         /// 韌體更新的錯誤碼，安裝時使用
         /// </summary>
         public FWUErrorCode FWUErrorCode { get; set; }
-
         //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
         public DeviceType DeviceType { get; set; }
-
+        public bool IsDisplay { get; set; }
         public string DeviceName { get; set; }
         public string DeviceId { get; set; }
         public string DevicePath { get; set; }
@@ -140,15 +140,18 @@ namespace DDPM.SA.Common
     /// <summary>
     /// Display FWU Metadata結構
     /// </summary>
-    public class Firmwares
+    public class Display_Firmwares_item
     {
         public string id { get; set; }
-        public string version { get; set; }
+        [JsonPropertyName("version")]
+        public string TheLastVersion { get; set; }
+        public string CurrentVersion { get; set; }
         public string fileName { get; set; }
         public string SHA256 { get; set; }
         public string url { get; set; }
         public string date { get; set; }
-
+        [JsonPropertyName("Supported platform")]
+        public string SupportedPlatform { get; set; }
     }
 
     /// <summary>
@@ -156,6 +159,10 @@ namespace DDPM.SA.Common
     /// </summary>
     public class DisplayUpdateHelper
     {
-        public List<Firmwares> Firmwares { get; set; }
+        public List<Display_Firmwares_item> Firmwares { get; set; }
+        public DisplayUpdateHelper()
+        {
+            Firmwares = new List<Display_Firmwares_item>();
+        }
     }
 }
