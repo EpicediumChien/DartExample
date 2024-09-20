@@ -7,7 +7,6 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <Configurations>Debug;Release;Debug_NKVM</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,14 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.DeviceManager\DDPM.SA.Plugins.User.DeviceManager.csproj" />
-    <ProjectReference Include="..\..\Plugins\DDPM.SA.Plugins.User.Peripherals\DDPM.SA.Plugins.User.Peripherals.csproj" />
-    <ProjectReference Include="..\SA.Plugins.User.DisplayManager.Test\SA.Plugins.User.DisplayManager.Test.csproj" />
+    <ProjectReference Include="..\..\DDPM.UI.Module.HeadsetAutomatedActions\DDPM.UI.Module.HeadsetAutomatedActions.csproj" />
+    <ProjectReference Include="..\NGA.UnitTest.PrivateObject\NGA.UnitTest.PrivateObject.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DPeMPublic.Common">
-      <HintPath>..\..\..\..\..\ElsaGit\0819git\DDPM\DDPM.UI\CommonDll\DPeMPublic.Common.dll</HintPath>
+    <Reference Include="DDPM.SA.Common">
+      <HintPath>..\..\CommonDll\DDPM.SA.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
 
