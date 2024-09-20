@@ -35,6 +35,8 @@
         public bool Lock_Pen_RestoreFactoryDefaults { get; set; } = false;
         public bool Lock_Keyboard_CollabScreenShare { get; set; } = false;
         public bool Lock_Audio_ancMode { get; set; } = false;
+        public bool Lock_Audio_micNoiseCancellation { get; set; } = false;
+        public bool Lock_Audio_wearDetection { get; set; } = false;
         #endregion Peripheral Setting
 
     }
