@@ -13,6 +13,19 @@ namespace DDPM.UI.WalkThroughData
         {
             return new Dictionary<string, List<WalkThroughPageData>>
             {
+                //APP////////////////////////////////////////////////////////////////////////////////////////////////OK
+                // DDPM
+                { "DDPM", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = "Welcome to\r\nDell Display and Peripheral Manager", SubText = "See all your supported Dell Displays and Peripherals in one place, personalize your settings, and keep your firmware updated", MainImageSource = "WalkThrough/DDPM/DDPM-1-.png" },
+                        new WalkThroughPageData { MainText = "Add a Device", SubText = "Click the + icon to find instructions on how to connect a supported Dell device", MainImageSource = "WalkThrough/DDPM/DDPM2.png" },
+                        new WalkThroughPageData { MainText = "View your Device", SubText = "See your device, how it’s connected, and its battery level (if wireless)", MainImageSource = "WalkThrough/DDPM/DDPM3.png" },
+                        new WalkThroughPageData { MainText = "Connection Tile", SubText = "Hover on the connection tile of a wireless device to learn more details", MainImageSource = "WalkThrough/DDPM/DDPM4.png" },
+                        new WalkThroughPageData { MainText = "Device Settings", SubText = "Click on your device to adjust its settings", MainImageSource = "WalkThrough/DDPM/DDPM5.png" },
+                        new WalkThroughPageData { MainText = "App Settings", SubText = "Click the gear icon to access app settings and software and firmware updates", MainImageSource = "WalkThrough/DDPM/DDPM6.png" },
+                        new WalkThroughPageData { MainText = "", SubText = "", MainImageSource = "WalkThrough/DDPM/DDPM-7.png" }
+                    }
+                },
                 //Display////////////////////////////////////////////////////////////////////////////////////////////////OK
                 // S3425DW
                 { "S3425DW", new List<WalkThroughPageData>
@@ -70,6 +83,15 @@ namespace DDPM.UI.WalkThroughData
 
                 // E2422H For Test
                 { "E2422H", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = "Customize your View", SubText = "Personalize your viewing experience by adjusting your brightness/contrast levels, color profiles, and more", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
+                        new WalkThroughPageData { MainText = "Easy Arrange", SubText = "Spend less time resizing your multiple windows. Choose an Easy Arrange layout then click and drag your windows into place. If you would like to reuse this specific arrangement of windows, save it with Easy Memory", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },
+                        new WalkThroughPageData { MainText = "Manage your Inputs", SubText = "Easily use your monitor with multiple PCs through Input Source or USB/Network KVM settings. Additionally, connect your mouse, keyboard, and accessories to your monitor via USB to use them with your multiple PCs", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_3.png" }
+                    }
+                },
+
+                // P3225DE For Test
+                { "P3225DE", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = "Customize your View", SubText = "Personalize your viewing experience by adjusting your brightness/contrast levels, color profiles, and more", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_1.png" },
                         new WalkThroughPageData { MainText = "Easy Arrange", SubText = "Spend less time resizing your multiple windows. Choose an Easy Arrange layout then click and drag your windows into place. If you would like to reuse this specific arrangement of windows, save it with Easy Memory", MainImageSource = "WalkThrough/Display/U2725QE/U2725QE_2.png" },

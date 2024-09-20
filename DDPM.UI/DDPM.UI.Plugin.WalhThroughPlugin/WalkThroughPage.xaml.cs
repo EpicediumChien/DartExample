@@ -1,8 +1,12 @@
-﻿using Dell.Client.Framework.UX.WPF;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using Windows.Devices.Geolocation;
 
 namespace DDPM.UI.Plugin.WalkThroughPlugin
 {
@@ -12,7 +16,6 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
     public partial class WalkThroughPage : UserControl
     {
         private WalkThroughPageViewModel ViewModel => (WalkThroughPageViewModel)DataContext;
-
         public WalkThroughPage()
         {
             InitializeComponent();
@@ -36,12 +39,12 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 }
                 else
                 {
-                    EndWalkThrough();
+                    ViewModel.EndWalkThrough();
                 }
             }
             else
             {
-                EndWalkThrough();
+                ViewModel.EndWalkThrough();
             }
         }
 
@@ -55,12 +58,6 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             ViewModel.PreviousPage();
             DoProgressAnimation(false);
-        }
-
-        private void EndWalkThrough()
-        {
-            IConsole? console = WalkThroughPlugin.PluginIoc.GetService<IConsole>();
-            console?.ShowHomePage();
         }
 
         private void DoProgressAnimation(bool isForward)
@@ -89,6 +86,27 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
             // refresh ProgressValue
             ViewModel.ProgressValue = newProgressValue;
+        }
+
+        private void MainNextBtn_Click(object sender, RoutedEventArgs e)
+        {
+            WalkThroughBox msgBox = new WalkThroughBox(ViewModel, Window.GetWindow(this));
+            msgBox.ShowDialog();
+
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
+            {
+                ViewModel.EndWalkThrough();
+            }
+            else
+            {
+                if (!DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+                {
+                    ViewModel.IsPeripheralVisible = true;
+                    ViewModel.IsDDPMVisibility = false;
+                    ViewModel.InitializeDeviceFromQueue();
+                    ViewModel.UpdateButtonVisibility();
+                }
+            }
         }
     }
 }
