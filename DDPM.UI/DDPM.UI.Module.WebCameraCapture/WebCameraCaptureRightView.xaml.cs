@@ -23,11 +23,9 @@ namespace DDPM.UI.Module.WebCameraCapture
             InitializeComponent();
             _vm = vm;
 
-            var picturesLibrary = StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
-            // Fall back to the local app storage if the Pictures Library is not available
-            //Windows.Storage.StorageFolder _captureFolder = picturesLibrary. ?? ApplicationData.Current.LocalFolder;
-            tbx_media_file_location.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
-            _vm.Media_File_Location = tbx_media_file_location.Text;
+            //var picturesLibrary = StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
+            tbx_media_file_location.Text = _vm.VideoCaptureFolder;
+            _vm.VideoCaptureFolder = tbx_media_file_location.Text;
         }
 
         private void Slider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -67,7 +65,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _vm._mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                         break;
                     }
                 }
@@ -89,7 +87,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _vm._mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                         break;
                     }
 
@@ -112,7 +110,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _vm._mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                         break;
                     }
 
@@ -135,7 +133,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _vm._mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                         break;
                     }
 
@@ -159,7 +157,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _vm._mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                         break;
                     }
 
@@ -182,7 +180,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
                     {
                         var encodingProperties = property.EncodingProperties;
-                        _vm._mediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                         break;
                     }
                 }
@@ -230,7 +228,7 @@ namespace DDPM.UI.Module.WebCameraCapture
         private void Change_Click(object sender, RoutedEventArgs e)
         {
 
-            _vm.Media_File_Location = tbx_media_file_location.Text;
+            _vm.VideoCaptureFolder = tbx_media_file_location.Text;
         }
 
         private void ChkBoxFramingGrid_Checked(object sender, RoutedEventArgs e)

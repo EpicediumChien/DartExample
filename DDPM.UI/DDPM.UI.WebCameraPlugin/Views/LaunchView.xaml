@@ -8,6 +8,7 @@
              xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
+             xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              d:DesignHeight="735" d:DesignWidth="1378"
@@ -18,6 +19,7 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
       <Storyboard x:Key="StoryGotoTwoView">
         <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
@@ -58,6 +60,18 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
+      </Style>
+      <Style x:Key="btnToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+        <Setter Property="Placement" Value="Top" />
+        <Setter Property="VerticalOffset" Value="-5" />
+        <Setter Property="HorizontalOffset">
+          <Setter.Value>
+            <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+              <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
+              <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
       </Style>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -187,16 +201,44 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
           <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
           <StackPanel Orientation="Horizontal" Visibility="{Binding FunctionsVisibility}">
-            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom">
+            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnFolder_Click">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.7], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
               <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />
             </Border>
-            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnPause" Height="40" VerticalAlignment="Bottom">
+            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnPause" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPause_Click">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.9], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
               <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pause.png" Stretch="Fill" Width="17" Height="16" />
             </Border>
+            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnPlay" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPlay_Click">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.10], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
+              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Play.png" Stretch="Fill" Width="13" Height="14" />
+            </Border>
             <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click" Height="40" VerticalAlignment="Bottom">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.8], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
               <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedCircle.png" Stretch="Fill" Width="17" Height="16" />
             </Border>
             <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnStop" MouseLeftButtonDown="btnStop_Click" Height="40" VerticalAlignment="Bottom">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.11], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
               <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedSquare.png" Stretch="Fill" Width="17" Height="16" />
             </Border>
             <StackPanel Orientation="Vertical">
@@ -259,8 +301,8 @@
       </Grid>
       <!--Timer-->
       <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center">
-        <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:01"
-                                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,118" FontFamily="Roboto" FontWeight="Normal" />
+        <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
+                                VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,118" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
       </Grid>
     </Grid>
   </Grid>

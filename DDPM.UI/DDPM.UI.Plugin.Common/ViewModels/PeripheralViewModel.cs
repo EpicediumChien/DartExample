@@ -79,7 +79,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnGoBackClicked();
         }
 
-        public void OnGoBackClicked()
+        public virtual void OnGoBackClicked()
         {
             VbarSelectedIndex = -1;
             _console.ShowHomePage();

@@ -184,6 +184,7 @@
     <None Remove="Resources\Images\PenC6.png" />
     <None Remove="Resources\Images\PencilMark.png" />
     <None Remove="Resources\Images\PenRadialCenter.png" />
+    <None Remove="Resources\Images\Play.png" />
     <None Remove="Resources\Images\PN5122W.png" />
     <None Remove="Resources\Images\PN7522W.png" />
     <None Remove="Resources\Images\PN7522WS.png" />
@@ -338,6 +339,7 @@
     </Resource>
     <Resource Include="Resources\Images\info18.png" />
     <Resource Include="Resources\Images\Pause.png" />
+    <Resource Include="Resources\Images\Play.png" />
     <Resource Include="Resources\Images\RedCircle.png" />
     <Resource Include="Resources\Images\RedSquare.png" />
     <Resource Include="Resources\Images\SD25.png">
