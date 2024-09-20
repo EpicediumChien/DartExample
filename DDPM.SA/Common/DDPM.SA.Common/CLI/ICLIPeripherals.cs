@@ -155,6 +155,8 @@ namespace DDPM.SA.Common
                 }
                 if (targetFeature.Equals("COLLABSCREENSHARE"))
                     Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
+                if (targetFeature.Equals("ANCMODE"))
+                    Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
             }
             else
             {
