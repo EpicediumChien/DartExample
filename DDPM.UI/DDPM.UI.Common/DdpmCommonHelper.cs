@@ -120,6 +120,22 @@ namespace DDPM.UI.Common
             return null;//null as default if feature not found
         }
 
+        public static bool GetUINotify_IsSynchronizeBetweenMonitors_Locked(DDPMSettings data)
+        {
+            if (data == null || data.LockSettings == null)
+                return false;
+
+            //9/7 Functionality update:
+            //When brightness, contrast, or color settings are locked, automatically lock 'synchronize between monitors'.
+            //Should unlock if no brightness, contrast, or color settings are locked.
+            if (data.LockSettings.Lock_Display_BriCont ||
+                data.LockSettings.Lock_Display_ColorPreset ||
+                data.LockSettings.Lock_Display_AutoBriTemp)
+                return true;
+
+            return false;
+        }
+
         public static bool GetUINotifyPropertyValue_isAnyLocked(DDPMSettings data, string search_key = "")
         {
             if (data == null || data.LockSettings == null)
