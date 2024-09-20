@@ -180,7 +180,7 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="4*" />
                                 </Grid.ColumnDefinitions>
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmComboBoxStyle}"
+                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Left" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}"
                                           SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}"

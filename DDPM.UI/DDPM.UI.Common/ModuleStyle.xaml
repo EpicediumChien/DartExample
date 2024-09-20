@@ -483,9 +483,9 @@
     <DataTemplate x:Key="ComboBoxItemTemplate">
         <StackPanel Orientation="Vertical" Margin="8">
             <!-- Text binding -->
-            <TextBlock Text="{Binding inputSource}" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding Type}" HorizontalAlignment="Center"/>
             <!-- Path Data binding -->
-            <Path Data="{Binding inputPathData}" Margin="8" 
+            <Path Data="{Binding PathData}" Margin="8" 
                   HorizontalAlignment="Center" Fill="White"/>
         </StackPanel>
     </DataTemplate>

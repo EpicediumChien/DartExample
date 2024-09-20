@@ -82,22 +82,22 @@ namespace DDPM.UI.Module.Kvm
                 hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
                 hotkeyInfo.Description = "kvm switch between pcs";
                 //add inputsource
-                string inputSource1 = vm.PC1Inputs_Selected.inputSource;
+                string inputSource1 = vm.PC1Inputs_Selected.Type;
                 if (!string.IsNullOrEmpty(inputSource1))
                 {
                     hotkeyInfo.InputSource.Add(new InputSourceObj(inputSource1));
                 }
-                string inputSource2 = vm.PC2Inputs_Selected.inputSource;
+                string inputSource2 = vm.PC2Inputs_Selected.Type;
                 if (!string.IsNullOrEmpty(inputSource2))
                 {
                     hotkeyInfo.InputSource.Add(new InputSourceObj(inputSource2));
                 }
-                string inputSource3 = vm.PC3Inputs_Selected.inputSource;
+                string inputSource3 = vm.PC3Inputs_Selected.Type;
                 if (!string.IsNullOrEmpty(inputSource3))
                 {
                     hotkeyInfo.InputSource.Add(new InputSourceObj(inputSource3));
                 }
-                string inputSource4 = vm.PC4Inputs_Selected.inputSource;
+                string inputSource4 = vm.PC4Inputs_Selected.Type;
                 if (!string.IsNullOrEmpty(inputSource4))
                 {
                     hotkeyInfo.InputSource.Add(new InputSourceObj(inputSource4));

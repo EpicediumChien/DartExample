@@ -22,31 +22,16 @@ namespace DDPM.UI.Module.Kvm
 {
     public class InputSourceList
     {
-        public string inputSource { get; set; } = String.Empty;
-        public string inputPathData { get; set; } = String.Empty;
+        public string Type { get; set; } = String.Empty;
+        public string PathData { get; set; } = String.Empty;
         public KvmModule kvmModule { get; set; }
-
-        public string inputDisplayText
-        {
-            get
-            {
-                return inputSource;
-            }
-        }
     }
 
     public class USBList
     {
-        public string usb = String.Empty;
+        public string Type { get; set; } = String.Empty;
+        public string PathData { get; set; } = string.Empty;
         public KvmModule kvmModule { get; set; }
-
-        public string inputDisplayText
-        {
-            get
-            {
-                return usb;
-            }
-        }
     }
 
     public class PCInput
@@ -334,7 +319,7 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _PC1selectInput, value);
-                SelectInputSource(_PC1selectInput.inputSource, "PC1");
+                SelectInputSource(_PC1selectInput.Type, "PC1");
             }
         }
 
@@ -344,7 +329,7 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _PC2selectInput, value);
-                SelectInputSource(_PC2selectInput.inputSource, "PC2");
+                SelectInputSource(_PC2selectInput.Type, "PC2");
             }
         }
 
@@ -354,7 +339,7 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _PC3selectInput, value);
-                SelectInputSource(_PC3selectInput.inputSource, "PC3");
+                SelectInputSource(_PC3selectInput.Type, "PC3");
             }
         }
 
@@ -364,7 +349,7 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _PC4selectInput, value);
-                SelectInputSource(_PC4selectInput.inputSource, "PC4");
+                SelectInputSource(_PC4selectInput.Type, "PC4");
             }
         }
 
@@ -374,7 +359,7 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _PC1selectUSB, value);
-                SelectUSB(_PC1selectUSB.usb, "PC1");
+                SelectUSB(_PC1selectUSB.Type, "PC1");
             }
         }
 
@@ -384,7 +369,7 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _PC2selectUSB, value);
-                SelectUSB(_PC2selectUSB.usb, "PC2");
+                SelectUSB(_PC2selectUSB.Type, "PC2");
             }
         }
 
@@ -394,7 +379,7 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _PC3selectUSB, value);
-                SelectUSB(_PC3selectUSB.usb, "PC3");
+                SelectUSB(_PC3selectUSB.Type, "PC3");
             }
         }
 
@@ -404,7 +389,7 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _PC4selectUSB, value);
-                SelectUSB(_PC4selectUSB.usb, "PC4");
+                SelectUSB(_PC4selectUSB.Type, "PC4");
             }
         }
 
@@ -641,37 +626,46 @@ namespace DDPM.UI.Module.Kvm
                                 }
                                 _inputsList.Add(new InputSourceList()
                                 {
-                                    inputPathData = pathData,
-                                    inputSource = item,
+                                    PathData = pathData,
+                                    Type = item,
                                     kvmModule = KvmModule
                                 });
                             }
                             foreach (string str in usbsList)
                             {
+                                if (str.StartsWith("USB-C") || str.StartsWith("Thunderbolt"))
+                                {
+                                    pathData = "M6 0.394531C2.96243 0.394531 0.5 2.85697 0.5 5.89453C0.5 8.9321 2.96243 11.3945 6 11.3945H25C28.0376 11.3945 30.5 8.9321 30.5 5.89453C30.5 2.85697 28.0376 0.394531 25 0.394531H6ZM7 5.39453C6.72386 5.39453 6.5 5.61839 6.5 5.89453C6.5 6.17067 6.72386 6.39453 7 6.39453H24C24.2761 6.39453 24.5 6.17067 24.5 5.89453C24.5 5.61839 24.2761 5.39453 24 5.39453H7Z";
+                                }
+                                else if (str.StartsWith("USB-B"))
+                                {
+                                    pathData = "M0.5 14.1064C0.5 13.7835 0.655966 13.4804 0.918762 13.2927L3.58124 11.3909C3.84403 11.2032 4 10.9001 4 10.5772V1.5918C4 1.03951 4.44771 0.591797 5 0.591797H22C22.5523 0.591797 23 1.03951 23 1.5918V10.5772C23 10.9001 23.156 11.2032 23.4188 11.3909L26.0812 13.2927C26.344 13.4804 26.5 13.7835 26.5 14.1064V31.5918C26.5 32.1441 26.0523 32.5918 25.5 32.5918H1.5C0.947715 32.5918 0.5 32.1441 0.5 31.5918V14.1064ZM4.5 16.5918C4.5 16.0395 4.94772 15.5918 5.5 15.5918H21.5C22.0523 15.5918 22.5 16.0395 22.5 16.5918V25.5918C22.5 26.1441 22.0523 26.5918 21.5 26.5918H5.5C4.94772 26.5918 4.5 26.1441 4.5 25.5918V16.5918ZM20.5 3.5918C20.5 3.03951 20.0523 2.5918 19.5 2.5918H7.5C6.94772 2.5918 6.5 3.03951 6.5 3.5918V5.5918C6.5 6.14408 6.94772 6.5918 7.5 6.5918H19.5C20.0523 6.5918 20.5 6.14408 20.5 5.5918V3.5918Z";
+                                }
                                 _usbsList.Add(new USBList()
                                 {
-                                    usb = str,
+                                    Type = str,
+                                    PathData = pathData,
                                     kvmModule = KvmModule
                                 });
                             }
                             PCInputsList = _inputsList;
                             USBsList = _usbsList;
-                            _PC1selectInput = _inputsList.Find(x => (x.inputSource == KvmModule.SelectedHomeDevice.MonitorInfo.inputSource));
-                            _PC1selectUSB = _usbsList.Find(x => (x.usb == pcsList["PC1"].USBUpstream));
-                            _PC2selectInput = _inputsList.Find(x => (x.inputSource == pcsList["PC2"].InputType));
-                            _PC2selectUSB = _usbsList.Find(x => (x.usb == pcsList["PC2"].USBUpstream));
+                            _PC1selectInput = _inputsList.Find(x => (x.Type == KvmModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                            _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC1"].USBUpstream));
+                            _PC2selectInput = _inputsList.Find(x => (x.Type == pcsList["PC2"].InputType));
+                            _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC2"].USBUpstream));
                             InputName1 = pcsList["PC1"].InputName;
                             InputName2 = pcsList["PC2"].InputName;
                             if (pcsList.Count >= 3)
                             {
-                                _PC3selectInput = _inputsList.Find(x => (x.inputSource == pcsList["PC3"].InputType));
-                                _PC3selectUSB = _usbsList.Find(x => (x.usb == pcsList["PC3"].USBUpstream));
+                                _PC3selectInput = _inputsList.Find(x => (x.Type == pcsList["PC3"].InputType));
+                                _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC3"].USBUpstream));
                                 InputName3 = pcsList["PC3"].InputName;
                                 PC3_Visibility = Visibility.Visible;
                                 if (pcsList.Count == 4)
                                 {
-                                    _PC4selectInput = _inputsList.Find(x => (x.inputSource == pcsList["PC4"].InputType));
-                                    _PC4selectUSB = _usbsList.Find(x => (x.usb == pcsList["PC4"].USBUpstream));
+                                    _PC4selectInput = _inputsList.Find(x => (x.Type == pcsList["PC4"].InputType));
+                                    _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList["PC4"].USBUpstream));
                                     InputName4 = pcsList["PC4"].InputName;
                                     PC4_Visibility = Visibility.Visible;
                                     PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_4PCs.png");
