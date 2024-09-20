@@ -84,6 +84,7 @@ namespace DDPM.SA.Common.Display
         KvmChangePIPPosition,
         DarkStabilizerToggle,
         DualResolutionToggle,
-        VisionEngineToggle
+        VisionEngineToggle,
+        NkvmConflict
     }
 }
