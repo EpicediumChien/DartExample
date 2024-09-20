@@ -72,7 +72,7 @@ namespace DDPM.UI.Module.InputSource
     public class Item
     {
         public int Index { get; set; }
-        public ImageSource InputImage { get; set; }
+        public string InputImage { get; set; }
         public string InputType { get; set; }
         public string InputName { get; set; }
         public ObservableCollection<string> USBUpstream { get; set; }

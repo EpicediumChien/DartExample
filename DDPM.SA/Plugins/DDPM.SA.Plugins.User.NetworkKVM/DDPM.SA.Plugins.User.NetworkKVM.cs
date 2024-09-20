@@ -153,11 +153,6 @@ namespace NetworkKVM.Plugins
                                 ResponseSupportedMonitor();
                                 MonitorPlug();
                             }
-                            else
-                            {
-                                Disconnect();
-                                CreateNamedPipe();
-                            }
                         }
                     }
                     _AllInfoMonitors.AddRange(monitorInfos);
@@ -291,8 +286,8 @@ namespace NetworkKVM.Plugins
                     _COMMAND.cid = cid;
                     _COMMAND.Checksum = _COMMAND.CalculateChecksum();
                     //_COMMAND.type = "ON_NKVM";
-                    WriteAsync(_COMMAND.ToJson()).Wait();
                     NKVMState = true;
+                    WriteAsync(_COMMAND.ToJson()).Wait();
                 }
             }
             return Task.CompletedTask;
@@ -310,8 +305,8 @@ namespace NetworkKVM.Plugins
                     _COMMAND.cid = cid;
                     _COMMAND.Checksum = _COMMAND.CalculateChecksum();
                     //_COMMAND.type = "OFF_NKVM";
-                    WriteAsync(_COMMAND.ToJson()).Wait();
                     NKVMState = false;
+                    WriteAsync(_COMMAND.ToJson()).Wait();
                 }
             }
             return Task.CompletedTask;
@@ -564,6 +559,56 @@ namespace NetworkKVM.Plugins
             catch
             {
                 ;
+            }
+            return Task.CompletedTask;
+        }
+        /// <summary>
+        /// DDPMtoNKVM SetHotkeyResponse
+        /// </summary>
+        /// <param name="jsonstring"></param>
+        /// <param name="isSuccess"></param>
+        /// <returns></returns>
+        public Task SetHotkeyResponse(string jsonstring, bool isSuccess)
+        {
+            _logs.DebugMsg("[NetworkKVM] SetHotkeyResponse....");
+            SET_HOTKEY set_HOTKEY = new SET_HOTKEY();
+            set_HOTKEY = JsonConvert.DeserializeObject<SET_HOTKEY>(jsonstring);
+            SET_HOTKEY_RESPONSE set_HOTKEY_RESPONSE = new SET_HOTKEY_RESPONSE();
+            if (set_HOTKEY != null)
+            {
+                set_HOTKEY_RESPONSE.cid = set_HOTKEY.cid;
+                set_HOTKEY_RESPONSE.Hotkey = set_HOTKEY.Hotkey;
+                if (set_HOTKEY.IsChecksumValid())
+                {
+                    if (isSuccess)
+                    {
+                        set_HOTKEY_RESPONSE.Success = true;
+                        set_HOTKEY_RESPONSE.UpdateChecksum();
+                        if (set_HOTKEY_RESPONSE.ToJson() != string.Empty)
+                        {
+                            WriteAsync(set_HOTKEY_RESPONSE.ToJson()).Wait();
+                        }
+                        return Task.CompletedTask;
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[NetworkKVM] SetHotkey isn't Success....");
+                    }
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
+                }
+            }
+            else
+            {
+                _logs.DebugMsg("[NetworkKVM] Not SET_HOTKEY");
+            }
+            set_HOTKEY_RESPONSE.Success = false;
+            set_HOTKEY_RESPONSE.UpdateChecksum();
+            if (set_HOTKEY_RESPONSE.ToJson() != string.Empty)
+            {
+                WriteAsync(set_HOTKEY_RESPONSE.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -1027,20 +1072,20 @@ namespace NetworkKVM.Plugins
             _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
             await pipeServer.WaitForConnectionAsync(cancellationTokenSource.Token);
             _logs.DebugMsg("[NetworkKVM] Client Connect....");
-            string info;
-            if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
-            {
+            //string info;
+            //if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
+            //{
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
                 _SupportedMonitors = GetSupportedNKVM().Result;
-                ResponseSupportedMonitor();
-                await OnNKVM();
-            }
-            else
-            {
-                _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
-                Disconnect();
-                CreateNamedPipe();
-            }
+                ResponseSupportedMonitor().Wait();
+                OnNKVM().Wait();
+            //}
+            //else
+            //{
+            //    _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
+            //    Disconnect();
+            //    CreateNamedPipe();
+            //}
         }
 
         private void Stop()
@@ -1140,7 +1185,7 @@ namespace NetworkKVM.Plugins
                         break;
 
                     case "SET_HOTKEY":
-                        GetSendHotkey(jsonstring);
+                        GetSetHotkey(jsonstring);
                         break;
 
                     case "SET_HOTKEY_RESPONSE":
@@ -1233,7 +1278,7 @@ namespace NetworkKVM.Plugins
                         set_VCP_R.UpdateChecksum();
                         if (set_VCP_R.ToJson() != string.Empty)
                         {
-                            _ = WriteAsync(set_VCP_R.ToJson());
+                            WriteAsync(set_VCP_R.ToJson()).Wait();
                         }
                         return Task.CompletedTask;
                     }
@@ -1258,7 +1303,7 @@ namespace NetworkKVM.Plugins
             set_VCP_R.UpdateChecksum();
             if (set_VCP_R.ToJson() != string.Empty)
             {
-                _ = WriteAsync(set_VCP_R.ToJson());
+                WriteAsync(set_VCP_R.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -1294,7 +1339,7 @@ namespace NetworkKVM.Plugins
                             get_VCP_R.UpdateChecksum();
                             if (get_VCP_R.ToJson() != string.Empty)
                             {
-                                _ = WriteAsync(get_VCP_R.ToJson());
+                                WriteAsync(get_VCP_R.ToJson()).Wait();
                             }
                             return Task.CompletedTask;
                         }
@@ -1306,7 +1351,7 @@ namespace NetworkKVM.Plugins
                             get_VCP_R.UpdateChecksum();
                             if (get_VCP_R.ToJson() != string.Empty)
                             {
-                                _ = WriteAsync(get_VCP_R.ToJson());
+                                WriteAsync(get_VCP_R.ToJson()).Wait();
                             }
                             return Task.CompletedTask;
                         }
@@ -1332,7 +1377,7 @@ namespace NetworkKVM.Plugins
             get_VCP_R.UpdateChecksum();
             if (get_VCP_R.ToJson() != string.Empty)
             {
-                _ = WriteAsync(get_VCP_R.ToJson());
+                WriteAsync(get_VCP_R.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -1509,7 +1554,7 @@ namespace NetworkKVM.Plugins
             SUPPORTED_MONITOR_LIST.UpdateChecksum();
             if (SUPPORTED_MONITOR_LIST.ToJson() != string.Empty)
             {
-                _ = WriteAsync(SUPPORTED_MONITOR_LIST.ToJson());
+                WriteAsync(SUPPORTED_MONITOR_LIST.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -1632,10 +1677,14 @@ namespace NetworkKVM.Plugins
             }
             return Task.CompletedTask;
         }
-
-        private Task GetSendHotkey(string jsonstring)
+        /// <summary>
+        /// NKVMtoDDPM SetHotkey
+        /// </summary>
+        /// <param name="jsonstring"></param>
+        /// <returns></returns>
+        private Task GetSetHotkey(string jsonstring)
         {
-            _logs.DebugMsg("[NetworkKVM] isHotkeyAvailable....");
+            _logs.DebugMsg("[NetworkKVM] GetSendHotkey....");
             SET_HOTKEY set_HOTKEY = new SET_HOTKEY();
             set_HOTKEY = JsonConvert.DeserializeObject<SET_HOTKEY>(jsonstring);
             SET_HOTKEY_RESPONSE set_HOTKEY_RESPONSE = new SET_HOTKEY_RESPONSE();
@@ -1643,28 +1692,34 @@ namespace NetworkKVM.Plugins
             {
                 if (set_HOTKEY.IsChecksumValid())
                 {
-                    set_HOTKEY_RESPONSE.cid = set_HOTKEY.cid;
-                    set_HOTKEY_RESPONSE.Hotkey = set_HOTKEY.Hotkey;
-                    if (_HotkeySettings != null)
+                    _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
+                    NKVMSetHotkey nKVMSetHotkey = new NKVMSetHotkey();
+                    HotkeyInfo hotkeyInfo = new HotkeyInfo();
+                    if (set_HOTKEY.Hotkey.Control)
                     {
-                        _logs.DebugMsg("[NetworkKVM] _HotkeySettings not null");
-                        set_HOTKEY_RESPONSE.Success = true;
-                        set_HOTKEY_RESPONSE.UpdateChecksum();
-                        if (set_HOTKEY_RESPONSE.ToJson() != string.Empty)
-                        {
-                            _ = WriteAsync(set_HOTKEY_RESPONSE.ToJson());
-                        }
-                        return Task.CompletedTask;
+                        hotkeyInfo.Hotkey.Add(VirtualKey.Control);
                     }
-                    else
+                    if (set_HOTKEY.Hotkey.Alt)
                     {
-                        _logs.DebugMsg("[NetworkKVM] _HotkeySettings is null");
+                        hotkeyInfo.Hotkey.Add(VirtualKey.Menu);
                     }
+                    if (set_HOTKEY.Hotkey.Shift)
+                    {
+                        hotkeyInfo.Hotkey.Add(VirtualKey.Shift);
+                    }
+                    hotkeyInfo.Hotkey.Add((VirtualKey)set_HOTKEY.Hotkey.Key);
+                    hotkeyInfo.Job = HotkeyType.NkvmConflict;
+                    nKVMSetHotkey.HotkeyInfo = hotkeyInfo;
+                    nKVMSetHotkey.jsonstring = jsonstring;
+                    SetDDPMHotkey(nKVMSetHotkey);
+                    return Task.CompletedTask;
                 }
                 else
                 {
                     _logs.DebugMsg("[NetworkKVM] Checksum Fail....");
                 }
+                set_HOTKEY_RESPONSE.cid = set_HOTKEY.cid;
+                set_HOTKEY_RESPONSE.Hotkey = set_HOTKEY.Hotkey;
             }
             else
             {
@@ -1827,6 +1882,8 @@ namespace NetworkKVM.Plugins
 
         public event EventHandler<NKVMRespone> NKVMCLIEvent;
 
+        public event EventHandler<NKVMSetHotkey> NKVMSetHotkey;
+
         public class EventArgsjson : EventArgs
         {
             public EventArgsjson(string jsonstring)
@@ -1883,6 +1940,11 @@ namespace NetworkKVM.Plugins
         public void ToNKVMCLI(NKVMRespone response)
         {
             NKVMCLIEvent?.AsyncFireAndForget(this, response, System.Threading.CancellationToken.None);
+        }
+
+        public void SetDDPMHotkey(NKVMSetHotkey setHotkey)
+        {
+            NKVMSetHotkey?.AsyncFireAndForget(this, setHotkey, System.Threading.CancellationToken.None);
         }
 
         #endregion Event Handler
