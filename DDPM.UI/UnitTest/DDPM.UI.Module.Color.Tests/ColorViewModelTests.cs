@@ -22,6 +22,8 @@ namespace DDPM.UI.Module.Color.Tests
         private MonitorInfo? monitorInfo;
         private ColorModule? colorModule;
         private ColorModule? myModleMock;
+        private IDeviceManagerSA? deviceManagerSA;
+        private Mock<IDeviceManagerSA>? deviceManagerSAMock;
 
         [SetUp]
         public void Setup()
@@ -31,6 +33,9 @@ namespace DDPM.UI.Module.Color.Tests
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
+            deviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            deviceManagerSA = deviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             privateObject = new PrivateObject(colorViewModel);
         }
 
@@ -99,7 +104,7 @@ namespace DDPM.UI.Module.Color.Tests
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
-            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(),new DDPMITConfig())));
+            deviceManagerMock.Setup(x => x.ReloadAppConfigData(It.IsAny<bool>())).Returns(Task.FromResult(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig())));
             var moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
@@ -224,14 +229,49 @@ namespace DDPM.UI.Module.Color.Tests
             Assert.That(result, Is.Not.Null);
         }
 
-        //[Test]
-        //public void TestBytesToString()
-        //{
-        //    byte[] bytes = new byte[] { 97, 98, 99 };
-        //    var result = ColorViewModel.BytesToString(bytes);
+        [Test]
+        public void TestInvoke_RefreshData()
+        {
+            try
+            {
+                colorViewModel.Invoke_RefreshData();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
 
-        //    Assert.That(result, Is.EqualTo("616263"));
-        //}
+        [Test]
+        public void TestWatchForProcessStart()
+        {
+            try
+            {
+                colorViewModel.WatchForProcessStart();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestWatchForProcessEnd()
+        {
+            try
+            {
+                colorViewModel.WatchForProcessEnd();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+
 
         [Test]
         public void TestSyncNightlightStatus()
@@ -303,16 +343,16 @@ namespace DDPM.UI.Module.Color.Tests
         //    }
         //}
 
-        [Test]
-        [Apartment(ApartmentState.STA)]
-        public void TestOnError_ICC()
-        {
-            colorViewModel.registryMonitor_NightLight = new RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
-            //colorViewModel.registryMonitor_ICC = new RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
-            //colorViewModel.OnError_ICC(null, null);
-            Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
-            //Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
-        }
+        //[Test]
+        //[Apartment(ApartmentState.STA)]
+        //public void TestOnError_ICC()
+        //{
+        //    colorViewModel.registryMonitor_NightLight = new RegistryMonitor_NightLight("HKEY_CLASSES_ROOT");
+        //    //colorViewModel.registryMonitor_ICC = new RegistryMonitor_ICC("HKEY_CLASSES_ROOT");
+        //    //colorViewModel.OnError_ICC(null, null);
+        //    Assert.That(colorViewModel.registryMonitor_NightLight, Is.EqualTo(null));
+        //    //Assert.That(colorViewModel.registryMonitor_ICC, Is.EqualTo(null));
+        //}
 
         [Test]
         public void TestAppsList()

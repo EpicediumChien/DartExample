@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.Views;
@@ -51,6 +52,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand ShowInfoClickedCommand { get; private set; }
         public volatile Dictionary<Guid, DeviceInfo> DeviceInfos = new();
         public List<string> EOLList = new() { "WK636", "KM714", "WM126", "WM116", "WM514" };
+        public DDPMSettings? DDPMSettings;
 
         public PeripheralViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager)
         {
@@ -77,7 +79,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnGoBackClicked();
         }
 
-        public void OnGoBackClicked()
+        public virtual void OnGoBackClicked()
         {
             VbarSelectedIndex = -1;
             _console.ShowHomePage();
@@ -153,7 +155,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     Model = CurrentDeviceInfo.ModelNumber;
                 }
-                //Name = CurrentDeviceInfo.Name.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
+                //ID = CurrentDeviceInfo.ID.Replace(CurrentDeviceInfo.ModelNumber, "").Trim();
                 Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
             }
             if (instenceNo == "")
@@ -165,11 +167,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 Model2 = $"{Model} ({instenceNo})";
             }
 
-            //0823 Bruce Dock名稱正常,故改回來
-            {
-                var colorCode = CurrentDeviceInfo.ColorCode == 0 ? "" : $"_{CurrentDeviceInfo.ColorCode}";
-                ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
-            }
+            var colorCode = CurrentDeviceInfo.ColorCode == 0 ? "" : $"_{CurrentDeviceInfo.ColorCode}";
+            ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";

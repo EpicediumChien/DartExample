@@ -329,6 +329,8 @@ namespace DDPM.SA.Common
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
 
         Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation);//Bruce 08-09 Modify the incoming value
+        Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
+        Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);
 
         Task<bool> CallWindowsDisplaySetting();
 
@@ -611,6 +613,7 @@ namespace DDPM.SA.Common
         Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable);
         #region OutReport
         Task<bool> ExportMonitorAssetReport(List<MonitorInfo> monitorInfos, string savePath);
+        Task<bool> SaveLogFile(string saveFolderPath);
         #endregion
         #endregion
     }

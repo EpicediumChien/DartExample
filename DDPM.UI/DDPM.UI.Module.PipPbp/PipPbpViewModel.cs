@@ -172,7 +172,7 @@ namespace DDPM.UI.Module.PipPbp
                 //
                 string currentInput = mi.inputSource;
                 LogInfo($"  MonitorInfo.InputSource={currentInput}");
-                //MainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
+                //MainInputSource = InputSourceList.Find(x => x.ID.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
                 _mainInputSource = InputSourceList.Find(x => x.Name.Equals(currentInput, StringComparison.OrdinalIgnoreCase));
                 OnPropertyChanged("MainInputSource");
                 if ( _mainInputSource == null ) 

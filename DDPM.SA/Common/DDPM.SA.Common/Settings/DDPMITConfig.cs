@@ -21,7 +21,10 @@
         public bool Lock_Display_PowerNap { get; set; } = false;
         public bool Lock_Display_ResolutionRefreshRate { get; set; } = false;
         public bool Lock_Display_USBCPrioritization { get; set; } = false;
-        public bool Lock_Display_ActiveInputSource { get; set; } = false;
+        public bool Lock_Display_ActiveInputSource { get; set; } = false;        
+        public bool Lock_Display_RestoreFactoryDefaults { get; set; } = false;
+        public bool Lock_Display_USBKVM { get; set; } = false;
+        public bool Lock_Display_EasyArrangeLayout { get; set; } = false;
         #endregion Display Setting
 
         #region Peripheral Setting
@@ -31,6 +34,9 @@
         public bool Lock_Mouse_RestoreFactoryDefaults { get; set; } = false;
         public bool Lock_Pen_RestoreFactoryDefaults { get; set; } = false;
         public bool Lock_Keyboard_CollabScreenShare { get; set; } = false;
+        public bool Lock_Audio_ancMode { get; set; } = false;
+        public bool Lock_Audio_micNoiseCancellation { get; set; } = false;
+        public bool Lock_Audio_wearDetection { get; set; } = false;
         #endregion Peripheral Setting
 
     }

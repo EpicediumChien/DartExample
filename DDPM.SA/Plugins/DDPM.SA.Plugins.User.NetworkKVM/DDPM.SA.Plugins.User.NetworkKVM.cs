@@ -20,7 +20,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using WinCopies.Util;
 using Windows.System;
 
 namespace NetworkKVM.Plugins

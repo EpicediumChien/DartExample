@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -69,7 +70,8 @@ namespace DDPM.SA.Common.Settings
 
         //public bool isOnUSBKVM { get; set; } = false;
         //public bool isOnNKVM { get; set; } = false;
-        public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }      
+        public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }
+        public string VideoCaptureFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
 
     }
 }

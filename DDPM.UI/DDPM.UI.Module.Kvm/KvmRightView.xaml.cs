@@ -1,4 +1,6 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,6 +26,69 @@ namespace DDPM.UI.Module.Kvm
             DataContext = vm;
             vm.Invoke_RefreshData();
             vm.Invoke_RefreshHotkeySettings();
+
+            //lock/unlock
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Display_NetworkKVM)
+                    {
+                        //Do lock ui init here (direct set or binding via vm)
+                    }
+                    //if (data.LockSettings.Lock_Display_USBKVM) //CLI not ready
+                    //{
+                    //    //Do lock ui init here (direct set or binding via vm)
+                    //}
+                }
+            }
+        }
+
+        ~KvmRightView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            //Using user data from config file if need
+            //DDPMSettings data = null;
+            //if (DdpmCommonHelper.DeviceManagerSA != null)
+            //    data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_NetworkKVM", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    KvmViewModel vm = (KvmViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply NetworkKVM(Lock) : {isLocked}");
+                    }
+                }));
+            }
+            //CLI not ready
+            /*isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_USBKVM", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    KvmViewModel vm = (KvmViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply USBKVM(Lock) : {isLocked}");
+                    }
+                }));
+            }*/
         }
 
         private void OpenUSBKVM(object sender, RoutedEventArgs e)

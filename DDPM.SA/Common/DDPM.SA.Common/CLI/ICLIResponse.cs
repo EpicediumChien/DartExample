@@ -152,12 +152,12 @@ namespace DDPM.SA.Common
 
     public class CLI_Get_Brightness_RESPONSE : CLI_RESPONSE
     {
-        public string Brightness { get; set; } = "N/A";
+        //public string Brightness { get; set; } = "N/A";
     }
 
     public class CLI_Get_Contrast_RESPONSE : CLI_RESPONSE
     {
-        public string Contrast { get; set; } = "N/A";
+        //public string Contrast { get; set; } = "N/A";
     }
 
     public class CLI_Get_Luminus_RESPONSE : CLI_RESPONSE
@@ -296,17 +296,17 @@ namespace DDPM.SA.Common
 
     public class CLI_Get_ActiveColorPresetList_RESPONSE : CLI_RESPONSE
     {
-        public string Get_ActiveColorPresetList { get; set; }
+        //public string Get_ActiveColorPresetList { get; set; }
     }
 
     public class CLI_Get_AllSupportedColorPresetList_RESPONSE : CLI_RESPONSE
     {
-        public List<string> Get_AllSupportedColorPresetList { get; set; }
+        //public List<string> Get_AllSupportedColorPresetList { get; set; }
     }
 
     public class CLI_Set_SupportedColorPreset_RESPONSE : CLI_RESPONSE
     {
-        public string Set_SupportedColorPreset { get; set; }
+        //public string Set_SupportedColorPreset { get; set; }
     }
 
     // jim modify 20240608

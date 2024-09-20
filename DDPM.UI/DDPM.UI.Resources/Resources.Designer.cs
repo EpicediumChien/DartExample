@@ -394,7 +394,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Touch your pen tip to the screen 的當地語系化字串。
+        ///   查詢類似 Touch your pen tip to the {0} screen 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Pen_1 {
             get {
@@ -421,7 +421,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Select &apos;Yes&apos; to confirm pairing on the prompt box to pair your pen 的當地語系化字串。
+        ///   查詢類似 Select &apos;Yes&apos; to confirm pairing on the prompt box 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Pen_4 {
             get {
@@ -457,7 +457,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Other 的當地語系化字串。
+        ///   查詢類似 Active Electrostatic 的當地語系化字串。
         /// </summary>
         internal static string AddDevice_Type_Other {
             get {
@@ -961,6 +961,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Resume Recording 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_10 {
+            get {
+                return ResourceManager.GetString("Camera.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Stop Recording 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_11 {
+            get {
+                return ResourceManager.GetString("Camera.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Presence Detection 的當地語系化字串。
         /// </summary>
         internal static string Camera_2 {
@@ -984,6 +1002,87 @@ namespace DDPM.UI.Resources {
         internal static string Camera_4 {
             get {
                 return ResourceManager.GetString("Camera.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Add new preset 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_5 {
+            get {
+                return ResourceManager.GetString("Camera.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Select an option 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_6 {
+            get {
+                return ResourceManager.GetString("Camera.6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Open Media Folder 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_7 {
+            get {
+                return ResourceManager.GetString("Camera.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Start Recording 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_8 {
+            get {
+                return ResourceManager.GetString("Camera.8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Pause Recording 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_9 {
+            get {
+                return ResourceManager.GetString("Camera.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Please wait while we’re applying the changes 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_Alert_1 {
+            get {
+                return ResourceManager.GetString("Camera.Alert.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Another application is using your camera 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_Alert_2 {
+            get {
+                return ResourceManager.GetString("Camera.Alert.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Please unplug and plug your camera and try again 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_Alert_3 {
+            get {
+                return ResourceManager.GetString("Camera.Alert.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Please wait while we remove your camera 的當地語系化字串。
+        /// </summary>
+        internal static string Camera_Alert_4 {
+            get {
+                return ResourceManager.GetString("Camera.Alert.4", resourceCulture);
             }
         }
         
@@ -3873,15 +3972,6 @@ namespace DDPM.UI.Resources {
         internal static string VisionEngine {
             get {
                 return ResourceManager.GetString("VisionEngine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查詢類似 Select an option 的當地語系化字串。
-        /// </summary>
-        internal static string Webcamera_0 {
-            get {
-                return ResourceManager.GetString("Webcamera.0", resourceCulture);
             }
         }
         

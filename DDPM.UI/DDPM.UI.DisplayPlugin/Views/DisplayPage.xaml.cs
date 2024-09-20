@@ -101,6 +101,16 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             if (_deviceManagerSA != null)
             {
                 _deviceManagerSA.DDCCIStatuschanged += _deviceManagerSA_DDCCIStatuschanged;
+                _deviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        ~DisplayPage()
+        {
+            if (_deviceManagerSA != null)
+            {
+                _deviceManagerSA.DDCCIStatuschanged -= _deviceManagerSA_DDCCIStatuschanged;
+                _deviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
         }
 
@@ -815,6 +825,39 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         //private void OnAddDeviceClicked(object sender, EventManagerArgs e)
         //{
         //}
+
+        #region Lock/unlock event
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ActiveInputSource", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    InputSourceViewModel vm = (InputSourceViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //Please handle the tap stop and click disable at here
+                        Trace.WriteLine($"Apply InputSource(Lock) : {isLocked}");
+                    }
+                }));
+            }
+            //Wait for CLI ready
+            /*isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_EasyArrangeLayout", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    InputSourceViewModel vm = (InputSourceViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //Please handle the tap stop and click disable at here
+                        Trace.WriteLine($"Apply InputSource(Lock) : {isLocked}");
+                    }
+                }));
+            }*/
+        }
+        #endregion
 
         #region Handle DDC/CI ON/OFF events
 

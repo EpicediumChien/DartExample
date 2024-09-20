@@ -39,7 +39,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using VcpCore.Common;
-using WinCopies.Util;
 
 namespace ColorPreset.Plugins
 {
@@ -1274,9 +1273,30 @@ namespace ColorPreset.Plugins
             }
         }
 
-        bool CheckICC_JSON_Security(string filepath)
+        bool CheckICC_JSON_Security(string filepath, out string strJson)
         {
-            return true;
+            string jsonfilepath = string.Empty;
+            string publickeyfilepath = string.Empty;
+            strJson = string.Empty;
+            bool ret = true;
+
+            jsonfilepath = filepath;    // .json: current no_signature from server
+            Console.WriteLine("[CheckICC_JSON_Security] :" + jsonfilepath);
+            writelog("[CheckICC_JSON_Security] :" + jsonfilepath);
+            if (ret)
+            {
+                return ret;
+            }
+            else
+            { // Currently the server can not provide json file with signature. Add code here for further use.
+                // (for debugging) Public_Key from file. Generate Public/Private Key then generate signature in json file.
+                publickeyfilepath = "C:\\Dell\\Dell Display and Peripheral Manager\\public_key.txt";
+                // (for debugging) .json: with signature 
+                jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
+
+                ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson(jsonfilepath, publickeyfilepath, out strJson);
+            }
+            return ret;
         }
 
         /// <summary>
@@ -1354,6 +1374,14 @@ namespace ColorPreset.Plugins
 
                     if (!string.IsNullOrEmpty(url))
                     {
+                        //20240920 Add Security
+                        string FileInfo;
+                        if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
+                        {
+                            writelog($"[DownloadICCData] {FileInfo}");
+                            return Task.FromResult(_ICC_Metadata);
+                        }
+
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
                         download.DownloadFile(url, strFilePath, out downloadInfo);                        
@@ -1361,7 +1389,6 @@ namespace ColorPreset.Plugins
                         if (System.IO.File.Exists(strFilePath))
                         {
                             //Elsa Add Security
-                            string FileInfo;
                             if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
                             {
                                 writelog($"[DownloadICCData] {FileInfo}");
@@ -1369,12 +1396,19 @@ namespace ColorPreset.Plugins
                                 return Task.FromResult(_ICC_Metadata);
                             }
 
-                            CheckICC_JSON_Security(strFilePath);
-
                             string strReadJson = string.Empty;
-                            using (var reader = new StreamReader(strFilePath))
+                            if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
                             {
-                                strReadJson = reader.ReadToEnd();
+                                writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
+                                return Task.FromResult(_ICC_Metadata);
+                            }
+                           
+                            if (strReadJson.Length <1)
+                            { 
+                                using (var reader = new StreamReader(strFilePath))
+                                {
+                                    strReadJson = reader.ReadToEnd();
+                                }
                             }
 
                             if (strReadJson == string.Empty || strReadJson.Length == 0)

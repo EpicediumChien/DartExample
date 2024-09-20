@@ -31,7 +31,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using VcpCore.Interfaces;
-using WinCopies.Util.Commands.Primitives;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
@@ -1888,7 +1887,22 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //Bruce, 2024-08-09 Added the feature that if the screen is rotated, the OSD will also be rotated together.
             isSWSetOrientation = true;
             SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
-            bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation, monitorInfos.modelName).Result;
+            bool ret = _DisplayPropertiesPlugin.SetDisplayPropertiest(monitorInfos.DisplayName, properties, orientation).Result;
+            isSWSetOrientation = false;
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
+        {
+            isSWSetOrientation = true;
+            bool ret = _DisplayPropertiesPlugin.SetResolutions(monitorInfos.DisplayName, properties).Result;
+            isSWSetOrientation = false;
+            return Task.FromResult(ret);
+        }
+        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
+        {
+            isSWSetOrientation = true;
+            SetOSDOrientation(monitorInfos, OrientationString[(int)orientation + 1]);
+            bool ret = _DisplayPropertiesPlugin.SetOrientation(monitorInfos.DisplayName, orientation).Result;
             isSWSetOrientation = false;
             return Task.FromResult(ret);
         }

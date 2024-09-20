@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using VcpCore.Common;
@@ -24,6 +25,57 @@ namespace DDPM.UI.Module.Brightness
 
             Leave_WriteToConfig_Debouncer = new Debouncer(1000, WriteToConfig);
             //vm = BrightnessViewModel.GetInstance();
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;                
+            }
+        }
+
+        ~BrightnessRightView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;    
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            DDPMSettings data = null;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+                data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+
+            bool? isLocked_BriCont = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_BriCont", e);
+            if (isLocked_BriCont != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}");
+                    }
+                }));
+            }
+            bool? isLocked_ALS = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_AutoBriTemp", e);
+            if (isLocked_ALS != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {isLocked_ALS}");
+                    }
+                }));
+            }
+            if(data != null && data.LockSettings != null)
+            {
+                bool isSyncLocked = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(data);
+                //apply this lock result to "synchronize between monitors" toggle button
+            }
         }
 
         private void Reset_Click(object sender, RoutedEventArgs e)

@@ -317,6 +317,324 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.Delete(DeserializehotkeySettingsObject_path1_);
         }
 
+        [Test]
+        public void TestInitGlobalSettingConfigFile()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var result = privateSettingsManagerObject.Invoke("InitGlobalSettingConfigFile");
+            var InitGlobalSettingParam = privateSettingsManagerObject.GetFieldOrProperty("_GlobalSettingParam");
+            Assert.That(InitGlobalSettingParam, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadGlobalSettings()
+        {
+            GlobalSettingParam ReadGlobalSettingsResult1;
+            string GlobalSettings_path1_ = "test_ReadGlobalSettingsPath.json";
+            string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
+            GlobalSettingParam globalSettingParam_ = new GlobalSettingParam();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", GlobalSettings_path1_);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSettingParam", globalSettingParam_);
+            if (!File.Exists(GlobalSettings_path1_))
+            {
+                ReadGlobalSettingsResult1 = SettingsManagerSAPlugin.ReadGlobalSettings().Result;  // strFilePath is not Exists GlobalSettings_path1_ GlobalSetting.json"
+                Assert.That(globalSettingParam_, Is.EqualTo(ReadGlobalSettingsResult1)); //run finnish will create path1_
+            }
+
+            if (File.Exists(GlobalSettings_path1_))
+            {
+                File.WriteAllText(GlobalSettings_path1_, jsonData);
+                var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadGlobalSettings().Result;
+                var globalSettingParam = (GlobalSettingParam)privateSettingsManagerObject.GetFieldOrProperty("_GlobalSettingParam");
+                Assert.That(globalSettingParam, Is.EqualTo(ReadColorPresetSettingsResult2));
+                File.Delete(GlobalSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestWriteGlobalSettings()
+        {
+            bool writeGlobalSettings_ = false;
+            bool writeGlobalSettings_2 = true;
+            GlobalSettingParam globalSettingParamNull;
+            globalSettingParamNull = null;
+            GlobalSettingParam globalSettingParam = new GlobalSettingParam()
+            {
+                GlobalSetting_About = new GlobalSetting_About(),
+                GlobalSetting_General = new GlobalSetting_General(),
+                GlobalSetting_WidgetSettings = new GlobalSetting_WidgetSettings()
+            };
+            string writeglobalSettings_path1_ = "test_WriteGlobalSettingsPath.json";
+            string jsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
+            File.WriteAllText(writeglobalSettings_path1_, jsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", writeglobalSettings_path1_);
+            if (globalSettingParamNull == null)
+            {
+                var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is not null
+                Assert.That(writeGlobalSettings_, Is.EqualTo(WriteGlobalSettingsResult1));
+            }
+
+            if (globalSettingParam != null)
+            {
+                var WriteGlobalSettingsResult2 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is null
+                Assert.That(writeGlobalSettings_2, Is.EqualTo(WriteGlobalSettingsResult2));
+                File.Delete(writeglobalSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestRunSerializeGlobalSettingObject()
+        {
+            string globalSettings_path1_ = "test_GlobalSettingsPath.json";
+            string GlobalSettingsjsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"\",\"DriverVersion\":\"0000\"}}";
+            File.WriteAllText(globalSettings_path1_, GlobalSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", globalSettings_path1_);
+            GlobalSettingParam globalSettingParam = new GlobalSettingParam()
+            {
+                GlobalSetting_About = new GlobalSetting_About(),
+                GlobalSetting_General = new GlobalSetting_General(),
+                GlobalSetting_WidgetSettings = new GlobalSetting_WidgetSettings()
+            };
+            var RunSerializeObjectresult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", globalSettingParam);
+            Assert.Greater(RunSerializeObjectresult.Length, 0);
+            File.Delete(globalSettings_path1_);
+        }
+
+        [Test]
+        public void TestRunGlobalSettinDeserializeObject()
+        {
+            string globalSettingsDes_path1_ = "test_GlobalSettingsPath.json";
+            string GlobalSettingsDesjsonData = "{\"GlobalSetting_General\":{\"Low_Battery_Level\":true,\"Keyboard_Lock_Key\":false,\"Webcam_WB7022_Presence_Detection_Sensor_Cover_State\":true,\"Display_MuteState\":true,\"Display_Color_Preset_and_Easy_Memory\":true},\"GlobalSetting_WidgetSettings\":{\"EnableQuickAccessWidget\":false,\"EnableQuickAccessWidget_Reminder\":false},\"GlobalSetting_About\":{\"SWVersion\":\"0000\",\"DriverVersion\":\"0000\"}}";
+            File.WriteAllText(globalSettingsDes_path1_, GlobalSettingsDesjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", globalSettingsDes_path1_);
+            GlobalSettingParam globalSettingParamDes = new GlobalSettingParam()
+            {
+                GlobalSetting_About = new GlobalSetting_About() { SWVersion = "0000", DriverVersion = "0000", },
+                GlobalSetting_General = new GlobalSetting_General() { Low_Battery_Level = true, Keyboard_Lock_Key = false, Webcam_WB7022_Presence_Detection_Sensor_Cover_State = true, Display_Color_Preset_and_Easy_Memory = true, Display_MuteState = true },
+                GlobalSetting_WidgetSettings = new GlobalSetting_WidgetSettings() { EnableQuickAccessWidget = false, EnableQuickAccessWidget_Reminder = false }
+            };
+            var RunGlobalSettinDeserializeObjectResult = (GlobalSettingParam)privateSettingsManagerObject.Invoke("RunGlobalSettinDeserializeObject", GlobalSettingsDesjsonData);
+            Assert.That(globalSettingParamDes.GlobalSetting_About.SWVersion, Is.EqualTo(RunGlobalSettinDeserializeObjectResult.GlobalSetting_About.SWVersion));
+            Assert.That(globalSettingParamDes.GlobalSetting_General.Low_Battery_Level, Is.EqualTo(RunGlobalSettinDeserializeObjectResult.GlobalSetting_General.Low_Battery_Level));
+            Assert.That(globalSettingParamDes.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State, Is.EqualTo(RunGlobalSettinDeserializeObjectResult.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State));
+            Assert.That(globalSettingParamDes.GlobalSetting_WidgetSettings.EnableQuickAccessWidget, Is.EqualTo(RunGlobalSettinDeserializeObjectResult.GlobalSetting_WidgetSettings.EnableQuickAccessWidget));
+            File.Delete(globalSettingsDes_path1_);
+        }
+
+        [Test]
+        public void TestInitPowerNapConfigFile()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var result = privateSettingsManagerObject.Invoke("InitPowerNapConfigFile");
+            var InitPowerNapSetting = privateSettingsManagerObject.GetFieldOrProperty("_powerNapSettings");
+            Assert.That(InitPowerNapSetting, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadPowerNapSettings()
+        {
+            string ReadPowerNapSettings_path1_ = "test_ReadPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            List<PowerNapSetting> powerNapSettings_ = new List<PowerNapSetting>();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", ReadPowerNapSettings_path1_);
+            privateSettingsManagerObject.SetFieldOrProperty("_present_powerNap_settings", powerNapSettings_);
+            if (!File.Exists(ReadPowerNapSettings_path1_))
+            {
+                var ReadPowerNapSettingsResult1 = SettingsManagerSAPlugin.ReadPowerNapSettings().Result;  // strFilePath is not Exists PowerNapSettings.json"
+                Assert.That(powerNapSettings_, Is.EqualTo(ReadPowerNapSettingsResult1)); //run finnish will create path
+            }
+
+            if (File.Exists(ReadPowerNapSettings_path1_))
+            {
+                File.WriteAllText(ReadPowerNapSettings_path1_, PowerNapSettingsjsonData);
+                var ReadPowerNapSettingsResult2 = SettingsManagerSAPlugin.ReadPowerNapSettings().Result;
+                var powerNap_settings = (List<PowerNapSetting>)privateSettingsManagerObject.GetFieldOrProperty("_present_powerNap_settings");
+                Assert.That(powerNap_settings, Is.EqualTo(ReadPowerNapSettingsResult2));
+                Assert.Greater(ReadPowerNapSettingsResult2.Count, 0);
+                File.Delete(ReadPowerNapSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestWritePowerNapSettings()
+        {
+            bool WritePowerNapSettings_ = false;
+            bool WritePowerNapSettings_succeed = true;
+            List<PowerNapSetting> powerNapSettingsNull;
+            powerNapSettingsNull = null;
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string WritePowerNapSettings_path1_ = "test_WritePowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(WritePowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", WritePowerNapSettings_path1_);
+            if (powerNapSettingsNull == null)
+            {
+                var WritePowerNapSettingsResult1 = SettingsManagerSAPlugin.WritePowerNapSettings(powerNapSettingsNull).Result;
+                Assert.That(WritePowerNapSettings_, Is.EqualTo(WritePowerNapSettingsResult1));
+            }
+
+            if (powerNapSettingsConfig != null)
+            {
+                var WritePowerNapSettingsResult2 = SettingsManagerSAPlugin.WritePowerNapSettings(powerNapSettingsConfig).Result;
+                Assert.That(WritePowerNapSettings_succeed, Is.EqualTo(WritePowerNapSettingsResult2));
+                File.Delete(WritePowerNapSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestRunPowerNapDeserializeObject()
+        {
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string SerializePowerNapSettings_path1_ = "test_SerializePowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(SerializePowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", SerializePowerNapSettings_path1_);
+            var RunDeserialObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", powerNapSettingsConfig);
+            Assert.Greater(RunDeserialObjectResult.Length, 0);
+            File.Delete(SerializePowerNapSettings_path1_);
+        }
+
+        [Test]
+        public void TestRunPowerNapSettingDeserializeObject()
+        {
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string DeserialPowerNapSettings_path1_ = "test_DeserialPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(DeserialPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", DeserialPowerNapSettings_path1_);
+            var RunPowerNapDeserializeObjectResult = (List<PowerNapSetting>)privateSettingsManagerObject.Invoke("RunPowerNapDeserializeObject", PowerNapSettingsjsonData);
+            Assert.Greater(RunPowerNapDeserializeObjectResult.Count, 0);
+            Assert.That(powerNapSettingsConfig[0].ModelName, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].ModelName));
+            Assert.That(powerNapSettingsConfig[0].SerialNumber, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].SerialNumber));
+            Assert.That(powerNapSettingsConfig[0].Status, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].Status));
+            File.Delete(DeserialPowerNapSettings_path1_);
+        }
+
+        [Test]
+        public void TestImportPowerNapSettings()
+        {
+            //string ImportPowerNapSettings_path = "C:\\Users\\win1020231116\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager";
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string ImportPowerNapSettings_path1_ = "test_ImportPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(ImportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_present_powerNap_settings", powerNapSettingsConfig);
+            var ImportPowerNapSettingsResult1 = SettingsManagerSAPlugin.ImportPowerNapSettings(ImportPowerNapSettings_path1_).Result;
+            Assert.Greater(ImportPowerNapSettingsResult1.Count, 0);
+            File.Delete(ImportPowerNapSettings_path1_);
+        }
+
+        [Test]
+        public void TestExportPowerNapSettings()
+        {
+            bool ExportPowerNapSettings_ = false;
+            bool ExportPowerNapSettings_succeed = true;
+            List<PowerNapSetting> powerNapSettingsNull;
+            powerNapSettingsNull = null;
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string ExportPowerNapSettings_path1_ = "test_ExportPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(ExportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", ExportPowerNapSettings_path1_);
+            if (powerNapSettingsNull == null)
+            {
+                var ExportPowerNapSettings_Result1 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettingsNull, ExportPowerNapSettings_path1_).Result;
+                Assert.That(ExportPowerNapSettings_, Is.EqualTo(ExportPowerNapSettings_Result1));
+            }
+
+            if (powerNapSettingsConfig != null)
+            {
+                var ExportPowerNapSettings_Result2 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettingsConfig, ExportPowerNapSettings_path1_).Result;
+                Assert.That(ExportPowerNapSettings_succeed, Is.EqualTo(ExportPowerNapSettings_Result2));
+                File.Delete(ExportPowerNapSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestReadEasyArrangeSettings()
+        {
+            string monitorModel = "TestU2724";
+            string serialNumber = "123456789";
+            EAMonitorSettings eAMonitorSettings = new EAMonitorSettings();
+            eAMonitorSettings = null;
+            var ReadEasyArrangeSettingsResult = SettingsManagerSAPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber).Result;
+            Assert.That(eAMonitorSettings, Is.EqualTo(ReadEasyArrangeSettingsResult));
+        }
+
+        [Test]
+        public void TestWriteEasyArrangeSettings()
+        {
+            EAMonitorSettings eAMonitorSettings1 = new EAMonitorSettings()
+            {
+                CustomList = new List<SplitJson>(),
+                IsOnlyAllowWhenShiftKeyPressed = false,
+                IsSpanAcrossMultiMonitors = false,
+                IsWidthoutGap = true,
+                RecentList = new List<SplitJson>(),
+                SelectedSplit = new SplitJson()
+            };
+            string WriteEasyArrangeSettings_Success = "OK";
+            var WriteEasyArrangeSettingsResult = SettingsManagerSAPlugin.WriteEasyArrangeSettings(eAMonitorSettings1).Result;
+            Assert.That(WriteEasyArrangeSettings_Success, Is.EqualTo(WriteEasyArrangeSettingsResult));
+        }
+
+        [Test]
+        public void TestInitializeSysSettingsPlugin()
+        {
+            Mock<ISettingsManagerSA> SysSettingsPlugin_ = new Mock<ISettingsManagerSA>();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var SysSettingsPlugin_Obj = SysSettingsPlugin_.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPlugin_Obj);
+            privateSettingsManagerObject.Invoke("InitializeSysSettingsPlugin");
+            var result = privateSettingsManagerObject.GetFieldOrProperty("_SysSettingsPlugin");
+            Assert.That(SysSettingsPlugin_Obj, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadRegistryData()
+        {
+            RegistryHive hive = RegistryHive.CurrentUser;
+            string keyPath = "TestReadRegistry_Path";
+            string keyName = "TestReadRegistry_Name";
+            object ReadRegistryDataObj;
+            ReadRegistryDataObj = new object();
+            Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+            SysSettingsPlugin.Setup(x => x.ReadRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(ReadRegistryDataObj));
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var SysSettingsPluginObj = SysSettingsPlugin.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
+            if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPlugin != null)
+                {
+                    var ReadRegistryData_Result = SettingsManagerSAPlugin.ReadRegistryData(hive, keyPath, keyName).Result;  //SysSettingsPlugin not null;
+                    Assert.That(ReadRegistryDataObj, Is.EqualTo(ReadRegistryData_Result));
+                }
+            }
+
+            var SysSettingsPluginNull = SysSettingsPlugin;
+            SysSettingsPluginNull = null;
+            RegistryHive hive2 = RegistryHive.LocalMachine;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginNull);
+            if (hive2 == RegistryHive.LocalMachine || hive2 == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPluginNull == null)
+                {
+                    var ReadRegistryData_Result2 = SettingsManagerSAPlugin.ReadRegistryData(hive2, keyPath, keyName);  //SysSettingsPlugin null;
+                    Assert.IsNull(ReadRegistryData_Result2);
+                }
+            }
+        }
 
         [OneTimeTearDown]
         public void TearDown()

@@ -81,6 +81,7 @@
     <None Remove="Resources\Images\Headset_Transparency.png" />
     <None Remove="Resources\Images\Headset_whitedot.png" />
     <None Remove="Resources\Images\info.png" />
+    <None Remove="Resources\Images\info18.png" />
     <None Remove="Resources\Images\KB3121W.png" />
     <None Remove="Resources\Images\KB500.png" />
     <None Remove="Resources\Images\KB500S.png" />
@@ -148,6 +149,7 @@
     <None Remove="Resources\Images\MultiDevice.png" />
     <None Remove="Resources\Images\P2424HEB.png" />
     <None Remove="Resources\Images\PairTile.png" />
+    <None Remove="Resources\Images\Pause.png" />
     <None Remove="Resources\Images\PButton11.png" />
     <None Remove="Resources\Images\PButton12.png" />
     <None Remove="Resources\Images\PButton13.png" />
@@ -182,6 +184,7 @@
     <None Remove="Resources\Images\PenC6.png" />
     <None Remove="Resources\Images\PencilMark.png" />
     <None Remove="Resources\Images\PenRadialCenter.png" />
+    <None Remove="Resources\Images\Play.png" />
     <None Remove="Resources\Images\PN5122W.png" />
     <None Remove="Resources\Images\PN7522W.png" />
     <None Remove="Resources\Images\PN7522WS.png" />
@@ -195,6 +198,7 @@
     <None Remove="Resources\Images\R2.png" />
     <None Remove="Resources\Images\R3.png" />
     <None Remove="Resources\Images\RedCircle.png" />
+    <None Remove="Resources\Images\RedSquare.png" />
     <None Remove="Resources\Images\Right.png" />
     <None Remove="Resources\Images\SB3022.png" />
     <None Remove="Resources\Images\SB522A.png" />
@@ -234,6 +238,7 @@
     <None Remove="Resources\Images\TopButton4.png" />
     <None Remove="Resources\Images\TopButton5.png" />
     <None Remove="Resources\Images\TopButton6.png" />
+    <None Remove="Resources\Images\TrashCan.png" />
     <None Remove="Resources\Images\Up.png" />
     <None Remove="Resources\Images\Usb24.png" />
     <None Remove="Resources\Images\Video.png" />
@@ -332,7 +337,11 @@
     <Resource Include="Resources\Images\HeadsetModel_7024-mall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\info18.png" />
+    <Resource Include="Resources\Images\Pause.png" />
+    <Resource Include="Resources\Images\Play.png" />
     <Resource Include="Resources\Images\RedCircle.png" />
+    <Resource Include="Resources\Images\RedSquare.png" />
     <Resource Include="Resources\Images\SD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -438,6 +447,7 @@
     <Resource Include="Resources\Images\SB522A.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\TrashCan.png" />
     <Resource Include="Resources\Images\WB5023.png" />
     <Resource Include="Resources\Images\WD25.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

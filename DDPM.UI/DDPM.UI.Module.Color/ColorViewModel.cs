@@ -672,6 +672,11 @@ namespace DDPM.UI.Module.Color
                 }
                 */
                
+                //Lock/unlock mask and tabstop init here
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
+                //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
+                //Read user default lock value, these values are synced from IT lock event          
+                Trace.WriteLine($"[SettingsPage] Color right page(Lock) : {data.LockSettings.Lock_Display_ColorPreset}"); 
             }
             catch (System.Exception)
             {
