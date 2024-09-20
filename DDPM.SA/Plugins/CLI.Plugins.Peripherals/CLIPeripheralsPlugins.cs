@@ -219,7 +219,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
             return (int)CLI_ExitCode.success;
         }
-
+        
         private int SetPeripheralProperty()
         {
             SetResults.Clear();
@@ -472,6 +472,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                     RunTaskA(val);
                     return (int)CLI_ExitCode.success;
                 case "ANCMODE":
+                    if (val == 1)
+                        data.LockSettings.Lock_Audio_ancMode = false;
+                    else
+                        data.LockSettings.Lock_Audio_ancMode = true;
+                    _devMgr.SetAppConfigData(data);
                     taskA = _devMgr.SetAncMode;
                     RunTaskA(val);
                     return (int)CLI_ExitCode.success;
@@ -669,9 +674,12 @@ namespace DDPM.CLI.Plugins.Peripherals
 
         private void RunTaskA(int val)
         {
+            DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
             SetResults.ForEach(x =>
             {
                 x.Value = _commandLineInput.Options[0].Option_Value;
+                if (_commandLineInput.TargetFeature.ToUpper().Equals("ANCMODE"))
+                    x.Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
                 if (x.Result == "")
                 {
                     var result = RunAsyncTimeout(taskA(val, Guid.Parse(x.Guid))).Result;

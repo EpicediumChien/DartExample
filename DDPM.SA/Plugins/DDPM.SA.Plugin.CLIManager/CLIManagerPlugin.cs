@@ -346,6 +346,10 @@ namespace DDPM.SA.Plugin.CLIManager
                     return rst;
                     //break;
                 case "EASYARRANGELAYOUT":        //EasyArrangeLayout         DDPMW-1350
+                    if (commandLineInput.PluginsType.Equals("DISPLAY"))
+                        rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "INAPPCOLORPRESET":         //InAppColorPreset          DDPMW-1351/1352
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
@@ -385,6 +389,10 @@ namespace DDPM.SA.Plugin.CLIManager
                 case "PRESENCEDETECTION":        //PresenceDetection         DDPMW-1747
                     break;
                 case "ANCMODE":                  //ancMode                   DDPMW-1853
+                    if (commandLineInput.PluginsType.Equals("AUDIO"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "MICNOISECANCELLATION":     //micNoiseCancellation      DDPMW-1855
                     break;

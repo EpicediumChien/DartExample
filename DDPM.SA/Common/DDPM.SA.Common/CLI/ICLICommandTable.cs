@@ -43,7 +43,7 @@ namespace DDPM.SA.Common
             "RESOLUTIONREFRESHRATE",    //ResolutionRefreshRate     DDPMW-1344
             "USBCPRIORITIZATION",       //USBCPrioritization        DDPMW-1345
             "ACTIVEINPUTSOURCE",        //ActiveInputSource         DDPMW-1346
-            "INAPPUSBKVM",              //InAppUSBKVM                    DDPMW-1347
+            "INAPPUSBKVM",              //InAppUSBKVM               DDPMW-1347
             "INAPPNETWORKKVM",          //InAppNetworkKVM           DDPMW-1599
             "EASYARRANGELAYOUT",        //EasyArrangeLayout         DDPMW-1350
             "INAPPCOLORPRESET",         //InAppColorPreset          DDPMW-1351/1352

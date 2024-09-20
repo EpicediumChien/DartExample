@@ -10333,6 +10333,8 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
+            DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
+
             if (commandLineInput.Command == "GET")
             {
                 writelog("Easyarrange get entry");
@@ -10374,7 +10376,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax.";
                     }
-
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -10402,10 +10404,17 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
                     if (commandLineInput.Options[0].Option_Value == "ENABLE")
+                    {
                         elable_ea = true;
+                        ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = false;
+                    } 
                     else
+                    {
                         elable_ea = false;
+                        ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout = true;
+                    }
 
+                    await devMgr.SetAppConfigData(ddpmSettings);
                     output_ea = devMgr.SetEAFunctionEnabled(elable_ea).Result;
                     if (output_ea != null)
                         retcode = true;
@@ -10424,7 +10433,7 @@ namespace DDPM.CLI.Plugins.Display
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax.";
                     }
-
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
