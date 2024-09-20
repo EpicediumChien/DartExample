@@ -528,17 +528,17 @@
         }
       },
       "System.ValueTuple/4.5.0": {},
-      "WinCopies.Util/3.21.0": {
+      "WinCopies.Util/2.19.0": {
         "runtime": {
           "lib/net7.0/WinCopies.Util.dll": {
-            "assemblyVersion": "3.21.0.0",
-            "fileVersion": "3.21.0.0"
+            "assemblyVersion": "2.19.0.0",
+            "fileVersion": "2.19.0.0"
           }
         }
       },
       "WinCopies.WindowsAPICodePack/2.12.0": {
         "dependencies": {
-          "WinCopies.Util": "3.21.0",
+          "WinCopies.Util": "2.19.0",
           "WinCopies.WindowsAPICodePack.COMNative": "2.12.0"
         },
         "runtime": {
@@ -550,7 +550,7 @@
       },
       "WinCopies.WindowsAPICodePack.COMNative/2.12.0": {
         "dependencies": {
-          "WinCopies.Util": "3.21.0",
+          "WinCopies.Util": "2.19.0",
           "WinCopies.WindowsAPICodePack.Win32Native": "2.12.0"
         },
         "runtime": {
@@ -570,7 +570,7 @@
       },
       "WinCopies.WindowsAPICodePack.Shell/2.12.0.2": {
         "dependencies": {
-          "WinCopies.Util": "3.21.0",
+          "WinCopies.Util": "2.19.0",
           "WinCopies.WindowsAPICodePack": "2.12.0"
         },
         "runtime": {
@@ -582,7 +582,7 @@
       },
       "WinCopies.WindowsAPICodePack.Win32Native/2.12.0": {
         "dependencies": {
-          "WinCopies.Util": "3.21.0",
+          "WinCopies.Util": "2.19.0",
           "WinCopies.WindowsAPICodePack.Consts": "2.12.0"
         },
         "runtime": {
@@ -611,8 +611,7 @@
           "Dell.TechHub.Sdk.Common_NET": "3.0.0.606-2e2db9-beta",
           "DellClientFramework": "6.4.5.1",
           "Microsoft-WindowsAPICodePack-Shell": "1.1.5",
-          "VcpCore.Interfaces": "2.0.0.5",
-          "WinCopies.Util": "3.21.0"
+          "VcpCore.Interfaces": "2.0.0.5"
         },
         "runtime": {
           "DDPM.SA.Common.dll": {}
@@ -659,6 +658,38 @@
           "DPeMPublic.Common.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/8.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging/8.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Logging.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options/8.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Options.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "Microsoft.Extensions.Primitives/8.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
           }
         }
       }
@@ -1039,12 +1070,12 @@
       "path": "system.valuetuple/4.5.0",
       "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
     },
-    "WinCopies.Util/3.21.0": {
+    "WinCopies.Util/2.19.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0p5eVa0wvtJOSvMp6DElD7O9pgXK5OPm4jY0Y0hCUQe/PFmz4FDOsGQxHu7E1U7gzDRMbmz8o0xNyv6/qJkiWQ==",
-      "path": "wincopies.util/3.21.0",
-      "hashPath": "wincopies.util.3.21.0.nupkg.sha512"
+      "sha512": "sha512-izmjO4SH15Qlxb87FJdMOWu6V8mCETRp93tJnq77dSptAvLMio0WT2nS30KimCiQ3z4chXzGcUQSIak8jxGiBQ==",
+      "path": "wincopies.util/2.19.0",
+      "hashPath": "wincopies.util.2.19.0.nupkg.sha512"
     },
     "WinCopies.WindowsAPICodePack/2.12.0": {
       "type": "package",
@@ -1117,6 +1148,26 @@
       "sha512": ""
     },
     "DPeMPublic.Common/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Logging.Abstractions/8.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Logging/8.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Options/8.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Primitives/8.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

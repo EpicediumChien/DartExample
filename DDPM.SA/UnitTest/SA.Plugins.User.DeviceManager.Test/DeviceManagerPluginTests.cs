@@ -1,11 +1,14 @@
 ﻿using DDPM.ColorApp;
 using DDPM.MonitorBorker;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.SA.Plugins.PeripheralsPlugin;
 using DDPM.SA.Plugins.User.DeviceManager;
+using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UnitTestShared.Tests;
+using Microsoft.WindowsAPICodePack.PortableDevices.PropertySystem;
 using Moq;
 using System.Security.Cryptography;
 using System.Windows.Input;
@@ -1044,6 +1047,567 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.IsNotNull(deviceMangerPlugin.SetTouchScrollSensitivityLevel(2, Guid.NewGuid()), $"SetTouchScrollSensitivityLevel() returns null");
         }
 
+        [Test]
+        public void TestUnPair()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.UnPair(Guid.NewGuid()), $"UnPair() returns null");
+        }
+
+        [Test]
+        public void TestStartPairing()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.StartPairing(Guid.NewGuid()), $"StartPairing() returns null");
+        }
+
+        [Test]
+        public void TestStopPairing()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.StopPairing(Guid.NewGuid()), $"StopPairing() returns null");
+        }
+
+        [Test]
+        public void TestSetWiredAudioIMicNSEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetWiredAudioIMicNSEnable(true,Guid.NewGuid()), $"SetWiredAudioIMicNSEnable() returns null");
+        }
+
+        [Test]
+        public void TestSetWiredAudioMicMuteSoundEnable()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetWiredAudioMicMuteSoundEnable(true,Guid.NewGuid()), $"SetWiredAudioMicMuteSoundEnable() returns null");
+        }
+
+        [Test]
+        public void TestSetWiredAudioVolumeAdjustmentTone()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetWiredAudioVolumeAdjustmentTone(2, Guid.NewGuid()), $"SetWiredAudioVolumeAdjustmentTone() returns null");
+        }
+
+        [Test]
+        public void TestSetAncMode()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetAncMode(2, Guid.NewGuid()), $"SetAncMode() returns null");
+        }
+
+        [Test]
+        public void TestSetAncGain()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetAncGain(2, Guid.NewGuid()), $"SetAncGain() returns null");
+        }
+
+        [Test]
+        public void TestSetSelectedPreset()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetSelectedPreset(2, Guid.NewGuid()), $"SetSelectedPreset() returns null");
+        }
+
+
+        [Test]
+        public void TestSetBandsGain()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetBandsGain(2, Guid.NewGuid(),"A"), $"SetBandsGain() returns null");
+        }
+
+        [Test]
+        public void TestSetMicNoiseCancellation()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetMicNoiseCancellation(true, Guid.NewGuid()), $"SetMicNoiseCancellation() returns null");
+        }
+
+        [Test]
+        public void TestSetSidetone()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetSidetone(true, Guid.NewGuid()), $"SetSidetone() returns null");
+        }
+
+        [Test]
+        public void TestSetSidetoneLevel()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetSidetoneLevel(2, Guid.NewGuid()), $"SetSidetoneLevel() returns null");
+        }
+
+        [Test]
+        public void TestSetWearDetection()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetWearDetection(2, Guid.NewGuid()), $"SetWearDetection() returns null");
+        }
+
+        [Test]
+        public void TestSetWearDetectionForCLI()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetWearDetectionForCLI(2, Guid.NewGuid()), $"SetWearDetectionForCLI() returns null");
+        }
+
+        [Test]
+        public void TestSetBusyLight()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetBusyLight(true, Guid.NewGuid()), $"SetBusyLight() returns null");
+        }
+
+        [Test]
+        public void TestSetVoiceGuidance()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetVoiceGuidance(true, Guid.NewGuid()), $"SetVoiceGuidance() returns null");
+        }
+
+        [Test]
+        public void TestSetMicNCIncoming()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetMicNCIncoming(true, Guid.NewGuid()), $"SetMicNCIncoming() returns null");
+        }
+
+        [Test]
+        public void TestSetIsMicEnumerationOn()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetIsMicEnumerationOn(true, Guid.NewGuid()), $"SetIsMicEnumerationOn() returns null");
+        }
+
+        [Test]
+        public void TestSetSideTopSwitchSinglePressSetting3()
+        {
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetSideTopSwitchSinglePressSetting3(new byte[]{ 0x11,0x12}, Guid.NewGuid()), $"SetSideTopSwitchSinglePressSetting3() returns null");
+        }
+
+
+        [Test]
+        public void TestOnUIUpdateNotify()
+        {
+            try
+            {
+                deviceMangerPlugin.OnUIUpdateNotify(new UpdateUINotify());
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestGetDisplayPropertiesInfo()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetDisplayPropertiesInfo(new MonitorInfo()), $"GetDisplayPropertiesInfo() returns null");
+        }
+
+        [Test]
+        public void TestSetDisplayPropertiest()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetDisplayPropertiest(new MonitorInfo(),new DDPM.SA.Common.Properties(),new DisplayOrientation()), $"SetDisplayPropertiest() returns null");
+        }
+
+        [Test]
+        public void TestSetResolutions()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetResolutions(new MonitorInfo(), new DDPM.SA.Common.Properties()), $"SetResolutions() returns null");
+        }
+
+        [Test]
+        public void TestSetOrientation()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetOrientation(new MonitorInfo(), new DisplayOrientation()), $"SetOrientation() returns null");
+        }
+
+        [Test]
+        public void TestCallWindowsDisplaySetting()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.CallWindowsDisplaySetting(), $"CallWindowsDisplaySetting() returns null");
+        }
+
+        [Test]
+        public void TestGetHDRStatus()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetHDRStatus(new MonitorInfo()), $"GetHDRStatus() returns null");
+        }
+
+        [Test]
+        public void TestSetHDRStatus()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetHDRStatus(new MonitorInfo(), true), $"SetHDRStatus() returns null");
+        }
+
+        [Test]
+        public void TestSetUSBCPrioritizationType()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetUSBCPrioritizationType(new MonitorInfo(), new USBCPrioritizationType()), $"SetUSBCPrioritizationType() returns null");
+        }
+
+        [Test]
+        public void TestLockRotate()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.LockRotate(true), $"LockRotate() returns null");
+        }
+
+        [Test]
+        public void TestGetLockRotateStatus()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetLockRotateStatus(), $"GetLockRotateStatus() returns null");
+        }
+
+        [Test]
+        public void TestGetOSDOrientation()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetOSDOrientation(new MonitorInfo()), $"GetOSDOrientation() returns null");
+        }
+
+        [Test]
+        public void TestSetOSDOrientation()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetOSDOrientation(new MonitorInfo(),"A"), $"SetOSDOrientation() returns null");
+        }
+
+        [Test]
+        public void TestReloadAppConfigData()
+        {
+            // Setup
+            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.ReloadAppConfigData(false), $"ReloadAppConfigData() returns null");
+        }
+
+        [Test]
+        public void TestSetAppConfigData()
+        {
+            // Setup
+            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetAppConfigData(new DDPMSettings(new DDPMAppSettings(), new DDPMUserSettings(), new DDPMITConfig())), $"SetAppConfigData() returns null");
+        }
+
+        [Test]
+        public void TestReadRegistryData()
+        {
+            // Setup
+            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM", "GUID"), $"ReadRegistryData() returns null");
+        }
+
+        [Test]
+        public void TestWriteRegistryData()
+        {
+            // Setup
+            var _SettingsPluginMock = new Mock<ISettingsManagerDev>();
+            privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM", "GUID","A"), $"WriteRegistryData() returns null");
+        }
+
+        [Test]
+        public void TestGetPipPbpCapabilitiesWords()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetPipPbpCapabilitiesWords(new MonitorInfo()), $"GetPipPbpCapabilitiesWords() returns null");
+        }
+
+        [Test]
+        public void TestSetPipModeOff()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetPipModeOff(new MonitorInfo()), $"SetPipModeOff() returns null");
+        }
+
+        [Test]
+        public void TestSetPipModeSmall()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetPipModeSmall(new MonitorInfo()), $"SetPipModeSmall() returns null");
+        }
+
+        [Test]
+        public void TestSetPipModeLarge()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetPipModeLarge(new MonitorInfo()), $"SetPipModeLarge() returns null");
+        }
+
+        [Test]
+        public void TestTogglePipSize()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.TogglePipSize(new MonitorInfo()), $"TogglePipSize() returns null");
+        }
+
+
+        [Test]
+        public void TestTogglePipPosition()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.TogglePipPosition(new MonitorInfo()), $"TogglePipPosition() returns null");
+        }
+
+        [Test]
+        public void TestSetPbpMode()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetPbpMode(new MonitorInfo(), (UInt16)1), $"SetPbpMode() returns null");
+        }
+
+        [Test]
+        public void TestVideoSwap()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.VideoSwap(new MonitorInfo(), (UInt16)1, (UInt16)2), $"VideoSwap() returns null");
+        }
+
+        [Test]
+        public void TestGetPxpMode()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetPxpMode(new MonitorInfo()), $"GetPxpMode() returns null");
+        }
+
+        [Test]
+        public void TestGetSubInputList()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetSubInputList(new MonitorInfo()), $"GetSubInputList() returns null");
+        }
+
+        [Test]
+        public void TestGetSubInputs()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetSubInputs(new MonitorInfo()), $"GetSubInputs() returns null");
+        }
+
+        [Test]
+        public void TestSetSubInputs()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.SetSubInputs(new MonitorInfo(), new InputSourceObj(), new InputSourceObj(),new InputSourceObj()), $"SetSubInputs() returns null");
+        }
+
+
+        [Test]
+        public void TestUsbSwitch1()
+        {
+            // Setup
+            var _DisplayManagerPluginMock = new Mock<IDisplayService>();
+            privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.UsbSwitch1(new MonitorInfo(), 0), $"UsbSwitch1() returns null");
+        }
+
+
+        
     }
 }
 
