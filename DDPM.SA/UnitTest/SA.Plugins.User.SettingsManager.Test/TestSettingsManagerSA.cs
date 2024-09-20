@@ -518,6 +518,124 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.Delete(DeserialPowerNapSettings_path1_);
         }
 
+        [Test]
+        public void TestImportPowerNapSettings()
+        {
+            //string ImportPowerNapSettings_path = "C:\\Users\\win1020231116\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager";
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string ImportPowerNapSettings_path1_ = "test_ImportPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(ImportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_present_powerNap_settings", powerNapSettingsConfig);
+            var ImportPowerNapSettingsResult1 = SettingsManagerSAPlugin.ImportPowerNapSettings(ImportPowerNapSettings_path1_).Result;
+            Assert.Greater(ImportPowerNapSettingsResult1.Count, 0);
+            File.Delete(ImportPowerNapSettings_path1_);
+        }
+
+        [Test]
+        public void TestExportPowerNapSettings()
+        {
+            bool ExportPowerNapSettings_ = false;
+            bool ExportPowerNapSettings_succeed = true;
+            List<PowerNapSetting> powerNapSettingsNull;
+            powerNapSettingsNull = null;
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string ExportPowerNapSettings_path1_ = "test_ExportPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(ExportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", ExportPowerNapSettings_path1_);
+            if (powerNapSettingsNull == null)
+            {
+                var ExportPowerNapSettings_Result1 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettingsNull, ExportPowerNapSettings_path1_).Result;
+                Assert.That(ExportPowerNapSettings_, Is.EqualTo(ExportPowerNapSettings_Result1));
+            }
+
+            if (powerNapSettingsConfig != null)
+            {
+                var ExportPowerNapSettings_Result2 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettingsConfig, ExportPowerNapSettings_path1_).Result;
+                Assert.That(ExportPowerNapSettings_succeed, Is.EqualTo(ExportPowerNapSettings_Result2));
+                File.Delete(ExportPowerNapSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestReadEasyArrangeSettings()
+        {
+            string monitorModel = "TestU2724";
+            string serialNumber = "123456789";
+            EAMonitorSettings eAMonitorSettings = new EAMonitorSettings();
+            eAMonitorSettings = null;
+            var ReadEasyArrangeSettingsResult = SettingsManagerSAPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber).Result;
+            Assert.That(eAMonitorSettings, Is.EqualTo(ReadEasyArrangeSettingsResult));
+        }
+
+        [Test]
+        public void TestWriteEasyArrangeSettings()
+        {
+            EAMonitorSettings eAMonitorSettings1 = new EAMonitorSettings()
+            {
+                CustomList = new List<SplitJson>(),
+                IsOnlyAllowWhenShiftKeyPressed = false,
+                IsSpanAcrossMultiMonitors = false,
+                IsWidthoutGap = true,
+                RecentList = new List<SplitJson>(),
+                SelectedSplit = new SplitJson()
+            };
+            string WriteEasyArrangeSettings_Success = "OK";
+            var WriteEasyArrangeSettingsResult = SettingsManagerSAPlugin.WriteEasyArrangeSettings(eAMonitorSettings1).Result;
+            Assert.That(WriteEasyArrangeSettings_Success, Is.EqualTo(WriteEasyArrangeSettingsResult));
+        }
+
+        [Test]
+        public void TestInitializeSysSettingsPlugin()
+        {
+            Mock<ISettingsManagerSA> SysSettingsPlugin_ = new Mock<ISettingsManagerSA>();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var SysSettingsPlugin_Obj = SysSettingsPlugin_.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPlugin_Obj);
+            privateSettingsManagerObject.Invoke("InitializeSysSettingsPlugin");
+            var result = privateSettingsManagerObject.GetFieldOrProperty("_SysSettingsPlugin");
+            Assert.That(SysSettingsPlugin_Obj, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadRegistryData()
+        {
+            RegistryHive hive = RegistryHive.CurrentUser;
+            string keyPath = "TestReadRegistry_Path";
+            string keyName = "TestReadRegistry_Name";
+            object ReadRegistryDataObj;
+            ReadRegistryDataObj = new object();
+            Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+            SysSettingsPlugin.Setup(x => x.ReadRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(ReadRegistryDataObj));
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var SysSettingsPluginObj = SysSettingsPlugin.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
+            if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPlugin != null)
+                {
+                    var ReadRegistryData_Result = SettingsManagerSAPlugin.ReadRegistryData(hive, keyPath, keyName).Result;  //SysSettingsPlugin not null;
+                    Assert.That(ReadRegistryDataObj, Is.EqualTo(ReadRegistryData_Result));
+                }
+            }
+
+            var SysSettingsPluginNull = SysSettingsPlugin;
+            SysSettingsPluginNull = null;
+            RegistryHive hive2 = RegistryHive.LocalMachine;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginNull);
+            if (hive2 == RegistryHive.LocalMachine || hive2 == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPluginNull == null)
+                {
+                    var ReadRegistryData_Result2 = SettingsManagerSAPlugin.ReadRegistryData(hive2, keyPath, keyName);  //SysSettingsPlugin null;
+                    Assert.IsNull(ReadRegistryData_Result2);
+                }
+            }
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {
