@@ -154,11 +154,6 @@ namespace NetworkKVM.Plugins
                                 ResponseSupportedMonitor();
                                 MonitorPlug();
                             }
-                            else
-                            {
-                                Disconnect();
-                                CreateNamedPipe();
-                            }
                         }
                     }
                     _AllInfoMonitors.AddRange(monitorInfos);
@@ -292,8 +287,8 @@ namespace NetworkKVM.Plugins
                     _COMMAND.cid = cid;
                     _COMMAND.Checksum = _COMMAND.CalculateChecksum();
                     //_COMMAND.type = "ON_NKVM";
-                    WriteAsync(_COMMAND.ToJson()).Wait();
                     NKVMState = true;
+                    WriteAsync(_COMMAND.ToJson()).Wait();
                 }
             }
             return Task.CompletedTask;
@@ -311,8 +306,8 @@ namespace NetworkKVM.Plugins
                     _COMMAND.cid = cid;
                     _COMMAND.Checksum = _COMMAND.CalculateChecksum();
                     //_COMMAND.type = "OFF_NKVM";
-                    WriteAsync(_COMMAND.ToJson()).Wait();
                     NKVMState = false;
+                    WriteAsync(_COMMAND.ToJson()).Wait();
                 }
             }
             return Task.CompletedTask;
@@ -592,7 +587,7 @@ namespace NetworkKVM.Plugins
                         set_HOTKEY_RESPONSE.UpdateChecksum();
                         if (set_HOTKEY_RESPONSE.ToJson() != string.Empty)
                         {
-                            _ = WriteAsync(set_HOTKEY_RESPONSE.ToJson());
+                            WriteAsync(set_HOTKEY_RESPONSE.ToJson()).Wait();
                         }
                         return Task.CompletedTask;
                     }
@@ -614,7 +609,7 @@ namespace NetworkKVM.Plugins
             set_HOTKEY_RESPONSE.UpdateChecksum();
             if (set_HOTKEY_RESPONSE.ToJson() != string.Empty)
             {
-                _ = WriteAsync(set_HOTKEY_RESPONSE.ToJson());
+                WriteAsync(set_HOTKEY_RESPONSE.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -1078,20 +1073,20 @@ namespace NetworkKVM.Plugins
             _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
             await pipeServer.WaitForConnectionAsync(cancellationTokenSource.Token);
             _logs.DebugMsg("[NetworkKVM] Client Connect....");
-            string info;
-            if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
-            {
+            //string info;
+            //if (NPipeSecurity.NamedPipeClientSecurity(pipeServer, out info))
+            //{
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
                 _SupportedMonitors = GetSupportedNKVM().Result;
-                ResponseSupportedMonitor();
-                await OnNKVM();
-            }
-            else
-            {
-                _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
-                Disconnect();
-                CreateNamedPipe();
-            }
+                ResponseSupportedMonitor().Wait();
+                OnNKVM().Wait();
+            //}
+            //else
+            //{
+            //    _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
+            //    Disconnect();
+            //    CreateNamedPipe();
+            //}
         }
 
         private void Stop()
@@ -1284,7 +1279,7 @@ namespace NetworkKVM.Plugins
                         set_VCP_R.UpdateChecksum();
                         if (set_VCP_R.ToJson() != string.Empty)
                         {
-                            _ = WriteAsync(set_VCP_R.ToJson());
+                            WriteAsync(set_VCP_R.ToJson()).Wait();
                         }
                         return Task.CompletedTask;
                     }
@@ -1309,7 +1304,7 @@ namespace NetworkKVM.Plugins
             set_VCP_R.UpdateChecksum();
             if (set_VCP_R.ToJson() != string.Empty)
             {
-                _ = WriteAsync(set_VCP_R.ToJson());
+                WriteAsync(set_VCP_R.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -1345,7 +1340,7 @@ namespace NetworkKVM.Plugins
                             get_VCP_R.UpdateChecksum();
                             if (get_VCP_R.ToJson() != string.Empty)
                             {
-                                _ = WriteAsync(get_VCP_R.ToJson());
+                                WriteAsync(get_VCP_R.ToJson()).Wait();
                             }
                             return Task.CompletedTask;
                         }
@@ -1357,7 +1352,7 @@ namespace NetworkKVM.Plugins
                             get_VCP_R.UpdateChecksum();
                             if (get_VCP_R.ToJson() != string.Empty)
                             {
-                                _ = WriteAsync(get_VCP_R.ToJson());
+                                WriteAsync(get_VCP_R.ToJson()).Wait();
                             }
                             return Task.CompletedTask;
                         }
@@ -1383,7 +1378,7 @@ namespace NetworkKVM.Plugins
             get_VCP_R.UpdateChecksum();
             if (get_VCP_R.ToJson() != string.Empty)
             {
-                _ = WriteAsync(get_VCP_R.ToJson());
+                WriteAsync(get_VCP_R.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -1560,7 +1555,7 @@ namespace NetworkKVM.Plugins
             SUPPORTED_MONITOR_LIST.UpdateChecksum();
             if (SUPPORTED_MONITOR_LIST.ToJson() != string.Empty)
             {
-                _ = WriteAsync(SUPPORTED_MONITOR_LIST.ToJson());
+                WriteAsync(SUPPORTED_MONITOR_LIST.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
