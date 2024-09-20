@@ -71,6 +71,11 @@ namespace DDPM.UI.Module.Brightness
                     }
                 }));
             }
+            if(data != null && data.LockSettings != null)
+            {
+                bool isSyncLocked = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(data);
+                //apply this lock result to "synchronize between monitors" toggle button
+            }
         }
 
         private void Reset_Click(object sender, RoutedEventArgs e)
