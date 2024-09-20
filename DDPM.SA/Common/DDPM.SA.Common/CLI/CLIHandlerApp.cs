@@ -876,7 +876,23 @@ namespace DDPM.SA.Common.CLI
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Display_USBKVM = target;
                             continue;
-                        }       
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("EASYARRANGELAYOUT"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_EasyArrangeLayout = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_EasyArrangeLayout = target;
+                            continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("ANCMODE"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Audio_ancMode = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Audio_ancMode = target;
+                            continue;
+                        }
                     }
                     else
                     {
@@ -945,6 +961,12 @@ namespace DDPM.SA.Common.CLI
                                 break;
                             case "INAPPUSBKVM":
                                 status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_USBKVM" }).Result;
+                                break;
+                            case "EASYARRANGELAYOUT":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_EasyArrangeLayout" }).Result;
+                                break;
+                            case "ANCMODE":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_ancMode" }).Result;
                                 break;
                         }
                     }
