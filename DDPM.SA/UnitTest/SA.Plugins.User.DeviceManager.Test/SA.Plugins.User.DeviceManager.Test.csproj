@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <Reference Include="DPeMPublic.Common">
-      <HintPath>..\..\..\..\..\ElsaGit\0819git\DDPM\DDPM.UI\CommonDll\DPeMPublic.Common.dll</HintPath>
+      <HintPath>..\..\dll\DPeMPublic.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
 

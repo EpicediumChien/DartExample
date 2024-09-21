@@ -36,7 +36,7 @@ namespace DDPM.SA.Obfuscation
                 return Convert.ToBase64String(hashMessage);
             }
         }
-        
+
         public static string GenerateAccessString2(string key, string message)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
@@ -160,7 +160,7 @@ namespace DDPM.SA.Obfuscation
         private static (string id, string ver, string location) QueryAppAccessInfo()
         {
             //info = string.Empty;
-            if(!IsUserElevated())
+            if (!IsUserElevated())
             {
                 //info = "Caller doesn't has elevated privilege";
                 return (string.Empty, string.Empty, string.Empty);
@@ -172,50 +172,56 @@ namespace DDPM.SA.Obfuscation
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
 
             // open and sequential read to compare.
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            //using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
             {
                 if (key != null)
                 {
-                    foreach (string subkeyName in key.GetSubKeyNames())
+                    using (RegistryKey uninstallKey = key.OpenSubKey(registryKey))
                     {
-                        try
+                        foreach (string subkeyName in uninstallKey.GetSubKeyNames())
                         {
-                            using (RegistryKey subkey = key.OpenSubKey(subkeyName))
+                            try
                             {
-                                if (subkey != null)
+                                using (RegistryKey subkey = uninstallKey.OpenSubKey(subkeyName))
                                 {
-                                    // get value from DisplayName
-                                    string displayName = subkey.GetValue("DisplayName") as string;
-                                    if (displayName != null && displayName.Trim().Equals(softwareName))
+                                    if (subkey != null)
                                     {
-                                        // get value from uninstall string
-                                        //string data = subkey.GetValue("UninstallString") as string;
-                                        //if(data != null && data.Length >= 36) //format like "{fgsetyu5-5da6-5ges-9sed-s6h8deqa6358}"
+                                        // get value from DisplayName
+                                        string displayName = subkey.GetValue("DisplayName") as string;
+                                        if (displayName != null && displayName.Trim().Equals(softwareName))
                                         {
-                                            //string output = data.ToUpper().Replace("MSIEXEC.EXE", "").Replace("{", "").Replace("}", "").Replace("-", "").Replace("/X", "").Trim();
-                                            string output = subkeyName.ToUpper().Replace("{", "").Replace("}", "").Replace("-", "").Trim();
-                                            if (output != null && output.Length == 32)
+                                            // get value from uninstall string
+                                            //string data = subkey.GetValue("UninstallString") as string;
+                                            //if(data != null && data.Length >= 36) //format like "{fgsetyu5-5da6-5ges-9sed-s6h8deqa6358}"
                                             {
-                                                string ver = subkey.GetValue("DisplayVersion") as string;
-                                                string addr = subkey.GetValue("InstallLocation") as string;
-                                                //info key original method: GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName)
-                                                string infoKey = Convert.ToBase64String(DeriveKey(output, Encoding.UTF8.GetBytes(softwareName), iterations, keyLength));
-                                                
-                                                return (infoKey, ver, addr); //this id is used as DDPM settings private key
+                                                //string output = data.ToUpper().Replace("MSIEXEC.EXE", "").Replace("{", "").Replace("}", "").Replace("-", "").Replace("/X", "").Trim();
+                                                string output = subkeyName.ToUpper().Replace("{", "").Replace("}", "").Replace("-", "").Trim();
+                                                if (output != null && output.Length == 32)
+                                                {
+                                                    string ver = subkey.GetValue("DisplayVersion") as string;
+                                                    string addr = subkey.GetValue("InstallLocation") as string;
+                                                    //info key original method: GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName)
+                                                    string infoKey = Convert.ToBase64String(DeriveKey(output, Encoding.UTF8.GetBytes(softwareName), iterations, keyLength));
+
+                                                    return (infoKey, ver, addr); //this id is used as DDPM settings private key
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
-                        catch
-                        {
-                            //do nothing
+                            catch
+                            {
+                                //do nothing
+                            }
                         }
                     }
+
+
                 }
             }
-            return (string.Empty, string.Empty,string.Empty);
+            return (string.Empty, string.Empty, string.Empty);
         }
     }
 }
