@@ -46,12 +46,12 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using VcpCore.Common;
-using WinCopies.Util;
 using Windows.System;
 using DDPM.SA.Common.Screen;
 using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 using Microsoft.WindowsAPICodePack.Win32Native;
+using System.IO.Compression;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -3488,6 +3488,159 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(ret);
         }
+        public Task<bool> SaveLogFile(string saveFolderPath)
+        {
+            writelog($"{nameof(SaveLogFile)} start");
+            bool ret = false;
+            if (_DisplayManagerPlugin != null)
+            {
+                // 確保資料夾存在
+                if (!Directory.Exists(saveFolderPath))
+                {
+                    Directory.CreateDirectory(saveFolderPath);
+                }
+                //0913 Bruce Add Security
+                string FolderInfo;
+                string PathSymbolicLinInfo;
+                int count = 0;
+                bool folderValid = false;
+                do
+                {
+                    FolderInfo = string.Empty;
+                    PathSymbolicLinInfo = string.Empty;
+                    folderValid = false;
+                    folderValid = DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
+                    if (!folderValid)
+                    {
+                        writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
+                        //Do remove Symbolic Link than delete folder
+                        Directory.Delete(saveFolderPath, true);
+                        Directory.CreateDirectory(saveFolderPath);
+                    }
+                    folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo) && folderValid;
+                    if (!folderValid)
+                    {
+                        writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
+                        //Do remove Symbolic Link than delete folder
+                        Directory.Delete(saveFolderPath, true);
+                        Directory.CreateDirectory(saveFolderPath);
+                    }
+                } while (!folderValid && count < 2);
+                string LogFolder = @"C:\ProgramData\Dell\DDPM Subagent";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(LogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                LogFolder = @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(LogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                LogFolder = @$"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(LogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                LogFolder = @"C:\ProgramData\Dell\Dell TechHub";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = GetFolderName(LogFolder);
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                LogFolder = @"C:\ProgramData\Dell\DTP\Logs";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = "DTP_Log";
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
+                object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
+                if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+                {
+                    LogFolder = @$"C:\ProgramData\{o.ToString()}\DDPMW-NKVM";
+                    if (DirectoryContainsFiles(LogFolder))
+                    {
+                        // 取得資料夾名稱
+                        string folderName = GetFolderName(LogFolder);
+                        string savePath = Path.Combine(saveFolderPath, folderName);
+                        // 複製指定的 log 文件到選擇的資料夾
+                        CopyLogFolder(LogFolder, savePath);
+                    }
+                }
+                LogFolder = @"C:\ProgramData\Dell\Dell Peripheral Manager\DPMService\Log";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = "DPMService_Log";
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                LogFolder = @"C:\ProgramData\Dell\Dell Peripheral Manager\DPM\Log";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = "DPM_Log";
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                LogFolder = @"C:\ProgramData\Dell\Dell Peripheral Manager\DPeMSDK\Log";
+                if (DirectoryContainsFiles(LogFolder))
+                {
+                    // 取得資料夾名稱
+                    string folderName = "DPeMSDK_Log";
+                    string savePath = Path.Combine(saveFolderPath, folderName);
+                    // 複製指定的 log 文件到選擇的資料夾
+                    CopyLogFolder(LogFolder, savePath);
+                }
+                string logFileName = "EventLog.evtx";
+                string logFilePath = Path.Combine(saveFolderPath, logFileName);
+                ExecuteWevtutilCommand(logFilePath);
+
+                string zipFilePath = saveFolderPath + ".zip";
+                // 壓縮資料夾
+                CreateZipFile(saveFolderPath, zipFilePath);
+                Directory.Delete(saveFolderPath, true);
+            }
+            writelog($"{nameof(SaveLogFile)} end");
+            return Task.FromResult(ret);
+        }
+        void CreateZipFile(string folderPath, string zipFilePath)
+        {
+            writelog($"{nameof(CreateZipFile)} start");
+            try
+            {
+                if (File.Exists(zipFilePath))
+                {
+                    File.Delete(zipFilePath);
+                }
+                ZipFile.CreateFromDirectory(folderPath, zipFilePath, CompressionLevel.Fastest, includeBaseDirectory: true);
+            }
+            catch (Exception ex)
+            {
+                writelog($"{nameof(CreateZipFile)} Exception occurred while creating ZIP file: {ex.Message}");
+            }
+            writelog($"{nameof(CreateZipFile)} end");
+        }
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
         {
             bool ret = false;
@@ -3535,6 +3688,135 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
             }
             return ret;
+        }
+        void ExecuteWevtutilCommand(string exportFilePath)
+        {
+            try
+            {
+                // 設定要查詢的日誌名稱
+                string logName = "Application"; // 可選擇 "Application", "System", "Security"
+
+                // 獲取當前時間
+                DateTime now = DateTime.UtcNow;
+
+                // 設定開始和結束時間範圍（UTC）
+                DateTime endTime = now;
+                DateTime startTime = endTime.AddDays(-1);
+
+                // 生成查詢語句
+                string query = $"*[System[TimeCreated[@SystemTime>='{startTime:yyyy-MM-ddTHH:mm:ss.fffZ}' and @SystemTime<='{endTime:yyyy-MM-ddTHH:mm:ss.fffZ}']]]";
+                // 建立我們要執行的命令
+                string command = $"epl {logName} \"{exportFilePath}\" /ow:true /q:\"{query}\"";
+                // 設定 ProcessStartInfo
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "wevtutil",
+                    Arguments = command,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                // 開啟進程
+                using (Process process = Process.Start(startInfo))
+                {
+                    // 讀取標準輸出和錯誤輸出
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    // 等待進程結束
+                    process.WaitForExit();
+
+                    // 輸出結果
+                    if (process.ExitCode == 0)
+                    {
+                        Console.WriteLine("Events have been exported successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error exporting events: {error}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+            }
+        }
+        string GetFolderName(string path)
+        {
+            try
+            {
+                string folderName = System.IO.Path.GetFileName(path.TrimEnd(System.IO.Path.DirectorySeparatorChar));
+                return folderName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                return null;
+            }
+        }
+        bool DirectoryContainsFiles(string folderPath)
+        {
+            bool ret = false;
+            try
+            {
+                if (Directory.Exists(folderPath))
+                {
+                    // 檢查資料夾是否包含檔案
+                    string[] files = Directory.GetFiles(folderPath);
+                    // 檢查資料夾是否包含子資料夾
+                    string[] directories = Directory.GetDirectories(folderPath);
+
+                    // 如果檔案或子資料夾數量大於0，則返回 true
+                    ret = files.Length > 0 || directories.Length > 0;
+                }
+            }
+            catch
+            {
+
+            }
+            return ret;
+        }
+        void CopyLogFolder(string sourceFolder, string destinationFolder)
+        {
+            try
+            {
+                if (Directory.Exists(sourceFolder))
+                {
+                    // 複製資料夾及其內容
+                    DirectoryCopy(sourceFolder, destinationFolder, true);
+                    Console.WriteLine("Log folder copied successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Source folder does not exist.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception occurred while copying log folder: {ex.Message}");
+            }
+        }
+        void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            // 確保目標資料夾存在
+            Directory.CreateDirectory(destDirName);
+            // 複製檔案
+            foreach (string file in Directory.GetFiles(sourceDirName))
+            {
+                string destFile = Path.Combine(destDirName, Path.GetFileName(file));
+                File.Copy(file, destFile, true);
+            }
+            // 複製子資料夾
+            if (copySubDirs)
+            {
+                foreach (string subDir in Directory.GetDirectories(sourceDirName))
+                {
+                    string destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
+                    DirectoryCopy(subDir, destSubDir, true);
+                }
+            }
         }
         #endregion
         #endregion
@@ -4655,6 +4937,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a running condition");
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
+                        _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -4663,6 +4946,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a started condition");
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
+                        _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -4888,7 +5172,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if (WriteHotkeySettings(saveList).Result)
             {
-                if (_NKVMPlugin != null)
+                if (_NKVMPlugin != null && info.Job != HotkeyType.NkvmConflict)
                 {
                     _NKVMPlugin.ToNKVM_HotkeySettings(saveList).Wait();
                     if (_NKVMPlugin.IsNamedpipeConnected().Result)
@@ -5425,7 +5709,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //pip/pbp subinput should only one
             List<InputSourceObj> subInputs = GetSubInputs(monitorInfo).Result;
             List<InputSourceObj> allInputs = new List<InputSourceObj>();
-            inputList.ForEach(input => allInputs.Add(new InputSourceObj(input.Value.InputName)));
+            //inputList.ForEach(input => allInputs.Add(new InputSourceObj(input.Value.InputName)));
+            //[Dean] remove WinCopies utilties and fix code conflict
+            foreach (var input in inputList)
+            {
+                allInputs.Add(new InputSourceObj(input.Value.InputName));
+            }
             List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
             if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
             {
@@ -6174,12 +6463,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SendCLINKVMRespone(e);
         }
 
+        private void NKVMSetHotkey(object sender, NKVMSetHotkey e)
+        {
+            SetNKVMHotkey(e);
+        }
+
         private void SendCLINKVMRespone(NKVMRespone e)
         {
             EventHandler<NKVMRespone> handler = NKVMCLIRespone;
             if (handler != null)
             {
                 handler.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+            }
+        }
+
+        private void SetNKVMHotkey(NKVMSetHotkey e)
+        {
+            bool b = SaveHotkeySetting(null, e.HotkeyInfo).Result;
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.SetHotkeyResponse(e.jsonstring, b);
+            }
+            else
+            {
+                writelog("[SetNKVMHotkey] _NKVMPlugin is null");
             }
         }
 

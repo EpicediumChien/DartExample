@@ -19,6 +19,7 @@ using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
@@ -88,20 +89,22 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
 
         // For WalkThrough
+        public static string _userId = string.Empty;
         public static bool _showPluginById = false;
         public static List<WalkThroughInfo> WalkThroughQueue { get; private set; } = new List<WalkThroughInfo>();
         private static readonly Dictionary<string, int> ModelTypeMapping = new Dictionary<string, int>
         {
-            { "Displays", 1 },
-            { "Webcam", 2 },
-            { "Keyboard", 3 },
-            { "Mice", 4 },
-            { "Stylus", 5 },
-            { "Headset", 6 },
-            { "Speakerphone", 7 },
-            { "Soundbar", 8 },
-            { "Audio", 9 },
-            { "Docks", 10 }
+            { "DDPM", 1 },
+            { "Displays", 2 },
+            { "Webcam", 3 },
+            { "Keyboard", 4 },
+            { "Mice", 5 },
+            { "Stylus", 6 },
+            { "Headset", 7 },
+            { "Speakerphone", 8 },
+            { "Soundbar", 9 },
+            { "Audio", 10 },
+            { "Docks", 11 }
         };
         /// <summary>
         /// Default constructor
@@ -226,6 +229,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 if (_iconGear != null)
                                     _iconGear.GlowEffect_Start();
                             }
+                        }
+                        await CheckAndQueueDevice("DDPM", "DDPM");
+                        if (WalkThroughQueue.Count != 0 && _showPluginById == false)
+                        {
+                            _log.Info($"[Walkthrough] WalkThroughQueue.Count != 0, ShowPluginById Start DDPM");
+                            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
+                            _showPluginById = true;
                         }
                     }
                 }
@@ -447,7 +457,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         /// <summary>
-        /// 
+        /// WalkThrough Sort
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
@@ -943,15 +953,26 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private async Task CheckAndQueueDevice(String modelNumber, String modelType)
         {
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
-
-            string _userId = GetActiveUserID();
+            object regValue;
+            _userId = GetActiveUserID();
             string regPath = $@"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Local\{_userId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
+            string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
 
             var devicePages = WalkThroughData.WalkThroughData.GetDevicePages();
 
             try
             {
+                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM);
+
+                if (!Convert.ToBoolean(regValue))
+                {
+                    if (!WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+                    {
+                        WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM"));
+                    }
+                }
+
                 // If the device is not supported, directly update the registry to true and return
                 if (!devicePages.ContainsKey(modelNumber))
                 {
@@ -961,24 +982,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
 
                 // read reg
-                object regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
+                regValue = await _deviceManager.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey);
 
                 // mean null or "" or is false, add to the queue and set it to true
                 if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
                 {
                     // Add the device to the queue and update the registry
-                    lock (WalkThroughQueue)
+                    if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber))
                     {
                         WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType));
                     }
-                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
-                    await DeviceSort(new WalkThroughInfo(modelNumber, modelType));
+ 
+                    //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);                    
                     _log.Info($"[Walkthrough] Device {modelNumber} added to the queue and registry value updated to true.");
                 }
                 else
                 {
                     _log.Info($"[Walkthrough] Device {modelNumber} reg is true, skipping.");
                 }
+                await DeviceSort(new WalkThroughInfo(modelNumber, modelType));
             }
             catch (Exception ex)
             {

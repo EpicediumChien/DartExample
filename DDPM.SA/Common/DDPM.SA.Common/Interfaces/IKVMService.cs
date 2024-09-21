@@ -18,6 +18,8 @@ namespace DDPM.SA.Common
     {
         event EventHandler<NKVMRespone> NKVMCLIEvent;
 
+        event EventHandler<NKVMSetHotkey> NKVMSetHotkey;
+
         Task CreatNewNamedpipe();
 
         Task<bool> IsNamedpipeConnected();
@@ -47,6 +49,8 @@ namespace DDPM.SA.Common
         Task NKVM_ChangeLimitedSW(MonitorInfo monitorInfo, bool isON);
 
         Task NKVM_ChangeMonitorIndex(MonitorInfo monitorInfo);
+
+        Task SetHotkeyResponse(string jsonstring, bool isSuccess);
 
         Task GetNKVMVersion();
 

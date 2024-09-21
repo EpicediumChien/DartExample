@@ -17,13 +17,14 @@ namespace DDPM.UI.Module.InputSource
             InitializeComponent();
             DataContext = vm;
 
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-            }
+            //Figma change, drop this field
+            //if (DdpmCommonHelper.DeviceManagerSA != null)
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+            //}
         }
 
-        ~InputSourceRightView()
+        /*~InputSourceRightView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -47,7 +48,7 @@ namespace DDPM.UI.Module.InputSource
                     }
                 }));
             }
-        }
+        }*/
 
         private void UXComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
@@ -71,7 +72,7 @@ namespace DDPM.UI.Module.InputSource
     public class Item
     {
         public int Index { get; set; }
-        public ImageSource InputImage { get; set; }
+        public string InputImage { get; set; }
         public string InputType { get; set; }
         public string InputName { get; set; }
         public ObservableCollection<string> USBUpstream { get; set; }

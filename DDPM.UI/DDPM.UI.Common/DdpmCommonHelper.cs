@@ -120,6 +120,46 @@ namespace DDPM.UI.Common
             return null;//null as default if feature not found
         }
 
+        public static bool GetUINotify_IsSynchronizeBetweenMonitors_Locked(DDPMSettings data)
+        {
+            if (data == null || data.LockSettings == null)
+                return false;
+
+            //9/7 Functionality update:
+            //When brightness, contrast, or color settings are locked, automatically lock 'synchronize between monitors'.
+            //Should unlock if no brightness, contrast, or color settings are locked.
+            if (data.LockSettings.Lock_Display_BriCont ||
+                data.LockSettings.Lock_Display_ColorPreset ||
+                data.LockSettings.Lock_Display_AutoBriTemp)
+                return true;
+
+            return false;
+        }
+
+        public static bool GetUINotifyPropertyValue_isAnyLocked(DDPMSettings data, string search_key = "")
+        {
+            if (data == null || data.LockSettings == null)
+            {
+                Trace.WriteLine("check is any lock but data is null!");
+                return false;
+            }
+
+            if (search_key == null || string.IsNullOrEmpty(search_key) || search_key.Length == 0)
+            {
+                bool anyTrue = data.LockSettings.GetType().GetProperties()
+                               .Where(p => p.PropertyType == typeof(bool))
+                               .Select(p => (bool)p.GetValue(data.LockSettings))
+                               .Any(value => value);
+
+                return anyTrue;
+            }
+            bool result = data.LockSettings.GetType()
+                         .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                         .Where(p => p.PropertyType == typeof(bool) && p.Name.Contains(search_key))
+                         .Any(p => (bool)p.GetValue(data.LockSettings));
+            return result;
+        }
+
         public static (bool isEnabled, Visibility isLocked) ApplyRestoreFactoryDefaultsEventData(ITSettingEventArgs e, string device_lock_string)
         {
             bool isEnabled = false;

@@ -39,7 +39,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using VcpCore.Common;
-using WinCopies.Util;
 
 namespace ColorPreset.Plugins
 {
@@ -1375,6 +1374,14 @@ namespace ColorPreset.Plugins
 
                     if (!string.IsNullOrEmpty(url))
                     {
+                        //20240920 Add Security
+                        string FileInfo;
+                        if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
+                        {
+                            writelog($"[DownloadICCData] {FileInfo}");
+                            return Task.FromResult(_ICC_Metadata);
+                        }
+
                         strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
 
                         download.DownloadFile(url, strFilePath, out downloadInfo);                        
@@ -1382,7 +1389,6 @@ namespace ColorPreset.Plugins
                         if (System.IO.File.Exists(strFilePath))
                         {
                             //Elsa Add Security
-                            string FileInfo;
                             if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out FileInfo))
                             {
                                 writelog($"[DownloadICCData] {FileInfo}");

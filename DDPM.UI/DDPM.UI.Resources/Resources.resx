@@ -1626,4 +1626,19 @@
   <data name="Camera.Alert.4" xml:space="preserve">
     <value>Please wait while we remove your camera</value>
   </data>
+  <data name="Camera.10" xml:space="preserve">
+    <value>Resume Recording</value>
+  </data>
+  <data name="Camera.11" xml:space="preserve">
+    <value>Stop Recording</value>
+  </data>
+  <data name="Camera.7" xml:space="preserve">
+    <value>Open Media Folder</value>
+  </data>
+  <data name="Camera.8" xml:space="preserve">
+    <value>Start Recording</value>
+  </data>
+  <data name="Camera.9" xml:space="preserve">
+    <value>Pause Recording</value>
+  </data>
 </root>

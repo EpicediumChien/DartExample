@@ -1,7 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
-using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -752,6 +751,10 @@ namespace DDPM.SA.Common.CLI
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Keyboard_CollabScreenShare}");
                         response.Value = (data_IT.Lock_Keyboard_CollabScreenShare ? "Lock" : "Unlock");
                         break;
+                    case "INAPPUSBKVM": //assume only IT command enter here
+                        Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBKVM}");
+                        response.Value = (data_IT.Lock_Display_USBKVM ? "Lock" : "Unlock");
+                        break;
                     default:
                         return CLI_Response_TypeNotSupport(commandLineInput, result);
                 }                
@@ -856,13 +859,60 @@ namespace DDPM.SA.Common.CLI
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Keyboard_CollabScreenShare = target;
                         }
+                        else if (commandLineInput.TargetFeature.Equals("MICNOISECANCELLATION"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Audio_micNoiseCancellation = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Audio_micNoiseCancellation = target;
+                        }
                         else
                             return CLI_Response_TypeNotSupport(commandLineInput, result);
+                    }
+                    else if (value.ToUpper().Equals("ENABLE") || value.ToUpper().Equals("DISABLE"))
+                    {
+                        bool target = false;
+                        if (value.ToUpper().Equals("DISABLE"))
+                            target = true;
+                        if (value.ToUpper().Equals("ENABLE"))
+                            target = false;
+                        if (commandLineInput.TargetFeature.Equals("INAPPUSBKVM"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_USBKVM = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_USBKVM = target;
+                            continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("EASYARRANGELAYOUT"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Display_EasyArrangeLayout = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Display_EasyArrangeLayout = target;
+                            continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("ANCMODE"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Audio_ancMode = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Audio_ancMode = target;
+                            continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("WEARDETECTION"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Audio_wearDetection = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Audio_wearDetection = target;
+                            continue;
+                        }
                     }
                     else
                     {
                         //Judgement the user action here, if the value is supported then bypass this loop. (the data store should be processed at user proxy plugin)
-                        if(commandLineInput.TargetFeature.Equals("POWERNAP"))
+                        if (commandLineInput.TargetFeature.Equals("POWERNAP"))
                         {
                             if (value.ToUpper().Equals("OFF") || value.ToUpper().Equals("SLEEP") || value.ToUpper().Equals("REDUCEBRIGHTNESS"))
                                 continue;
@@ -886,6 +936,11 @@ namespace DDPM.SA.Common.CLI
                             }
                         }
                         else if (commandLineInput.TargetFeature.Equals("COLLABSCREENSHARE"))
+                        {
+                            if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("MICNOISECANCELLATION"))
                         {
                             if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
                                 continue;
@@ -923,6 +978,21 @@ namespace DDPM.SA.Common.CLI
                                 break;
                             case "COLLABSCREENSHARE":
                                 status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Keyboard_CollabScreenShare" }).Result;
+                                break;
+                            case "INAPPUSBKVM":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_USBKVM" }).Result;
+                                break;
+                            case "EASYARRANGELAYOUT":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_EasyArrangeLayout" }).Result;
+                                break;
+                            case "ANCMODE":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_ancMode" }).Result;
+                                break;
+                            case "MICNOISECANCELLATION":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_micNoiseCancellation" }).Result;
+                                break;
+                            case "WEARDETECTION":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_wearDetection" }).Result;
                                 break;
                         }
                     }

@@ -35,6 +35,7 @@ namespace DDPM.UI.Module.EzArrange.Tests
         private ILog? log;
         private Mock<ILog>? logMock;
 
+
         [SetUp]
         public void Setup()
         {
@@ -51,7 +52,8 @@ namespace DDPM.UI.Module.EzArrange.Tests
             log = logMock.Object;
             vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange);
             HomeDevice.DeviceManagerSA= deviceManagerSAMock.Object;
-            ezArrangeModule = new EzArrangeModule(new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice=new HomeDevice()});
+            deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true }));
+            ezArrangeModule = new EzArrangeModule(new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice = new HomeDevice() { MonitorInfo = new MonitorInfo() { DisplayName = "AA" } } });
             privateObject = new PrivateObject(ezArrangeModule);
         }
 
@@ -85,7 +87,8 @@ namespace DDPM.UI.Module.EzArrange.Tests
         [Test]
         public void TestGetRightView()
         {
-            deviceManagerSAMock.Setup(x=>x.ReadEAMonitorSettings(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new EAMonitorSettings()));
+
+
             // Act
             var result = ezArrangeModule!.GetRightView();
 

@@ -480,6 +480,31 @@
         <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
     </Style>
 
+    <DataTemplate x:Key="ComboBoxItemTemplate">
+        <StackPanel Orientation="Vertical" Margin="8">
+            <!-- Text binding -->
+            <TextBlock Text="{Binding Type}" HorizontalAlignment="Center"/>
+            <!-- Path Data binding -->
+            <Path Data="{Binding PathData}" Margin="8" 
+                  HorizontalAlignment="Center" Fill="White"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <!--  DdpmCombox Style usage from here  -->
+    <Style x:Key="DdpmUSBKVMComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+        <Setter Property="MinWidth" Value="120" />
+        <Setter Property="MinHeight" Value="80" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource DdpmCB_BkColor}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template" Value="{StaticResource DdpmComboBoxControlTemplate}" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
+        <Setter Property="ItemTemplate" Value="{StaticResource ComboBoxItemTemplate}"/>
+    </Style>
+
     <!-- General Control Colors
     There are many buttons,headers use this brush as their background color in hover state.
     When you see the colors in Figma are:
