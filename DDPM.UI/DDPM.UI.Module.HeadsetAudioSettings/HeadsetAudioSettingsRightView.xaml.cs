@@ -82,15 +82,24 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                 {
                     if (data.LockSettings.Lock_Audio_ancMode)
                     {
-                        //_vm.lockIcon = Visibility.Visible;
-                        //_vm.viewMask = Visibility.Visible;
-                        //_vm.tabStop = false;
+                        _vm.isAncModeLocked = Visibility.Visible;
+                        _vm.isAncEnabled = false;
                     }
                     else
                     {
-                        //_vm.lockIcon = Visibility.Collapsed;
-                        //_vm.viewMask = Visibility.Collapsed;
-                        //_vm.tabStop = true;
+                        _vm.isAncModeLocked = Visibility.Collapsed;
+                        _vm.isAncEnabled = true;
+                    }
+
+                    if (data.LockSettings.Lock_Audio_micNoiseCancellation)
+                    {
+                        _vm.isMicCancelLocked = Visibility.Visible;
+                        _vm.isMicTabStopped = false;
+                    }
+                    else
+                    {
+                        _vm.isMicCancelLocked = Visibility.Collapsed;
+                        _vm.isMicTabStopped = true;
                     }
                 }
             }
@@ -115,9 +124,21 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                     if (rst != null && rst == true)
                         locked = true;
 
-                    //_vm.lockIcon = locked ? Visibility.Visible : Visibility.Collapsed;
-                    //_vm.viewMask = locked ? Visibility.Visible : Visibility.Collapsed;
-                    //_vm.tabStop = !locked;
+                    _vm.isAncModeLocked = locked ? Visibility.Visible : Visibility.Collapsed;
+                    _vm.isAncEnabled = !locked;
+                }
+            }));
+            rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Audio_micNoiseCancellation", e);
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (_vm != null)
+                {
+                    bool locked = false;
+                    if (rst != null && rst == true)
+                        locked = true;
+
+                    _vm.isMicCancelLocked = locked ? Visibility.Visible : Visibility.Collapsed;
+                    _vm.isMicTabStopped = !locked;
                 }
             }));
         }
