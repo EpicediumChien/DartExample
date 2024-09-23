@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Brightness.Tests")]
 
@@ -555,7 +556,8 @@ namespace DDPM.UI.Module.Brightness
                 Trace.WriteLine($"7 {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
 
                 //Lock/unlock mask and tabstop init here
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here
+                Update_ALSLockStatus(data.LockSettings.Lock_Display_AutoBriTemp);
                 //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
                 //Read user default lock value, these values are synced from IT lock event          
                 Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {data.LockSettings.Lock_Display_BriCont}"); 
@@ -2149,6 +2151,243 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #region ALS functions
+
+        private Visibility _AutoALSLock = Visibility.Collapsed;
+        private Visibility _AutoBrightnessLock = Visibility.Collapsed;
+        private Visibility _AutoBrigRangeLevelLock = Visibility.Collapsed;
+        private Visibility _AutoTemperatureLock = Visibility.Collapsed;
+        private Visibility _PrimaryMonitorSyncLock = Visibility.Collapsed;
+        
+        public Visibility AutoALSLock
+        {
+            get => _AutoALSLock;
+            set
+            {
+                _AutoALSLock = value ;
+                NotifyPropertyChanged(nameof(AutoALSLock));
+            }
+        }
+
+        public Visibility AutoBrightnessLock
+        {
+            get => _AutoBrightnessLock;
+            set
+            {
+                _AutoBrightnessLock = value;
+                NotifyPropertyChanged(nameof(AutoBrightnessLock));
+            }
+        }
+        public Visibility AutoBrigRangeLevelLock
+        {
+            get => _AutoBrigRangeLevelLock;
+            set
+            {
+                _AutoBrigRangeLevelLock = value;
+                NotifyPropertyChanged(nameof(AutoBrigRangeLevelLock));
+            }
+        }
+        public Visibility AutoTemperatureLock
+        {
+            get => _AutoTemperatureLock;
+            set
+            {
+                _AutoTemperatureLock = value;
+                NotifyPropertyChanged(nameof(AutoTemperatureLock));
+            }
+        }
+        public Visibility PrimaryMonitorSyncLock
+        {
+            get => _PrimaryMonitorSyncLock;
+            set
+            {
+                _PrimaryMonitorSyncLock = value;
+                NotifyPropertyChanged(nameof(PrimaryMonitorSyncLock));
+            }
+        }
+
+        /// <summary>
+        /// Auto Brightness Binding data
+        /// </summary>
+        public void Update_ALSLockStatus(bool value)
+        {
+            if (value && _autoBrightnessStatus && !_autoColorTempStatus)
+            {
+                AutoALSLock = value ? Visibility.Visible : Visibility.Collapsed;
+                IsAutoBrightnessLockMask = Visibility.Visible;
+                IsAutoBrigRangeLevelLockMask = Visibility.Visible;
+                IsAutoTemperatureLockMask = Visibility.Visible;
+                IsPrimaryMonitorSyncLockMask = Visibility.Visible;
+                IsAutoBrightnessRangeLevelStringLockMask = Visibility.Visible;
+            }
+            else if(value && _autoBrightnessStatus && _autoColorTempStatus)
+            {
+                AutoALSLock = value ? Visibility.Visible : Visibility.Collapsed;
+                AutoTemperatureLock = value ? Visibility.Visible : Visibility.Collapsed;
+                IsAutoTemperatureSwitchLockMask = Visibility.Visible;
+            }
+            else
+            {
+                AutoALSLock = value ? Visibility.Visible : Visibility.Collapsed;
+                AutoBrightnessLock = value ? Visibility.Visible : Visibility.Collapsed;
+                AutoBrigRangeLevelLock = value ? Visibility.Visible : Visibility.Collapsed;
+                AutoTemperatureLock = value ? Visibility.Visible : Visibility.Collapsed;
+                PrimaryMonitorSyncLock = value ? Visibility.Visible : Visibility.Collapsed;
+
+                IsAutoBrightnessLockMask = Visibility.Collapsed;
+                IsAutoBrigRangeLevelLockMask = Visibility.Collapsed;
+                IsAutoTemperatureLockMask = Visibility.Collapsed;
+                IsAutoTemperatureSwitchLockMask = Visibility.Collapsed;
+                IsPrimaryMonitorSyncLockMask = Visibility.Collapsed;
+                IsAutoBrightnessRangeLevelStringLockMask = Visibility.Collapsed;
+            }
+        }
+        private Visibility _isAutoBrightnessLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoBrightnessLockMask
+        {
+            get { return _isAutoBrightnessLockMask; }
+            set
+            {
+                if (_isAutoBrightnessLockMask != value)
+                {
+                    _isAutoBrightnessLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoBrightnessLockMask));
+                }
+            }
+        }
+
+        private Visibility _isAutoBrigRangeLevelLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoBrigRangeLevelLockMask
+        {
+            get { return _isAutoBrigRangeLevelLockMask; }
+            set
+            {
+                if (_isAutoBrigRangeLevelLockMask != value)
+                {
+                    _isAutoBrigRangeLevelLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoBrigRangeLevelLockMask));
+                }
+            }
+        }
+
+        private Visibility _isAutoTemperatureLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoTemperatureLockMask
+        {
+            get { return _isAutoTemperatureLockMask; }
+            set
+            {
+                if (_isAutoTemperatureLockMask != value)
+                {
+                    _isAutoTemperatureLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoTemperatureLockMask));
+                }
+            }
+        }
+
+        private Visibility _isAutoTemperatureSwitchLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoTemperatureSwitchLockMask
+        {
+            get { return _isAutoTemperatureSwitchLockMask; }
+            set
+            {
+                if (_isAutoTemperatureSwitchLockMask != value)
+                {
+                    _isAutoTemperatureSwitchLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoTemperatureSwitchLockMask));
+                }
+            }
+        }        
+
+        private Visibility _isPrimaryMonitorSyncLockMask = Visibility.Collapsed;
+
+        public Visibility IsPrimaryMonitorSyncLockMask
+        {
+            get { return _isPrimaryMonitorSyncLockMask; }
+            set
+            {
+                if (_isPrimaryMonitorSyncLockMask != value)
+                {
+                    _isPrimaryMonitorSyncLockMask = value;
+                    NotifyPropertyChanged(nameof(IsPrimaryMonitorSyncLockMask));
+                }
+            }
+        }
+
+        private Visibility _isAutoBrightnessRangeLevelStringLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoBrightnessRangeLevelStringLockMask
+        {
+            get { return _isAutoBrightnessRangeLevelStringLockMask; }
+            set
+            {
+                if (_isAutoBrightnessRangeLevelStringLockMask != value)
+                {
+                    _isAutoBrightnessRangeLevelStringLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoBrightnessRangeLevelStringLockMask));
+                }
+            }
+        }
+     
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        private bool _isAutoBrightnessTextGrayedOut;
+        public bool IsAutoBrightnessTextGrayedOut
+        {
+            get => _isAutoBrightnessTextGrayedOut;
+            set
+            {
+                _isAutoBrightnessTextGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoBrightnessTextGrayedOut));
+            }
+        }
+
+        private bool _isAutoColorTempTextGrayedOut;
+        public bool IsAutoColorTempTextGrayedOut
+        {
+            get => _isAutoColorTempTextGrayedOut;
+            set
+            {
+                _isAutoColorTempTextGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoColorTempTextGrayedOut));
+            }
+        }
+
+        private bool _isAutoBrightnessRangeLevelTextGrayedOut;
+        public bool IsAutoBrightnessRangeLevelTextGrayedOut
+        {
+            get => _isAutoBrightnessRangeLevelTextGrayedOut;
+            set
+            {
+                _isAutoBrightnessRangeLevelTextGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoBrightnessRangeLevelTextGrayedOut));
+            }
+        }
+
+        private bool _isAutoPrimaryMonitorForSyncTextGrayedOut;
+        public bool IsAutoPrimaryMonitorForSyncTextGrayedOut
+        {
+            get => _isAutoPrimaryMonitorForSyncTextGrayedOut;
+            set
+            {
+                _isAutoPrimaryMonitorForSyncTextGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoPrimaryMonitorForSyncTextGrayedOut));
+            }
+        }
+
+        private bool _isAutoBrightnessRangeLevelStringGrayedOut;
+        public bool IsAutoBrightnessRangeLevelStringGrayedOut
+        {
+            get => _isAutoBrightnessRangeLevelStringGrayedOut;
+            set
+            {
+                _isAutoBrightnessRangeLevelStringGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoBrightnessRangeLevelStringGrayedOut));
+            }
+        }
 
         public Visibility isAlsSupported { get; set; } = Visibility.Collapsed;
 
