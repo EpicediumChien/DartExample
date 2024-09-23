@@ -404,6 +404,10 @@ namespace DDPM.UI.Module.Kvm
         public bool isUSBKVMButton { get; set; } = true;
         public double USBKVMButtonOpacity { get; set; } = 1;
 
+        public bool isNKVMEanble {  get; set; } = true;
+        public double NKVM_Opacity { get; set; } = 1;
+        public Visibility LockNKVM_Visibility {  get; set; } = Visibility.Collapsed;
+
         #region Hotkey
 
         private string _switchPCsKey = "None";

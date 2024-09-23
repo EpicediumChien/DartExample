@@ -93,7 +93,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 WorkerSupportsCancellation = false
             };
             bw.DoWork += Set_SaveMonitorAssetReport_Dowork;
-            bw.RunWorkerCompleted += Set_SaveMonitorAssetReport_Done;
+            bw.RunWorkerCompleted += Set_Page_Done;
             bw.RunWorkerAsync(filePath);
             IsBusy = true;
             OnPropertyChanged("IsBusy");
@@ -106,7 +106,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 WorkerSupportsCancellation = false
             };
             bw.DoWork += Set_SaveDiagnosticReport_Dowork;
-            bw.RunWorkerCompleted += Set_SaveMonitorAssetReport_Done;
+            bw.RunWorkerCompleted += Set_Page_Done;
             bw.RunWorkerAsync(filePath);
             IsBusy = true;
             OnPropertyChanged("IsBusy");
@@ -122,7 +122,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             string filePath = e.Argument.ToString();
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile( filePath).Result;
         }
-        private void Set_SaveMonitorAssetReport_Done(object sender, RunWorkerCompletedEventArgs e)
+        private void Set_Page_Done(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;
             OnPropertyChanged("IsBusy");
@@ -231,7 +231,24 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return $"Driver version: {GlobalSettingParam.GlobalSetting_About.DriverVersion}";
             }
         }
-
+        public void CheckUpdate()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += Set_CheckUpdate_Dowork;
+            bw.RunWorkerCompleted += Set_Page_Done;
+            bw.RunWorkerAsync();
+            IsBusy = true;
+            OnPropertyChanged("IsBusy");
+        }
+        private void Set_CheckUpdate_Dowork(object sender, DoWorkEventArgs e)
+        {
+            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
+            RefreshUI();
+        }
         public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage)
         {
             LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
@@ -354,12 +371,19 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public SWUpdateInfo SWUpdateInfo { get; set; }
         public Visibility UXAlertItemVisibility { get; set; }
         public string UXAlertItemMessage { get; set; }
+        public Visibility UXAlertItemVisibility_2 { get; set; }
+        public string UXAlertItemMessage_2 { get; set; }
 
         public UIUpdateInfo(FWUpdateInfo fwUpdateInfo)
         {
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷
             DeviceType[] CriticalUpdates = new DeviceType[] { DeviceType.PhysicalAudioDongle, DeviceType.PhysicalDongle },
-                     RecommendedUpdates = new DeviceType[] { DeviceType.LogicalMouse, DeviceType.LogicalKeyboard, DeviceType.LogicalDock, DeviceType.PhysicalPen };
+                     RecommendedUpdates = new DeviceType[] { DeviceType.LogicalMouse, DeviceType.LogicalKeyboard, 
+                         DeviceType.LogicalDock, DeviceType.PhysicalWiredDock,
+                         DeviceType.PhysicalPen, DeviceType.PhysicalPen, 
+                         DeviceType.LogicalWebcam, DeviceType.PhysicalWebcam, 
+                         DeviceType.PhysicalWiredAudio, DeviceType.LogicalWiredAudio, 
+                         DeviceType.LogicalHeadset, DeviceType.PhysicalBluetoothAudio };
             FWUpdateInfo = fwUpdateInfo;
             this.IsCheckUpdate = true;
             this.IsEnableCheckBox = true;
@@ -384,7 +408,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     UXAlertItemVisibility = Visibility.Visible;
                     UXAlertItemMessage = "Battery level on the device is low. Replace/recharge battery to enable this update.";
                     break;
-
                 default:
                     UXAlertItemVisibility = Visibility.Collapsed;
                     UXAlertItemMessage = "";

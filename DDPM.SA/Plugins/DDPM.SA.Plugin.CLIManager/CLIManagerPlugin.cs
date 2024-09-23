@@ -313,6 +313,10 @@ namespace DDPM.SA.Plugin.CLIManager
                     return rst;
                     //break;
                 case "SCREENNOTIFICATION":       //ScreenNotification        DDPMW-1901
+                    if (commandLineInput.PluginsType.Equals("APP"))
+                        rst = CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerApp.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "RESOLUTIONREFRESHRATE":    //ResolutionRefreshRate     DDPMW-1344
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
@@ -379,14 +383,34 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "HDR":                      //hdr                       DDPMW-1729
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "ANTIFLICKER":              //AntiFlicker               DDPMW-1735
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "MICSWITCH":                //MicSwitch                 DDPMW-1736
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "AIAUTOFRAMING":            //AIAutoFraming             DDPMW-1742
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "PRESENCEDETECTION":        //PresenceDetection         DDPMW-1747
+                    if (commandLineInput.PluginsType.Equals("WEBCAM"))
+                        rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "ANCMODE":                  //ancMode                   DDPMW-1853
                     if (commandLineInput.PluginsType.Equals("AUDIO"))

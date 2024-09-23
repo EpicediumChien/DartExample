@@ -1,4 +1,6 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
@@ -69,6 +71,76 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             //vm.DetectPageShow("WH5024");
             //_vm.DetectPageShow("WL3024");
             //_vm.DetectPageShow("WH3024");
+
+            //lock/unlock init, 9/23 add
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Audio_ancMode)
+                    {
+                        _vm.isAncModeLocked = Visibility.Visible;
+                        _vm.isAncEnabled = false;
+                    }
+                    else
+                    {
+                        _vm.isAncModeLocked = Visibility.Collapsed;
+                        _vm.isAncEnabled = true;
+                    }
+
+                    if (data.LockSettings.Lock_Audio_micNoiseCancellation)
+                    {
+                        _vm.isMicCancelLocked = Visibility.Visible;
+                        _vm.isMicTabStopped = false;
+                    }
+                    else
+                    {
+                        _vm.isMicCancelLocked = Visibility.Collapsed;
+                        _vm.isMicTabStopped = true;
+                    }
+                }
+            }
+        }
+
+        ~HeadsetAudioSettingsRightView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Audio_ancMode", e);
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (_vm != null)
+                {
+                    bool locked = false;
+                    if (rst != null && rst == true)
+                        locked = true;
+
+                    _vm.isAncModeLocked = locked ? Visibility.Visible : Visibility.Collapsed;
+                    _vm.isAncEnabled = !locked;
+                }
+            }));
+            rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Audio_micNoiseCancellation", e);
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (_vm != null)
+                {
+                    bool locked = false;
+                    if (rst != null && rst == true)
+                        locked = true;
+
+                    _vm.isMicCancelLocked = locked ? Visibility.Visible : Visibility.Collapsed;
+                    _vm.isMicTabStopped = !locked;
+                }
+            }));
         }
 
         private void Slider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
