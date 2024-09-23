@@ -17,6 +17,13 @@ namespace DDPM.UI.Module.DisplayOthers
             get => (DisplayOthersViewModel)DataContext;
         }
 
+        private void IsLockinUI()
+        {
+            vm.LockSettings_Visibility = Visibility.Visible;
+            vm.isSettingsEnable = false;
+            vm.Settings_Opacity = 0.5;
+        }
+
         public DisplayOthersRightView(DisplayOthersViewModel vm)
         {
             InitializeComponent();
@@ -32,6 +39,7 @@ namespace DDPM.UI.Module.DisplayOthers
                     if (data.LockSettings.Lock_Display_ExportSettings)
                     {
                         //Do lock ui init here (direct set or binding via vm)
+                        IsLockinUI();
                     }
                     if (data.LockSettings.Lock_Display_PowerNap)
                     {
@@ -62,7 +70,9 @@ namespace DDPM.UI.Module.DisplayOthers
                     DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.LockSettings_Visibility = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.isSettingsEnable = (bool)isLocked ? false : true;
+                        vm.Settings_Opacity = (bool)isLocked ? 0.5 : 1;
                         Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) : {isLocked}");                        
                     }
                 }));
@@ -88,6 +98,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 if(DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
                 {
                     //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                    IsLockinUI();
                     Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
                 }
             }

@@ -38,6 +38,9 @@ namespace DDPM.UI.Module.Kvm
                     if (data.LockSettings.Lock_Display_NetworkKVM)
                     {
                         //Do lock ui init here (direct set or binding via vm)
+                        vm.LockNKVM_Visibility = Visibility.Visible;
+                        vm.isNKVMEanble = false;
+                        vm.NKVM_Opacity = 0.5;
                     }
                     //if (data.LockSettings.Lock_Display_USBKVM) //CLI not ready
                     //{
@@ -70,7 +73,9 @@ namespace DDPM.UI.Module.Kvm
                     KvmViewModel vm = (KvmViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.LockNKVM_Visibility = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.isNKVMEanble = (bool)isLocked ? false : true;
+                        vm.NKVM_Opacity = (bool)isLocked ? 0.5 : 1;
                         Trace.WriteLine($"[SettingsPage] Apply NetworkKVM(Lock) : {isLocked}");
                     }
                 }));
