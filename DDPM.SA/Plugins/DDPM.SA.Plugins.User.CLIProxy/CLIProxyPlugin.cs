@@ -483,6 +483,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         case "DEVICEDATA":
                         case "APPLYCONFIGURATION":
                         case "CONNECTEDDEVICES":
+                        case "SCREENNOTIFICATION":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                             break;
