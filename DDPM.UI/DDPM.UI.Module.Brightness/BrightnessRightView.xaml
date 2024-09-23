@@ -457,6 +457,9 @@
                                         Text="{Binding [Auto], Source={x:Static lang:LangHelper.Instance}}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" />
+                                    <Image Grid.Column="1" Visibility="{Binding AutoALSLock}" Margin="90,0,20,0"
+                               Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                               VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16"/>
                                 </Grid>
                             </Expander.Header>
 
@@ -475,14 +478,16 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <UXControls:UXTextBlock
+                                            Name="AutoBrightnessText"
                                             Grid.Column="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoBrightnessTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.6], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -509,9 +514,11 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+                                        <Image Grid.Column="2" Visibility="{Binding AutoBrightnessLock}" Margin="8,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png" VerticalAlignment="Center" HorizontalAlignment="Left" Width="16" Height="16"/>
                                         <UXControls:UXToggleSwitch
                                             Name="AutoBrightnessSwitch"
-                                            Grid.Column="2"
+                                            Grid.Column="3"
+                                            IsTabStop="False"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -522,9 +529,12 @@
                                             Foreground="White"
                                             IsChecked="{Binding Path=AutoBrightnessStatus}"
                                             IsEnabled="{Binding Path=SupportedAutoBrightness}" />
+                                        <!-- 遮罩 -->
+                                        <Border Background="#132F54" Grid.Column="0" Grid.ColumnSpan="4" Opacity="0.6" CornerRadius="13" Visibility="{Binding IsAutoBrightnessLockMask}" />
                                     </Grid>
                                     <Grid Grid.Row="1" Height="50">
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
@@ -534,7 +544,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoBrightnessRangeLevelTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.8], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -574,9 +584,10 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+                                        <Image Grid.Column="2" Visibility="{Binding AutoBrigRangeLevelLock}" Margin="8,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png" VerticalAlignment="Center" HorizontalAlignment="Left" Width="16" Height="16"/>
                                         <ComboBox
                                             x:Name="cbAutoBrightness"
-                                            Grid.Column="2"
+                                            Grid.Column="3"
                                             Width="184"
                                             Margin="0,0,10,0"
                                             Padding="10,0,0,0"
@@ -585,19 +596,22 @@
                                             ItemsSource="{Binding AutoBrightnessRangeLevel}"
                                             SelectedIndex="{Binding AutoBrightnessRangeLevel_SelectedIndex}"
                                             Style="{StaticResource DdpmComboBoxStyle}" />
+                                        <Border Background="#132F54" Grid.Column="0" Grid.ColumnSpan="4" Opacity="0.6" CornerRadius="13" Visibility="{Binding IsAutoBrigRangeLevelLockMask}" />
                                     </Grid>
                                     <Grid Grid.Row="2" Height="50">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <UXControls:UXTextBlock
+                                            Name="AutoColorTempText"
                                             Grid.Column="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoColorTempTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.10], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1" />
@@ -624,9 +638,10 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+                                        <Image Grid.Column="2" Visibility="{Binding AutoTemperatureLock}" Margin="8,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png" VerticalAlignment="Center" HorizontalAlignment="Left" Width="16" Height="16"/>
                                         <UXControls:UXToggleSwitch
                                             Name="AutoColorTempSwitch"
-                                            Grid.Column="2"
+                                            Grid.Column="3"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -637,9 +652,12 @@
                                             Foreground="White"
                                             IsChecked="{Binding Path=AutoColorTempStatus}" />
                                         <!--  IsEnabled="{Binding Path=SupportedColorTemp}"  -->
+                                        <Border Background="#132F54" Grid.Column="0" Grid.ColumnSpan="4" Opacity="0.6" CornerRadius="13" Visibility="{Binding IsAutoTemperatureLockMask}" />
+                                        <Border Background="#132F54" Grid.Column="4" Opacity="0.6" CornerRadius="13" Visibility="{Binding IsAutoTemperatureSwitchLockMask}" />
                                     </Grid>
                                     <Grid Grid.Row="3" Height="50">
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
@@ -649,7 +667,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             FontSize="16"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoPrimaryMonitorForSyncTextGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding [Brightness.12], Source={x:Static lang:LangHelper.Instance}}"
                                             TextBlockSemanticColorType="Light"
                                             TextBlockType="Display1"
@@ -689,9 +707,10 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+                                        <Image Grid.Column="2" Visibility="{Binding PrimaryMonitorSyncLock}" Margin="8,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png" VerticalAlignment="Center" HorizontalAlignment="Left" Width="16" Height="16"/>
                                         <UXControls:UXToggleSwitch
                                             Name="PrimaryMonitorSyncSwitch"
-                                            Grid.Column="2"
+                                            Grid.Column="3"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -702,6 +721,7 @@
                                             Foreground="White"
                                             IsChecked="{Binding Path=PrimaryMonitorSyncStatus}"
                                             IsEnabled="{Binding Path=SupportedPrimaryMonitorSync}" />
+                                        <Border Background="#132F54" Grid.Column="0" Grid.ColumnSpan="4" Opacity="0.6" CornerRadius="13" Visibility="{Binding IsPrimaryMonitorSyncLockMask}" />
                                     </Grid>
                                     <Border
                                         Grid.Row="4"
@@ -713,9 +733,10 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="14"
-                                            Foreground="White"
+                                            Foreground="{Binding IsAutoBrightnessRangeLevelStringGrayedOut, Converter={StaticResource BooleanToBrushConverter}}"
                                             Text="{Binding AutoBrightnessRangeLevel_String}" />
                                     </Border>
+                                    <Border Background="#132F54" Grid.Row="4" Opacity="0.6" CornerRadius="13" Visibility="{Binding IsAutoBrightnessRangeLevelStringLockMask}" />
                                 </Grid>
                             </StackPanel>
                         </Expander>
