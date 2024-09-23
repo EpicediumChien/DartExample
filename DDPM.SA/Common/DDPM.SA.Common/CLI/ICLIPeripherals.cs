@@ -41,7 +41,8 @@ namespace DDPM.SA.Common
             int retvalue = 0;
             Name = di.Name;
             Model = di.ModelNumber;
-            Guid = di.ID.ToString();
+            //Guid = di.ID.ToString();
+            Guid = "DellPeripheral.Webcam.0";
             Command = "GET";
             DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
 
