@@ -107,6 +107,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
+        private string Display_FWU_URL = $"https://clientperipherals.dell.com/DDPM/";
+        private string Display_FWU_URL_Folder = $"/Windows/Display/Firmware/";
 
         #endregion
 
@@ -3279,16 +3281,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<DisplayUpdateHelper> GetDisplayFWUpdate()
         {
             DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
+            SetDisplayFWUServer();
             displayUpdateHelper = GetDisplayFWMetadata();
             return Task.FromResult(displayUpdateHelper);
         }
-        private string URL = $"https://clientperipherals.dell.com/DDPM/";
-        private string URL_Folder = $"/Windows/Display/Firmware/";
-        private DisplayUpdateHelper GetDisplayFWMetadata()
+        private void SetDisplayFWUServer()
         {
-            DisplayUpdateHelper ret = new DisplayUpdateHelper();
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            URL = URL + URL_Folder;
+            Display_FWU_URL = Display_FWU_URL + Display_FWU_URL_Folder;
             if (localKey64 != null)
             {
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
@@ -3300,13 +3300,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         string s = obj.ToString();
                         if (!string.IsNullOrEmpty(s))
                         {
-                            URL = obj + URL_Folder;
+                            Display_FWU_URL = obj + Display_FWU_URL_Folder;
                         }
                     }
                 }
             }
+        }
+        private DisplayUpdateHelper GetDisplayFWMetadata()
+        {
+            DisplayUpdateHelper ret = new DisplayUpdateHelper();
             CertificateCheck certificateCheck = new CertificateCheck();
-            if (!certificateCheck.CheckURLCACertificate(URL))
+            if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
             {
                 return ret;
             }
@@ -3317,7 +3321,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 try
                 {
                     client.Timeout = TimeSpan.FromSeconds(5);
-                    HttpResponseMessage response = client.GetAsync(URL + "version_sha256.json").Result;
+                    HttpResponseMessage response = client.GetAsync(Display_FWU_URL + "version_sha256.json").Result;
                     response.EnsureSuccessStatusCode();
                     string jsonString = response.Content.ReadAsStringAsync().Result;
                     var data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
@@ -3340,7 +3344,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             if (firmwares_item != null)
                             {
                                 firmwares_item.id = model;
-                                firmwares_item.url = URL + firmwares_item.url;
+                                firmwares_item.url = Display_FWU_URL + firmwares_item.url;
                                 firmwares_item.CurrentVersion = monitorInfo.FwVersion;
                                 firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
                                 if (firmwares_item.SupportedPlatform != null)
