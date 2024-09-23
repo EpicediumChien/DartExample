@@ -313,6 +313,10 @@ namespace DDPM.SA.Plugin.CLIManager
                     return rst;
                     //break;
                 case "SCREENNOTIFICATION":       //ScreenNotification        DDPMW-1901
+                    if (commandLineInput.PluginsType.Equals("APP"))
+                        rst = CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
+                    else
+                        rst = CLIHandlerApp.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     break;
                 case "RESOLUTIONREFRESHRATE":    //ResolutionRefreshRate     DDPMW-1344
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
