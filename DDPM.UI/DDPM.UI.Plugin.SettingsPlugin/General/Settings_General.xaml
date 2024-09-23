@@ -22,13 +22,21 @@
             <Border Background="#99132F54"
                     CornerRadius="13">
                 <StackPanel>
-                    <Grid Margin="20,20,8,8">
+                    <StackPanel Margin="20,20,8,8"
+                                Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="On screen notifications"
                                                 FontSize="20"
                                                 TextBlockType="Header1"
                                                 Style="{StaticResource ModuleCaptionStyle}" />
-                    </Grid>
-                    <Grid Margin="20,20,8,8">
+                        <Grid Margin="15,0,0,0"
+                              VerticalAlignment="Center"
+                              Visibility="{Binding GeneralUI_LockTooltip}">
+                            <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
+                                  Fill="white" />
+                        </Grid>
+                    </StackPanel>
+                    <Grid Margin="20,20,8,8"
+                          >
                         <Border Background="#132F54"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
@@ -44,11 +52,17 @@
                                                        FontSize="16"
                                                        Background="#0A0E14"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Low_Battery_Level}"
-                                                       Click="LowBatteryLevel_Click" />
+                                                       Click="LowBatteryLevel_Click"
+                                                       IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                             </StackPanel>
                         </Border>
+                        <Border Background="#132F54"
+                                Opacity="0.6"
+                                CornerRadius="13"
+                                Visibility="{Binding GeneralUI_LockTooltip}" />
                     </Grid>
-                    <Grid Margin="20,20,8,8">
+                    <Grid Margin="20,20,8,8"
+                          >
                         <Border Background="#132F54"
                                 CornerRadius="6">
                             <StackPanel Orientation="Vertical"
@@ -63,7 +77,8 @@
                                                        FontSize="16"
                                                        Background="#0A0E14"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key}"
-                                                       Click="KeyboardLockKey_Click" />
+                                                       Click="KeyboardLockKey_Click"
+                                                       IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
                                                        Height="25"
                                                        HorizontalAlignment="Left"
@@ -72,7 +87,8 @@
                                                        FontSize="16"
                                                        Background="#0A0E14"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State}"
-                                                       Click="WB7022CoverState_Click" />
+                                                       Click="WB7022CoverState_Click"
+                                                       IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
                                                        Height="25"
                                                        HorizontalAlignment="Left"
@@ -81,7 +97,8 @@
                                                        FontSize="16"
                                                        Background="#0A0E14"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Display_MuteState}"
-                                                       Click="MuteState_Click" />
+                                                       Click="MuteState_Click"
+                                                       IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                                 <UXControls:UXCheckBox Margin="0,0,0,15"
                                                        Height="25"
                                                        HorizontalAlignment="Left"
@@ -90,9 +107,14 @@
                                                        FontSize="16"
                                                        Background="#0A0E14"
                                                        IsChecked="{Binding GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory}"
-                                                       Click="DisplayCPAndEM_Click" />
+                                                       Click="DisplayCPAndEM_Click"
+                                                       IsTabStop="{Binding GeneralUI_IsTabStoppable}" />
                             </StackPanel>
                         </Border>
+                        <Border Background="#132F54"
+                                Opacity="0.6"
+                                CornerRadius="13"
+                                Visibility="{Binding GeneralUI_LockTooltip}" />
                     </Grid>
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="Reports"
