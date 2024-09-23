@@ -58,7 +58,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }*/
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
-        {            
+        {
             bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Settings_Updates", e);
             if (isLocked != null)
             {
@@ -86,9 +86,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-
-            vm.SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
-            vm.RefreshUI();
+            vm.CheckUpdate();
         }
 
         private void DownloadAndInstall_Click(object sender, RoutedEventArgs e)

@@ -93,5 +93,6 @@ namespace DDPM.SA.Common.Settings
         public KVM KVM { get; set; } = new KVM();
         public List<VCP> VCPs { get; set; } = new List<VCP>();
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
+        public DisplayPropertiesInfo DisplayPropertiesInfo { get; set; }
     }
 }

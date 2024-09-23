@@ -593,6 +593,31 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
 
+                case "SCREENNOTIFICATION":
+                    {
+                        if (commandLineInput.TargetType == "APP")
+                        {
+                            var ret = ScreenNotifacationx(devMgr, commandLineInput);
+                            result.ExitCode = ret.code;
+                            result.serialize_Json_response = ret.result;
+                        }
+                        else
+                        {
+                            CLI_RESPONSE rsp_device = new CLI_RESPONSE()
+                            {
+                                Command = commandLineInput.Command,
+                                TargetFeature = commandLineInput.TargetFeature,
+                                Result = "Un-supported feature",
+                                Message = "Un-supported feature"
+                            };
+                            result.serialize_Json_response = JsonConvert.SerializeObject(rsp_device, Formatting.Indented);
+                            result.ExitCode = (int)CLI_ExitCode.unknow_command;
+                            return result;
+                        }
+
+                    }
+                    break;
+
                 case "ENERGYSAVER":
                     {
                         var energysaver = EnergysaverX(devMgr, commandLineInput);
@@ -1033,6 +1058,148 @@ namespace DDPM.CLI.Plugins.Display
                 G_ConnectedDevices_RESPONSE.Message = $"Un-supported command: {type}";
             }
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
+        }
+
+        private (int code, string result) ScreenNotifacationx(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
+        {
+            if (commandLineInput.Command.Equals("GET"))
+            {
+                if (commandLineInput.Options.Count > 0)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Syntax error";
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                }
+                else
+                {
+                    return ScreenNotifacation(devMgr, commandLineInput).Result;
+                }
+            }
+            else if (commandLineInput.Command.Equals("SET"))
+            {
+                if (commandLineInput.Options.Count > 1)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Syntax error";
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                }
+                else
+                {
+                    return ScreenNotifacation(devMgr, commandLineInput).Result;
+                }
+            }
+            else
+            {
+                CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                cli_Response.Result = "FAIL";
+                cli_Response.Message = "Un-supported command";
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+            }
+        }
+
+        private async Task<(int code, string result)> ScreenNotifacation(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
+            {
+
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    ;
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+
+                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                    {
+                        case "ON":
+                            writelog($"ScreenNotifacation on entry");
+                            devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(true);
+                            devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(true);
+                            devMgr.Set_GlobalSetting_DisplayWB7022CoverState(true);
+                            devMgr.Set_GlobalSetting_DisplayMuteState(true);
+                            devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(true);
+
+                            cli_Response.Result = "PASS";
+                            cli_Response.Value = "ON";
+                            break;
+
+                        case "OFF":
+                            writelog($"ScreenNotifacation off entry");
+                            devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(false);
+                            devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(false);
+                            devMgr.Set_GlobalSetting_DisplayWB7022CoverState(false);
+                            devMgr.Set_GlobalSetting_DisplayMuteState(false);
+                            devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(false);
+                            cli_Response.Result = "PASS";
+                            cli_Response.Value = "OFF";
+                            break;
+
+                        default:
+                            writelog($"option value not support");
+
+                            cli_Response.Command = commandLineInput.Command;
+                            cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                            cli_Response.Result = "FAIL";
+                            cli_Response.Message = "Un-supported command";
+                            break;
+                    }
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            if (commandLineInput.Command == "GET")
+            {
+                List<int> _monitorIndeies = new List<int>();
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    writelog($"ScreenNotifacation get entry");
+
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    GlobalSettingParam param = new GlobalSettingParam();
+                    param = devMgr.GetGlobalSettingParam().Result;
+
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Model = monitor.AliasDeviceName;
+                    cli_Response.SerialNumber = monitor.edid.SerialNumber;
+                    cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
+                    cli_Response.ServiceTag = monitor.edid.ServiceTag;
+                    cli_Response.Value = (param.GlobalSetting_General.Low_Battery_Level.ToString().ToLower() == "true") ? "ON" : "OFF";
+                    cli_Response.Result = "Succes";
+
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                }
+            }
+            writelog($"ScreenNotifacation exit return value : {output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
         #region Jarvis methods
