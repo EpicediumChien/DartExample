@@ -199,7 +199,7 @@ namespace DDPM.UI.Module.DisplayProperties
                         }
                     }
                 }
-                _SupportedUSBCPrioeitization = displayPropertiesInfo.SupportedUSBCPrioritization;
+                _SupportedUSBCPrioeitization = true;
                 switch (displayPropertiesInfo.USBCPrioritizationType)
                 {
                     case USBCPrioritizationType.HighDataSpeed:
