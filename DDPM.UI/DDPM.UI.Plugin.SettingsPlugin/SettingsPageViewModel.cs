@@ -93,7 +93,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 WorkerSupportsCancellation = false
             };
             bw.DoWork += Set_SaveMonitorAssetReport_Dowork;
-            bw.RunWorkerCompleted += Set_SaveMonitorAssetReport_Done;
+            bw.RunWorkerCompleted += Set_Page_Done;
             bw.RunWorkerAsync(filePath);
             IsBusy = true;
             OnPropertyChanged("IsBusy");
@@ -106,7 +106,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 WorkerSupportsCancellation = false
             };
             bw.DoWork += Set_SaveDiagnosticReport_Dowork;
-            bw.RunWorkerCompleted += Set_SaveMonitorAssetReport_Done;
+            bw.RunWorkerCompleted += Set_Page_Done;
             bw.RunWorkerAsync(filePath);
             IsBusy = true;
             OnPropertyChanged("IsBusy");
@@ -122,7 +122,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             string filePath = e.Argument.ToString();
             bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile( filePath).Result;
         }
-        private void Set_SaveMonitorAssetReport_Done(object sender, RunWorkerCompletedEventArgs e)
+        private void Set_Page_Done(object sender, RunWorkerCompletedEventArgs e)
         {
             IsBusy = false;
             OnPropertyChanged("IsBusy");
@@ -231,7 +231,24 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return $"Driver version: {GlobalSettingParam.GlobalSetting_About.DriverVersion}";
             }
         }
-
+        public void CheckUpdate()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += Set_CheckUpdate_Dowork;
+            bw.RunWorkerCompleted += Set_Page_Done;
+            bw.RunWorkerAsync();
+            IsBusy = true;
+            OnPropertyChanged("IsBusy");
+        }
+        private void Set_CheckUpdate_Dowork(object sender, DoWorkEventArgs e)
+        {
+            SetUpdateInfoUI(DdpmCommonHelper.DeviceManagerSA.GetFWUpdateInfo(false).Result, DdpmCommonHelper.DeviceManagerSA.SW_GetSWUpdateInfo(false).Result);
+            RefreshUI();
+        }
         public void SetUpdateInfoUI(FWUpdateInfoPackage fwUpdateInfoPackage, SWUpdateInfoPackage swUpdateInfoPackage)
         {
             LastCheckDate = fwUpdateInfoPackage.TheLastCheckTime.ToString();
