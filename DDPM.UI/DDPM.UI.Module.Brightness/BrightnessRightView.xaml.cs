@@ -3,8 +3,11 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 using VcpCore.Common;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -67,6 +70,7 @@ namespace DDPM.UI.Module.Brightness
                     if (vm != null)
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Update_ALSLockStatus(isLocked_ALS ?? false);
                         Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {isLocked_ALS}");
                     }
                 }));
