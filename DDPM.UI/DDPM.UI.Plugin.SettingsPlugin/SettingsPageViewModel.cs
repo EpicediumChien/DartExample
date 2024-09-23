@@ -386,6 +386,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 _Lock_AnalyticsPage = value;
                 OnPropertyChanged("AnalyticsPage_IsEnable");
+                OnPropertyChanged("AnalyticsPage_Opacity");
                 OnPropertyChanged("AnalyticsPage_LockTooltip");
             }
         }

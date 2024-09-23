@@ -3,7 +3,9 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
+using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -40,8 +42,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_Settings_TelemetryConsent}");
                         vm.Lock_UpdatesPage = data.LockSettings.Lock_Settings_Updates;
                         Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(check) : {data.LockSettings.Lock_Settings_Updates}");
-                        vm.Lock_GeneralPage = data.LockSettings.Lock_Settings_Updates;
-                        Trace.WriteLine($"[SettingsPage] Apply General(check) : {data.LockSettings.Lock_Settings_Updates}");
+                        vm.Lock_GeneralPage = data.LockSettings.Lock_Setting_ScreenNotification;
+                        Trace.WriteLine($"[SettingsPage] Apply General(check) : {data.LockSettings.Lock_Setting_ScreenNotification}");
                     }
                 }));
 
@@ -82,6 +84,17 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     {
                         vm.Lock_UpdatesPage = (bool)isLocked;
                         Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(Lock) : {isLocked}");
+                    }
+                }));
+            }
+            isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Setting_ScreenNotification", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                    if (vm != null)
+                    {
                         vm.Lock_GeneralPage = (bool)isLocked;
                         Trace.WriteLine($"[SettingsPage] Apply General(check) : {isLocked}");
                     }
