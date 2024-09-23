@@ -866,6 +866,13 @@ namespace DDPM.SA.Common.CLI
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Audio_micNoiseCancellation = target;
                         }
+                        else if (commandLineInput.TargetFeature.Equals("SCREENNOTIFICATION"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Setting_ScreenNotification = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Setting_ScreenNotification = target;
+                        }
                         else
                             return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
@@ -945,6 +952,11 @@ namespace DDPM.SA.Common.CLI
                             if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
                                 continue;
                         }
+                        else if (commandLineInput.TargetFeature.Equals("SCREENNOTIFICATION"))
+                        {
+                            if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
+                                continue;
+                        }
                         //No pre-definition be found, means fail
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
                         Debug.WriteLine(response.Message);
@@ -993,6 +1005,9 @@ namespace DDPM.SA.Common.CLI
                                 break;
                             case "WEARDETECTION":
                                 status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_wearDetection" }).Result;
+                                break;
+                            case "SCREENNOTIFICATION":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Setting_ScreenNotification" }).Result;
                                 break;
                         }
                     }
