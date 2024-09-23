@@ -31,23 +31,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public Settings_General()
         {
             InitializeComponent();
-
-            //lock/unlock init, 9/23 add OSD lock
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-            }
         }
         ~Settings_General()
         {
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-            }
-        }
-        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
-        {
-            
+
         }
         private void LowBatteryLevel_Click(object sender, RoutedEventArgs e)
         {
