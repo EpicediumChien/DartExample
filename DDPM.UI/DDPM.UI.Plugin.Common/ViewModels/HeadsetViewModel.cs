@@ -1708,6 +1708,29 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged("isMicTabStopped");
             }
         }
+
+        private Visibility _isWearLocked = Visibility.Collapsed;
+
+        public Visibility isWearLocked
+        {
+            get { return _isWearLocked; }
+            set
+            {
+                _isWearLocked = value;
+                OnPropertyChanged("isWearLocked");
+            }
+        }
+
+        private bool _isWearTabStopped = true;
+        public bool isWearTabStopped
+        {
+            get { return _isWearTabStopped; }
+            set
+            {
+                _isWearTabStopped = value;
+                OnPropertyChanged("isWearTabStopped");
+            }
+        }
         #endregion
     }
 }
