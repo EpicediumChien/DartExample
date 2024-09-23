@@ -873,6 +873,34 @@ namespace DDPM.SA.Common.CLI
                             if (data_user != null)
                                 data_user.LockSettings.Lock_Setting_ScreenNotification = target;
                         }
+                        else if (commandLineInput.TargetFeature.Equals("HDR"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Webcam_hdr = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Webcam_hdr = target;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("ANTIFLICKER"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Webcam_AntiFlicker = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Webcam_AntiFlicker = target;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("AIAUTOFRAMING"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Webcam_AIAutoFraming = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Webcam_AIAutoFraming = target;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("MICSWITCH"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Webcam_MicSwitch = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Webcam_MicSwitch = target;
+                        }
                         else
                             return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
@@ -915,6 +943,14 @@ namespace DDPM.SA.Common.CLI
                                 data_user.LockSettings.Lock_Audio_wearDetection = target;
                             continue;
                         }
+                        else if (commandLineInput.TargetFeature.Equals("PRESENCEDETECTION"))
+                        {
+                            if (data_IT != null)
+                                data_IT.Lock_Webcam_PresenceDetection = target;
+                            if (data_user != null)
+                                data_user.LockSettings.Lock_Webcam_PresenceDetection = target;
+                            continue;
+                        }
                     }
                     else
                     {
@@ -953,6 +989,26 @@ namespace DDPM.SA.Common.CLI
                                 continue;
                         }
                         else if (commandLineInput.TargetFeature.Equals("SCREENNOTIFICATION"))
+                        {
+                            if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("HDR"))
+                        {
+                            if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("ANTIFLICKER"))
+                        {
+                            if (value.ToString().Equals("50") || value.ToString().Equals("60"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("AIAUTOFRAMING"))
+                        {
+                            if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
+                                continue;
+                        }
+                        else if (commandLineInput.TargetFeature.Equals("MICSWITCH"))
                         {
                             if (value.ToUpper().Equals("ON") || value.ToUpper().Equals("OFF"))
                                 continue;
@@ -1008,6 +1064,21 @@ namespace DDPM.SA.Common.CLI
                                 break;
                             case "SCREENNOTIFICATION":
                                 status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Setting_ScreenNotification" }).Result;
+                                break;
+                            case "HDR":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_hdr" }).Result;
+                                break;
+                            case "ANTIFLICKER":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_AntiFlicker" }).Result;
+                                break;
+                            case "AIAUTOFRAMING":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_AIAutoFraming" }).Result;
+                                break;
+                            case "MICSWITCH":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_MicSwitch" }).Result;
+                                break;
+                            case "PRESENCEDETECTION":
+                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_PresenceDetection" }).Result;
                                 break;
                         }
                     }
