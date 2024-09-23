@@ -10,6 +10,7 @@
         public bool Lock_Settings_Updates { get; set; } = false;
         //public bool Lock_Settings_RestoreFactoryDefaults { get; set; } = false;
         public bool Lock_Setting_RestoreDefaults { get; set; } = false;
+        public bool Lock_Setting_ScreenNotification { get; set; } = false;
         #endregion Global Setting
 
         #region Display Setting
