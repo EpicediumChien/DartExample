@@ -1060,24 +1060,45 @@ namespace DDPM.CLI.Plugins.Display
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
         }
 
-        private (int code, string result) ScreenNotifacationx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        private (int code, string result) ScreenNotifacationx(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
         {
-            if (commandLineInput.Command == "GET" && commandLineInput.Options.Count == 0)
+            if (commandLineInput.Command.Equals("GET"))
             {
-                return ScreenNotifacation(devMgr, commandLineInput).Result;
+                if (commandLineInput.Options.Count > 0)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Syntax error";
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                }
+                else
+                {
+                    return ScreenNotifacation(devMgr, commandLineInput).Result;
+                }
             }
-            else if (commandLineInput.Command == "SET" && commandLineInput.Options.Count == 1)
+            else if (commandLineInput.Command.Equals("SET"))
             {
-                return ScreenNotifacation(devMgr, commandLineInput).Result;
+                if (commandLineInput.Options.Count > 1)
+                {
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE();
+                    cli_Response.Result = "FAIL";
+                    cli_Response.Message = "Syntax error";
+                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                    return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                }
+                else
+                {
+                    return ScreenNotifacation(devMgr, commandLineInput).Result;
+                }
             }
             else
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                cli_Response.Command = commandLineInput.Command;
-                cli_Response.TargetFeature = commandLineInput.TargetFeature;
                 cli_Response.Result = "FAIL";
-                cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
-                return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                cli_Response.Message = "Un-supported command";
+                System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
+                return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
             }
         }
 
@@ -1141,7 +1162,7 @@ namespace DDPM.CLI.Plugins.Display
                             cli_Response.Command = commandLineInput.Command;
                             cli_Response.TargetFeature = commandLineInput.TargetFeature;
                             cli_Response.Result = "FAIL";
-                            cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                            cli_Response.Message = "Un-supported command";
                             break;
                     }
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
