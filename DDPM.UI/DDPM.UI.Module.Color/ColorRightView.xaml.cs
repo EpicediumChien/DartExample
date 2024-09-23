@@ -56,10 +56,40 @@ namespace DDPM.UI.Module.Color
             //}
 
             //Lock/unlock
+
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+                return;
+            try
+            {
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data == null)
+                    return;
+                if (data.UserSettings == null)
+                    return;
+
+                vm.ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
+
+                if (vm.ShowLockMask)
+                    vm.isTabStoppable = "None";
+                else
+                    vm.isTabStoppable = "Cycle";
+
+                //vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
+
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                //DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotifyEvent;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            /*
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;                
             }
+            */
         }
 
         //  Jim add 20240606
@@ -94,6 +124,14 @@ namespace DDPM.UI.Module.Color
                     ColorViewModel vm = (ColorViewModel)this.DataContext;
                     if (vm != null)
                     {
+                        //vm.isTabStoppable = !(bool)isLocked;
+                        vm.ShowLockMask = (bool)isLocked;
+
+                        if (vm.ShowLockMask)
+                            vm.isTabStoppable = "None";
+                        else
+                            vm.isTabStoppable = "Cycle";
+
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Color right view(Lock) : {isLocked}");
                     }
