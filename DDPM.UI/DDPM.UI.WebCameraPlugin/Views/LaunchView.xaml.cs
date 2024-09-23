@@ -11,6 +11,7 @@ using DDPM.UI.Module.WebCameraSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -57,6 +58,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private bool IsPresetOpen = false;
         private Stopwatch stopwatch = new Stopwatch();
         private DispatcherTimer RecordingTimer;
+        private bool _running = false;
 
         //private readonly string[] PresetNames = [LangHelper.Instance["Default"], LangHelper.Instance["Camera.10"], LangHelper.Instance["Camera.9"], LangHelper.Instance["Camera.8"]];
         private readonly string[] PresetNames = [LangHelper.Instance["Default"], Strings.Smooth, Strings.Vibrant, Strings.Warm];
@@ -116,7 +118,111 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             RecordingTimer = new DispatcherTimer();
             RecordingTimer.Interval = TimeSpan.FromSeconds(1);
             RecordingTimer.Tick += RecordingTimer_Tick;
+
+            _vm!.WebcamSettingChanged += WebcamSettingChanged;
             Preview();
+        }
+
+        private void WebcamSettingChanged(object? sender, EventArgs e)
+        {
+            Preview();
+        }
+
+        private async void Preview()
+        {
+            if (_vm!.MediaCapture != null)
+            { return; }
+
+            try
+            {
+                // jim add 20240621
+                var frameSourceGroups = await MediaFrameSourceGroup.FindAllAsync();
+
+                // 20240626  jim add to avoid exception
+                if (frameSourceGroups.Count <= 0)
+                {
+                    Debug.WriteLine("frameSourceGroups.Count = 0");
+                    return;
+                }
+
+                // 20240626 jim add
+                MediaFrameSourceGroup? selectedFrameSourceGroup = frameSourceGroups[0];
+
+                int index_matched_webcam = 0;
+
+                for (index_matched_webcam = 0; index_matched_webcam < frameSourceGroups.Count; index_matched_webcam++)
+                {
+                    selectedFrameSourceGroup = frameSourceGroups[index_matched_webcam];
+
+                    if (_vm != null && _vm.CurrentDeviceInfo != null)
+                    {
+                        if (selectedFrameSourceGroup.DisplayName.Contains(_vm.CurrentDeviceInfo.ModelNumber, StringComparison.CurrentCultureIgnoreCase))
+                            break;
+                    }
+                    else
+                        selectedFrameSourceGroup = null;
+                }
+
+                // 20240626  jim add to avoid exception
+                if (selectedFrameSourceGroup == null)
+                {
+                    Debug.WriteLine("selectedGroup null");
+                    return;
+                }
+
+                MediaFrameSourceInfo frameSourceInfo = selectedFrameSourceGroup.SourceInfos[0];
+
+                _vm!.MediaCapture = new MediaCapture();
+                _vm.MediaCapture.Failed += handler;
+
+                try
+                {
+                    await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
+                    {
+                        SourceGroup = selectedFrameSourceGroup,
+                        SharingMode = MediaCaptureSharingMode.ExclusiveControl,
+                        //SharingMode = MediaCaptureSharingMode.SharedReadOnly,
+                        MemoryPreference = MediaCaptureMemoryPreference.Cpu,
+                        StreamingCaptureMode = StreamingCaptureMode.AudioAndVideo
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("MediaCapture initiate fail: " + ex.Message);
+                    return;
+                }
+
+                MediaFrameSource mediaFrameSource = _vm.MediaCapture.FrameSources[frameSourceInfo.Id];
+
+                // 20240626 jim modify
+                _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
+
+                _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
+
+                await _vm.MediaFrameReader.StartAsync();
+
+                // Query all properties [resolution and frame rate] of the webcam device
+                _vm.allProperties = _vm.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
+
+                // Order them by resolution then frame rate
+                _vm.allProperties = _vm.allProperties.OrderByDescending(x => x.Height * x.Width).ThenByDescending(x => x.FrameRate);
+
+                _vm.SetResolution_Selected(1);
+                _vm.SetFPS_Selected(1);
+                //imgDevice.Visibility = Visibility.Hidden;
+                DoubleAnimation visibilityAnimation = new()
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = new Duration(TimeSpan.FromSeconds(0.5))
+                };
+                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
+                grdPreview.Visibility = _vm.WebcamGrid ? Visibility.Visible : Visibility.Collapsed;
+            }
+            catch (Exception Exc)
+            {
+                Debug.WriteLine("MediaCapture initialization failed: " + Exc.Message);
+            }
         }
 
         private void RecordingTimer_Tick(object? sender, EventArgs e)
@@ -147,7 +253,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }));
         }
 
-        private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
+        private void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -156,7 +262,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-                await CleanupMediaCaptureAsync();
+                _ = CleanupMediaCaptureAsync();
             }
             catch (Exception Exc)
             {
@@ -319,120 +425,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.SetLadningMode(true);
             _vm.SelectVBar();
 
-            _ = CleanupMediaCaptureAsync();
-            imgDevice.Visibility = Visibility.Visible;
-            gridPreview.Visibility = Visibility.Hidden;
             if (IsPresetOpen)
             { btnPreset_Click(this, null); }
         }
 
-        MediaCaptureFailedEventHandler handler = (sender, e) =>
+        private MediaCaptureFailedEventHandler handler = (sender, e) =>
         {
             System.Threading.Tasks.Task task = System.Threading.Tasks.Task.Run(async () =>
             {
                 await new MessageDialog("There was an error capturing the video from camera.", "Error").ShowAsync();
             });
         };
-
-        // 20240626 jim add
-        private async void Preview()
-        {
-            if (_vm!.captureManagerInitialized)
-            { return; }
-
-            try
-            {
-                // jim add 20240621
-                var frameSourceGroups = await MediaFrameSourceGroup.FindAllAsync();
-
-                // 20240626  jim add to avoid exception
-                if (frameSourceGroups.Count <= 0)
-                {
-                    Debug.WriteLine("frameSourceGroups.Count = 0");
-                    return;
-                }
-
-                // 20240626 jim add
-                MediaFrameSourceGroup? selectedFrameSourceGroup = frameSourceGroups[0];
-
-                int index_matched_webcam = 0;
-
-                for (index_matched_webcam = 0; index_matched_webcam < frameSourceGroups.Count; index_matched_webcam++)
-                {
-                    selectedFrameSourceGroup = frameSourceGroups[index_matched_webcam];
-
-                    if (_vm != null && _vm.CurrentDeviceInfo != null)
-                    {
-                        if (selectedFrameSourceGroup.DisplayName.ToUpper().Contains(_vm.CurrentDeviceInfo.ModelNumber.ToUpper()))
-                            break;
-                    }
-                    else
-                        selectedFrameSourceGroup = null;
-                }
-
-                // 20240626  jim add to avoid exception
-                if (selectedFrameSourceGroup == null)
-                {
-                    Debug.WriteLine("selectedGroup null");
-                    return;
-                }
-
-                MediaFrameSourceInfo frameSourceInfo = selectedFrameSourceGroup.SourceInfos[0];
-
-                _vm!.MediaCapture = new MediaCapture();
-                _vm.MediaCapture.Failed += handler;
-
-                try
-                {
-                    await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
-                    {
-                        SourceGroup = selectedFrameSourceGroup,
-                        SharingMode = MediaCaptureSharingMode.ExclusiveControl,
-                        //SharingMode = MediaCaptureSharingMode.SharedReadOnly,
-                        MemoryPreference = MediaCaptureMemoryPreference.Cpu,
-                        StreamingCaptureMode = StreamingCaptureMode.Video
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("MediaCapture initiate fail: " + ex.Message);
-                    return;
-                }
-
-                MediaFrameSource mediaFrameSource = _vm.MediaCapture.FrameSources[frameSourceInfo.Id];
-
-                // 20240626 jim modify
-                _vm.MediaFrameReader = await _vm.MediaCapture.CreateFrameReaderAsync(mediaFrameSource, MediaEncodingSubtypes.Argb32);
-
-                _vm.MediaFrameReader.FrameArrived += MediaFrameReader_FrameArrived;
-
-                await _vm.MediaFrameReader.StartAsync();
-
-                // Query all properties [resolution and frame rate] of the webcam device
-                _vm.allProperties = _vm.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
-
-                // Order them by resolution then frame rate
-                _vm.allProperties = _vm.allProperties.OrderByDescending(x => x.Height * x.Width).ThenByDescending(x => x.FrameRate);
-
-                // jim add 20240626
-                _vm.captureManagerInitialized = true;
-
-                _vm.SetResolution_Selected(1);
-                _vm.SetFPS_Selected(1);
-                //imgDevice.Visibility = Visibility.Hidden;
-                DoubleAnimation visibilityAnimation = new()
-                {
-                    From = 1,
-                    To = 0,
-                    Duration = new Duration(TimeSpan.FromSeconds(0.5))
-                };
-                imgDevice.BeginAnimation(OpacityProperty, visibilityAnimation);
-            }
-            catch (Exception Exc)
-            {
-                Debug.WriteLine("MediaCapture initialization failed: " + Exc.Message);
-            }
-        }
 
         /// <summary>
         /// MediaFrameReader FrameArrived event
@@ -441,11 +444,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             using var latestFrameReference = sender.TryAcquireLatestFrame();
 
-            // 2024060626 jim modify to avoid exception
             var videoMediaFrame = latestFrameReference?.VideoMediaFrame;
             var softwareBitmap = videoMediaFrame?.SoftwareBitmap;
 
-            // 2024060626 jim modify to avoid exception
             if (softwareBitmap != null)
             {
                 if (softwareBitmap.BitmapPixelFormat != BitmapPixelFormat.Bgra8 ||
@@ -456,13 +457,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 CameraImage.Dispatcher.BeginInvoke(async () =>
                 {
-                    if (_vm._running)
+                    if (_running)
                         return;
-                    _vm._running = true;
-
+                    _running = true;
                     CameraImage.Source = await ConvertSoftwareBitmap2BitmapImage(softwareBitmap);
-
-                    _vm._running = false;
+                    _running = false;
                 });
             }
         }
@@ -491,7 +490,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void StartRecord()
         {
-            if (_vm!.Countdown_IsChecked)
+            if (_vm!.WebcamCountdown)
             {
                 //_countdownValue = 3; // 設置倒數起始值
                 //CountdownText.Text = _countdownValue.ToString();
@@ -665,10 +664,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _vm.MediaCapture = null;
                 }
             }
-
-            _vm.captureManagerInitialized = false;
-
-            Debug.WriteLine("Media preview has canceled.");
         }
 
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)

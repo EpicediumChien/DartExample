@@ -4066,7 +4066,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Controls video clarity and style by adjusting the number of images captured per second 的當地語系化字串。
+        ///   查詢類似 Controls video clarity and style by adjusting the number of images captured per second. 的當地語系化字串。
         /// </summary>
         internal static string WebCameraCapture_9 {
             get {

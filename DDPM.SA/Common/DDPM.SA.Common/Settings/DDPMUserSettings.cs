@@ -72,6 +72,8 @@ namespace DDPM.SA.Common.Settings
         //public bool isOnNKVM { get; set; } = false;
         public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }
         public string VideoCaptureFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+        public bool WebcamCountdown { get; set; } = false;
+        public bool WebcamGrid { get; set; } = false;
 
     }
 }

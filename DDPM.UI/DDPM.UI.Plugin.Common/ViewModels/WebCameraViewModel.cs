@@ -9,8 +9,11 @@ using Microsoft;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Media.Animation;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
@@ -37,7 +40,10 @@ namespace DDPM.UI.Plugin.ViewModels
         #endregion Variables
 
         public string CurrentProfileName = "";
+        public List<string> Resolutions = new();
+        public List<string> FPSs = new();
 
+        public event EventHandler<EventArgs> WebcamSettingChanged;
         public new event PropertyChangedEventHandler? PropertyChanged;
 
         public WebCameraViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
@@ -55,7 +61,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
             SetResolution_Selected(1);
             SetFPS_Selected(1);
-
         }
 
         public void SetResolution_Selected(int index)
@@ -186,10 +191,36 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
 
+            Resolutions.Clear();
+            FPSs.Clear();
+
+            InitializeWebcam();
+            WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
+
             IsMicEnumerationOnEnabled = true;
             AlertVisibility = Visibility.Collapsed;
             return true;
         }
+
+        private void InitializeWebcam()
+        {
+            WebcamSettings = WebcamSettings.ImportWebcamSettings(Model);
+            if (string.IsNullOrEmpty(WebcamSettings.SelectedResolution))
+            {
+                foreach (var res in CurrentDeviceInfo!.SupportedResolutions)
+                {
+                    var sts = res.Split(';');
+                    if (!WebcamSettings.SupportedFPSs.ContainsKey(sts[2]))
+                    { WebcamSettings.SupportedFPSs.Add(sts[2], new List<string>()); }
+                    if (!WebcamSettings.SupportedFPSs[sts[2]].Contains(sts[1]))
+                    { WebcamSettings.SupportedFPSs[sts[2]].Add(sts[1]); }
+                }
+                WebcamSettings.SelectedResolution = WebcamSettings.SupportedFPSs.Keys.FirstOrDefault() ?? "";
+                WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].FirstOrDefault() ?? "");
+            }
+
+        }
+
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
             base.HandleNotification(changeType, di, property);
@@ -235,8 +266,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public MediaCapture? MediaCapture;
         public MediaFrameReader MediaFrameReader;
 
-        public bool captureManagerInitialized = false;
-        public bool _running = false;
         public bool IsRecording;
         public string strCurrent_Resolution;
         public string strCurrent_Framerate;
@@ -273,7 +302,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 isChecked_AWB = value;
-                OnPropertyChanged(nameof(IsChecked_AWB));
+                OnPropertyChanged();
             }
         }
 
@@ -285,7 +314,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 awbStatus_String = value;
-                OnPropertyChanged("AWBStatus_String");
+                OnPropertyChanged();
             }
         }
 
@@ -313,39 +342,33 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private bool framingGrid_isChecked;
-
-        public bool FramingGrid_IsChecked
-        {
-            get { return framingGrid_isChecked; }
-            set
-            {
-                framingGrid_isChecked = value;
-                OnPropertyChanged("FramingGrid_IsChecked");
-            }
-        }
-
-        private bool countdown_isChecked;
-
-        public bool Countdown_IsChecked
-        {
-            get { return countdown_isChecked; }
-            set
-            {
-                countdown_isChecked = value;
-                OnPropertyChanged("Countdown_IsChecked");
-            }
-        }
-
-        private string _videoCaptureFolder;
-
         public string VideoCaptureFolder
         {
-            get => DDPMSettings!.UserSettings.VideoCaptureFolder;
+            get => WebcamSettings.VideoCaptureFolder;
             set
             {
-                DDPMSettings!.UserSettings.VideoCaptureFolder = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetAppConfigData(DDPMSettings);
+                WebcamSettings.VideoCaptureFolder = value;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            }
+        }
+        public bool WebcamCountdown
+        {
+            get => WebcamSettings.WebcamCountdown;
+            set
+            {
+                WebcamSettings.WebcamCountdown = value;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            }
+        }
+        public bool WebcamGrid
+        {
+            get => WebcamSettings.WebcamGrid;
+            set
+            {
+                WebcamSettings.WebcamGrid = value;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                OnPropertyChanged();
+                WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -364,7 +387,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
         }
-        private bool isMicEnumerationOnEnabled;
+        private bool isMicEnumerationOnEnabled = true;
         public bool IsMicEnumerationOnEnabled
         {
             get => isMicEnumerationOnEnabled;

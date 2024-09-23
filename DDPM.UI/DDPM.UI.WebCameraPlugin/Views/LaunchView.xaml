@@ -20,6 +20,7 @@
         <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
+      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <Storyboard x:Key="StoryGotoTwoView">
         <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
@@ -117,7 +118,7 @@
                 <Image Grid.Row="0"  Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="3" Name="CameraImage" Width="704" Height="396" Stretch="Fill" />
 
                 <!-- Add vertical grid line -->
-                <Grid Visibility="{Binding IsChecked_FramingGrid}">
+                <Grid x:Name="grdPreview" Visibility="Collapsed">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
