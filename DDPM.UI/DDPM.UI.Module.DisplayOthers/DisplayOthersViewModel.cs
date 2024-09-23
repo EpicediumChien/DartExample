@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DDPM.UI.Common;
 using DDPM.SA.Common.Display;
 using System.Windows.Forms;
+using System.Windows;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -95,6 +96,12 @@ namespace DDPM.UI.Module.DisplayOthers
         public System.Windows.Media.Brush PowerNap_Color { get; set; }
 
         public bool AutoApply_Checked { get; set; }
+
+        public bool isSettingsEnable {  get; set; } = true;
+
+        public Visibility LockSettings_Visibility { get; set; } = Visibility.Collapsed;
+
+        public double Settings_Opacity { get; set; } = 1;
 
         #region UI Enable Flags
 

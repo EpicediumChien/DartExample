@@ -1060,7 +1060,7 @@ namespace DDPM.CLI.Plugins.Display
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
         }
 
-        private (int code, string result) ScreenNotifacationx(CommandLineInput commandLineInput, IDeviceManagerSA devMgr)
+        private (int code, string result) ScreenNotifacationx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command.Equals("GET"))
             {
