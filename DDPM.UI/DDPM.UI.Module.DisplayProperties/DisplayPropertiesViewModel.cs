@@ -5,6 +5,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using VcpCore.Common;
@@ -144,7 +145,92 @@ namespace DDPM.UI.Module.DisplayProperties
                 return "0.5";
             }
         }
-
+        #region Lock/Unlock
+        #region RefreshRate
+        private bool _Lock_RefreshRate;
+        public bool Lock_RefreshRate
+        {
+            get
+            {
+                return _Lock_RefreshRate;
+            }
+            set
+            {
+                _Lock_RefreshRate = value;
+                OnPropertyChanged("RefreshRateUI_IsEnable");
+                OnPropertyChanged("RefreshRateUI_Opacity");
+                OnPropertyChanged("RefreshRateUI_LockTooltip");
+            }
+        }
+        public bool RefreshRateUI_IsEnable
+        {
+            get
+            {
+                return _Lock_RefreshRate ? false : true;
+            }
+        }
+        public string RefreshRateUI_Opacity
+        {
+            get
+            {
+                return _Lock_RefreshRate ? "0.5" : "1.0";
+            }
+        }
+        public Visibility RefreshRateUI_LockTooltip
+        {
+            get
+            {
+                return _Lock_RefreshRate ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        #endregion
+        #region USB-C Prioritization
+        private bool _Lock_USBCrioritization;
+        public bool Lock_USBCrioritization
+        {
+            get
+            {
+                return _Lock_USBCrioritization;
+            }
+            set
+            {
+                _Lock_USBCrioritization = value;
+                OnPropertyChanged("USBCrioritizationUI_IsTabStoppable");
+                OnPropertyChanged("USBCrioritizationUI_Opacity");
+                OnPropertyChanged("USBCrioritizationUI_LockTooltip");
+                OnPropertyChanged("USBCrioritizationUI_NoLock");
+            }
+        }
+        public bool USBCrioritizationUI_IsTabStoppable
+        {
+            get
+            {
+                return _Lock_USBCrioritization ? false : true;
+            }
+        }
+        public string USBCrioritizationUI_Opacity
+        {
+            get
+            {
+                return _Lock_USBCrioritization ? "0.5" : "1.0";
+            }
+        }
+        public Visibility USBCrioritizationUI_LockTooltip
+        {
+            get
+            {
+                return _Lock_USBCrioritization ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        public Visibility USBCrioritizationUI_NoLock
+        {
+            get
+            {
+                return _Lock_USBCrioritization ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+        #endregion
+        #endregion
         #region UI Enable Flags
 
         private bool _isBusy = false;
@@ -199,7 +285,7 @@ namespace DDPM.UI.Module.DisplayProperties
                         }
                     }
                 }
-                _SupportedUSBCPrioeitization = true;
+                _SupportedUSBCPrioeitization = displayPropertiesInfo.SupportedUSBCPrioritization;
                 switch (displayPropertiesInfo.USBCPrioritizationType)
                 {
                     case USBCPrioritizationType.HighDataSpeed:
@@ -240,8 +326,10 @@ namespace DDPM.UI.Module.DisplayProperties
 
                 //Lock/unlock UI init data here (user's lock data should be synced up from IT config, so read user's data directly)
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                bool isLocked_RefreshRate = data.LockSettings.Lock_Display_ResolutionRefreshRate;
-                bool isLocked_USBC = data.LockSettings.Lock_Display_USBCPrioritization;
+                Lock_RefreshRate = (bool)data.LockSettings.Lock_Display_ResolutionRefreshRate;
+                Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {Lock_RefreshRate}");
+                Lock_USBCrioritization = true;
+                Trace.WriteLine($"[SettingsPage] USBC Prioritization(Lock) : {Lock_USBCrioritization}");
 
                 RefreshUI();
             }

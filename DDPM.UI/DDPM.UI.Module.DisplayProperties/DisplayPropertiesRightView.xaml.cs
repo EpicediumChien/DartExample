@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Common;
+﻿using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +16,7 @@ namespace DDPM.UI.Module.DisplayProperties
         {
             InitializeComponent();
             //DisplayPropertiesViewModel vm = (DisplayPropertiesViewModel)DataContext;
-
+            
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -38,7 +39,7 @@ namespace DDPM.UI.Module.DisplayProperties
                     DisplayPropertiesViewModel vm = (DisplayPropertiesViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Lock_RefreshRate = (bool)isLocked;
                         Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {isLocked}");
                     }
                 }));
@@ -51,7 +52,7 @@ namespace DDPM.UI.Module.DisplayProperties
                     DisplayPropertiesViewModel vm = (DisplayPropertiesViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Lock_USBCrioritization = true;
                         Trace.WriteLine($"[SettingsPage] USBC Prioritization(Lock) : {isLocked}");
                     }
                 }));

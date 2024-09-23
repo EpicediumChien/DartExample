@@ -120,7 +120,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void Set_SaveDiagnosticReport_Dowork(object sender, DoWorkEventArgs e)
         {
             string filePath = e.Argument.ToString();
-            bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile( filePath).Result;
+            bool monitorAssetReports = DdpmCommonHelper.DeviceManagerSA.SaveLogFile(filePath).Result;
         }
         private void Set_Page_Done(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -135,17 +135,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public List<UIUpdateInfo> Recommended_UpdateList_UI { get; set; }
         public List<UIUpdateInfo> Optional_UpdateList_UI { get; set; }
         public string LastCheckDate { get; set; }
-        private bool _UpdatesPageUI_Enable;
-
-        public bool UpdatesPageUI_Enable
-        {
-            get
-            {
-                _UpdatesPageUI_Enable = !DdpmCommonHelper.DeviceManagerSA.GetUILockStatus().Result;
-                return _UpdatesPageUI_Enable;
-            }
-        }
-
         public string UpdateTitle { get; set; }
         public string UpdateVersion { get; set; }
         public string ProgressStr { get; set; }
@@ -169,30 +158,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             get => (Critical_UpdateList_UI?.Count >= 1 ||
                 Recommended_UpdateList_UI?.Count >= 1 ||
                 Optional_UpdateList_UI?.Count >= 1) ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private Visibility lockMaskVisible = Visibility.Collapsed;
-
-        public Visibility LockMaskVisible
-        {
-            get { return lockMaskVisible; }
-            set
-            {
-                lockMaskVisible = value;
-                OnPropertyChanged("LockMaskVisible");
-            }
-        }
-
-        private Visibility lockMaskVisible_Updates = Visibility.Collapsed;
-
-        public Visibility LockMaskVisible_Updates
-        {
-            get { return lockMaskVisible_Updates; }
-            set
-            {
-                lockMaskVisible_Updates = value;
-                OnPropertyChanged("LockMaskVisible_Updates");
-            }
         }
         public GlobalSettingParam GlobalSettingParam { get; set; }
         public string EnableQuickAccessWidget_String
@@ -332,6 +297,121 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             SWUpdateInfoPackage.SWUpdateInfo = swUpdateInfos;
         }
         #endregion
+        #region Lock/Unlock
+        #region General
+        private bool _Lock_GeneralPage;
+        public bool Lock_GeneralPage
+        {
+            get
+            {
+                return _Lock_GeneralPage;
+            }
+            set
+            {
+                _Lock_GeneralPage = value;
+                OnPropertyChanged("GeneralUI_IsTabStoppable");
+                OnPropertyChanged("GeneralUI_Opacity");
+                OnPropertyChanged("GeneralUI_LockTooltip");
+            }
+        }
+        public bool GeneralUI_IsTabStoppable
+        {
+            get
+            {
+                return _Lock_GeneralPage ? false : true;
+            }
+        }
+        public string GeneralUI_Opacity
+        {
+            get
+            {
+                return _Lock_GeneralPage ? "0.5" : "1.0";
+            }
+        }
+        public Visibility GeneralUI_LockTooltip
+        {
+            get
+            {
+                return _Lock_GeneralPage ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        #endregion
+        #region UpdatePage
+        private bool _Lock_UpdatesPage;
+        public bool Lock_UpdatesPage
+        {
+            get
+            {
+                return _Lock_UpdatesPage;
+            }
+            set
+            {
+                _Lock_UpdatesPage = value;
+                OnPropertyChanged("UpdatesPageUI_IsEnable");
+                OnPropertyChanged("UpdatesPageUI_Opacity");
+                OnPropertyChanged("UpdatesPageUI_LockTooltip");
+            }
+        }
+        public bool UpdatesPageUI_IsEnable
+        {
+            get
+            {
+                return _Lock_UpdatesPage ? false : true;
+            }
+        }
+        public string UpdatesPageUI_Opacity
+        {
+            get
+            {
+                return _Lock_UpdatesPage ? "0.5" : "1.0";
+            }
+        }
+        public Visibility UpdatesPageUI_LockTooltip
+        {
+            get
+            {
+                return _Lock_UpdatesPage ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        #endregion
+        #region AnalyticsPage
+        private bool _Lock_AnalyticsPage;
+        public bool Lock_AnalyticsPage
+        {
+            get
+            {
+                return _Lock_AnalyticsPage;
+            }
+            set
+            {
+                _Lock_AnalyticsPage = value;
+                OnPropertyChanged("AnalyticsPage_IsEnable");
+                OnPropertyChanged("AnalyticsPage_LockTooltip");
+            }
+        }
+        public bool AnalyticsPage_IsEnable
+        {
+            get
+            {
+                return _Lock_AnalyticsPage ? false : true;
+            }
+        }
+        public string AnalyticsPage_Opacity
+        {
+            get
+            {
+                return _Lock_AnalyticsPage ? "0.5" : "1.0";
+            }
+        }
+        public Visibility AnalyticsPage_LockTooltip
+        {
+            get
+            {
+                return _Lock_AnalyticsPage ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        #endregion
+        #endregion
         public void RefreshUI()
         {
             OnPropertyChanged("Critical_UpdateList_UI");
@@ -378,11 +458,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷
             DeviceType[] CriticalUpdates = new DeviceType[] { DeviceType.PhysicalAudioDongle, DeviceType.PhysicalDongle },
-                     RecommendedUpdates = new DeviceType[] { DeviceType.LogicalMouse, DeviceType.LogicalKeyboard, 
+                     RecommendedUpdates = new DeviceType[] { DeviceType.LogicalMouse, DeviceType.LogicalKeyboard,
                          DeviceType.LogicalDock, DeviceType.PhysicalWiredDock,
-                         DeviceType.PhysicalPen, DeviceType.PhysicalPen, 
-                         DeviceType.LogicalWebcam, DeviceType.PhysicalWebcam, 
-                         DeviceType.PhysicalWiredAudio, DeviceType.LogicalWiredAudio, 
+                         DeviceType.PhysicalPen, DeviceType.PhysicalPen,
+                         DeviceType.LogicalWebcam, DeviceType.PhysicalWebcam,
+                         DeviceType.PhysicalWiredAudio, DeviceType.LogicalWiredAudio,
                          DeviceType.LogicalHeadset, DeviceType.PhysicalBluetoothAudio };
             FWUpdateInfo = fwUpdateInfo;
             this.IsCheckUpdate = true;
