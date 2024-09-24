@@ -16,6 +16,9 @@ namespace DDPM.UI.Common
         public string SelectedResolution = "";
         public Dictionary<string, List<string>> SupportedFPSs = new();
         public Dictionary<string, string> SelectedFPSs = new();
+        public Dictionary<string, string> Resolutions = new();
+        public string CurrentResolution { get => Resolutions[SelectedResolution]; }
+        public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
 
         public static bool ExportWebcamSettings(WebcamSettings WebcamSettings, string model)
         {

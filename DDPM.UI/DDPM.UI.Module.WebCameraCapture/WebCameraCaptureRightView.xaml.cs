@@ -10,6 +10,9 @@ using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using DDPM.UI.Plugin.Common;
 using System.Diagnostics;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.Linq;
+using DDPM.UI.Common;
 
 namespace DDPM.UI.Module.WebCameraCapture
 {
@@ -26,122 +29,108 @@ namespace DDPM.UI.Module.WebCameraCapture
             _vm = vm;
 
             txtCaptureFolder.Text = Utility.CheckTextLength(_vm.VideoCaptureFolder, 155, 14);
+            InitializeResolution();
+            InitializeFPS();
         }
-
-        private void Resolution_4KUHD_Button_Click(object sender, MouseButtonEventArgs e)
+        private void InitializeResolution()
         {
-            _vm.SetResolution_Selected(0);
-
-            _vm.strCurrent_Resolution = "3840x2160";
-
-            foreach (var property in _vm.allProperties)
+            var Res = _vm.WebcamSettings.SupportedFPSs.Keys.ToList();
+            switch (Res.Count)
             {
-                string properties_temp = property.GetFriendlyName();
-
-                if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
-                {
-                    var encodingProperties = property.EncodingProperties;
-                    _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                case 2:
+                    btnRes0.Width = 201;
+                    txtRes0.Text = Res[0];
+                    btnRes1.Width = 201;
+                    txtRes1.Text = Res[1];
+                    btnRes1.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    btnRes2.Visibility = Visibility.Collapsed;
+                    btnRes3.Visibility = Visibility.Collapsed;
                     break;
+                case 3:
+                    btnRes0.Width = 134;
+                    txtRes0.Text = Res[0];
+                    btnRes1.Width = 134;
+                    txtRes1.Text = Res[1];
+                    btnRes2.Width = 134;
+                    txtRes2.Text = Res[2];
+                    btnRes2.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    btnRes3.Visibility = Visibility.Collapsed;
+                    break;
+                case 4:
+                    btnRes0.Width = 100.5;
+                    txtRes0.Text = Res[0];
+                    btnRes1.Width = 100.5;
+                    txtRes1.Text = Res[1];
+                    btnRes2.Width = 100.5;
+                    txtRes2.Text = Res[2];
+                    btnRes3.Width = 100.5;
+                    txtRes3.Text = Res[3];
+                    btnRes3.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    break;
+            }
+        }
+        private void InitializeFPS()
+        {
+            var FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+            switch (FPS.Count)
+            {
+                case 2:
+                    btnFPS0.Width = 201;
+                    txtFPS0.Text = FPS[0];
+                    btnFPS1.Width = 201;
+                    txtFPS1.Text = FPS[1];
+                    btnFPS1.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    btnFPS2.Visibility = Visibility.Collapsed;
+                    break;
+                case 3:
+                    btnFPS0.Width = 134;
+                    txtFPS0.Text = FPS[0];
+                    btnFPS1.Width = 134;
+                    txtFPS1.Text = FPS[1];
+                    btnFPS1.CornerRadius = new CornerRadius(0);
+                    btnFPS2.Width = 134;
+                    txtFPS2.Text = FPS[2];
+                    btnFPS2.Visibility = Visibility.Visible;
+                    btnFPS2.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    break;
+            }
+            _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
+        }
+        private void btnResolution_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border bdr)
+            {
+                var idx = int.Parse(bdr.Tag.ToString()!);
+                _vm.SetResolution_Selected(idx);
+                InitializeFPS();
+                foreach (var property in _vm.allProperties)
+                {
+                    string properties_temp = property.GetFriendlyName();
+                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var encodingProperties = property.EncodingProperties;
+                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        break;
+                    }
                 }
             }
         }
 
-        private void Resolution_FullHD_Button_Click(object sender, MouseButtonEventArgs e)
+        private void btnFPS_Click(object sender, MouseButtonEventArgs e)
         {
-            _vm.SetResolution_Selected(1);
-
-            _vm.strCurrent_Resolution = "1920x1080";
-
-            foreach (var property in _vm.allProperties)
+            if (sender is Border bdr)
             {
-                string properties_temp = property.GetFriendlyName();
-
-                if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
+                var idx = int.Parse(bdr.Tag.ToString()!);
+                _vm.SetFPS_Selected(idx);
+                foreach (var property in _vm.allProperties)
                 {
-                    var encodingProperties = property.EncodingProperties;
-                    _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                    break;
-                }
-
-            }
-        }
-
-        private void Resolution_HD_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-            _vm.SetResolution_Selected(2);
-
-            _vm.strCurrent_Resolution = "1280x720";
-
-            foreach (var property in _vm.allProperties)
-            {
-                string properties_temp = property.GetFriendlyName();
-
-                if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
-                {
-                    var encodingProperties = property.EncodingProperties;
-                    _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                    break;
-                }
-
-            }
-        }
-
-        private void FPS_24_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-            _vm.SetFPS_Selected(0);
-
-            _vm.strCurrent_Framerate = "24FPS";
-
-            foreach (var property in _vm.allProperties)
-            {
-                string properties_temp = property.GetFriendlyName();
-
-                if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
-                {
-                    var encodingProperties = property.EncodingProperties;
-                    _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                    break;
-                }
-
-            }
-        }
-
-        private void FPS_30_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-            _vm.SetFPS_Selected(1);
-
-            _vm.strCurrent_Framerate = "30FPS";
-
-            foreach (var property in _vm.allProperties)
-            {
-                string properties_temp = property.GetFriendlyName();
-
-                if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
-                {
-                    var encodingProperties = property.EncodingProperties;
-                    _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                    break;
-                }
-
-            }
-        }
-
-        private void FPS_60_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-            _vm.SetFPS_Selected(2);
-
-            _vm.strCurrent_Framerate = "60FPS";
-
-            foreach (var property in _vm.allProperties)
-            {
-                string properties_temp = property.GetFriendlyName();
-
-                if (properties_temp.Contains(_vm.strCurrent_Resolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.strCurrent_Framerate, StringComparison.OrdinalIgnoreCase))
-                {
-                    var encodingProperties = property.EncodingProperties;
-                    _vm.MediaCapture.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                    break;
+                    string properties_temp = property.GetFriendlyName();
+                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var encodingProperties = property.EncodingProperties;
+                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        break;
+                    }
                 }
             }
         }

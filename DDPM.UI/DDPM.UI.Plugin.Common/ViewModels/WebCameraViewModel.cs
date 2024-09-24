@@ -25,22 +25,21 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         #region Variables
         private readonly ILog _log;
-        //private readonly IDeviceManagerSA _deviceManager;
+        private ObservableCollection<ProfileItem> _profileItems = new();
+        private readonly Dictionary<string, WebcamProfile> Profiles = new();
+        private List<string> _resolutions = new();
 
         // Query all properties [resolution and frame rate] of the webcam device
         public IEnumerable<StreamResolution> allProperties;
 
-        public bool[] Resolution_IsSelected { get; set; } = new bool[3];
+        public bool[] Resolution_IsSelected { get; set; } = new bool[4];
         public bool[] FPS_IsSelected { get; set; } = new bool[3];
 
 
-        private ObservableCollection<ProfileItem> _profileItems = new();
-        private readonly Dictionary<string, WebcamProfile> Profiles = new();
 
         #endregion Variables
 
         public string CurrentProfileName = "";
-        public List<string> Resolutions = new();
         public List<string> FPSs = new();
 
         public event EventHandler<EventArgs> WebcamSettingChanged;
@@ -56,11 +55,9 @@ namespace DDPM.UI.Plugin.ViewModels
 
             IsChecked_FramingGrid = Visibility.Hidden;
 
-            strCurrent_Resolution = "1920x1080";
-            strCurrent_Framerate = "30FPS";
+            //strCurrent_Resolution = "1920x1080";
+            //strCurrent_Framerate = "30FPS";
 
-            SetResolution_Selected(1);
-            SetFPS_Selected(1);
         }
 
         public void SetResolution_Selected(int index)
@@ -70,7 +67,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 Resolution_IsSelected[j] = false;
             }
             Resolution_IsSelected[index] = true;
-            OnPropertyChanged("Resolution_IsSelected");
+            WebcamSettings.SelectedResolution = _resolutions[index];
+            if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+            { WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][0]); }
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            OnPropertyChanged(nameof(Resolution_IsSelected));
         }
 
         public void SetFPS_Selected(int index)
@@ -80,7 +81,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 FPS_IsSelected[j] = false;
             }
             FPS_IsSelected[index] = true;
-            OnPropertyChanged("FPS_IsSelected");
+            WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution] = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][index];
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            OnPropertyChanged(nameof(FPS_IsSelected));
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -191,7 +194,6 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
 
-            Resolutions.Clear();
             FPSs.Clear();
 
             InitializeWebcam();
@@ -214,11 +216,21 @@ namespace DDPM.UI.Plugin.ViewModels
                     { WebcamSettings.SupportedFPSs.Add(sts[2], new List<string>()); }
                     if (!WebcamSettings.SupportedFPSs[sts[2]].Contains(sts[1]))
                     { WebcamSettings.SupportedFPSs[sts[2]].Add(sts[1]); }
+                    if (!WebcamSettings.Resolutions.ContainsKey(sts[2]))
+                    {
+                        WebcamSettings.Resolutions.Add(sts[2], sts[0]);
+                    }
+
                 }
                 WebcamSettings.SelectedResolution = WebcamSettings.SupportedFPSs.Keys.FirstOrDefault() ?? "";
                 WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].FirstOrDefault() ?? "");
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             }
-
+            _resolutions = WebcamSettings.Resolutions.Keys.ToList();
+            var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
+            SetResolution_Selected(i);
+            var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
+            SetFPS_Selected(j);
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -266,9 +278,17 @@ namespace DDPM.UI.Plugin.ViewModels
         public MediaCapture? MediaCapture;
         public MediaFrameReader MediaFrameReader;
 
-        public bool IsRecording;
-        public string strCurrent_Resolution;
-        public string strCurrent_Framerate;
+        private bool _isRecording = false;
+        public bool IsRecording
+        {
+            get => _isRecording;
+            set
+            {
+                _isRecording = value;
+                OnPropertyChanged(nameof(IsNotRecording));
+            }
+        }
+        public bool IsNotRecording { get => !IsRecording; }
 
         private bool _isChecked_Autofocus;
 
@@ -448,6 +468,23 @@ namespace DDPM.UI.Plugin.ViewModels
                 catch { }
             }
             base.OnGoBackClicked();
+        }
+        public async Task CleanupMediaCapture()
+        {
+            if (MediaCapture != null)
+            {
+                try
+                {
+                    await MediaFrameReader?.StopAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error stopping MediaFrameReader: {ex.Message}");
+                }
+                MediaFrameReader?.Dispose();
+                MediaCapture.Dispose();
+                MediaCapture = null;
+            }
         }
     }
 
