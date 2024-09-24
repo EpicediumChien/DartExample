@@ -38,6 +38,11 @@
         public bool Lock_Audio_ancMode { get; set; } = false;
         public bool Lock_Audio_micNoiseCancellation { get; set; } = false;
         public bool Lock_Audio_wearDetection { get; set; } = false;
+        public bool Lock_Webcam_hdr { get; set; } = false;
+        public bool Lock_Webcam_AntiFlicker { get; set; } = false;
+        public bool Lock_Webcam_AIAutoFraming { get; set; } = false;
+        public bool Lock_Webcam_MicSwitch { get; set; } = false;
+        public bool Lock_Webcam_PresenceDetection { get; set; } = false;
         #endregion Peripheral Setting
 
     }

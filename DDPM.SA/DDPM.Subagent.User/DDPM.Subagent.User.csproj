@@ -2,7 +2,7 @@
 
 
 	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
+		<OutputType>Exe</OutputType>
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<BaseOutputPath>..\bin\$(MSBuildProjectName)\</BaseOutputPath>
