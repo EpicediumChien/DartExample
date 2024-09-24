@@ -122,9 +122,27 @@
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
+                                    <Image Name="LockIcon" Visibility="{Binding isAncModeLocked}" Margin="10,0,0,0"
+                                           Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                                        <Image.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="ActiveNoiseCancellingButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -161,7 +179,7 @@
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
 
-                                    <UXControls:UXToggleSwitch x:Name="TransparencyButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsTransparencyChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="TransparencyButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsTransparencyChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="TransparencyButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -198,7 +216,7 @@
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
 
-                                    <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="NoiseOffButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -518,9 +536,11 @@
                                                 <BezierSegment x:Name="ShadowSegment2" Point1="200,60" Point2="250,60" Point3="250,60" />
                                                 <BezierSegment x:Name="ShadowSegment3" Point1="300,60" Point2="350,60" Point3="350,60" />
                                                 <BezierSegment x:Name="ShadowSegment4" Point1="400,60" Point2="450,60" Point3="450,60" />
-                                                --><!--<LineSegment Point="450,300" />
+                                                -->
+                                                <!--<LineSegment Point="450,300" />
                                                 <LineSegment Point="50,300" />
-                                                <LineSegment Point="50,60" />--><!--
+                                                <LineSegment Point="50,60" />-->
+                                                <!--
                                                 </PathFigure>
                                                 </PathGeometry>
                                                 </Path.Data>
@@ -602,7 +622,27 @@
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <UXControls:UXTextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />
+                                                <Image Name="LockIconMic" Visibility="{Binding isMicCancelLocked}" Margin="10,0,0,0"
+                                                       Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                                                    <Image.ToolTip>
+                                                        <ToolTip>
+                                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                <Border.Resources>
+                                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                                </Border.Resources>
+                                                                <StackPanel>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                    </StackPanel>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </ToolTip>
+                                                    </Image.ToolTip>
+                                                </Image>
+                                            </StackPanel>
                                         </Grid>
 
                                         <!--Outgoing Audio-->
@@ -629,7 +669,7 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,0,20,0" />
+                                            <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                         </Grid>
 
                                         <!--Incoming Audio-->
@@ -656,8 +696,13 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IncomingAudioStatus}" IsEnabled="{Binding Path=SupportedIncomingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="IncomingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,0,20,0" />
+                                            <UXControls:UXToggleSwitch Name="IncomingAudioToggleSwitch" FontSize="16" Content="{Binding Path=IncomingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=IncomingAudioStatus}" IsEnabled="{Binding Path=SupportedIncomingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="IncomingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                         </Grid>
+
+                                        <Border Background="#132F54"
+                                                Opacity="0.6" Grid.Row="1" Grid.RowSpan="2"
+                                                CornerRadius="13" 
+                                                Visibility="{Binding isMicCancelLocked}"/>
 
                                         <Grid Grid.Row="3" Height="1" Margin="8,20,8,0">
                                             <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" StrokeThickness="1" HorizontalAlignment="Center" />
@@ -680,6 +725,7 @@
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <UXControls:UXTextBlock  HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="{Binding [HeadsetAudioSettings.16], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,0" />
@@ -699,7 +745,29 @@
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
-                                            <UXControls:UXToggleSwitch Name="MicNoiseCancellationToggleSwitch" FontSize="16" Content="{Binding Path=MicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedMicNoiseCancellation}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,20,20,0" />
+                                            <Image Name="LockIconMic2" Visibility="{Binding isMicCancelLocked}" Margin="8,20,0,0"
+                                                   Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png" Grid.Column="2"
+                                                   VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                                                <Image.ToolTip>
+                                                    <ToolTip>
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <Border.Resources>
+                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                            </Border.Resources>
+                                                            <StackPanel>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </ToolTip>
+                                                </Image.ToolTip>
+                                            </Image>
+                                            <UXControls:UXToggleSwitch Name="MicNoiseCancellationToggleSwitch" FontSize="16" Content="{Binding Path=MicNoiseCancellation_String, FallbackValue='OFF'}" IsChecked="{Binding Path=MicNoiseCancellationStatus}" IsEnabled="{Binding Path=SupportedMicNoiseCancellation}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="White" Margin="0,20,20,0" IsTabStop="{Binding isMicTabStopped}"/>
+                                            <Border Background="#132F54"
+                                                    Opacity="0.6" Grid.Column="3"
+                                                    CornerRadius="13" Margin="150,20,20,0"
+                                                    Visibility="{Binding isMicCancelLocked}" />
                                         </Grid>
                                     </Grid>
                                 </StackPanel>
@@ -723,10 +791,11 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="315*" />
+                                            <ColumnDefinition Width="67*"/>
                                         </Grid.ColumnDefinitions>
-                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,20,0,0" />
-                                        <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,20,0,0">
+                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,20,0,0" />
+                                        <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,23,0,2">
                                             <Image.ToolTip>
                                                 <ToolTip>
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
@@ -742,7 +811,7 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
-                                        <UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="0,20,20,0" />
+                                        <UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="0,31,20,0" />
                                     </Grid>
                                     <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" />
                                     <StackPanel x:Name="SidetoneSliderStackPanel" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,20">

@@ -83,6 +83,46 @@ namespace DDPM.UI.Module.Color
 
         //private static List<ColorPresetSettings> AddAppist = new List<ColorPresetSettings>();
 
+
+        // 20240920 jim add
+        private bool showLockMask = false;
+
+        public bool ShowLockMask
+        {
+            get { return showLockMask; }
+            set
+            {
+                showLockMask = value;
+                LockMaskVisible = showLockMask ? Visibility.Visible : Visibility.Collapsed;
+                OnPropertyChanged("ShowLockMask");
+            }
+        }
+
+        private Visibility lockMaskVisible = Visibility.Collapsed;
+
+        public Visibility LockMaskVisible
+        {
+            get { return lockMaskVisible; }
+            set
+            {
+                lockMaskVisible = value;
+                OnPropertyChanged("LockMaskVisible");
+            }
+        }
+
+        private string _isTabStoppable = "Cycle";
+
+        public string isTabStoppable
+        {
+            get { return _isTabStoppable; }
+            set
+            {
+                _isTabStoppable = value;
+                OnPropertyChanged("isTabStoppable");
+            }
+        }
+
+
         private Visibility isAdvanced_Settings;
 
         public Visibility IsisAdvanced_Settings
