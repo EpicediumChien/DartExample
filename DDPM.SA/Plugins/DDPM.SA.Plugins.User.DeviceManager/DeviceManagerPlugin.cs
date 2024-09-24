@@ -52,6 +52,8 @@ using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
+using Microsoft.Toolkit.Uwp.Notifications;
+using System.Runtime;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -210,6 +212,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManager plugin started");
 
             Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+            ToastNotificationManagerCompat.OnActivated += CheckInput;//Bruce 0924 add Popup Event
             //displayChange = new DisplayChange(Log);
             //Task.Run(() =>
             //{
@@ -2167,6 +2170,45 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             string info = popupContentPackage.Info;
             bool isInfo = popupContentPackage.IsInfo;
             bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
+            if (!string.IsNullOrEmpty(info))
+            {
+                Task.Run(async () =>
+                {
+                    ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
+                    // 將物件序列化為 JSON 字串
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(json);
+                    if (!isInfo)
+                    {
+                        toastContentBuilder.AddArgument(title);
+                        toastContentBuilder.AddText(title);
+                        toastContentBuilder.AddText(info);
+                        toastContentBuilder.AddButton("Update", ToastActivationType.Background, "Update " + json);
+                        if (!isOnlyUpdate)
+                        {
+                            toastContentBuilder.AddButton("Delay", ToastActivationType.Background, "Delay " + json);
+                        }
+                    }
+                    else
+                    {
+                        toastContentBuilder.AddArgument(title);
+                        toastContentBuilder.AddText(title);
+                        toastContentBuilder.AddText(info);
+
+                    }
+                    toastContentBuilder.Show(); // 顯示Toast通知
+                });
+            }
+            /*自訂Popup通知
+            // 將 popupContentPackage.Object 轉換成 JSON 字串
+            string json = JsonConvert.SerializeObject(popupContentPackage.Object);
+            // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
+            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
+            // 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
+            SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
+            string title = popupContentPackage.Title;
+            string info = popupContentPackage.Info;
+            bool isInfo = popupContentPackage.IsInfo;
+            bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
             bool stayOpen = popupContentPackage.StayOpen;
             int timeout = popupContentPackage.Timeout;
             object ob;
@@ -2200,9 +2242,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         popupBaseManage.FWU_Show(title, info, "Update", "Delay", ob, stayOpen, timeout);
                     }
                 });
+            }*/
+        }
+        void CheckInput(ToastNotificationActivatedEventArgsCompat e)
+        {
+            string[] ret = e.Argument.Split(" ");
+            if (ret.Length >= 2)
+            {
+                if (e.Argument.StartsWith("Update"))
+                {
+                    UpdateEvent(this, ret[1]);
+                }
+                else if (e.Argument.StartsWith("Delay"))
+                {
+                    Debug.WriteLine(ret[1]);
+                    DelayEvent(this, ret[1]);
+                }
             }
         }
-
         private void UpdateEvent(object o, object ob)
         {
             // 將 e 轉換成 JSON 字串
@@ -6599,6 +6656,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //Bruce 08 - 09 Add a new event to determine whether it is a display signal event or a setting event.
                     Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
+                    ToastNotificationManagerCompat.OnActivated -= CheckInput;//Bruce 0924 add Popup Event
                     //displayChange.DisplayChange_Event -= SystemEvents_DisplaySettingsChanged;
                     if (_SettingsPlugin != null)
                         _SettingsPlugin.ITSettingsActionEvent -= _SettingsPlugin_ITSettingsActionEvent;

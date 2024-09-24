@@ -981,6 +981,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     Object = _fWUpdateInfoPackage
                 };
                 CallPopup?.AsyncFireAndForget(this, popupContentPackage, System.Threading.CancellationToken.None);
+                ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
+                ToastNotificationManagerCompat.OnActivated += toastArgs =>
+                {
+                    CheckInput(toastArgs);
+                };
+                toastContentBuilder.AddArgument(title);
+                toastContentBuilder.AddText(title);
+                toastContentBuilder.AddText(info);
+                toastContentBuilder.AddButton("Update", ToastActivationType.Background, "Update");
+                toastContentBuilder.AddButton("Delay", ToastActivationType.Background, "Delay");
                 //Task.Run(() =>
                 //{
                 //    PopupBaseManage popupBaseManage = new PopupBaseManage();
