@@ -31,53 +31,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public Settings_General()
         {
             InitializeComponent();
-
-            //lock/unlock init, 9/23 add OSD lock
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
-                {
-                    //if (data.LockSettings.Lock_Setting_ScreenNotification)
-                    //{
-                        //_vm.lockIcon = Visibility.Visible;
-                        //_vm.viewMask = Visibility.Visible;
-                        //_vm.tabStop = false;
-                    //}
-                    //else
-                    //{
-                        //_vm.lockIcon = Visibility.Collapsed;
-                        //_vm.viewMask = Visibility.Collapsed;
-                        //_vm.tabStop = true;
-                    //}
-                }
-            }
         }
         ~Settings_General()
         {
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
-            }
-        }
-        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
-        {
-            bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Setting_ScreenNotification", e);
-            Dispatcher.Invoke(new Action(() =>
-            {
-                //if (_vm != null)
-                {
-                    bool locked = false;
-                    if (rst != null && rst == true)
-                        locked = true;
 
-                    //_vm.lockIcon = locked ? Visibility.Visible : Visibility.Collapsed;
-                    //_vm.viewMask = locked ? Visibility.Visible : Visibility.Collapsed;
-                    //_vm.tabStop = !locked;
-                }
-            }));
         }
         private void LowBatteryLevel_Click(object sender, RoutedEventArgs e)
         {

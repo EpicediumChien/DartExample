@@ -1110,6 +1110,8 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
+            DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
+
             if (commandLineInput.Command == "SET" && commandLineInput.Options[0].Option_Value != null)
             {
 
@@ -1131,40 +1133,53 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.Index = change_0base_to_1base((monitor.Index).ToString());
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
 
-                    switch (commandLineInput.Options[0].Option_Value.ToUpper())
+                    commandLineInput.Options[0].Option_Value.Replace(".", ",");
+                    List<string> values = commandLineInput.Options[0].Option_Value.Split(",").ToList();
+                    foreach (string v in values)
                     {
-                        case "ON":
-                            writelog($"ScreenNotifacation on entry");
-                            devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(true);
-                            devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(true);
-                            devMgr.Set_GlobalSetting_DisplayWB7022CoverState(true);
-                            devMgr.Set_GlobalSetting_DisplayMuteState(true);
-                            devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(true);
+                        switch (v.ToUpper())
+                        {
+                            case "ON":
+                                writelog($"ScreenNotifacation on entry");
+                                devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(true);
+                                devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(true);
+                                devMgr.Set_GlobalSetting_DisplayWB7022CoverState(true);
+                                devMgr.Set_GlobalSetting_DisplayMuteState(true);
+                                devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(true);
 
-                            cli_Response.Result = "PASS";
-                            cli_Response.Value = "ON";
-                            break;
+                                cli_Response.Result = "PASS";
+                                cli_Response.Value = "ON";
+                                break;
 
-                        case "OFF":
-                            writelog($"ScreenNotifacation off entry");
-                            devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(false);
-                            devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(false);
-                            devMgr.Set_GlobalSetting_DisplayWB7022CoverState(false);
-                            devMgr.Set_GlobalSetting_DisplayMuteState(false);
-                            devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(false);
-                            cli_Response.Result = "PASS";
-                            cli_Response.Value = "OFF";
-                            break;
+                            case "OFF":
+                                writelog($"ScreenNotifacation off entry");
+                                devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(false);
+                                devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(false);
+                                devMgr.Set_GlobalSetting_DisplayWB7022CoverState(false);
+                                devMgr.Set_GlobalSetting_DisplayMuteState(false);
+                                devMgr.Set_GlobalSetting_DisplayColorPresetAndEasyMemory(false);
+                                cli_Response.Result = "PASS";
+                                cli_Response.Value = "OFF";
+                                break;
 
-                        default:
-                            writelog($"option value not support");
+                            case "LOCK":
+                            case "UNLOCK":
+                                if (v.ToUpper().Equals("LOCK")) ddpmSettings.LockSettings.Lock_Setting_ScreenNotification = true;
+                                if (v.ToUpper().Equals("UNLOCK")) ddpmSettings.LockSettings.Lock_Setting_ScreenNotification = false;
+                                await devMgr.SetAppConfigData(ddpmSettings);
+                                break;
 
-                            cli_Response.Command = commandLineInput.Command;
-                            cli_Response.TargetFeature = commandLineInput.TargetFeature;
-                            cli_Response.Result = "FAIL";
-                            cli_Response.Message = "Un-supported command";
-                            break;
+                            default:
+                                writelog($"option value not support");
+
+                                cli_Response.Command = commandLineInput.Command;
+                                cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                                cli_Response.Result = "FAIL";
+                                cli_Response.Message = "Un-supported command";
+                                break;
+                        }
                     }
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
@@ -1193,7 +1208,7 @@ namespace DDPM.CLI.Plugins.Display
                     cli_Response.ServiceTag = monitor.edid.ServiceTag;
                     cli_Response.Value = (param.GlobalSetting_General.Low_Battery_Level.ToString().ToLower() == "true") ? "ON" : "OFF";
                     cli_Response.Result = "Succes";
-
+                    cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Setting_ScreenNotification ? "LOCK" : "UNLOCK");
                     System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }

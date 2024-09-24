@@ -173,7 +173,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.GetUILockStatus()).Returns(Task.FromResult(true));
-            var result = settingsPageViewModel.UpdatesPageUI_Enable;
+            var result = settingsPageViewModel.Lock_UpdatesPage;
             Assert.That(result, Is.EqualTo(false));
         }
 
@@ -247,7 +247,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.GetUILockStatus()).Returns(Task.FromResult(false));
-            var UpdatesPageUI_EnableBef = settingsPageViewModel.UpdatesPageUI_Enable;
+            var UpdatesPageUI_EnableBef = settingsPageViewModel.Lock_UpdatesPage;
             Assert.That(UpdatesPageUI_EnableBef, Is.EqualTo(true));
 
             settingsPageViewModel.Critical_UpdateList_UI = new List<UIUpdateInfo>();
@@ -255,7 +255,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             settingsPageViewModel.Optional_UpdateList_UI = new List<UIUpdateInfo>();
             settingsPageViewModel.LastCheckDate = "AA";
             deviceManagerSAMock.Setup(x => x.GetUILockStatus()).Returns(Task.FromResult(true));
-            var result = settingsPageViewModel.UpdatesPageUI_Enable;
+            var result = settingsPageViewModel.Lock_UpdatesPage;
             settingsPageViewModel.RefreshUI();
 
             //After RefreshUI
