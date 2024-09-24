@@ -9163,9 +9163,10 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
-                if (commandLineInput.Options.Count == 2)
+                string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+                if (commandLineInput.Options.Count == 1)
                 {
-                    string filename = commandLineInput.Options[1].Option_Value;
+                    string filename = ss_1[1];
                     if (!File.Exists(filename))
                     {
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
@@ -9202,21 +9203,22 @@ namespace DDPM.CLI.Plugins.Display
 
             List<DeviceInfo> _deviceinfo = null;
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
+            Trace.WriteLine(ss_1[0]);
+            Trace.WriteLine(ss_1[1]);
 
-            StreamReader r = new StreamReader(commandLineInput.Options[1].Option_Value);
+            StreamReader r = new StreamReader(ss_1[1]);
             string jsonString = r.ReadToEnd();
             r.Close();
             string[] jsonString_2 = jsonString.Split("\"Device\":");
             int i = 0;
             int count = jsonString.Split("Index").Length - 1;
 
-            switch (commandLineInput.Options[0].Option_Value)
+            switch (ss_1[0].ToUpper())
             {
                 case "DISPLAY":
                     do
                     {
-                        Trace.WriteLine(jsonString_2[i]);
-
                         if (jsonString_2[i].Contains("DISPLAY", StringComparison.OrdinalIgnoreCase))
                         {
 
@@ -9228,7 +9230,6 @@ namespace DDPM.CLI.Plugins.Display
                             }
                             break;
                         }
-                            
 
                         i++;
                     } while (true);
@@ -9237,8 +9238,6 @@ namespace DDPM.CLI.Plugins.Display
                 case "MOUSE":
                     do
                     {
-
-                        Trace.WriteLine(jsonString_2[i]);
                         if (jsonString_2[i].Contains("MOUSE", StringComparison.OrdinalIgnoreCase))
                         {
                             jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
@@ -9258,8 +9257,6 @@ namespace DDPM.CLI.Plugins.Display
                 case "KEYBOARD":
                     do
                     {
-                        Trace.WriteLine(jsonString_2[i]);
-
                         if (jsonString_2[i].Contains("KEYBOARD", StringComparison.OrdinalIgnoreCase))
                         {
                             jsonString_2[i] = jsonString_2[i].Replace("\"Device\":", "");
@@ -9277,9 +9274,6 @@ namespace DDPM.CLI.Plugins.Display
                     } while (true);
                     break;
             }
-
-            
-
             if (string.IsNullOrWhiteSpace(jsonString_2[i]) || count < 1)
             {
                 CLI_RESPONSE cli_Response = new CLI_RESPONSE();
@@ -9289,7 +9283,6 @@ namespace DDPM.CLI.Plugins.Display
                 cli_Response.Message = "file format is not valid.";
                 return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
             }
-
             Get_DeviceData devicedata = JsonConvert.DeserializeObject<Get_DeviceData>(jsonString_2[i]);
 
             bool ispass = true;
@@ -9300,10 +9293,9 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
             _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
-            writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[1].Option_Value}");
-            if (commandLineInput.Options[0].Option_Value == "DISPLAY")
+            writelog($"CLI /set -display=applyConfiguration -value={commandLineInput.Options[0].Option_Value}");
+            if (ss_1[0].ToUpper() == "DISPLAY")
             {
-
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
@@ -9476,7 +9468,7 @@ namespace DDPM.CLI.Plugins.Display
                     output += "\n" + JsonConvert.SerializeObject(ApplyConfiguration, Formatting.Indented);
                 }
             }
-            else if (commandLineInput.Options[0].Option_Value == "MOUSE")
+            else if (ss_1[0].ToUpper() == "MOUSE")
             {
                 CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
                 cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
@@ -9492,7 +9484,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
             }
-            else if (commandLineInput.Options[0].Option_Value == "KEYBOARD")
+            else if (ss_1[0].ToUpper() == "KEYBOARD")
             {
                 CLI_RESPONSE2 cli_Response2 = new CLI_RESPONSE2();
                 cli_Response2 = JsonConvert.DeserializeObject<CLI_RESPONSE2>(jsonString_2[i]);
