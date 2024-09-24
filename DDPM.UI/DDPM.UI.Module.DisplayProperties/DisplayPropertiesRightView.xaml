@@ -27,7 +27,7 @@
                 <StackPanel>
                     <Border Style="{StaticResource RightGroupBorderStyle}">
                         <StackPanel>
-                            <Grid Height="40" Margin="0,8">
+                            <Grid Height="50" Margin="0,8">
                                 <StackPanel VerticalAlignment="Center"
                                             HorizontalAlignment="Left" Orientation="Horizontal">
                                     <UXControls:UXTextBlock Text="{Binding [DisplayProperties.2], Source={x:Static lang:LangHelper.Instance}}"
@@ -65,7 +65,7 @@
                                           IsEnabled="{Binding RefreshRateUI_IsEnable}"
                                           Opacity="{Binding RefreshRateUI_Opacity}"/>
                             </Grid>
-                            <Grid Height="40" Margin="0,8">
+                            <Grid Height="50" Margin="0,8">
                                 <UXControls:UXTextBlock Text="{Binding [Orientation], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="White" TextBlockSemanticColorType="Light" TextBlockType="Caption" VerticalAlignment="Center" HorizontalAlignment="Left" />
                                 <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" ItemsSource="{Binding Orientation_ItemsCollection}" SelectedItem="{Binding SelectedOrientation, Mode=TwoWay}" DisplayMemberPath="DisplayText" Width="200" />
                             </Grid>
