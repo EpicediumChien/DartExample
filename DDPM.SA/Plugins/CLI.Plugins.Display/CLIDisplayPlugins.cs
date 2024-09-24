@@ -5445,12 +5445,10 @@ namespace DDPM.CLI.Plugins.Display
                         switch (value.ToUpper())
                         {
                             case "OSDLOCK":
-                                value = "Lock";
                                 r = devMgr.SetVCPCapability(monitor, 0xCA, 0x01).Result;
                                 break;
 
                             case "OSDUNLOCK":
-                                value = "UnLock";
                                 r = devMgr.SetVCPCapability(monitor, 0xCA, 0x02).Result;
                                 break;
                         }
@@ -5484,12 +5482,10 @@ namespace DDPM.CLI.Plugins.Display
                         switch (value.ToUpper())
                         {
                             case "OSDLOCK":
-                                value = "Lock";
                                 r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x01).Result;
                                 break;
 
                             case "OSDUNLOCK":
-                                value = "UnLock";
                                 r = devMgr.SetVCPCapability(_AllInfoMonitors[System.Convert.ToInt32(idx)], 0xCA, 0x02).Result;
                                 break;
                         }
@@ -5527,12 +5523,10 @@ namespace DDPM.CLI.Plugins.Display
                             switch (value.ToUpper())
                             {
                                 case "OSDLOCK":
-                                    value = "Lock";
                                     r = devMgr.SetVCPCapability(mo, 0xCA, 0x01).Result;
                                     break;
 
                                 case "OSDUNLOCK":
-                                    value = "UnLock";
                                     r = devMgr.SetVCPCapability(mo, 0xCA, 0x02).Result;
                                     break;
                             }
@@ -5569,6 +5563,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 ObjGetVCP rc = new ObjGetVCP();
                 bool retcode = true;
+                int exit = 0;
 
                 if (index.Count == 0 && serviceTag.Count == 0)
                 {
@@ -5588,13 +5583,15 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                         else
                         {
                             _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            if (exit == 0)
+                                exit = (int)CLI_ExitCode.functional_error;
                         }
                     }
                 }
@@ -5617,13 +5614,15 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                            return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                            output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                         }
                         else
                         {
                             _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
                             System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                             output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                            if (exit == 0)
+                                exit = (int)CLI_ExitCode.functional_error;
                         }
                     }
                 }
@@ -5649,18 +5648,20 @@ namespace DDPM.CLI.Plugins.Display
                             {
                                 _Get_CLI_RESPONSE_RESPONSE.Result = "pass";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
-                                return ((int)CLI_ExitCode.functional_error, JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
+                                output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
                             }
                             else
                             {
                                 _Get_CLI_RESPONSE_RESPONSE.Result = "fail";
                                 System.Console.WriteLine(JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented));
                                 output += "\n" + JsonConvert.SerializeObject(_Get_CLI_RESPONSE_RESPONSE, Formatting.Indented);
+                                if (exit == 0)
+                                    exit = (int)CLI_ExitCode.functional_error;
                             }
                         }
                     }
                 }
-                return ((int)CLI_ExitCode.success, output);
+                return (exit, output);
             }
             else
             {
@@ -5747,7 +5748,7 @@ namespace DDPM.CLI.Plugins.Display
                 {
                     if (properties.isCurrent)
                     {
-                        cli_CurrentResolutionRefreshRate_RESPONSE.Value = $"Resolutions and RefreshRate:{properties.Resolutions_Width}x{properties.Resolutions_High}, {properties.Frequency}Hz";
+                        cli_CurrentResolutionRefreshRate_RESPONSE.Value = $"{properties.Resolutions_Width}x{properties.Resolutions_High}, {properties.Frequency}Hz";
                         cli_CurrentResolutionRefreshRate_RESPONSE.BitsPerPixel = properties.BitsPerPixel.ToString();
                         break;
                     }
