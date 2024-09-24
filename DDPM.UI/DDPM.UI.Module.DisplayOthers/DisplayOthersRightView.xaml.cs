@@ -14,14 +14,17 @@ namespace DDPM.UI.Module.DisplayOthers
     {
         private DisplayOthersViewModel vm
         {
-            get => (DisplayOthersViewModel)DataContext;
+            get => (DisplayOthersViewModel)DataContext != null ? (DisplayOthersViewModel)DataContext : null;
         }
 
         private void IsLockinUI()
         {
-            vm.LockSettings_Visibility = Visibility.Visible;
-            vm.isSettingsEnable = false;
-            vm.Settings_Opacity = 0.5;
+            if (vm != null)
+            {
+                vm.LockSettings_Visibility = Visibility.Visible;
+                vm.isSettingsEnable = false;
+                vm.Settings_Opacity = 0.5;
+            }
         }
 
         public DisplayOthersRightView(DisplayOthersViewModel vm)
@@ -36,10 +39,17 @@ namespace DDPM.UI.Module.DisplayOthers
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
-                    if (data.LockSettings.Lock_Display_ExportSettings)
+                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data))
                     {
-                        //Do lock ui init here (direct set or binding via vm)
                         IsLockinUI();
+                    }
+                    else
+                    {
+                        if (data.LockSettings.Lock_Display_ExportSettings)
+                        {
+                            //Do lock ui init here (direct set or binding via vm)
+                            IsLockinUI();
+                        }
                     }
                     if (data.LockSettings.Lock_Display_PowerNap)
                     {
@@ -94,17 +104,23 @@ namespace DDPM.UI.Module.DisplayOthers
             //Functionality: When a 1 or more settings are locked, automatically lock 'export/import'. 
             if (DdpmCommonHelper.DeviceManagerSA != null && data == null)
             {
-                data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if(DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                    IsLockinUI();
-                    Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
-                }
+                    data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (vm != null)
+                    {
+                        if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                        {
+                            //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                            IsLockinUI();
+                            Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
+                        }
+                    }
+                }));
             }
         }
 
-            private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
+        private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
         {
             var psi = new System.Diagnostics.ProcessStartInfo();
             psi.FileName = Environment.SystemDirectory + Path.DirectorySeparatorChar + @"rundll32.exe";
