@@ -128,9 +128,11 @@ namespace DDPM.SA.Common
 
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
 
-        public event EventHandler<string> EAEditCompleted;
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public event EventHandler<string> EAEditCompleted;
 
         public event EventHandler<string> EAEditStarted;
 
@@ -139,6 +141,8 @@ namespace DDPM.SA.Common
 
         public event EventHandler<EAArgs> EAEditReturn;
 
+        //        public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
+        public Task<bool> ReloadEzSettings();
         #endregion EasyArange
 
         #region Gaming

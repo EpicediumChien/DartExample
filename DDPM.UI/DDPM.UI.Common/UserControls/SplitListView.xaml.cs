@@ -25,6 +25,8 @@ namespace DDPM.UI.Common.UserControls
         {
             InitializeComponent();
             DataContext = vm;
+
+            addButton.ClickCommand = new RelayCommand<AddCustomLayoutButton>(HandleAddButtonClickCommand);
         }
         #endregion ctor
 
@@ -84,7 +86,7 @@ namespace DDPM.UI.Common.UserControls
             if (vm.SplitOwner == eSplitOwner.EaCustom)
             {
                 spItem.IsDeleteEnabled = true;
-                spItem.IsEditEnabled = true;
+                spItem.IsEditEnabled = !spItem.IsAddedCustomLayout;
             }
             else if (vm.SplitOwner == eSplitOwner.EaWin)
             {
@@ -116,7 +118,7 @@ namespace DDPM.UI.Common.UserControls
             if (vm.SplitOwner == eSplitOwner.EaCustom)
             {
                 spItem.IsDeleteEnabled = true;
-                spItem.IsEditEnabled = true;
+                spItem.IsEditEnabled = !spItem.IsAddedCustomLayout;
             }
             else if (vm.SplitOwner == eSplitOwner.EaWin)
             {
@@ -414,5 +416,31 @@ namespace DDPM.UI.Common.UserControls
 
         #endregion Screen Orientation
 
+        #region AddCustomLayoutButton
+        public bool HasAddButton
+        {
+            get { return vm.HasAddButton; }
+            set { vm.HasAddButton = value; }
+        }
+
+
+
+        public ICommand AddButtonClickCommand
+        {
+            get { return (ICommand)GetValue(AddButtonClickCommandProperty); }
+            set { SetValue(AddButtonClickCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AddButtonClickCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AddButtonClickCommandProperty =
+            DependencyProperty.Register("AddButtonClickCommand", typeof(ICommand), typeof(SplitListView));
+
+        private void HandleAddButtonClickCommand(AddCustomLayoutButton addButton)
+        {
+            if (AddButtonClickCommand != null)
+                AddButtonClickCommand.Execute(this);
+        }
+
+        #endregion
     }
 }

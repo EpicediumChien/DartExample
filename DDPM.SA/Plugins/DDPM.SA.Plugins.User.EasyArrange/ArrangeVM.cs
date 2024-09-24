@@ -3,6 +3,7 @@ using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
+using nsWinEventHook;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
@@ -19,7 +20,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private readonly object _lockObject = new();
         private IDisplayService? _displayManagerPlugin;
         private IDeviceManagerSA? _deviceManagerPlugin;
-
 
         #region Enabled flag
 
@@ -45,7 +45,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             get
             {
-                return (_isWorkUIEnabled && IsMoving);
+                if (! IsMoving)
+                    return false;
+                if (!_isWorkUIEnabled)
+                    return false;
+
+                if (EzSettings.IsOnlyAllowWhenShiftKeyPressed)
+                {
+                    LogInfo($"@ ArrangeVM.IsWorkUIShowing: IsShiftPressed={IsShiftPressed}");
+                    return IsShiftPressed;
+                }
+                return true;
             }
         }
 
@@ -84,6 +94,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     RefreshWorkWinInfos();
                 }
+            }
+        }
+
+        private bool _isShiftPressed = false;
+        public bool IsShiftPressed
+        {
+            get => _isShiftPressed;
+            set
+            {
+                SetProperty(ref _isShiftPressed, value);
+                OnPropertyChanged("IsWorkUIShowing");
             }
         }
 
@@ -181,7 +202,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //{
             //    EAWorkWindow workWin = keyValuePair.Value;
             //    if (workWin == null) continue;
-                
+
             //    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
             //    if (cellObj != null)
             //    {
@@ -190,6 +211,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //        return cellObj;
             //    }
             //}
+            
             foreach (EAWorkWindow workWin in _workWindows2)
             {
                 if (!workWin.IsUsed)
@@ -223,34 +245,83 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion HoveringScreen
 
         #region WorkWindowList
-        private const int maxWorkWindowCount = 5;
+        public const int maxWorkWindowCount = 5;
         private List<EAWorkWindow> _workWindows2 = new List<EAWorkWindow>();
         private int _workWindowUsedCount = 0;
+
+        public void AddWorkWindow(EAWorkWindow workWindow)
+        {
+            _workWindows2.Add(workWindow);
+        }
 
         public void CreateWorkWindows2()
         {
             if (_workWindows2.Count >= maxWorkWindowCount)
                 return;
 
-            //List<MonitorInfo> monitors = GetMonitors();
-            //foreach (MonitorInfo mi in monitors)
-            //{
-            //    _deviceManagerPlugin.ShowOSD(mi, OSDType.DisplayChanged);
-            //    Thread.Sleep(1000);
-            //}
-
-            Task.Run(CreateWorkWindowAndAddToList);
-            Task.Run(CreateWorkWindowAndAddToList);
-            Task.Run(CreateWorkWindowAndAddToList);
-            Task.Run(CreateWorkWindowAndAddToList);
-            Task.Run(CreateWorkWindowAndAddToList);
-
-            //Wait until previous thread has finished, _workWindows count has been added
-            while (_workWindows2.Count < 5)
+            int idx = _workWindows2.Count;
+            //[0]
+            Task.Run(new Action(() => { CreateWorkWindowAndAddToList(idx); }));
+            idx++;
+            while (_workWindows2.Count < idx)
             {
                 Thread.Sleep(10);
                 Trace.WriteLine($"WorkWindows.Count={_workWindows2.Count}");
             }
+            if (_workWindows2.Count >= maxWorkWindowCount)
+                return;
+
+            //[1]
+            Task.Run(new Action(() => { CreateWorkWindowAndAddToList(idx); }));
+            idx++;
+            while (_workWindows2.Count < idx)
+            {
+                Thread.Sleep(10);
+                Trace.WriteLine($"WorkWindows.Count={_workWindows2.Count}");
+            }
+            if (_workWindows2.Count >= maxWorkWindowCount)
+                return;
+
+            //[2]
+            Task.Run(new Action(() => { CreateWorkWindowAndAddToList(idx); }));
+            idx++;
+            while (_workWindows2.Count < idx)
+            {
+                Thread.Sleep(10);
+                Trace.WriteLine($"WorkWindows.Count={_workWindows2.Count}");
+            }
+            if (_workWindows2.Count >= maxWorkWindowCount)
+                return;
+
+            //[3]
+            Task.Run(new Action(() => { CreateWorkWindowAndAddToList(idx); }));
+            idx++;
+            while (_workWindows2.Count < idx)
+            {
+                Thread.Sleep(10);
+                Trace.WriteLine($"WorkWindows.Count={_workWindows2.Count}");
+            }
+            if (_workWindows2.Count >= maxWorkWindowCount)
+                return;
+
+            //[4]
+            Task.Run(new Action(() => { CreateWorkWindowAndAddToList(idx); }));
+            idx++;
+            while (_workWindows2.Count < idx)
+            {
+                Thread.Sleep(10);
+                Trace.WriteLine($"WorkWindows.Count={_workWindows2.Count}");
+            }
+            if (_workWindows2.Count >= maxWorkWindowCount)
+                return;
+
+
+            ////Wait until previous thread has finished, _workWindows count has been added
+            //while (_workWindows2.Count < 5)
+            //{
+            //    Thread.Sleep(10);
+            //    Trace.WriteLine($"WorkWindows.Count={_workWindows2.Count}");
+            //}
             Trace.WriteLine($"WorkWindows.Count={_workWindows2.Count}");
             /*
             try
@@ -397,11 +468,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             */
         }
 
-        private Task CreateWorkWindowAndAddToList()
+        private Task CreateWorkWindowAndAddToList(int idx)
         {
             Thread thread = new Thread(() =>
             {
+                LogInfo($"Before new EAWorkWindow({idx})");
                 EAWorkWindow workWin = new EAWorkWindow(this);
+                LogInfo($"After new EAWorkWindow({idx})");
                 workWin.Show();
 
                 _workWindows2.Add(workWin);
@@ -415,12 +488,70 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return Task.CompletedTask;
         }
 
+        private EAWorkWindow workWin0;
+        private EAWorkWindow workWin1;
+        private EAWorkWindow workWin2;
+        private EAWorkWindow workWin3;
+        private EAWorkWindow workWin4;
+        /// <summary>
+        /// Called from STA Thread
+        /// </summary>
+        public void STA_CreateWorkWindowsAddToList()
+        {
+            LogInfo($"Before new EAWorkWindow(0)");
+            workWin0 = new EAWorkWindow(this);
+            LogInfo($"After new EAWorkWindow(0)");
+            workWin0.Show();
+            AddWorkWindow(workWin0);
+
+            LogInfo($"Before new EAWorkWindow(1)");
+            workWin1 = new EAWorkWindow(this);
+            LogInfo($"After new EAWorkWindow(1)");
+            workWin1.Show();
+            AddWorkWindow(workWin1);
+
+            LogInfo($"Before new EAWorkWindow(2)");
+            workWin2 = new EAWorkWindow(this);
+            LogInfo($"After new EAWorkWindow(2)");
+            workWin2.Show();
+            AddWorkWindow(workWin2);
+
+            LogInfo($"Before new EAWorkWindow(3)");
+            EAWorkWindow workWin3 = new EAWorkWindow(this);
+            LogInfo($"After new EAWorkWindow(3)");
+            workWin3.Show();
+            AddWorkWindow(workWin3);
+
+            LogInfo($"Before new EAWorkWindow(4)");
+            EAWorkWindow workWin4 = new EAWorkWindow(this);
+            LogInfo($"After new EAWorkWindow(4)");
+            workWin4.Show();
+            AddWorkWindow(workWin4);
+        }
+
+        private EAWorkWindow _eaWin;
+        public void STA_CreateAndAddWorkWindowToList()
+        {
+            if (WorkWindowCount >= maxWorkWindowCount)
+                return;
+            _eaWin = new EAWorkWindow(this);
+            _eaWin.Show();
+            AddWorkWindow(_eaWin);
+
+        }
+
         public void ResetWorkWindows2()
         {
             foreach (EAWorkWindow workWin in _workWindows2)
             {
                 if (workWin != null)
-                    workWin.IsUsed = false;
+                {
+                    if (workWin.IsUsed)
+                    {
+                        workWin.DispatcherClose();
+                        workWin.IsUsed = false;
+                    }
+                }
             }
         }
 
@@ -519,6 +650,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     workWin.IsUsed = true;
                     workWin.SetScreen(scr);
+                    workWin.AttachedMonitor = miWork;
                     usedCount++;
                 }
 
@@ -537,6 +669,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     List<double> settings = eaSettings.SelectedSplit.Settings;
                     LogInfo($"  * SetWorkSplit: {eaSettings.SelectedSplit.ToString()}");
                     workWin.SetWorkingSplit(cellCount, splitKey, settings);
+
+
                 }
 
                 workWin.ChangeWindowPos(left, top, width, height);
@@ -609,7 +743,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public int WorkWindowCount
         {
-            get 
+            get
             {
                 //return WorkWindows.Count; 
                 return _workWindowUsedCount;
@@ -661,7 +795,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //        newInfo.Add(workInfo);
                 //    }
                 //}
-                foreach(EAWorkWindow workWin in _workWindows2)
+                foreach (EAWorkWindow workWin in _workWindows2)
                 {
                     if (workWin == null)
                         continue;
@@ -708,7 +842,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         //    return null;
         //}
 
-          /// <summary>
+        /// <summary>
         /// Add/Build EAWorkWindows for each supported Monitors, with their settings, add into WorkWindows.
         /// </summary>
         /// <returns>>0 : number of WorkWindows are added.</returns>
@@ -866,7 +1000,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             set => SetProperty(ref _startMovingMsg, value);
         }
 
-        public bool IsAllowToMoveFromPathName(string pathName)
+         public bool IsAllowToMoveFromPathName(string pathName)
         {
             string fileName = System.IO.Path.GetFileName(pathName);
             if (fileName.Equals("DDPM.Subagent.User.exe", StringComparison.OrdinalIgnoreCase))
@@ -950,5 +1084,68 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         //}
 
         #endregion WorkWindow FadeOut
+
+        public void DetermineWorkWindowVisibility()
+        {
+            //foreach (EAWorkWindow workWin in _workWindows2)
+            //{
+            //    if (workWin.IsUsed)
+            //    {
+            //        workWin.DetermineWindowVisibility();
+            //    }
+            //}
+        }
+
+        #region EzSettings
+        private EzSettings _ezSettings = new EzSettings();
+        public EzSettings EzSettings 
+        {
+            get => _ezSettings;
+            set
+            {
+                SetProperty(ref _ezSettings, value);
+                OnPropertyChanged("IsOnlyShift");
+            }
+        }
+
+        public bool IsOnlyShift
+        {
+            get { return EzSettings.IsOnlyAllowWhenShiftKeyPressed; }
+        }
+        #endregion
+
+        //public bool ReloadMonitorSettings(MonitorInfo monitorInfo)
+        //{
+        //    foreach (EAWorkWindow workWin in _workWindows2)
+        //    {
+        //        if (workWin.IsUsed)
+        //        {
+        //            if (workWin.ScreenDeviceName.Equals(monitorInfo.DisplayName))
+        //                return workWin.ReloadMonitorSettings();
+        //        }
+        //    }
+        //    return false;
+        //}
+
+
+        /// <summary>
+        /// Check if the specify pathName is exclued by EasyArrange and EasyMemory
+        /// </summary>
+        /// <param name="pathName"></param>
+        /// <returns></returns>
+        public static bool IsEAExcludedPathName(string pathName)
+        {
+            if (String.IsNullOrWhiteSpace(pathName)) 
+                return true;
+            string fileName = System.IO.Path.GetFileName(pathName);
+            if (fileName.Equals("DDPM.Subagent.User.exe", StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (fileName.Equals("DDPM.exe", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
+        }
+
+
     }
 }

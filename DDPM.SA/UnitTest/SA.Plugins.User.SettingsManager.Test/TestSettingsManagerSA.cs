@@ -577,9 +577,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             EAMonitorSettings eAMonitorSettings1 = new EAMonitorSettings()
             {
                 CustomList = new List<SplitJson>(),
-                IsOnlyAllowWhenShiftKeyPressed = false,
-                IsSpanAcrossMultiMonitors = false,
-                IsWidthoutGap = true,
+                //Robert_Lin, 2024-9-24 below 3 properties has been moved to EzSettings class
+                // Which is one member of DDPMUserSetting (original in DDPMMonitorSettings)
+                //
+                //IsOnlyAllowWhenShiftKeyPressed = false,
+                //IsSpanAcrossMultiMonitors = false,
+                //IsWidthoutGap = true,
                 RecentList = new List<SplitJson>(),
                 SelectedSplit = new SplitJson()
             };
