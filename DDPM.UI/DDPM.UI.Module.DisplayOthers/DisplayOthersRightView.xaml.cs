@@ -36,10 +36,17 @@ namespace DDPM.UI.Module.DisplayOthers
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
-                    if (data.LockSettings.Lock_Display_ExportSettings)
+                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data))
                     {
-                        //Do lock ui init here (direct set or binding via vm)
                         IsLockinUI();
+                    }
+                    else
+                    {
+                        if (data.LockSettings.Lock_Display_ExportSettings)
+                        {
+                            //Do lock ui init here (direct set or binding via vm)
+                            IsLockinUI();
+                        }
                     }
                     if (data.LockSettings.Lock_Display_PowerNap)
                     {
@@ -95,16 +102,19 @@ namespace DDPM.UI.Module.DisplayOthers
             if (DdpmCommonHelper.DeviceManagerSA != null && data == null)
             {
                 data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if(DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                if (vm != null)
                 {
-                    //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                    IsLockinUI();
-                    Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
+                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                    {
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        IsLockinUI();
+                        Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
+                    }
                 }
             }
         }
 
-            private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
+        private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
         {
             var psi = new System.Diagnostics.ProcessStartInfo();
             psi.FileName = Environment.SystemDirectory + Path.DirectorySeparatorChar + @"rundll32.exe";
