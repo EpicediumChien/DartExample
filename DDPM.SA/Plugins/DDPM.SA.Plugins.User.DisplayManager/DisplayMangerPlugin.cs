@@ -3376,7 +3376,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         break;
                                     }
                                 }
-                                if (newVersion > oldVersion)
+                                //if (newVersion > oldVersion)
                                 {
                                     ret.Firmwares.Add(firmwares_item);
                                 }

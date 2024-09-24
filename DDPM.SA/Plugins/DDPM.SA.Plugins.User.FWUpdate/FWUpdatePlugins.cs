@@ -981,6 +981,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     Object = _fWUpdateInfoPackage
                 };
                 CallPopup?.AsyncFireAndForget(this, popupContentPackage, System.Threading.CancellationToken.None);
+                ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
+                ToastNotificationManagerCompat.OnActivated += toastArgs =>
+                {
+                    CheckInput(toastArgs);
+                };
+                toastContentBuilder.AddArgument(title);
+                toastContentBuilder.AddText(title);
+                toastContentBuilder.AddText(info);
+                toastContentBuilder.AddButton("Update", ToastActivationType.Background, "Update");
+                toastContentBuilder.AddButton("Delay", ToastActivationType.Background, "Delay");
                 //Task.Run(() =>
                 //{
                 //    PopupBaseManage popupBaseManage = new PopupBaseManage();
@@ -1054,10 +1064,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         public void DelayEvent(object e)
         {
             _logs.DebugMsg_1(nameof(DelayEvent));
-            // 將 e 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(e);
+            //// 將 e 轉換成 JSON 字串
+            //string json = JsonConvert.SerializeObject(e);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
+            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(e.ToString());
             if (fWUpdateInfoPackage != null)
             {
                 if (_DelayFWUpdateInfoPackage != null && _DelayFWUpdateInfoPackage.SaveTime != null && _DelayFWUpdateInfoPackage.FWUpdateInfo.Count > 0)
@@ -1101,10 +1111,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         public void UpdateEvent(object e)
         {
             _logs.DebugMsg_1(nameof(UpdateEvent));
-            // 將 e 轉換成 JSON 字串
-            string json = JsonConvert.SerializeObject(e);
+            //// 將 e 轉換成 JSON 字串
+            //string json = JsonConvert.SerializeObject(e);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
-            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
+            FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(e.ToString());
             List<FWUpdateInfo> fWUpdateInfo = fWUpdateInfoPackage.FWUpdateInfo;
             DownloadAndInstall_Result_Notify?.AsyncFireAndForget(this, DownloadAndInstall(fWUpdateInfo, "").Result, System.Threading.CancellationToken.None);
         }
