@@ -52,7 +52,7 @@ namespace DDPM.UI.Module.DisplayProperties
                     DisplayPropertiesViewModel vm = (DisplayPropertiesViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.Lock_USBCrioritization = true;
+                        vm.Lock_USBCrioritization = (bool)isLocked;
                         Trace.WriteLine($"[SettingsPage] USBC Prioritization(Lock) : {isLocked}");
                     }
                 }));
