@@ -72,7 +72,7 @@ namespace VcpCore.Plugins
         //private static BackgroundWorker _MonitorRetrier;
         private static ResultLockPool _TaskQueueResult;
 
-        private static System.Timers.Timer _CacheTimer = new System.Timers.Timer(2000);
+        private static System.Timers.Timer _CacheTimer = new System.Timers.Timer(8000);
         private static readonly object TaskQueueExecutorLock = new object();
 
         //private  static readonly object MonitorRetrierLock = new object();
