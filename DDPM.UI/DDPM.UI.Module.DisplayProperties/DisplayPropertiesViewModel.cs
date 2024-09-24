@@ -328,7 +328,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_RefreshRate = (bool)data.LockSettings.Lock_Display_ResolutionRefreshRate;
                 Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {Lock_RefreshRate}");
-                Lock_USBCrioritization = true;
+                Lock_USBCrioritization = (bool)data.LockSettings.Lock_Display_USBCPrioritization;
                 Trace.WriteLine($"[SettingsPage] USBC Prioritization(Lock) : {Lock_USBCrioritization}");
 
                 RefreshUI();
