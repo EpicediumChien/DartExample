@@ -73,6 +73,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     if (e.device_peripherals.Name == _viewModel!.CurrentDeviceInfo!.Name)
                     {
+                        _console.ShowPluginById(PluginId);
                         GetPeripheralsAsync();
                         _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
                         Mouse.OverrideCursor = null;
@@ -135,10 +136,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel!.DDPMSettings == null)
-            {
-                _viewModel.DDPMSettings = DdpmCommonHelper.DeviceManagerSA!.ReloadAppConfigData().Result;
-            }
             if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
             { }
             Mouse.OverrideCursor = null;

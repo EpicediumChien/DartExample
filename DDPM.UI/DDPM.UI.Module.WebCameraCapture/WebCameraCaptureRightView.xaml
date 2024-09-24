@@ -32,149 +32,159 @@
         </StackPanel>
         <Border Background="#99132F54" CornerRadius="6" Margin="0,22,0,0">
           <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Vertical" Margin="18,22,18,18">
-              <StackPanel Orientation="Horizontal">
-                <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-              </StackPanel>
-              <Grid Margin="0,15,0,0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="Resolution_4KUHD_Button_Click" Height="30">
-                  <Border.Style>
-                    <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding Resolution_IsSelected[0]}"  Value="True">
-                          <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                          <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Border.Style>
-                  <Grid>
-                    <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.5], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
-                  </Grid>
-                </Border>
-                <Border Grid.Column="1" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="Resolution_FullHD_Button_Click" Height="30">
-                  <Border.Style>
-                    <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding Resolution_IsSelected[1]}"  Value="True">
-                          <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                          <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Border.Style>
-                  <Grid>
-                    <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.6], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
-                  </Grid>
-                </Border>
-                <Border Grid.Column="2" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="Resolution_HD_Button_Click" Height="30">
-                  <Border.Style>
-                    <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding Resolution_IsSelected[2]}"  Value="True">
-                          <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                          <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Border.Style>
-                  <Grid>
-                    <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
-                  </Grid>
-                </Border>
-              </Grid>
+            <UXControls:UXTextBlock Margin="18,25,0,18" Text="{Binding [WebCameraCapture.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+            <StackPanel Orientation="Horizontal" Margin="18,0,18,18">
+              <Border x:Name="btnRes0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="100" Tag="0" IsEnabled="{Binding IsNotRecording}">
+                <Border.Style>
+                  <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Resolution_IsSelected[0]}"  Value="True">
+                        <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                      </DataTrigger>
+                      <Trigger Property="IsEnabled"  Value="false">
+                        <Setter Property="Opacity"  Value="0.5" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Border.Style>
+                <UXControls:UXTextBlock x:Name="txtRes0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+              </Border>
+              <Border x:Name="btnRes1" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="100" Tag="1" IsEnabled="{Binding IsNotRecording}">
+                <Border.Style>
+                  <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Resolution_IsSelected[1]}"  Value="True">
+                        <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                      </DataTrigger>
+                      <Trigger Property="IsEnabled"  Value="false">
+                        <Setter Property="Opacity"  Value="0.5" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Border.Style>
+                <UXControls:UXTextBlock x:Name="txtRes1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+              </Border>
+              <Border x:Name="btnRes2" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="100" Tag="2" IsEnabled="{Binding IsNotRecording}">
+                <Border.Style>
+                  <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Resolution_IsSelected[2]}"  Value="True">
+                        <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                      </DataTrigger>
+                      <Trigger Property="IsEnabled"  Value="false">
+                        <Setter Property="Opacity"  Value="0.5" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Border.Style>
+                <Grid>
+                  <UXControls:UXTextBlock x:Name="txtRes2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"  FontFamily="Roboto" />
+                </Grid>
+              </Border>
+              <Border x:Name="btnRes3" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Width="100" Tag="3" IsEnabled="{Binding IsNotRecording}">
+                <Border.Style>
+                  <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Resolution_IsSelected[2]}"  Value="True">
+                        <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                      </DataTrigger>
+                      <Trigger Property="IsEnabled"  Value="false">
+                        <Setter Property="Opacity"  Value="0.5" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Border.Style>
+                <Grid>
+                  <UXControls:UXTextBlock x:Name="txtRes3" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                </Grid>
+              </Border>
             </StackPanel>
           </StackPanel>
         </Border>
-        <Border Background="#99132F54" CornerRadius="6">
+        <Border Background="#99132F54" CornerRadius="6" Margin="0,10,0,0">
           <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Vertical" Margin="18,22,18,18">
-              <StackPanel Orientation="Horizontal">
-                <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
-                  <Image.ToolTip>
-                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                      <TextBlock Width="350" Height="56" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
-                    </ToolTip>
-                  </Image.ToolTip>
-                </Image>
-              </StackPanel>
-              <Grid Margin="0,15,0,0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="FPS_24_Button_Click" Height="30">
-                  <Border.Style>
-                    <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding FPS_IsSelected[0]}"  Value="True">
-                          <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                          <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Border.Style>
-                  <Grid>
-                    <UXControls:UXTextBlock Text="24" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
-                  </Grid>
-                </Border>
-                <Border Grid.Column="1" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="FPS_30_Button_Click" Height="30">
-                  <Border.Style>
-                    <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding FPS_IsSelected[1]}"  Value="True">
-                          <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                          <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Border.Style>
-                  <Grid>
-                    <UXControls:UXTextBlock Text="30" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
-                  </Grid>
-                </Border>
-                <Border Grid.Column="2" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="FPS_60_Button_Click" Height="30">
-                  <Border.Style>
-                    <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding FPS_IsSelected[2]}"  Value="True">
-                          <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
-                          <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Border.Style>
-                  <Grid>
-                    <UXControls:UXTextBlock Text="60" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
-                  </Grid>
-                </Border>
-              </Grid>
+            <StackPanel Orientation="Horizontal" Margin="18,25,0,18">
+              <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+              <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+                <Image.ToolTip>
+                  <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                    <TextBlock Width="350" Height="56" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" TextWrapping="Wrap" />
+                  </ToolTip>
+                </Image.ToolTip>
+              </Image>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="18,0,18,18">
+              <Border x:Name="btnFPS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="btnFPS_Click" Height="30" Width="100" Tag="0" IsEnabled="{Binding IsNotRecording}">
+                <Border.Style>
+                  <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding FPS_IsSelected[0]}"  Value="True">
+                        <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                      </DataTrigger>
+                      <Trigger Property="IsEnabled"  Value="false">
+                        <Setter Property="Opacity"  Value="0.5" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Border.Style>
+                <UXControls:UXTextBlock x:Name="txtFPS0" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+              </Border>
+              <Border x:Name="btnFPS1" Focusable="True" MouseLeftButtonDown="btnFPS_Click" Height="30" Width="100" Tag="1" IsEnabled="{Binding IsNotRecording}">
+                <Border.Style>
+                  <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding FPS_IsSelected[1]}"  Value="True">
+                        <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                      </DataTrigger>
+                      <Trigger Property="IsEnabled"  Value="false">
+                        <Setter Property="Opacity"  Value="0.5" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Border.Style>
+                <UXControls:UXTextBlock x:Name="txtFPS1" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+              </Border>
+              <Border x:Name="btnFPS2" Focusable="True" MouseLeftButtonDown="btnFPS_Click" Height="30" Width="100" Tag="2" IsEnabled="{Binding IsNotRecording}">
+                <Border.Style>
+                  <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding FPS_IsSelected[2]}"  Value="True">
+                        <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                      </DataTrigger>
+                      <Trigger Property="IsEnabled"  Value="false">
+                        <Setter Property="Opacity"  Value="0.5" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Border.Style>
+                <Grid>
+                  <UXControls:UXTextBlock x:Name="txtFPS2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
+                </Grid>
+              </Border>
             </StackPanel>
           </StackPanel>
         </Border>
-        <Border Background="#99132F54" CornerRadius="6">
-          <StackPanel Orientation="Vertical" Margin="18,22,0,18">
-            <UXControls:UXCheckBox Name="ckboxCountdown" Margin="0,0,0,8" Content="{Binding [WebCameraCapture.0], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding Countdown_IsChecked}" Foreground="#F5F6F7" Checked="ChkBoxCountdown_Checked" Unchecked="ChkBoxCountdown_Unchecked" />
-            <UXControls:UXCheckBox Name="ckboxFramingGrid" Margin="0,8,0,8" Content="{Binding [WebCameraCapture.1], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding FramingGrid_IsChecked}" Foreground="#F5F6F7" Checked="ChkBoxFramingGrid_Checked" Unchecked="ChkBoxFramingGrid_Unchecked" />
+        <Border Background="#99132F54" CornerRadius="6" Margin="0,10,0,0">
+          <StackPanel Orientation="Vertical" Margin="18,12,0,02">
+            <UXControls:UXCheckBox Name="ckboxCountdown" Margin="0" Content="{Binding [WebCameraCapture.0], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding WebcamCountdown}" Foreground="#F5F6F7" FontFamily="Roboto" />
+            <UXControls:UXCheckBox Name="ckboxFramingGrid" Margin="0,15,0,12" Content="{Binding [WebCameraCapture.1], Source={x:Static lang:LangHelper.Instance}}" IsChecked="{Binding WebcamGrid}" Foreground="#F5F6F7" FontFamily="Roboto" />
           </StackPanel>
         </Border>
-        <Border Background="#99132F54" CornerRadius="6" Margin="0,0,0,4000">
+        <Border Background="#99132F54" CornerRadius="6" Margin="0,10,0,4000">
           <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Vertical" Margin="18,22,0,18">
-              <StackPanel Orientation="Horizontal">
-                <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-              </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="18,25,0,18">
+              <UXControls:UXTextBlock Text="{Binding [WebCameraCapture.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
               <StackPanel Orientation="Horizontal" Margin="15,15,15,0">
-                <UXControls:UXTextBox Grid.Column="0" Name="tbx_media_file_location" AutomationProperties.Name="TextBoxDefault" Width="165" Height="40" Background="#141D28" Foreground="#7E7E7E" IsReadOnly="True" />
-                <UXControls:UXButton Grid.Column="1" Margin="8,0,8,0" ButtonType="Secondary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Click="Open_Click" Content="{Binding [WebCameraCapture.2], Source={x:Static lang:LangHelper.Instance}}" Width="112" Height="40" Foreground="White" BorderBrush="White" />
-                <UXControls:UXButton Grid.Column="2" ButtonType="Primary" AutomationProperties.Name="Primary1" ButtonSize="Medium" Click="Change_Click" Content="{Binding [WebCameraCapture.3], Source={x:Static lang:LangHelper.Instance}}" Width="112" Height="40" />
+                <UXControls:UXTextBox Name="txtCaptureFolder" AutomationProperties.Name="TextBoxDefault" Width="165" Height="40" Background="#141D28" Foreground="#7E7E7E" IsReadOnly="True" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" Padding="8,10,0,0" />
+                <UXControls:UXButton Margin="8,0,8,0" ButtonType="Secondary" Click="Open_Click" Content="{Binding [WebCameraCapture.2], Source={x:Static lang:LangHelper.Instance}}" Width="97" Height="40" Foreground="White" BorderBrush="White" FontFamily="Roboto" Cursor="Hand" />
+                <UXControls:UXButton ButtonType="Primary" Click="Change_Click" Content="{Binding [WebCameraCapture.3], Source={x:Static lang:LangHelper.Instance}}" Width="112" Height="40" FontFamily="Roboto" Cursor="Hand" />
               </StackPanel>
             </StackPanel>
           </StackPanel>
