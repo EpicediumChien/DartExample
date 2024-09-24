@@ -614,6 +614,21 @@ namespace DDPM.UI.Plugin.ViewModels
         /// HeadsetAudioSettings Page
         /// </summary>
 
+        //private Visibility _isAncLockMask = Visibility.Collapsed;
+
+        //public Visibility IsAncLockMask
+        //{
+        //    get { return _isAncLockMask; }
+        //    set
+        //    {
+        //        if (_isAncLockMask != value)
+        //        {
+        //            _isAncLockMask = value;
+        //            OnPropertyChanged(nameof(_isAncLockMask));
+        //        }
+        //    }
+        //}
+
         #region HeadsetAudioSettings ToggleSwitch Binding
 
         //Outgoing Audio ToggleSwitch

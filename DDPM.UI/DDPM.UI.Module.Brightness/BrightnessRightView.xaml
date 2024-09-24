@@ -491,7 +491,19 @@
                                         <RowDefinition Height="auto" />
                                         <RowDefinition Height="auto" />
                                     </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0" Height="50">
+                                    <Grid Grid.Row="0" Height="50" x:Name="AutoBriGrid">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Visible">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Collapsed">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
@@ -563,7 +575,19 @@
                                             Opacity="0.6"
                                             Visibility="{Binding IsAutoBrightnessLockMask}" />
                                     </Grid>
-                                    <Grid Grid.Row="1" Height="50">
+                                    <Grid Grid.Row="1" Height="50" x:Name="AutoBriRLGrid">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Visible">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Collapsed">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
@@ -643,7 +667,19 @@
                                             Opacity="0.6"
                                             Visibility="{Binding IsAutoBrigRangeLevelLockMask}" />
                                     </Grid>
-                                    <Grid Grid.Row="2" Height="50">
+                                    <Grid Grid.Row="2" Height="50" x:Name="AutoColorTempGrid">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Visible">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Collapsed">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
@@ -719,7 +755,19 @@
                                             Opacity="0.6"
                                             Visibility="{Binding IsAutoTemperatureSwitchLockMask}" />
                                     </Grid>
-                                    <Grid Grid.Row="3" Height="50">
+                                    <Grid Grid.Row="3" Height="50" x:Name="AutoPMSGrid">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Visible">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding AutoALSLock}" Value="Collapsed">
+                                                        <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />

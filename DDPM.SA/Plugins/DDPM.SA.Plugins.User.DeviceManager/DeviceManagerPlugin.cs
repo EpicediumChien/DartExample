@@ -4218,7 +4218,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _VCPchangedEventArgs.monitor = e.monitor;
             OnVCPchanged(_VCPchangedEventArgs);
         }
-
         private void show_peripheralsNotify(object sender, DeviceChangedEventArgs e)
         {
             writelog("Receive Notify Event from PeripheralsPlugin");

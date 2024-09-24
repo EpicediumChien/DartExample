@@ -5,11 +5,74 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:local="clr-namespace:DDPM.UI.Module.EzMemory"
+             xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
+             xmlns:ezCommon="clr-namespace:DDPM.Easy.Common;assembly=DDPM.Easy.Common"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <Button Width="200" Height="160" Content="EzMemoryRightView" />
-        <CheckBox Name="ck" Content="AddDeviceIcon" IsChecked="True" Click="CheckBox_Click_1" Foreground="White"/>
-        <CheckBox Name="ckSettings" Content="SettingsIcon" IsChecked="True" Click="ckSettings_Click" Foreground="White"/>
-    </StackPanel>
+             d:DesignHeight="1000" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="UXTextBlock_Caption" TargetType="UXControls:UXTextBlock">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="Margin" Value="0,0,8,0" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <UXControls:UXScrollViewer>
+            <Grid>
+                <StackPanel>
+                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0">
+                        <StackPanel Margin="0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <UXControls:UXTextBlock Grid.Row="0" Text="Profile" FontSize="20" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+
+                                <StackPanel Grid.Row="1" Margin="0,10,0,10">
+                                    <Grid Margin="10,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <UXControls:UXTextBlock Grid.Row="0" Grid.Column="0" Text="Automatic Startup:"  Margin="170,0,10,10"   />
+                                        <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="N/A" Margin="16,0,10,10" />
+
+                                        <UXControls:UXTextBlock Grid.Row="1" Grid.Column="0" Text="Launch by Time:" Margin="190,0,10,10"  />
+                                        <UXControls:UXTextBlock Grid.Row="1" Grid.Column="1" Text="N/A" Margin="16,0,10,10" />
+
+                                        <UXControls:UXTextBlock Grid.Row="2" Grid.Column="0" Text="App/Document:" Margin="190,0,10,10"  />
+                                        <UXControls:UXTextBlock Grid.Row="2" Grid.Column="1" Text="N/A" Margin="16,0,10,10" />
+                                    </Grid>
+
+                                    <commonCtrl:SplitListView Name="splitListView_Recent" Margin="0,10,0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+
+                                    <UXControls:UXButton Width="99" Height="40" Content="Apply" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" IsEnabled="False"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </UXControls:UXScrollViewer>
+    </Grid>
 </UserControl>
