@@ -32,6 +32,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 vm.RefreshUI();
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -55,7 +56,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         ~SettingsPage()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent -= GlobalSettingChangeEvent;
+            }
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -100,6 +104,18 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     }
                 }));
             }
+        }
+        private void GlobalSettingChangeEvent(object? sender, EventArgs e)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                if (vm != null)
+                {
+                    vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    vm.RefreshUI();
+                }
+            }));
         }
 
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
