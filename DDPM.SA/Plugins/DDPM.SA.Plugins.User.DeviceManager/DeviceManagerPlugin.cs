@@ -279,6 +279,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<NKVMRespone> NKVMCLIRespone;
 
+        public event EventHandler GlobalSettingChangeEvent;
+
         #endregion
 
         #region ColorPreset implementation
@@ -3376,6 +3378,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_DisplayKeyboardLockKey(bool isDisplay)
@@ -3386,6 +3389,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_DisplayWB7022CoverState(bool isDisplay)
@@ -3396,6 +3400,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_DisplayMuteState(bool isDisplay)
@@ -3406,6 +3411,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Display_MuteState = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_DisplayColorPresetAndEasyMemory(bool isDisplay)
@@ -3416,6 +3422,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_EnableQuickAccessWidget(bool isEnable)
@@ -3426,6 +3433,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = isEnable;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable)
@@ -3436,6 +3444,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = isEnable;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         private bool LoadGlobalSettingParam()
