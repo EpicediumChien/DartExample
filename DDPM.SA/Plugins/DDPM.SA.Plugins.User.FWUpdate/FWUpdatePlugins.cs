@@ -577,19 +577,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     FolderInfo = string.Empty;
                     PathSymbolicLinInfo = string.Empty;
                     folderValid = false;
-                    folderValid = DDPMFileSecurity.IsPathSymbolicLinked(savePath, out PathSymbolicLinInfo);//0913 Bruce Add Security
+                    folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(savePath, out PathSymbolicLinInfo);//0924 Bruce Add Security
                     if (!folderValid)
                     {
                         _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
-                        //Do remove Symbolic Link than delete folder
-                        Directory.Delete(savePath, true);
-                        Directory.CreateDirectory(savePath);
                     }
                     folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo) && folderValid;
                     if (!folderValid)
                     {
                         _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                        //Do remove Symbolic Link than delete folder
                         Directory.Delete(savePath, true);
                         Directory.CreateDirectory(savePath);
                     }
@@ -630,13 +626,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         FolderInfo = string.Empty;
                         PathSymbolicLinInfo = string.Empty;
                         folderValid = false;
-                        folderValid = DDPMFileSecurity.IsPathSymbolicLinked(savePath, out PathSymbolicLinInfo);//0913 Bruce Add Security
+                        folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(savePath, out PathSymbolicLinInfo);//0924 Bruce Add Security
                         if (!folderValid)
                         {
                             _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
-                            //Do remove Symbolic Link than delete folder
-                            Directory.Delete(savePath, true);
-                            Directory.CreateDirectory(savePath);
                         }
                         folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo) && folderValid;
                         if (!folderValid)
@@ -856,22 +849,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             if (download != null)
             {
-                if (download.DownloadFileStream != null)
+                FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                 {
-                    if (download.DownloadFileSize == null)
-                    {
-                        download.DownloadFileSize = 1;
-                    }
-                    double d = Math.Round(((double)download.DownloadFileStream.Length / (double)download.DownloadFileSize) * 100.0, 2);
-                    FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
-                    {
-                        DeviceName = _fWUpdateInfo.DeviceName,
-                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Downloading",
-                        ProcessProgress = d,
-                    };
-                    sendMessageToEvent(fWUpdateInfo);
-                }
+                    DeviceName = _fWUpdateInfo.DeviceName,
+                    TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                    ProcessName = "Downloading",
+                    ProcessProgress = download.GetProgress(),
+                };
+                sendMessageToEvent(fWUpdateInfo);
             }
         }
 
@@ -1229,7 +1214,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 else
                 {
                     string logPath = Path.GetDirectoryName(fwUpdateInfo.InstallPaths);
-                    arguments = $"-s -f {logPath}";
+                    arguments = $"-s --force -f {logPath}";
                 }
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
@@ -1434,6 +1419,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private void _timerTimeOut_Tick(object sender, EventArgs e)
         {
+            if (_timeOutCount < _fwTimeOutCount)
+            {
+                FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                {
+                    DeviceName = _fWUpdateInfo.DeviceName,
+                    TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                    ProcessName = "Timeout",
+                    ProcessProgress = _fwTimeOutCount,
+                };
+                sendMessageToEvent(fWUpdateInfo);
+            }
             _timeOutCount--;
             if (_namedPipeServer.IsNamedPipeServerIsNoSafe)
             {
