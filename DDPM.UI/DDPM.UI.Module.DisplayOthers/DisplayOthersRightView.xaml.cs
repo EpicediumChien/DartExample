@@ -14,14 +14,17 @@ namespace DDPM.UI.Module.DisplayOthers
     {
         private DisplayOthersViewModel vm
         {
-            get => (DisplayOthersViewModel)DataContext;
+            get => (DisplayOthersViewModel)DataContext != null ? (DisplayOthersViewModel)DataContext : null;
         }
 
         private void IsLockinUI()
         {
-            vm.LockSettings_Visibility = Visibility.Visible;
-            vm.isSettingsEnable = false;
-            vm.Settings_Opacity = 0.5;
+            if (vm != null)
+            {
+                vm.LockSettings_Visibility = Visibility.Visible;
+                vm.isSettingsEnable = false;
+                vm.Settings_Opacity = 0.5;
+            }
         }
 
         public DisplayOthersRightView(DisplayOthersViewModel vm)
@@ -101,16 +104,19 @@ namespace DDPM.UI.Module.DisplayOthers
             //Functionality: When a 1 or more settings are locked, automatically lock 'export/import'. 
             if (DdpmCommonHelper.DeviceManagerSA != null && data == null)
             {
-                data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (vm != null)
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                    data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                        IsLockinUI();
-                        Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
+                        if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                        {
+                            //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                            IsLockinUI();
+                            Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
+                        }
                     }
-                }
+                }));
             }
         }
 
