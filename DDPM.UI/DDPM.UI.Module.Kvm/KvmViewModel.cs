@@ -408,6 +408,10 @@ namespace DDPM.UI.Module.Kvm
         public double NKVM_Opacity { get; set; } = 1;
         public Visibility LockNKVM_Visibility {  get; set; } = Visibility.Collapsed;
 
+        public bool isUSBKVMEanble { get; set; } = true;
+        public double USBKVM_Opacity { get; set; } = 1;
+        public Visibility LockUSBKVM_Visibility { get; set; } = Visibility.Collapsed;
+
         #region Hotkey
 
         private string _switchPCsKey = "None";
@@ -1203,6 +1207,16 @@ namespace DDPM.UI.Module.Kvm
                 DdpmCommonHelper.DeviceManagerSA.SupportedNKVMMonitors().Wait();
             }
             DdpmCommonHelper.DeviceManagerSA.SetOnNKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
+        }
+
+        public void OnPropertyChanged_Lock()
+        {
+            OnPropertyChanged("isNKVMEanble");
+            OnPropertyChanged("NKVM_Opacity");
+            OnPropertyChanged("LockNKVM_Visibility");
+            OnPropertyChanged("isUSBKVMEanble");
+            OnPropertyChanged("USBKVM_Opacity");
+            OnPropertyChanged("LockUSBKVM_Visibility");
         }
     }
 }

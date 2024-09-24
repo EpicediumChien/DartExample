@@ -248,5 +248,13 @@ namespace DDPM.UI.Module.DisplayOthers
 
             return false;
         }
+
+        public void OnPropertyChanged_Lock()
+        {
+            OnPropertyChanged("isSettingsEnable");
+            OnPropertyChanged("LockSettings_Visibility");
+            OnPropertyChanged("Settings_Opacity");
+        }
+
     }
 }
