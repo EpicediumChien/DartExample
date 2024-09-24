@@ -911,7 +911,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetBackLightingControls(3,Guid.NewGuid()), $"SetBackLightingControls() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetBackLightingControls(3, Guid.NewGuid()), $"SetBackLightingControls() returns null");
         }
 
         [Test]
@@ -1033,7 +1033,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
 
             // Execute and Verify
-            //Assert.IsNotNull(deviceMangerPlugin.SetPrimaryMouseButton(DPeMPublic.Common.Enums.MouseButton.Left, Guid.NewGuid()), $"SetPrimaryMouseButton() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetPrimaryMouseButton(DPeMPublic.Common.Enums.MouseButton.Left, Guid.NewGuid()), $"SetPrimaryMouseButton() returns null");
         }
 
         [Test]
@@ -1088,7 +1088,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetWiredAudioIMicNSEnable(true,Guid.NewGuid()), $"SetWiredAudioIMicNSEnable() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetWiredAudioIMicNSEnable(true, Guid.NewGuid()), $"SetWiredAudioIMicNSEnable() returns null");
         }
 
         [Test]
@@ -1099,7 +1099,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetWiredAudioMicMuteSoundEnable(true,Guid.NewGuid()), $"SetWiredAudioMicMuteSoundEnable() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetWiredAudioMicMuteSoundEnable(true, Guid.NewGuid()), $"SetWiredAudioMicMuteSoundEnable() returns null");
         }
 
         [Test]
@@ -1155,7 +1155,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetBandsGain(2, Guid.NewGuid(),"A"), $"SetBandsGain() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetBandsGain(2, Guid.NewGuid(), "A"), $"SetBandsGain() returns null");
         }
 
         [Test]
@@ -1265,7 +1265,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetSideTopSwitchSinglePressSetting3(new byte[]{ 0x11,0x12}, Guid.NewGuid()), $"SetSideTopSwitchSinglePressSetting3() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetSideTopSwitchSinglePressSetting3(new byte[] { 0x11, 0x12 }, Guid.NewGuid()), $"SetSideTopSwitchSinglePressSetting3() returns null");
         }
 
 
@@ -1302,7 +1302,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetDisplayPropertiest(new MonitorInfo(),new DDPM.SA.Common.Properties(),new DisplayOrientation()), $"SetDisplayPropertiest() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetDisplayPropertiest(new MonitorInfo(), new DDPM.SA.Common.Properties(), new DisplayOrientation()), $"SetDisplayPropertiest() returns null");
         }
 
         [Test]
@@ -1414,7 +1414,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetOSDOrientation(new MonitorInfo(),"A"), $"SetOSDOrientation() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetOSDOrientation(new MonitorInfo(), "A"), $"SetOSDOrientation() returns null");
         }
 
         [Test]
@@ -1458,7 +1458,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM", "GUID","A"), $"WriteRegistryData() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM", "GUID", "A"), $"WriteRegistryData() returns null");
         }
 
         [Test]
@@ -1591,7 +1591,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPluginMock.Object);
 
             // Execute and Verify
-            Assert.IsNotNull(deviceMangerPlugin.SetSubInputs(new MonitorInfo(), new InputSourceObj(), new InputSourceObj(),new InputSourceObj()), $"SetSubInputs() returns null");
+            Assert.IsNotNull(deviceMangerPlugin.SetSubInputs(new MonitorInfo(), new InputSourceObj(), new InputSourceObj(), new InputSourceObj()), $"SetSubInputs() returns null");
         }
 
 
@@ -1607,7 +1607,7 @@ namespace SA.Plugins.User.DeviceManager.Test
         }
 
 
-        
+
     }
 }
 
