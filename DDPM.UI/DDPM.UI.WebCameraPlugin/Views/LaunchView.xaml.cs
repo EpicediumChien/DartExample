@@ -664,15 +664,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // 20240626 jim add
         private async Task CleanupMediaCaptureAsync()
         {
+            if (_vm!.MediaFrameReader != null)
+            {
+                _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
+                try
+                {
+                    await _vm.MediaFrameReader.StopAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error stopping MediaFrameReader: {ex.Message}");
+                }
+                _vm.MediaFrameReader.Dispose();
+                _vm.MediaFrameReader = null;
+            }
             if (_vm!.MediaCapture != null)
             {
-                using (var mediaCapture = _vm.MediaCapture)
-                {
-                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-                    await _vm.MediaFrameReader.StopAsync();
-                    _vm.MediaFrameReader.Dispose();
-                    _vm.MediaCapture = null;
-                }
+                _vm.MediaCapture = null;
             }
         }
 
