@@ -18,7 +18,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid IsEnabled="{Binding UpdatesPageUI_Enable}">
+    <Grid IsEnabled="{Binding UpdatesPageUI_IsEnable}"
+          Opacity="{Binding UpdatesPageUI_Opacity}">
         <UXControls:UXScrollViewer>
             <Border Background="#99132F54" CornerRadius="13">
 

@@ -603,6 +603,7 @@ namespace DDPM.SA.Common
 
 
         #region GlobalSetting
+        event EventHandler GlobalSettingChangeEvent;
         Task<GlobalSettingParam> GetGlobalSettingParam();
         Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay);
         Task<bool> Set_GlobalSetting_DisplayKeyboardLockKey(bool isDisplay);

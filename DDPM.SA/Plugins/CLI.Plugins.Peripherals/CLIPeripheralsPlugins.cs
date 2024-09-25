@@ -224,9 +224,11 @@ namespace DDPM.CLI.Plugins.Peripherals
         {
             SetResults.Clear();
             int val = 0;
+            int retvalue = 0;
             bool bl = false;
             string ItemId = string.Empty;
             bool retcode = false;
+            bool retcode_ = false;
             //bool target = false;
             DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
 
@@ -324,6 +326,15 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             case "MICNOISECANCELLATION":
                                                 data.LockSettings.Lock_Audio_micNoiseCancellation = true;
                                                 break;
+                                            case "HDR":
+                                                data.LockSettings.Lock_Webcam_hdr = true;
+                                                break;
+                                            case "ANTIFLICKER":
+                                                data.LockSettings.Lock_Webcam_AntiFlicker = true;
+                                                break;
+                                            case "AIAUTOFRAMING":
+                                                data.LockSettings.Lock_Webcam_AIAutoFraming = true;
+                                                break;
                                         }
                                     }
                                     if (value.ToUpper().Equals("UNLOCK"))
@@ -335,6 +346,15 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 break;
                                             case "MICNOISECANCELLATION":
                                                 data.LockSettings.Lock_Audio_micNoiseCancellation = false;
+                                                break;
+                                            case "HDR":
+                                                data.LockSettings.Lock_Webcam_hdr = false;
+                                                break;
+                                            case "ANTIFLICKER":
+                                                data.LockSettings.Lock_Webcam_AntiFlicker = false;
+                                                break;
+                                            case "AIAUTOFRAMING":
+                                                data.LockSettings.Lock_Webcam_AIAutoFraming = false;
                                                 break;
                                         }
                                     }
@@ -573,6 +593,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     return (int)CLI_ExitCode.success;
 
                 case "HDR":
+                    ItemId = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyHDRSupportedByDTP(ItemId).Result)
                     {
                         SetResults.ForEach(x =>
@@ -584,6 +605,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
+                                    retcode_ = _devMgr.GetIsHDROnValueByDTP(ItemId).Result;
+                                    x.Value = (retcode_) ? "ON" : "OFF";
+                                    x.Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")
@@ -613,6 +637,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
 
                 case "ANTIFLICKER":
+                    ItemId = "DellPeripheral.Webcam.0";
                     if (_devMgr.CheckIsPropertyAntiFlickerSupportedByDTP(ItemId).Result)
                     {
                         SetResults.ForEach(x =>
@@ -624,6 +649,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
+                                    retvalue = _devMgr.GetAntiFlickerValueByDTP(ItemId).Result;
+                                    x.Value = retvalue.ToString();
+                                    x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")
@@ -653,7 +681,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                     }
 
                 case "AIAUTOFRAMING":
-                    if(_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(ItemId).Result)
+                    ItemId = "DellPeripheral.Webcam.0";
+                    if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(ItemId).Result)
                     {
                         SetResults.ForEach(x =>
                         {
@@ -664,6 +693,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 if (result == "0")
                                 {
                                     x.Result = "PASS";
+                                    retcode_ = _devMgr.GetIsAutoFramingOnValueByDTP(ItemId).Result;
+                                    x.Value = (retcode_) ? "ON" : "OFF";
+                                    x.Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
                                     x.Message = "N/A";
                                 }
                                 else if (result == "1")

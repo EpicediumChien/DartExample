@@ -3,7 +3,9 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
+using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -30,16 +32,19 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 vm.RefreshUI();
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent += GlobalSettingChangeEvent;
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 Dispatcher.Invoke(new Action(() =>
                 {
                     SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.LockMaskVisible = data.LockSettings.Lock_Settings_TelemetryConsent ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
                         Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_Settings_TelemetryConsent}");
-                        vm.LockMaskVisible_Updates = data.LockSettings.Lock_Settings_Updates ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Lock_UpdatesPage = data.LockSettings.Lock_Settings_Updates;
                         Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(check) : {data.LockSettings.Lock_Settings_Updates}");
+                        vm.Lock_GeneralPage = data.LockSettings.Lock_Setting_ScreenNotification;
+                        Trace.WriteLine($"[SettingsPage] Apply General(check) : {data.LockSettings.Lock_Setting_ScreenNotification}");
                     }
                 }));
 
@@ -51,7 +56,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         ~SettingsPage()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.GlobalSettingChangeEvent -= GlobalSettingChangeEvent;
+            }
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
@@ -64,12 +72,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Lock_AnalyticsPage = (bool)isLocked;
                         Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(Lock) : {isLocked}");
                     }
                 }));
             }
-            
+
             isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Settings_Updates", e);
             if (isLocked != null)
             {
@@ -78,11 +86,36 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.LockMaskVisible_Updates = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Lock_UpdatesPage = (bool)isLocked;
                         Trace.WriteLine($"[SettingsPage] Apply FW/SW Updates(Lock) : {isLocked}");
                     }
                 }));
             }
+            isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Setting_ScreenNotification", e);
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.Lock_GeneralPage = (bool)isLocked;
+                        Trace.WriteLine($"[SettingsPage] Apply General(check) : {isLocked}");
+                    }
+                }));
+            }
+        }
+        private void GlobalSettingChangeEvent(object? sender, EventArgs e)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
+                if (vm != null)
+                {
+                    vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    vm.RefreshUI();
+                }
+            }));
         }
 
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

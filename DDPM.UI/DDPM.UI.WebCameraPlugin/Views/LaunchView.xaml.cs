@@ -390,7 +390,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         SharingMode = MediaCaptureSharingMode.ExclusiveControl,
                         //SharingMode = MediaCaptureSharingMode.SharedReadOnly,
                         MemoryPreference = MediaCaptureMemoryPreference.Cpu,
-                        StreamingCaptureMode = StreamingCaptureMode.Video
+                        StreamingCaptureMode = StreamingCaptureMode.AudioAndVideo
                     });
                 }
                 catch (Exception ex)

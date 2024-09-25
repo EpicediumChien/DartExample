@@ -636,6 +636,215 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             }
         }
 
+        [Test]
+        public void TestWriteRegistryData()
+        {
+            bool writeRegistryDataFail = false;
+            bool writeRegistryDataSuccess = true;
+            RegistryHive hive = RegistryHive.CurrentUser;
+            string keyPath = "TestWriteRegistry_Path";
+            string keyName = "TestWriteRegistry_Name";
+            object WriteRegistryDataObj;
+            WriteRegistryDataObj = new object();
+            Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+            SysSettingsPlugin.Setup(x => x.WriteRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>())).Returns(Task.FromResult(writeRegistryDataSuccess));
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var SysSettingsPluginObj = SysSettingsPlugin.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
+            if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPlugin != null)
+                {
+                    var WriteRegistryData_Result = SettingsManagerSAPlugin.WriteRegistryData(hive, keyPath, keyName, WriteRegistryDataObj).Result;  //SysSettingsPlugin not null;
+                    Assert.That(writeRegistryDataSuccess, Is.EqualTo(WriteRegistryData_Result));
+                }
+            }
+
+            RegistryHive hive2 = RegistryHive.LocalMachine;
+            var SysSettingsPluginNull = SysSettingsPlugin;
+            SysSettingsPluginNull = null;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginNull);
+            if (hive2 == RegistryHive.LocalMachine || hive2 == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPluginNull == null)
+                {
+                    var WriteRegistryData_Result2 = SettingsManagerSAPlugin.WriteRegistryData(hive, keyPath, keyName, WriteRegistryDataObj).Result;  //SysSettingsPlugin null;
+                    Assert.That(writeRegistryDataFail, Is.EqualTo(WriteRegistryData_Result2));
+                }
+            }
+        }
+
+        [Test]
+        public void TestSetAppConfigData()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var Ddpm_app_ = new DDPMAppSettings();
+            var Ddpm_user_ = new DDPMUserSettings()
+            {
+                Version = 1.0,
+                Language = (int)Languages.en,
+                IsSynchronizemonitor = false,
+                Schedule = string.Empty,
+                DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
+                LockRotate = true,
+                isTelemetryConsentOn = true,
+                LockFWU_UI = true,
+                UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
+                SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
+                DelaySWUpdateInfoPackage = new SWUpdateInfoPackage(),
+            };
+            var Ddpm_it_ = new DDPMITConfig()
+            {
+                Lock_Settings_TelemetryConsent = false,
+                Lock_Settings_Updates = false,
+                Lock_Display_ExportSettings = false,
+                Lock_Setting_RestoreDefaults = false,
+                Lock_Display_BriCont = false,
+                Lock_Display_AutoBriTemp = false,
+                Lock_Display_NetworkKVM = false,
+                Lock_Display_ColorPreset = false,
+                Lock_Display_PowerNap = false,
+                Lock_Display_ResolutionRefreshRate = false,
+                Lock_Display_USBCPrioritization = false,
+                Lock_Display_ActiveInputSource = false,
+                Lock_Webcam_RestoreFactoryDefaults = false,
+                Lock_Audio_RestoreFactoryDefaults = false,
+                Lock_Keyboard_RestoreFactoryDefaults = false,
+                Lock_Mouse_RestoreFactoryDefaults = false,
+                Lock_Pen_RestoreFactoryDefaults = false,
+                Lock_Keyboard_CollabScreenShare = false,
+            };
+            bool SetAppConfigData_ = false;
+            var settings_Data = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
+            DDPMSettings data_ = null;
+            if (data_ == null)
+            {
+                var SetAppConfigDataResult1 = SettingsManagerSAPlugin.SetAppConfigData(data_).Result; //DDPMSettings data_ is null 
+                Assert.That(SetAppConfigDataResult1, Is.EqualTo(SetAppConfigData_));
+            }
+            string accessInfo_ = "testaccessinfo";
+            string serialized_string = "{\"key\":\"value\"}";
+            string target_file = "testSetAppConfigDatafile.json";
+            File.WriteAllText(target_file, serialized_string);
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+            privateSettingsManagerObject.SetFieldOrProperty("_settings_path", target_file);
+            if (settings_Data != null)
+            {
+                var SetAppConfigDataResult2 = SettingsManagerSAPlugin.SetAppConfigData(settings_Data).Result; //DDPMSettings is  not null 
+                Assert.That(SetAppConfigDataResult2, Is.EqualTo(SetAppConfigData_));
+                File.Delete(target_file);
+            }
+        }
+
+        [Test]
+        public void TestInitDDPMMonitorConfigFile()
+        {
+            string modelname = "TestU2724DD";
+            bool binit = false;
+            List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
+            var Result = SettingsManagerSAPlugin.InitDDPMMonitorConfigFile(modelname, out binit).Result;  // ReloadMonitorSettings is null
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            var _allDDPMMonitorSettings = (Dictionary<string, List<DDPMMonitorSettings>>)privatesettingsManagerObj.GetFieldOrProperty("_AllMonitorSettings");
+            Assert.That(dDPMMonitorSettingsList, Is.EqualTo(Result));
+            Assert.Greater(_allDDPMMonitorSettings.Count, 0);
+            Assert.IsTrue(_allDDPMMonitorSettings.ContainsKey(modelname));
+        }
+
+        [Test]
+        public void TestReloadAppConfigData()
+        {
+            bool force_reload = false;
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var Ddpm_app_ = new DDPMAppSettings();
+            var Ddpm_user_ = new DDPMUserSettings()
+            {
+                Version = 1.0,
+                Language = (int)Languages.en,
+                IsSynchronizemonitor = false,
+                Schedule = string.Empty,
+                DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
+                LockRotate = true,
+                isTelemetryConsentOn = true,
+                LockFWU_UI = true,
+                UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
+                SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
+                DelaySWUpdateInfoPackage = new SWUpdateInfoPackage(),
+            };
+            var Ddpm_it_ = new DDPMITConfig()
+            {
+                Lock_Settings_TelemetryConsent = false,
+                Lock_Settings_Updates = false,
+                Lock_Display_ExportSettings = false,
+                Lock_Setting_RestoreDefaults = false,
+                Lock_Display_BriCont = false,
+                Lock_Display_AutoBriTemp = false,
+                Lock_Display_NetworkKVM = false,
+                Lock_Display_ColorPreset = false,
+                Lock_Display_PowerNap = false,
+                Lock_Display_ResolutionRefreshRate = false,
+                Lock_Display_USBCPrioritization = false,
+                Lock_Display_ActiveInputSource = false,
+                Lock_Webcam_RestoreFactoryDefaults = false,
+                Lock_Audio_RestoreFactoryDefaults = false,
+                Lock_Keyboard_RestoreFactoryDefaults = false,
+                Lock_Mouse_RestoreFactoryDefaults = false,
+                Lock_Pen_RestoreFactoryDefaults = false,
+                Lock_Keyboard_CollabScreenShare = false,
+            };
+            var settings_Data = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
+            string _settings_pathNull = string.Empty;
+            privateSettingsManagerObject.SetFieldOrProperty("_settings_path", _settings_pathNull);
+
+            if (string.IsNullOrEmpty(_settings_pathNull))
+            {
+                var ddpm_it = new DDPMITConfig();
+                Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+                SysSettingsPlugin.Setup(x => x.GetITGlobalConfigs(It.IsAny<bool>())).Returns(Task.FromResult(Ddpm_it_));
+                var SysSettingsPluginObj = SysSettingsPlugin.Object;
+                privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
+                var ReloadAppConfigDataResult1 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //_settings_pathNull  is null , _settings not null
+                Assert.IsNotNull(ReloadAppConfigDataResult1);
+                Assert.That(ReloadAppConfigDataResult1.LockSettings, Is.EqualTo(settings_Data.LockSettings));
+            }
+
+            string accessInfo_ = "testaccessinfo";
+            string serialized_string = "{\"key\":\"value\"}";
+            string settings_path_target_file = "testReloadAppConfigDatafile.json";
+            File.WriteAllText(settings_path_target_file, serialized_string);
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+            privateSettingsManagerObject.SetFieldOrProperty("_settings_path", settings_path_target_file);
+            privateSettingsManagerObject.SetFieldOrProperty("_settings", null);
+            if (!string.IsNullOrEmpty(settings_path_target_file))
+            {
+                var ReloadAppConfigDataResult2 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //settings_path_target_file is  not null , _settings=null
+                Assert.IsNull(ReloadAppConfigDataResult2);
+            }
+
+            if (settings_Data != null)
+            {
+                privateSettingsManagerObject.SetFieldOrProperty("_settings", settings_Data);
+                var ReloadAppConfigDataResult3 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //settings_path_target_file is  not null , _settings not null
+                Assert.IsNotNull(ReloadAppConfigDataResult3);
+                Assert.That(ReloadAppConfigDataResult3.LockSettings, Is.EqualTo(settings_Data.LockSettings));
+                File.Delete(settings_path_target_file);
+            }
+        }
+
+        [Test]
+        public void TestRunMonitorListDeserializeObject()
+        {
+            double version = 1.0;
+            string model = "TestModel";
+            string serviceTag = "12345";
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            var MonitorListDesResult = (List<DDPMMonitorSettings>)privatesettingsManagerObj.Invoke("RunMonitorListDeserializeObject", MonitorListjsonData);
+            Assert.IsNotNull(MonitorListDesResult);
+            Assert.That(version, Is.EqualTo(MonitorListDesResult[0].Version));
+            Assert.That(model, Is.EqualTo(MonitorListDesResult[0].Model));
+            Assert.That(serviceTag, Is.EqualTo(MonitorListDesResult[0].ServiceTag));
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

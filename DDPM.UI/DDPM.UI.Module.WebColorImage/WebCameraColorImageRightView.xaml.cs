@@ -1,4 +1,6 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
+using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Windows;
 using System.Windows.Input;
@@ -114,6 +116,68 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     SaturationSlider.ValueChanged += SaturationSlider_ValueChanged;
                 }
             }
+
+            //lock/unlock init, 9/23 add
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    //if (data.LockSettings.Lock_Webcam_hdr)
+                    {
+                        //_vm.isHdrLocked = Visibility.Visible;
+                        //_vm.isHdrTabStopped = false;
+                    }
+                    //else
+                    {
+                        //_vm.isHdrLocked = Visibility.Collapsed;
+                        //_vm.isHdrTabStopped = true;
+                    }
+
+                    //if (data.LockSettings.Lock_Webcam_AntiFlicker)
+                    {
+                        //_vm.isAntiLocked = Visibility.Visible;
+                        //_vm.isAntiTabStopped = false;
+                    }
+                    //else
+                    {
+                        //_vm.isAntiLocked = Visibility.Collapsed;
+                        //_vm.isAntiTabStopped = true;
+                    }
+                }
+            }
+        }
+
+        private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
+        {
+            bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_hdr", e);
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (_vm != null)
+                {
+                    bool locked = false;
+                    if (rst != null && rst == true)
+                        locked = true;
+
+                    //_vm.isHdrLocked = locked ? Visibility.Visible : Visibility.Collapsed;
+                    //_vm.isHdrTabStopped = !locked;
+                }
+            }));
+            rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_AntiFlicker", e);
+            Dispatcher.Invoke(new Action(() =>
+            {
+                if (_vm != null)
+                {
+                    bool locked = false;
+                    if (rst != null && rst == true)
+                        locked = true;
+
+                    //_vm.isAntiLocked = locked ? Visibility.Visible : Visibility.Collapsed;
+                    //_vm.isAntiTabStopped = !locked;
+                }
+            }));
         }
 
         //  Jim add 20240628
