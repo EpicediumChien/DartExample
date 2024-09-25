@@ -870,7 +870,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Input = new Input() { strInputSourceList = "HDMI-1" },
                 KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
                 VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
-                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+                //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings });
             Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings4 = new Dictionary<string, List<DDPMMonitorSettings>>();
@@ -937,7 +937,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Input = new Input() { strInputSourceList = "HDMI-1" },
                 KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
                 VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
-                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+                //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             dDPMMonitorSettingsList2.Add(settings);
             Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings2 = new Dictionary<string, List<DDPMMonitorSettings>>();
@@ -978,7 +978,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Input = new Input() { strInputSourceList = "HDMI-1" },
                 KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
                 VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
-                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+                //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             dDPMMonitorSettingsList.Add(settings);
             string _display_path2 = string.Empty;
@@ -1002,7 +1002,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Input = new Input() { strInputSourceList = "HDMI-1" },
                 KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
                 VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
-                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+                //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             monitorSettings.Add(settings);
             PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
@@ -1027,7 +1027,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Input = new Input() { strInputSourceList = "HDMI-1" },
                 KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
                 VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
-                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+                //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings });
             PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
