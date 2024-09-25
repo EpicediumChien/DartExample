@@ -137,7 +137,7 @@
                     </Image>
                   </StackPanel>
                   <Grid Width="70">
-                    <UXControls:UXToggleSwitch Margin="0" IsChecked="{Binding IsCollaborationScreenShareEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    <UXControls:UXToggleSwitch Name="tsShare" Margin="0" IsChecked="{Binding IsCollaborationScreenShareEnable}" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                                    Foreground="White" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                                    Content="{Binding IsCollaborationScreenShareEnableText}" IsEnabled="{Binding CameraToggleEnabled}" />
                   </Grid>

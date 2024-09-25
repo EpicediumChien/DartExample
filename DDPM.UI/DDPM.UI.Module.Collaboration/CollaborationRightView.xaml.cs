@@ -51,6 +51,7 @@ namespace DDPM.UI.Module.Collaboration
                     {
                         bdrShare.Opacity = 0.5;
                         imgLock.Visibility = Visibility.Visible;
+                        tsShare.IsEnabled = false;
                     }
                 }
             }
@@ -77,15 +78,17 @@ namespace DDPM.UI.Module.Collaboration
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Apply Keyboard CollabScreenShare(Lock) : {isLocked}");
-                        if (IsLoaded)
+                        if (isLocked.Value)
                         {
                             bdrShare.Opacity = 0.5;
                             imgLock.Visibility = Visibility.Visible;
+                            tsShare.IsEnabled = false;
                         }
                         else
                         {
                             bdrShare.Opacity = 1;
                             imgLock.Visibility = Visibility.Collapsed;
+                            tsShare.IsEnabled = true;
                         }
                     }
                 }));
