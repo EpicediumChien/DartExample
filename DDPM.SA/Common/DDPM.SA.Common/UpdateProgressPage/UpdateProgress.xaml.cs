@@ -155,7 +155,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
             Close();
         }
 
-        public void _FWUpdatePlugin_ProgressUpdate(object sender, FWUpdateInfo e)
+        public void _FWUpdatePlugin_ProgressUpdate(object sender, UpdateProgressInfo e)
         {
             UpdateTitle = "Firmware Update - " + e.DeviceName;
             UpdateSubTitle = "Updating firmware. Do not remove or power off the device. Leave the device undisturbed.";

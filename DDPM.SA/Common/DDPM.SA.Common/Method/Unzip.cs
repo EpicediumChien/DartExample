@@ -17,6 +17,12 @@ namespace DDPM.SA.Common.Method
         {
             _logs = logs;
         }
+        /// <summary>
+        /// Only for MiniInstaller use.
+        /// </summary>
+        public Unzip()
+        {
+        }
 
         public bool ExecuteUnzip(string zipFilePath, string extractPath, out string exeFilePath)
         {

@@ -10,7 +10,7 @@ namespace DDPM.SA.Common
     {
         event EventHandler CollCheckUpdate;
 
-        event EventHandler<FWUpdateInfo> ProgressUpdate_Notify;
+        event EventHandler<UpdateProgressInfo> ProgressUpdate_Notify;
 
         event EventHandler<FWUpdateInfoPackage> CallSaveUpdateInfoPackage;
 
