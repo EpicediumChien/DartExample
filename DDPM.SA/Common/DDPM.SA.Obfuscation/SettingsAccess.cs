@@ -173,7 +173,7 @@ namespace DDPM.SA.Obfuscation
 
             // open and sequential read to compare.
             //using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
-            using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+            using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)) // DDPM-Setup-2.0.0.40.exe is x86-32bit
             {
                 if (key != null)
                 {

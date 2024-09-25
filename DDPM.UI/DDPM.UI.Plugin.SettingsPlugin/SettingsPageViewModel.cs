@@ -85,6 +85,43 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             FullView = null;
         }
         #region General
+        public GlobalSettingParam GlobalSettingParam { get; set; }
+        public string EnableQuickAccessWidget_String
+        {
+            get
+            {
+                if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
+                {
+                    return "ON";
+                }
+                return "OFF";
+            }
+        }
+        public string EnableQuickAccessWidget_Reminder_String
+        {
+            get
+            {
+                if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                {
+                    return "ON";
+                }
+                return "OFF";
+            }
+        }
+        public string SWVersion
+        {
+            get
+            {
+                return $"Software version: {GlobalSettingParam.GlobalSetting_About.SWVersion}";
+            }
+        }
+        public string DriverVersion
+        {
+            get
+            {
+                return $"Driver version: {GlobalSettingParam.GlobalSetting_About.DriverVersion}";
+            }
+        }
         public void SaveMonitorAssetReport(string filePath)
         {
             BackgroundWorker bw = new BackgroundWorker()
@@ -158,43 +195,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             get => (Critical_UpdateList_UI?.Count >= 1 ||
                 Recommended_UpdateList_UI?.Count >= 1 ||
                 Optional_UpdateList_UI?.Count >= 1) ? Visibility.Visible : Visibility.Collapsed;
-        }
-        public GlobalSettingParam GlobalSettingParam { get; set; }
-        public string EnableQuickAccessWidget_String
-        {
-            get
-            {
-                if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
-                {
-                    return "ON";
-                }
-                return "OFF";
-            }
-        }
-        public string EnableQuickAccessWidget_Reminder_String
-        {
-            get
-            {
-                if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
-                {
-                    return "ON";
-                }
-                return "OFF";
-            }
-        }
-        public string SWVersion
-        {
-            get
-            {
-                return $"Software version: {GlobalSettingParam.GlobalSetting_About.SWVersion}";
-            }
-        }
-        public string DriverVersion
-        {
-            get
-            {
-                return $"Driver version: {GlobalSettingParam.GlobalSetting_About.DriverVersion}";
-            }
         }
         public void CheckUpdate()
         {
