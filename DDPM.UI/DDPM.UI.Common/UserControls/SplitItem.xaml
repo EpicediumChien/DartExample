@@ -100,9 +100,18 @@
                     <Setter Property="BorderThickness" Value="1.5" />
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
+                        <!-- 
                         <DataTrigger Binding="{Binding ElementName=root, Path=IsMouseOver}" Value="True">
                             <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
+                        -->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=root, Path=IsMouseOver}" Value="True"/>
+                                <Condition Binding="{Binding IsHoverable}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>

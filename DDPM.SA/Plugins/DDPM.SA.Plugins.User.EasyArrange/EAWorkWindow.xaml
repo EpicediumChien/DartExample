@@ -9,7 +9,8 @@
         AllowsTransparency="True" Topmost="True"
         WindowStyle="None" ResizeMode="NoResize" Background="Transparent" ShowInTaskbar="False"
         Loaded="Window_Loaded" Activated="Window_Activated"
-        ContentRendered="Window_ContentRendered" IsVisibleChanged="Window_IsVisibleChanged">
+        ContentRendered="Window_ContentRendered" 
+        IsVisibleChanged="Window_IsVisibleChanged">
     <Window.Resources>
         <Storyboard x:Key="FadeOut">
             <DoubleAnimation Storyboard.TargetName="fadeOutCtrl" Storyboard.TargetProperty="Opacity"
@@ -42,6 +43,7 @@
         -->
 
         <Grid Name="splitGrid">
+            
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Visibility" Value="Hidden"/>
@@ -54,6 +56,7 @@
                 </Style>
             </Grid.Style>
             <ContentControl Name="splitCtrl" />
+            <Canvas Name="canvasWorker"/>
         </Grid>
         <!-- 
               Visibility="{Binding IsFading, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVisibilityConverter}}">
@@ -73,6 +76,7 @@
             </Grid.Style>
             -->
             <ContentControl Name="fadeOutCtrl" />
+            <Canvas Name="canvasFader"/>
         </Grid>
      </Grid>
 </Window>

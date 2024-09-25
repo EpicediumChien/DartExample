@@ -282,6 +282,20 @@
             <ContentControl Grid.Column="2" Content="{Binding SplitItem2}" Style="{StaticResource ContentControlStyle_SplitItem}" />
             <ContentControl Grid.Column="3" Content="{Binding SplitItem3}" Style="{StaticResource ContentControlStyle_SplitItem}" />
             <ContentControl Grid.Column="4" Content="{Binding SplitItem4}" Style="{StaticResource ContentControlStyle_SplitItem}" />
+
+            <local:AddCustomLayoutButton x:Name="addButton" Grid.Column="{Binding AddButtonColumn}"
+                                         HorizontalAlignment="Center" Margin="0,0,40,0">
+                <local:AddCustomLayoutButton.Style>
+                    <Style TargetType="local:AddCustomLayoutButton">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsAddButtonVisible}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </local:AddCustomLayoutButton.Style>
+            </local:AddCustomLayoutButton>
         </Grid>
     </Grid>
 </UserControl>

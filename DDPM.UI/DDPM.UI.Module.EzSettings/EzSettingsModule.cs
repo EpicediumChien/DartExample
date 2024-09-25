@@ -1,6 +1,8 @@
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Interfaces;
+using Dell.Client.Framework.Common;
 using System.Diagnostics;
 using System.Windows.Controls;
 
@@ -9,15 +11,20 @@ namespace DDPM.UI.Module.EzSettings
     public class EzSettingsModule : IDdpmModule
     {
         private UserControl? _leftView = null;
-        private UserControl _rightView = new EzSettingsRightView();
-        private EzSettingsViewModel vm = new EzSettingsViewModel();
+        private UserControl _rightView = null;
+        private EzSettingsViewModel vm;
 
         private bool isSelectChanged = false;
         public bool IsModuleActive { get; set; } = false;
 
         public EzSettingsModule(IModuleOwner moduleOwner = null)
         {
-            _rightView.DataContext = vm;
+            vm = new EzSettingsViewModel(moduleOwner);
+            if (DdpmCommonHelper.MyConsole != null)
+            {
+                vm.Log = (ILog?)DdpmCommonHelper.MyConsole.CreateLog("EzSettings");
+            }
+            _rightView = new EzSettingsRightView(vm);
         }
 
         public string ModuleName { get => "EzSettingsModule"; }

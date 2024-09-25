@@ -86,8 +86,8 @@ namespace DDPM.UI.Module.EzArrange
             splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
 
             splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
-
-
+            splitListView_Custom.HasAddButton = true;
+            splitListView_Custom.AddButtonClickCommand = new RelayCommand<SplitListView>(HandleAddButtonClickCommand);
 
             //InitRecentListView();
             InitListViewItems();
@@ -623,8 +623,15 @@ namespace DDPM.UI.Module.EzArrange
                     {
                         //Create a custom item
                         ISplitCtrl ispCustom = ISplitCtrl.Create(e.CellCount, e.SplitKey);
-                        if (ispCustom == null) return;
-
+                        if (ispCustom == null)
+                        {
+                            if ((e.CellCount == 0) && (e.SplitKey == 'B'))
+                            {
+                                ispCustom = new SplitCtrl0B();
+                            }
+                            else
+                                return;
+                        }
                         ispCustom.Settings = e.Settings;
                         ispCustom.FriendlyName = e.CustomName;
                         //Insert to the first (DDPMW-861)
@@ -632,7 +639,8 @@ namespace DDPM.UI.Module.EzArrange
                         itemCustom.CustomId = GenerateCustomId();
 
                         //Add a Buddy to Recent List
-                        ISplitCtrl ispRecent = ISplitCtrl.Create(e.CellCount, e.SplitKey);
+                        //ISplitCtrl ispRecent = ISplitCtrl.Create(e.CellCount, e.SplitKey);
+                        ISplitCtrl ispRecent = ispCustom.Clone();
                         if (ispRecent != null)
                         {
                             ispRecent.Settings = e.Settings;
@@ -677,26 +685,26 @@ namespace DDPM.UI.Module.EzArrange
         }
 #endif
 
-        private void _deviceManagerSA_EAEditCompleted(object? sender, string e)
-        {
-#if ENABLE_CALL_SA
+//        private void _deviceManagerSA_EAEditCompleted(object? sender, string e)
+//        {
+//#if ENABLE_CALL_SA
 
-            if (_deviceManagerSA != null)
-            {
-                _deviceManagerSA.EAEditCompleted -= _deviceManagerSA_EAEditCompleted;
-                if (_console != null)
-                {
-                    Dispatcher.Invoke(new Action(() =>
-                    {
-                        _console.RaiseEvent("MainWindow.Activate", this, new EventManagerArgs());
-                        //_console.RaiseEvent("MainWindow.Normal", this, new EventManagerArgs());
-                        //_console.RaiseEvent("MainWindow.Show", this, new EventManagerArgs());
-                    }
-                    ));
-                }
-            }
-#endif
-        }
+//            if (_deviceManagerSA != null)
+//            {
+//                _deviceManagerSA.EAEditCompleted -= _deviceManagerSA_EAEditCompleted;
+//                if (_console != null)
+//                {
+//                    Dispatcher.Invoke(new Action(() =>
+//                    {
+//                        _console.RaiseEvent("MainWindow.Activate", this, new EventManagerArgs());
+//                        //_console.RaiseEvent("MainWindow.Normal", this, new EventManagerArgs());
+//                        //_console.RaiseEvent("MainWindow.Show", this, new EventManagerArgs());
+//                    }
+//                    ));
+//                }
+//            }
+//#endif
+//        }
 
         #endregion Edit Layout
 
@@ -894,5 +902,38 @@ namespace DDPM.UI.Module.EzArrange
             return DisplayOrientation.Unknow;
         }
         #endregion
+
+        #region Add Custom Layout
+        private void HandleAddButtonClickCommand(SplitListView lv)
+        {
+            if (_deviceManagerSA != null)
+            {
+                int selectedIndex = 0;
+                List<string> friendlyNameList = GenerateCustomNames(out selectedIndex);
+                //Create a defulte EAArgs, for pre-defined layout
+                EAArgs args = new EAArgs()
+                {
+                    Command = "EditCommnd",
+                    CellCount = 0,
+                    SplitKey = 'B',
+                    CustomId = 0,
+                    CustomName = friendlyNameList[selectedIndex],
+                    CustomNames = friendlyNameList,
+                    Settings = new List<double>()
+                };
+                //Register a event handler for EditStarted event
+                _deviceManagerSA.EAEditStarted += _deviceManagerSA_EAEditStarted;
+                bool isSaAccepted = _deviceManagerSA.EAEditCommand(_homeDevice.MonitorInfo, args).Result;
+                if (!isSaAccepted)
+                {
+                    //If DDPM.SA.EAPlugin cannot addcept the EditCommand, we will unregister the EditStarted
+                    // handler, because, we will never receive this event from DDPM.SA.EAplugin
+                    _deviceManagerSA.EAEditStarted -= _deviceManagerSA_EAEditStarted;
+                    return;
+                }
+            }
+
+        }
+        #endregion Add Custom Layout
     }
 }
