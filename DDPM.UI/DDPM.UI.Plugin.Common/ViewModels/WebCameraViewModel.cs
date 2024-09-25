@@ -18,6 +18,7 @@ using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
+using WebcamProfile = DDPM.UI.Common.WebcamProfile;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -39,7 +40,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #endregion Variables
 
-        public string CurrentProfileName = "";
+        public WebcamProfile CurrentProfile = new();
         public List<string> FPSs = new();
 
         public event EventHandler<EventArgs> WebcamSettingChanged;
@@ -90,6 +91,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
         {
             DeviceInfos.Clear();
@@ -189,8 +191,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
             });
 
-            CurrentProfileName = CurrentDeviceInfo!.ProfileName;
-
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
 
@@ -224,13 +224,36 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 WebcamSettings.SelectedResolution = WebcamSettings.SupportedFPSs.Keys.FirstOrDefault() ?? "";
                 WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].FirstOrDefault() ?? "");
+
+                foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
+                {
+                    WebcamSettings.PresetProfiles.Add(profile.Name, profile);
+                }
+                WebcamSettings.SelectedProfileName = WebcamSettings.PresetProfiles.Values.ToList()[0].Name;
+
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             }
+            SetProfile();
+
             _resolutions = WebcamSettings.Resolutions.Keys.ToList();
             var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
             SetResolution_Selected(i);
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             SetFPS_Selected(j);
+        }
+
+        public void SetProfile()
+        {
+            if (WebcamSettings.CustomProfiles.ContainsKey(CurrentProfileName))
+                CurrentProfile = WebcamSettings.CustomProfiles[CurrentProfileName];
+            else
+                CurrentProfile = WebcamSettings.PresetProfiles[CurrentProfileName];
+
+            //var ProfileName = DdpmCommonHelper.DeviceManagerSA!.GetProfileName(_vm!.CurrentDeviceInfo!.ID.ToString()).Result;
+            //DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedProfile(profileName, _vm!.CurrentDeviceInfo!.ID);
+            //var ProfileName2 = DdpmCommonHelper.DeviceManagerSA!.GetProfileName(_vm!.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -277,6 +300,16 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public MediaCapture? MediaCapture;
         public MediaFrameReader? MediaFrameReader;
+
+        public string CurrentProfileName
+        {
+            get => WebcamSettings.SelectedProfileName;
+            set
+            {
+                WebcamSettings.SelectedProfileName = value;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            }
+        }
 
         private bool _isRecording = false;
         public bool IsRecording

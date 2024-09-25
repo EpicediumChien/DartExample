@@ -76,6 +76,8 @@ namespace DDPM.SA.Common
 
         Task SetIsAutoFramingOnValue(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
+        Task SetProfile(string Guid, string newValue);
+        Task SetZoom(string Guid, int newValue);
 
     }
 }

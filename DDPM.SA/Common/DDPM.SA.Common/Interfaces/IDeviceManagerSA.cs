@@ -305,6 +305,7 @@ namespace DDPM.SA.Common
 
         //Task SetEqualizerValues(ILogicalDeviceHeadset logicalDeviceHeadset, DeviceInfo info);
         Task SetIsMicEnumerationOn(bool newValue, Guid deviceId);
+        Task SetCurrentSelectedProfile(string newValue, Guid deviceId);
 
         #endregion public for Peripherals
 
@@ -363,9 +364,9 @@ namespace DDPM.SA.Common
         Task<List<ColorPresetSettings>> ReadColorPresetSettings();
 
         Task<bool> WriteColorPresetSettings(List<ColorPresetSettings> colorPresetSettings);
-        
+
         Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
-        
+
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
         #endregion public for settings
 
@@ -583,6 +584,8 @@ namespace DDPM.SA.Common
 
         Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
+        Task SetProfile(string Guid, string newValue);
+        Task SetZoom(string Guid, int newValue);
 
         #endregion
 

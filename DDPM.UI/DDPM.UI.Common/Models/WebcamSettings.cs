@@ -17,6 +17,11 @@ namespace DDPM.UI.Common
         public Dictionary<string, List<string>> SupportedFPSs = new();
         public Dictionary<string, string> SelectedFPSs = new();
         public Dictionary<string, string> Resolutions = new();
+
+        public string SelectedProfileName = "";
+        public Dictionary<string, WebcamProfile> PresetProfiles = new();
+        public Dictionary<string, WebcamProfile> CustomProfiles = new();
+
         public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
 
@@ -53,5 +58,32 @@ namespace DDPM.UI.Common
                 return ka;
             }
         }
+    }
+
+    public class WebcamProfile
+    {
+        public string Id = "";
+        public string Name = "";
+        public string Description = "";
+        public int Priority = 0;
+        public bool IsFocusOn;
+        public int Focus;
+        public int Pan;
+        public int Tilt = 0;
+        public int Zoom;
+        public int Brightness;
+        public int Contrast;
+        public int AntiFlicker;
+        public int Saturation;
+        public int Sharpness;
+        public bool IsAutoWhiteBalanceOn;
+        public int AutoWhiteBalance;
+        public bool IsAutoFramingOn;
+        public int AutoFramingSensitivity;
+        public int AutoFramingFrameSize;
+        public bool IsAutoFramingTransitionOn;
+        public int FieldOfView;
+        public bool IsHDROn;
+
     }
 }
