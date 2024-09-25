@@ -3,6 +3,7 @@ using DDPM.MonitorBorker;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Common.UpdateProgressPage;
 using DDPM.SA.Plugins.PeripheralsPlugin;
 using DDPM.SA.Plugins.User.DeviceManager;
 using Dell.Client.Framework.Common;
@@ -1606,8 +1607,50 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.IsNotNull(deviceMangerPlugin.UsbSwitch1(new MonitorInfo(), 0), $"UsbSwitch1() returns null");
         }
 
+        [Test]
+        public void TestGetFWUpdateInfo()
+        {
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false, false, null, false), $"GetFWUpdateInfo() returns null");
 
-        
+            //_PeripheralsPlugin != null && _FWUpdatePlugin != null
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+            _PeripheralsPluginMock.Setup(x => x.GetFWUpdateInfo()).Returns(Task.FromResult(new UpdateHelper()));
+            var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true,false,false,null, false), $"GetFWUpdateInfo() returns null");
+        }
+
+        [Test]
+        public void TestDownloadAndInstall()
+        {
+            // Setup
+            var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
+            _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(),It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(), ""), $"DownloadAndInstall() returns null");
+        }
+
+        [Test]
+        public void TestInstall()
+        {
+            Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
+
+            // Setup
+            var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
+            _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>())).Returns(Task.FromResult(new FWUErrorCode()));
+            privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress());
+            // Execute and Verify
+
+            Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
+        }
+
     }
 }
 
