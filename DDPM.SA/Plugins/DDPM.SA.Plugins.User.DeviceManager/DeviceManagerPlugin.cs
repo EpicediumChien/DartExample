@@ -1319,7 +1319,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
             _EventArgs.device_peripherals = di;
             _EventArgs.changedProperty = "CollaborationScreenShareEnable";
-            EventHandler<DeviceChangedEventArgs> handler = DeviceChanged;
             DeviceChanged?.Invoke(this, _EventArgs);
 
             return Task.FromResult(true);
