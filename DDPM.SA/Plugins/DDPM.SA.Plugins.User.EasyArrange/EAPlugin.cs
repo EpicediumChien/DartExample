@@ -1,4 +1,4 @@
-//#define REMOVE_EA
+#define REMOVE_EA
 //Define this flag will remove EA functions
 
 using CommunityToolkit.Mvvm.DependencyInjection;
