@@ -6,8 +6,214 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DDPM.UI.Module.EzSettings"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
+                <ResourceDictionary Source="/DDPM.UI.Common;component/ButtonStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="ItemDescriptionTextStyle" TargetType="UXControls:UXTextBlock">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                        <Setter Property="Foreground" Value="#8996A7"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+ 
+
+        </ResourceDictionary>    </UserControl.Resources>
     <Grid>
-        <Button Width="200" Height="160" Content="EzSettingsRightView" />
+        <UXControls:UXScrollViewer>
+            <Border Style="{StaticResource RightGroupBorderStyle}">
+                <Grid>
+                    <StackPanel>
+                        <!-- Row 0: Hotkey: Recent -->
+                        <Grid Height="40" Margin="16,16,16,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <!-- Text "Hotkey: Recent"-->
+                                <UXControls:UXTextBlock Text="Hotkey: Recent" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                                <!-- (i) icon and tooltip -->
+                                <Viewbox Width="16" Height="16"  Margin="16,0,0,0" Stretch="Uniform">
+                                    <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
+                                        <Grid.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
+                                                    MaxWidth="360">
+                                                    <Grid>
+                                                        <TextBlock Name="hotkeyRecentTooltipText"
+                                                               Style="{StaticResource Tooltip_TextBlockStyle}"
+                                                               TextWrapping="Wrap"/>
+                                                    </Grid>
+                                                </Border>
+                                            </ToolTip>
+                                        </Grid.ToolTip>
+                                        <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
+                                              Fill="#FFB6B6B6" />
+                                        <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
+                                              Fill="#FFB6B6B6" />
+                                        <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
+                                              Fill="#FFB6B6B6" />
+                                    </Grid>
+                                </Viewbox>
+
+                            </StackPanel>
+                            <!-- Hotkey TextBox 
+                                                      PreviewKeyDown="tbToggleInputSource_PreviewKeyDown"
+                                                      PreviewKeyUp="tbToggleInputSource_PreviewKeyUp"
+                                                      GotFocus="tbToggleInputSource_GotFocus"
+                                                      LostFocus="tbToggleInputSource_LostFocus"
+                                                      ContextMenuOpening="tbToggleInputSource_ContextMenuOpening"
+                        -->
+                            <UXControls:UXTextBox Grid.Column="2" Name="tbRecentHotkey" Margin="0"
+                                              Text="{Binding RecentHoKey,Mode=TwoWay}"
+                                              Background="#141D28" Foreground="White" Width="230"
+                                              BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                                              HorizontalAlignment="Center" VerticalContentAlignment="Center"
+                                              AcceptsReturn="True" ContextMenu="{x:Null}" PreviewKeyDown="tbRecentHotkey_PreviewKeyDown" PreviewKeyUp="tbRecentHotkey_PreviewKeyUp" GotFocus="tbRecentHotkey_GotFocus" LostFocus="tbRecentHotkey_LostFocus" ContextMenuOpening="tbRecentHotkey_ContextMenuOpening" />
+                        </Grid>
+
+                        <!-- Row 1: Allow app to split side by side without gap -->
+                        <Grid Height="40" Margin="16,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Text "Allow app to split side by side without gap"-->
+                            <UXControls:UXTextBlock Grid.Column="0" Text="Allow app to split side by side without gap" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                            <!-- ToogleSwitch -->
+                            <UXControls:UXToggleSwitch Grid.Column="2" IsChecked="{Binding IsWithoutGap}" ContentTextVisibility="True" 
+                                                   Content="{Binding Path=IsWithoutGap_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  
+                                                   Foreground="White" />
+                        </Grid>
+
+                        <!-- Row 2: Only allow zone positioning when SHIFT is pressed -->
+                        <Grid Height="40" Margin="16,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Text "Only allow zone positioning when SHIFT is pressed"-->
+                            <UXControls:UXTextBlock Grid.Column="0" Text="Only allow zone positioning when SHIFT is pressed" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                            <!-- ToogleSwitch 
+                        Content="{Binding Path=IsOnlyAllowWhenShiftKeyPressed_String}"
+                        -->
+                            <UXControls:UXToggleSwitch Grid.Column="2" IsChecked="{Binding IsOnlyAllowWhenShiftKeyPressed}" ContentTextVisibility="True" 
+                                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                   Content="{Binding Path=IsOnlyAllowWhenShiftKeyPressed_String}"
+                                                   Foreground="White"/>
+
+                        </Grid>
+
+                        <!-- Row 3: Snap across multiple monitors -->
+                        <Grid Height="40" Margin="16,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Text "Only allow zone positioning when SHIFT is pressed"-->
+                            <!-- 
+                        <UXControls:UXTextBlock Grid.Column="0" Text="Snap across multiple monitors" Style="{StaticResource ItemDescriptionTextStyle}"
+                                                IsEnabled="{Binding IsSpanAcrossEnabled}"/>
+                        -->
+                            <TextBlock Grid.Column="0" Text="Snap across multiple monitors" FontFamily="Roboto" FontSize="16"
+                                   VerticalAlignment="Center" IsEnabled="{Binding IsSpanAcrossEnabled}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Foreground" Value="#8996A7"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <!-- ToogleSwitch -->
+                            <UXControls:UXToggleSwitch Grid.Column="2" IsChecked="{Binding IsSpanAcrossMultiMonitors}" ContentTextVisibility="True" 
+                                                   Content="{Binding Path=IsSpanAcrossMultiMonitors_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  
+                                                   Foreground="White" IsEnabled="{Binding IsSpanAcrossEnabled}"/>
+                        </Grid>
+
+                        <!-- Row 4: Application Window Snap -->
+                        <Grid Height="40" Margin="16,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <!-- Text "Application Window Snap"-->
+                                <UXControls:UXTextBlock Text="Application Window Snap" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                                <!-- (i) icon and tooltip -->
+                                <Viewbox Width="16" Height="16"  Margin="16,0,0,0" Stretch="Uniform">
+                                    <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
+                                        <Grid.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
+                                                   MaxWidth="360">
+                                                    <Grid>
+                                                        <TextBlock Name="applicationWindowSnapTooltipText"
+                                                              Style="{StaticResource Tooltip_TextBlockStyle}"
+                                                              TextWrapping="Wrap"/>
+                                                    </Grid>
+                                                </Border>
+                                            </ToolTip>
+                                        </Grid.ToolTip>
+                                        <Path Data="M8 5.0498C8.55228 5.0498 9 4.60209 9 4.0498C9 3.49752 8.55228 3.0498 8 3.0498C7.44772 3.0498 7 3.49752 7 4.0498C7 4.60209 7.44772 5.0498 8 5.0498Z"
+                                             Fill="#FFB6B6B6" />
+                                        <Path Data="M8.75 6.4502H7.25V12.6502H8.75V6.4502Z"
+                                             Fill="#FFB6B6B6" />
+                                        <Path Data="M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
+                                             Fill="#FFB6B6B6" />
+                                    </Grid>
+                                </Viewbox>
+
+                            </StackPanel>
+                            <!-- ToogleSwitch -->
+                            <UXControls:UXToggleSwitch Grid.Column="2" IsChecked="{Binding IsAwsEnabled}" ContentTextVisibility="True" 
+                                                   Content="{Binding Path=IsAwsEnabled_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  
+                                                   Foreground="White" />
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Show BusyIndicator over the page -->
+                    <Border Background="#4C24273C">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <!-- Add a UXBusyIndicator from Robert -->
+                        <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
+                                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                IsActive="{Binding IsBusy}" />
+                    </Border>
+                </Grid>
+            </Border>
+        </UXControls:UXScrollViewer>
     </Grid>
 </UserControl>

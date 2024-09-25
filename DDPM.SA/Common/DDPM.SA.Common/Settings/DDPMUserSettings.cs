@@ -73,5 +73,15 @@ namespace DDPM.SA.Common.Settings
         public SWUpdateInfoPackage DelaySWUpdateInfoPackage { get; set; }
         public string VideoCaptureFolder { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
 
+
+        //Robert_Lin added for Display / Easy Arrange / Settings (EzSettings module)
+        //These settings are per-user settings and will apply to all monitors
+        #region EzSettings
+        //Recent Hotkey settings: will save to Hotkey settings, implemented by Gavin Liu
+
+        public EzSettings EzSettings { get; set; } = new EzSettings();
+
+        #endregion EzSettings
+
     }
 }

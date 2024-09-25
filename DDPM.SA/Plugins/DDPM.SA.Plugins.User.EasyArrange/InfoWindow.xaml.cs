@@ -173,13 +173,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
 
             _vmArrange.RefreshScreenScale();
-            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            //var varX = (int)dpiXProperty.GetValue(null, null);
-            //double dpiX = (double)varX / (double)96;
             Trace.WriteLine($"ScreenScale={_vmArrange.ScreenScale}");
-            //_vmArrange.ScreenScale = dpiX;
             _vmArrange.IsMoving = true;
             _vmArrange.StartMovingMsg = "OK";
+            _vmArrange.IsShiftPressed = WinEventHook.IsShiftPressed();
+            //_vmArrange.DetermineWorkWindowVisibility();
 
             _vmArrange.RefreshCellRects();
         }
@@ -193,6 +191,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             _vmArrange.IsMoving = false;
             _vmArrange.StartMovingMsg = "";
+
+            _vmArrange.IsShiftPressed = WinEventHook.IsShiftPressed();
+            //_vmArrange.DetermineWorkWindowVisibility();
 
             if (!isWorkUIShowing)
                 return;
@@ -224,6 +225,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _vmArrange.xCursor = x;
             _vmArrange.yCursor = y;
 
+            //_vmArrange.DetermineWorkWindowVisibility();
+            _vmArrange.IsShiftPressed = WinEventHook.IsShiftPressed();
+
             if (!_vmArrange.IsWorkUIShowing)
                 return;
 
@@ -239,7 +243,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 if (_vmArrange.HoveringCellObj != null)
                     strNew = _vmArrange.HoveringCellObj.Name;
 
-                //Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
+                Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
             }
             if (_vmArrange.HoveringCellObj != null)
             {

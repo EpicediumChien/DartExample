@@ -12,9 +12,11 @@ namespace DDPM.SA.Common.Interfaces
 
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
 
-        public event EventHandler<string> EditCompleted;
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public event EventHandler<string> EditCompleted;
 
         public event EventHandler<string> EditStarted;
 
@@ -24,5 +26,7 @@ namespace DDPM.SA.Common.Interfaces
         public Task<bool> EditCommand(MonitorInfo monitorInfo, EAArgs args);
 
         public event EventHandler<EAArgs> EditReturn;
-    }
+        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
+        public Task<bool> ReloadEzSettings();
+     }
 }
