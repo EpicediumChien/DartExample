@@ -118,127 +118,127 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About" xml:space="preserve">
-    <value>关于</value>
+    <value>정보</value>
   </data>
   <data name="AdaptiveLight" xml:space="preserve">
-    <value>自适应灯</value>
+    <value>적응형 조명</value>
   </data>
   <data name="Display" xml:space="preserve">
-    <value>显示器</value>
+    <value>디스플레이</value>
   </data>
   <data name="DisplaySettings" xml:space="preserve">
-    <value>显示器设置</value>
+    <value>디스플레이 설정</value>
   </data>
   <data name="EasyArrange" xml:space="preserve">
-    <value>Easy Arrange</value>
+    <value>EasyArrange</value>
   </data>
   <data name="FirmwareVersion" xml:space="preserve">
-    <value>固件版本</value>
+    <value>펌웨어 버전</value>
   </data>
   <data name="Gaming" xml:space="preserve">
-    <value>游戏</value>
+    <value>게이밍</value>
   </data>
   <data name="InputSource" xml:space="preserve">
-    <value>输入源</value>
+    <value>입력 소스</value>
   </data>
   <data name="KVM" xml:space="preserve">
     <value>KVM</value>
   </data>
   <data name="Manual" xml:space="preserve">
-    <value>手动</value>
+    <value>수동</value>
   </data>
   <data name="ManufactureMonth" xml:space="preserve">
-    <value>生产</value>
+    <value>제조</value>
   </data>
   <data name="Off" xml:space="preserve">
-    <value>关闭</value>
+    <value>꺼짐</value>
   </data>
   <data name="On" xml:space="preserve">
-    <value>开启</value>
+    <value>켜짐</value>
   </data>
   <data name="RestoreToDefault" xml:space="preserve">
-    <value>还原至默认设置</value>
+    <value>기본값으로 복원</value>
   </data>
   <data name="ServiceTag" xml:space="preserve">
-    <value>服务编号</value>
+    <value>서비스 태그</value>
   </data>
   <data name="Unpair" xml:space="preserve">
-    <value>取消配对</value>
+    <value>페어링 해제</value>
   </data>
   <data name="VbarText_DisplayOthers" xml:space="preserve">
-    <value>其他</value>
+    <value>기타</value>
   </data>
   <data name="QuickSettings" xml:space="preserve">
-    <value>快速设置</value>
+    <value>빠른 설정</value>
   </data>
   <data name="Analytics" xml:space="preserve">
-    <value>分析</value>
+    <value>분석</value>
   </data>
   <data name="Updates" xml:space="preserve">
-    <value>更新</value>
+    <value>업데이트</value>
   </data>
   <data name="General" xml:space="preserve">
-    <value>常规</value>
+    <value>일반</value>
   </data>
   <data name="Settings" xml:space="preserve">
-    <value>设置</value>
+    <value>설정</value>
   </data>
   <data name="Updates.0" xml:space="preserve">
-    <value>可用的更新</value>
+    <value>업데이트 사용 가능</value>
   </data>
   <data name="Updates.1" xml:space="preserve">
-    <value>更新完成后，Dell Peripheral Manager 将关闭并重新打开。更新一旦开始，将无法取消。</value>
+    <value>업데이트가 완료되면 Dell Peripheral Manager가 닫혔다가 다시 열립니다. 일단 업데이트가 시작되면 취소할 수 없습니다.</value>
   </data>
   <data name="Updates.2" xml:space="preserve">
-    <value>检查是否有更新</value>
+    <value>업데이트 확인</value>
   </data>
   <data name="Updates.3" xml:space="preserve">
-    <value>目前没有可用的更新。</value>
+    <value>현재 사용 가능한 업데이트가 없습니다.</value>
   </data>
   <data name="Updates.4" xml:space="preserve">
-    <value>网络错误。请重试。</value>
+    <value>네트워크 오류입니다. 다시 시도하십시오.</value>
   </data>
   <data name="Updates.5" xml:space="preserve">
-    <value>下载并安装</value>
+    <value>다운로드 및 설치</value>
   </data>
   <data name="Updates.6" xml:space="preserve">
-    <value>正在准备更新。请稍候...</value>
+    <value>업데이트 준비 중입니다. 잠시 기다려 주십시오.</value>
   </data>
   <data name="Analytics.0" xml:space="preserve">
-    <value>分析</value>
+    <value>분석</value>
   </data>
   <data name="Analytics.1" xml:space="preserve">
-    <value>自动发送诊断和使用情况数据，帮助戴尔改进产品和服务。</value>
+    <value>진단 및 사용 데이터를 자동으로 전송하여 Dell이 제품과 서비스를 개선할 수 있도록 도와주십시오.</value>
   </data>
   <data name="Analytics.2" xml:space="preserve">
-    <value>戴尔隐私政策</value>
+    <value>Dell 개인정보 처리방침</value>
   </data>
   <data name="Analytics.3" xml:space="preserve">
-    <value>帮助戴尔自动改进其产品和服务</value>
+    <value>Dell이 제품과 서비스를 개선할 수 있도록 도와주십시오.</value>
   </data>
   <data name="AddDevice" xml:space="preserve">
-    <value>添加设备</value>
+    <value>디바이스 추가</value>
   </data>
   <data name="AddDevice.Display" xml:space="preserve">
-    <value>显示器</value>
+    <value>디스플레이</value>
   </data>
   <data name="AddDevice.Webcam" xml:space="preserve">
-    <value>网络摄像头</value>
+    <value>웹캠</value>
   </data>
   <data name="AddDevice.KnM" xml:space="preserve">
-    <value>键盘\n和鼠标</value>
+    <value>키보드\n및 마우스</value>
   </data>
   <data name="AddDevice.Pen" xml:space="preserve">
-    <value>触控笔</value>
+    <value>펜</value>
   </data>
   <data name="AddDevice.Headset" xml:space="preserve">
-    <value>耳机</value>
+    <value>헤드셋</value>
   </data>
   <data name="AddDevice.Speaker" xml:space="preserve">
-    <value>扬声器\n和音棒</value>
+    <value>스피커폰\n및 사운드바</value>
   </data>
   <data name="AddDevice.Dock" xml:space="preserve">
-    <value>坞站</value>
+    <value>도크</value>
   </data>
   <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
     <value>Bluetooth</value>
@@ -253,130 +253,130 @@
     <value>Other</value>
   </data>
   <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
-    <value>取消</value>
+    <value>취소</value>
   </data>
   <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
-    <value>正在添加设备，请稍候...</value>
+    <value>디바이스를 추가하는 중입니다. 잠시 기다려 주십시오.</value>
   </data>
   <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
-    <value>正在配对</value>
+    <value>페어링</value>
   </data>
   <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
-    <value>配对可能需要一些时间。请勿断开设备连接</value>
+    <value>페어링에 시간이 다소 걸릴 수 있습니다. 디바이스를 분리하지 마십시오.</value>
   </data>
   <data name="AddDevice.Display.1" xml:space="preserve">
-    <value>通过系统上的 HDMI/USB-C 端口连接显示器</value>
+    <value>시스템의 HDMI/USB-C 포트를 통해 디스플레이를 연결합니다.</value>
   </data>
   <data name="AddDevice.Webcam.0" xml:space="preserve">
-    <value>通过系统上的 USB 端口连接网络摄像头</value>
+    <value>시스템의 USB 포트를 통해 웹캠을 연결합니다.</value>
   </data>
   <data name="AddDevice.KnM.0" xml:space="preserve">
-    <value>蓝牙连接</value>
+    <value>Bluetooth 연결</value>
   </data>
   <data name="AddDevice.KnM.1" xml:space="preserve">
-    <value>通过 Windows 设置进行配对来添加蓝牙设备</value>
+    <value>Windows 설정을 통해 페어링하여 Bluetooth 디바이스를 추가합니다.</value>
   </data>
   <data name="AddDevice.KnM.2" xml:space="preserve">
-    <value>将电源开关滑块拨至“开”</value>
+    <value>전원 스위치 슬라이더를 켜짐 위치로 밉니다.</value>
   </data>
   <data name="AddDevice.KnM.3" xml:space="preserve">
-    <value>选择蓝牙通道，然后按住 3 秒钟以使设备可被发现</value>
+    <value>Bluetooth 채널을 선택한 다음, 디바이스를 검색할 수 있도록 3초 동안 길게 누릅니다.</value>
   </data>
   <data name="AddDevice.KnM.4" xml:space="preserve">
-    <value>允许设备配对，或启动 Windows 设置，并在发现设备后选择相应的设备</value>
+    <value>디바이스를 페어링될 때까지 기다리거나, Windows 설정을 시작하고 해당 디바이스가 검색되면 선택합니다.</value>
   </data>
   <data name="AddDevice.KnM.6" xml:space="preserve">
-    <value>将 USB 无线接收器连接到系统</value>
+    <value>USB 무선 수신기를 시스템에 연결합니다.</value>
   </data>
   <data name="AddDevice.KnM.7" xml:space="preserve">
-    <value>将电源开关拨至“关”。</value>
+    <value>전원 스위치를 꺼짐 위치로 밉니다.</value>
   </data>
   <data name="AddDevice.KnM.8" xml:space="preserve">
-    <value>按住任意键/按钮，并将电源开关拨至“开”</value>
+    <value>아무 키/버튼이나 길게 누른 상태에서 전원 스위치를 켜짐 위치로 밉니다.</value>
   </data>
   <data name="AddDevice.KnM.9" xml:space="preserve">
-    <value>使此窗口保持打开状态。配对将在几秒钟后开始。如果没有，请重复步骤 2 和 3 以重试。</value>
+    <value>이 창을 열어 두십시오. 몇 초 후에 페어링이 시작됩니다. 페어링이 시작되지 않으면 2단계와 3단계를 반복하여 다시 시도하십시오.</value>
   </data>
   <data name="AddDevice.KnM.10" xml:space="preserve">
-    <value>检测到多个无线接收器。请拔下用于键盘和鼠标的所有戴尔无线接收器。插入要配对的接收器。</value>
+    <value>여러 개의 무선 수신기가 감지되었습니다. 키보드 및 마우스용 Dell 무선 수신기를 모두 분리한 다음, 페어링할 디바이스를 꽂으십시오.</value>
   </data>
   <data name="AddDevice.KnM.11" xml:space="preserve">
-    <value>未连接 USB 无线接收器。请连接您的 USB 无线接收器，并配对最多六台兼容设备。</value>
+    <value>연결된 USB 무선 수신기가 없습니다. USB 무선 수신기를 연결하고 호환되는 디바이스를 최대 6개까지 페어링하십시오.</value>
   </data>
   <data name="AddDevice.KnM.12" xml:space="preserve">
-    <value>未连接 USB 无线接收器。请连接 USB 无线接收器以获得更好的 UC 兼容性、更低的延迟和更稳定的连接。</value>
+    <value>연결된 USB 무선 수신기가 없습니다. USB 무선 수신기를 연결하면 UC 호환성이 향상되고, 대기 시간이 줄어들며, 더 안정적으로 연결됩니다.</value>
   </data>
   <data name="AddDevice.KnM.13" xml:space="preserve">
-    <value>通过系统上的 USB 端口连接键盘和鼠标</value>
+    <value>시스템의 USB 포트를 통해 키보드와 마우스를 연결합니다.</value>
   </data>
   <data name="AddDevice.Pen.0" xml:space="preserve">
-    <value>连接触控笔</value>
+    <value>펜을 연결하는 중입니다.</value>
   </data>
   <data name="AddDevice.Pen.1" xml:space="preserve">
-    <value>用笔尖触碰屏幕</value>
+    <value>펜촉으로 화면을 누르십시오.</value>
   </data>
   <data name="AddDevice.Pen.2" xml:space="preserve">
-    <value>按住顶部按钮 3 秒钟。等待 Windows 发现设备。</value>
+    <value>위쪽 버튼을 3초 동안 길게 누릅니다. 디바이스가 Windows에서 검색될 때까지 기다립니다.</value>
   </data>
   <data name="AddDevice.Pen.3" xml:space="preserve">
-    <value>允许设备配对，或启动 Windows 设置，并在发现设备后选择相应的设备。</value>
+    <value>디바이스를 페어링될 때까지 기다리거나, Windows 설정을 시작하고 해당 디바이스가 검색되면 선택합니다.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>在提示框中选择“是”以确认配对触控笔</value>
+    <value>프롬프트 상자에서 &apos;예&apos;를 선택하여 페어링을 확인함으로써 펜과 페어링합니다.</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
-    <value>无需 USB 无线接收器，随时随地连接</value>
+    <value>USB 무선 수신기 없이 이동 중에 연결하는 경우</value>
   </data>
   <data name="AddDevice.Headset.1" xml:space="preserve">
-    <value>将耳机开机</value>
+    <value>헤드셋 전원을 켭니다.</value>
   </data>
   <data name="AddDevice.Headset.2" xml:space="preserve">
-    <value>按住电源按钮 3 秒钟，使耳机可被蓝牙发现</value>
+    <value>전원 버튼을 3초 동안 눌러서 Bluetooth가 헤드셋을 감지할 수 있도록 합니다.</value>
   </data>
   <data name="AddDevice.Headset.3" xml:space="preserve">
-    <value>允许设备配对，或启动 Windows 设置，并在发现设备后选择相应的设备。</value>
+    <value>디바이스를 페어링될 때까지 기다리거나, Windows 설정을 시작하고 해당 디바이스가 검색되면 선택합니다.</value>
   </data>
   <data name="AddDevice.Headset.4" xml:space="preserve">
-    <value>将耳机关机。按住麦克风静音按钮，并再次开机。</value>
+    <value>헤드셋 전원을 끕니다. 마이크 음소거 버튼을 누른 상태에서 다시 전원을 켭니다.</value>
   </data>
   <data name="AddDevice.Headset.5" xml:space="preserve">
-    <value>配对将在几秒钟后自动开始</value>
+    <value>몇 초 후에 페어링이 자동으로 시작됩니다.</value>
   </data>
   <data name="AddDevice.Headset.6" xml:space="preserve">
-    <value>通过系统上的 USB 端口连接耳机。</value>
+    <value>시스템의 USB 포트를 통해 헤드셋을 연결합니다.</value>
   </data>
   <data name="AddDevice.Speaker.0" xml:space="preserve">
-    <value>通过系统上的 USB 端口连接扬声器或音棒。</value>
+    <value>시스템의 USB 포트를 통해 스피커 또는 사운드바를 연결합니다.</value>
   </data>
   <data name="AddDevice.Dock.0" xml:space="preserve">
-    <value>通过系统上的 USB 端口连接坞站</value>
+    <value>시스템의 USB 포트를 통해 도크를 연결합니다.</value>
   </data>
   <data name="HomePage.0" xml:space="preserve">
-    <value>请稍候...</value>
+    <value>기다려 주십시오...</value>
   </data>
   <data name="UpdateFirmware" xml:space="preserve">
-    <value>更新固件</value>
+    <value>펌웨어 업데이트</value>
   </data>
   <data name="Dock.0" xml:space="preserve">
-    <value>{0} 个插槽可用，共 {1} 个插槽</value>
+    <value>{0} /{1} 슬롯 사용 가능</value>
   </data>
   <data name="Dock.1" xml:space="preserve">
-    <value>转换器 {0}</value>
+    <value>동글 {0}</value>
   </data>
   <data name="Keyboard.2" xml:space="preserve">
-    <value>键自定义</value>
+    <value>키 맞춤 구성</value>
   </data>
   <data name="Keyboard.3" xml:space="preserve">
-    <value>协作</value>
+    <value>협업</value>
   </data>
   <data name="Keyboard.4" xml:space="preserve">
-    <value>照明</value>
+    <value>조명</value>
   </data>
   <data name="Mouse.0" xml:space="preserve">
-    <value>分配操作</value>
+    <value>작업 할당:</value>
   </data>
   <data name="Mouse.1" xml:space="preserve">
-    <value>所有应用程序</value>
+    <value>모든 애플리케이션</value>
   </data>
   <data name="Mouse.2" xml:space="preserve">
     <value>Microsoft Word</value>
@@ -391,721 +391,721 @@
     <value>Microsoft Outlook</value>
   </data>
   <data name="EOL.0" xml:space="preserve">
-    <value>此设备上没有高级功能</value>
+    <value>이 디바이스에는 고급 기능이 없습니다.</value>
   </data>
   <data name="Mouse.6" xml:space="preserve">
-    <value>鼠标设置</value>
+    <value>마우스 설정</value>
   </data>
   <data name="Mouse.7" xml:space="preserve">
-    <value>按钮\n自定义</value>
+    <value>버튼\n맞춤 구성</value>
   </data>
   <data name="Pen.0" xml:space="preserve">
-    <value>触控笔设置</value>
+    <value>펜 설정</value>
   </data>
   <data name="Soundbar.0" xml:space="preserve">
-    <value>音频预设</value>
+    <value>오디오 사전 설정</value>
   </data>
   <data name="Soundbar.1" xml:space="preserve">
-    <value>交互</value>
+    <value>상호 작용</value>
   </data>
   <data name="Camera.0" xml:space="preserve">
-    <value>摄像头控制</value>
+    <value>카메라 컨트롤</value>
   </data>
   <data name="Camera.1" xml:space="preserve">
-    <value>颜色和图像</value>
+    <value>색상 및 이미지</value>
   </data>
   <data name="Camera.2" xml:space="preserve">
-    <value>用户检测</value>
+    <value>사용자 감지</value>
   </data>
   <data name="Camera.3" xml:space="preserve">
-    <value>拍摄</value>
+    <value>캡처</value>
   </data>
   <data name="Camera.4" xml:space="preserve">
-    <value>麦克风</value>
+    <value>마이크</value>
   </data>
   <data name="WiredConnection" xml:space="preserve">
-    <value>有线连接</value>
+    <value>유선 연결</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>错误</value>
+    <value>오류</value>
   </data>
   <data name="Brightness.0" xml:space="preserve">
-    <value>请检查您的设置，确保预设开始时间和过渡长度不重叠</value>
+    <value>설정을 확인하여 사전 설정 시작 시간 및 전환 길이가 겹치지 않도록 하십시오.</value>
   </data>
   <data name="Brightness.1" xml:space="preserve">
-    <value>在以下情况下亮度/对比度不可用 </value>
+    <value>밝기/대비는 </value>
   </data>
   <data name="Brightness.2" xml:space="preserve">
-    <value>智能 HDR </value>
+    <value>스마트 HDR </value>
   </data>
   <data name="Brightness.3" xml:space="preserve">
-    <value>已启用</value>
+    <value>기능이 켜져 있을 때 사용할 수 없습니다.</value>
   </data>
   <data name="Brightness" xml:space="preserve">
-    <value>亮度</value>
+    <value>밝기</value>
   </data>
   <data name="Contrast" xml:space="preserve">
-    <value>对比度</value>
+    <value>대비</value>
   </data>
   <data name="Brightness.4" xml:space="preserve">
-    <value>在显示器之间同步</value>
+    <value>모니터 간 동기화</value>
   </data>
   <data name="Brightness.5" xml:space="preserve">
-    <value>应用上述亮度/辉度、对比度和颜色&amp;#x000A；为连接的显示器预设控制功能。</value>
+    <value>위의 밝기/휘도, 대비, 색상 사전 설정 컨트롤을 연결된 모니터에 적용하십시오.</value>
   </data>
   <data name="Luminance" xml:space="preserve">
-    <value>辉度</value>
+    <value>휘도</value>
   </data>
   <data name="Auto" xml:space="preserve">
-    <value>自动</value>
+    <value>자동</value>
   </data>
   <data name="Brightness.6" xml:space="preserve">
-    <value>自动亮度  </value>
+    <value>자동 밝기  </value>
   </data>
   <data name="Brightness.7" xml:space="preserve">
-    <value>根据周围空间的照明情况调整显示器的亮度</value>
+    <value>주변 공간의 조명 상태에 따라 디스플레이 밝기를 조정합니다.</value>
   </data>
   <data name="Brightness.8" xml:space="preserve">
-    <value>自动亮度范围级别  </value>
+    <value>자동 밝기 범위 레벨  </value>
   </data>
   <data name="Brightness.9" xml:space="preserve">
-    <value>根据周围空间的照明情况提供 3 级亮度范围（高/中/低）</value>
+    <value>주변 공간의 조명 상태에 따라 3가지 밝기 범위(높음/중간/낮음)를 제공합니다.</value>
   </data>
   <data name="Brightness.10" xml:space="preserve">
-    <value>自动色温  </value>
+    <value>자동 색온도  </value>
   </data>
   <data name="Brightness.11" xml:space="preserve">
-    <value>自动调整显示器的色温，以匹配周围空间的光线。</value>
+    <value>주변 공간의 조명에 맞춰 디스플레이 색온도를 자동으로 조정합니다.</value>
   </data>
   <data name="Brightness.12" xml:space="preserve">
-    <value>用于同步的主显示器  </value>
+    <value>동기화할 기본 모니터  </value>
   </data>
   <data name="Brightness.13" xml:space="preserve">
-    <value>将主显示器的亮度、对比度、色彩预设和色温同步到其他 ALS 显示器</value>
+    <value>밝기, 대비, 색상 사전 설정, 색온도를 기본 모니터를 기준으로 다른 ALS 모니터와 동기화합니다.</value>
   </data>
   <data name="Scheduled" xml:space="preserve">
-    <value>计划</value>
+    <value>예약됨</value>
   </data>
   <data name="Brightness.14" xml:space="preserve">
-    <value>预设 1 名称</value>
+    <value>사전 설정 1 이름</value>
   </data>
   <data name="Brightness.15" xml:space="preserve">
-    <value>开始时间</value>
+    <value>시작 시간</value>
   </data>
   <data name="AM" xml:space="preserve">
     <value>AM</value>
   </data>
   <data name="Brightness.16" xml:space="preserve">
-    <value>过渡长度</value>
+    <value>전환 길이</value>
   </data>
   <data name="Brightness.17" xml:space="preserve">
-    <value>测试。</value>
+    <value>테스트</value>
   </data>
   <data name="Min" xml:space="preserve">
-    <value>分钟</value>
+    <value>분</value>
   </data>
   <data name="Brightness.18" xml:space="preserve">
-    <value>预设 2 名称</value>
+    <value>사전 설정 2 이름</value>
   </data>
   <data name="PM" xml:space="preserve">
     <value>PM</value>
   </data>
   <data name="Hotkeys" xml:space="preserve">
-    <value>热键</value>
+    <value>핫키</value>
   </data>
   <data name="Reset" xml:space="preserve">
-    <value>重置</value>
+    <value>재설정</value>
   </data>
   <data name="Hotkey.0" xml:space="preserve">
-    <value>亮度 -</value>
+    <value>밝기 -</value>
   </data>
   <data name="Hotkey.1" xml:space="preserve">
-    <value>亮度 +</value>
+    <value>밝기 +</value>
   </data>
   <data name="Hotkey.2" xml:space="preserve">
-    <value>对比度 -</value>
+    <value>명암 대비 -</value>
   </data>
   <data name="Hotkey.3" xml:space="preserve">
-    <value>对比度 +</value>
+    <value>명암 대비 +</value>
   </data>
   <data name="Hotkey.4" xml:space="preserve">
-    <value>辉度 -</value>
+    <value>휘도 -</value>
   </data>
   <data name="Hotkey.5" xml:space="preserve">
-    <value>辉度 +</value>
+    <value>휘도 +</value>
   </data>
   <data name="Hotkey.6" xml:space="preserve">
-    <value>示例：“Alt + P”“Shift + F”“Ctrl + Shift + F”。\n请注意，对于多个显示器，鼠标光标应位于目标显示器屏幕上以触发热键功能。</value>
+    <value>예: &quot;Alt+P&quot;, &quot;Shift+F&quot;, &quot;Ctrl+Shift+F&quot; 키\n다중 모니터의 경우 마우스 커서가 대상 모니터 화면에 있어야 핫키 기능을 실행할 수 있습니다.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
-    <value>滚轮单击</value>
+    <value>스크롤 휠 클릭</value>
   </data>
   <data name="ButtonSettings.1" xml:space="preserve">
-    <value>向左倾斜滚动</value>
+    <value>왼쪽으로 기울여 스크롤</value>
   </data>
   <data name="ButtonSettings.2" xml:space="preserve">
-    <value>向右倾斜滚动</value>
+    <value>오른쪽으로 기울여 스크롤</value>
   </data>
   <data name="ButtonSettings.3" xml:space="preserve">
-    <value>侧面按钮向前</value>
+    <value>측면 버튼 앞으로</value>
   </data>
   <data name="ButtonSettings.4" xml:space="preserve">
-    <value>侧面按钮向后</value>
+    <value>측면 버튼 뒤로</value>
   </data>
   <data name="ButtonSettings.5" xml:space="preserve">
-    <value>要进行自定义，请单击左侧图像中显示的相应部分</value>
+    <value>맞춤 구성하려면 왼쪽의 이미지에서 윤곽선이 표시된 섹션 중 하나를 클릭합니다.</value>
   </data>
   <data name="ButtonSettings.6" xml:space="preserve">
-    <value>恢复到所有应用程序</value>
+    <value>모든 애플리케이션으로 복원</value>
   </data>
   <data name="ButtonSettings.7" xml:space="preserve">
-    <value>建议的操作</value>
+    <value>제안된 작업</value>
   </data>
   <data name="ButtonSettings.8" xml:space="preserve">
-    <value>生产力操作</value>
+    <value>생산성 작업</value>
   </data>
   <data name="ButtonSettings.9" xml:space="preserve">
-    <value>Windows 操作</value>
+    <value>Windows 작업</value>
   </data>
   <data name="ButtonSettings.10" xml:space="preserve">
-    <value>多媒体操作</value>
+    <value>멀티미디어 작업</value>
   </data>
   <data name="ButtonSettings.11" xml:space="preserve">
-    <value>高级操作</value>
+    <value>고급 작업</value>
   </data>
   <data name="ButtonSettings.12" xml:space="preserve">
-    <value>搜索结果</value>
+    <value>검색 결과</value>
   </data>
   <data name="ButtonSettings.13" xml:space="preserve">
-    <value>按钮自定义</value>
+    <value>버튼 맞춤 구성</value>
   </data>
   <data name="Customize" xml:space="preserve">
-    <value>自定义</value>
+    <value>사용자 정의</value>
   </data>
   <data name="Edit" xml:space="preserve">
-    <value>编辑</value>
+    <value>편집</value>
   </data>
   <data name="Remove" xml:space="preserve">
-    <value>移除</value>
+    <value>제거</value>
   </data>
   <data name="Collaboration.0" xml:space="preserve">
-    <value>协作图标</value>
+    <value>협업 아이콘</value>
   </data>
   <data name="Collaboration.1" xml:space="preserve">
-    <value>快速访问会议控件。\n在 Microsoft Teams 或 Zoom 通话中，\n打开/关闭按键将在键盘上显示或隐藏它们。</value>
+    <value>회의 컨트롤에 빠르게 액세스할 수 있습니다. 키를 켜거나 끄면\nMicrosoft Teams 또는 Zoom 통화 중에\n키보드에서 키가 표시되거나 숨겨집니다.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>在电话会议中出现新的聊天消息时启用闪烁\n效果</value>
+    <value>전화 회의 중 새 채팅 메시지가 있을 때 깜박임 효과를\n활성화합니다.</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
-    <value>通过双击而不是单击来激活键盘上的\n图标</value>
+    <value>한 번 탭하는 대신 두 번 탭하여 키보드의 아이콘을\n활성화합니다.</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
-    <value>若要将协作式键盘与 Microsoft Teams 配合使用，请确保已登录并使用全新版本的 Microsoft Teams，并且已启用第三方应用 API。</value>
+    <value>Microsoft Teams와 협업 키보드를 사용하려면 최신 버전의 Microsoft Teams에 로그인하여 사용하고 있으며 타사 앱 API가 활성화되어 있는지 확인하십시오.</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
-    <value>了解更多</value>
+    <value>더 자세히 알아보기</value>
   </data>
   <data name="Video" xml:space="preserve">
-    <value>视频</value>
+    <value>비디오</value>
   </data>
   <data name="Share" xml:space="preserve">
-    <value>共享</value>
+    <value>공유</value>
   </data>
   <data name="Chat" xml:space="preserve">
-    <value>聊天</value>
+    <value>채팅</value>
   </data>
   <data name="Mic" xml:space="preserve">
-    <value>麦克风</value>
+    <value>마이크</value>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>确定</value>
+    <value>확인</value>
   </data>
   <data name="Collaboration" xml:space="preserve">
-    <value>协作</value>
+    <value>협업</value>
   </data>
   <data name="Confirm" xml:space="preserve">
-    <value>确认</value>
+    <value>확인</value>
   </data>
   <data name="Color.0" xml:space="preserve">
-    <value>添加应用程序</value>
+    <value>응용프로그램 추가</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>搜索</value>
+    <value>검색</value>
   </data>
   <data name="Color.1" xml:space="preserve">
-    <value>按名称排序</value>
+    <value>이름으로 정렬</value>
   </data>
   <data name="Color.2" xml:space="preserve">
-    <value>按日期排序</value>
+    <value>날짜로 정렬</value>
   </data>
   <data name="Color.3" xml:space="preserve">
-    <value>根据色彩预设自动调整 ICC 色彩配置文件</value>
+    <value>색상 사전 설정에 따라 ICC 색상 프로파일을 자동 조정합니다.</value>
   </data>
   <data name="WindowsSettings" xml:space="preserve">
-    <value>Windows 设置</value>
+    <value>Windows 설정</value>
   </data>
   <data name="Color.4" xml:space="preserve">
-    <value>根据以下项自动调整颜色预设：</value>
+    <value>다음에 따라 색상 사전 설정을 자동 조정합니다.</value>
   </data>
   <data name="Color.5" xml:space="preserve">
-    <value>ICC 配置文件</value>
+    <value>ICC 프로파일</value>
   </data>
   <data name="Color.6" xml:space="preserve">
-    <value>颜色配置文件</value>
+    <value>색상 프로파일</value>
   </data>
   <data name="Color.7" xml:space="preserve">
-    <value>特定于应用程序的颜色预设</value>
+    <value>애플리케이션별 색상 사전 설정</value>
   </data>
   <data name="Color.8" xml:space="preserve">
-    <value>夜灯 </value>
+    <value>야간 조명 </value>
   </data>
   <data name="Color.9" xml:space="preserve">
-    <value>在显示屏上显示舒适的色彩，帮助您入睡。</value>
+    <value>수면에 도움이 되도록 편안한 색상을 디스플레이에 표시합니다.</value>
   </data>
   <data name="Color.11" xml:space="preserve">
-    <value>色彩管理</value>
+    <value>색상 관리</value>
   </data>
   <data name="Color.12" xml:space="preserve">
-    <value>自动将 ICC 配置文件与显示器的色彩预设同步。</value>
+    <value>ICC 프로파일을 모니터의 색상 사전 설정과 자동으로 동기화합니다.</value>
   </data>
   <data name="Color.13" xml:space="preserve">
-    <value>建议使用 Dell Color Management 应用程序进行高级色彩管理。</value>
+    <value>고급 색상 관리를 위해 Dell 색상 관리 애플리케이션을 권장합니다.</value>
   </data>
   <data name="DisplayHotkeys.0" xml:space="preserve">
-    <value>输入源</value>
+    <value>입력 소스</value>
   </data>
   <data name="DisplayHotkeys.1" xml:space="preserve">
-    <value>切换至下一个输入源</value>
+    <value>다음 입력 소스로 전환</value>
   </data>
   <data name="DisplayHotkeys.2" xml:space="preserve">
-    <value>最喜爱的输入</value>
+    <value>자주 사용하는 입력</value>
   </data>
   <data name="DisplayHotkeys.3" xml:space="preserve">
-    <value>在 2 个输入源之间切换</value>
+    <value>2개 입력 소스 간 전환</value>
   </data>
   <data name="VideoSwap" xml:space="preserve">
-    <value>视频交换</value>
+    <value>비디오 전환</value>
   </data>
   <data name="PIPorPBP" xml:space="preserve">
     <value>PIP/PBP</value>
   </data>
   <data name="DisplayHotkeys.4" xml:space="preserve">
-    <value>交换 PIP/PBP 窗口的 2 个输入</value>
+    <value>PIP/PBP 창의 2개 입력 전환</value>
   </data>
   <data name="DisplayHotkeys.5" xml:space="preserve">
-    <value>更改 PIP 位置</value>
+    <value>PIP 위치 변경</value>
   </data>
   <data name="DisplayOthers.0" xml:space="preserve">
-    <value>降低亮度</value>
+    <value>밝기 줄이기</value>
   </data>
   <data name="DisplayOthers.1" xml:space="preserve">
-    <value>使显示器进入睡眠状态</value>
+    <value>디스플레이를 절전 모드로 설정</value>
   </data>
   <data name="Import" xml:space="preserve">
-    <value>导入</value>
+    <value>가져오기</value>
   </data>
   <data name="Export" xml:space="preserve">
-    <value>导出</value>
+    <value>내보내기</value>
   </data>
   <data name="DisplayOthers.2" xml:space="preserve">
-    <value>检测到相同型号时自动应用设置</value>
+    <value>동일한 모델이 감지되면 자동으로 설정을 적용합니다.</value>
   </data>
   <data name="PowerNap" xml:space="preserve">
     <value>PowerNap</value>
   </data>
   <data name="DisplayOthers.3" xml:space="preserve">
-    <value>PowerNap 可在屏幕保护程序激活时帮助节省电量</value>
+    <value>화면 보호기가 작동될 때 PowerNap 기능을 통해 전력을 절약할 수 있습니다.</value>
   </data>
   <data name="DisplayOthers.4" xml:space="preserve">
-    <value>当屏幕保护程序激活时（选择一项）：</value>
+    <value>화면 보호기가 작동될 때(한 가지 선택):</value>
   </data>
   <data name="DisplayOthers.5" xml:space="preserve">
-    <value>配置屏幕保护程序设置 </value>
+    <value>화면 보호기 설정 구성 </value>
   </data>
   <data name="DisplayOthers.6" xml:space="preserve">
-    <value>应用程序设置</value>
+    <value>애플리케이션 설정</value>
   </data>
   <data name="DisplayOthers.7" xml:space="preserve">
-    <value>将配置和重要信息导出到另一台同一型号的显示器</value>
+    <value>구성 및 중요 사항을 동일한 모델의 다른 모니터로 내보냅니다.</value>
   </data>
   <data name="DisplayProperties.0" xml:space="preserve">
-    <value>高数据速度</value>
+    <value>빠른 데이터 속도</value>
   </data>
   <data name="DisplayProperties.1" xml:space="preserve">
-    <value>高分辨率</value>
+    <value>고해상도</value>
   </data>
   <data name="DisplayProperties.2" xml:space="preserve">
-    <value>分辨率和刷新率</value>
+    <value>해상도 및 화면 재생률</value>
   </data>
   <data name="Orientation" xml:space="preserve">
-    <value>方向</value>
+    <value>방향</value>
   </data>
   <data name="SmartHDR" xml:space="preserve">
-    <value>智能 HDR</value>
+    <value>스마트 HDR</value>
   </data>
   <data name="DisplayProperties.3" xml:space="preserve">
-    <value>更改文本、应用程序和其他项目的大小</value>
+    <value>텍스트, 앱 및 기타 항목의 크기를 변경합니다.</value>
   </data>
   <data name="AdvancedSettings" xml:space="preserve">
-    <value>高级设置</value>
+    <value>고급 설정</value>
   </data>
   <data name="DisplayProperties.4" xml:space="preserve">
-    <value>USB-C 优先级 </value>
+    <value>USB-C 우선순위 지정 </value>
   </data>
   <data name="DisplayProperties.5" xml:space="preserve">
-    <value>数据和网络速度优先级高于屏幕性能。</value>
+    <value>화면 성능보다 데이터 및 네트워크 속도를 우선시합니다.</value>
   </data>
   <data name="DisplayProperties.6" xml:space="preserve">
-    <value>屏幕性能优先级高于数据和网络速度。</value>
+    <value>데이터 및 네트워크 속도보다 화면 성능을 우선시합니다.</value>
   </data>
   <data name="Windows" xml:space="preserve">
     <value>Windows</value>
   </data>
   <data name="Custom" xml:space="preserve">
-    <value>自定义</value>
+    <value>맞춤 구성(s)</value>
   </data>
   <data name="EzArrange.1" xml:space="preserve">
-    <value>Windows 或其他</value>
+    <value>Windows 및 기타 운영 체제</value>
   </data>
   <data name="Recent" xml:space="preserve">
-    <value>最近</value>
+    <value>최근</value>
   </data>
   <data name="AudioSettings" xml:space="preserve">
-    <value>音频设置</value>
+    <value>오디오 설정</value>
   </data>
   <data name="HeadsetAudioSettings.0" xml:space="preserve">
-    <value>控制我听到的噪音</value>
+    <value>들리는 소음 제어</value>
   </data>
   <data name="HeadsetAudioSettings.1" xml:space="preserve">
-    <value>主动降噪</value>
+    <value>액티브 노이즈 캔슬링</value>
   </data>
   <data name="HeadsetAudioSettings.2" xml:space="preserve">
-    <value>透明模式</value>
+    <value>투명도</value>
   </data>
   <data name="HeadsetAudioSettings.3" xml:space="preserve">
-    <value>关闭</value>
+    <value>끄기</value>
   </data>
   <data name="HeadsetAudioSettings.4" xml:space="preserve">
-    <value>透明度级别</value>
+    <value>주변음 허용도</value>
   </data>
   <data name="HeadsetAudioSettings.5" xml:space="preserve">
-    <value>配置我的音频模式</value>
+    <value>오디오 모드 구성</value>
   </data>
   <data name="Multimedia" xml:space="preserve">
-    <value>多媒体</value>
+    <value>멀티미디어</value>
   </data>
   <data name="HeadsetAudioSettings.6" xml:space="preserve">
-    <value>音频输出预设</value>
+    <value>오디오 출력 사전 설정</value>
   </data>
   <data name="Default" xml:space="preserve">
-    <value>默认</value>
+    <value>기본값</value>
   </data>
   <data name="HeadsetAudioSettings.7" xml:space="preserve">
-    <value>低音增强</value>
+    <value>저음 강조</value>
   </data>
   <data name="HeadsetAudioSettings.8" xml:space="preserve">
-    <value>语音增强</value>
+    <value>음성 강조</value>
   </data>
   <data name="HeadsetAudioSettings.9" xml:space="preserve">
-    <value>高音增强</value>
+    <value>고음 강조</value>
   </data>
   <data name="HeadsetAudioSettings.10" xml:space="preserve">
-    <value>音频均衡器</value>
+    <value>오디오 이퀄라이저</value>
   </data>
   <data name="HeadsetAudioSettings.11" xml:space="preserve">
-    <value>调整您听到的声音的音频范围</value>
+    <value>들리는 소리의 오디오 범위 조정</value>
   </data>
   <data name="HeadsetAudioSettings.12" xml:space="preserve">
-    <value>分贝</value>
+    <value>db</value>
   </data>
   <data name="HeadsetAudioSettings.13" xml:space="preserve">
-    <value>低音</value>
+    <value>저음</value>
   </data>
   <data name="HeadsetAudioSettings.14" xml:space="preserve">
-    <value>中音</value>
+    <value>중간 범위</value>
   </data>
   <data name="HeadsetAudioSettings.15" xml:space="preserve">
-    <value>高音</value>
+    <value>고음</value>
   </data>
   <data name="HeadsetAudioSettings.16" xml:space="preserve">
-    <value>麦克风降噪</value>
+    <value>마이크 노이즈 캔슬레이션</value>
   </data>
   <data name="HeadsetAudioSettings.17" xml:space="preserve">
-    <value>传出音频</value>
+    <value>출력 오디오</value>
   </data>
   <data name="HeadsetAudioSettings.18" xml:space="preserve">
-    <value>传入音频</value>
+    <value>입력 오디오</value>
   </data>
   <data name="HeadsetAudioSettings.19" xml:space="preserve">
-    <value>侧音</value>
+    <value>사이드톤</value>
   </data>
   <data name="AutomatedActions" xml:space="preserve">
-    <value>自动操作</value>
+    <value>자동화된 작업</value>
   </data>
   <data name="HeadsetAutomatedActions.0" xml:space="preserve">
-    <value>佩戴检测</value>
+    <value>착용 감지</value>
   </data>
   <data name="HeadsetAutomatedActions.1" xml:space="preserve">
-    <value>敏感度</value>
+    <value>감도</value>
   </data>
   <data name="HeadsetAutomatedActions.2" xml:space="preserve">
-    <value>低</value>
+    <value>낮음</value>
   </data>
   <data name="HeadsetAutomatedActions.3" xml:space="preserve">
-    <value>普通</value>
+    <value>정상</value>
   </data>
   <data name="HeadsetAutomatedActions.4" xml:space="preserve">
-    <value>摘下耳机时：</value>
+    <value>헤드셋을 벗은 경우:</value>
   </data>
   <data name="HeadsetAutomatedActions.5" xml:space="preserve">
-    <value>暂停音乐</value>
+    <value>음악 일시 중지</value>
   </data>
   <data name="HeadsetAutomatedActions.6" xml:space="preserve">
-    <value>麦克风静音</value>
+    <value>마이크 음소거</value>
   </data>
   <data name="HeadsetAutomatedActions.7" xml:space="preserve">
-    <value>快速暂停</value>
+    <value>빠른 일시 중지</value>
   </data>
   <data name="HeadsetAutomatedActions.8" xml:space="preserve">
-    <value>接听电话</value>
+    <value>전화 받기</value>
   </data>
   <data name="DeviceSettings" xml:space="preserve">
-    <value>设备设置</value>
+    <value>디바이스 설정</value>
   </data>
   <data name="HeadsetDeviceSettings.0" xml:space="preserve">
-    <value>繁忙指示灯</value>
+    <value>방해 금지 표시등</value>
   </data>
   <data name="HeadsetDeviceSettings.1" xml:space="preserve">
-    <value>语音指导</value>
+    <value>음성 안내</value>
   </data>
   <data name="HeadsetDeviceSettings.2" xml:space="preserve">
-    <value>必要</value>
+    <value>기본 정보</value>
   </data>
   <data name="HeadsetDeviceSettings.3" xml:space="preserve">
-    <value>全部</value>
+    <value>모두</value>
   </data>
   <data name="HeadsetDeviceSettings.4" xml:space="preserve">
-    <value>下载 Dell Audio</value>
+    <value>Dell Audio 다운로드</value>
   </data>
   <data name="HeadsetDeviceSettings.5" xml:space="preserve">
-    <value>立即下载 Dell Audio，并方便地使用 iPhone 或 Android 设备优化和个性化您的耳机设置。</value>
+    <value>지금 Dell Audio를 다운로드하여 iPhone 또는 Android 디바이스에서 편리하게 헤드셋 설정을 최적화하고 개인 설정하십시오.</value>
   </data>
   <data name="HeadsetDeviceSettings.6" xml:space="preserve">
-    <value>了解详情</value>
+    <value>자세한 정보</value>
   </data>
   <data name="Illumination.0" xml:space="preserve">
-    <value>照明控制</value>
+    <value>조명 컨트롤</value>
   </data>
   <data name="Illumination.1" xml:space="preserve">
-    <value>照明</value>
+    <value>조명</value>
   </data>
   <data name="InputSource.0" xml:space="preserve">
-    <value>当前输入源</value>
+    <value>현재 입력 소스</value>
   </data>
   <data name="InputSource.1" xml:space="preserve">
-    <value>重命名输入源并分配 USB 连接</value>
+    <value>입력 소스 이름 바꾸기 및 USB 연결 할당</value>
   </data>
   <data name="InputSource.2" xml:space="preserve">
-    <value>输入</value>
+    <value>입력</value>
   </data>
   <data name="InputSource.3" xml:space="preserve">
-    <value>输入名称</value>
+    <value>입력 이름</value>
   </data>
   <data name="InputSource.4" xml:space="preserve">
-    <value>USB 上行</value>
+    <value>USB 업스트림</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
-    <value>要自定义按键，请单击左侧图像中显示的相应按键</value>
+    <value>키를 맞춤 구성하려면 왼쪽에 있는 이미지에서 윤곽선이 표시된 키 중 하나를 클릭합니다.</value>
   </data>
   <data name="KeyCustomization.1" xml:space="preserve">
-    <value>将所有操作恢复为默认设置</value>
+    <value>모든 작업을 기본값으로 복원</value>
   </data>
   <data name="KeyCustomization.2" xml:space="preserve">
-    <value>键自定义</value>
+    <value>키 맞춤 구성</value>
   </data>
   <data name="Kvm.0" xml:space="preserve">
     <value>PC</value>
   </data>
   <data name="Kvm.1" xml:space="preserve">
-    <value>下一步</value>
+    <value>다음</value>
   </data>
   <data name="Kvm.2" xml:space="preserve">
-    <value>USB KVM 设置</value>
+    <value>USB KVM 설정</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>连接鼠标\n和键盘</value>
+    <value>마우스\n 및 키보드 연결</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>鼠标和键盘请连接到显示器背面 (USB-A)。\n 提醒：您还可以连接其他 USB 外围设备，例如\n 网络摄像头。</value>
+    <value>마우스 및 키보드의 경우 모니터 후면(USB-A)에 연결합니다.\n 참고: 웹캠 등 다른 USB 주변 디바이스를 연결할 수도 있습니다.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>关闭</value>
+    <value>닫기</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>保存</value>
+    <value>저장</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>取消</value>
+    <value>취소</value>
   </data>
   <data name="USB" xml:space="preserve">
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>连接到\n您的设备</value>
+    <value>디바이스에\n 연결하는 중</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>请将每台 PC 之间的视频线缆和 USB 线缆连接到\n显示器。您最多可以连接 4 台 PC（计算机、游戏机\n等）。\r\n\r\n请选择线缆类型并为每个源分配名称。</value>
+    <value>비디오 케이블과 USB 케이블을 각 PC와\n 모니터 사이에 연결하십시오. 최대 4대의 PC(컴퓨터, 게이밍\n 콘솔 등)를 연결할 수 있습니다. \r\n\r\n케이블 유형을 선택하고 각 소스에 이름을 지정하십시오.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
-    <value>在 PC 之间切换</value>
+    <value>PC 간 전환</value>
   </data>
   <data name="Kvm.9" xml:space="preserve">
-    <value>切换键盘和鼠标</value>
+    <value>키보드와 마우스 전환</value>
   </data>
   <data name="Kvm.10" xml:space="preserve">
-    <value>更改 PIP 位置</value>
+    <value>PIP 위치 변경</value>
   </data>
   <data name="Kvm.11" xml:space="preserve">
-    <value>在 PBP 并排模式下自动切换 USB 上行端口</value>
+    <value>PBP 병렬 모드에서 USB 업스트림 포트 자동 전환</value>
   </data>
   <data name="Kvm.12" xml:space="preserve">
-    <value>输入源热键</value>
+    <value>입력 소스 핫키</value>
   </data>
   <data name="Kvm.13" xml:space="preserve">
-    <value>编辑输入源</value>
+    <value>입력 소스 편집</value>
   </data>
   <data name="Kvm.14" xml:space="preserve">
-    <value>编辑 PIP/PBP</value>
+    <value>PIP/PBP 편집</value>
   </data>
   <data name="Kvm.15" xml:space="preserve">
-    <value>在位置之间切换</value>
+    <value>위치 간 전환</value>
   </data>
   <data name="Finish" xml:space="preserve">
-    <value>完成</value>
+    <value>마침</value>
   </data>
   <data name="Kvm.16" xml:space="preserve">
-    <value>PIP/PBP 设置</value>
+    <value>PIP/PBP 설정</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>为您的显示器\n设置 PIP/PBP</value>
+    <value>모니터의 PIP/PBP 설정</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
-    <value>您的显示器可以一次显示一台 PC 或一个源（全屏），\n或者在源之间分区（画中画/画旁画）。</value>
+    <value>모니터는 한 번에 하나의 PC 또는 소스를 표시하거나(전체 화면),\n소스 간에 분할할 수 있습니다(PIP/PBP).</value>
   </data>
   <data name="Kvm.19" xml:space="preserve">
-    <value>无 KVM</value>
+    <value>KVM 없음</value>
   </data>
   <data name="Kvm.20" xml:space="preserve">
     <value>USB KVM</value>
   </data>
   <data name="Kvm.21" xml:space="preserve">
-    <value>设置 USB KVM</value>
+    <value>USB KVM 설정</value>
   </data>
   <data name="Kvm.22" xml:space="preserve">
-    <value>启动新的 USB KVM</value>
+    <value>새 USB KVM 시작</value>
   </data>
   <data name="Kvm.23" xml:space="preserve">
-    <value>网络 KVM</value>
+    <value>네트워크 KVM</value>
   </data>
   <data name="Kvm.24" xml:space="preserve">
-    <value>选择 KVM 设置类型</value>
+    <value>KVM 설정 유형 선택</value>
   </data>
   <data name="Kvm.25" xml:space="preserve">
-    <value>适合单显示器设置</value>
+    <value>단일 모니터 설정에 적합</value>
   </data>
   <data name="Kvm.26" xml:space="preserve">
-    <value>通过显示器 USB 端口设置</value>
+    <value>모니터 USB 포트를 통해 설정</value>
   </data>
   <data name="Kvm.27" xml:space="preserve">
-    <value>热键 - 在 PC 之间切换：无</value>
+    <value>핫키 - PC 간 전환: 없음</value>
   </data>
   <data name="Kvm.28" xml:space="preserve">
-    <value>适合多显示器设置</value>
+    <value>다중 모니터 설정에 적합</value>
   </data>
   <data name="Kvm.29" xml:space="preserve">
-    <value>通过网络设置</value>
+    <value>네트워크를 통해 설정</value>
   </data>
   <data name="Kvm.30" xml:space="preserve">
-    <value>在 PC（Mac 和 Windows）之间安全地轻松共享文件</value>
+    <value>PC(Mac 및 Windows) 간에 파일을 쉽고 안전하게 공유</value>
   </data>
   <data name="Kvm.31" xml:space="preserve">
-    <value>打开网络 KVM</value>
+    <value>네트워크 KVM 열기</value>
   </data>
   <data name="Kvm.32" xml:space="preserve">
-    <value>打开另一个窗口以设置或编辑网络 KVM</value>
+    <value>다른 창을 열어 네트워크 KVM을 설정하거나 편집합니다.</value>
   </data>
   <data name="MouseSettings.0" xml:space="preserve">
-    <value>移动鼠标以完成对 DPI 值的更改</value>
+    <value>마우스를 움직여 DPI 값 변경을 완료합니다.</value>
   </data>
   <data name="MouseSettings.1" xml:space="preserve">
-    <value>提高轮询速率可能会影响鼠标的电池续航时间。</value>
+    <value>폴링 속도를 높이면 마우스 배터리 수명에 영향을 줄 수 있습니다.</value>
   </data>
   <data name="Medium" xml:space="preserve">
-    <value>中</value>
+    <value>중간</value>
   </data>
   <data name="Slow" xml:space="preserve">
-    <value>慢</value>
+    <value>느림</value>
   </data>
   <data name="High" xml:space="preserve">
-    <value>高</value>
+    <value>높음</value>
   </data>
   <data name="PenButtonSettings.0" xml:space="preserve">
-    <value>顶部按钮</value>
+    <value>위쪽 버튼</value>
   </data>
   <data name="PenButtonSettings.1" xml:space="preserve">
-    <value>顶部筒状按钮</value>
+    <value>위쪽 배럴 버튼</value>
   </data>
   <data name="PenButtonSettings.2" xml:space="preserve">
-    <value>底部筒状按钮</value>
+    <value>아래쪽 배럴 버튼</value>
   </data>
   <data name="PenButtonSettings.3" xml:space="preserve">
-    <value>单击一次</value>
+    <value>한 번 클릭</value>
   </data>
   <data name="PenButtonSettings.4" xml:space="preserve">
-    <value>双击</value>
+    <value>두 번 클릭</value>
   </data>
   <data name="PenButtonSettings.5" xml:space="preserve">
-    <value>按住</value>
+    <value>길게 누르기</value>
   </data>
   <data name="PenButtonSettings.6" xml:space="preserve">
-    <value>悬停单击</value>
+    <value>마우스를 올려 클릭</value>
   </data>
   <data name="PenButtonSettings.7" xml:space="preserve">
-    <value>要自定义按钮，请单击左侧图像中显示的相应按钮</value>
+    <value>버튼을 맞춤 구성하려면 왼쪽의 이미지에서 윤곽선이 표시된 버튼을 클릭합니다.</value>
   </data>
   <data name="PenButtonSettings.8" xml:space="preserve">
-    <value>恢复到默认操作</value>
+    <value>기본 작업으로 복원</value>
   </data>
   <data name="PenSettings.0" xml:space="preserve">
-    <value>触控笔设置</value>
+    <value>펜 설정</value>
   </data>
   <data name="PenSettings.1" xml:space="preserve">
-    <value>笔尖灵敏度</value>
+    <value>펜촉 감도</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>将滑块向右移动将逐渐\n降低压力敏感度，您需要\n向触控笔施加更大的压力</value>
+    <value>슬라이더를 오른쪽으로 움직이면\n압력에 대한 감도가 점차 감소하므로\n펜 압력을 더 강하게 가해야 합니다.</value>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
-    <value>倾斜灵敏度</value>
+    <value>기울기 조절 감도</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>将滑块向右移动将逐渐\n增加倾斜效果，您需要\n应用更小的倾斜角度</value>
+    <value>슬라이더를 오른쪽으로 움직이면\n기울기 조절 효과가 점차 증가하므로\n덜 기울여야 합니다.</value>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
-    <value>与 Tile 配对</value>
+    <value>Tile과 페어링</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>使用 Tile 应用程序将触控笔与\n移动设备配对</value>
+    <value>Tile 앱을 사용하여 펜을 모바일 디바이스에\n페어링합니다.</value>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
-    <value>开始使用</value>
+    <value>시작하기</value>
   </data>
   <data name="Fullscreen" xml:space="preserve">
-    <value>全屏</value>
+    <value>전체 화면</value>
   </data>
   <data name="PipPbp.0" xml:space="preserve">
     <value>PIP</value>
@@ -1114,88 +1114,88 @@
     <value>PBP</value>
   </data>
   <data name="PipPbp.2" xml:space="preserve">
-    <value>输入 1（主）</value>
+    <value>입력 1(기본)</value>
   </data>
   <data name="PipPbp.3" xml:space="preserve">
-    <value>输入 2（子）</value>
+    <value>입력 2(보조)</value>
   </data>
   <data name="PipPbp.4" xml:space="preserve">
-    <value>输入 3（子）</value>
+    <value>입력 3(보조)</value>
   </data>
   <data name="PipPbp.5" xml:space="preserve">
-    <value>输入 4（子）</value>
+    <value>입력 4(보조)</value>
   </data>
   <data name="PipPbp.6" xml:space="preserve">
-    <value>USB 开关</value>
+    <value>USB 스위치</value>
   </data>
   <data name="PipPbp.7" xml:space="preserve">
-    <value>在位置之间切换</value>
+    <value>위치 간 전환</value>
   </data>
   <data name="SpeakerAudioPreset.0" xml:space="preserve">
-    <value>音频预设</value>
+    <value>오디오 사전 설정</value>
   </data>
   <data name="SpeakerAudioPreset.1" xml:space="preserve">
-    <value>这些设置仅适用于多媒体</value>
+    <value>이 설정은 멀티미디어에만 적용됩니다.</value>
   </data>
   <data name="SpeakerAudioPreset.2" xml:space="preserve">
-    <value>语音</value>
+    <value>말하기</value>
   </data>
   <data name="SpeakerAudioPreset.3" xml:space="preserve">
-    <value>根据您的喜好调整音频范围。这些设置仅适用于多媒体音频。</value>
+    <value>오디오 범위를 원하는 대로 조정합니다. 이 설정은 멀티미디어 오디오에만 적용됩니다.</value>
   </data>
   <data name="SpeakerAudioSettings.0" xml:space="preserve">
-    <value>智能麦克风降噪</value>
+    <value>지능형 마이크 노이즈 캔슬레이션</value>
   </data>
   <data name="SpeakerAudioSettings.1" xml:space="preserve">
-    <value>静音通知</value>
+    <value>음소거 알림</value>
   </data>
   <data name="SpeakerAudioSettings.2" xml:space="preserve">
-    <value>音量调节音调</value>
+    <value>볼륨 조절음</value>
   </data>
   <data name="SpeakerAudioSettings.3" xml:space="preserve">
-    <value>每个级别</value>
+    <value>모든 레벨</value>
   </data>
   <data name="SpeakerAudioSettings.4" xml:space="preserve">
-    <value>仅最小值和最大值</value>
+    <value>최소 및 최대만</value>
   </data>
   <data name="SpeakerInteractions.0" xml:space="preserve">
-    <value>交互</value>
+    <value>상호 작용</value>
   </data>
   <data name="SpeakerInteractions.1" xml:space="preserve">
-    <value>将光标悬停在下面的应用程序名称上可查看可用的扬声器按钮（以绿色表示）</value>
+    <value>사용 가능한 스피커폰 버튼을 보려면 아래의 애플리케이션 이름 위에 마우스를 올리십시오(녹색으로 표시됨).</value>
   </data>
   <data name="SpeakerInteractions.2" xml:space="preserve">
     <value>Microsoft Teams</value>
   </data>
   <data name="SpeakerInteractions.3" xml:space="preserve">
-    <value>Zoom</value>
+    <value>확대</value>
   </data>
   <data name="SpeakerInteractions.4" xml:space="preserve">
     <value>Google Meet</value>
   </data>
   <data name="SpeakerInteractions.5" xml:space="preserve">
-    <value>Skype for Business</value>
+    <value>비즈니스용 Skype</value>
   </data>
   <data name="WebCameraCapture.0" xml:space="preserve">
-    <value>3-2-1 倒计时</value>
+    <value>3-2-1 카운트다운</value>
   </data>
   <data name="WebCameraCapture.1" xml:space="preserve">
-    <value>取景网格</value>
+    <value>프레이밍 그리드</value>
   </data>
   <data name="WebCameraCapture.2" xml:space="preserve">
-    <value>打开</value>
+    <value>열기</value>
   </data>
   <data name="WebCameraCapture.3" xml:space="preserve">
-    <value>更改</value>
+    <value>변경</value>
   </data>
   <data name="WebCameraCapture.4" xml:space="preserve">
-    <value>分辨率</value>
+    <value>해상도</value>
   </data>
   <data name="WebCameraCapture.5" xml:space="preserve">
     <value>4K UHD</value>
   </data>
   <data name="WebCameraCapture.6" xml:space="preserve">
-    <value>全高清</value>
+    <value>Full HD</value>
   </data>
   <data name="WebCameraCapture.7" xml:space="preserve">
     <value>HD</value>
@@ -1204,399 +1204,399 @@
     <value>FPS</value>
   </data>
   <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>通过调整每秒捕获的图像数量来控制视频清晰度和风格</value>
+    <value>초당 캡처되는 이미지 수를 조정하여 비디오 선명도와 스타일을 제어합니다.</value>
   </data>
   <data name="WebCameraCapture.10" xml:space="preserve">
-    <value>媒体文件位置</value>
+    <value>미디어 파일 위치</value>
   </data>
   <data name="WebCameraColorImage.0" xml:space="preserve">
     <value>HDR</value>
   </data>
   <data name="WebCameraColorImage.1" xml:space="preserve">
-    <value>高动态范围可在各种光照条件下自动校正，以获得最佳图像质量</value>
+    <value>High Dynamic Range가 화질을 최적화하기 위해 다양한 조명 상태에서 자동으로 보정합니다.</value>
   </data>
   <data name="WebCameraColorImage.2" xml:space="preserve">
-    <value>自动白平衡</value>
+    <value>자동 화이트 밸런스</value>
   </data>
   <data name="WebCameraColorImage.3" xml:space="preserve">
-    <value>亮度</value>
+    <value>밝기</value>
   </data>
   <data name="WebCameraColorImage.4" xml:space="preserve">
-    <value>锐度</value>
+    <value>선명도</value>
   </data>
   <data name="WebCameraColorImage.5" xml:space="preserve">
-    <value>对比度</value>
+    <value>대비</value>
   </data>
   <data name="WebCameraColorImage.6" xml:space="preserve">
-    <value>饱和度</value>
+    <value>채도</value>
   </data>
   <data name="WebCameraColorImage.7" xml:space="preserve">
-    <value>防闪烁</value>
+    <value>깜박임 방지</value>
   </data>
   <data name="WebCameraColorImage.8" xml:space="preserve">
-    <value>在人工照明下录制时减少闪烁</value>
+    <value>인공조명 사용 시 깜박임을 줄입니다.</value>
   </data>
   <data name="WebCameraColorImage.9" xml:space="preserve">
     <value>Hz</value>
   </data>
   <data name="WebCameraMicrophone.0" xml:space="preserve">
-    <value>麦克风</value>
+    <value>마이크</value>
   </data>
   <data name="WebCameraMicrophone.1" xml:space="preserve">
-    <value>摄像头麦克风</value>
+    <value>카메라 마이크</value>
   </data>
   <data name="WebCameraMicrophone.2" xml:space="preserve">
-    <value>注意：此麦克风未经 Microsoft Teams 认证。要获得最佳的 Microsoft Teams 通话体验，请使用戴尔的 Microsoft Teams 认证音频设备。</value>
+    <value>참고: 이 마이크는 Microsoft Teams 인증을 받지 않았습니다. 최적의 Microsoft Teams 통화를 경험하려면 Dell의 Microsoft Teams 인증 오디오 디바이스를 사용하십시오.</value>
   </data>
   <data name="WebCameraPresenceDetection.0" xml:space="preserve">
-    <value>用户检测</value>
+    <value>사용자 감지</value>
   </data>
   <data name="WebCameraPresenceDetection.1" xml:space="preserve">
-    <value>接近传感器</value>
+    <value>근접각 센서</value>
   </data>
   <data name="WebCameraPresenceDetection.2" xml:space="preserve">
-    <value>当您处于视野范围内时，检测您的存在</value>
+    <value>사용자가 시야에 있을 때 사용자 존재를 감지합니다.</value>
   </data>
   <data name="WebCameraPresenceDetection.3" xml:space="preserve">
-    <value>接近时唤醒</value>
+    <value>감지 시 활성화</value>
   </data>
   <data name="WebCameraPresenceDetection.4" xml:space="preserve">
-    <value>当您接近时，系统将唤醒 PC</value>
+    <value>사용자 감지 시 PC 활성화</value>
   </data>
   <data name="WebCameraPresenceDetection.5" xml:space="preserve">
-    <value>离开锁定</value>
+    <value>부재 시 잠금</value>
   </data>
   <data name="WebCameraPresenceDetection.6" xml:space="preserve">
-    <value>当您离开时锁定 PC 并关闭显示器</value>
+    <value>자리를 비울 때 PC를 잠그고 디스플레이를 끕니다.</value>
   </data>
   <data name="WebCameraPresenceDetection.7" xml:space="preserve">
-    <value>延迟</value>
+    <value>지연</value>
   </data>
   <data name="WebCameraPresenceDetection.8" xml:space="preserve">
-    <value>暂停</value>
+    <value>일시 비활성화</value>
   </data>
   <data name="WebCameraPresenceDetection.9" xml:space="preserve">
-    <value>暂停长度</value>
+    <value>일시 비활성화 길이</value>
   </data>
   <data name="WebCameraPresenceDetection.10" xml:space="preserve">
     <value>Windows Hello</value>
   </data>
   <data name="WebCameraPresenceDetection.11" xml:space="preserve">
-    <value>使用面部识别进行登录。此链接会将您转至 Windows 设置。</value>
+    <value>안면 인식 기능으로 로그인합니다. 이 링크를 클릭하면 Windows 설정으로 이동합니다.</value>
   </data>
   <data name="WebCameraSettings.0" xml:space="preserve">
-    <value>摄像头控制</value>
+    <value>카메라 컨트롤</value>
   </data>
   <data name="WebCameraSettings.1" xml:space="preserve">
-    <value>AI 自动取景</value>
+    <value>AI 오토 프레이밍</value>
   </data>
   <data name="WebCameraSettings.2" xml:space="preserve">
-    <value>利用智能场景分析和面部跟踪，在您移动时缩放和平移视图</value>
+    <value>지능형 장면 분석 및 얼굴 추적 기능을 활용하여 확대/축소하며, 움직일 때 뷰를 좌우로 이동합니다.</value>
   </data>
   <data name="WebCameraSettings.3" xml:space="preserve">
-    <value>摄像头过渡</value>
+    <value>카메라 전환</value>
   </data>
   <data name="WebCameraSettings.4" xml:space="preserve">
-    <value>当摄像头重新调整您在画面中的位置时，通过平移和缩放实现平滑过渡</value>
+    <value>카메라가 프레임에서 사용자 위치를 재조정할 때 패닝(좌우 이동) 및 줌(확대/축소)을 통해 부드럽게 전환합니다.</value>
   </data>
   <data name="WebCameraSettings.5" xml:space="preserve">
-    <value>跟踪灵敏度</value>
+    <value>추적 감도</value>
   </data>
   <data name="WebCameraSettings.6" xml:space="preserve">
-    <value>调整摄像头对移动的响应速度，并重新调整您在画面中的位置</value>
+    <value>카메라가 사용자 움직임에 반응하고 프레임에서 사용자 위치를 재조정하는 속도를 조절합니다.</value>
   </data>
   <data name="WebCameraSettings.7" xml:space="preserve">
-    <value>普通</value>
+    <value>정상</value>
   </data>
   <data name="WebCameraSettings.8" xml:space="preserve">
-    <value>快速</value>
+    <value>빠름</value>
   </data>
   <data name="WebCameraSettings.9" xml:space="preserve">
-    <value>帧大小</value>
+    <value>프레임 크기</value>
   </data>
   <data name="WebCameraSettings.10" xml:space="preserve">
-    <value>窄</value>
+    <value>좁음</value>
   </data>
   <data name="WebCameraSettings.11" xml:space="preserve">
-    <value>标准</value>
+    <value>표준</value>
   </data>
   <data name="WebCameraSettings.12" xml:space="preserve">
-    <value>视场</value>
+    <value>시야각</value>
   </data>
   <data name="WebCameraSettings.13" xml:space="preserve">
-    <value>缩小或拓宽摄像头视场的角度</value>
+    <value>카메라의 시야각을 좁히거나 넓힙니다.</value>
   </data>
   <data name="WebCameraSettings.14" xml:space="preserve">
     <value>°</value>
   </data>
   <data name="WebCameraSettings.15" xml:space="preserve">
-    <value>Zoom</value>
+    <value>확대</value>
   </data>
   <data name="WebCameraSettings.16" xml:space="preserve">
-    <value>自动对焦</value>
+    <value>오토포커스</value>
   </data>
   <data name="WebCameraSettings.17" xml:space="preserve">
-    <value>智能调整摄像头镜头以获得对焦清晰的画面</value>
+    <value>카메라 렌즈를 지능적으로 조정하여 초점과 선명도를 맞춥니다.</value>
   </data>
   <data name="WebCameraSettings.18" xml:space="preserve">
-    <value>优先级</value>
+    <value>우선 순위</value>
   </data>
   <data name="WebCameraSettings.19" xml:space="preserve">
-    <value>FPS 视频的平滑度或曝光度优先，以保持理想的光线水平</value>
+    <value>FPS 비디오 평활도 또는 노출을 우선시하면서 이상적인 조명 수준을 유지합니다.</value>
   </data>
   <data name="WebCameraSettings.20" xml:space="preserve">
-    <value>曝光</value>
+    <value>노출</value>
   </data>
   <data name="WebCameraSettings.21" xml:space="preserve">
-    <value>帧速</value>
+    <value>프레임 속도</value>
   </data>
   <data name="WebCameraSettings.22" xml:space="preserve">
-    <value>HDR 开启时，帧速/曝光将不起作用。\r单击 </value>
+    <value>HDR이 켜져 있으면 프레임 속도/노출이 작동하지 않습니다.\r </value>
   </data>
   <data name="WebCameraSettings.23" xml:space="preserve">
-    <value>此处 </value>
+    <value>여기 </value>
   </data>
   <data name="WebCameraSettings.24" xml:space="preserve">
-    <value>更改 HDR 设置。</value>
+    <value>를 클릭하여 HDR 설정을 변경할 수 있습니다.</value>
   </data>
   <data name="WebCameraSettings.25" xml:space="preserve">
-    <value>外部网络摄像头优先</value>
+    <value>외부 웹캠 우선순위 지정</value>
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
-    <value>在 Dell UltraSharp 网络摄像头和其他网络摄像头（集成和外部）之间自动切换。Windows Hello 将使用活动网络摄像头进行面部识别。注意：一次只能启用和访问一个摄像头。</value>
+    <value>Dell UltraSharp 웹캠과 기타 웹캠(내장형 및 외장형) 간에 자동으로 전환합니다. Windows Hello는 안면 인식 기능을 위해 활성 웹캠을 사용합니다. 참고: 한 번에 하나의 카메라만 활성화하고 액세스할 수 있습니다.</value>
   </data>
   <data name="Mouse.8" xml:space="preserve">
-    <value>触控滚动灵敏度</value>
+    <value>터치 스크롤 감도</value>
   </data>
   <data name="Mouse.9" xml:space="preserve">
-    <value>调整滚动速度</value>
+    <value>스크롤 속도 조절</value>
   </data>
   <data name="Mouse.10" xml:space="preserve">
-    <value>鼠标主键</value>
+    <value>기본 마우스 버튼</value>
   </data>
   <data name="Mouse.11" xml:space="preserve">
-    <value>DPI 设置</value>
+    <value>DPI 설정</value>
   </data>
   <data name="Mouse.12" xml:space="preserve">
-    <value>轮询速率</value>
+    <value>폴링 속도</value>
   </data>
   <data name="Mouse.13" xml:space="preserve">
-    <value>每秒向系统报告鼠标位置的次数</value>
+    <value>마우스 위치가 시스템에 보고되는 초당 횟수입니다.</value>
   </data>
   <data name="Wired" xml:space="preserve">
-    <value>有线</value>
+    <value>유선</value>
   </data>
   <data name="Tooltip.0" xml:space="preserve">
-    <value>您已连接同一型号的多个设备。操作将在每个设备的上重复</value>
+    <value>동일한 모델의 디바이스를 여러 개 연결했습니다. 디바이스의 각 인스턴스에서 작업이 중복됩니다.</value>
   </data>
   <data name="Tooltip.1" xml:space="preserve">
-    <value>未找到设备。请确保您的无线设备已充电并打开。</value>
+    <value>디바이스를 찾을 수 없습니다. 무선 디바이스가 충전되었으며 켜져 있는지 확인하십시오.</value>
   </data>
   <data name="Tooltip.2" xml:space="preserve">
-    <value>此设备已配对。如果您想要再次配对，请先将此设备取消配对。</value>
+    <value>이 디바이스는 이미 페어링되어 있습니다. 다시 페어링하려면 먼저 디바이스의 페어링을 해제하십시오.</value>
   </data>
   <data name="Tooltip.3" xml:space="preserve">
-    <value>连接的 USB 无线接收器不支持您要配对的设备。请使用设备随附的接收器。</value>
+    <value>페어링하려는 이 디바이스는 현재 연결된 USB 무선 수신기에서 지원되지 않습니다. 디바이스와 함께 제공된 수신기를 사용하십시오.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>此 USB 无线接收器上的可用插槽已满。要使用，请单击设备设置页面中的\“取消配对\”按钮，取消设备与其的配对。</value>
+    <value>이 USB 무선 수신기의 사용 가능한 슬롯이 가득 찼습니다. 사용하려면 디바이스 설정 페이지에서 \&quot;페어링 해제\&quot; 버튼을 클릭하여 디바이스의 페어링을 해제하십시오.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
-    <value>单击以分配操作</value>
+    <value>작업을 할당하려면 클릭합니다.</value>
   </data>
   <data name="Mouse.15" xml:space="preserve">
-    <value>从右侧的列表中\n选择一项操作</value>
+    <value>오른쪽 목록에서\n작업을 선택합니다.</value>
   </data>
   <data name="USBWirelessReceiver" xml:space="preserve">
-    <value>USB 无线接收器</value>
+    <value>USB 무선 수신기</value>
   </data>
   <data name="ReceiverFirmwareVersion" xml:space="preserve">
-    <value>接收器固件版本</value>
+    <value>수신기 펌웨어 버전</value>
   </data>
   <data name="ReadyToBePaired" xml:space="preserve">
-    <value>准备好配对</value>
+    <value>페어링 준비 완료</value>
   </data>
   <data name="BrightnessOrContrast" xml:space="preserve">
-    <value>亮度/对比度</value>
+    <value>밝기/대비</value>
   </data>
   <data name="DisplayProperties" xml:space="preserve">
-    <value>显示器属性</value>
+    <value>디스플레이 속성</value>
   </data>
   <data name="Layout" xml:space="preserve">
-    <value>布局</value>
+    <value>레이아웃</value>
   </data>
   <data name="EasyMemory" xml:space="preserve">
-    <value>Easy Memory</value>
+    <value>간편한 메모리</value>
   </data>
   <data name="VisionEngine" xml:space="preserve">
-    <value>Vision Engine</value>
+    <value>비전 엔진</value>
   </data>
   <data name="None" xml:space="preserve">
-    <value>无</value>
+    <value>없음</value>
   </data>
   <data name="Copilot" xml:space="preserve">
     <value>Copilot</value>
   </data>
   <data name="Devices" xml:space="preserve">
-    <value>设备</value>
+    <value>장치(D)</value>
   </data>
   <data name="Lock" xml:space="preserve">
-    <value>锁定</value>
+    <value>잠금</value>
   </data>
   <data name="NotificationCenter" xml:space="preserve">
-    <value>通知中心</value>
+    <value>알림 센터</value>
   </data>
   <data name="ScreenSnip" xml:space="preserve">
-    <value>屏幕剪裁</value>
+    <value>화면 캡처</value>
   </data>
   <data name="ShowHideDesktop" xml:space="preserve">
-    <value>显示/隐藏桌面</value>
+    <value>데스크탑 표시/숨기기</value>
   </data>
   <data name="Shutdown" xml:space="preserve">
-    <value>关机</value>
+    <value>종료</value>
   </data>
   <data name="SignOut" xml:space="preserve">
-    <value>注销</value>
+    <value>로그아웃</value>
   </data>
   <data name="Sleep" xml:space="preserve">
-    <value>睡眠</value>
+    <value>절전</value>
   </data>
   <data name="SwitchApplications" xml:space="preserve">
-    <value>切换应用程序</value>
+    <value>애플리케이션 전환</value>
   </data>
   <data name="TaskView" xml:space="preserve">
-    <value>任务视图</value>
+    <value>작업 보기</value>
   </data>
   <data name="BarrelButton" xml:space="preserve">
-    <value>筒状按钮</value>
+    <value>배럴 버튼</value>
   </data>
   <data name="DefineBySystem" xml:space="preserve">
-    <value>由系统定义</value>
+    <value>시스템별로 정의</value>
   </data>
   <data name="EMail" xml:space="preserve">
-    <value>电子邮件</value>
+    <value>이메일</value>
   </data>
   <data name="OneNote" xml:space="preserve">
-    <value>One Note</value>
+    <value>OneNote</value>
   </data>
   <data name="PenMenu" xml:space="preserve">
-    <value>触控笔菜单</value>
+    <value>펜 메뉴</value>
   </data>
   <data name="QuickNote" xml:space="preserve">
-    <value>快速备注</value>
+    <value>빠른 노트</value>
   </data>
   <data name="ScreenSnipping" xml:space="preserve">
-    <value>屏幕剪裁</value>
+    <value>화면 캡처</value>
   </data>
   <data name="StickyNotes" xml:space="preserve">
-    <value>便笺</value>
+    <value>스티커 메모</value>
   </data>
   <data name="Widgets" xml:space="preserve">
-    <value>小组件</value>
+    <value>위젯</value>
   </data>
   <data name="WindowsSearch" xml:space="preserve">
-    <value>Windows 搜索</value>
+    <value>Windows Search</value>
   </data>
   <data name="SwitchApplication" xml:space="preserve">
-    <value>切换应用程序</value>
+    <value>애플리케이션 전환</value>
   </data>
   <data name="AssignKeystroke" xml:space="preserve">
-    <value>设定击键</value>
+    <value>키 누름 할당</value>
   </data>
   <data name="Color" xml:space="preserve">
-    <value>颜色</value>
+    <value>색상</value>
   </data>
   <data name="Back" xml:space="preserve">
-    <value>上一步</value>
+    <value>뒤로</value>
   </data>
   <data name="Calculator" xml:space="preserve">
-    <value>计算器</value>
+    <value>계산기</value>
   </data>
   <data name="CloseWindow" xml:space="preserve">
-    <value>关闭窗口</value>
+    <value>창 닫기</value>
   </data>
   <data name="Copy" xml:space="preserve">
-    <value>复制</value>
+    <value>복사</value>
   </data>
   <data name="Cut" xml:space="preserve">
-    <value>剪切</value>
+    <value>자르기</value>
   </data>
   <data name="Documents" xml:space="preserve">
-    <value>文档</value>
+    <value>문서</value>
   </data>
   <data name="Forward" xml:space="preserve">
-    <value>向前</value>
+    <value>전달</value>
   </data>
   <data name="MaximizeWindow" xml:space="preserve">
-    <value>最大化窗口</value>
+    <value>창 최대화</value>
   </data>
   <data name="MinimizeWindow" xml:space="preserve">
-    <value>最小化窗口</value>
+    <value>창 최소화</value>
   </data>
   <data name="MyHome" xml:space="preserve">
-    <value>我的主页</value>
+    <value>내 홈</value>
   </data>
   <data name="OpenFile" xml:space="preserve">
-    <value>打开文件</value>
+    <value>파일 열기</value>
   </data>
   <data name="OpenFolder" xml:space="preserve">
-    <value>打开文件夹</value>
+    <value>폴더 열기</value>
   </data>
   <data name="OpenNewBrowserTab" xml:space="preserve">
-    <value>打开新的浏览器选项卡</value>
+    <value>새 브라우저 탭 열기</value>
   </data>
   <data name="OpenWebPage" xml:space="preserve">
-    <value>打开网页</value>
+    <value>웹 페이지 열기</value>
   </data>
   <data name="Paste" xml:space="preserve">
-    <value>粘贴</value>
+    <value>붙여넣기</value>
   </data>
   <data name="ZoomIn" xml:space="preserve">
-    <value>放大</value>
+    <value>확대</value>
   </data>
   <data name="ZoomOut" xml:space="preserve">
-    <value>缩小</value>
+    <value>축소</value>
   </data>
   <data name="ZoomReset" xml:space="preserve">
-    <value>缩放重置</value>
+    <value>확대 재설정</value>
   </data>
   <data name="4thClick" xml:space="preserve">
-    <value>第 4 次单击</value>
+    <value>4번째 클릭</value>
   </data>
   <data name="5thClick" xml:space="preserve">
-    <value>第 5 次单击</value>
+    <value>5번째 클릭</value>
   </data>
   <data name="Erase" xml:space="preserve">
-    <value>擦除</value>
+    <value>지우기</value>
   </data>
   <data name="LeftClick" xml:space="preserve">
-    <value>左键单击</value>
+    <value>왼쪽 클릭</value>
   </data>
   <data name="MiddleClick" xml:space="preserve">
-    <value>中键单击</value>
+    <value>가운데 클릭</value>
   </data>
   <data name="OpenRun" xml:space="preserve">
-    <value>打开/运行</value>
+    <value>열기/실행</value>
   </data>
   <data name="OpenRun2" xml:space="preserve">
-    <value>打开运行</value>
+    <value>실행 열기</value>
   </data>
   <data name="PenPageDown" xml:space="preserve">
-    <value>向下翻页</value>
+    <value>Page Down</value>
   </data>
   <data name="PenPageUp" xml:space="preserve">
-    <value>向上翻页</value>
+    <value>Page Up</value>
   </data>
   <data name="RadialMenu" xml:space="preserve">
-    <value>圆盘菜单</value>
+    <value>방사형 메뉴</value>
   </data>
   <data name="Redo" xml:space="preserve">
-    <value>重做</value>
+    <value>다시 실행</value>
   </data>
   <data name="RightClick" xml:space="preserve">
-    <value>右键单击</value>
+    <value>오른쪽 클릭</value>
   </data>
   <data name="Undo" xml:space="preserve">
-    <value>撤消</value>
+    <value>실행 취소</value>
   </data>
 </root>
