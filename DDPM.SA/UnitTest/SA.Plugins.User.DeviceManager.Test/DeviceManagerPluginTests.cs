@@ -1651,10 +1651,6 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
         }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 638e3c989ed3641c006f24a1f7e5578601624a7e
     }
 }
 
