@@ -42,7 +42,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             deviceManager = deviceManagerMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new WebCameraViewModel(console, log, deviceManager);
+            vm = new WebCameraViewModel(console, log);
             webCameraCaptureModule = new WebCameraCaptureModule(vm);
             privateObject = new PrivateObject(webCameraCaptureModule);
         }

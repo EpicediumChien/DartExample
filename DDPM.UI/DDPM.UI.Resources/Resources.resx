@@ -661,7 +661,7 @@
     <value>Night light </value>
   </data>
   <data name="Color.9" xml:space="preserve">
-    <value>Show comfortable colors on your display to help you sleep.</value>
+    <value>Shows warmer colors to help you sleep at night</value>
   </data>
   <data name="Color.11" xml:space="preserve">
     <value>Color Management</value>
@@ -1204,7 +1204,7 @@
     <value>FPS</value>
   </data>
   <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>Controls video clarity and style by adjusting the number of images captured per second</value>
+    <value>Controls video clarity and style by adjusting the number of images captured per second.</value>
   </data>
   <data name="WebCameraCapture.10" xml:space="preserve">
     <value>Media Files Location</value>
@@ -1625,5 +1625,20 @@
   </data>
   <data name="Camera.Alert.4" xml:space="preserve">
     <value>Please wait while we remove your camera</value>
+  </data>
+  <data name="Camera.10" xml:space="preserve">
+    <value>Resume Recording</value>
+  </data>
+  <data name="Camera.11" xml:space="preserve">
+    <value>Stop Recording</value>
+  </data>
+  <data name="Camera.7" xml:space="preserve">
+    <value>Open Media Folder</value>
+  </data>
+  <data name="Camera.8" xml:space="preserve">
+    <value>Start Recording</value>
+  </data>
+  <data name="Camera.9" xml:space="preserve">
+    <value>Pause Recording</value>
   </data>
 </root>

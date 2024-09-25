@@ -481,8 +481,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             cliEventResult = CLIHandlerApp.CLI_App_LockUnlock(Log, data_restoredefaults, _DevManagerPlugin, commandLineInput, e.command_guid_string);
                             break;
                         case "DEVICEDATA":
-                        case "APPLYCONFIGURATION":
+                        case "DEVICECONFIGURATION":
                         case "CONNECTEDDEVICES":
+                        case "SCREENNOTIFICATION":
                             //cliEventResult = CLI_Analytics_Consent(commandLineInput, e.command_guid_string);
                             cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
                             break;

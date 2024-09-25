@@ -41,7 +41,8 @@ namespace DDPM.SA.Common
             int retvalue = 0;
             Name = di.Name;
             Model = di.ModelNumber;
-            Guid = di.ID.ToString();
+            //Guid = di.ID.ToString();
+            Guid = "DellPeripheral.Webcam.0";
             Command = "GET";
             DDPMSettings data = _devMgr.ReloadAppConfigData().Result;
 
@@ -67,7 +68,8 @@ namespace DDPM.SA.Common
                     if (_devMgr.CheckIsPropertyHDRSupportedByDTP(Guid).Result)
                     {
                         retcode = _devMgr.GetIsHDROnValueByDTP(Guid).Result;
-                        Value = (retcode) ? "on" : "off";
+                        Value = (retcode) ? "ON" : "OFF";
+                        Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
                         Result = "PASS";
                         Message = "N/A";
                         TargetFeature = targetFeature;
@@ -85,6 +87,7 @@ namespace DDPM.SA.Common
                     {
                         retvalue = _devMgr.GetAntiFlickerValueByDTP(Guid).Result;
                         Value = retvalue.ToString();
+                        Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                         Result = "PASS";
                         Message = "N/A";
                         TargetFeature = targetFeature;
@@ -100,7 +103,8 @@ namespace DDPM.SA.Common
                     if (_devMgr.CheckIsPropertyAutoFramingSupportedByDTP(Guid).Result)
                     {
                         retcode = _devMgr.GetIsAutoFramingOnValueByDTP(Guid).Result;
-                        Value = (retcode) ? "on" : "off";
+                        Value = (retcode) ? "ON" : "OFF";
+                        Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
                         Result = "PASS";
                         Message = "N/A";
                         TargetFeature = targetFeature;
@@ -111,6 +115,20 @@ namespace DDPM.SA.Common
                         Result = "FAIL";
                         Message = "Webcam not support AI AutoFraming";
                     }
+                    return;
+                case "MICSWITCH":
+                    Result = "PASS";
+                    Message = "N/A";
+                    Value = "N/A";
+                    Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                    TargetFeature = targetFeature;
+                    return;
+                case "PRESENCEDETECTION":
+                    Result = "PASS";
+                    Message = "N/A";
+                    Value = "N/A";
+                    Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
+                    TargetFeature = targetFeature;
                     return;
                 case "FWVERSION":
                     TargetFeature = "FIRMWAREVERSION";
@@ -131,7 +149,6 @@ namespace DDPM.SA.Common
                     TargetFeature = targetFeature;
                     break;
             }
-            Debug.WriteLine($"Target: {TargetFeature}, target: {targetFeature}");
             var properties = Property.DeviceProperties[deviceType];
             if (properties.Contains(TargetFeature))
             {
@@ -147,16 +164,47 @@ namespace DDPM.SA.Common
                             Value = "ENABLE";
                         else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
                             Value = "DISABLE";
+                        else if (prop.GetValue(di).ToString().Equals("7"))
+                        {
+                            if (TargetFeature.ToUpper().Equals("WEARDETECTION"))
+                                Value = "ENABLE";
+                        }                          
                         else
                         {
                             Value = prop.GetValue(di).ToString() ?? "";
                         }
                     }
                 }
-                if (targetFeature.Equals("COLLABSCREENSHARE"))
-                    Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
-                if (targetFeature.Equals("ANCMODE"))
-                    Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
+                switch (targetFeature)
+                {
+                    case "COLLABSCREENSHARE":
+                        Value += "," + (data.LockSettings.Lock_Keyboard_CollabScreenShare ? "LOCK" : "UNLOCK");
+                        break;
+                    case "ANCMODE":
+                        Value += "," + (data.LockSettings.Lock_Audio_ancMode ? "LOCK" : "UNLOCK");
+                        break;
+                    case "MICNOISECANCELLATION":
+                        Value += "," + (data.LockSettings.Lock_Audio_micNoiseCancellation ? "LOCK" : "UNLOCK");
+                        break;
+                    case "WEARDETECTION":
+                        Value += "," + (data.LockSettings.Lock_Audio_wearDetection ? "LOCK" : "UNLOCK");
+                        break;
+                    case "HDR":
+                        Value += "," + (data.LockSettings.Lock_Webcam_hdr ? "LOCK" : "UNLOCK");
+                        break;
+                    case "ANTIFLICKER":
+                        Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
+                        break;
+                    case "AIAUTOFRAMING":
+                        Value += "," + (data.LockSettings.Lock_Webcam_AIAutoFraming ? "LOCK" : "UNLOCK");
+                        break;
+                    case "MICSWITCH":
+                        Value += "," + (data.LockSettings.Lock_Webcam_MicSwitch ? "LOCK" : "UNLOCK");
+                        break;
+                    case "PRESENCEDETECTION":
+                        Value += "," + (data.LockSettings.Lock_Webcam_PresenceDetection ? "LOCK" : "UNLOCK");
+                        break;
+                }
             }
             else
             {

@@ -1,14 +1,19 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Media.Animation;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
 using Windows.Media.MediaProperties;
@@ -20,39 +25,38 @@ namespace DDPM.UI.Plugin.ViewModels
     {
         #region Variables
         private readonly ILog _log;
-        private readonly IDeviceManagerSA _deviceManager;
+        private ObservableCollection<ProfileItem> _profileItems = new();
+        private readonly Dictionary<string, WebcamProfile> Profiles = new();
+        private List<string> _resolutions = new();
 
         // Query all properties [resolution and frame rate] of the webcam device
         public IEnumerable<StreamResolution> allProperties;
 
-        public bool[] Resolution_IsSelected { get; set; } = new bool[3];
+        public bool[] Resolution_IsSelected { get; set; } = new bool[4];
         public bool[] FPS_IsSelected { get; set; } = new bool[3];
 
 
-        private ObservableCollection<ProfileItem> _profileItems = new();
-        private readonly Dictionary<string, WebcamProfile> Profiles = new();
 
         #endregion Variables
 
         public string CurrentProfileName = "";
+        public List<string> FPSs = new();
 
+        public event EventHandler<EventArgs> WebcamSettingChanged;
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        public WebCameraViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public WebCameraViewModel(IConsole console, ILog log) : base(console, log, DdpmCommonHelper.DeviceManagerSA!)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
 
             _log = log;
-            _deviceManager = deviceManager;
+            //_deviceManager = deviceManager;
 
             IsChecked_FramingGrid = Visibility.Hidden;
 
-            strCurrent_Resolution = "1920x1080";
-            strCurrent_Framerate = "30FPS";
-
-            SetResolution_Selected(1);
-            SetFPS_Selected(1);
+            //strCurrent_Resolution = "1920x1080";
+            //strCurrent_Framerate = "30FPS";
 
         }
 
@@ -63,7 +67,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 Resolution_IsSelected[j] = false;
             }
             Resolution_IsSelected[index] = true;
-            OnPropertyChanged("Resolution_IsSelected");
+            WebcamSettings.SelectedResolution = _resolutions[index];
+            if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+            { WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][0]); }
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            OnPropertyChanged(nameof(Resolution_IsSelected));
         }
 
         public void SetFPS_Selected(int index)
@@ -73,7 +81,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 FPS_IsSelected[j] = false;
             }
             FPS_IsSelected[index] = true;
-            OnPropertyChanged("FPS_IsSelected");
+            WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution] = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][index];
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            OnPropertyChanged(nameof(FPS_IsSelected));
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -184,10 +194,45 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
 
+            FPSs.Clear();
+
+            InitializeWebcam();
+            WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
+
             IsMicEnumerationOnEnabled = true;
             AlertVisibility = Visibility.Collapsed;
             return true;
         }
+
+        private void InitializeWebcam()
+        {
+            WebcamSettings = WebcamSettings.ImportWebcamSettings(Model);
+            if (string.IsNullOrEmpty(WebcamSettings.SelectedResolution))
+            {
+                foreach (var res in CurrentDeviceInfo!.SupportedResolutions)
+                {
+                    var sts = res.Split(';');
+                    if (!WebcamSettings.SupportedFPSs.ContainsKey(sts[2]))
+                    { WebcamSettings.SupportedFPSs.Add(sts[2], new List<string>()); }
+                    if (!WebcamSettings.SupportedFPSs[sts[2]].Contains(sts[1]))
+                    { WebcamSettings.SupportedFPSs[sts[2]].Add(sts[1]); }
+                    if (!WebcamSettings.Resolutions.ContainsKey(sts[2]))
+                    {
+                        WebcamSettings.Resolutions.Add(sts[2], sts[0]);
+                    }
+
+                }
+                WebcamSettings.SelectedResolution = WebcamSettings.SupportedFPSs.Keys.FirstOrDefault() ?? "";
+                WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].FirstOrDefault() ?? "");
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            }
+            _resolutions = WebcamSettings.Resolutions.Keys.ToList();
+            var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
+            SetResolution_Selected(i);
+            var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
+            SetFPS_Selected(j);
+        }
+
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
             base.HandleNotification(changeType, di, property);
@@ -230,30 +275,30 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public MediaCapture? _mediaCapture;
-        public MediaFrameReader _mediaFrameReader;
+        public MediaCapture? MediaCapture;
+        public MediaFrameReader MediaFrameReader;
 
-        public bool captureManagerInitialized = false;
-        public bool _running = false;
-        public bool _isRecording;
-        public StorageFolder _captureFolder;
+        private bool _isRecording = false;
+        public bool IsRecording
+        {
+            get => _isRecording;
+            set
+            {
+                _isRecording = value;
+                OnPropertyChanged(nameof(IsNotRecording));
+            }
+        }
+        public bool IsNotRecording { get => !IsRecording; }
 
-        // 20240911 jim add
-        public string strCurrent_Resolution;
-        public string strCurrent_Framerate;
-
-
-
-        //20240702
-        private bool isChecked_Autofocus;
+        private bool _isChecked_Autofocus;
 
         public bool IsChecked_Autofocus
         {
-            get { return isChecked_Autofocus; }
+            get { return _isChecked_Autofocus; }
             set
             {
-                isChecked_Autofocus = value;
-                OnPropertyChanged("IsChecked_Autofocus");
+                _isChecked_Autofocus = value;
+                OnPropertyChanged();
             }
         }
 
@@ -277,7 +322,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 isChecked_AWB = value;
-                OnPropertyChanged(nameof(IsChecked_AWB));
+                OnPropertyChanged();
             }
         }
 
@@ -289,7 +334,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 awbStatus_String = value;
-                OnPropertyChanged("AWBStatus_String");
+                OnPropertyChanged();
             }
         }
 
@@ -317,39 +362,33 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private bool framingGrid_isChecked;
-
-        public bool FramingGrid_IsChecked
+        public string VideoCaptureFolder
         {
-            get { return framingGrid_isChecked; }
+            get => WebcamSettings.VideoCaptureFolder;
             set
             {
-                framingGrid_isChecked = value;
-                OnPropertyChanged("FramingGrid_IsChecked");
+                WebcamSettings.VideoCaptureFolder = value;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             }
         }
-
-        private bool countdown_isChecked;
-
-        public bool Countdown_IsChecked
+        public bool WebcamCountdown
         {
-            get { return countdown_isChecked; }
+            get => WebcamSettings.WebcamCountdown;
             set
             {
-                countdown_isChecked = value;
-                OnPropertyChanged("Countdown_IsChecked");
+                WebcamSettings.WebcamCountdown = value;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             }
         }
-
-        private string media_file_location;
-
-        public string Media_File_Location
+        public bool WebcamGrid
         {
-            get { return media_file_location; }
+            get => WebcamSettings.WebcamGrid;
             set
             {
-                media_file_location = value;
-                OnPropertyChanged("Media_File_Location");
+                WebcamSettings.WebcamGrid = value;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                OnPropertyChanged();
+                WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -363,12 +402,12 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 //_deviceManager.SetIsMicEnumerationOn(CurrentDeviceInfo!.ID.ToString(), value);
-                _deviceManager.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
+                DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
         }
-        private bool isMicEnumerationOnEnabled;
+        private bool isMicEnumerationOnEnabled = true;
         public bool IsMicEnumerationOnEnabled
         {
             get => isMicEnumerationOnEnabled;
@@ -386,7 +425,17 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 alertVisibility = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(FunctionsVisibility));
             }
+        }
+        public Visibility FunctionsVisibility
+        {
+            get => AlertVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            //set
+            //{
+            //    alertVisibility = value;
+            //    OnPropertyChanged();
+            //}
         }
         private WebcamAlert alertType;
         public WebcamAlert AlertType
@@ -408,6 +457,35 @@ namespace DDPM.UI.Plugin.ViewModels
             _ => ""
         };
         public ObservableCollection<ProfileItem> ProfileItems { get => _profileItems; }
+        public override void OnGoBackClicked()
+        {
+            if (MediaCapture != null)
+            {
+                try
+                {
+                    _ = MediaCapture.StopRecordAsync();
+                }
+                catch { }
+            }
+            base.OnGoBackClicked();
+        }
+        public async Task CleanupMediaCapture()
+        {
+            if (MediaCapture != null)
+            {
+                try
+                {
+                    await MediaFrameReader?.StopAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error stopping MediaFrameReader: {ex.Message}");
+                }
+                MediaFrameReader?.Dispose();
+                MediaCapture.Dispose();
+                MediaCapture = null;
+            }
+        }
     }
 
     public class StreamResolution

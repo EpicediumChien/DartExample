@@ -12,16 +12,16 @@ namespace DDPM.UI.Module.DisplayOthers
     /// </summary>
     public partial class DisplayOthersRightView : UserControl
     {
-        private DisplayOthersViewModel vm
-        {
-            get => (DisplayOthersViewModel)DataContext;
-        }
+        //private DisplayOthersViewModel vm
+        //{
+        //    get => (DisplayOthersViewModel)DataContext != null ? (DisplayOthersViewModel)DataContext : null;
+        //}
 
-        public DisplayOthersRightView(DisplayOthersViewModel vm)
+        public DisplayOthersRightView(/*DisplayOthersViewModel vm*/)
         {
             InitializeComponent();
-            DataContext = vm;
-
+            //DataContext = vm;
+            DisplayOthersViewModel vm = (DisplayOthersViewModel)DataContext;
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -29,9 +29,21 @@ namespace DDPM.UI.Module.DisplayOthers
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
-                    if (data.LockSettings.Lock_Display_ExportSettings)
+                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data))
                     {
-                        //Do lock ui init here (direct set or binding via vm)
+                        IsLockinUI(vm, true);
+                    }
+                    else
+                    {
+                        if (data.LockSettings.Lock_Display_ExportSettings)
+                        {
+                            //Do lock ui init here (direct set or binding via vm)
+                            IsLockinUI(vm, true);
+                        }
+                        else
+                        {
+                            IsLockinUI(vm, false);
+                        }
                     }
                     if (data.LockSettings.Lock_Display_PowerNap)
                     {
@@ -49,11 +61,20 @@ namespace DDPM.UI.Module.DisplayOthers
             }
         }
 
+        private void IsLockinUI(DisplayOthersViewModel vm, bool isLocked)
+        {
+            if (vm != null)
+            {
+                vm.LockSettings_Visibility = isLocked ? Visibility.Visible : Visibility.Collapsed;
+                vm.isSettingsEnable = isLocked ? false : true;
+                vm.Settings_Opacity = isLocked ? 0.5 : 1;
+            }
+        }
+
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
             //Using user data from config file if need
-            DDPMSettings data = null;            
-
+            DDPMSettings data = null;
             bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ExportSettings", e);
             if (isLocked != null)
             {
@@ -62,8 +83,9 @@ namespace DDPM.UI.Module.DisplayOthers
                     DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                        Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) : {isLocked}");                        
+                        IsLockinUI(vm, (bool)isLocked);
+                        Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) : {isLocked}");
+                        vm.OnPropertyChanged_Lock();
                     }
                 }));
             }
@@ -84,16 +106,25 @@ namespace DDPM.UI.Module.DisplayOthers
             //Functionality: When a 1 or more settings are locked, automatically lock 'export/import'. 
             if (DdpmCommonHelper.DeviceManagerSA != null && data == null)
             {
-                data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if(DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                    Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
-                }
+                    DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
+                    data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (vm != null)
+                    {
+                        if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
+                        {
+                            //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                            IsLockinUI(vm, true);
+                            Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
+                            vm.OnPropertyChanged_Lock();
+                        }
+                    }
+                }));
             }
         }
 
-            private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
+        private void tbOpenScreensaverSettings_Click(object sender, RoutedEventArgs e)
         {
             var psi = new System.Diagnostics.ProcessStartInfo();
             psi.FileName = Environment.SystemDirectory + Path.DirectorySeparatorChar + @"rundll32.exe";
@@ -105,11 +136,13 @@ namespace DDPM.UI.Module.DisplayOthers
 
         private void import_Click(object sender, RoutedEventArgs e)
         {
+            DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
             vm.ImportSettings();
         }
 
         private void export_Click(object sender, RoutedEventArgs e)
         {
+            DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
             vm.ExportSettings();
         }
     }

@@ -518,6 +518,524 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.Delete(DeserialPowerNapSettings_path1_);
         }
 
+        [Test]
+        public void TestImportPowerNapSettings()
+        {
+            //string ImportPowerNapSettings_path = "C:\\Users\\win1020231116\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager";
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string ImportPowerNapSettings_path1_ = "test_ImportPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(ImportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_present_powerNap_settings", powerNapSettingsConfig);
+            var ImportPowerNapSettingsResult1 = SettingsManagerSAPlugin.ImportPowerNapSettings(ImportPowerNapSettings_path1_).Result;
+            Assert.Greater(ImportPowerNapSettingsResult1.Count, 0);
+            File.Delete(ImportPowerNapSettings_path1_);
+        }
+
+        [Test]
+        public void TestExportPowerNapSettings()
+        {
+            bool ExportPowerNapSettings_ = false;
+            bool ExportPowerNapSettings_succeed = true;
+            List<PowerNapSetting> powerNapSettingsNull;
+            powerNapSettingsNull = null;
+            List<PowerNapSetting> powerNapSettingsConfig = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string ExportPowerNapSettings_path1_ = "test_ExportPowerNapSettingsPath.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(ExportPowerNapSettings_path1_, PowerNapSettingsjsonData);
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", ExportPowerNapSettings_path1_);
+            if (powerNapSettingsNull == null)
+            {
+                var ExportPowerNapSettings_Result1 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettingsNull, ExportPowerNapSettings_path1_).Result;
+                Assert.That(ExportPowerNapSettings_, Is.EqualTo(ExportPowerNapSettings_Result1));
+            }
+
+            if (powerNapSettingsConfig != null)
+            {
+                var ExportPowerNapSettings_Result2 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettingsConfig, ExportPowerNapSettings_path1_).Result;
+                Assert.That(ExportPowerNapSettings_succeed, Is.EqualTo(ExportPowerNapSettings_Result2));
+                File.Delete(ExportPowerNapSettings_path1_);
+            }
+        }
+
+        [Test]
+        public void TestReadEasyArrangeSettings()
+        {
+            string monitorModel = "TestU2724";
+            string serialNumber = "123456789";
+            EAMonitorSettings eAMonitorSettings = new EAMonitorSettings();
+            eAMonitorSettings = null;
+            var ReadEasyArrangeSettingsResult = SettingsManagerSAPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber).Result;
+            Assert.That(eAMonitorSettings, Is.EqualTo(ReadEasyArrangeSettingsResult));
+        }
+
+        [Test]
+        public void TestWriteEasyArrangeSettings()
+        {
+            EAMonitorSettings eAMonitorSettings1 = new EAMonitorSettings()
+            {
+                CustomList = new List<SplitJson>(),
+                IsOnlyAllowWhenShiftKeyPressed = false,
+                IsSpanAcrossMultiMonitors = false,
+                IsWidthoutGap = true,
+                RecentList = new List<SplitJson>(),
+                SelectedSplit = new SplitJson()
+            };
+            string WriteEasyArrangeSettings_Success = "OK";
+            var WriteEasyArrangeSettingsResult = SettingsManagerSAPlugin.WriteEasyArrangeSettings(eAMonitorSettings1).Result;
+            Assert.That(WriteEasyArrangeSettings_Success, Is.EqualTo(WriteEasyArrangeSettingsResult));
+        }
+
+        [Test]
+        public void TestInitializeSysSettingsPlugin()
+        {
+            Mock<ISettingsManagerSA> SysSettingsPlugin_ = new Mock<ISettingsManagerSA>();
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var SysSettingsPlugin_Obj = SysSettingsPlugin_.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPlugin_Obj);
+            privateSettingsManagerObject.Invoke("InitializeSysSettingsPlugin");
+            var result = privateSettingsManagerObject.GetFieldOrProperty("_SysSettingsPlugin");
+            Assert.That(SysSettingsPlugin_Obj, Is.EqualTo(result));
+        }
+
+        [Test]
+        public void TestReadRegistryData()
+        {
+            RegistryHive hive = RegistryHive.CurrentUser;
+            string keyPath = "TestReadRegistry_Path";
+            string keyName = "TestReadRegistry_Name";
+            object ReadRegistryDataObj;
+            ReadRegistryDataObj = new object();
+            Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+            SysSettingsPlugin.Setup(x => x.ReadRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(ReadRegistryDataObj));
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var SysSettingsPluginObj = SysSettingsPlugin.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
+            if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPlugin != null)
+                {
+                    var ReadRegistryData_Result = SettingsManagerSAPlugin.ReadRegistryData(hive, keyPath, keyName).Result;  //SysSettingsPlugin not null;
+                    Assert.That(ReadRegistryDataObj, Is.EqualTo(ReadRegistryData_Result));
+                }
+            }
+
+            var SysSettingsPluginNull = SysSettingsPlugin;
+            SysSettingsPluginNull = null;
+            RegistryHive hive2 = RegistryHive.LocalMachine;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginNull);
+            if (hive2 == RegistryHive.LocalMachine || hive2 == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPluginNull == null)
+                {
+                    var ReadRegistryData_Result2 = SettingsManagerSAPlugin.ReadRegistryData(hive2, keyPath, keyName);  //SysSettingsPlugin null;
+                    Assert.IsNull(ReadRegistryData_Result2);
+                }
+            }
+        }
+
+        [Test]
+        public void TestWriteRegistryData()
+        {
+            bool writeRegistryDataFail = false;
+            bool writeRegistryDataSuccess = true;
+            RegistryHive hive = RegistryHive.CurrentUser;
+            string keyPath = "TestWriteRegistry_Path";
+            string keyName = "TestWriteRegistry_Name";
+            object WriteRegistryDataObj;
+            WriteRegistryDataObj = new object();
+            Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+            SysSettingsPlugin.Setup(x => x.WriteRegistryData(It.IsAny<RegistryHive>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>())).Returns(Task.FromResult(writeRegistryDataSuccess));
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var SysSettingsPluginObj = SysSettingsPlugin.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
+            if (hive == RegistryHive.LocalMachine || hive == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPlugin != null)
+                {
+                    var WriteRegistryData_Result = SettingsManagerSAPlugin.WriteRegistryData(hive, keyPath, keyName, WriteRegistryDataObj).Result;  //SysSettingsPlugin not null;
+                    Assert.That(writeRegistryDataSuccess, Is.EqualTo(WriteRegistryData_Result));
+                }
+            }
+
+            RegistryHive hive2 = RegistryHive.LocalMachine;
+            var SysSettingsPluginNull = SysSettingsPlugin;
+            SysSettingsPluginNull = null;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginNull);
+            if (hive2 == RegistryHive.LocalMachine || hive2 == RegistryHive.CurrentUser)
+            {
+                if (SysSettingsPluginNull == null)
+                {
+                    var WriteRegistryData_Result2 = SettingsManagerSAPlugin.WriteRegistryData(hive, keyPath, keyName, WriteRegistryDataObj).Result;  //SysSettingsPlugin null;
+                    Assert.That(writeRegistryDataFail, Is.EqualTo(WriteRegistryData_Result2));
+                }
+            }
+        }
+
+        [Test]
+        public void TestSetAppConfigData()
+        {
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var Ddpm_app_ = new DDPMAppSettings();
+            var Ddpm_user_ = new DDPMUserSettings()
+            {
+                Version = 1.0,
+                Language = (int)Languages.en,
+                IsSynchronizemonitor = false,
+                Schedule = string.Empty,
+                DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
+                LockRotate = true,
+                isTelemetryConsentOn = true,
+                LockFWU_UI = true,
+                UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
+                SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
+                DelaySWUpdateInfoPackage = new SWUpdateInfoPackage(),
+            };
+            var Ddpm_it_ = new DDPMITConfig()
+            {
+                Lock_Settings_TelemetryConsent = false,
+                Lock_Settings_Updates = false,
+                Lock_Display_ExportSettings = false,
+                Lock_Setting_RestoreDefaults = false,
+                Lock_Display_BriCont = false,
+                Lock_Display_AutoBriTemp = false,
+                Lock_Display_NetworkKVM = false,
+                Lock_Display_ColorPreset = false,
+                Lock_Display_PowerNap = false,
+                Lock_Display_ResolutionRefreshRate = false,
+                Lock_Display_USBCPrioritization = false,
+                Lock_Display_ActiveInputSource = false,
+                Lock_Webcam_RestoreFactoryDefaults = false,
+                Lock_Audio_RestoreFactoryDefaults = false,
+                Lock_Keyboard_RestoreFactoryDefaults = false,
+                Lock_Mouse_RestoreFactoryDefaults = false,
+                Lock_Pen_RestoreFactoryDefaults = false,
+                Lock_Keyboard_CollabScreenShare = false,
+            };
+            bool SetAppConfigData_ = false;
+            var settings_Data = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
+            DDPMSettings data_ = null;
+            if (data_ == null)
+            {
+                var SetAppConfigDataResult1 = SettingsManagerSAPlugin.SetAppConfigData(data_).Result; //DDPMSettings data_ is null 
+                Assert.That(SetAppConfigDataResult1, Is.EqualTo(SetAppConfigData_));
+            }
+            string accessInfo_ = "testaccessinfo";
+            string serialized_string = "{\"key\":\"value\"}";
+            string target_file = "testSetAppConfigDatafile.json";
+            File.WriteAllText(target_file, serialized_string);
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+            privateSettingsManagerObject.SetFieldOrProperty("_settings_path", target_file);
+            if (settings_Data != null)
+            {
+                var SetAppConfigDataResult2 = SettingsManagerSAPlugin.SetAppConfigData(settings_Data).Result; //DDPMSettings is  not null 
+                Assert.That(SetAppConfigDataResult2, Is.EqualTo(SetAppConfigData_));
+                File.Delete(target_file);
+            }
+        }
+
+        [Test]
+        public void TestInitDDPMMonitorConfigFile()
+        {
+            string modelname = "TestU2724DD";
+            bool binit = false;
+            List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
+            var Result = SettingsManagerSAPlugin.InitDDPMMonitorConfigFile(modelname, out binit).Result;  // ReloadMonitorSettings is null
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            var _allDDPMMonitorSettings = (Dictionary<string, List<DDPMMonitorSettings>>)privatesettingsManagerObj.GetFieldOrProperty("_AllMonitorSettings");
+            Assert.That(dDPMMonitorSettingsList, Is.EqualTo(Result));
+            Assert.Greater(_allDDPMMonitorSettings.Count, 0);
+            Assert.IsTrue(_allDDPMMonitorSettings.ContainsKey(modelname));
+        }
+
+        [Test]
+        public void TestReloadAppConfigData()
+        {
+            bool force_reload = false;
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var Ddpm_app_ = new DDPMAppSettings();
+            var Ddpm_user_ = new DDPMUserSettings()
+            {
+                Version = 1.0,
+                Language = (int)Languages.en,
+                IsSynchronizemonitor = false,
+                Schedule = string.Empty,
+                DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
+                LockRotate = true,
+                isTelemetryConsentOn = true,
+                LockFWU_UI = true,
+                UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
+                SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
+                DelaySWUpdateInfoPackage = new SWUpdateInfoPackage(),
+            };
+            var Ddpm_it_ = new DDPMITConfig()
+            {
+                Lock_Settings_TelemetryConsent = false,
+                Lock_Settings_Updates = false,
+                Lock_Display_ExportSettings = false,
+                Lock_Setting_RestoreDefaults = false,
+                Lock_Display_BriCont = false,
+                Lock_Display_AutoBriTemp = false,
+                Lock_Display_NetworkKVM = false,
+                Lock_Display_ColorPreset = false,
+                Lock_Display_PowerNap = false,
+                Lock_Display_ResolutionRefreshRate = false,
+                Lock_Display_USBCPrioritization = false,
+                Lock_Display_ActiveInputSource = false,
+                Lock_Webcam_RestoreFactoryDefaults = false,
+                Lock_Audio_RestoreFactoryDefaults = false,
+                Lock_Keyboard_RestoreFactoryDefaults = false,
+                Lock_Mouse_RestoreFactoryDefaults = false,
+                Lock_Pen_RestoreFactoryDefaults = false,
+                Lock_Keyboard_CollabScreenShare = false,
+            };
+            var settings_Data = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
+            string _settings_pathNull = string.Empty;
+            privateSettingsManagerObject.SetFieldOrProperty("_settings_path", _settings_pathNull);
+
+            if (string.IsNullOrEmpty(_settings_pathNull))
+            {
+                var ddpm_it = new DDPMITConfig();
+                Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+                SysSettingsPlugin.Setup(x => x.GetITGlobalConfigs(It.IsAny<bool>())).Returns(Task.FromResult(Ddpm_it_));
+                var SysSettingsPluginObj = SysSettingsPlugin.Object;
+                privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
+                var ReloadAppConfigDataResult1 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //_settings_pathNull  is null , _settings not null
+                Assert.IsNotNull(ReloadAppConfigDataResult1);
+                Assert.That(ReloadAppConfigDataResult1.LockSettings, Is.EqualTo(settings_Data.LockSettings));
+            }
+
+            string accessInfo_ = "testaccessinfo";
+            string serialized_string = "{\"key\":\"value\"}";
+            string settings_path_target_file = "testReloadAppConfigDatafile.json";
+            File.WriteAllText(settings_path_target_file, serialized_string);
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+            privateSettingsManagerObject.SetFieldOrProperty("_settings_path", settings_path_target_file);
+            privateSettingsManagerObject.SetFieldOrProperty("_settings", null);
+            if (!string.IsNullOrEmpty(settings_path_target_file))
+            {
+                var ReloadAppConfigDataResult2 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //settings_path_target_file is  not null , _settings=null
+                Assert.IsNull(ReloadAppConfigDataResult2);
+            }
+
+            if (settings_Data != null)
+            {
+                privateSettingsManagerObject.SetFieldOrProperty("_settings", settings_Data);
+                var ReloadAppConfigDataResult3 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //settings_path_target_file is  not null , _settings not null
+                Assert.IsNotNull(ReloadAppConfigDataResult3);
+                Assert.That(ReloadAppConfigDataResult3.LockSettings, Is.EqualTo(settings_Data.LockSettings));
+                File.Delete(settings_path_target_file);
+            }
+        }
+
+        [Test]
+        public void TestRunMonitorListDeserializeObject()
+        {
+            double version = 1.0;
+            string model = "TestModel";
+            string serviceTag = "12345";
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            var MonitorListDesResult = (List<DDPMMonitorSettings>)privatesettingsManagerObj.Invoke("RunMonitorListDeserializeObject", MonitorListjsonData);
+            Assert.IsNotNull(MonitorListDesResult);
+            Assert.That(version, Is.EqualTo(MonitorListDesResult[0].Version));
+            Assert.That(model, Is.EqualTo(MonitorListDesResult[0].Model));
+            Assert.That(serviceTag, Is.EqualTo(MonitorListDesResult[0].ServiceTag));
+        }
+
+        [Test]
+        public void TestReloadMonitorSettings()
+        {
+            string modelname = "TestU2724DD";
+            string Settings_path1 = string.Empty;
+            List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string monitorSettings_path = "TestU2724DD.json";
+            string displayPath = "TestDisplayPath";
+            double Version3 = 1.0f;
+            string Model3 = "TestU2724DF";
+            string ServiceTag3 = "12345";
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+            DDPMMonitorSettings settings = new DDPMMonitorSettings
+            {
+                Version = 1.0f,
+                Model = "TestU2724DF",
+                ServiceTag = "12345",
+                Input = new Input() { strInputSourceList = "HDMI-1" },
+                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+            };
+            _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings });
+            Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings4 = new Dictionary<string, List<DDPMMonitorSettings>>();
+            _allMonitorSettings4 = null;
+            double version4 = 1.0;
+            string model4 = "TestModel";
+            string serviceTag4 = "12345";
+            if (!string.IsNullOrEmpty(displayPath))
+            {
+                privatesettingsManagerObj.SetFieldOrProperty("_display_path", displayPath);
+                privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
+                if (!File.Exists(monitorSettings_path))
+                {
+                    var ReloadMonitorSettingsResult2 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null,file no monitorSettings_path
+                    Assert.That(dDPMMonitorSettingsList, Is.EqualTo(ReloadMonitorSettingsResult2));
+                }
+                File.WriteAllText(monitorSettings_path, MonitorListjsonData);
+                var displayPath3 = Environment.CurrentDirectory;
+                if (File.Exists(monitorSettings_path))
+                {
+                    privatesettingsManagerObj.SetFieldOrProperty("_display_path", displayPath3);
+                    var ReloadMonitorSettingsResult3 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is not null 
+                    Assert.Greater(ReloadMonitorSettingsResult3.Count, 0);
+                    Assert.That(Version3, Is.EqualTo(ReloadMonitorSettingsResult3[0].Version));
+                    Assert.That(Model3, Is.EqualTo(ReloadMonitorSettingsResult3[0].Model));
+                    Assert.That(ServiceTag3, Is.EqualTo(ReloadMonitorSettingsResult3[0].ServiceTag));
+                }
+
+                if (_allMonitorSettings4 == null)
+                {
+                    privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings4);
+                    var ReloadMonitorSettingsResult4 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is null 
+                    Assert.Greater(ReloadMonitorSettingsResult4.Count, 0);
+                    Assert.That(version4, Is.EqualTo(ReloadMonitorSettingsResult4[0].Version));
+                    Assert.That(model4, Is.EqualTo(ReloadMonitorSettingsResult4[0].Model));
+                    Assert.That(serviceTag4, Is.EqualTo(ReloadMonitorSettingsResult4[0].ServiceTag));
+                    File.Delete(monitorSettings_path);
+                }
+            }
+            if (string.IsNullOrEmpty(Settings_path1))
+            {
+                privatesettingsManagerObj.SetFieldOrProperty("_settings_path", Settings_path1);
+                var ReloadMonitorSettingsResult1 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // Settings_path1 is null
+                Assert.That(dDPMMonitorSettingsList, Is.EqualTo(ReloadMonitorSettingsResult1));
+            }
+        }
+
+        [Test]
+        public void TestWriteMonitorSettings()
+        {
+            string modelname = "TestU2724DD";
+            List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
+            dDPMMonitorSettingsList = null;
+            bool WriteMonitorSettingsF = false;
+            bool WriteMonitorSettingsP = true;
+            List<DDPMMonitorSettings> dDPMMonitorSettingsList2 = new List<DDPMMonitorSettings>();
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            DDPMMonitorSettings settings = new DDPMMonitorSettings
+            {
+                Version = 1.0f,
+                Model = "TestU2724DD",
+                ServiceTag = "12345",
+                Input = new Input() { strInputSourceList = "HDMI-1" },
+                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+            };
+            dDPMMonitorSettingsList2.Add(settings);
+            Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings2 = new Dictionary<string, List<DDPMMonitorSettings>>();
+            if (dDPMMonitorSettingsList == null)
+            {
+                var WriteMonitorSettingsResult = SettingsManagerSAPlugin.WriteMonitorSettings(modelname, dDPMMonitorSettingsList).Result;  // dDPMMonitorSettingsList is null
+                Assert.That(WriteMonitorSettingsF, Is.EqualTo(WriteMonitorSettingsResult));
+            }
+            privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings2);
+            if (dDPMMonitorSettingsList2 != null)
+            {
+                string _display_path = "TestU2724DD.json";
+                string _display_path2 = string.Empty;
+                privatesettingsManagerObj.SetFieldOrProperty("_display_path", _display_path2);
+                File.WriteAllText(_display_path, MonitorListjsonData);
+                var WriteMonitorSettingsResult2 = SettingsManagerSAPlugin.WriteMonitorSettings(modelname, dDPMMonitorSettingsList2).Result;  // dDPMMonitorSettingsList is not null,
+                var Write_AllMonitorSettings = (Dictionary<string, List<DDPMMonitorSettings>>)privatesettingsManagerObj.GetFieldOrProperty("_AllMonitorSettings");
+                Assert.That(WriteMonitorSettingsP, Is.EqualTo(WriteMonitorSettingsResult2));
+                Assert.Greater(Write_AllMonitorSettings.Count, 0);
+                Assert.That(Write_AllMonitorSettings.ContainsKey(modelname));
+                File.Delete(_display_path);
+            }
+        }
+
+        [Test]
+        public void TestRunDDPMMonitorSettingsSerializeObject()
+        {
+            string _display_path = "TestDDPMMonitorSettingsSerial.json";
+            string modelname = "TestU2724DD";
+            List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            DDPMMonitorSettings settings = new DDPMMonitorSettings
+            {
+                Version = 1.0f,
+                Model = "TestU2724DD",
+                ServiceTag = "12345",
+                Input = new Input() { strInputSourceList = "HDMI-1" },
+                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+            };
+            dDPMMonitorSettingsList.Add(settings);
+            string _display_path2 = string.Empty;
+            privatesettingsManagerObj.SetFieldOrProperty("_display_path", _display_path2);
+            File.WriteAllText(_display_path, MonitorListjsonData);
+            var DDPMMonitorSettingsSerializ = (string)privatesettingsManagerObj.Invoke("RunSerializeObject", modelname, dDPMMonitorSettingsList);
+            Assert.Greater(DDPMMonitorSettingsSerializ.Length, 0);
+            File.Delete(_display_path);
+        }
+
+        [Test]
+        public void TestRunMonitorListRunSerializeObject()
+        {
+            string modelname = "TestU2724";
+            List<DDPMMonitorSettings> monitorSettings = new List<DDPMMonitorSettings>();
+            DDPMMonitorSettings settings = new DDPMMonitorSettings
+            {
+                Version = 1.0f,
+                Model = "TestU2724DD",
+                ServiceTag = "12345",
+                Input = new Input() { strInputSourceList = "HDMI-1" },
+                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+            };
+            monitorSettings.Add(settings);
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            var MonitorListSerialResult = (string)privatesettingsManagerObj.Invoke("RunSerializeObject", modelname, monitorSettings);
+            Assert.IsNotNull(MonitorListSerialResult);
+            Assert.Greater(MonitorListSerialResult.Length, 0);
+        }
+
+        [Test]
+        public void TestReadAllMonitorSettings()
+        {
+            string _display_path2 = "ReadAllMonitorSettings.json";
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            File.WriteAllText(_display_path2, MonitorListjsonData);
+            var displayPath2 = Environment.CurrentDirectory;
+            Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+            DDPMMonitorSettings settings = new DDPMMonitorSettings
+            {
+                Version = 1.0f,
+                Model = "TestU2724DF",
+                ServiceTag = "12345",
+                Input = new Input() { strInputSourceList = "HDMI-1" },
+                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                EA = new EAMonitorSettings() { IsWidthoutGap = true, }
+            };
+            _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings });
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
+            privatesettingsManagerObj.SetFieldOrProperty("_display_path", displayPath2);
+            var ReadAllMonitorSettingsResult = (Dictionary<string, List<DDPMMonitorSettings>>)privatesettingsManagerObj.Invoke("ReadAllMonitorSettings");
+            Assert.IsNotNull(ReadAllMonitorSettingsResult);
+            Assert.Greater(ReadAllMonitorSettingsResult.Count, 0);
+            Assert.That(_allMonitorSettings, Is.EqualTo(_allMonitorSettings));
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

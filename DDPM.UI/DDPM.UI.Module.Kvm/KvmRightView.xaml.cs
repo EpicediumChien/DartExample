@@ -13,10 +13,7 @@ namespace DDPM.UI.Module.Kvm
     {
         private KvmViewModel vm
         {
-            get
-            {
-                return (KvmViewModel)DataContext;
-            }
+            get => (KvmViewModel)DataContext != null ? (KvmViewModel)DataContext : null;
         }
 
         public KvmRightView(KvmViewModel vm)
@@ -38,11 +35,21 @@ namespace DDPM.UI.Module.Kvm
                     if (data.LockSettings.Lock_Display_NetworkKVM)
                     {
                         //Do lock ui init here (direct set or binding via vm)
+                        IsLockinNKVMUI(true);
                     }
-                    //if (data.LockSettings.Lock_Display_USBKVM) //CLI not ready
-                    //{
-                    //    //Do lock ui init here (direct set or binding via vm)
-                    //}
+                    else
+                    {
+                        IsLockinNKVMUI(false);
+                    }
+                    if (data.LockSettings.Lock_Display_USBKVM) //CLI not ready
+                    {
+                        //Do lock ui init here (direct set or binding via vm)
+                        IsLockinUSBKVMUI(true);
+                    }
+                    else
+                    {
+                        IsLockinUSBKVMUI(false);
+                    }
                 }
             }
         }
@@ -52,6 +59,26 @@ namespace DDPM.UI.Module.Kvm
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+            }
+        }
+
+        private void IsLockinNKVMUI(bool isLocked)
+        {
+            if (vm != null)
+            {
+                vm.LockNKVM_Visibility = isLocked ? Visibility.Visible : Visibility.Collapsed;
+                vm.isNKVMEanble = isLocked ? false : true;
+                vm.NKVM_Opacity = isLocked ? 0.5 : 1;
+            }
+        }
+
+        private void IsLockinUSBKVMUI(bool isLocked)
+        {
+            if (vm != null)
+            {
+                vm.LockUSBKVM_Visibility = isLocked ? Visibility.Visible : Visibility.Collapsed;
+                vm.isUSBKVMEanble = isLocked ? false : true;
+                vm.USBKVM_Opacity = isLocked ? 0.5 : 1;
             }
         }
 
@@ -70,13 +97,14 @@ namespace DDPM.UI.Module.Kvm
                     KvmViewModel vm = (KvmViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        IsLockinNKVMUI((bool)isLocked);
                         Trace.WriteLine($"[SettingsPage] Apply NetworkKVM(Lock) : {isLocked}");
+                        vm.OnPropertyChanged_Lock();
                     }
                 }));
             }
             //CLI not ready
-            /*isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_USBKVM", e);
+            isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_USBKVM", e);
             if (isLocked != null)
             {
                 Dispatcher.Invoke(new Action(() =>
@@ -85,10 +113,12 @@ namespace DDPM.UI.Module.Kvm
                     if (vm != null)
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        IsLockinUSBKVMUI((bool)isLocked);
                         Trace.WriteLine($"[SettingsPage] Apply USBKVM(Lock) : {isLocked}");
+                        vm.OnPropertyChanged_Lock();
                     }
                 }));
-            }*/
+            }
         }
 
         private void OpenUSBKVM(object sender, RoutedEventArgs e)

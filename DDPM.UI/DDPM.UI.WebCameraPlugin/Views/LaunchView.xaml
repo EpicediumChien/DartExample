@@ -8,16 +8,20 @@
              xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
+             xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              d:DesignHeight="735" d:DesignWidth="1378"
              Cursor="{Binding CurrentCursor}"
+             Loaded="LaunchView_Loaded"
              Unloaded="LaunchView_Unloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
+      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <Storyboard x:Key="StoryGotoTwoView">
         <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
@@ -59,6 +63,18 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
       </Style>
+      <Style x:Key="btnToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+        <Setter Property="Placement" Value="Top" />
+        <Setter Property="VerticalOffset" Value="-5" />
+        <Setter Property="HorizontalOffset">
+          <Setter.Value>
+            <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+              <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
+              <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </Style>
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
@@ -90,20 +106,13 @@
               <Grid>
                 <Image Name="imgDevice" Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
               </Grid>
-              <Grid Width="704" Height="396" x:Name="gridPreview">
+              <Grid Width="704" Height="396" x:Name="gridPreview" Margin="0,0,0,12">
                 <StackPanel ZIndex ="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                   <TextBlock Name="CountdownText" Foreground="WhiteSmoke" FontSize="120" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
-                <!-- Add your camera preview control here -->
-                <!-- For example, you can use an Image control or a MediaElement -->
-
-                <!-- Add grid lines -->
-
-                <!-- Your camera preview control goes here -->
                 <Image Grid.Row="0"  Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="3" Name="CameraImage" Width="704" Height="396" Stretch="Fill" />
-
-                <!-- Add vertical grid line -->
-                <Grid Visibility="{Binding IsChecked_FramingGrid}">
+                <!-- Add grid lines -->
+                <Grid x:Name="grdPreview" Visibility="{Binding WebcamGrid, Converter={StaticResource BoolToVisibilityConverter}}" Opacity="0">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
@@ -186,54 +195,90 @@
       <Grid VerticalAlignment="Bottom">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
           <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom">
-            <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />
-          </Border>
-          <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click" Height="40" VerticalAlignment="Bottom">
-            <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedCircle.png" Stretch="Fill" Width="17" Height="16" />
-          </Border>
-          <StackPanel Orientation="Vertical">
-            <StackPanel Name="spPresets" Orientation="Vertical" Visibility="Collapsed">
-              <Border Margin="8,0,0,6" Style="{StaticResource Border3}">
-                <DockPanel Name="SearchPanel" Margin="15,2,2,8" MaxHeight="160">
-                  <UXControls:UXScrollViewer x:Name="svAction" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl Name="ProfileItems">
-                      <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                          <Grid Height="30" Margin="0,5,0,0">
-                            <StackPanel Orientation="Horizontal" Width="110" HorizontalAlignment="Left">
-                              <UXControls:UXTextBlock Cursor="Hand" Margin="0" Tag="{Binding ID}" Text="{Binding Caption}" HorizontalAlignment="Left" MouseLeftButtonDown="ProfileSelected" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" />
-                              <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset">
-                                <Image.ToolTip>
-                                  <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding Tooltip}"/>
-                                  </ToolTip>
-                                </Image.ToolTip>
-                              </Image>
-                            </StackPanel>
-                            <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Visibility="{Binding ButtonVisibility}" HorizontalAlignment="Right">
-                              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" />
-                              <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/TrashCan.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" />
-                            </StackPanel>
-                          </Grid>
-                        </DataTemplate>
-                      </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                  </UXControls:UXScrollViewer>
-                </DockPanel>
-              </Border>
-              <Border Margin="8,0,0,12" Style="{StaticResource Border3}" Cursor="Hand" Height="36">
-                <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" />
+          <StackPanel Orientation="Horizontal" Visibility="{Binding FunctionsVisibility}">
+            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnFolder_Click">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.7], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
+              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />
+            </Border>
+            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnPause" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPause_Click">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.9], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
+              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pause.png" Stretch="Fill" Width="17" Height="16" />
+            </Border>
+            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnPlay" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPlay_Click">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.10], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
+              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Play.png" Stretch="Fill" Width="13" Height="14" />
+            </Border>
+            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click" Height="40" VerticalAlignment="Bottom">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.8], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
+              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedCircle.png" Stretch="Fill" Width="17" Height="16" />
+            </Border>
+            <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,70" Visibility="Collapsed" x:Name="btnStop" MouseLeftButtonDown="btnStop_Click" Height="40" VerticalAlignment="Bottom">
+              <Border.ToolTip>
+                <ToolTip Style="{StaticResource btnToolTipStyle}">
+                  <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding [Camera.11], Source={x:Static lang:LangHelper.Instance}}" />
+                </ToolTip>
+              </Border.ToolTip>
+              <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/RedSquare.png" Stretch="Fill" Width="17" Height="16" />
+            </Border>
+            <StackPanel Orientation="Vertical">
+              <StackPanel Name="spPresets" Orientation="Vertical" Visibility="Collapsed">
+                <Border Margin="8,0,0,6" Style="{StaticResource Border3}">
+                  <DockPanel Name="SearchPanel" Margin="15,2,2,8" MaxHeight="160">
+                    <UXControls:UXScrollViewer x:Name="svAction" VerticalScrollBarVisibility="Auto">
+                      <ItemsControl Name="ProfileItems">
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate>
+                            <Grid Height="30" Margin="0,5,0,0">
+                              <StackPanel Orientation="Horizontal" Width="110" HorizontalAlignment="Left">
+                                <UXControls:UXTextBlock Cursor="Hand" Margin="0" Tag="{Binding ID}" Text="{Binding Caption}" HorizontalAlignment="Left" MouseLeftButtonDown="ProfileSelected" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" />
+                                <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset">
+                                  <Image.ToolTip>
+                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                      <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding Tooltip}"/>
+                                    </ToolTip>
+                                  </Image.ToolTip>
+                                </Image>
+                              </StackPanel>
+                              <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Visibility="{Binding ButtonVisibility}" HorizontalAlignment="Right">
+                                <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" />
+                                <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/TrashCan.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" />
+                              </StackPanel>
+                            </Grid>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+                    </UXControls:UXScrollViewer>
+                  </DockPanel>
+                </Border>
+                <Border Margin="8,0,0,12" Style="{StaticResource Border3}" Cursor="Hand" Height="36">
+                  <UXControls:UXTextBlock Name="txtAddPreset" Style="{StaticResource TextBlockStyle1}" HorizontalAlignment="Center" />
+                </Border>
+              </StackPanel>
+              <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click">
+                <Grid>
+                  <Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />
+                  <UXControls:UXTextBlock Name="txtPreset" Margin="35,0,0,0" Style="{StaticResource TextBlockStyle1}" />
+                  <Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
+                         Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>
+                </Grid>
               </Border>
             </StackPanel>
-            <Border Margin="8,0,0,70" Style="{StaticResource Border2}" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click">
-              <Grid>
-                <Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />
-                <UXControls:UXTextBlock Name="txtPreset" Margin="35,0,0,0" Style="{StaticResource TextBlockStyle1}" />
-                <Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
-                       Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>
-              </Grid>
-            </Border>
           </StackPanel>
         </StackPanel>
       </Grid>
@@ -248,6 +293,11 @@
                                     VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" LineHeight="19.5" Padding="0,18,0,16" FontFamily="Roboto" FontWeight="Normal" />
           </StackPanel>
         </Border>
+      </Grid>
+      <!--Timer-->
+      <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center">
+        <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
+                                VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,118" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
       </Grid>
     </Grid>
   </Grid>

@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public Settings_General()
         {
             InitializeComponent();
+        }
+        ~Settings_General()
+        {
+
         }
         private void LowBatteryLevel_Click(object sender, RoutedEventArgs e)
         {

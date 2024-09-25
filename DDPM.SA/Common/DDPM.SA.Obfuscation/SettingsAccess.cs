@@ -12,6 +12,9 @@ namespace DDPM.SA.Obfuscation
 {
     public class SettingsAccess
     {
+        private const int iterations = 100;
+        private const int keyLength = 128;
+
         /*
             //Example:
             // The secret key for HMAC. In a real-world application, this should be kept secret.
@@ -34,7 +37,14 @@ namespace DDPM.SA.Obfuscation
             }
         }
 
-        public static bool VerifyAccessString(byte[] key, string message, string HMAC)
+        public static string GenerateAccessString2(string key, string message)
+        {
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+            byte[] output = DeriveKey(key, messageBytes, iterations, keyLength);
+            return Convert.ToBase64String(output);
+        }
+
+        /*public static bool VerifyAccessString(byte[] key, string message, string HMAC)
         {
             using (var HMACSha512 = new HMACSHA512(key))
             {
@@ -42,6 +52,91 @@ namespace DDPM.SA.Obfuscation
                 byte[] hashMessage = HMACSha512.ComputeHash(messageBytes);
                 string computedHmac = Convert.ToBase64String(hashMessage);
                 return HMAC == computedHmac;
+            }
+        }*/
+
+        //HashAlgorithmName.SHA512 as default
+        public static string ComputeAccessInfo2(byte[] key, string message)//, HashAlgorithmName hashAlgorithm)
+        {
+            try
+            {
+                //   key = DeriveKey();
+                HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
+                byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+
+                switch (hashAlgorithm.Name)
+                {
+                    case "SHA512":
+                        {
+                            using (var hmacsha512 = new HMACSHA512(key))
+                            {
+                                byte[] hashBytes = hmacsha512.ComputeHash(messageBytes);
+                                Console.WriteLine(BitConverter.ToString(hashBytes).Replace("-", "").ToLower());
+
+                                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                            }
+                        }
+                    case "SHA256":
+                        {
+                            using (var hmacsha256 = new HMACSHA256(key))
+                            {
+                                byte[] hashBytes = hmacsha256.ComputeHash(messageBytes);
+                                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                            }
+                        }
+                    default:
+                        throw new Exception("Underlying HMAC mechanism must leverage HMACSHA256 or higher");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable to generate HMAC: {e.Message}");
+                return "";
+            }
+        }
+
+        private static byte[] DeriveKey(string password, byte[] salt, int iterations, int keyLength)
+        {
+            using (var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(password)))
+            {
+                //  foreach (byte key in salt) { Console.WriteLine($"{key}"); }
+                var derivedKey = new byte[keyLength];
+                var blockCount = (int)Math.Ceiling((double)keyLength / hmac.HashSize);
+                //var blockCount = (int)Math.Ceiling((double)keyLength );
+                var buffer = new byte[hmac.HashSize / 8];
+                var temp = new byte[hmac.HashSize / 8];
+
+                for (int i = 1; i <= blockCount; i++)
+                {
+                    var counter = BitConverter.GetBytes(i);
+                    if (BitConverter.IsLittleEndian)
+                    {
+                        Array.Reverse(counter);
+                    }
+
+                    hmac.TransformBlock(salt, 0, salt.Length, salt, 0);
+                    hmac.TransformFinalBlock(counter, 0, counter.Length);
+                    Array.Copy(hmac.Hash, temp, temp.Length);
+
+                    Array.Copy(temp, 0, buffer, 0, temp.Length);
+
+                    for (int j = 1; j < iterations; j++)
+                    {
+                        temp = hmac.ComputeHash(temp);
+                        for (int k = 0; k < buffer.Length; k++)
+                        {
+                            buffer[k] ^= temp[k];
+                        }
+                    }
+
+                    Array.Copy(buffer, 0, derivedKey, (i - 1) * buffer.Length, buffer.Length);
+                }
+                /* foreach (byte b in derivedKey)
+                 {
+                     Console.WriteLine(b + " ");
+                 }*/
+                // Console.WriteLine($"Derived Key: {Encoding.UTF8.GetString(derivedKey)} ");
+                return derivedKey.Take(keyLength / 2).ToArray();
             }
         }
 
@@ -65,7 +160,7 @@ namespace DDPM.SA.Obfuscation
         private static (string id, string ver, string location) QueryAppAccessInfo()
         {
             //info = string.Empty;
-            if(!IsUserElevated())
+            if (!IsUserElevated())
             {
                 //info = "Caller doesn't has elevated privilege";
                 return (string.Empty, string.Empty, string.Empty);
@@ -77,47 +172,56 @@ namespace DDPM.SA.Obfuscation
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
 
             // open and sequential read to compare.
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            //using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)) // DDPM-Setup-2.0.0.40.exe is x86-32bit
             {
                 if (key != null)
                 {
-                    foreach (string subkeyName in key.GetSubKeyNames())
+                    using (RegistryKey uninstallKey = key.OpenSubKey(registryKey))
                     {
-                        try
+                        foreach (string subkeyName in uninstallKey.GetSubKeyNames())
                         {
-                            using (RegistryKey subkey = key.OpenSubKey(subkeyName))
+                            try
                             {
-                                if (subkey != null)
+                                using (RegistryKey subkey = uninstallKey.OpenSubKey(subkeyName))
                                 {
-                                    // get value from DisplayName
-                                    string displayName = subkey.GetValue("DisplayName") as string;
-                                    if (displayName != null && displayName.Trim().Equals(softwareName))
+                                    if (subkey != null)
                                     {
-                                        // get value from uninstall string
-                                        //string data = subkey.GetValue("UninstallString") as string;
-                                        //if(data != null && data.Length >= 36) //format like "{fgsetyu5-5da6-5ges-9sed-s6h8deqa6358}"
+                                        // get value from DisplayName
+                                        string displayName = subkey.GetValue("DisplayName") as string;
+                                        if (displayName != null && displayName.Trim().Equals(softwareName))
                                         {
-                                            //string output = data.ToUpper().Replace("MSIEXEC.EXE", "").Replace("{", "").Replace("}", "").Replace("-", "").Replace("/X", "").Trim();
-                                            string output = subkeyName.ToUpper().Replace("{", "").Replace("}", "").Replace("-", "").Trim();
-                                            if (output != null && output.Length == 32)
+                                            // get value from uninstall string
+                                            //string data = subkey.GetValue("UninstallString") as string;
+                                            //if(data != null && data.Length >= 36) //format like "{fgsetyu5-5da6-5ges-9sed-s6h8deqa6358}"
                                             {
-                                                string ver = subkey.GetValue("DisplayVersion") as string;
-                                                string addr = subkey.GetValue("InstallLocation") as string;
-                                                return (GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName), ver, addr); //this id is used as DDPM settings private key
+                                                //string output = data.ToUpper().Replace("MSIEXEC.EXE", "").Replace("{", "").Replace("}", "").Replace("-", "").Replace("/X", "").Trim();
+                                                string output = subkeyName.ToUpper().Replace("{", "").Replace("}", "").Replace("-", "").Trim();
+                                                if (output != null && output.Length == 32)
+                                                {
+                                                    string ver = subkey.GetValue("DisplayVersion") as string;
+                                                    string addr = subkey.GetValue("InstallLocation") as string;
+                                                    //info key original method: GenerateAccessString(Encoding.UTF8.GetBytes(output), softwareName)
+                                                    string infoKey = Convert.ToBase64String(DeriveKey(output, Encoding.UTF8.GetBytes(softwareName), iterations, keyLength));
+
+                                                    return (infoKey, ver, addr); //this id is used as DDPM settings private key
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
-                        catch
-                        {
-                            //do nothing
+                            catch
+                            {
+                                //do nothing
+                            }
                         }
                     }
+
+
                 }
             }
-            return (string.Empty, string.Empty,string.Empty);
+            return (string.Empty, string.Empty, string.Empty);
         }
     }
 }

@@ -279,6 +279,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<NKVMRespone> NKVMCLIRespone;
 
+        public event EventHandler GlobalSettingChangeEvent;
+
         #endregion
 
         #region ColorPreset implementation
@@ -1979,11 +1981,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false)
         {
-            if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
+            if (_PeripheralsPlugin != null && _FWUpdatePlugin != null && _DisplayManagerPlugin != null)
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate().Result).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2057,10 +2059,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_PeripheralsPlugin == null)
                 return Task.FromResult(false);
             UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
+            if (_DisplayManagerPlugin == null)
+                return Task.FromResult(false);
+            DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate().Result;
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
             SetDelayFWUpdateInfoPackage();
-            List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false).Result;
+            List<FWUpdateInfo> fwUpdateInfos = _FWUpdatePlugin.CheckUpdate(updateHelper, true, null, false, displayUpdateHelper).Result;
             bool b = true;
             foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
             {
@@ -3373,6 +3378,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_DisplayKeyboardLockKey(bool isDisplay)
@@ -3383,6 +3389,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_DisplayWB7022CoverState(bool isDisplay)
@@ -3393,6 +3400,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_DisplayMuteState(bool isDisplay)
@@ -3403,6 +3411,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Display_MuteState = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_DisplayColorPresetAndEasyMemory(bool isDisplay)
@@ -3413,6 +3422,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory = isDisplay;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_EnableQuickAccessWidget(bool isEnable)
@@ -3423,6 +3433,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = isEnable;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         public Task<bool> Set_GlobalSetting_EnableQuickAccessWidget_Reminder(bool isEnable)
@@ -3433,6 +3444,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = isEnable;
                 ret = SaveGlobalSettingParam();
             }
+            GlobalSettingChangeEvent?.Invoke(this, null);
             return Task.FromResult(ret);
         }
         private bool LoadGlobalSettingParam()
@@ -4215,7 +4227,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _VCPchangedEventArgs.monitor = e.monitor;
             OnVCPchanged(_VCPchangedEventArgs);
         }
-
         private void show_peripheralsNotify(object sender, DeviceChangedEventArgs e)
         {
             writelog("Receive Notify Event from PeripheralsPlugin");
@@ -4937,6 +4948,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a running condition");
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
+                        _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -4945,6 +4957,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentNKVMPluginCondition)} - NKVM Plugin is in a started condition");
                         //_NKVMPluginCondition = pluginCondition;
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
+                        _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
                         ToNKVM_SupportedMonitorList();
                         ToNKVM_initHotKeys();
                     }
@@ -5170,7 +5183,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if (WriteHotkeySettings(saveList).Result)
             {
-                if (_NKVMPlugin != null)
+                if (_NKVMPlugin != null && info.Job != HotkeyType.NkvmConflict)
                 {
                     _NKVMPlugin.ToNKVM_HotkeySettings(saveList).Wait();
                     if (_NKVMPlugin.IsNamedpipeConnected().Result)
@@ -6461,12 +6474,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SendCLINKVMRespone(e);
         }
 
+        private void NKVMSetHotkey(object sender, NKVMSetHotkey e)
+        {
+            SetNKVMHotkey(e);
+        }
+
         private void SendCLINKVMRespone(NKVMRespone e)
         {
             EventHandler<NKVMRespone> handler = NKVMCLIRespone;
             if (handler != null)
             {
                 handler.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+            }
+        }
+
+        private void SetNKVMHotkey(NKVMSetHotkey e)
+        {
+            bool b = SaveHotkeySetting(null, e.HotkeyInfo).Result;
+            if (_NKVMPlugin != null)
+            {
+                _NKVMPlugin.SetHotkeyResponse(e.jsonstring, b);
+            }
+            else
+            {
+                writelog("[SetNKVMHotkey] _NKVMPlugin is null");
             }
         }
 

@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Brightness.Tests")]
 
@@ -34,6 +35,51 @@ namespace DDPM.UI.Module.Brightness
                 INSTANCE = new BrightnessViewModel();
             }
             return INSTANCE;
+        }
+
+        private string _TabSTOP = "Cycle";
+
+        public string TabSTOP
+        {
+            get
+            {
+                return _TabSTOP;
+            }
+            set
+            {
+                _TabSTOP = value;
+                NotifyPropertyChanged("TabSTOP");
+            }
+        }
+
+        private Visibility _LockMaskVisible = Visibility.Collapsed;
+
+        public Visibility LockMaskVisible
+        {
+            get
+            {
+                return _LockMaskVisible;
+            }
+            set
+            {
+                _LockMaskVisible = value;
+                NotifyPropertyChanged("LockMaskVisible");
+            }
+        }
+
+        private Visibility _synchronizeLock = Visibility.Collapsed;
+
+        public Visibility synchronizeLock
+        {
+            get
+            {
+                return _synchronizeLock;
+            }
+            set
+            {
+                _synchronizeLock = value;
+                NotifyPropertyChanged("synchronizeLock");
+            }
         }
 
         private ImageSource? _BrightnessImage;
@@ -555,11 +601,12 @@ namespace DDPM.UI.Module.Brightness
                 Trace.WriteLine($"7 {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
 
                 //Lock/unlock mask and tabstop init here
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here
+                Update_ALSLockStatus(data.LockSettings.Lock_Display_AutoBriTemp);
                 //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
-                //Read user default lock value, these values are synced from IT lock event          
-                Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {data.LockSettings.Lock_Display_BriCont}"); 
-                Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {data.LockSettings.Lock_Display_AutoBriTemp}");  
+                //Read user default lock value, these values are synced from IT lock event
+                Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {data.LockSettings.Lock_Display_BriCont}");
+                Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {data.LockSettings.Lock_Display_AutoBriTemp}");
             }
         }
 
@@ -592,7 +639,7 @@ namespace DDPM.UI.Module.Brightness
                     {
                         if (alsSynchronizeList[0].isSupportALS == 2 && alsSynchronizeList[1].isSupportALS == 2)
                         {
-                            if(CheckALSOnOff(alsSynchronizeList) == false)
+                            if (CheckALSOnOff(alsSynchronizeList) == false)
                             {
                                 SynchronizeBtnExpectedResult("C");
                                 return;
@@ -685,21 +732,19 @@ namespace DDPM.UI.Module.Brightness
                     }
                     //else
                     //{
-                        //19 Test Scenario : G series monitor and S series monitor
-                        //20 Test Scenario : AW series Freesync monitor and U series monitor
-                        //21 Test Scenario : C series, SE series, E series and P series monitors
-                        //Expected Result B:
-                        SynchronizeBtnExpectedResult("B");
-                        return;
+                    //19 Test Scenario : G series monitor and S series monitor
+                    //20 Test Scenario : AW series Freesync monitor and U series monitor
+                    //21 Test Scenario : C series, SE series, E series and P series monitors
+                    //Expected Result B:
+                    SynchronizeBtnExpectedResult("B");
+                    return;
                     //}
                 }
-
-
                 else if (alsSynchronizeList.Count == 3)//Test case for 3 monitors
                 {
                     //0x12 = non Luminance
                     //22 Test Scenario : 2 monitors with Brightness/Contrast and 1 monitor with Luminance
-                    if(CheckLuminanceMonitorCount() == 2)
+                    if (CheckLuminanceMonitorCount() == 2)
                     {
                         ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
                         if (obj.result)
@@ -735,7 +780,7 @@ namespace DDPM.UI.Module.Brightness
                     //27 Test Scenario : 1 ALS monitor(ALS = ON) and 2 non ALS monitors
                     //28 Test Scenario : 1 ALS monitor(ALS = OFF) and 2 non ALS monitors
                     if (CheckALSMonitorCount(alsSynchronizeList) == 1)
-                    {                      
+                    {
                         if (Start_ALSConfig.isSupportALS == 2)
                         {
                             if (Start_ALSConfig.isAutoBrightness == true || Start_ALSConfig.isAutoColorTemp == true)
@@ -849,6 +894,7 @@ namespace DDPM.UI.Module.Brightness
             }
             SynchronizeBtnExpectedResult("default");
         }
+
         /// <summary>
         ///  Check the number of Luminance Monitor.0x12 = non Luminance
         /// </summary>
@@ -860,14 +906,15 @@ namespace DDPM.UI.Module.Brightness
             {
                 foreach (HomeDevice hd in ModuleOwner!.HomeDevices!)
                 {
-                    if(hd.MonitorInfo!.CapabilityDic.ContainsKey("12"))
+                    if (hd.MonitorInfo!.CapabilityDic.ContainsKey("12"))
                     {
                         _isLuminanceCount++;
-                    }                  
+                    }
                 }
             }
             return _isLuminanceCount;
         }
+
         /// <summary>
         /// Check if AutoBrightness/AutoColorTemp is enabled.
         /// </summary>
@@ -882,10 +929,11 @@ namespace DDPM.UI.Module.Brightness
                 {
                     _isAlSON = true;
                     break;
-                }      
+                }
             }
             return _isAlSON;
         }
+
         /// <summary>
         /// Check the number of ALS Monitor.
         /// </summary>
@@ -901,16 +949,17 @@ namespace DDPM.UI.Module.Brightness
             }
             return _isMutliAlsMonitorCount;
         }
+
         ///<summary>
         ///Expected Result A: "Synchronize between monitors" is displayed and not greyed out with default is OFF.
         ///Expected Result B: "Synchronize between monitors" is displayed and not greyed out with default is OFF.
-        ///Expected Result C: "Synchronize between monitors" is displayed and default is OFF. 
+        ///Expected Result C: "Synchronize between monitors" is displayed and default is OFF.
         ///Expected Result D: "Synchronize between monitors" is displayed but greyed out.
         ///Expected Result E:  "Synchronize between monitors" is NOT displayed.
         ///</summary>
         private void SynchronizeBtnExpectedResult(string str)
         {
-            switch(str)
+            switch (str)
             {
                 case "A":
                 case "B":
@@ -918,13 +967,16 @@ namespace DDPM.UI.Module.Brightness
                     IsSynchronizeDisabled = false;
                     isShowSynchronize = Visibility.Visible;
                     break;
+
                 case "D":
                     IsSynchronizeDisabled = true;
                     isShowSynchronize = Visibility.Visible;
                     break;
+
                 case "E":
                     isShowSynchronize = Visibility.Collapsed;
                     break;
+
                 default:
                     isShowSynchronize = Visibility.Visible;
                     break;
@@ -2149,6 +2201,251 @@ namespace DDPM.UI.Module.Brightness
         }
 
         #region ALS functions
+
+        private Visibility _AutoALSLock = Visibility.Collapsed;
+        private Visibility _AutoBrightnessLock = Visibility.Collapsed;
+        private Visibility _AutoBrigRangeLevelLock = Visibility.Collapsed;
+        private Visibility _AutoTemperatureLock = Visibility.Collapsed;
+        private Visibility _PrimaryMonitorSyncLock = Visibility.Collapsed;
+
+        public Visibility AutoALSLock
+        {
+            get => _AutoALSLock;
+            set
+            {
+                _AutoALSLock = value;
+                NotifyPropertyChanged(nameof(AutoALSLock));
+            }
+        }
+
+        public Visibility AutoBrightnessLock
+        {
+            get => _AutoBrightnessLock;
+            set
+            {
+                _AutoBrightnessLock = value;
+                NotifyPropertyChanged(nameof(AutoBrightnessLock));
+            }
+        }
+
+        public Visibility AutoBrigRangeLevelLock
+        {
+            get => _AutoBrigRangeLevelLock;
+            set
+            {
+                _AutoBrigRangeLevelLock = value;
+                NotifyPropertyChanged(nameof(AutoBrigRangeLevelLock));
+            }
+        }
+
+        public Visibility AutoTemperatureLock
+        {
+            get => _AutoTemperatureLock;
+            set
+            {
+                _AutoTemperatureLock = value;
+                NotifyPropertyChanged(nameof(AutoTemperatureLock));
+            }
+        }
+
+        public Visibility PrimaryMonitorSyncLock
+        {
+            get => _PrimaryMonitorSyncLock;
+            set
+            {
+                _PrimaryMonitorSyncLock = value;
+                NotifyPropertyChanged(nameof(PrimaryMonitorSyncLock));
+            }
+        }
+
+        /// <summary>
+        /// Auto Brightness Binding data
+        /// </summary>
+        public void Update_ALSLockStatus(bool value)
+        {
+            if (value && _autoBrightnessStatus && !_autoColorTempStatus)
+            {
+                AutoALSLock = value ? Visibility.Visible : Visibility.Collapsed;
+                IsAutoBrightnessLockMask = Visibility.Visible;
+                IsAutoBrigRangeLevelLockMask = Visibility.Visible;
+                IsAutoTemperatureLockMask = Visibility.Visible;
+                IsPrimaryMonitorSyncLockMask = Visibility.Visible;
+                IsAutoBrightnessRangeLevelStringLockMask = Visibility.Visible;
+            }
+            else if (value && _autoBrightnessStatus && _autoColorTempStatus)
+            {
+                AutoALSLock = value ? Visibility.Visible : Visibility.Collapsed;
+                AutoTemperatureLock = value ? Visibility.Visible : Visibility.Collapsed;
+                IsAutoTemperatureSwitchLockMask = Visibility.Visible;
+            }
+            else
+            {
+                AutoALSLock = value ? Visibility.Visible : Visibility.Collapsed;
+                AutoBrightnessLock = value ? Visibility.Visible : Visibility.Collapsed;
+                AutoBrigRangeLevelLock = value ? Visibility.Visible : Visibility.Collapsed;
+                AutoTemperatureLock = value ? Visibility.Visible : Visibility.Collapsed;
+                PrimaryMonitorSyncLock = value ? Visibility.Visible : Visibility.Collapsed;
+
+                IsAutoBrightnessLockMask = Visibility.Collapsed;
+                IsAutoBrigRangeLevelLockMask = Visibility.Collapsed;
+                IsAutoTemperatureLockMask = Visibility.Collapsed;
+                IsAutoTemperatureSwitchLockMask = Visibility.Collapsed;
+                IsPrimaryMonitorSyncLockMask = Visibility.Collapsed;
+                IsAutoBrightnessRangeLevelStringLockMask = Visibility.Collapsed;
+            }
+        }
+
+        private Visibility _isAutoBrightnessLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoBrightnessLockMask
+        {
+            get { return _isAutoBrightnessLockMask; }
+            set
+            {
+                if (_isAutoBrightnessLockMask != value)
+                {
+                    _isAutoBrightnessLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoBrightnessLockMask));
+                }
+            }
+        }
+
+        private Visibility _isAutoBrigRangeLevelLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoBrigRangeLevelLockMask
+        {
+            get { return _isAutoBrigRangeLevelLockMask; }
+            set
+            {
+                if (_isAutoBrigRangeLevelLockMask != value)
+                {
+                    _isAutoBrigRangeLevelLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoBrigRangeLevelLockMask));
+                }
+            }
+        }
+
+        private Visibility _isAutoTemperatureLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoTemperatureLockMask
+        {
+            get { return _isAutoTemperatureLockMask; }
+            set
+            {
+                if (_isAutoTemperatureLockMask != value)
+                {
+                    _isAutoTemperatureLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoTemperatureLockMask));
+                }
+            }
+        }
+
+        private Visibility _isAutoTemperatureSwitchLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoTemperatureSwitchLockMask
+        {
+            get { return _isAutoTemperatureSwitchLockMask; }
+            set
+            {
+                if (_isAutoTemperatureSwitchLockMask != value)
+                {
+                    _isAutoTemperatureSwitchLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoTemperatureSwitchLockMask));
+                }
+            }
+        }
+
+        private Visibility _isPrimaryMonitorSyncLockMask = Visibility.Collapsed;
+
+        public Visibility IsPrimaryMonitorSyncLockMask
+        {
+            get { return _isPrimaryMonitorSyncLockMask; }
+            set
+            {
+                if (_isPrimaryMonitorSyncLockMask != value)
+                {
+                    _isPrimaryMonitorSyncLockMask = value;
+                    NotifyPropertyChanged(nameof(IsPrimaryMonitorSyncLockMask));
+                }
+            }
+        }
+
+        private Visibility _isAutoBrightnessRangeLevelStringLockMask = Visibility.Collapsed;
+
+        public Visibility IsAutoBrightnessRangeLevelStringLockMask
+        {
+            get { return _isAutoBrightnessRangeLevelStringLockMask; }
+            set
+            {
+                if (_isAutoBrightnessRangeLevelStringLockMask != value)
+                {
+                    _isAutoBrightnessRangeLevelStringLockMask = value;
+                    NotifyPropertyChanged(nameof(IsAutoBrightnessRangeLevelStringLockMask));
+                }
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+        private bool _isAutoBrightnessTextGrayedOut;
+
+        public bool IsAutoBrightnessTextGrayedOut
+        {
+            get => _isAutoBrightnessTextGrayedOut;
+            set
+            {
+                _isAutoBrightnessTextGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoBrightnessTextGrayedOut));
+            }
+        }
+
+        private bool _isAutoColorTempTextGrayedOut;
+
+        public bool IsAutoColorTempTextGrayedOut
+        {
+            get => _isAutoColorTempTextGrayedOut;
+            set
+            {
+                _isAutoColorTempTextGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoColorTempTextGrayedOut));
+            }
+        }
+
+        private bool _isAutoBrightnessRangeLevelTextGrayedOut;
+
+        public bool IsAutoBrightnessRangeLevelTextGrayedOut
+        {
+            get => _isAutoBrightnessRangeLevelTextGrayedOut;
+            set
+            {
+                _isAutoBrightnessRangeLevelTextGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoBrightnessRangeLevelTextGrayedOut));
+            }
+        }
+
+        private bool _isAutoPrimaryMonitorForSyncTextGrayedOut;
+
+        public bool IsAutoPrimaryMonitorForSyncTextGrayedOut
+        {
+            get => _isAutoPrimaryMonitorForSyncTextGrayedOut;
+            set
+            {
+                _isAutoPrimaryMonitorForSyncTextGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoPrimaryMonitorForSyncTextGrayedOut));
+            }
+        }
+
+        private bool _isAutoBrightnessRangeLevelStringGrayedOut;
+
+        public bool IsAutoBrightnessRangeLevelStringGrayedOut
+        {
+            get => _isAutoBrightnessRangeLevelStringGrayedOut;
+            set
+            {
+                _isAutoBrightnessRangeLevelStringGrayedOut = value;
+                NotifyPropertyChanged(nameof(IsAutoBrightnessRangeLevelStringGrayedOut));
+            }
+        }
 
         public Visibility isAlsSupported { get; set; } = Visibility.Collapsed;
 

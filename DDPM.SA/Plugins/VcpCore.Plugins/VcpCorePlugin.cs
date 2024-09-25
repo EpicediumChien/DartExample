@@ -72,7 +72,7 @@ namespace VcpCore.Plugins
         //private static BackgroundWorker _MonitorRetrier;
         private static ResultLockPool _TaskQueueResult;
 
-        private static System.Timers.Timer _CacheTimer = new System.Timers.Timer(2000);
+        private static System.Timers.Timer _CacheTimer = new System.Timers.Timer(8000);
         private static readonly object TaskQueueExecutorLock = new object();
 
         //private  static readonly object MonitorRetrierLock = new object();
@@ -2165,6 +2165,9 @@ namespace VcpCore.Plugins
                                         _TargetMonitor.MarketingName = WhichMarketingName(_TargetMonitor.modelName);
                                     }
 
+                                    _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.modelName: " + _TargetMonitor.modelName);
+                                    _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.MarketingName: " + _TargetMonitor.MarketingName);
+
                                     _TargetMonitor.series = string.Empty;
                                     foreach (KeyValuePair<string, List<string>> kv in _supportDictionary)
                                     {
@@ -2174,10 +2177,19 @@ namespace VcpCore.Plugins
                                             break;
                                         }
                                     }
+                                    _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.series: " + _TargetMonitor.series);
                                 }
 
                                 if (string.IsNullOrWhiteSpace(_TargetMonitor.series))
-                                    continue;
+                                {
+                                    if (CheckIsSupportDisplayByBit(_TargetMonitor.hPhysicalMonitor))
+                                    {
+                                        _TargetMonitor.series = "UnKnown";
+                                        _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.series: " + _TargetMonitor.series);
+                                    }
+                                    else
+                                        continue;
+                                }
 
                                 //_TargetMonitor.CapabilityString = "(prot(monitor)type(lcd)model(Z24nf)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 0B 0C 10 14(01 02 04 05 08 0B) 16 18 1A 52 60(03 0F 10 11) 6C 6E 70 87 AA(01 02 03 04) AC AE B2 B6 C0 C6 C8 C9 CA(01 02) CC(01 02 03 04 05 06 08 0A 0D 14) D6(01 02 03 04 05) DA(00 02 ) DF E9(00 01) EA(00 01) EB(00 01) EF(01 02 03 04 05) F0 FA(00 01 02) FB FC FD FE(00 01 02 04) )mswhql(1)asset_eep(40)mccs_ver(2.2))";
 
@@ -2277,8 +2289,11 @@ namespace VcpCore.Plugins
                             }
                             _TargetMonitor.Index = MoIndexCounter;
                             _TargetMonitor.FwVersion = FwVersion(_TargetMonitor.hPhysicalMonitor, _TargetMonitor.modelName);
-                            if (!string.IsNullOrWhiteSpace(_TargetMonitor.series)) monitors.Add(_TargetMonitor);
-                            MoIndexCounter++;
+                            if (!string.IsNullOrWhiteSpace(_TargetMonitor.series))
+                            {
+                                monitors.Add(_TargetMonitor);
+                                MoIndexCounter++;
+                            }
                         }
                         watch.Stop();
                         return true;
@@ -3180,6 +3195,47 @@ namespace VcpCore.Plugins
                 }
             }
             return ColorPresetDescriptions;
+        }
+
+        private bool CheckIsSupportDisplayByBit(IntPtr hPhyMonitor)
+        {
+            try
+            {
+                int count = 0;
+                object F1supportBit = null;
+                do
+                {
+                    if (F1supportBit == null)
+                        F1supportBit = Get_VCPCapability(new MonitorInfo_complex() { hPhysicalMonitor = hPhyMonitor }, 0xF1, 0, true);
+
+                    if (F1supportBit != null)
+                    {
+                        uint r = ((Convert.ToUInt32(F1supportBit)) & 0x2000);
+                        if (r > 0)
+                        {
+                            _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return true");
+                            return true;
+                        }
+                        else
+                        {
+                            _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
+                            return false;
+                        }
+                    }
+
+                    count++;
+                    _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit retry ({count})");
+                    Thread.Sleep(1000);
+                } while (count < 3);
+
+                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit into catch: " + ex.Message);
+                return false;
+            }
         }
 
         private string FwVersion(IntPtr hPhyMonitor, string modelName)

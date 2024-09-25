@@ -73,7 +73,7 @@ namespace DDPM.SA.Common.Settings
         }
 
         //need system privilege to query this string
-        public static string AppAccessInfo { get; } = SettingsAccess.AppAccessInfo;
+        //public static string AppAccessInfo { get; } = SettingsAccess.AppAccessInfo;
 
         /// <summary>
         /// Apply DDPM data security [Write settings]
@@ -120,7 +120,8 @@ namespace DDPM.SA.Common.Settings
                     info = "DDPM AccessInfo value is abnormal";
                     return false;
                 }
-                signature = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
+                //signature = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
+                signature = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), serialized_string);
             }
             catch (Exception e)
             {
@@ -272,7 +273,9 @@ namespace DDPM.SA.Common.Settings
                 //byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
                 //byte[] sign = GetSHA512(body_array, 0, body_array.Length);
                 //cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
-                cal_sign = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
+
+                //cal_sign = SettingsAccess.GenerateAccessString(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
+                cal_sign = SettingsAccess.ComputeAccessInfo2(Encoding.UTF8.GetBytes(accessInfo), modifiedJson);
                 if (string.IsNullOrEmpty(cal_sign))
                 {
                     info = "Null signature from hash calculation";
@@ -1315,7 +1318,7 @@ namespace DDPM.SA.Common.Settings
                     byte[] hashBytes = sha256.ComputeHash(fileStream);
 
                     // 將計算的雜湊值轉換為十六進制字符串
-                    ret = BitConverter.ToString(hashBytes);
+                    ret = BitConverter.ToString(hashBytes).Replace("-", "");
                 }
             }
             return ret;
@@ -1363,7 +1366,7 @@ namespace DDPM.SA.Common.Settings
                     byte[] hashBytes = sha512.ComputeHash(fileStream);
 
                     // 將計算的雜湊值轉換為十六進制字符串
-                    ret = BitConverter.ToString(hashBytes);
+                    ret = BitConverter.ToString(hashBytes).Replace("-", "");
                 }
             }
             return ret;

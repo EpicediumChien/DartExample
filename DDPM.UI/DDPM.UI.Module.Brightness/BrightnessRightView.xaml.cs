@@ -3,8 +3,11 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 using VcpCore.Common;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -53,7 +56,8 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.LockMaskVisible = (bool)isLocked_BriCont ? Visibility.Visible : Visibility.Collapsed;
+                        vm.TabSTOP = (bool)isLocked_BriCont ? "None" : "Cycle";
                         Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}");
                     }
                 }));
@@ -67,6 +71,7 @@ namespace DDPM.UI.Module.Brightness
                     if (vm != null)
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Update_ALSLockStatus(isLocked_ALS ?? false);
                         Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {isLocked_ALS}");
                     }
                 }));
@@ -74,6 +79,16 @@ namespace DDPM.UI.Module.Brightness
             if(data != null && data.LockSettings != null)
             {
                 bool isSyncLocked = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(data);
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
+                    if (vm != null)
+                    {
+                        vm.synchronizeLock= isSyncLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
+                    }
+                }));
+                
                 //apply this lock result to "synchronize between monitors" toggle button
             }
         }

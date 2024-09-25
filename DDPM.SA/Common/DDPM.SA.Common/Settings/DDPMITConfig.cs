@@ -10,6 +10,7 @@
         public bool Lock_Settings_Updates { get; set; } = false;
         //public bool Lock_Settings_RestoreFactoryDefaults { get; set; } = false;
         public bool Lock_Setting_RestoreDefaults { get; set; } = false;
+        public bool Lock_Setting_ScreenNotification { get; set; } = false;
         #endregion Global Setting
 
         #region Display Setting
@@ -35,6 +36,13 @@
         public bool Lock_Pen_RestoreFactoryDefaults { get; set; } = false;
         public bool Lock_Keyboard_CollabScreenShare { get; set; } = false;
         public bool Lock_Audio_ancMode { get; set; } = false;
+        public bool Lock_Audio_micNoiseCancellation { get; set; } = false;
+        public bool Lock_Audio_wearDetection { get; set; } = false;
+        public bool Lock_Webcam_hdr { get; set; } = false;
+        public bool Lock_Webcam_AntiFlicker { get; set; } = false;
+        public bool Lock_Webcam_AIAutoFraming { get; set; } = false;
+        public bool Lock_Webcam_MicSwitch { get; set; } = false;
+        public bool Lock_Webcam_PresenceDetection { get; set; } = false;
         #endregion Peripheral Setting
 
     }
