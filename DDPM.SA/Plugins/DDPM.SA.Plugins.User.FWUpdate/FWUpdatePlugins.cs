@@ -1429,7 +1429,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             if (_timeOutCount < _fwTimeOutCount)
             {
-                FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                UpdateProgressInfo fWUpdateInfo = new UpdateProgressInfo()
                 {
                     DeviceName = _fWUpdateInfo.DeviceName,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
