@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.Common;
+using DDPM.UI.Module.EzMemory.Views;
+using System.Windows;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -18,9 +20,11 @@ namespace DDPM.UI.Module.EzMemory
             DataContext = vm;
         }
 
-        private void CheckBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
         {
-
+            EzMemoryFirst ezFirst = new EzMemoryFirst();
+            ezFirst.DataContext = vm;
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 
         //private void CheckBox_Click_1(object sender, System.Windows.RoutedEventArgs e)
