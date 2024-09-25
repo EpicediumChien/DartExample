@@ -68,11 +68,12 @@ namespace DDPM.UI.Module.Color
                     return;
 
                 vm.ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
+                vm.isTabStoppable = !data.LockSettings.Lock_Display_ColorPreset;
 
                 if (vm.ShowLockMask)
-                    vm.isTabStoppable = "None";
+                    vm.TabNavigation = "None";
                 else
-                    vm.isTabStoppable = "Cycle";
+                    vm.TabNavigation = "Cycle";
 
                 //vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
 
@@ -124,13 +125,13 @@ namespace DDPM.UI.Module.Color
                     ColorViewModel vm = (ColorViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        //vm.isTabStoppable = !(bool)isLocked;
+                        vm.isTabStoppable = !(bool)isLocked;
                         vm.ShowLockMask = (bool)isLocked;
 
                         if (vm.ShowLockMask)
-                            vm.isTabStoppable = "None";
+                            vm.TabNavigation = "None";
                         else
-                            vm.isTabStoppable = "Cycle";
+                            vm.TabNavigation = "Cycle";
 
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Color right view(Lock) : {isLocked}");
