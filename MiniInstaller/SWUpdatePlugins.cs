@@ -304,7 +304,7 @@ namespace MiniInstaller
         /// <summary>
         /// 安裝下載好的更新檔
         /// </summary>
-        private SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
+        public SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
         {
             try
             {
@@ -321,45 +321,63 @@ namespace MiniInstaller
                 Process _clientProcess = new Process();
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
-                IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                {
+                    DeviceName = _SWUpdateInfo.SoftwareName,
+                    TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                    ProcessName = "Installing",
+                    ProcessProgress = 0.0,
+                };
+                sendMessageToEvent(updateProgressInfo);
                 RegEvent();
-                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
-                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
-                var constraints = new LeafCertConstraints(hashes)
+                using (Process clientProcess = new Process())
                 {
-                    RequireAllCerts = false
-                };
-                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
-                {
-                    Constraints = constraints
-                };
-                using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
-                {
-                    AclChecker aclChecker = new AclChecker();
-                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
-                    {
-                        throw new SecurityException($"File ACLs for {swUpdateInfo.InstallPaths} contained unprivileged write access for one or more identity");
-                    }
-                    /*暫時註解 因還沒有簽章
-                    var result = verifier.Verify(fileLock);
-                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
-                    {
-                        throw new SecurityException($"Signature validation failed for {fwUpdateInfo.InstallPaths}! Received the following return code {result}");
-                    }*/
-                    UserImpersonator.RunAsUser(token, () =>
-                    {
-                        using (Process clientProcess = new Process())
-                        {
-                            _clientProcess = new Process();
-                            _clientProcess.StartInfo.UseShellExecute = false;
-                            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                            _clientProcess.StartInfo.Arguments = arguments;
-                            _clientProcess.Start();
-                            _clientProcess.WaitForExit();
-                        }
-                    });
+                    _clientProcess = new Process();
+                    _clientProcess.StartInfo.UseShellExecute = false;
+                    _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
+                    _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                    _clientProcess.StartInfo.Arguments = arguments;
+                    _clientProcess.Start();
+                    _clientProcess.WaitForExit();
                 }
+                //IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
+                //VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                //SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                //var constraints = new LeafCertConstraints(hashes)
+                //{
+                //    RequireAllCerts = false
+                //};
+                //PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                //{
+                //    Constraints = constraints
+                //};
+                //using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
+                //{
+                //    AclChecker aclChecker = new AclChecker();
+                //    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
+                //    {
+                //        throw new SecurityException($"File ACLs for {swUpdateInfo.InstallPaths} contained unprivileged write access for one or more identity");
+                //    }
+                //    /*暫時註解 因還沒有簽章
+                //    var result = verifier.Verify(fileLock);
+                //    if (result != Win32ErrorCodes.ERROR_SUCCESS)
+                //    {
+                //        throw new SecurityException($"Signature validation failed for {fwUpdateInfo.InstallPaths}! Received the following return code {result}");
+                //    }*/
+                //    UserImpersonator.RunAsUser(token, () =>
+                //    {
+                //        using (Process clientProcess = new Process())
+                //        {
+                //            _clientProcess = new Process();
+                //            _clientProcess.StartInfo.UseShellExecute = false;
+                //            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
+                //            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                //            _clientProcess.StartInfo.Arguments = arguments;
+                //            _clientProcess.Start();
+                //            _clientProcess.WaitForExit();
+                //        }
+                //    });
+                //}
 
                 _updateErrorCode = SWUErrorCode.NoError;
                 return _updateErrorCode;

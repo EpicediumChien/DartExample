@@ -15,12 +15,37 @@ namespace MiniInstaller
     {
         private UpdateProgress _UpdateProgress;
         private SWUpdatePlugins _SWUpdatePlugins;
-        public Task<SWUErrorCode> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "")
+        public LaunchInstaller()
+        {
+            _SWUpdatePlugins = new SWUpdatePlugins();
+        }
+        public Task<SWUErrorCode> DownloadAndInstall(List<SWUpdateInfo> fwUpdateInfos, string installPath = "")
         {
             SWUErrorCode ret = SWUErrorCode.NoError;
             _UpdateProgress = null;
-            _SWUpdatePlugins.DownloadAndInstall();
             CallUpdateProgressUI().Wait();
+            List<SWUpdateInfo> retSWUpdate = _SWUpdatePlugins.DownloadAndInstall(fwUpdateInfos, installPath).Result;
+            if (_UpdateProgress != null)
+            {
+                _SWUpdatePlugins.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                _UpdateProgress.CloseWindow();
+                _UpdateProgress = null;
+            }
+            foreach (SWUpdateInfo swUErrorCode in retSWUpdate)
+            {
+                if (swUErrorCode.SWUErrorCode != SWUErrorCode.NoError)
+                {
+                    ret = swUErrorCode.SWUErrorCode;
+                }
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<SWUErrorCode> Install(SWUpdateInfo fwUpdateInfos)
+        {
+            SWUErrorCode ret = SWUErrorCode.NoError;
+            _UpdateProgress = null;
+            CallUpdateProgressUI().Wait();
+            ret = _SWUpdatePlugins.Install(fwUpdateInfos);
             if (_UpdateProgress != null)
             {
                 _SWUpdatePlugins.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
