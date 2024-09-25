@@ -276,7 +276,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         public MediaCapture? MediaCapture;
-        public MediaFrameReader MediaFrameReader;
+        public MediaFrameReader? MediaFrameReader;
 
         private bool _isRecording = false;
         public bool IsRecording

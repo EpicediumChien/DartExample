@@ -179,16 +179,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm!.MediaCapture = new MediaCapture();
                 _vm.MediaCapture.Failed += handler;
 
-                foreach (var property in _vm.allProperties)
-                {
-                    string properties_temp = property.GetFriendlyName();
-                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
-                    {
-                        var encodingProperties = property.EncodingProperties;
-                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                        break;
-                    }
-                }
                 try
                 {
                     await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
@@ -220,6 +210,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 // Order them by resolution then frame rate
                 _vm.allProperties = _vm.allProperties.OrderByDescending(x => x.Height * x.Width).ThenByDescending(x => x.FrameRate);
+                foreach (var property in _vm.allProperties)
+                {
+                    string properties_temp = property.GetFriendlyName();
+                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var encodingProperties = property.EncodingProperties;
+                        _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                        break;
+                    }
+                }
 
                 DoubleAnimation visibilityAnimation = new()
                 {
@@ -664,15 +664,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // 20240626 jim add
         private async Task CleanupMediaCaptureAsync()
         {
+            if (_vm!.MediaFrameReader != null)
+            {
+                _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
+                try
+                {
+                    await _vm.MediaFrameReader.StopAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error stopping MediaFrameReader: {ex.Message}");
+                }
+                _vm.MediaFrameReader.Dispose();
+                _vm.MediaFrameReader = null;
+            }
             if (_vm!.MediaCapture != null)
             {
-                using (var mediaCapture = _vm.MediaCapture)
-                {
-                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-                    await _vm.MediaFrameReader.StopAsync();
-                    _vm.MediaFrameReader.Dispose();
-                    _vm.MediaCapture = null;
-                }
+                _vm.MediaCapture = null;
             }
         }
 
