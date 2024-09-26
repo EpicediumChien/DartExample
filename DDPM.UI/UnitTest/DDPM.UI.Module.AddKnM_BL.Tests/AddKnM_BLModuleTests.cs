@@ -8,28 +8,25 @@ using NGA.UnitTest.PrivateObject;
 using Moq;
 using DDPM.SA.Common;
 using System.Windows.Controls;
-using DDPM.SA.Common.Settings;
 
-namespace DDPM.UI.Module.WebCameraCapture.Tests
+namespace DDPM.UI.Module.AddKnM_BL.Tests
 {
     [Apartment(ApartmentState.STA)]
-    public class WebCameraCaptureModuleTests
+    public class AddKnM_BLModuleTests
     {
-        private WebCameraCaptureModule? webCameraCaptureModule;
+        private AddKnM_BLModule? addKnM_BLModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
-        private WebCameraViewModel? vm;
+        private AddDeviceViewModel? vm;
         private IConsole? console;
         private Mock<IConsole>? consoleMock;
         private IShowPluginManager? showPluginManager;
         private Mock<IShowPluginManager>? showPluginManagerMock;
-        private IDeviceManagerSA? deviceManager;
-        private Mock<IDeviceManagerSA>? deviceManagerMock;
+        private IDeviceManagerSA? peripheralPlugin;
+        private Mock<IDeviceManagerSA>? peripheralPluginMock;
         private ILog? log;
         private Mock<ILog>? logMock;
-        private WebcamSettings? webcamSettings;
-        private WebCameraCaptureRightView? webCameraCaptureRightView;
 
         [SetUp]
         public void Setup()
@@ -41,48 +38,50 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             console = consoleMock.Object;
             showPluginManagerMock = new Mock<IShowPluginManager>();
             showPluginManager = showPluginManagerMock.Object;
-            deviceManagerMock = new Mock<IDeviceManagerSA>();
-            deviceManager = deviceManagerMock.Object;
+            peripheralPluginMock = new Mock<IDeviceManagerSA>();
+            peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new WebCameraViewModel(console, log);
-            webcamSettings = new WebcamSettings();
-            webcamSettings.SupportedFPSs = new Dictionary<string, List<string>>();
-            webcamSettings.SupportedFPSs.Add("a",new List<string> { "a"});
-            webcamSettings.SelectedResolution = "a";
-            webcamSettings.SelectedFPSs = new Dictionary<string, string>();
-            webcamSettings.SelectedFPSs.Add("a", "a");
-            webcamSettings.Resolutions = new Dictionary<string, string>();
-            webcamSettings.Resolutions.Add("a", "a");           
-            vm.WebcamSettings = webcamSettings;
-            webCameraCaptureRightView = new WebCameraCaptureRightView(vm);
-            webCameraCaptureModule = new WebCameraCaptureModule(vm);
-            privateObject = new PrivateObject(webCameraCaptureModule);
+            vm = new AddDeviceViewModel(showPluginManager, console, log, peripheralPlugin);
+            addKnM_BLModule = new AddKnM_BLModule(vm);
+            privateObject = new PrivateObject(addKnM_BLModule);
+
         }
 
         [Test]
-        public void TestConstructor_WebCameraCaptureModule()
+        public void TestConstructor_AddKnM_BLModule()
         {
             // Assert
-            Assert.That(webCameraCaptureModule, Is.Not.Null);
+            Assert.That(addKnM_BLModule, Is.Not.Null);
             Assert.That(privateObject.GetFieldOrProperty("_rightView"), Is.Not.Null);
         }
+
+        [Test]
+        public void TestIsModuleActive()
+        {
+            // Act
+            addKnM_BLModule.IsModuleActive = true;
+
+            // Assert
+            Assert.That(addKnM_BLModule.IsModuleActive, Is.EqualTo(true));
+        }
+
 
         [Test]
         public void TestModuleName()
         {
             // Act
-            var result = webCameraCaptureModule!.ModuleName;
+            var result = addKnM_BLModule!.ModuleName;
 
             // Assert
-            Assert.That(result, Is.EqualTo("WebCameraCaptureModule"));
+            Assert.That(result, Is.EqualTo("AddKnM_BLModule"));
         }
 
         [Test]
         public void TestGetLeftView()
         {
             // Act
-            var result = webCameraCaptureModule!.GetLeftView();
+            var result = addKnM_BLModule!.GetLeftView();
 
             // Assert
             Assert.That(result, Is.Null);
@@ -92,7 +91,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         public void TestGetRightView()
         {
             // Act
-            var result = webCameraCaptureModule!.GetRightView();
+            var result = addKnM_BLModule!.GetRightView();
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -106,8 +105,8 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             var homeDevice = new HomeDevice();
 
             // Act
-            webCameraCaptureModule!.SelectedHomeDevice = homeDevice;
-            var result = webCameraCaptureModule.SelectedHomeDevice;
+            addKnM_BLModule!.SelectedHomeDevice = homeDevice;
+            var result = addKnM_BLModule.SelectedHomeDevice;
 
             // Assert
             Assert.That(result, Is.EqualTo(homeDevice));
@@ -117,8 +116,8 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         public void TestModuleOwner()
         {
             // Arrange
-            webCameraCaptureModule.ModuleOwner = moduleOwner;
-            Assert.That(webCameraCaptureModule.ModuleOwner, Is.EqualTo(moduleOwner));
+            addKnM_BLModule.ModuleOwner = moduleOwner;
+            Assert.That(addKnM_BLModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
 
         [Test]
@@ -126,7 +125,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         {
             try
             {
-                webCameraCaptureModule.OnSelectedHomeDeviceChanged();
+                addKnM_BLModule.OnSelectedHomeDeviceChanged();
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -140,7 +139,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         {
             try
             {
-                webCameraCaptureModule.OnActivated();
+                addKnM_BLModule.OnActivated();
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -154,7 +153,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         {
             try
             {
-                webCameraCaptureModule.OnDeactivated();
+                addKnM_BLModule.OnDeactivated();
                 Assert.True(true);
             }
             catch (Exception ex)

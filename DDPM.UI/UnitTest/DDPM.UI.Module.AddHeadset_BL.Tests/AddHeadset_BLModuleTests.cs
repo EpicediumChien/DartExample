@@ -1,35 +1,33 @@
+using DDPM.SA.Common;
+using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
-using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
-using NGA.UnitTest.PrivateObject;
 using Moq;
-using DDPM.SA.Common;
+using NGA.UnitTest.PrivateObject;
+using System;
 using System.Windows.Controls;
-using DDPM.SA.Common.Settings;
 
-namespace DDPM.UI.Module.WebCameraCapture.Tests
+namespace DDPM.UI.Module.AddHeadset_BL.Tests
 {
     [Apartment(ApartmentState.STA)]
-    public class WebCameraCaptureModuleTests
+    public class AddHeadset_BLModuleTests
     {
-        private WebCameraCaptureModule? webCameraCaptureModule;
+        private AddHeadset_BLModule? addHeadset_BLModule;
         private PrivateObject? privateObject;
         private Mock<IModuleOwner>? moduleOwnerMock;
         private IModuleOwner? moduleOwner;
-        private WebCameraViewModel? vm;
+        private AddDeviceViewModel? vm;
         private IConsole? console;
         private Mock<IConsole>? consoleMock;
         private IShowPluginManager? showPluginManager;
         private Mock<IShowPluginManager>? showPluginManagerMock;
-        private IDeviceManagerSA? deviceManager;
-        private Mock<IDeviceManagerSA>? deviceManagerMock;
+        private IDeviceManagerSA? peripheralPlugin;
+        private Mock<IDeviceManagerSA>? peripheralPluginMock;
         private ILog? log;
         private Mock<ILog>? logMock;
-        private WebcamSettings? webcamSettings;
-        private WebCameraCaptureRightView? webCameraCaptureRightView;
 
         [SetUp]
         public void Setup()
@@ -41,48 +39,50 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             console = consoleMock.Object;
             showPluginManagerMock = new Mock<IShowPluginManager>();
             showPluginManager = showPluginManagerMock.Object;
-            deviceManagerMock = new Mock<IDeviceManagerSA>();
-            deviceManager = deviceManagerMock.Object;
+            peripheralPluginMock = new Mock<IDeviceManagerSA>();
+            peripheralPlugin = peripheralPluginMock.Object;
             logMock = new Mock<ILog>();
             log = logMock.Object;
-            vm = new WebCameraViewModel(console, log);
-            webcamSettings = new WebcamSettings();
-            webcamSettings.SupportedFPSs = new Dictionary<string, List<string>>();
-            webcamSettings.SupportedFPSs.Add("a",new List<string> { "a"});
-            webcamSettings.SelectedResolution = "a";
-            webcamSettings.SelectedFPSs = new Dictionary<string, string>();
-            webcamSettings.SelectedFPSs.Add("a", "a");
-            webcamSettings.Resolutions = new Dictionary<string, string>();
-            webcamSettings.Resolutions.Add("a", "a");           
-            vm.WebcamSettings = webcamSettings;
-            webCameraCaptureRightView = new WebCameraCaptureRightView(vm);
-            webCameraCaptureModule = new WebCameraCaptureModule(vm);
-            privateObject = new PrivateObject(webCameraCaptureModule);
+            vm = new AddDeviceViewModel(showPluginManager, console, log, peripheralPlugin);
+            addHeadset_BLModule = new AddHeadset_BLModule(vm);
+            privateObject = new PrivateObject(addHeadset_BLModule);
+
         }
 
         [Test]
-        public void TestConstructor_WebCameraCaptureModule()
+        public void TestConstructor_AddHeadset_BLModule()
         {
             // Assert
-            Assert.That(webCameraCaptureModule, Is.Not.Null);
+            Assert.That(addHeadset_BLModule, Is.Not.Null);
             Assert.That(privateObject.GetFieldOrProperty("_rightView"), Is.Not.Null);
         }
+
+        [Test]
+        public void TestIsModuleActive()
+        {
+            // Act
+            addHeadset_BLModule.IsModuleActive=true;
+
+            // Assert
+            Assert.That(addHeadset_BLModule.IsModuleActive, Is.EqualTo(true));
+        }
+        
 
         [Test]
         public void TestModuleName()
         {
             // Act
-            var result = webCameraCaptureModule!.ModuleName;
+            var result = addHeadset_BLModule!.ModuleName;
 
             // Assert
-            Assert.That(result, Is.EqualTo("WebCameraCaptureModule"));
+            Assert.That(result, Is.EqualTo("AddHeadset_BLModule"));
         }
 
         [Test]
         public void TestGetLeftView()
         {
             // Act
-            var result = webCameraCaptureModule!.GetLeftView();
+            var result = addHeadset_BLModule!.GetLeftView();
 
             // Assert
             Assert.That(result, Is.Null);
@@ -92,7 +92,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         public void TestGetRightView()
         {
             // Act
-            var result = webCameraCaptureModule!.GetRightView();
+            var result = addHeadset_BLModule!.GetRightView();
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -106,8 +106,8 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             var homeDevice = new HomeDevice();
 
             // Act
-            webCameraCaptureModule!.SelectedHomeDevice = homeDevice;
-            var result = webCameraCaptureModule.SelectedHomeDevice;
+            addHeadset_BLModule!.SelectedHomeDevice = homeDevice;
+            var result = addHeadset_BLModule.SelectedHomeDevice;
 
             // Assert
             Assert.That(result, Is.EqualTo(homeDevice));
@@ -117,8 +117,8 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         public void TestModuleOwner()
         {
             // Arrange
-            webCameraCaptureModule.ModuleOwner = moduleOwner;
-            Assert.That(webCameraCaptureModule.ModuleOwner, Is.EqualTo(moduleOwner));
+            addHeadset_BLModule.ModuleOwner = moduleOwner;
+            Assert.That(addHeadset_BLModule.ModuleOwner, Is.EqualTo(moduleOwner));
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         {
             try
             {
-                webCameraCaptureModule.OnSelectedHomeDeviceChanged();
+                addHeadset_BLModule.OnSelectedHomeDeviceChanged();
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -134,13 +134,13 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
                 Assert.Fail("not invoked");
             }
         }
-
+       
         [Test]
         public void TestOnActivated()
         {
             try
             {
-                webCameraCaptureModule.OnActivated();
+                addHeadset_BLModule.OnActivated();
                 Assert.True(true);
             }
             catch (Exception ex)
@@ -154,7 +154,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         {
             try
             {
-                webCameraCaptureModule.OnDeactivated();
+                addHeadset_BLModule.OnDeactivated();
                 Assert.True(true);
             }
             catch (Exception ex)
