@@ -217,7 +217,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
         public Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify)
         {
-            SetDisplayFWUServer();
+            SetSWUServer();
             _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
@@ -249,7 +249,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             return Task.FromResult(new List<SWUpdateInfo>());
         }
-        private void SetDisplayFWUServer()
+        private void SetSWUServer()
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
             URL = URL + URL_Folder;
@@ -539,70 +539,14 @@ namespace DDPM.SA.Plugins.SWUpdate
             {
                 if (download.DownloadFileStream != null)
                 {
-                    if (download.DownloadFileSize == null)
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
-                        download.DownloadFileSize = 1;
-                    }
-                    double d = Math.Round(((double)download.DownloadFileStream.Length / (double)download.DownloadFileSize) * 100.0, 2);
+                        DeviceName = _SWUpdateInfo.SoftwareName,
+                        TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                        ProcessName = "Downloading",
+                        ProcessProgress = download.GetProgress(),
+                    };
                 }
-            }
-        }
-        private void HandleUpdateInfo()
-        {
-            _logs.DebugMsg_1("HandleUpdateInfo");
-            if (_SWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage != null)
-            {
-                List<SWUpdateInfo> _ForceUpdates = new List<SWUpdateInfo>();
-                bool isUpdate = false;//判斷是否強制更新
-                bool isOnlyInfo = false;
-                string s = "";
-                if (_SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
-                {
-                    isOnlyInfo = true;
-                    s = "no updates available.";
-                }
-                else
-                {
-                    foreach (SWUpdateInfo swUpdateInfo in _SWUpdateInfoPackage.SWUpdateInfo)
-                    {
-                        if (_isForce)
-                        {
-                            isUpdate = true;
-                            s += $"{swUpdateInfo.SoftwareName} will be updated to {swUpdateInfo.TheLatestVersion}\n";
-                        }
-                        if (_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(swUpdateInfo)))
-                        {
-                            if (_DelaySWUpdateInfoPackage.SaveTime != null)
-                            {
-                                SWUpdateInfo? delayFUpdateInfo = _DelaySWUpdateInfoPackage.SWUpdateInfo.Find(o => o.Equals(swUpdateInfo));
-                                if (delayFUpdateInfo != null)
-                                {
-                                    TimeSpan difference = DateTime.Now - (DateTime)_DelaySWUpdateInfoPackage.SaveTime;
-                                    if (_isDefer)
-                                    {
-                                        s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
-                                    }
-                                    else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable > 0)
-                                    {
-                                        s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
-                                    }
-                                    else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable <= 0)
-                                    {
-                                        _ForceUpdates.Add(delayFUpdateInfo);
-                                        isUpdate = true;
-                                        s += $"{swUpdateInfo.SoftwareName} will be updated to {swUpdateInfo.TheLatestVersion}\n";
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
-                        }
-                    }
-                }
-                NotificationFWupdate("Updates info", s, isOnlyInfo, isUpdate);
-                _logs.DebugMsg_1("HandleUpdateInfo done");
             }
         }
         /// <summary>
