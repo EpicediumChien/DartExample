@@ -36,14 +36,6 @@ namespace DDPM.SA.Plugins.SWUpdate
     [DependencyKnownTypes(new[] { typeof(ISWUpdateService) })]
     public class SWUpdatePlugins : BaseAgentPlugin, ISWUpdateService
     {
-        ////0531 Bruce 因應IL的現有安裝包修改底層邏輯，FWUpdatePlugins.cs有稍作大改
-        ////0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
-        //[DllImport("user32.dll")]
-        //private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        //[DllImport("user32.dll")]
-        //private static extern bool SetForegroundWindow(IntPtr hWnd);
-
         #region Private Members
 
         private const string pluginName = "SWUpdatePlugin";
@@ -119,26 +111,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             _checkUpdateScheduleTimer = new Timer();
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromMinutes(0.5).TotalMilliseconds;
             _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
-            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            URL = URL + URL_Folder;
-            if (localKey64 != null)
-            {
-                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
-                if (registryKey != null)
-                {
-                    var obj = registryKey?.GetValue("TestServerURL");
-                    if (obj != null)
-                    {
-                        string s = obj.ToString();
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            URL = obj + TestURL_Folder;
-                        }
-                    }
-                }
-            }
         }
-
         #region Overriding methods
 
         #region IDisposableObservable Support
@@ -244,6 +217,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
         public Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify)
         {
+            SetDisplayFWUServer();
             _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
@@ -275,7 +249,27 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             return Task.FromResult(new List<SWUpdateInfo>());
         }
-
+        private void SetDisplayFWUServer()
+        {
+            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+            URL = URL + URL_Folder;
+            if (localKey64 != null)
+            {
+                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
+                if (registryKey != null)
+                {
+                    var obj = registryKey?.GetValue("TestServerURL");
+                    if (obj != null)
+                    {
+                        string s = obj.ToString();
+                        if (!string.IsNullOrEmpty(s))
+                        {
+                            URL = obj + TestURL_Folder;
+                        }
+                    }
+                }
+            }
+        }
         private SWUpdateHelper GetSWMetadata()
         {
             _logs.DebugMsg_1(nameof(GetSWMetadata) + " start.");
@@ -311,66 +305,6 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             return new SWUpdateHelper();
         }
-
-        private void HandleUpdateInfo()
-        {
-            _logs.DebugMsg_1("HandleUpdateInfo");
-            if (_SWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage != null)
-            {
-                List<SWUpdateInfo> _ForceUpdates = new List<SWUpdateInfo>();
-                bool isUpdate = false;//判斷是否強制更新
-                bool isOnlyInfo = false;
-                string s = "";
-                if (_SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
-                {
-                    isOnlyInfo = true;
-                    s = "no updates available.";
-                }
-                else
-                {
-                    foreach (SWUpdateInfo swUpdateInfo in _SWUpdateInfoPackage.SWUpdateInfo)
-                    {
-                        if (_isForce)
-                        {
-                            isUpdate = true;
-                            s += $"{swUpdateInfo.SoftwareName} will be updated to {swUpdateInfo.TheLatestVersion}\n";
-                        }
-                        if (_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(swUpdateInfo)))
-                        {
-                            if (_DelaySWUpdateInfoPackage.SaveTime != null)
-                            {
-                                SWUpdateInfo? delayFUpdateInfo = _DelaySWUpdateInfoPackage.SWUpdateInfo.Find(o => o.Equals(swUpdateInfo));
-                                if (delayFUpdateInfo != null)
-                                {
-                                    TimeSpan difference = DateTime.Now - (DateTime)_DelaySWUpdateInfoPackage.SaveTime;
-                                    if (_isDefer)
-                                    {
-                                        s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
-                                    }
-                                    else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable > 0)
-                                    {
-                                        s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
-                                    }
-                                    else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable <= 0)
-                                    {
-                                        _ForceUpdates.Add(delayFUpdateInfo);
-                                        isUpdate = true;
-                                        s += $"{swUpdateInfo.SoftwareName} will be updated to {swUpdateInfo.TheLatestVersion}\n";
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
-                        }
-                    }
-                }
-                NotificationFWupdate("Updates info", s, isOnlyInfo, isUpdate);
-                _logs.DebugMsg_1("HandleUpdateInfo done");
-            }
-        }
-
         /// <summary>
         /// 從伺服端下載更新檔，下載後會接續執行安裝方法
         /// </summary>
@@ -397,19 +331,32 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     Directory.CreateDirectory(savePath);
                 }
+                //0926 Bruce Add Security
+                if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
+                {
+                    foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
+                    {
+                        swUpdateInfo.SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
+                    }
+                    _notificationStr = $"Firmware update unsuccessful.";
+                    NotificationFWupdate("Error", _notificationStr);
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                    return Task.FromResult(swUpdateInfos);
+                }
                 for (int i = 0; i < swUpdateInfos.Count; i++)
                 {
-                    _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + nameof(DownloadAndInstall) + " start");
-                    _notificationStr = "";
-                    _SWUpdateInfo = swUpdateInfos[i];
                     _updateErrorCode = SWUErrorCode.Unknow;
                     swUpdateInfos[i].SWUErrorCode = _updateErrorCode;
+                    _SWUpdateInfo = swUpdateInfos[i];
+                    _notificationStr = "";
+                    _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + nameof(DownloadAndInstall) + " start");
                     string url = swUpdateInfos[i].ServerPath;
-                    string FolderInfo;
-                    if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
+                    if (!CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo);
+                        _notificationStr = $"Software update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                         continue;
                     }
                     _downloadTimer = new Timer();
@@ -422,15 +369,26 @@ namespace DDPM.SA.Plugins.SWUpdate
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                     bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo);
                     _downloadTimer.Stop();
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    {
+                        DeviceName = swUpdateInfos[i].SoftwareName,
+                        TheLatestVersion = swUpdateInfos[i].TheLatestVersion,
+                        ProcessName = "Downloading",
+                        ProcessProgress = 100,
+                    };
                     if (!downloadRet)
                     {
                         if (downloadInfo.Equals("CA check fail"))
                         {
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
+                            _notificationStr = $"Software update unsuccessful.";
+                            NotificationFWupdate("Error", _notificationStr);
                         }
                         else if (downloadInfo.Equals("Network fail"))
                         {
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
+                            _notificationStr = $"Update failed due to network error. Try again.";
+                            NotificationFWupdate("Error", _notificationStr);
                         }
                         _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Download File Fail");
                         continue;
@@ -440,27 +398,32 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         Directory.CreateDirectory(extractPath);
                     }
-                    FolderInfo = "";
-                    if (!DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo))//0815 Bruce Add Security
+                    if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo);
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        _notificationStr = $"Software update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
+                        continue;
+                    }
+                    if (!CheckSHA(swUpdateInfos[i].InstallPaths, out string FileCAInfo))
+                    {
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FileCheckFail;
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " File check fail. Ex:" + FileCAInfo);
+                        _notificationStr = $"Software update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
                     string exeFilePath;
-                    Unzip unzip = new Unzip(_logs);
-                    if (!unzip.ExecuteUnzip(_installationFileStoragePath, extractPath, out exeFilePath))
+                    if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                     {
-                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Unzip Faile");
+                        _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
+                        _notificationStr = $"Software update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
-                    //暫時註解 等待check sha512和CA
-                    //if (caCheck.CheckFileCA(exeFilePath))
-                    {
-                        swUpdateInfos[i].InstallPaths = exeFilePath;
-                        swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
-                    }
+                    swUpdateInfos[i].InstallPaths = exeFilePath;
+                    swUpdateInfos[i].SWUErrorCode = Install();
                     if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
                     {
                         NotificationFWupdate("FW info", _notificationStr);
@@ -526,7 +489,64 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
             }
         }
-
+        private void HandleUpdateInfo()
+        {
+            _logs.DebugMsg_1("HandleUpdateInfo");
+            if (_SWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage != null)
+            {
+                List<SWUpdateInfo> _ForceUpdates = new List<SWUpdateInfo>();
+                bool isUpdate = false;//判斷是否強制更新
+                bool isOnlyInfo = false;
+                string s = "";
+                if (_SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
+                {
+                    isOnlyInfo = true;
+                    s = "no updates available.";
+                }
+                else
+                {
+                    foreach (SWUpdateInfo swUpdateInfo in _SWUpdateInfoPackage.SWUpdateInfo)
+                    {
+                        if (_isForce)
+                        {
+                            isUpdate = true;
+                            s += $"{swUpdateInfo.SoftwareName} will be updated to {swUpdateInfo.TheLatestVersion}\n";
+                        }
+                        if (_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(swUpdateInfo)))
+                        {
+                            if (_DelaySWUpdateInfoPackage.SaveTime != null)
+                            {
+                                SWUpdateInfo? delayFUpdateInfo = _DelaySWUpdateInfoPackage.SWUpdateInfo.Find(o => o.Equals(swUpdateInfo));
+                                if (delayFUpdateInfo != null)
+                                {
+                                    TimeSpan difference = DateTime.Now - (DateTime)_DelaySWUpdateInfoPackage.SaveTime;
+                                    if (_isDefer)
+                                    {
+                                        s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
+                                    }
+                                    else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable > 0)
+                                    {
+                                        s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
+                                    }
+                                    else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable <= 0)
+                                    {
+                                        _ForceUpdates.Add(delayFUpdateInfo);
+                                        isUpdate = true;
+                                        s += $"{swUpdateInfo.SoftwareName} will be updated to {swUpdateInfo.TheLatestVersion}\n";
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
+                        }
+                    }
+                }
+                NotificationFWupdate("Updates info", s, isOnlyInfo, isUpdate);
+                _logs.DebugMsg_1("HandleUpdateInfo done");
+            }
+        }
         /// <summary>
         /// 定期檢查更新排程
         /// </summary>
@@ -598,7 +618,6 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
             }
         }
-
         /// <summary>
         /// NotificationFWupdate 立即更新事件
         /// </summary>
@@ -612,9 +631,8 @@ namespace DDPM.SA.Plugins.SWUpdate
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
             SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
             List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
-            DownloadAndInstall(sWUpdateInfo, "").Wait();
+            Install();
         }
-
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
@@ -634,28 +652,18 @@ namespace DDPM.SA.Plugins.SWUpdate
                     break;
             }
         }
-
         /// <summary>
         /// 安裝下載好的更新檔
         /// </summary>
-        private SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
+        private SWUErrorCode Install()
         {
             try
             {
-                _logs.DebugMsg_1(swUpdateInfo.SoftwareName + nameof(Install) + " start");
-                string FileInfo;
-                if (!DDPMFileSecurity.IsFilePathValid(swUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
-                {
-                    _logs.DebugMsg_1(swUpdateInfo.SoftwareName + " FileIsNoSafe:" + FileInfo);
-                    return SWUErrorCode.FileIsNoSafe;
-                }
-                // 要運行的安裝程式路徑和命令行參數
-                string arguments = "";//"/silent" + " /pipename:" + _namedPipeName;
-                Process _clientProcess = new Process();
+                string miniInstallPath = $"";
+                string arguments = $"";
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
-
                 VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
                 SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
                 var constraints = new LeafCertConstraints(hashes)
@@ -666,12 +674,12 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     Constraints = constraints
                 };
-                using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
+                using (FileLock fileLock = new FileLock(miniInstallPath, PathCheckOption.None, lockNow: true))
                 {
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
-                        throw new SecurityException($"File ACLs for {swUpdateInfo.InstallPaths} contained unprivileged write access for one or more identity");
+                        throw new SecurityException($"File ACLs for {miniInstallPath} contained unprivileged write access for one or more identity");
                     }
                     /*暫時註解 因還沒有簽章
                     var result = verifier.Verify(fileLock);
@@ -681,11 +689,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                     }*/
                     UserImpersonator.RunAsUser(token, () =>
                     {
-                        using (Process clientProcess = new Process())
+                        using (_clientProcess = new Process())
                         {
-                            _clientProcess = new Process();
                             _clientProcess.StartInfo.UseShellExecute = false;
-                            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
+                            _clientProcess.StartInfo.FileName = miniInstallPath;
                             _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
                             _clientProcess.StartInfo.Arguments = arguments;
                             _clientProcess.Start();
@@ -700,10 +707,80 @@ namespace DDPM.SA.Plugins.SWUpdate
             catch (Exception ex)
             {
                 _updateErrorCode = SWUErrorCode.Unknow;
-                _logs.DebugMsg_1(swUpdateInfo.SoftwareName + nameof(Install) + " Error:" + ex.ToString());
+                _logs.DebugMsg_1(nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = $"{_SWUpdateInfo.SoftwareName} Service not running. Try again.";
                 return _updateErrorCode;
             }
+        }
+        private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
+        {
+            folderInfo = "Error";
+            pathSymbolicLinInfo = "Error";
+            int count = 0;
+            bool folderValid = false;
+            do
+            {
+                folderInfo = string.Empty;
+                pathSymbolicLinInfo = string.Empty;
+                folderValid = false;
+                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
+                if (!folderValid)
+                {
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
+                }
+                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                if (!folderValid)
+                {
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
+                    Directory.Delete(path, true);
+                    Directory.CreateDirectory(path);
+                }
+            } while (!folderValid && count < 2);
+            return folderValid;
+        }
+        private bool CheckSHA(string filePath, out string fileCAInfo)
+        {
+            CertificateCheck certificateCheck = new CertificateCheck();
+            bool isCheckSHA = false;
+            fileCAInfo = "Error";
+            if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
+            {
+                isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _SWUpdateInfo.SHA512, out fileCAInfo);
+            }
+            else
+            {
+                isCheckSHA = certificateCheck.CheckFile_SHA256(filePath, _SWUpdateInfo.SHA256, out fileCAInfo);
+            }
+            return isCheckSHA;
+        }
+        private bool Unzip(string filePath, string extractPath, out string exeFilePath)
+        {
+            _SWUpdateInfo.SWUErrorCode = SWUErrorCode.Unknow;
+            bool ret = false;
+            Unzip unzip = new Unzip(_logs);
+            exeFilePath = "";
+            if (unzip.CheckFileIsZip(filePath))
+            {
+                if (!unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                {
+                    _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
+                }
+                if (!string.IsNullOrEmpty(exeFilePath))
+                {
+                    CertificateCheck certificateCheck = new CertificateCheck();
+                    if (!certificateCheck.CheckFile_Thumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out string FileCAInfo))
+                    {
+                        _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " File check fail. Ex:" + FileCAInfo);
+                        _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                    }
+                }
+            }
+            else
+            {
+                exeFilePath = filePath;
+                ret = true;
+            }
+            return ret;
         }
     }
 }

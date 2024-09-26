@@ -69,6 +69,7 @@ namespace DDPM.UI.Module.DisplayProperties
         //Handle new device coming
         private void InitNewViewModel()
         {
+            
         }
 
         public void OnActivated()

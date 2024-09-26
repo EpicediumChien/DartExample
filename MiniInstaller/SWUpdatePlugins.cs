@@ -188,6 +188,15 @@ namespace MiniInstaller
                 {
                     Directory.CreateDirectory(savePath);
                 }
+                if (!CheckFold(savePath, out string folderInfo, out string pathSymbolicLinInfo))//0815 Bruce Add Security
+                {
+                    foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
+                    {
+                        swUpdateInfo.SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
+                    }
+                    Debug.WriteLine(nameof(DownloadAndInstall) + " FileIsNoSafe:" + folderInfo + "--or--" + pathSymbolicLinInfo);
+                    return Task.FromResult(swUpdateInfos);
+                }
                 for (int i = 0; i < swUpdateInfos.Count; i++)
                 {
                     Debug.WriteLine(swUpdateInfos[i].SoftwareName + nameof(DownloadAndInstall) + " start");
@@ -196,11 +205,10 @@ namespace MiniInstaller
                     _updateErrorCode = SWUErrorCode.Unknow;
                     swUpdateInfos[i].SWUErrorCode = _updateErrorCode;
                     string url = swUpdateInfos[i].ServerPath;
-                    string FolderInfo;
-                    if (!DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo))//0815 Bruce Add Security
+                    if (!CheckFold(savePath, out folderInfo, out pathSymbolicLinInfo))//0815 Bruce Add Security
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        Debug.WriteLine(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo);
+                        Debug.WriteLine(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + folderInfo + "--or--" + pathSymbolicLinInfo);
                         continue;
                     }
                     _downloadTimer = new Timer();
@@ -231,30 +239,33 @@ namespace MiniInstaller
                     {
                         Directory.CreateDirectory(extractPath);
                     }
-                    FolderInfo = "";
-                    if (!DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo))//0815 Bruce Add Security
+                    if (!CheckFold(extractPath, out folderInfo, out pathSymbolicLinInfo))//0815 Bruce Add Security
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        Debug.WriteLine(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + FolderInfo);
+                        Debug.WriteLine(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + folderInfo + "--or--" + pathSymbolicLinInfo);
+                        continue;
+                    }
+                    if (!CheckSHA(swUpdateInfos[i].InstallPaths, out string FileCAInfo))
+                    {
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FileCheckFail;
+                        Debug.WriteLine(swUpdateInfos[i].SoftwareName + " File check fail. Ex:" + FileCAInfo);
+                        _notificationStr = $"Software update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
                     string exeFilePath;
-                    Unzip unzip = new Unzip();
-                    if (!unzip.ExecuteUnzip(_installationFileStoragePath, extractPath, out exeFilePath))
+                    if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                     {
-                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
-                        Debug.WriteLine(swUpdateInfos[i].SoftwareName + " Unzip Faile");
+                        Debug.WriteLine(_SWUpdateInfo.SoftwareName + " Unzip Faile");
+                        _notificationStr = $"Software update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
-                    //暫時註解 等待check sha512和CA
-                    //if (caCheck.CheckFileCA(exeFilePath))
-                    {
-                        swUpdateInfos[i].InstallPaths = exeFilePath;
-                        swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
-                    }
+                    swUpdateInfos[i].InstallPaths = exeFilePath;
+                    swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]);
                     if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
                     {
-                        NotificationFWupdate("FW info", _notificationStr);
+                        NotificationFWupdate("SW info", _notificationStr);
                     }
                     else
                     {
@@ -304,23 +315,20 @@ namespace MiniInstaller
         /// <summary>
         /// 安裝下載好的更新檔
         /// </summary>
-        public SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
+        private SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
         {
             try
             {
                 _SWUpdateInfo = swUpdateInfo;
                 Debug.WriteLine(swUpdateInfo.SoftwareName + nameof(Install) + " start");
-                string FileInfo;
-                if (!DDPMFileSecurity.IsFilePathValid(swUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
+                if (!CheckFold(swUpdateInfo.InstallPaths, out string folderInfo, out string pathSymbolicLinInfo))//0815 Bruce Add Security
                 {
-                    Debug.WriteLine(swUpdateInfo.SoftwareName + " FileIsNoSafe:" + FileInfo);
+                    Debug.WriteLine(swUpdateInfo.SoftwareName + " FileIsNoSafe:" + folderInfo + "--or--" + pathSymbolicLinInfo);
                     return SWUErrorCode.FileIsNoSafe;
                 }
                 // 要運行的安裝程式路徑和命令行參數
                 string arguments = "/silent";
                 Process _clientProcess = new Process();
-                var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
-                if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
                     DeviceName = _SWUpdateInfo.SoftwareName,
@@ -330,55 +338,47 @@ namespace MiniInstaller
                 };
                 sendMessageToEvent(updateProgressInfo);
                 RegEvent();
-                using (Process clientProcess = new Process())
-                {
-                    _clientProcess = new Process();
-                    _clientProcess.StartInfo.UseShellExecute = false;
-                    _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                    _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                    _clientProcess.StartInfo.Arguments = arguments;
-                    _clientProcess.Start();
-                    _clientProcess.WaitForExit();
-                }
-                //IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
-                //VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
-                //SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
-                //var constraints = new LeafCertConstraints(hashes)
-                //{
-                //    RequireAllCerts = false
-                //};
-                //PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
-                //{
-                //    Constraints = constraints
-                //};
-                //using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
-                //{
-                //    AclChecker aclChecker = new AclChecker();
-                //    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
-                //    {
-                //        throw new SecurityException($"File ACLs for {swUpdateInfo.InstallPaths} contained unprivileged write access for one or more identity");
-                //    }
-                //    /*暫時註解 因還沒有簽章
-                //    var result = verifier.Verify(fileLock);
-                //    if (result != Win32ErrorCodes.ERROR_SUCCESS)
-                //    {
-                //        throw new SecurityException($"Signature validation failed for {fwUpdateInfo.InstallPaths}! Received the following return code {result}");
-                //    }*/
-                //    UserImpersonator.RunAsUser(token, () =>
-                //    {
-                //        using (Process clientProcess = new Process())
-                //        {
-                //            _clientProcess = new Process();
-                //            _clientProcess.StartInfo.UseShellExecute = false;
-                //            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
-                //            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                //            _clientProcess.StartInfo.Arguments = arguments;
-                //            _clientProcess.Start();
-                //            _clientProcess.WaitForExit();
-                //        }
-                //    });
-                //}
 
+                var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
+                if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
+                IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
+                VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
+                SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
+                var constraints = new LeafCertConstraints(hashes)
+                {
+                    RequireAllCerts = false
+                };
+                PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
+                {
+                    Constraints = constraints
+                };
+                using (FileLock fileLock = new FileLock(swUpdateInfo.InstallPaths, PathCheckOption.None, lockNow: true))
+                {
+                    AclChecker aclChecker = new AclChecker();
+                    if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
+                    {
+                        throw new SecurityException($"File ACLs for {swUpdateInfo.InstallPaths} contained unprivileged write access for one or more identity");
+                    }
+                    /*暫時註解 因還沒有簽章
+                    var result = verifier.Verify(fileLock);
+                    if (result != Win32ErrorCodes.ERROR_SUCCESS)
+                    {
+                        throw new SecurityException($"Signature validation failed for {fwUpdateInfo.InstallPaths}! Received the following return code {result}");
+                    }*/
+                    UserImpersonator.RunAsUser(token, () =>
+                    {
+                        using (Process clientProcess = new Process())
+                        {
+                            _clientProcess = new Process();
+                            _clientProcess.StartInfo.UseShellExecute = false;
+                            _clientProcess.StartInfo.FileName = swUpdateInfo.InstallPaths;
+                            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                            _clientProcess.StartInfo.Arguments = arguments;
+                            _clientProcess.Start();
+                            _clientProcess.WaitForExit();
+                        }
+                    });
+                }
                 _updateErrorCode = SWUErrorCode.NoError;
                 return _updateErrorCode;
             }
@@ -390,12 +390,82 @@ namespace MiniInstaller
                 return _updateErrorCode;
             }
         }
-        void NotificationFWupdate(string title, string info)
+        private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
+        {
+            folderInfo = "Error";
+            pathSymbolicLinInfo = "Error";
+            int count = 0;
+            bool folderValid = false;
+            do
+            {
+                folderInfo = string.Empty;
+                pathSymbolicLinInfo = string.Empty;
+                folderValid = false;
+                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
+                if (!folderValid)
+                {
+                    Debug.WriteLine(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
+                }
+                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                if (!folderValid)
+                {
+                    Debug.WriteLine(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
+                    Directory.Delete(path, true);
+                    Directory.CreateDirectory(path);
+                }
+            } while (!folderValid && count < 2);
+            return folderValid;
+        }
+        private bool CheckSHA(string filePath, out string fileCAInfo)
+        {
+            CertificateCheck certificateCheck = new CertificateCheck();
+            bool isCheckSHA = false;
+            fileCAInfo = "Error";
+            if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
+            {
+                isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _SWUpdateInfo.SHA512, out fileCAInfo);
+            }
+            else
+            {
+                isCheckSHA = certificateCheck.CheckFile_SHA256(filePath, _SWUpdateInfo.SHA256, out fileCAInfo);
+            }
+            return isCheckSHA;
+        }
+        private bool Unzip(string filePath, string extractPath, out string exeFilePath)
+        {
+            _SWUpdateInfo.SWUErrorCode = SWUErrorCode.Unknow;
+            bool ret = false;
+            Unzip unzip = new Unzip();
+            exeFilePath = "";
+            if (unzip.CheckFileIsZip(filePath))
+            {
+                if (!unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                {
+                    Debug.WriteLine(_SWUpdateInfo.SoftwareName + " Unzip Faile");
+                }
+                if (!string.IsNullOrEmpty(exeFilePath))
+                {
+                    CertificateCheck certificateCheck = new CertificateCheck();
+                    if (!certificateCheck.CheckFile_Thumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out string FileCAInfo))
+                    {
+                        Debug.WriteLine(_SWUpdateInfo.SoftwareName + " File check fail. Ex:" + FileCAInfo);
+                        _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
+                    }
+                }
+            }
+            else
+            {
+                exeFilePath = filePath;
+                ret = true;
+            }
+            return ret;
+        }
+        private void NotificationFWupdate(string title, string info)
         {
             Debug.WriteLine($"{title} Message:{info}");
         }
         ManagementEventWatcher watcher;
-        public void RegEvent()
+        private void RegEvent()
         {
             try
             {
@@ -418,12 +488,12 @@ namespace MiniInstaller
                 Debug.WriteLine($"Exception: {ex.Message}");
             }
         }
-        public void CancelRegEvent()
+        private void CancelRegEvent()
         {
+            watcher.Stop();
             watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
-            watcher.Start();
         }
-        void OnRegistryValueChanged(object sender, EventArrivedEventArgs e)
+        private void OnRegistryValueChanged(object sender, EventArrivedEventArgs e)
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
             if (localKey64 != null)

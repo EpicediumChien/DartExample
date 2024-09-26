@@ -1152,19 +1152,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     //Bruce 0913 Add exe file check Thumbprint.
                     bool isCheckSHA = false;
                     string FileCAInfo = string.Empty;
-                    isCheckSHA = certificateCheck.CheckFile_Thumbprint(fwUpdateInfo.InstallPaths, fwUpdateInfo.Thumbprint, out FileCAInfo);
-                    if (!isCheckSHA)
-                    {
-                        _notificationStr = $"Firmware update unsuccessful.";
-                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
-                        return FWUErrorCode.FileCheckFail;
-                    }
                     string FileInfo;
                     if (!DDPMFileSecurity.IsFilePathValid(fwUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
                     {
                         _notificationStr = $"Firmware update unsuccessful.";
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " FileIsNoSafe:" + FileInfo);
                         return FWUErrorCode.FileIsNoSafe;
+                    }
+                    isCheckSHA = certificateCheck.CheckFile_Thumbprint(fwUpdateInfo.InstallPaths, fwUpdateInfo.Thumbprint, out FileCAInfo);
+                    if (!isCheckSHA)
+                    {
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
+                        return FWUErrorCode.FileCheckFail;
                     }
                 }
                 else
@@ -1266,9 +1266,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     UserImpersonator.RunAsUser(token, () =>
                     {
-                        using (Process clientProcess = new Process())
+                        using (_clientProcess = new Process())
                         {
-                            _clientProcess = new Process();
                             _clientProcess.StartInfo.UseShellExecute = false;
                             _clientProcess.StartInfo.FileName = fwUpdateInfo.InstallPaths;
                             _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);

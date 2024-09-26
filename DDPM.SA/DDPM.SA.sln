@@ -115,9 +115,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.OSDs", "Common\OSDs\DD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SA.Plugins.User.Hotkey.Test", "UnitTest\SA.Plugins.User.Hotkey.Test\SA.Plugins.User.Hotkey.Test.csproj", "{F5BAB5E2-A7EE-4D17-9224-8B4458A0119D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.SA.Plugins.CMAManager", "Plugins\DDPM.SA.Plugins.CMAManager\DDPM.SA.Plugins.CMAManager.csproj", "{68E0B9B3-3A00-4B5F-806D-78D2EEF55760}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.SA.Plugins.CMAManager", "Plugins\DDPM.SA.Plugins.CMAManager\DDPM.SA.Plugins.CMAManager.csproj", "{68E0B9B3-3A00-4B5F-806D-78D2EEF55760}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.SA.Plugins.User.CMAProxy", "Plugins\DDPM.SA.Plugins.User.CMAProxy\DDPM.SA.Plugins.User.CMAProxy.csproj", "{3C0B1921-66BB-441F-9C96-85FFB6F73A96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.SA.Plugins.User.CMAProxy", "Plugins\DDPM.SA.Plugins.User.CMAProxy\DDPM.SA.Plugins.User.CMAProxy.csproj", "{3C0B1921-66BB-441F-9C96-85FFB6F73A96}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SA.Plugins.User.SettingsManager.Test", "UnitTest\SA.Plugins.User.SettingsManager.Test\SA.Plugins.User.SettingsManager.Test.csproj", "{3C75DCFA-7420-43D5-8C24-2A40C6A9EFFD}"
 EndProject

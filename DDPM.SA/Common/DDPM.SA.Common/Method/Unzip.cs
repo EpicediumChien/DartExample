@@ -23,7 +23,27 @@ namespace DDPM.SA.Common.Method
         public Unzip()
         {
         }
-
+        public bool CheckFileIsZip(string filePath)
+        {
+            string extension = Path.GetExtension(filePath).ToLower();
+            bool isNeedUnzip = true;
+            if (extension == ".exe")
+            {
+                isNeedUnzip = false;
+            }
+            else if (extension == ".zip")
+            {
+                isNeedUnzip = true;
+            }
+            return isNeedUnzip;
+        }
+        /// <summary>
+        /// 解壓縮
+        /// </summary>
+        /// <param name="zipFilePath">壓縮檔路徑</param>
+        /// <param name="extractPath">解壓縮資料夾路徑</param>
+        /// <param name="exeFilePath">回傳解壓縮後資料夾中的exe檔案</param>
+        /// <returns></returns>
         public bool ExecuteUnzip(string zipFilePath, string extractPath, out string exeFilePath)
         {
             //Elsa Add Security
