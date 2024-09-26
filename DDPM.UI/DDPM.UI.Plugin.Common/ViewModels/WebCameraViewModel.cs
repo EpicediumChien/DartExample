@@ -42,6 +42,58 @@ namespace DDPM.UI.Plugin.ViewModels
         public string CurrentProfileName = "";
         public List<string> FPSs = new();
 
+
+        // 20240926 jim add
+        private bool showLockMask = false;
+
+        public bool ShowLockMask
+        {
+            get { return showLockMask; }
+            set
+            {
+                showLockMask = value;
+                LockMaskVisible = showLockMask ? Visibility.Visible : Visibility.Collapsed;
+                OnPropertyChanged("ShowLockMask");
+            }
+        }
+
+        private Visibility lockMaskVisible = Visibility.Collapsed;
+
+        public Visibility LockMaskVisible
+        {
+            get { return lockMaskVisible; }
+            set
+            {
+                lockMaskVisible = value;
+                OnPropertyChanged("LockMaskVisible");
+            }
+        }
+
+        private bool _isTabStoppable;
+
+        public bool isTabStoppable
+        {
+            get { return _isTabStoppable; }
+            set
+            {
+                _isTabStoppable = value;
+                OnPropertyChanged("isTabStoppable");
+            }
+        }
+
+        private string _TabNavigation = "Cycle";
+
+        public string TabNavigation
+        {
+            get { return _TabNavigation; }
+            set
+            {
+                _TabNavigation = value;
+                OnPropertyChanged("TabNavigation");
+            }
+        }
+
+
         public event EventHandler<EventArgs> WebcamSettingChanged;
         public new event PropertyChangedEventHandler? PropertyChanged;
 
