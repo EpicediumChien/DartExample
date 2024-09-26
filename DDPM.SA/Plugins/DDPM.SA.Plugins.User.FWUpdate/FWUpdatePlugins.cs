@@ -849,22 +849,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             if (download != null)
             {
-                if (download.DownloadFileStream != null)
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
-                    if (download.DownloadFileSize == null)
-                    {
-                        download.DownloadFileSize = 1;
-                    }
-                    double d = Math.Round(((double)download.DownloadFileStream.Length / (double)download.DownloadFileSize) * 100.0, 2);
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                    {
-                        DeviceName = _fWUpdateInfo.DeviceName,
-                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Downloading",
-                        ProcessProgress = d,
-                    };
-                    sendMessageToEvent(updateProgressInfo);
-                }
+                    DeviceName = _fWUpdateInfo.DeviceName,
+                    TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                    ProcessName = "Downloading",
+                    ProcessProgress = download.GetProgress(),
+                };
+                sendMessageToEvent(updateProgressInfo);
             }
         }
 
@@ -1300,7 +1292,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 break;
                         }
                         _notificationStr = $"{_fWUpdateInfo.DeviceName} Firmware update unsuccessful: code:{exitCode} {_updateErrorCode.ToString()}";
-                        
+
                     }
                 }
                 else
