@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -273,6 +274,15 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void AutoFramingSensitivity_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border bdr)
+            {
+                var val = int.Parse(bdr.Tag.ToString()!);
+                _vm.AutoFramingSensitivity = val;
+            }
         }
     }
 }

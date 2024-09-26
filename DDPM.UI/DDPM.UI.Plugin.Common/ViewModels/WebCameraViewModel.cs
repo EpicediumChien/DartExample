@@ -249,9 +249,16 @@ namespace DDPM.UI.Plugin.ViewModels
             else
                 CurrentProfile = WebcamSettings.PresetProfiles[CurrentProfileName];
 
-            //var ProfileName = DdpmCommonHelper.DeviceManagerSA!.GetProfileName(_vm!.CurrentDeviceInfo!.ID.ToString()).Result;
-            //DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedProfile(profileName, _vm!.CurrentDeviceInfo!.ID);
-            //var ProfileName2 = DdpmCommonHelper.DeviceManagerSA!.GetProfileName(_vm!.CurrentDeviceInfo!.ID.ToString()).Result;
+            if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
+                OnPropertyChanged(nameof(IsAutoFramingOnText));
+                if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn);
+                    OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
+                }
+            }
 
             DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
         }
@@ -434,12 +441,56 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
-                //_deviceManager.SetIsMicEnumerationOn(CurrentDeviceInfo!.ID.ToString(), value);
                 DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
         }
+
+        public string IsAutoFramingOnText
+        {
+            get => CurrentProfile.IsAutoFramingOn ? Strings.On : Strings.Off;
+        }
+        public bool IsAutoFramingOn
+        {
+            get => CurrentProfile.IsAutoFramingOn;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(IsAutoFramingOn), value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAutoFramingOnText));
+            }
+        }
+
+        public string IsAutoFramingTransitionOnText
+        {
+            get => CurrentProfile.IsAutoFramingTransitionOn ? Strings.On : Strings.Off;
+        }
+        public bool IsAutoFramingTransitionOn
+        {
+            get => CurrentProfile.IsAutoFramingTransitionOn;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(IsAutoFramingTransitionOn), value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
+            }
+        }
+
+        public int AutoFramingSensitivity
+        {
+            get => CurrentProfile.AutoFramingSensitivity;
+            set
+            {
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(AutoFramingSensitivity), value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AutoFramingSensitivity));
+            }
+        }
+
         private bool isMicEnumerationOnEnabled = true;
         public bool IsMicEnumerationOnEnabled
         {
@@ -461,6 +512,24 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(FunctionsVisibility));
             }
         }
+
+        public Visibility AutoFramingVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public Visibility AutoFramingSensitivityVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public Visibility AutoFramingSizeVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyAutoFramingSizeSupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public Visibility AutoFramingTransitionVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyAutoFramingTransitionSupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         public Visibility FunctionsVisibility
         {
             get => AlertVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
@@ -518,6 +587,15 @@ namespace DDPM.UI.Plugin.ViewModels
                 MediaCapture.Dispose();
                 MediaCapture = null;
             }
+        }
+
+        private void SetProfileProperty(string propertyName, object value)
+        {
+            var type = CurrentProfile.GetType();
+            var propertyInfo = type.GetProperty(propertyName);
+            object convertedValue = Convert.ChangeType(value, propertyInfo!.PropertyType);
+            propertyInfo.SetValue(CurrentProfile, convertedValue);
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
         }
     }
 

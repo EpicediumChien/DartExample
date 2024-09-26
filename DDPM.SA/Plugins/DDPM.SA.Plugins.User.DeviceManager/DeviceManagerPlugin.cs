@@ -3618,6 +3618,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetZoom(guid, newValue);
             return Task.FromResult(true);
         }
+        public Task SetIsAutoFramingOn(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetIsAutoFramingTransitionOn(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsAutoFramingTransitionOn requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
+            return Task.FromResult(true);
+        }
         #endregion
 
 

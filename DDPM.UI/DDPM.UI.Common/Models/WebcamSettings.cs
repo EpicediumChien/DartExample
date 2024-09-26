@@ -62,28 +62,28 @@ namespace DDPM.UI.Common
 
     public class WebcamProfile
     {
-        public string Id = "";
-        public string Name = "";
-        public string Description = "";
-        public int Priority = 0;
-        public bool IsFocusOn;
-        public int Focus;
-        public int Pan;
-        public int Tilt = 0;
-        public int Zoom;
-        public int Brightness;
-        public int Contrast;
-        public int AntiFlicker;
-        public int Saturation;
-        public int Sharpness;
-        public bool IsAutoWhiteBalanceOn;
-        public int AutoWhiteBalance;
-        public bool IsAutoFramingOn;
-        public int AutoFramingSensitivity;
-        public int AutoFramingFrameSize;
-        public bool IsAutoFramingTransitionOn;
-        public int FieldOfView;
-        public bool IsHDROn;
+        public string Id { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
+        public int Priority { get; set; }
+        public bool IsFocusOn { get; set; }
+        public int Focus { get; set; }
+        public int Pan { get; set; }
+        public int Tilt { get; set; }
+        public int Zoom { get; set; }
+        public int Brightness { get; set; }
+        public int Contrast { get; set; }
+        public int AntiFlicker { get; set; }
+        public int Saturation { get; set; }
+        public int Sharpness { get; set; }
+        public bool IsAutoWhiteBalanceOn { get; set; }
+        public int AutoWhiteBalance { get; set; }
+        public bool IsAutoFramingOn { get; set; }
+        public int AutoFramingSensitivity { get; set; }
+        public int AutoFramingFrameSize { get; set; }
+        public bool IsAutoFramingTransitionOn { get; set; }
+        public int FieldOfView { get; set; }
+        public bool IsHDROn { get; set; }
 
     }
 }
