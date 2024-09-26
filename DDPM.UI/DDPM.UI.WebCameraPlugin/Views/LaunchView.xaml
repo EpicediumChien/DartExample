@@ -13,6 +13,7 @@
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
              d:DesignHeight="735" d:DesignWidth="1378"
              Cursor="{Binding CurrentCursor}"
+             Loaded="LaunchView_Loaded"
              Unloaded="LaunchView_Unloaded">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -20,6 +21,7 @@
         <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
+      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
       <Storyboard x:Key="StoryGotoTwoView">
         <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
@@ -108,16 +110,9 @@
                 <StackPanel ZIndex ="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                   <TextBlock Name="CountdownText" Foreground="WhiteSmoke" FontSize="120" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </StackPanel>
-                <!-- Add your camera preview control here -->
-                <!-- For example, you can use an Image control or a MediaElement -->
-
-                <!-- Add grid lines -->
-
-                <!-- Your camera preview control goes here -->
                 <Image Grid.Row="0"  Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="3" Name="CameraImage" Width="704" Height="396" Stretch="Fill" />
-
-                <!-- Add vertical grid line -->
-                <Grid Visibility="{Binding IsChecked_FramingGrid}">
+                <!-- Add grid lines -->
+                <Grid x:Name="grdPreview" Visibility="{Binding WebcamGrid, Converter={StaticResource BoolToVisibilityConverter}}" Opacity="0">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />

@@ -13,11 +13,31 @@ set build_arch="Any CPU"
 ::Build for [Release] or [Debug]
 set ConfigType=%1
 
+::It's going to build UI.
+set GetGotoUI=%2
+
+if "%GetGotoUI%"=="UI" goto BuildUI
+
 :: Call msbuild environment.
 :: start /B cmd.exe /C .\SetVSBuildEnvironment.bat
 
 
 ::goto FileCopy
+
+ech Clean DDPM.UI\DDPM.Easy.Common
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+if errorlevel 1 goto errorEAComm
+echo Build VCPSDK
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+if errorlevel 1 goto errorEAComm
+echo *************************************
+echo BUILD DDPM.Easy.Common SUCCESS
+echo BUILD DDPM.Easy.Common SUCCESS
+echo BUILD DDPM.Easy.Common SUCCESS
+echo *************************************
+xcopy /Y ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.dll" ".\DDPM.SA\dll\DDPM.Easy.Common.dll"  
+xcopy /Y ".\DDPM.UI\bin\%NET%-windows10.0.19041.0\DDPM.Easy.Common.deps.json" ".\DDPM.SA\dll\DDPM.Easy.Common.deps.json"  
+
 
 
 echo Clean VCPSDK
@@ -30,6 +50,8 @@ dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:Ena
 :: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorVCPSDK
 echo *************************************
+echo BUILD VCPSDK SUCCESS
+echo BUILD VCPSDK SUCCESS
 echo BUILD VCPSDK SUCCESS
 echo *************************************
 
@@ -49,12 +71,14 @@ dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:Ena
 if errorlevel 1 goto errorSA
 echo *************************************
 echo BUILD SA SUCCESS
+echo BUILD SA SUCCESS
+echo BUILD SA SUCCESS
 echo *************************************
 
 
 
 
-
+:BuildUI
 
 echo Clean UI
 dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
@@ -74,6 +98,19 @@ echo *************************************
 
 
 goto PassDone
+
+:errorEAComm
+    @echo.
+    @echo  #####       #             
+    @echo  #          # #        
+    @echo  #         #   #        
+    @echo  ####     #     #    
+    @echo  #        #######     
+    @echo  #        #     #      
+    @echo  #####    #     #   
+    @echo.
+goto errorDone
+
 
 :errorVCPSDK
     @echo.

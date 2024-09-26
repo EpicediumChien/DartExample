@@ -1,0 +1,1602 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>حول</value>
+  </data>
+  <data name="AdaptiveLight" xml:space="preserve">
+    <value>إضاءة قابلة للتكيف</value>
+  </data>
+  <data name="Display" xml:space="preserve">
+    <value>شاشة عرض</value>
+  </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>إعدادات شاشة العرض</value>
+  </data>
+  <data name="EasyArrange" xml:space="preserve">
+    <value>Easy Arrange</value>
+  </data>
+  <data name="FirmwareVersion" xml:space="preserve">
+    <value>إصدار البرنامج الثابت</value>
+  </data>
+  <data name="Gaming" xml:space="preserve">
+    <value>تجربة الألعاب</value>
+  </data>
+  <data name="InputSource" xml:space="preserve">
+    <value>مصدر الإدخال</value>
+  </data>
+  <data name="KVM" xml:space="preserve">
+    <value>وحدة KVM</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>الدليل</value>
+  </data>
+  <data name="ManufactureMonth" xml:space="preserve">
+    <value>الشركة المصنعة</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>إيقاف التشغيل</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>تشغيل</value>
+  </data>
+  <data name="RestoreToDefault" xml:space="preserve">
+    <value>استعادة إلى الإعدادات الافتراضية</value>
+  </data>
+  <data name="ServiceTag" xml:space="preserve">
+    <value>رمز الصيانة</value>
+  </data>
+  <data name="Unpair" xml:space="preserve">
+    <value>إلغاء الإقران</value>
+  </data>
+  <data name="VbarText_DisplayOthers" xml:space="preserve">
+    <value>غير ذلك</value>
+  </data>
+  <data name="QuickSettings" xml:space="preserve">
+    <value>إعدادات سريعة</value>
+  </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>تحليلات</value>
+  </data>
+  <data name="Updates" xml:space="preserve">
+    <value>تحديثات</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>عام</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>إعدادات</value>
+  </data>
+  <data name="Updates.0" xml:space="preserve">
+    <value>يتوفر تحديث</value>
+  </data>
+  <data name="Updates.1" xml:space="preserve">
+    <value>سيتم إغلاق Dell Peripheral Manager وإعادة فتحه بمجرد اكتمال التحديثات. بمجرد بدء التحديثات، لا يمكن إلغاؤها.</value>
+  </data>
+  <data name="Updates.2" xml:space="preserve">
+    <value>التحقق من وجود تحديثات</value>
+  </data>
+  <data name="Updates.3" xml:space="preserve">
+    <value>لا تتوفر أي تحديثات في الوقت الحالي.</value>
+  </data>
+  <data name="Updates.4" xml:space="preserve">
+    <value>خطأ في الشبكة. يُرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="Updates.5" xml:space="preserve">
+    <value>التنزيل والتثبيت</value>
+  </data>
+  <data name="Updates.6" xml:space="preserve">
+    <value>جارٍ التحضير للتحديثات. يُرجى الانتظار...</value>
+  </data>
+  <data name="Analytics.0" xml:space="preserve">
+    <value>تحليلات</value>
+  </data>
+  <data name="Analytics.1" xml:space="preserve">
+    <value>ساعد Dell على تحسين منتجاتها وخدماتها تلقائيًا عن طريق إرسال بيانات التشخيصات والاستخدام.</value>
+  </data>
+  <data name="Analytics.2" xml:space="preserve">
+    <value>سياسة خصوصية Dell</value>
+  </data>
+  <data name="Analytics.3" xml:space="preserve">
+    <value>مساعدة Dell على تحسين منتجاتها وخدماتها تلقائيًا</value>
+  </data>
+  <data name="AddDevice" xml:space="preserve">
+    <value>إضافة جهاز</value>
+  </data>
+  <data name="AddDevice.Display" xml:space="preserve">
+    <value>شاشة عرض</value>
+  </data>
+  <data name="AddDevice.Webcam" xml:space="preserve">
+    <value>كاميرا ويب</value>
+  </data>
+  <data name="AddDevice.KnM" xml:space="preserve">
+    <value>لوحة المفاتيح\nوالماوس</value>
+  </data>
+  <data name="AddDevice.Pen" xml:space="preserve">
+    <value>قلم</value>
+  </data>
+  <data name="AddDevice.Headset" xml:space="preserve">
+    <value>سماعه رأس</value>
+  </data>
+  <data name="AddDevice.Speaker" xml:space="preserve">
+    <value>مكبر الصوت\nوجهاز الصوت</value>
+  </data>
+  <data name="AddDevice.Dock" xml:space="preserve">
+    <value>وحدة إرساء</value>
+  </data>
+  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+    <value>Wireless receiver</value>
+  </data>
+  <data name="AddDevice.Type.Wired" xml:space="preserve">
+    <value>Wired</value>
+  </data>
+  <data name="AddDevice.Type.Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+    <value>جارٍ إضافة جهاز، يُرجى الانتظار...</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+    <value>الإقران</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+    <value>قد يستغرق الإقران بعض الوقت. لا تفصل جهازك</value>
+  </data>
+  <data name="AddDevice.Display.1" xml:space="preserve">
+    <value>قم بتوصيل شاشة العرض عبر منفذ HDMI/USB-C على نظامك</value>
+  </data>
+  <data name="AddDevice.Webcam.0" xml:space="preserve">
+    <value>قم بتوصيل كاميرا الويب عبر منفذ USB على نظامك</value>
+  </data>
+  <data name="AddDevice.KnM.0" xml:space="preserve">
+    <value>اتصال Bluetooth</value>
+  </data>
+  <data name="AddDevice.KnM.1" xml:space="preserve">
+    <value>أضف جهاز Bluetooth عن طريق إقرانه من خلال إعدادات Windows</value>
+  </data>
+  <data name="AddDevice.KnM.2" xml:space="preserve">
+    <value>حرك شريط تمرير مفتاح الطاقة إلى وضع التشغيل</value>
+  </data>
+  <data name="AddDevice.KnM.3" xml:space="preserve">
+    <value>حدد قناة Bluetooth، ثم اضغط مع الاستمرار لمدة 3 ثوانٍ لجعل الجهاز قابلاً للاكتشاف</value>
+  </data>
+  <data name="AddDevice.KnM.4" xml:space="preserve">
+    <value>اسمح بإقران الجهاز أو قم بتشغيل إعدادات Windows وحدد الجهاز المعني بمجرد اكتشافه</value>
+  </data>
+  <data name="AddDevice.KnM.6" xml:space="preserve">
+    <value>قم بتوصيل جهاز الاستقبال اللاسلكي USB بنظامك</value>
+  </data>
+  <data name="AddDevice.KnM.7" xml:space="preserve">
+    <value>حرك مفتاح الطاقة إلى وضع إيقاف التشغيل.</value>
+  </data>
+  <data name="AddDevice.KnM.8" xml:space="preserve">
+    <value>اضغط مع الاستمرار على أي مفتاح/زر وحرك مفتاح الطاقة إلى وضع التشغيل</value>
+  </data>
+  <data name="AddDevice.KnM.9" xml:space="preserve">
+    <value>أبقِ هذه النافذة مفتوحة. سيبدأ الإقران بعد بضع ثوانٍ. وإذا لم يبدأ، فكرر الخطوتين 2 و3 للمحاولة مرة أخرى.</value>
+  </data>
+  <data name="AddDevice.KnM.10" xml:space="preserve">
+    <value>تم اكتشاف العديد من أجهزة الاستقبال اللاسلكية. افصل كل أجهزة الاستقبال اللاسلكية من Dell للوحة المفاتيح والماوس. قم بتوصيل جهاز الاستقبال الذي تريد إقرانه.</value>
+  </data>
+  <data name="AddDevice.KnM.11" xml:space="preserve">
+    <value>لا يوجد جهاز استقبال لاسلكي USB متصل. قم بتوصيل جهاز الاستقبال اللاسلكي USB، وقم بإقران ما يصل إلى ستة أجهزة متوافقة.</value>
+  </data>
+  <data name="AddDevice.KnM.12" xml:space="preserve">
+    <value>لا يوجد جهاز استقبال لاسلكي USB متصل. قم بتوصيل جهاز استقبال لاسلكي USB للحصول على توافق أفضل مع الاتصالات الموحدة وزمن انتقال أقل واتصال أكثر استقرارًا.</value>
+  </data>
+  <data name="AddDevice.KnM.13" xml:space="preserve">
+    <value>قم بتوصيل لوحة المفاتيح والماوس عبر منفذ USB على نظامك</value>
+  </data>
+  <data name="AddDevice.Pen.0" xml:space="preserve">
+    <value>توصيل القلم</value>
+  </data>
+  <data name="AddDevice.Pen.1" xml:space="preserve">
+    <value>المس الشاشة بطرف القلم</value>
+  </data>
+  <data name="AddDevice.Pen.2" xml:space="preserve">
+    <value>اضغط مع الاستمرار على الزر العلوي لمدة 3 ثوانٍ. انتظر حتى يكتشف Windows الجهاز.</value>
+  </data>
+  <data name="AddDevice.Pen.3" xml:space="preserve">
+    <value>اسمح بإقران الجهاز أو قم بتشغيل إعدادات Windows وحدد الجهاز المعني بمجرد اكتشافه.</value>
+  </data>
+  <data name="AddDevice.Pen.4" xml:space="preserve">
+    <value>حدد &quot;نعم&quot; لتأكيد الإقران في مربع المطالبة لإقران قلمك</value>
+  </data>
+  <data name="AddDevice.Headset.0" xml:space="preserve">
+    <value>للاتصال المجاني وفي أثناء التنقل لجهاز الاستقبال اللاسلكي USB</value>
+  </data>
+  <data name="AddDevice.Headset.1" xml:space="preserve">
+    <value>تشغيل سماعة الرأس</value>
+  </data>
+  <data name="AddDevice.Headset.2" xml:space="preserve">
+    <value>اضغط مع الاستمرار على زر الطاقة لمدة 3 ثوانٍ لجعل سماعة الرأس قابلة للاكتشاف عن طريق Bluetooth</value>
+  </data>
+  <data name="AddDevice.Headset.3" xml:space="preserve">
+    <value>اسمح بإقران الجهاز أو قم بتشغيل إعدادات Windows وحدد الجهاز المعني بمجرد اكتشافه.</value>
+  </data>
+  <data name="AddDevice.Headset.4" xml:space="preserve">
+    <value>إيقاف تشغيل سماعة الرأس. اضغط مع الاستمرار على زر كتم صوت الميكروفون وقم بالتشغيل مرة أخرى.</value>
+  </data>
+  <data name="AddDevice.Headset.5" xml:space="preserve">
+    <value>سيبدأ الإقران تلقائيًا بعد بضع ثوانٍ</value>
+  </data>
+  <data name="AddDevice.Headset.6" xml:space="preserve">
+    <value>قم بتوصيل سماعة الرأس عبر منفذ USB على نظامك.</value>
+  </data>
+  <data name="AddDevice.Speaker.0" xml:space="preserve">
+    <value>قم بتوصيل مكبر الصوت أو جهاز الصوت عبر منفذ USB على نظامك.</value>
+  </data>
+  <data name="AddDevice.Dock.0" xml:space="preserve">
+    <value>قم بتوصيل محطة الإرساء عبر منفذ USB على نظامك</value>
+  </data>
+  <data name="HomePage.0" xml:space="preserve">
+    <value>يُرجى الانتظار...</value>
+  </data>
+  <data name="UpdateFirmware" xml:space="preserve">
+    <value>تحديث البرنامج الثابت</value>
+  </data>
+  <data name="Dock.0" xml:space="preserve">
+    <value>{0} يتوفر {1} من الفتحات</value>
+  </data>
+  <data name="Dock.1" xml:space="preserve">
+    <value>دونجل {0}</value>
+  </data>
+  <data name="Keyboard.2" xml:space="preserve">
+    <value>تخصيص المفتاح</value>
+  </data>
+  <data name="Keyboard.3" xml:space="preserve">
+    <value>التعاون</value>
+  </data>
+  <data name="Keyboard.4" xml:space="preserve">
+    <value>الإضاءة</value>
+  </data>
+  <data name="Mouse.0" xml:space="preserve">
+    <value>تعيين إجراءات من أجل</value>
+  </data>
+  <data name="Mouse.1" xml:space="preserve">
+    <value>كل التطبيقات</value>
+  </data>
+  <data name="Mouse.2" xml:space="preserve">
+    <value>Microsoft Word</value>
+  </data>
+  <data name="Mouse.3" xml:space="preserve">
+    <value>Microsoft Excel</value>
+  </data>
+  <data name="Mouse.4" xml:space="preserve">
+    <value>Microsoft PowerPoint</value>
+  </data>
+  <data name="Mouse.5" xml:space="preserve">
+    <value>Microsoft Outlook</value>
+  </data>
+  <data name="EOL.0" xml:space="preserve">
+    <value>لا توجد ميزات متقدمة على هذا الجهاز</value>
+  </data>
+  <data name="Mouse.6" xml:space="preserve">
+    <value>إعدادات الماوس</value>
+  </data>
+  <data name="Mouse.7" xml:space="preserve">
+    <value>تخصيص\nالزر</value>
+  </data>
+  <data name="Pen.0" xml:space="preserve">
+    <value>إعدادات القلم</value>
+  </data>
+  <data name="Soundbar.0" xml:space="preserve">
+    <value>الإعداد المسبق للصوت</value>
+  </data>
+  <data name="Soundbar.1" xml:space="preserve">
+    <value>التفاعلات</value>
+  </data>
+  <data name="Camera.0" xml:space="preserve">
+    <value>التحكم في الكاميرا</value>
+  </data>
+  <data name="Camera.1" xml:space="preserve">
+    <value>اللون والصورة</value>
+  </data>
+  <data name="Camera.2" xml:space="preserve">
+    <value>اكتشاف التواجد</value>
+  </data>
+  <data name="Camera.3" xml:space="preserve">
+    <value>التقاط</value>
+  </data>
+  <data name="Camera.4" xml:space="preserve">
+    <value>ميكروفون</value>
+  </data>
+  <data name="WiredConnection" xml:space="preserve">
+    <value>اتصال سلكي</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="Brightness.0" xml:space="preserve">
+    <value>تحقق من إعداداتك للتأكد من عدم تداخل أوقات البدء وفترات الانتقال المحددة مسبقًا</value>
+  </data>
+  <data name="Brightness.1" xml:space="preserve">
+    <value>لا يتوفر السطوع/التباين عندما </value>
+  </data>
+  <data name="Brightness.2" xml:space="preserve">
+    <value>تقنية HDR الذكية </value>
+  </data>
+  <data name="Brightness.3" xml:space="preserve">
+    <value>قيد التشغيل</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>السطوع</value>
+  </data>
+  <data name="Contrast" xml:space="preserve">
+    <value>التباين</value>
+  </data>
+  <data name="Brightness.4" xml:space="preserve">
+    <value>المزامنة بين الشاشات</value>
+  </data>
+  <data name="Brightness.5" xml:space="preserve">
+    <value>قم بتطبيق عناصر التحكم المحددة مسبقًا في السطوع/الإضاءة والتباين واللون على الشاشات المتصلة.</value>
+  </data>
+  <data name="Luminance" xml:space="preserve">
+    <value>الإضاءة</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>تلقائي</value>
+  </data>
+  <data name="Brightness.6" xml:space="preserve">
+    <value>سطوع تلقائي  </value>
+  </data>
+  <data name="Brightness.7" xml:space="preserve">
+    <value>يضبط سطوع شاشة العرض بناء على ظروف الإضاءة في المساحة المحيطة</value>
+  </data>
+  <data name="Brightness.8" xml:space="preserve">
+    <value>مستوى نطاق السطوع التلقائي  </value>
+  </data>
+  <data name="Brightness.9" xml:space="preserve">
+    <value>يوفر 3 مستويات من نطاقات السطوع بناء على ظروف الإضاءة في المساحة المحيطة (مرتفع / متوسط / منخفض)</value>
+  </data>
+  <data name="Brightness.10" xml:space="preserve">
+    <value>درجة حرارة اللون التلقائية  </value>
+  </data>
+  <data name="Brightness.11" xml:space="preserve">
+    <value>تضبط درجة حرارة لون شاشة العرض تلقائيًا لمطابقة الإضاءة في المساحة المحيطة.</value>
+  </data>
+  <data name="Brightness.12" xml:space="preserve">
+    <value>الشاشة الرئيسية للمزامنة  </value>
+  </data>
+  <data name="Brightness.13" xml:space="preserve">
+    <value>مزامنة السطوع والتباين والإعداد المسبق للون ودرجة حرارة اللون استنادًا إلى الشاشة الأساسية مع شاشات مستشعر الإضاءة المحيطة الأخرى</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>المجدول</value>
+  </data>
+  <data name="Brightness.14" xml:space="preserve">
+    <value>اسم الإعداد المسبق 1</value>
+  </data>
+  <data name="Brightness.15" xml:space="preserve">
+    <value>وقت البدء</value>
+  </data>
+  <data name="AM" xml:space="preserve">
+    <value>صباحًا</value>
+  </data>
+  <data name="Brightness.16" xml:space="preserve">
+    <value>فترة الانتقال</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>اختبر.</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>دقيقة</value>
+  </data>
+  <data name="Brightness.18" xml:space="preserve">
+    <value>اسم الإعداد المسبق 2</value>
+  </data>
+  <data name="PM" xml:space="preserve">
+    <value>مساءً</value>
+  </data>
+  <data name="Hotkeys" xml:space="preserve">
+    <value>مفاتيح التشغيل السريع</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>إعادة التعيين</value>
+  </data>
+  <data name="Hotkey.0" xml:space="preserve">
+    <value>السطوع -</value>
+  </data>
+  <data name="Hotkey.1" xml:space="preserve">
+    <value>السطوع +</value>
+  </data>
+  <data name="Hotkey.2" xml:space="preserve">
+    <value>التباين -</value>
+  </data>
+  <data name="Hotkey.3" xml:space="preserve">
+    <value>التباين +</value>
+  </data>
+  <data name="Hotkey.4" xml:space="preserve">
+    <value>الإضاءة -</value>
+  </data>
+  <data name="Hotkey.5" xml:space="preserve">
+    <value>الإضاءة +</value>
+  </data>
+  <data name="Hotkey.6" xml:space="preserve">
+    <value>مثال: &quot;Alt + P&quot; و&quot;Shift + F&quot; و&quot;Ctrl + Shift + F&quot;.‏\nلاحظ أنه بالنسبة إلى الشاشات المتعددة، يجب أن يكون مؤشر الماوس على الشاشة المستهدفة لتشغيل وظيفة مفتاح التشغيل السريع.</value>
+  </data>
+  <data name="ButtonSettings.0" xml:space="preserve">
+    <value>النقر فوق عجلة التمرير</value>
+  </data>
+  <data name="ButtonSettings.1" xml:space="preserve">
+    <value>التمرير والإمالة لليسار</value>
+  </data>
+  <data name="ButtonSettings.2" xml:space="preserve">
+    <value>التمرير والإمالة لليمين</value>
+  </data>
+  <data name="ButtonSettings.3" xml:space="preserve">
+    <value>زر جانبي للأمام</value>
+  </data>
+  <data name="ButtonSettings.4" xml:space="preserve">
+    <value>زر جانبي للخلف</value>
+  </data>
+  <data name="ButtonSettings.5" xml:space="preserve">
+    <value>للتخصيص، انقر فوق أحد الأقسام الموضحة في الصورة على اليسار</value>
+  </data>
+  <data name="ButtonSettings.6" xml:space="preserve">
+    <value>استعادة كل التطبيقات</value>
+  </data>
+  <data name="ButtonSettings.7" xml:space="preserve">
+    <value>الإجراءات المقترحة</value>
+  </data>
+  <data name="ButtonSettings.8" xml:space="preserve">
+    <value>إجراءات الإنتاجية</value>
+  </data>
+  <data name="ButtonSettings.9" xml:space="preserve">
+    <value>إجراءات Windows</value>
+  </data>
+  <data name="ButtonSettings.10" xml:space="preserve">
+    <value>إجراءات الوسائط المتعددة</value>
+  </data>
+  <data name="ButtonSettings.11" xml:space="preserve">
+    <value>الإجراءات المتقدمة</value>
+  </data>
+  <data name="ButtonSettings.12" xml:space="preserve">
+    <value>نتائج البحث</value>
+  </data>
+  <data name="ButtonSettings.13" xml:space="preserve">
+    <value>تخصيص الزر</value>
+  </data>
+  <data name="Customize" xml:space="preserve">
+    <value>تخصيص</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تحرير</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>إزالة</value>
+  </data>
+  <data name="Collaboration.0" xml:space="preserve">
+    <value>أيقونات التعاون</value>
+  </data>
+  <data name="Collaboration.1" xml:space="preserve">
+    <value>توفر وصولاً سريعًا إلى عناصر التحكم في المؤتمرات. سيؤدي التبديل بين \nتشغيل/إيقاف تشغيل المفاتيح إلى إظهارها أو إخفائها على لوحة المفاتيح في أثناء إجراء مكالمة\nعبر Zoom أو Microsoft Teams.</value>
+  </data>
+  <data name="Collaboration.3" xml:space="preserve">
+    <value>قم بتمكين تأثير الوميض عند وجود رسالة دردشة جديدة في المكالمة\nالجماعية</value>
+  </data>
+  <data name="Collaboration.4" xml:space="preserve">
+    <value>قم بتنشيط الأيقونات على لوحة المفاتيح عن طريق النقر المزدوج بدلاً من النقر\nالفردي</value>
+  </data>
+  <data name="Collaboration.5" xml:space="preserve">
+    <value>لاستخدام لوحة المفاتيح التعاونية مع Microsoft Teams، تأكد من تسجيل الدخول إلى أحدث إصدار من Microsoft Teams واستخدامه، ومن تمكين واجهة برمجة تطبيقات الجهات الخارجية</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>معرفة المزيد</value>
+  </data>
+  <data name="Video" xml:space="preserve">
+    <value>فيديو</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>مشاركة</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>محادثة</value>
+  </data>
+  <data name="Mic" xml:space="preserve">
+    <value>الميكروفون</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>موافق</value>
+  </data>
+  <data name="Collaboration" xml:space="preserve">
+    <value>التعاون</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="Color.0" xml:space="preserve">
+    <value>إضافة تطبيق</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+  <data name="Color.1" xml:space="preserve">
+    <value>فرز حسب الاسم</value>
+  </data>
+  <data name="Color.2" xml:space="preserve">
+    <value>فرز حسب التاريخ</value>
+  </data>
+  <data name="Color.3" xml:space="preserve">
+    <value>الضبط التلقائي لملف تعريف لون ICC بناء على الإعداد المسبق للون</value>
+  </data>
+  <data name="WindowsSettings" xml:space="preserve">
+    <value>إعدادات Windows</value>
+  </data>
+  <data name="Color.4" xml:space="preserve">
+    <value>الضبط التلقائي للإعداد المسبق للون بناء على</value>
+  </data>
+  <data name="Color.5" xml:space="preserve">
+    <value>ملف تعريف ICC</value>
+  </data>
+  <data name="Color.6" xml:space="preserve">
+    <value>ملف تعريف اللون</value>
+  </data>
+  <data name="Color.7" xml:space="preserve">
+    <value>الإعداد المسبق للون الخاص بالتطبيق</value>
+  </data>
+  <data name="Color.8" xml:space="preserve">
+    <value>الإضاءة الليلية </value>
+  </data>
+  <data name="Color.9" xml:space="preserve">
+    <value>أظهر ألوانًا مريحة على شاشة العرض لديك لمساعدتك على النوم.</value>
+  </data>
+  <data name="Color.11" xml:space="preserve">
+    <value>إدارة اللون</value>
+  </data>
+  <data name="Color.12" xml:space="preserve">
+    <value>تقوم بمزامنة ملف تعريف ICC مع الإعداد المسبق للون الشاشة تلقائيًا.</value>
+  </data>
+  <data name="Color.13" xml:space="preserve">
+    <value>يوصى باستخدام تطبيق إدارة اللون من Dell لإدارة اللون المتقدمة.</value>
+  </data>
+  <data name="DisplayHotkeys.0" xml:space="preserve">
+    <value>مصدر الإدخال</value>
+  </data>
+  <data name="DisplayHotkeys.1" xml:space="preserve">
+    <value>التبديل إلى مصدر الإدخال التالي</value>
+  </data>
+  <data name="DisplayHotkeys.2" xml:space="preserve">
+    <value>الإدخال المفضل</value>
+  </data>
+  <data name="DisplayHotkeys.3" xml:space="preserve">
+    <value>التبديل بين مصدري الإدخال</value>
+  </data>
+  <data name="VideoSwap" xml:space="preserve">
+    <value>تبديل الفيديو</value>
+  </data>
+  <data name="PIPorPBP" xml:space="preserve">
+    <value>PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.4" xml:space="preserve">
+    <value>تبديل مدخلين من نوافذ PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.5" xml:space="preserve">
+    <value>تغيير موضع PIP</value>
+  </data>
+  <data name="DisplayOthers.0" xml:space="preserve">
+    <value>تقليل مستوى السطوع</value>
+  </data>
+  <data name="DisplayOthers.1" xml:space="preserve">
+    <value>وضع شاشة العرض في وضع السكون</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>استيراد</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>تصدير</value>
+  </data>
+  <data name="DisplayOthers.2" xml:space="preserve">
+    <value>تطبيق الإعدادات تلقائيًا عند اكتشاف نفس الطراز</value>
+  </data>
+  <data name="PowerNap" xml:space="preserve">
+    <value>PowerNap</value>
+  </data>
+  <data name="DisplayOthers.3" xml:space="preserve">
+    <value>يساعدك PowerNap على توفير الطاقة عند تنشيط شاشة التوقف</value>
+  </data>
+  <data name="DisplayOthers.4" xml:space="preserve">
+    <value>عند تنشيط شاشة التوقف (اختر واحدًا):</value>
+  </data>
+  <data name="DisplayOthers.5" xml:space="preserve">
+    <value>تكوين إعدادات شاشة التوقف </value>
+  </data>
+  <data name="DisplayOthers.6" xml:space="preserve">
+    <value>إعدادات التطبيق</value>
+  </data>
+  <data name="DisplayOthers.7" xml:space="preserve">
+    <value>تصدير تكوين واستيراده إلى شاشة أخرى من نفس الطراز</value>
+  </data>
+  <data name="DisplayProperties.0" xml:space="preserve">
+    <value>سرعة بيانات عالية</value>
+  </data>
+  <data name="DisplayProperties.1" xml:space="preserve">
+    <value>دقة عالية</value>
+  </data>
+  <data name="DisplayProperties.2" xml:space="preserve">
+    <value>معدل الدقة والتحديث</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>توجيه</value>
+  </data>
+  <data name="SmartHDR" xml:space="preserve">
+    <value>تقنية HDR الذكية</value>
+  </data>
+  <data name="DisplayProperties.3" xml:space="preserve">
+    <value>تغيير حجم النص والتطبيقات وعناصر أخرى</value>
+  </data>
+  <data name="AdvancedSettings" xml:space="preserve">
+    <value>إعدادات متقدمة</value>
+  </data>
+  <data name="DisplayProperties.4" xml:space="preserve">
+    <value>تحديد أولويات منفذ USB-C </value>
+  </data>
+  <data name="DisplayProperties.5" xml:space="preserve">
+    <value>قم بإعطاء الأولوية لسرعات البيانات والشبكة على حساب أداء الشاشة.</value>
+  </data>
+  <data name="DisplayProperties.6" xml:space="preserve">
+    <value>قم بإعطاء الأولوية لأداء الشاشة على حساب سرعة البيانات والشبكة.</value>
+  </data>
+  <data name="Windows" xml:space="preserve">
+    <value>نظام Windows</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>مخصص</value>
+  </data>
+  <data name="EzArrange.1" xml:space="preserve">
+    <value>نظام Windows أو أكثر</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>حديث</value>
+  </data>
+  <data name="AudioSettings" xml:space="preserve">
+    <value>إعدادات الصوت</value>
+  </data>
+  <data name="HeadsetAudioSettings.0" xml:space="preserve">
+    <value>التحكم في الضوضاء التي أسمعها</value>
+  </data>
+  <data name="HeadsetAudioSettings.1" xml:space="preserve">
+    <value>إلغاء الضوضاء النشطة</value>
+  </data>
+  <data name="HeadsetAudioSettings.2" xml:space="preserve">
+    <value>الشفافية</value>
+  </data>
+  <data name="HeadsetAudioSettings.3" xml:space="preserve">
+    <value>إيقاف التشغيل</value>
+  </data>
+  <data name="HeadsetAudioSettings.4" xml:space="preserve">
+    <value>مستوى الشفافية</value>
+  </data>
+  <data name="HeadsetAudioSettings.5" xml:space="preserve">
+    <value>تكوين أوضاع الصوت الخاصة بي</value>
+  </data>
+  <data name="Multimedia" xml:space="preserve">
+    <value>الوسائط المتعددة</value>
+  </data>
+  <data name="HeadsetAudioSettings.6" xml:space="preserve">
+    <value>الإعدادات المسبقة لإخراج الصوت</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>افتراضي</value>
+  </data>
+  <data name="HeadsetAudioSettings.7" xml:space="preserve">
+    <value>تعزيز صوت الجهير</value>
+  </data>
+  <data name="HeadsetAudioSettings.8" xml:space="preserve">
+    <value>تعزيز صوت الحديث</value>
+  </data>
+  <data name="HeadsetAudioSettings.9" xml:space="preserve">
+    <value>تعزيز الصوت الثلاثي</value>
+  </data>
+  <data name="HeadsetAudioSettings.10" xml:space="preserve">
+    <value>موازن الصوت</value>
+  </data>
+  <data name="HeadsetAudioSettings.11" xml:space="preserve">
+    <value>اضبط نطاقات الصوت للصوت الذي تسمعه</value>
+  </data>
+  <data name="HeadsetAudioSettings.12" xml:space="preserve">
+    <value>ديسيبل</value>
+  </data>
+  <data name="HeadsetAudioSettings.13" xml:space="preserve">
+    <value>الجهير</value>
+  </data>
+  <data name="HeadsetAudioSettings.14" xml:space="preserve">
+    <value>نطاق متوسط</value>
+  </data>
+  <data name="HeadsetAudioSettings.15" xml:space="preserve">
+    <value>ثلاثي</value>
+  </data>
+  <data name="HeadsetAudioSettings.16" xml:space="preserve">
+    <value>إلغاء ضوضاء الميكروفون</value>
+  </data>
+  <data name="HeadsetAudioSettings.17" xml:space="preserve">
+    <value>الصوت الصادر</value>
+  </data>
+  <data name="HeadsetAudioSettings.18" xml:space="preserve">
+    <value>الصوت الوارد</value>
+  </data>
+  <data name="HeadsetAudioSettings.19" xml:space="preserve">
+    <value>النغمة الجانبية</value>
+  </data>
+  <data name="AutomatedActions" xml:space="preserve">
+    <value>الإجراءات التلقائية</value>
+  </data>
+  <data name="HeadsetAutomatedActions.0" xml:space="preserve">
+    <value>اكتشاف الارتداء</value>
+  </data>
+  <data name="HeadsetAutomatedActions.1" xml:space="preserve">
+    <value>الحساسية</value>
+  </data>
+  <data name="HeadsetAutomatedActions.2" xml:space="preserve">
+    <value>مستوى منخفض</value>
+  </data>
+  <data name="HeadsetAutomatedActions.3" xml:space="preserve">
+    <value>مستوى عادي</value>
+  </data>
+  <data name="HeadsetAutomatedActions.4" xml:space="preserve">
+    <value>عند إزالة سماعة الرأس:</value>
+  </data>
+  <data name="HeadsetAutomatedActions.5" xml:space="preserve">
+    <value>إيقاف الموسيقى مؤقتًا</value>
+  </data>
+  <data name="HeadsetAutomatedActions.6" xml:space="preserve">
+    <value>كتم صوت الميكروفون</value>
+  </data>
+  <data name="HeadsetAutomatedActions.7" xml:space="preserve">
+    <value>الإيقاف المؤقت السريع</value>
+  </data>
+  <data name="HeadsetAutomatedActions.8" xml:space="preserve">
+    <value>الرد على المكالمات</value>
+  </data>
+  <data name="DeviceSettings" xml:space="preserve">
+    <value>إعدادات الجهاز</value>
+  </data>
+  <data name="HeadsetDeviceSettings.0" xml:space="preserve">
+    <value>إضاءة حالة الانشغال</value>
+  </data>
+  <data name="HeadsetDeviceSettings.1" xml:space="preserve">
+    <value>التوجيه الصوتي</value>
+  </data>
+  <data name="HeadsetDeviceSettings.2" xml:space="preserve">
+    <value>ضروري</value>
+  </data>
+  <data name="HeadsetDeviceSettings.3" xml:space="preserve">
+    <value>الكل</value>
+  </data>
+  <data name="HeadsetDeviceSettings.4" xml:space="preserve">
+    <value>تنزيل Dell Audio</value>
+  </data>
+  <data name="HeadsetDeviceSettings.5" xml:space="preserve">
+    <value>قم بتنزيل Dell Audio الآن لتحسين إعدادات سماعة الرأس وتخصيصها من جهاز iPhone أو Android المريح.</value>
+  </data>
+  <data name="HeadsetDeviceSettings.6" xml:space="preserve">
+    <value>معرفة المزيد</value>
+  </data>
+  <data name="Illumination.0" xml:space="preserve">
+    <value>التحكم في الإضاءة</value>
+  </data>
+  <data name="Illumination.1" xml:space="preserve">
+    <value>الإضاءة</value>
+  </data>
+  <data name="InputSource.0" xml:space="preserve">
+    <value>مصدر الإدخال الحالي</value>
+  </data>
+  <data name="InputSource.1" xml:space="preserve">
+    <value>قم بإعادة تسمية مصدر الإدخال وتعيين اتصال USB</value>
+  </data>
+  <data name="InputSource.2" xml:space="preserve">
+    <value>الإدخال</value>
+  </data>
+  <data name="InputSource.3" xml:space="preserve">
+    <value>اسم الإدخال</value>
+  </data>
+  <data name="InputSource.4" xml:space="preserve">
+    <value>منفذ USB العلوي</value>
+  </data>
+  <data name="KeyCustomization.0" xml:space="preserve">
+    <value>لتخصيص مفتاح، انقر فوق أحد المفاتيح الموضحة في الصورة على اليسار</value>
+  </data>
+  <data name="KeyCustomization.1" xml:space="preserve">
+    <value>قم باستعادة كل الإجراءات إلى الوضع الافتراضي</value>
+  </data>
+  <data name="KeyCustomization.2" xml:space="preserve">
+    <value>تخصيص المفتاح</value>
+  </data>
+  <data name="Kvm.0" xml:space="preserve">
+    <value>الكمبيوتر الشخصي</value>
+  </data>
+  <data name="Kvm.1" xml:space="preserve">
+    <value>التالي</value>
+  </data>
+  <data name="Kvm.2" xml:space="preserve">
+    <value>إعداد وحدة KVM عبر USB</value>
+  </data>
+  <data name="Kvm.3" xml:space="preserve">
+    <value>توصيل الماوس\n ولوحة المفاتيح</value>
+  </data>
+  <data name="Kvm.4" xml:space="preserve">
+    <value>فيما يخص الماوس ولوحة المفاتيح، قم بتوصيلهما بالجزء الخلفي من الشاشة (USB-A).‏\n ملاحظة: يمكنك أيضًا توصيل أجهزة USB الطرفية الأخرى مثل\n كاميرا الويب.</value>
+  </data>
+  <data name="Kvm.5" xml:space="preserve">
+    <value>USB-A</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
+  <data name="Kvm.6" xml:space="preserve">
+    <value>الاتصال\n بأجهزتك</value>
+  </data>
+  <data name="Kvm.7" xml:space="preserve">
+    <value>يُرجى توصيل كابل فيديو وكابل USB بين كل جهاز كمبيوتر شخصي إلى\n الشاشة. يمكنك توصيل ما يصل إلى 4 أجهزة كمبيوتر شخصية (أجهزة الكمبيوتر ووحدات التحكم في\n الألعاب وما إلى ذلك). \r\n\r\nيُرجى تحديد نوع الكابل وتعيين اسم لكل مصدر.</value>
+  </data>
+  <data name="Kvm.8" xml:space="preserve">
+    <value>التبديل بين أجهزة الكمبيوتر الشخصية</value>
+  </data>
+  <data name="Kvm.9" xml:space="preserve">
+    <value>التبديل بين لوحة المفاتيح والماوس</value>
+  </data>
+  <data name="Kvm.10" xml:space="preserve">
+    <value>تغيير موضع PIP</value>
+  </data>
+  <data name="Kvm.11" xml:space="preserve">
+    <value>التبديل التلقائي لمنفذ USB العلوي في وضع PBP جنبًا إلى جنب</value>
+  </data>
+  <data name="Kvm.12" xml:space="preserve">
+    <value>مفاتيح التشغيل السريع لمصدر الإدخال</value>
+  </data>
+  <data name="Kvm.13" xml:space="preserve">
+    <value>تحرير مصدر الإدخال</value>
+  </data>
+  <data name="Kvm.14" xml:space="preserve">
+    <value>تحرير PIP/PBP</value>
+  </data>
+  <data name="Kvm.15" xml:space="preserve">
+    <value>التبديل بين المواضع</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>إنهاء</value>
+  </data>
+  <data name="Kvm.16" xml:space="preserve">
+    <value>إعداد PIP/PBP</value>
+  </data>
+  <data name="Kvm.17" xml:space="preserve">
+    <value>إعداد PIP/PBP‏\nلشاشتك</value>
+  </data>
+  <data name="Kvm.18" xml:space="preserve">
+    <value>يمكن لشاشتك عرض جهاز كمبيوتر شخصي واحد أو مصدر واحد في كل مرة (في وضع ملء الشاشة)،\nأو يمكن تقسيمها بين المصادر (صورةin/بجانب صورة).</value>
+  </data>
+  <data name="Kvm.19" xml:space="preserve">
+    <value>لا توجد وحدة KVM</value>
+  </data>
+  <data name="Kvm.20" xml:space="preserve">
+    <value>وحدة KVM عبر USB</value>
+  </data>
+  <data name="Kvm.21" xml:space="preserve">
+    <value>إعداد وحدة KVM عبر USB</value>
+  </data>
+  <data name="Kvm.22" xml:space="preserve">
+    <value>بدء تشغيل وحدة KVM جديدة عبر USB</value>
+  </data>
+  <data name="Kvm.23" xml:space="preserve">
+    <value>وحدة KVM للشبكة</value>
+  </data>
+  <data name="Kvm.24" xml:space="preserve">
+    <value>تحديد نوع إعداد وحدة KVM</value>
+  </data>
+  <data name="Kvm.25" xml:space="preserve">
+    <value>مناسبة لإعداد شاشة واحدة</value>
+  </data>
+  <data name="Kvm.26" xml:space="preserve">
+    <value>الإعداد من خلال منفذ USB للشاشة</value>
+  </data>
+  <data name="Kvm.27" xml:space="preserve">
+    <value>مفاتيح التشغيل السريع - التبديل بين أجهزة الكمبيوتر الشخصية: لا شيء</value>
+  </data>
+  <data name="Kvm.28" xml:space="preserve">
+    <value>مناسبة لإعداد شاشات متعددة</value>
+  </data>
+  <data name="Kvm.29" xml:space="preserve">
+    <value>الإعداد من خلال الشبكة</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>سهولة مشاركة الملفات بين أجهزة الكمبيوتر الشخصية (Mac وWindows) بأمان</value>
+  </data>
+  <data name="Kvm.31" xml:space="preserve">
+    <value>فتح وحدة KVM للشبكة</value>
+  </data>
+  <data name="Kvm.32" xml:space="preserve">
+    <value>لفتح نافذة أخرى لإعداد وحدة KVM للشبكة أو تحريرها</value>
+  </data>
+  <data name="MouseSettings.0" xml:space="preserve">
+    <value>حرك الماوس لإكمال التغيير إلى قيمة DPI</value>
+  </data>
+  <data name="MouseSettings.1" xml:space="preserve">
+    <value>قد تؤثر زيادة معدل الإبلاغ في عمر بطارية الماوس.</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>متوسط</value>
+  </data>
+  <data name="Slow" xml:space="preserve">
+    <value>بطيء</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>مرتفع</value>
+  </data>
+  <data name="PenButtonSettings.0" xml:space="preserve">
+    <value>الزر العلوي</value>
+  </data>
+  <data name="PenButtonSettings.1" xml:space="preserve">
+    <value>الزر الأسطواني العلوي</value>
+  </data>
+  <data name="PenButtonSettings.2" xml:space="preserve">
+    <value>الزر الأسطواني السفلي</value>
+  </data>
+  <data name="PenButtonSettings.3" xml:space="preserve">
+    <value>انقر مرة واحدة</value>
+  </data>
+  <data name="PenButtonSettings.4" xml:space="preserve">
+    <value>انقر نقرًا مزدوجًا</value>
+  </data>
+  <data name="PenButtonSettings.5" xml:space="preserve">
+    <value>اضغط مع الاستمرار</value>
+  </data>
+  <data name="PenButtonSettings.6" xml:space="preserve">
+    <value>انقر فوق المؤشر</value>
+  </data>
+  <data name="PenButtonSettings.7" xml:space="preserve">
+    <value>لتخصيص زر، انقر فوق الزر الموضح في الصورة على اليسار</value>
+  </data>
+  <data name="PenButtonSettings.8" xml:space="preserve">
+    <value>استعادة إلى الإجراءات الافتراضية</value>
+  </data>
+  <data name="PenSettings.0" xml:space="preserve">
+    <value>إعدادات القلم</value>
+  </data>
+  <data name="PenSettings.1" xml:space="preserve">
+    <value>حساسية السن</value>
+  </data>
+  <data name="PenSettings.2" xml:space="preserve">
+    <value>سيؤدي تحريك شريط التمرير إلى اليمين إلى\nتقليل الحساسية للضغط تدريجيًا\nوتحتاج إلى الضغط بقوة أكثر على القلم</value>
+  </data>
+  <data name="PenSettings.3" xml:space="preserve">
+    <value>حساسية الإمالة</value>
+  </data>
+  <data name="PenSettings.4" xml:space="preserve">
+    <value>سيؤدي تحريك شريط التمرير إلى اليمين إلى\nزيادة تأثير الإمالة تدريجيًا وتحتاج إلى\تطبيق زاوية إمالة أقل</value>
+  </data>
+  <data name="PenSettings.5" xml:space="preserve">
+    <value>إقران مع Tile</value>
+  </data>
+  <data name="PenSettings.6" xml:space="preserve">
+    <value>قم بإقران القلم بجهازك المحمول باستخدام\nتطبيق Tile</value>
+  </data>
+  <data name="PenSettings.7" xml:space="preserve">
+    <value>بدء التشغيل</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>ملء الشاشة</value>
+  </data>
+  <data name="PipPbp.0" xml:space="preserve">
+    <value>PIP</value>
+  </data>
+  <data name="PipPbp.1" xml:space="preserve">
+    <value>PBP</value>
+  </data>
+  <data name="PipPbp.2" xml:space="preserve">
+    <value>الإدخال 1 (الرئيسي)</value>
+  </data>
+  <data name="PipPbp.3" xml:space="preserve">
+    <value>الإدخال 2 (الفرعي)</value>
+  </data>
+  <data name="PipPbp.4" xml:space="preserve">
+    <value>الإدخال 3 (الفرعي)</value>
+  </data>
+  <data name="PipPbp.5" xml:space="preserve">
+    <value>الإدخال 4 (الفرعي)</value>
+  </data>
+  <data name="PipPbp.6" xml:space="preserve">
+    <value>مفتاح USB</value>
+  </data>
+  <data name="PipPbp.7" xml:space="preserve">
+    <value>التبديل بين المواضع</value>
+  </data>
+  <data name="SpeakerAudioPreset.0" xml:space="preserve">
+    <value>الإعداد المسبق للصوت</value>
+  </data>
+  <data name="SpeakerAudioPreset.1" xml:space="preserve">
+    <value>تنطبق هذه الإعدادات على الوسائط المتعددة فقط</value>
+  </data>
+  <data name="SpeakerAudioPreset.2" xml:space="preserve">
+    <value>الكلام</value>
+  </data>
+  <data name="SpeakerAudioPreset.3" xml:space="preserve">
+    <value>اضبط نطاقات الصوت حسب تفضيلاتك. تنطبق هذه الإعدادات على صوت الوسائط المتعددة فقط.</value>
+  </data>
+  <data name="SpeakerAudioSettings.0" xml:space="preserve">
+    <value>إلغاء ضوضاء الميكروفون الذكية</value>
+  </data>
+  <data name="SpeakerAudioSettings.1" xml:space="preserve">
+    <value>إشعار كتم الصوت</value>
+  </data>
+  <data name="SpeakerAudioSettings.2" xml:space="preserve">
+    <value>نغمة ضبط مستوى الصوت</value>
+  </data>
+  <data name="SpeakerAudioSettings.3" xml:space="preserve">
+    <value>كل مستوى</value>
+  </data>
+  <data name="SpeakerAudioSettings.4" xml:space="preserve">
+    <value>الحد الأدنى والحد الأقصى فقط</value>
+  </data>
+  <data name="SpeakerInteractions.0" xml:space="preserve">
+    <value>التفاعلات</value>
+  </data>
+  <data name="SpeakerInteractions.1" xml:space="preserve">
+    <value>مرر مؤشر الماوس فوق أسماء التطبيقات أدناه لعرض أزرار مكبرات الصوت المتاحة (المشار إليها باللون الأخضر)</value>
+  </data>
+  <data name="SpeakerInteractions.2" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="SpeakerInteractions.3" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="SpeakerInteractions.4" xml:space="preserve">
+    <value>Google Meet</value>
+  </data>
+  <data name="SpeakerInteractions.5" xml:space="preserve">
+    <value>Skype for Business</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>‎3-2-1 Countdown</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>شبكة التأطير</value>
+  </data>
+  <data name="WebCameraCapture.2" xml:space="preserve">
+    <value>فتح</value>
+  </data>
+  <data name="WebCameraCapture.3" xml:space="preserve">
+    <value>تغيير</value>
+  </data>
+  <data name="WebCameraCapture.4" xml:space="preserve">
+    <value>الدقة</value>
+  </data>
+  <data name="WebCameraCapture.5" xml:space="preserve">
+    <value>4K UHD</value>
+  </data>
+  <data name="WebCameraCapture.6" xml:space="preserve">
+    <value>Full HD</value>
+  </data>
+  <data name="WebCameraCapture.7" xml:space="preserve">
+    <value>HD</value>
+  </data>
+  <data name="WebCameraCapture.8" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="WebCameraCapture.9" xml:space="preserve">
+    <value>للتحكم في وضوح الفيديو ونمطه من خلال ضبط عدد الصور التي يتم التقاطها كل ثانية</value>
+  </data>
+  <data name="WebCameraCapture.10" xml:space="preserve">
+    <value>موقع ملفات الوسائط</value>
+  </data>
+  <data name="WebCameraColorImage.0" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="WebCameraColorImage.1" xml:space="preserve">
+    <value>يقوم النطاق الديناميكي العالي بالتصحيح تلقائيًا للحصول على جودة الصورة المثالية في ظروف الإضاءة المختلفة</value>
+  </data>
+  <data name="WebCameraColorImage.2" xml:space="preserve">
+    <value>توازن اللون الأبيض التلقائي</value>
+  </data>
+  <data name="WebCameraColorImage.3" xml:space="preserve">
+    <value>السطوع</value>
+  </data>
+  <data name="WebCameraColorImage.4" xml:space="preserve">
+    <value>الدقة</value>
+  </data>
+  <data name="WebCameraColorImage.5" xml:space="preserve">
+    <value>التباين</value>
+  </data>
+  <data name="WebCameraColorImage.6" xml:space="preserve">
+    <value>التشبع</value>
+  </data>
+  <data name="WebCameraColorImage.7" xml:space="preserve">
+    <value>منع الوميض</value>
+  </data>
+  <data name="WebCameraColorImage.8" xml:space="preserve">
+    <value>تقليل الوميض عند التسجيل تحت الإضاءة الصناعية</value>
+  </data>
+  <data name="WebCameraColorImage.9" xml:space="preserve">
+    <value>هرتز</value>
+  </data>
+  <data name="WebCameraMicrophone.0" xml:space="preserve">
+    <value>ميكروفون</value>
+  </data>
+  <data name="WebCameraMicrophone.1" xml:space="preserve">
+    <value>ميكروفون الكاميرا</value>
+  </data>
+  <data name="WebCameraMicrophone.2" xml:space="preserve">
+    <value>ملاحظة: هذا الميكروفون غير معتمد من Microsoft Teams. للحصول على تجربة مثالية لمكالمات Microsoft Teams، استخدم أجهزة الصوت المعتمدة من Microsoft Teams من Dell.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.0" xml:space="preserve">
+    <value>اكتشاف التواجد</value>
+  </data>
+  <data name="WebCameraPresenceDetection.1" xml:space="preserve">
+    <value>مستشعر القرب</value>
+  </data>
+  <data name="WebCameraPresenceDetection.2" xml:space="preserve">
+    <value>لاكتشاف وجودك عندما تكون داخل مجال الرؤية</value>
+  </data>
+  <data name="WebCameraPresenceDetection.3" xml:space="preserve">
+    <value>التنشيط عند الاقتراب</value>
+  </data>
+  <data name="WebCameraPresenceDetection.4" xml:space="preserve">
+    <value>تنشيط الكمبيوتر الشخصي عند الاقتراب</value>
+  </data>
+  <data name="WebCameraPresenceDetection.5" xml:space="preserve">
+    <value>القفل عند الابتعاد</value>
+  </data>
+  <data name="WebCameraPresenceDetection.6" xml:space="preserve">
+    <value>لقفل الكمبيوتر الشخصي وإيقاف تشغيل الشاشة عند الابتعاد</value>
+  </data>
+  <data name="WebCameraPresenceDetection.7" xml:space="preserve">
+    <value>تأخير</value>
+  </data>
+  <data name="WebCameraPresenceDetection.8" xml:space="preserve">
+    <value>غفوة</value>
+  </data>
+  <data name="WebCameraPresenceDetection.9" xml:space="preserve">
+    <value>طول الغفوة</value>
+  </data>
+  <data name="WebCameraPresenceDetection.10" xml:space="preserve">
+    <value>Windows Hello</value>
+  </data>
+  <data name="WebCameraPresenceDetection.11" xml:space="preserve">
+    <value>لتسجيل دخولك من خلال برنامج التعرف على الوجه. سيوجهك هذا الرابط إلى إعدادات Windows.</value>
+  </data>
+  <data name="WebCameraSettings.0" xml:space="preserve">
+    <value>التحكم في الكاميرا</value>
+  </data>
+  <data name="WebCameraSettings.1" xml:space="preserve">
+    <value>التأطير التلقائي بالذكاء الاصطناعي</value>
+  </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>يستخدم التحليل الذكي للمشهد وتتبع الوجه للتكبير/التصغير وتحريك المنظر عند التنقل</value>
+  </data>
+  <data name="WebCameraSettings.3" xml:space="preserve">
+    <value>انتقال الكاميرا</value>
+  </data>
+  <data name="WebCameraSettings.4" xml:space="preserve">
+    <value>للانتقال بسلاسة عن طريق التحريك والتكبير/التصغير عندما تعيد الكاميرا ضبط موضعك في الإطار</value>
+  </data>
+  <data name="WebCameraSettings.5" xml:space="preserve">
+    <value>حساسية التتبع</value>
+  </data>
+  <data name="WebCameraSettings.6" xml:space="preserve">
+    <value>لضبط مدى سرعة استجابة الكاميرا لحركتك وإعادة ضبط موضعك في الإطار</value>
+  </data>
+  <data name="WebCameraSettings.7" xml:space="preserve">
+    <value>مستوى عادي</value>
+  </data>
+  <data name="WebCameraSettings.8" xml:space="preserve">
+    <value>مستوى سريع</value>
+  </data>
+  <data name="WebCameraSettings.9" xml:space="preserve">
+    <value>حجم الإطار</value>
+  </data>
+  <data name="WebCameraSettings.10" xml:space="preserve">
+    <value>ضيق</value>
+  </data>
+  <data name="WebCameraSettings.11" xml:space="preserve">
+    <value>قياسي</value>
+  </data>
+  <data name="WebCameraSettings.12" xml:space="preserve">
+    <value>مجال الرؤية</value>
+  </data>
+  <data name="WebCameraSettings.13" xml:space="preserve">
+    <value>يضيق زاوية مجال رؤية الكاميرا أو يوسعها</value>
+  </data>
+  <data name="WebCameraSettings.14" xml:space="preserve">
+    <value>°</value>
+  </data>
+  <data name="WebCameraSettings.15" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="WebCameraSettings.16" xml:space="preserve">
+    <value>التركيز التلقائي</value>
+  </data>
+  <data name="WebCameraSettings.17" xml:space="preserve">
+    <value>لضبط عدسة الكاميرا بذكاء للحصول على التركيز البؤري والدقة</value>
+  </data>
+  <data name="WebCameraSettings.18" xml:space="preserve">
+    <value>الأولوية</value>
+  </data>
+  <data name="WebCameraSettings.19" xml:space="preserve">
+    <value>لإعطاء الأولوية لسلاسة فيديو FPS أو التعرض للحفاظ على المستوى المثالي للإضاءة</value>
+  </data>
+  <data name="WebCameraSettings.20" xml:space="preserve">
+    <value>التعرض</value>
+  </data>
+  <data name="WebCameraSettings.21" xml:space="preserve">
+    <value>معدل الإطارات</value>
+  </data>
+  <data name="WebCameraSettings.22" xml:space="preserve">
+    <value>لن يعمل معدل الإطارات/التعرض عند تشغيل HDR‏.\rانقر </value>
+  </data>
+  <data name="WebCameraSettings.23" xml:space="preserve">
+    <value>هنا </value>
+  </data>
+  <data name="WebCameraSettings.24" xml:space="preserve">
+    <value>لتغيير إعدادات HDR.</value>
+  </data>
+  <data name="WebCameraSettings.25" xml:space="preserve">
+    <value>إعطاء الأولوية لكاميرا الويب الخارجية</value>
+  </data>
+  <data name="WebCameraSettings.26" xml:space="preserve">
+    <value>للتبديل تلقائيًا بين كاميرا الويب UltraSharp من Dell وكاميرات الويب الأخرى (المدمجة والخارجية). ستستخدم تقنية Windows Hello كاميرا الويب النشطة للتعرف على الوجه. ملاحظة: يمكن تمكين كاميرا واحدة فقط والوصول إليها في كل مرة.</value>
+  </data>
+  <data name="Mouse.8" xml:space="preserve">
+    <value>حساسية التمرير باللمس</value>
+  </data>
+  <data name="Mouse.9" xml:space="preserve">
+    <value>ضبط سرعة التمرير</value>
+  </data>
+  <data name="Mouse.10" xml:space="preserve">
+    <value>زر الماوس الأساسي</value>
+  </data>
+  <data name="Mouse.11" xml:space="preserve">
+    <value>إعداد DPI</value>
+  </data>
+  <data name="Mouse.12" xml:space="preserve">
+    <value>معدل الإبلاغ</value>
+  </data>
+  <data name="Mouse.13" xml:space="preserve">
+    <value>عدد المرات في الثانية التي يتم فيها إبلاغ نظامك بوضع الماوس</value>
+  </data>
+  <data name="Wired" xml:space="preserve">
+    <value>سلكية</value>
+  </data>
+  <data name="Tooltip.0" xml:space="preserve">
+    <value>لقد قمت بتوصيل أجهزة متعددة من نفس الطراز. سيتم تكرار الإجراءات على كل مثيل للجهاز</value>
+  </data>
+  <data name="Tooltip.1" xml:space="preserve">
+    <value>لم يتم العثور على جهاز. تأكد من شحن جهازك اللاسلكي وتشغيله.</value>
+  </data>
+  <data name="Tooltip.2" xml:space="preserve">
+    <value>تم إقران هذا الجهاز بالفعل. قم بإلغاء إقران الجهاز أولاً إذا كنت ترغب في الإقران مرة أخرى.</value>
+  </data>
+  <data name="Tooltip.3" xml:space="preserve">
+    <value>هذا الجهاز الذي تقوم بإقرانه غير مدعوم بجهاز استقبال USB لاسلكي متصل. استخدم جهاز الاستقبال المرفق مع الجهاز.</value>
+  </data>
+  <data name="Tooltip.4" xml:space="preserve">
+    <value>الفتحات المتوفرة على جهاز الاستقبال اللاسلكي USB هذا ممتلئة. لاستخدامها، قم بإلغاء إقران جهاز منها بالنقر فوق الزر \&quot;إلغاء الإقران\&quot; في صفحة إعدادات الجهاز.</value>
+  </data>
+  <data name="Mouse.14" xml:space="preserve">
+    <value>انقر لتعيين إجراء</value>
+  </data>
+  <data name="Mouse.15" xml:space="preserve">
+    <value>حدد إجراءً من\nالقائمة الموجودة على اليمين</value>
+  </data>
+  <data name="USBWirelessReceiver" xml:space="preserve">
+    <value>جهاز استقبال USB لاسلكي</value>
+  </data>
+  <data name="ReceiverFirmwareVersion" xml:space="preserve">
+    <value>إصدار البرنامج الثابت لجهاز الاستقبال</value>
+  </data>
+  <data name="ReadyToBePaired" xml:space="preserve">
+    <value>جاهز للإقران</value>
+  </data>
+  <data name="BrightnessOrContrast" xml:space="preserve">
+    <value>السطوع/التباين</value>
+  </data>
+  <data name="DisplayProperties" xml:space="preserve">
+    <value>خصائص شاشة العرض</value>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>التخطيط</value>
+  </data>
+  <data name="EasyMemory" xml:space="preserve">
+    <value>ذاكرة سهلة</value>
+  </data>
+  <data name="VisionEngine" xml:space="preserve">
+    <value>محرك Vision</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>لا يوجد</value>
+  </data>
+  <data name="Copilot" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>الأجهزة</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>قفل</value>
+  </data>
+  <data name="NotificationCenter" xml:space="preserve">
+    <value>مركز الإشعارات</value>
+  </data>
+  <data name="ScreenSnip" xml:space="preserve">
+    <value>قصاصة الشاشة</value>
+  </data>
+  <data name="ShowHideDesktop" xml:space="preserve">
+    <value>إظهار/إخفاء الكمبيوتر المكتبي</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>إيقاف التشغيل</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>تسجيل الخروج</value>
+  </data>
+  <data name="Sleep" xml:space="preserve">
+    <value>السكون</value>
+  </data>
+  <data name="SwitchApplications" xml:space="preserve">
+    <value>تبديل التطبيقات</value>
+  </data>
+  <data name="TaskView" xml:space="preserve">
+    <value>عرض المهمة</value>
+  </data>
+  <data name="BarrelButton" xml:space="preserve">
+    <value>الزر الأسطواني</value>
+  </data>
+  <data name="DefineBySystem" xml:space="preserve">
+    <value>تحديد حسب النظام</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+  <data name="OneNote" xml:space="preserve">
+    <value>ملاحظة واحدة</value>
+  </data>
+  <data name="PenMenu" xml:space="preserve">
+    <value>قائمة القلم</value>
+  </data>
+  <data name="QuickNote" xml:space="preserve">
+    <value>ملاحظة سريعة</value>
+  </data>
+  <data name="ScreenSnipping" xml:space="preserve">
+    <value>قصاصة الشاشة</value>
+  </data>
+  <data name="StickyNotes" xml:space="preserve">
+    <value>الملاحظات الملصقة</value>
+  </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>عناصر واجهة المستخدم</value>
+  </data>
+  <data name="WindowsSearch" xml:space="preserve">
+    <value>Windows Search</value>
+  </data>
+  <data name="SwitchApplication" xml:space="preserve">
+    <value>تبديل التطبيق</value>
+  </data>
+  <data name="AssignKeystroke" xml:space="preserve">
+    <value>تخصيص نقرة المفتاح</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>اللون</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>رجوع</value>
+  </data>
+  <data name="Calculator" xml:space="preserve">
+    <value>الحاسبة</value>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>إغلاق النافذة</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>نسخ</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>قص</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>المستندات</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>للأمام</value>
+  </data>
+  <data name="MaximizeWindow" xml:space="preserve">
+    <value>تكبير النافذة</value>
+  </data>
+  <data name="MinimizeWindow" xml:space="preserve">
+    <value>تصغير النافذة</value>
+  </data>
+  <data name="MyHome" xml:space="preserve">
+    <value>الصفحة الرئيسية</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>فتح ملف</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>فتح مجلد</value>
+  </data>
+  <data name="OpenNewBrowserTab" xml:space="preserve">
+    <value>فتح علامة تبويب جديدة في المتصفح</value>
+  </data>
+  <data name="OpenWebPage" xml:space="preserve">
+    <value>فتح صفحة ويب</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>لصق</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>التكبير</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>التصغير</value>
+  </data>
+  <data name="ZoomReset" xml:space="preserve">
+    <value>إعادة تعيين التكبير/التصغير</value>
+  </data>
+  <data name="4thClick" xml:space="preserve">
+    <value>النقرة الرابعة</value>
+  </data>
+  <data name="5thClick" xml:space="preserve">
+    <value>النقرة الخامسة</value>
+  </data>
+  <data name="Erase" xml:space="preserve">
+    <value>مسح</value>
+  </data>
+  <data name="LeftClick" xml:space="preserve">
+    <value>النقر بزر الماوس الأيسر</value>
+  </data>
+  <data name="MiddleClick" xml:space="preserve">
+    <value>النقر بزر الماوس الأوسط</value>
+  </data>
+  <data name="OpenRun" xml:space="preserve">
+    <value>فتح/تشغيل</value>
+  </data>
+  <data name="OpenRun2" xml:space="preserve">
+    <value>فتح وتشغيل</value>
+  </data>
+  <data name="PenPageDown" xml:space="preserve">
+    <value>صفحة لأسفل</value>
+  </data>
+  <data name="PenPageUp" xml:space="preserve">
+    <value>صفحة لأعلى</value>
+  </data>
+  <data name="RadialMenu" xml:space="preserve">
+    <value>القائمة الشعاعية</value>
+  </data>
+  <data name="Redo" xml:space="preserve">
+    <value>إعادة</value>
+  </data>
+  <data name="RightClick" xml:space="preserve">
+    <value>النقر بزر الماوس الأيمن</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+</root>

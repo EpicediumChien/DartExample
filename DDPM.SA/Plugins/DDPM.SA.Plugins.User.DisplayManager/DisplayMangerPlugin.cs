@@ -35,10 +35,12 @@ using System.Security.Policy;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using VcpCore.Common;
 using VcpCore.Interfaces;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using static VcpCore.Common.EDIDReader;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 
 //using WinCopies;
@@ -2454,7 +2456,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private IEasyArrangeService _eaService;
         private PluginCondition _eaPluginCondition;
 
-        public event EventHandler<string> EAEditCompleted;
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public event EventHandler<string> EAEditCompleted;
 
         public event EventHandler<string> EAEditStarted;
 
@@ -2493,7 +2496,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (!_isEaPluginConfigured)
                         {
                             _isEaPluginConfigured = true;
-                            _eaService.EditCompleted += _eaService_EditCompleted;
+                            //Robert_Lin, 2024-9-13 Remove unused interfaces
+                            //_eaService.EditCompleted += _eaService_EditCompleted;
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
@@ -2507,7 +2511,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         if (!_isEaPluginConfigured)
                         {
                             _isEaPluginConfigured = true;
-                            _eaService.EditCompleted += _eaService_EditCompleted;
+                            //Robert_Lin, 2024-9-13 Remove unused interfaces
+                            //_eaService.EditCompleted += _eaService_EditCompleted;
                             _eaService.EditStarted += _eaService_EditStarted;
                             //Robert_Lin, 2024-8-4
                             _eaService.EditReturn += _eaService_EditReturn;
@@ -2525,13 +2530,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        private void _eaService_EditCompleted(object sender, string e)
-        {
-            if (EAEditCompleted != null)
-            {
-                Task.Run(() => EAEditCompleted.Invoke(this, e));
-            }
-        }
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //private void _eaService_EditCompleted(object sender, string e)
+        //{
+        //    if (EAEditCompleted != null)
+        //    {
+        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
+        //    }
+        //}
 
         private void EaCondition_PluginConditionChangeHandler(object sender, EventArgs e)
         {
@@ -2567,14 +2573,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
-        {
-            if (_eaService != null)
-            {
-                return _eaService.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
-            }
-            return Task.FromResult(false);
-        }
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
+        //{
+        //    if (_eaService != null)
+        //    {
+        //        return _eaService.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
+        //    }
+        //    return Task.FromResult(false);
+        //}
 
         //Robert_Lin,2024-8-4
         public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
@@ -2598,6 +2605,31 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
+        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo)
+        //{
+        //    if (_eaService != null)
+        //    {
+        //        Task.Run(() =>
+        //        {
+        //            return _eaService.EAReloadMonitorSettings(monitorInfo);
+        //        });
+        //    }
+        //    return Task.FromResult(false);
+        //}
+
+        public Task<bool> ReloadEzSettings()
+        {
+            if (_eaService != null)
+            {
+                
+                return _eaService.ReloadEzSettings();
+            }
+            else
+            {
+                _logs.DebugMsg($"@ DisplayManager.ReloadEzSettings(): _eaService is in null");
+            }
+            return Task.FromResult(false);
+        }
         #endregion
 
         #region OutReport

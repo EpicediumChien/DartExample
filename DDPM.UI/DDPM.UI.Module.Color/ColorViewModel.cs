@@ -110,9 +110,9 @@ namespace DDPM.UI.Module.Color
             }
         }
 
-        private string _isTabStoppable = "Cycle";
+        private bool _isTabStoppable;
 
-        public string isTabStoppable
+        public bool isTabStoppable
         {
             get { return _isTabStoppable; }
             set
@@ -122,6 +122,17 @@ namespace DDPM.UI.Module.Color
             }
         }
 
+        private string _TabNavigation = "Cycle";
+
+        public string TabNavigation
+        {
+            get { return _TabNavigation; }
+            set
+            {
+                _TabNavigation = value;
+                OnPropertyChanged("TabNavigation");
+            }
+        }
 
         private Visibility isAdvanced_Settings;
 
@@ -314,8 +325,8 @@ namespace DDPM.UI.Module.Color
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
                 }
             }
             return index;
@@ -335,7 +346,8 @@ namespace DDPM.UI.Module.Color
             {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
                 {
-                    DeviceInfo = mo.edid,
+                    ModelName = mo.edid.ModelName,
+                    SerialNumber = mo.edid.SerialNumber,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
                     PresetForManual = "Standard/Native",
@@ -714,7 +726,12 @@ namespace DDPM.UI.Module.Color
                
                 //Lock/unlock mask and tabstop init here
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
-                //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
+                                                                                                  //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
+
+                LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
+                ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
+                isTabStoppable = !data.LockSettings.Lock_Display_ColorPreset;
+
                 //Read user default lock value, these values are synced from IT lock event          
                 Trace.WriteLine($"[SettingsPage] Color right page(Lock) : {data.LockSettings.Lock_Display_ColorPreset}"); 
             }
@@ -962,6 +979,9 @@ namespace DDPM.UI.Module.Color
             OnPropertyChanged("AppsList");
             OnPropertyChanged("NightlightStatus");
             OnPropertyChanged("IsisAdvanced_Settings");
+
+            OnPropertyChanged("TabNavigation");
+            OnPropertyChanged("isTabStoppable");
         }
 
         private void update_ui_over_runtype(ColorPresetSettings config)

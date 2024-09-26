@@ -65,6 +65,8 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         public List<SplitJson> RecentList { get; set; }
 
+        //Robert_Lin, 2024-9-18 Move these flags to DDPMUserSettings
+        /*
         /// <summary>
         /// The setting of "Allow app to split side by side without gap" in Easy Arrange / Settings page.
         /// The defualt value is True.
@@ -82,6 +84,12 @@ namespace DDPM.SA.Common.Settings
         /// The defualt value is False.
         /// </summary>
         public bool? IsSpanAcrossMultiMonitors { get; set; } = false;
+
+        /// <summary>
+        /// The settings of "Application Window Snap" in Easy Arrange / Settings page.
+        /// </summary>
+        public bool IsAwsEnabled { get; set; } = false;
+        */
     }
 
     public class DDPMMonitorSettings

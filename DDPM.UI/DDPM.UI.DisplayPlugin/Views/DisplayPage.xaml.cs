@@ -392,8 +392,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             //if (moduleCapabilities.EzSettings)
             {
                 sw.Restart();
-                //moduleGroup.AddHeader("Settings", new EzSettingsModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
-                moduleGroup.AddHeader(Strings.RightViewHeader_Settings, new EzSettingsModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
+                moduleGroup.AddHeader(Strings.RightViewHeader_Settings, typeof(EzSettingsModule));
+                //moduleGroup.AddHeader(Strings.RightViewHeader_Settings, new EzSettingsModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
                 sw.Stop();
                 _log?.Info($"* EzSettingsModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
