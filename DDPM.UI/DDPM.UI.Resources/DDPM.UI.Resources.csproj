@@ -338,6 +338,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\info18.png" />
+    <Resource Include="Resources\Images\KB740.png" />
     <Resource Include="Resources\Images\Pause.png" />
     <Resource Include="Resources\Images\Play.png" />
     <Resource Include="Resources\Images\RedCircle.png" />
@@ -521,7 +522,6 @@
     <Resource Include="Resources\Images\KB525C.png" />
     <Resource Include="Resources\Images\KB555.png" />
     <Resource Include="Resources\Images\KB700.png" />
-    <Resource Include="Resources\Images\KB740.png" />
     <Resource Include="Resources\Images\KB900.png" />
     <Resource Include="Resources\Images\MButton11.png" />
     <Resource Include="Resources\Images\MButton12.png" />

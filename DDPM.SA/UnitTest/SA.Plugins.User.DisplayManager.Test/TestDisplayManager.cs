@@ -834,6 +834,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             }
         }
 
+        //Robert_Lin 2024-9-24 this interface has been removed
+        /*
         [Test]
         public void TestRequestEditSplit()
         {
@@ -860,6 +862,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.That(result2, Is.EqualTo(SetEAWrokSplitResult));
             }
         }
+        */
+
 
         [Test]
         public void TestGetALSFeatureValue()

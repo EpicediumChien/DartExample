@@ -100,7 +100,7 @@
                         <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="White" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                     </Grid>
 
-                    <!-- Control the noise I hear -->
+                    <!-- Control the noise I hear -->                 
                     <Grid x:Name="NoiseControlGrid" VerticalAlignment="Top" Margin="0,0,0,20">
                         <Border Visibility="{Binding ControlTheNoiseIHearPageShow, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="NoiseControlBorder" Background="#99132F54" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="NoiseControlStackPanel" Orientation="Vertical">
@@ -141,7 +141,21 @@
                                         </Image.ToolTip>
                                     </Image>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Border x:Name="AncModeLockBorder" Background="#132F54" CornerRadius="13" >
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Opacity" Value="1" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding isAncModeLocked}" Value="Visible">
+                                                    <Setter Property="Opacity" Value="0.6" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding isAncModeLocked}" Value="Collapsed">
+                                                    <Setter Property="Opacity" Value="1" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >                                    
                                     <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
@@ -216,44 +230,45 @@
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
 
-                                    <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
-                                        <UXControls:UXToggleSwitch.Template>
-                                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="NoiseOffButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                                                    <Grid>
-                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <Image Source="/DDPM.UI.Common;component/Resources/Headset_off.png" Width="24" Height="24" />
-                                                            <UXControls:UXTextBlock x:Name="NoiseOffButtonTextBlock" Text="{Binding [HeadsetAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
-                                                        </StackPanel>
-                                                        <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
-                                                            <Image.ToolTip>
-                                                                <ToolTip>
-                                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                                        <Border.Resources>
-                                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                                                        </Border.Resources>
-                                                                        <StackPanel>
-                                                                            <StackPanel Orientation="Horizontal">
-                                                                                <TextBlock Text="{Binding NoiseOffInfoTip}" />
+                                        <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1" BorderBrush="#1E3F6C" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                            <UXControls:UXToggleSwitch.Template>
+                                                <ControlTemplate TargetType="UXControls:UXToggleSwitch">
+                                                    <Border x:Name="NoiseOffButtonBorder" Background="{StaticResource NormalBackground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                        <Grid>
+                                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <Image Source="/DDPM.UI.Common;component/Resources/Headset_off.png" Width="24" Height="24" />
+                                                                <UXControls:UXTextBlock x:Name="NoiseOffButtonTextBlock" Text="{Binding [HeadsetAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="White" TextAlignment="Center" Margin="0,8,0,0" />
+                                                            </StackPanel>
+                                                            <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                                <Image.ToolTip>
+                                                                    <ToolTip>
+                                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                                            <Border.Resources>
+                                                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                                            </Border.Resources>
+                                                                            <StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <TextBlock Text="{Binding NoiseOffInfoTip}" />
+                                                                                </StackPanel>
                                                                             </StackPanel>
-                                                                        </StackPanel>
-                                                                    </Border>
-                                                                </ToolTip>
-                                                            </Image.ToolTip>
-                                                        </Image>
-                                                    </Grid>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsChecked" Value="True">
-                                                        <Setter TargetName="NoiseOffButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                        <Setter TargetName="NoiseOffButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </UXControls:UXToggleSwitch.Template>
-                                    </UXControls:UXToggleSwitch>
-                                </StackPanel>
-
+                                                                        </Border>
+                                                                    </ToolTip>
+                                                                </Image.ToolTip>
+                                                            </Image>
+                                                        </Grid>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="NoiseOffButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
+                                                            <Setter TargetName="NoiseOffButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </UXControls:UXToggleSwitch.Template>
+                                        </UXControls:UXToggleSwitch>
+                                    </StackPanel>
+                                </Border>
+                                <!--</Border>-->
                                 <!--可隱藏縮排-->
                                 <Grid Visibility="{Binding IsTransparencyChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <Grid>
@@ -794,7 +809,7 @@
                                             <ColumnDefinition Width="315*" />
                                             <ColumnDefinition Width="67*"/>
                                         </Grid.ColumnDefinitions>
-                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,20,0,0" />
+                                        <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0" />
                                         <Image Grid.Column="1" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,23,0,2">
                                             <Image.ToolTip>
                                                 <ToolTip>
@@ -811,7 +826,7 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
-                                        <UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="0,31,20,0" />
+                                        <UXControls:UXToggleSwitch Name="SidetoneToggleSwitch" FontSize="16" Content="{Binding Path=Sidetone_String, FallbackValue='OFF'}" IsChecked="{Binding Path=SidetoneStatus}" IsEnabled="{Binding Path=IsTransparencyChecked, Converter={StaticResource InverseBooleanConverter}}" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Center" AutomationProperties.Name="SidetoneToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Margin="-20,31,20,0" />
                                     </Grid>
                                     <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" />
                                     <StackPanel x:Name="SidetoneSliderStackPanel" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,20">

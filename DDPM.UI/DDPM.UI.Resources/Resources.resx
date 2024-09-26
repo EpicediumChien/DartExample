@@ -1204,7 +1204,7 @@
     <value>FPS</value>
   </data>
   <data name="WebCameraCapture.9" xml:space="preserve">
-    <value>Controls video clarity and style by adjusting the number of images captured per second</value>
+    <value>Controls video clarity and style by adjusting the number of images captured per second.</value>
   </data>
   <data name="WebCameraCapture.10" xml:space="preserve">
     <value>Media Files Location</value>

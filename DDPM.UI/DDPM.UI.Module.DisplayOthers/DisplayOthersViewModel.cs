@@ -11,6 +11,7 @@ using DDPM.UI.Common;
 using DDPM.SA.Common.Display;
 using System.Windows.Forms;
 using System.Windows;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.UI.Module.DisplayOthers
 {
@@ -40,7 +41,7 @@ namespace DDPM.UI.Module.DisplayOthers
             get => _powerNapEnabled;
             set
             {
-                
+
                 SetProperty(ref _powerNapEnabled, value);
                 PowerNap_text = _powerNapEnabled ? Strings.On : Strings.Off;
                 OnPropertyChanged("PowerNap_Enable");
@@ -97,11 +98,17 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public bool AutoApply_Checked { get; set; }
 
-        public bool isSettingsEnable {  get; set; } = true;
+        public bool isSettingsEnable { get; set; } = true;
 
         public Visibility LockSettings_Visibility { get; set; } = Visibility.Collapsed;
 
         public double Settings_Opacity { get; set; } = 1;
+
+        public bool isLockPowerNapEnable { get; set; } = true;
+
+        public Visibility LockPowerNap_Visibility { get; set; } = Visibility.Collapsed;
+
+        public double LockPowerNap_Opacity { get; set; } = 1;
 
         #region UI Enable Flags
 
@@ -135,6 +142,17 @@ namespace DDPM.UI.Module.DisplayOthers
                 _powerNapEnabled = false;
                 //todo get powerNapSupport
                 List<SA.Common.Display.PowerNapSetting> settings = DdpmCommonHelper.DeviceManagerSA.ReadPowerNapSettings().Result;
+                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    if (data.LockSettings.Lock_Display_PowerNap)
+                    {
+                        //Do lock ui init here (direct set or binding via vm)
+                        LockPowerNap_Visibility = Visibility.Visible;
+                        isLockPowerNapEnable = true;
+                        LockPowerNap_Opacity = 0.5;
+                    }
+                }
                 string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber;
                 settings.RemoveAll(x => x.SerialNumber == null);
                 PowerNapSetting crtSetting = settings.Find(x => x.SerialNumber == crtSn);
@@ -189,7 +207,7 @@ namespace DDPM.UI.Module.DisplayOthers
         private void ImpExpSettings_Dowork(object sender, DoWorkEventArgs e)
         {
             string ImpExppath = e.Argument.ToString();
-            if (ImpExppath.Substring(0,3) == "Imp")
+            if (ImpExppath.Substring(0, 3) == "Imp")
             {
                 bool b = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, AutoApply_Checked, ImpExppath.Substring(3)).Result;
             }
@@ -219,7 +237,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 ImpExpSettings("Exp", filename);
                 return true;
             }
-            else 
+            else
             {
                 IsBusy = false;
                 OnPropertyChanged("IsBusy");
@@ -248,5 +266,16 @@ namespace DDPM.UI.Module.DisplayOthers
 
             return false;
         }
+
+        public void OnPropertyChanged_Lock()
+        {
+            OnPropertyChanged("isSettingsEnable");
+            OnPropertyChanged("LockSettings_Visibility");
+            OnPropertyChanged("Settings_Opacity");
+            OnPropertyChanged("isLockPowerNapEnable");
+            OnPropertyChanged("LockPowerNap_Visibility");
+            OnPropertyChanged("LockPowerNap_Opacity");
+        }
+
     }
 }

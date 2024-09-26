@@ -182,6 +182,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
             if (_commandLineInput.GuidString.Count == 0)
             {
+                int go = 0;
                 Debug.WriteLine($"{_commandLineInput.PluginsType}");
                 _deviceinfo.ForEach(x =>
                 {
@@ -190,10 +191,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                         //if (_commandLineInput.TargetFeature == "HDR" || _commandLineInput.TargetFeature == "ANTIFLICKER" || _commandLineInput.TargetFeature == "AIAUTOFRAMING")
                             GetResults.Add(new CLI_PeripheralRESPONSE(_devMgr, x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
                         //else
-                            //GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
-
+                        //GetResults.Add(new CLI_PeripheralRESPONSE(x, _commandLineInput.PluginsType, _commandLineInput.TargetFeature));
+                        go++;
                     }
                 });
+                if (go == 0)
+                {
+                    GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
+                }
             }
             else
             {
@@ -240,6 +245,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
             if (_commandLineInput.GuidString.Count == 0)
             {
+                int go = 0;
                 if (_deviceinfo == null || _deviceinfo.Count == 0)
                 {
                     SetResults.Add(new CLI_PeripheralRESPONSE("N/A", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found", "N/A", "N/A"));
@@ -251,8 +257,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         SetResults.Add(new CLI_PeripheralRESPONSE($"{{{x.ID}}}", _commandLineInput.Command, _commandLineInput.TargetFeature, "", "", $"{x.Name}", $"{x.ModelNumber}"));
                         ItemId = x.ID.ToString();
+                        go++;
                     }
                 });
+                if (go == 0)
+                {
+                    SetResults.Add(new CLI_PeripheralRESPONSE("N/A", "SET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
+                    return (int)CLI_ExitCode.fail_GetPeripheralProperty;
+                }
             }
             else
             {

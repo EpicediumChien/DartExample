@@ -86,7 +86,7 @@ echo "{E5DA6004-21DC-4058-917F-A0ECF838EA03}"="%BaseDir%\\bin\\DDPM.Subagent.Use
 echo "{D034EE8F-7C8A-4296-8B5B-33B4E978C6B5}"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.User.DTPProxy.dll">>%OutFile%
 echo.>>%OutFile%
 :: This section is used to generate secret key and version info, test purpose
-echo [HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{21A24609-08A2-423E-80DE-4D33A933F1A1}]>>%OutFile%
+echo [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{21A24609-08A2-423E-80DE-4D33A933F1A1}]>>%OutFile%
 echo "DisplayName"="Dell Display and Peripheral Manager">>%OutFile%
 echo "DisplayVersion"="2.0.0.40">>%OutFile%
 echo "InstallLocation"="C:\\Program Files\\Dell\\Dell Display and Peripheral Manager">>%OutFile%
