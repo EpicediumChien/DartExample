@@ -592,10 +592,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (File.Exists(strFilePath))
             {
                 string strReadJson = string.Empty;
-                using (var reader = new StreamReader(strFilePath))
-                {
-                    strReadJson = reader.ReadToEnd();
-                }
+                //using (var reader = new StreamReader(strFilePath))
+                //{
+                //    strReadJson = reader.ReadToEnd();
+                //}
+                string info;
+                strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
 
                 if (strReadJson == string.Empty || strReadJson.Length == 0)
                     return Task.FromResult(_preset_settings);
@@ -622,9 +624,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (colorPresetSettings == null)
                 return Task.FromResult(false);
 
-            string temp = RunSerializeObject(colorPresetSettings);
-            if (!string.IsNullOrWhiteSpace(temp))
-                return Task.FromResult(true);
+            //string temp = RunSerializeObject(colorPresetSettings);
+            //if (!string.IsNullOrWhiteSpace(temp))
+            //    return Task.FromResult(true);
+            JObject obj = new JObject(colorPresetSettings);
+            string info;
+            bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
 
             return Task.FromResult(false);
         }

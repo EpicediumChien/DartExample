@@ -204,7 +204,7 @@ namespace DDPM.UI.Module.Color.Tests
         public void Testget_index_of_json_config_for_cur_monitor()
         {
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
-            temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
+            temp.Add(new ColorPresetSettings() { ModelName = "123", SerialNumber = "111" });
             monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = temp;
 
@@ -219,7 +219,7 @@ namespace DDPM.UI.Module.Color.Tests
         public void Testget_cur_monitor_preset_config()
         {
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
-            temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
+            temp.Add(new ColorPresetSettings() { ModelName = "123", SerialNumber = "111" });
             monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = temp;
 

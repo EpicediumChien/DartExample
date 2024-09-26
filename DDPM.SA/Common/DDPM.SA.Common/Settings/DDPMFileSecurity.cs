@@ -258,7 +258,7 @@ namespace DDPM.SA.Common.Settings
                 Console.WriteLine(info);
                 return string.Empty;
             }
-            if (jObject == null || jObject.Count == 0)
+            if (jObject == null)// || jObject.Count == 0)
             {
                 info = "Convert from json content got no object";
                 Console.WriteLine(info);

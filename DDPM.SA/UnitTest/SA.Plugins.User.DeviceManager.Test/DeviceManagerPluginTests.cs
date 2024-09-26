@@ -433,8 +433,8 @@ namespace SA.Plugins.User.DeviceManager.Test
         public void Testget_index_of_json_config_for_cur_monitor()
         {
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
-            temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
-            var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
+            temp.Add(new ColorPresetSettings() { ModelName = "DELLU3224KB", SerialNumber = "808792396" });
+            var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "DELLU3224KB", SerialNumber = "808792396" } };
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = temp;
 
             var result = deviceMangerPlugin.get_index_of_json_config_for_cur_monitor(monitorInfo);
