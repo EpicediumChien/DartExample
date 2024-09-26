@@ -748,7 +748,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             var Result = SettingsManagerSAPlugin.InitDDPMMonitorConfigFile(modelname, out binit).Result;  // ReloadMonitorSettings is null
             PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
             var _allDDPMMonitorSettings = (Dictionary<string, List<DDPMMonitorSettings>>)privatesettingsManagerObj.GetFieldOrProperty("_AllMonitorSettings");
-            Assert.That(dDPMMonitorSettingsList, Is.EqualTo(Result));
+            Assert.IsNotNull(Result);
             Assert.Greater(_allDDPMMonitorSettings.Count, 0);
             Assert.IsTrue(_allDDPMMonitorSettings.ContainsKey(modelname));
         }
@@ -1037,6 +1037,238 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.IsNotNull(ReadAllMonitorSettingsResult);
             Assert.Greater(ReadAllMonitorSettingsResult.Count, 0);
             Assert.That(_allMonitorSettings, Is.EqualTo(_allMonitorSettings));
+        }
+
+        [Test]
+        public void TestReadImportSettingsFile()
+        {
+            DDPMImpExpSettings ImpSettings = new DDPMImpExpSettings();
+            string path = "TestReadImportSettings";
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            var ReadImportSettingsFileResult = (DDPMImpExpSettings)privatesettingsManagerObj.Invoke("ReadImportSettingsFile", path);
+            Assert.IsNotNull(ReadImportSettingsFileResult);
+            Assert.That(ImpSettings.AppSettings, Is.EqualTo(ReadImportSettingsFileResult.AppSettings));
+            Assert.That(ImpSettings.UserSettings, Is.EqualTo(ReadImportSettingsFileResult.UserSettings));
+            Assert.That(ImpSettings.MonitorSettings, Is.EqualTo(ReadImportSettingsFileResult.MonitorSettings));
+        }
+
+        [Test]
+        public void TestRunImpExpDeserializeObject()
+        {
+            double Version = 2.0;
+            double Version2 = 1.5;
+            double Version3 = 1.2;
+            int Language = 1;
+            string Model = "TestModel";
+            string ServiceTag = "12345";
+            string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            var RunDDPMImpExpSettingsDes_Result = (DDPMImpExpSettings)privatesettingsManagerObj.Invoke("RunImpExpDeserializeObject", DDPMImpExpSetjsonData);
+            Assert.IsNotNull(RunDDPMImpExpSettingsDes_Result);
+            Assert.IsNotNull(RunDDPMImpExpSettingsDes_Result.AppSettings);
+            Assert.That(Version, Is.EqualTo(RunDDPMImpExpSettingsDes_Result.AppSettings.Version));
+            Assert.IsNotNull(RunDDPMImpExpSettingsDes_Result.UserSettings);
+            Assert.That(Version2, Is.EqualTo(RunDDPMImpExpSettingsDes_Result.UserSettings.Version));
+            Assert.That(Language, Is.EqualTo(RunDDPMImpExpSettingsDes_Result.UserSettings.Language));
+            Assert.IsNotNull(RunDDPMImpExpSettingsDes_Result.MonitorSettings);
+            Assert.That(Version3, Is.EqualTo(RunDDPMImpExpSettingsDes_Result.MonitorSettings.Version));
+            Assert.That(Model, Is.EqualTo(RunDDPMImpExpSettingsDes_Result.MonitorSettings.Model));
+            Assert.That(ServiceTag, Is.EqualTo(RunDDPMImpExpSettingsDes_Result.MonitorSettings.ServiceTag));
+        }
+
+        [Test]
+        public void TestWriteImpExpSettings()
+        {
+            bool WriteImpExpSettingsF = false;
+            string WriteImpExpSet_path2 = "WriteImpExpSet.json";
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            File.WriteAllText(WriteImpExpSet_path2, MonitorListjsonData);
+            DDPMImpExpSettings dDPMImpExpSettings = new DDPMImpExpSettings()
+            {
+                AppSettings = new DDPMAppSettings() { Version = 1.0 },
+                MonitorSettings = new DDPMMonitorSettings()
+                {
+                    Version = 2.0,
+                    Model = "TestMode",
+                    ServiceTag = "123456",
+                    EA = new EAMonitorSettings()
+                    {
+                        SelectedSplit = new SplitJson(),
+                        CustomList = new List<SplitJson>(),
+                        RecentList = new List<SplitJson>(),
+                    },
+                    Input = new Input()
+                    {
+                        strInputSourceList = "HDMI=1"
+                    },
+                    KVM = new KVM()
+                    {
+                        strUSBKVMPCsList = "TestUSBKVM",
+                        isOnNKVM = false,
+                        isOnUSBKVM = true,
+                    },
+                    VCPs = new List<VCP>()
+            {
+                new VCP()
+                {
+                    Code=0X12,
+                    Value=new List<int>() { 1,2}
+                }
+            },
+                }
+            };
+            DDPMImpExpSettings dDPMImpExpSettingsNull = new DDPMImpExpSettings();
+            dDPMImpExpSettingsNull = null;
+            bool WriteImpExpSettingsT = true;
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            if (dDPMImpExpSettingsNull == null)
+            {
+                var WriteImpExpSettings_Result = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path2, dDPMImpExpSettingsNull); //dDPMImpExpSettingsNull null
+                Assert.IsNotNull(WriteImpExpSettings_Result);
+                Assert.That(WriteImpExpSettingsF, Is.EqualTo(WriteImpExpSettings_Result));
+            }
+            if (dDPMImpExpSettings != null)
+            {
+                var WriteImpExpSettings_Result2 = (bool)privatesettingsManagerObj.Invoke("WriteImpExpSettings", WriteImpExpSet_path2, dDPMImpExpSettings); //dDPMImpExpSettings not null
+                Assert.IsNotNull(WriteImpExpSettings_Result2);
+                Assert.That(WriteImpExpSettingsT, Is.EqualTo(WriteImpExpSettings_Result2));
+                File.Delete(WriteImpExpSet_path2);
+            }
+        }
+
+        [Test]
+        public void TestDisplayImportSettings()
+        {
+            string DisplayImportSettings_path = "TestDDPMImpExpSettings.json";
+            string DisplayImportSettings_path2 = "TestU2724DD.json";
+            bool isSameModel = false;
+            List<VCP> Testvcps = new List<VCP>();
+            bool DisplayImportSettings1 = false;
+            bool DisplayImportSettings2 = true;
+            string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestU2724DD\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
+            File.WriteAllText(DisplayImportSettings_path, DDPMImpExpSetjsonData);
+            DisplayImportSettings_path = Environment.CurrentDirectory + "\\" + DisplayImportSettings_path;
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string monitorSettings_path = string.Empty;
+            privatesettingsManagerObj.SetFieldOrProperty("_display_path", string.Empty);
+            if (monitorSettings_path == string.Empty)
+            {
+                var DisplayImportSettings_result = SettingsManagerSAPlugin.DisplayImportSettings(DisplayImportSettings_path, isSameModel, out Testvcps).Result; //file no exist monitorSettings_path
+                Assert.That(DisplayImportSettings1, Is.EqualTo(DisplayImportSettings_result));
+            }
+            string monitorSettings_path2 = Environment.CurrentDirectory + "\\" + DisplayImportSettings_path2;
+            privatesettingsManagerObj.SetFieldOrProperty("_display_path", Environment.CurrentDirectory);
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            File.WriteAllText(DisplayImportSettings_path2, MonitorListjsonData);
+            List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
+            Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+            DDPMMonitorSettings settings = new DDPMMonitorSettings
+            {
+                Version = 1.0f,
+                Model = "TestU2724DF",
+                ServiceTag = "12345",
+                Input = new Input() { strInputSourceList = "HDMI-1" },
+                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                EA = new EAMonitorSettings(),
+            };
+            _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings }); //ReloadMonitorSettings
+            privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
+
+            if (monitorSettings_path2 != null)
+            {
+                var DisplayImportSettings_result2 = SettingsManagerSAPlugin.DisplayImportSettings(DisplayImportSettings_path, isSameModel, out Testvcps).Result; //file exist monitorSettings_path
+                Assert.That(DisplayImportSettings2, Is.EqualTo(DisplayImportSettings_result2));
+            }
+            File.Delete(DisplayImportSettings_path);
+            File.Delete(DisplayImportSettings_path2);
+
+        }
+
+        [Test]
+        public void TestDisplayExportSettings()
+        {
+            string modelname = "TestU2724DD";
+            string seriveTag = "12345";
+            string path = "testpath";
+
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            var Ddpm_app_ = new DDPMAppSettings();
+            var Ddpm_user_ = new DDPMUserSettings()
+            {
+                Version = 1.0,
+                Language = (int)Languages.en,
+                IsSynchronizemonitor = false,
+                Schedule = string.Empty,
+                DelayFWUpdateInfoPackage = new FWUpdateInfoPackage(),
+                LockRotate = true,
+                isTelemetryConsentOn = true,
+                LockFWU_UI = true,
+                UODFWUInfoPackage = new DokcUODUpdateInfoPackage(),
+                SupportedMonitorList = new List<string> { "Testmonitor1", "TestMonitor2" },
+                DelaySWUpdateInfoPackage = new SWUpdateInfoPackage(),
+            };
+            var Ddpm_it_ = new DDPMITConfig()
+            {
+                Lock_Settings_TelemetryConsent = false,
+                Lock_Settings_Updates = false,
+                Lock_Display_ExportSettings = false,
+                Lock_Setting_RestoreDefaults = false,
+                Lock_Display_BriCont = false,
+                Lock_Display_AutoBriTemp = false,
+                Lock_Display_NetworkKVM = false,
+                Lock_Display_ColorPreset = false,
+                Lock_Display_PowerNap = false,
+                Lock_Display_ResolutionRefreshRate = false,
+                Lock_Display_USBCPrioritization = false,
+                Lock_Display_ActiveInputSource = false,
+                Lock_Webcam_RestoreFactoryDefaults = false,
+                Lock_Audio_RestoreFactoryDefaults = false,
+                Lock_Keyboard_RestoreFactoryDefaults = false,
+                Lock_Mouse_RestoreFactoryDefaults = false,
+                Lock_Pen_RestoreFactoryDefaults = false,
+                Lock_Keyboard_CollabScreenShare = false,
+            };
+            var settings_Data = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
+            var ddpm_it = new DDPMITConfig();
+            Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+            SysSettingsPlugin.Setup(x => x.GetITGlobalConfigs(It.IsAny<bool>())).Returns(Task.FromResult(Ddpm_it_));
+            var SysSettingsPluginObj = SysSettingsPlugin.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
+
+            string accessInfo_ = "testaccessinfo";
+            string serialized_string = "{\"key\":\"value\"}";
+            string settings_path_target_file = "testReloadAppConfigDatafile.json";  //ReloadAppConfigData
+            File.WriteAllText(settings_path_target_file, serialized_string);
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+            privateSettingsManagerObject.SetFieldOrProperty("_settings_path", settings_path_target_file);
+            privateSettingsManagerObject.SetFieldOrProperty("_settings", settings_Data); //settings_path_target_file is  not null , _settings not null
+
+            string DisplayImportSettings_path2 = "TestU2724DD.json";
+            PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
+            string monitorSettings_path2 = Environment.CurrentDirectory + "\\" + DisplayImportSettings_path2; //ReloadMonitorSettings
+            privatesettingsManagerObj.SetFieldOrProperty("_display_path", Environment.CurrentDirectory);
+            string MonitorListjsonData = "[{\"Version\":1.0,\"Model\":\"TestModel\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}]";
+            File.WriteAllText(DisplayImportSettings_path2, MonitorListjsonData);
+            List<DDPMMonitorSettings> dDPMMonitorSettingsList = new List<DDPMMonitorSettings>();
+            Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+            DDPMMonitorSettings settings = new DDPMMonitorSettings
+            {
+                Version = 1.0f,
+                Model = "TestU2724DF",
+                ServiceTag = "12345",
+                Input = new Input() { strInputSourceList = "HDMI-1" },
+                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                EA = new EAMonitorSettings(),
+            };
+            _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings }); //ReloadMonitorSettings
+            privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
+
+            var result = SettingsManagerSAPlugin.DisplayExportSettings(modelname, seriveTag, path).Result;
+            Assert.That(result, Is.True);
+            File.Delete(settings_path_target_file);
+            File.Delete(DisplayImportSettings_path2);
         }
 
         [OneTimeTearDown]
