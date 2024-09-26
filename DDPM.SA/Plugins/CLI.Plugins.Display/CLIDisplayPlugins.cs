@@ -349,7 +349,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 case "AUTOBRIGHTNESS":
                 case "AUTOBRIGHTNESSRANGELEVEL"://Mark 0723
-                case "AUTOCOLORTEMP":
+                case "AUTOTEMP":
                 case "PRIMARYMONITORSYNC":
                 case "MULTIMONITORSYNC":
                     var tmp = ProcessAlsFunction(devMgr, commandLineInput);
@@ -6393,7 +6393,7 @@ namespace DDPM.CLI.Plugins.Display
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
 
-                case "AUTOCOLORTEMP":
+                case "AUTOTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
 
@@ -6442,7 +6442,7 @@ namespace DDPM.CLI.Plugins.Display
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
 
-                case "AUTOCOLORTEMP":
+                case "AUTOTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
 
@@ -6605,7 +6605,7 @@ namespace DDPM.CLI.Plugins.Display
                             ALS_RESPONSE.Value = param.AutoBrightnessRangeLevel[0].level_name.ToUpper();
                             break;
 
-                        case "AUTOCOLORTEMP":
+                        case "AUTOTEMP":
                             ALS_RESPONSE.Value = param.isAutoColorTemp ? "ON" : "OFF";
                             break;
 
