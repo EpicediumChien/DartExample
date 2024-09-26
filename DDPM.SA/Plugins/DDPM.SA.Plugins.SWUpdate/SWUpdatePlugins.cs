@@ -305,6 +305,64 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             return new SWUpdateHelper();
         }
+        private void HandleUpdateInfo()
+        {
+            _logs.DebugMsg_1("HandleUpdateInfo");
+            if (_SWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage != null)
+            {
+                List<SWUpdateInfo> _ForceUpdates = new List<SWUpdateInfo>();
+                bool isUpdate = false;//判斷是否強制更新
+                bool isOnlyInfo = false;
+                string s = "";
+                if (_SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
+                {
+                    isOnlyInfo = true;
+                    s = "no updates available.";
+                }
+                else
+                {
+                    foreach (SWUpdateInfo swUpdateInfo in _SWUpdateInfoPackage.SWUpdateInfo)
+                    {
+                        if (_isForce)
+                        {
+                            isUpdate = true;
+                            s += $"{swUpdateInfo.SoftwareName} will be updated to {swUpdateInfo.TheLatestVersion}\n";
+                        }
+                        if (_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(swUpdateInfo)))
+                        {
+                            if (_DelaySWUpdateInfoPackage.SaveTime != null)
+                            {
+                                SWUpdateInfo? delayFUpdateInfo = _DelaySWUpdateInfoPackage.SWUpdateInfo.Find(o => o.Equals(swUpdateInfo));
+                                if (delayFUpdateInfo != null)
+                                {
+                                    TimeSpan difference = DateTime.Now - (DateTime)_DelaySWUpdateInfoPackage.SaveTime;
+                                    if (_isDefer)
+                                    {
+                                        s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
+                                    }
+                                    else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable > 0)
+                                    {
+                                        s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
+                                    }
+                                    else if (difference.TotalHours >= 24 && _DelaySWUpdateInfoPackage.DelayTimesAvailable <= 0)
+                                    {
+                                        _ForceUpdates.Add(delayFUpdateInfo);
+                                        isUpdate = true;
+                                        s += $"{swUpdateInfo.SoftwareName} will be updated to {swUpdateInfo.TheLatestVersion}\n";
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            s += $"{swUpdateInfo.SoftwareName} can be updated to {swUpdateInfo.TheLatestVersion}\n";
+                        }
+                    }
+                }
+                NotificationFWupdate("Updates info", s, isOnlyInfo, isUpdate);
+                _logs.DebugMsg_1("HandleUpdateInfo done");
+            }
+        }
         /// <summary>
         /// 從伺服端下載更新檔，下載後會接續執行安裝方法
         /// </summary>
