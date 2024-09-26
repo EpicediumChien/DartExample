@@ -133,7 +133,12 @@ namespace DDPM.UI.Common.ViewModels
 
         public bool IsLandingMode { get => (GroupSelectedIndex < 0); }
 
-        private int FindGroupIndexByGroupName(string groupName)
+        /// <summary>
+        /// Find the index with the specific GroupName
+        /// </summary>
+        /// <param name="groupName">Use the string in Constants.GroupName_XXXX</param>
+        /// <returns></returns>
+        public int FindGroupIndexByGroupName(string groupName)
         {
             int idx = 0;
             foreach (ModuleGroup mg in ModuleGroups)
@@ -708,7 +713,7 @@ namespace DDPM.UI.Common.ViewModels
             LogInfo($"  * Has KVM Capability={hasCapability_KVM}");
 
             //Search for ModuleGroup which ModuleName is "KVM"
-            ModuleGroup? mgKvm = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals("KVM"));
+            ModuleGroup? mgKvm = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals(Constants.GroupName_KVM));
             if (mgKvm != null)
             {
                 VbarItem1? vbarItem = VbarItems.Find(x => x.Text.Equals(mgKvm.VbarText));
@@ -720,10 +725,12 @@ namespace DDPM.UI.Common.ViewModels
                     //Then we will change the selected Group to another visible vbarItem
                     if ((!hasCapability_KVM) && (SelectedGroup != null))
                     {
-                        if (SelectedGroup.GroupName.Equals("KVM"))
+                        //if (SelectedGroup.GroupName.Equals("KVM"))
+                        if (SelectedGroup.GroupName.Equals(Constants.GroupName_KVM))
                         {
                             //Change to EasyArrange
-                            int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                            //int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                            int idxEaGroup = FindGroupIndexByGroupName(Constants.GroupName_EasyArrange);
                             if (idxEaGroup < 0)
                                 idxEaGroup = 0;
                             GroupSelectedIndex = idxEaGroup;
@@ -815,44 +822,61 @@ namespace DDPM.UI.Common.ViewModels
 
         public void HandleDdcCiOffEvent(bool isDdcCiOn)
         {
-            //Find the "EasyArrange" group
-            int idxEA = -1;
-            string vbarText_EA = "Easy Arrange";
+            LogInfo($"@ HandleDdcCiOffEvent(isDdcCiOn={isDdcCiOn})");
 
-            for (int idx = 0; idx < ModuleGroups.Count; idx++)
+            //Find the "EasyArrange" group
+            int idxEA = FindGroupIndexByGroupName(Constants.GroupName_EasyArrange);
+            string vbarText_EA = "Easy Arrange";
+            //Get if EasyArrange group is locked
+            bool isEaLocked = false;
+            if (idxEA >= 0)
             {
-                if (ModuleGroups[idx].GroupName.Equals("EasyArrange", StringComparison.OrdinalIgnoreCase))
-                {
-                    idxEA = idx;
-                    vbarText_EA = ModuleGroups[idx].VbarText;
-                    break;
-                }
+                //If EasyArrange group is NOT locked
+                isEaLocked = VbarItems[idxEA].IsLocked;
+                vbarText_EA = VbarItems[idxEA].Text;
+            }
+
+            //If DDCI is off and EasyArrange group is locked then go to homepage
+            if (!isDdcCiOn && isEaLocked)
+            {
+                LogInfo("  * DDC/CI is off and EasyArrange group is locked, will go back to Homepage.");
+                GotoHomepage();
+                return;
             }
 
             //If DDC/CI is off, then switch to Easy Arrange group
             if (!isDdcCiOn)
             {
-                //If current is LandingMode, then no selectied item
-                //If not Landing mode
+                //If current is not Landing mode
                 if (!IsLandingMode)
                 {
-                    //Change Group selection to "EasyArrange"
                     if (idxEA >= 0)
+                    {
+                        //If EasyArrange group is locked
+                        if (isEaLocked)
+                        {
+                            //If DDCI is off and EasyArrange group is locked then go to homepage
+                            LogInfo("  * DDC/CI is off and EasyArrange group is locked, will go back to Homepage.");
+                            GotoHomepage();
+                            return;
+                        }
+                        //Else Change Group selection to "EasyArrange"
                         GroupSelectedIndex = idxEA;
+                    }
                 }
             }
 
             //Disable/Enable all other (non EA) Groups (it it's visible)
-            foreach (VbarItem1 vbar in VbarItems)
+            for (int i=0; i<VbarItems.Count; i++)
             {
                 //For the non-visible groupes. we don't need to change them
-                if (vbar.Visibility != Visibility.Visible)
+                if (VbarItems[i].Visibility != Visibility.Visible)
                     continue;
-                //If it's not EA
-                if (!vbar.Text.Equals(vbarText_EA, StringComparison.OrdinalIgnoreCase))
+                //If it's not EasyArrange group
+                if (i!=idxEA)
                 {
-                    vbar.LeaveHoverState();
-                    vbar.IsEnabled = isDdcCiOn;
+                    VbarItems[i].LeaveHoverState();
+                    VbarItems[i].IsEnabled = isDdcCiOn;
                 }
             }
         }
@@ -876,5 +900,14 @@ namespace DDPM.UI.Common.ViewModels
         }
         #endregion
 
+        #region DCF / DUCA related
+        public void GotoHomepage()
+        {
+            if (DdpmCommonHelper.MyConsole != null)
+            {
+                DdpmCommonHelper.MyConsole.ShowHomePage();
+            }
+        }
+        #endregion
     }
 }
