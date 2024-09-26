@@ -155,18 +155,29 @@ namespace DDPM.SA.Common.UpdateProgressPage
             Close();
         }
 
-        public void _FWUpdatePlugin_ProgressUpdate(object sender, FWUpdateInfo e)
+        public void _FWUpdatePlugin_ProgressUpdate(object sender, UpdateProgressInfo e)
         {
-            UpdateTitle = "Firmware Update - " + e.DeviceName;
-            UpdateSubTitle = "Updating firmware. Do not remove or power off the device. Leave the device undisturbed.";
+            if (e.DeviceName.Equals("DDPM"))
+            {
+                UpdateTitle = "Software Update - " + e.DeviceName;
+                UpdateSubTitle = "Updating Software. Do not power off this PC.";
+            }
+            else
+            {
+                UpdateTitle = "Firmware Update - " + e.DeviceName;
+                UpdateSubTitle = "Updating firmware. Do not remove or power off the device. Leave the device undisturbed.";
+            }
             UpdateVersion = e.TheLatestVersion;
             AlertVisibility = Visibility.Collapsed;
             if (e.ProcessName.Equals("Installing"))
             {
                 ProgressValue = (int)100;
                 ProgressStr = $"Processing... {(int)e.ProcessProgress}%";
-                ProgressStr_2 = $"DDPM will reopen soon after update";
-                ProgressStr_2_Color = "#FFFFFF";
+                if (!e.DeviceName.Equals("DDPM"))
+                {
+                    ProgressStr_2 = $"DDPM will reopen soon after update";
+                    ProgressStr_2_Color = "#FFFFFF";
+                }
                 Progress_IsAnimated = true;
             }
             else if (e.ProcessName.Equals("Downloading"))

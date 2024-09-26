@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+	  <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+		<PackageReference Include="Dell.TechHub.Sdk.Common_NET" Version="3.0.0.606-2e2db9-beta" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DDPM.SA.Common">
+      <HintPath>CommonDll\DDPM.SA.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
