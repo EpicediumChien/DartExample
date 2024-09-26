@@ -826,7 +826,7 @@ namespace ColorPreset.Plugins
 
                 int index = get_index_of_json_config_for_cur_monitor(m);
 
-                /*
+                
                 if (colorPresetRunType == (int)ColorPresetRunType.Manual)
                 {
                     if (index >= 0)
@@ -848,7 +848,7 @@ namespace ColorPreset.Plugins
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 Thread.Sleep(100);
-                */
+                
                 if (index >= 0)
                 {
                     if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.On &&
