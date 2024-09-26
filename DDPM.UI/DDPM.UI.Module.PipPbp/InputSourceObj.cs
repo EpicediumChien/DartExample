@@ -1,6 +1,6 @@
 ﻿namespace DDPM.UI.Module.PipPbp
 {
-    //InputSource {VCP 0x60 Code, Input Source ID} mapping table
+    //InputSource {VCP 0x60 Code, Input Source Name} mapping table
     //
     //Robert_Lin 2024-6, temporary remove by change its className
     public class InputSourceObj_Unused

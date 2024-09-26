@@ -723,8 +723,8 @@ namespace ColorPreset.Plugins
 
                             double dbscale = dbfactor * dpiX;
 
-                            OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
-                            OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
+                            //OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
+                            //OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
 
                             if (is_ShowUI)
                                 OsdWin.Show();
@@ -741,8 +741,8 @@ namespace ColorPreset.Plugins
 
                             double dbscale = dbfactor * dpiX;
 
-                            OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
-                            OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
+                            //OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
+                            //OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
 
                             if (is_ShowUI)
                                 OsdWin.Show();

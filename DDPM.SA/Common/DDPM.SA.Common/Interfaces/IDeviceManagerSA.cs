@@ -207,15 +207,17 @@ namespace DDPM.SA.Common
 
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
 
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null);
 
-        public event EventHandler<string> EAEditCompleted;
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public event EventHandler<string> EAEditCompleted;
 
         public event EventHandler<string> EAEditStarted;
 
-        Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
+        //Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings);
 
-        public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
+        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber);
 
         //Robert_Lin, 2024-8-4 new added
         public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args);
@@ -226,6 +228,15 @@ namespace DDPM.SA.Common
 
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo);
 
+        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo);
+        //public Task<bool> EASaveOptions(MonitorInfo monitorInfo, EAMonitorSettings eaSettings);
+
+        //Robert_Lin, 2024-9-18 added for EzSettings
+        public Task<EzSettings> ReadEzSettings();
+        public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue);
+        public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue);
+        public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue);
+        public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
         #endregion EasyArrange
 
         #endregion public for Displays

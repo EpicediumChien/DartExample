@@ -1,0 +1,1602 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>Подробиці</value>
+  </data>
+  <data name="AdaptiveLight" xml:space="preserve">
+    <value>Адаптивне світло</value>
+  </data>
+  <data name="Display" xml:space="preserve">
+    <value>Екран</value>
+  </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Налаштування екрана</value>
+  </data>
+  <data name="EasyArrange" xml:space="preserve">
+    <value>Easy Arrange</value>
+  </data>
+  <data name="FirmwareVersion" xml:space="preserve">
+    <value>Версія мікропрограми</value>
+  </data>
+  <data name="Gaming" xml:space="preserve">
+    <value>Ігри</value>
+  </data>
+  <data name="InputSource" xml:space="preserve">
+    <value>Джерело вхідного сигналу</value>
+  </data>
+  <data name="KVM" xml:space="preserve">
+    <value>KVM</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>Вручну</value>
+  </data>
+  <data name="ManufactureMonth" xml:space="preserve">
+    <value>Виробник</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>ВИМК.</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>УВІМК.</value>
+  </data>
+  <data name="RestoreToDefault" xml:space="preserve">
+    <value>Відновити стандартні налаштування</value>
+  </data>
+  <data name="ServiceTag" xml:space="preserve">
+    <value>Сервісний тег</value>
+  </data>
+  <data name="Unpair" xml:space="preserve">
+    <value>Скасувати сполучення</value>
+  </data>
+  <data name="VbarText_DisplayOthers" xml:space="preserve">
+    <value>Інші</value>
+  </data>
+  <data name="QuickSettings" xml:space="preserve">
+    <value>Швидкі налаштування</value>
+  </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>Аналітика</value>
+  </data>
+  <data name="Updates" xml:space="preserve">
+    <value>Оновлення</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>Загальні</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Налаштування</value>
+  </data>
+  <data name="Updates.0" xml:space="preserve">
+    <value>Доступні оновлення</value>
+  </data>
+  <data name="Updates.1" xml:space="preserve">
+    <value>Dell Peripheral Manager закриється та відкриється знову після встановлення оновлень. Після запуску оновлення скасувати цей процес не можна.</value>
+  </data>
+  <data name="Updates.2" xml:space="preserve">
+    <value>Перевірка наявності оновлень</value>
+  </data>
+  <data name="Updates.3" xml:space="preserve">
+    <value>Наразі доступних оновлень немає.</value>
+  </data>
+  <data name="Updates.4" xml:space="preserve">
+    <value>Помилка мережі. Повторіть спробу.</value>
+  </data>
+  <data name="Updates.5" xml:space="preserve">
+    <value>Завантажити й встановити</value>
+  </data>
+  <data name="Updates.6" xml:space="preserve">
+    <value>Підготовка до оновлень, зачекайте…</value>
+  </data>
+  <data name="Analytics.0" xml:space="preserve">
+    <value>Аналітика</value>
+  </data>
+  <data name="Analytics.1" xml:space="preserve">
+    <value>Допоможіть Dell покращити свої продукти та послуги, дозволивши автоматично надсилати діагностичні дані та інформацію про використання.</value>
+  </data>
+  <data name="Analytics.2" xml:space="preserve">
+    <value>Політика конфіденційності Dell</value>
+  </data>
+  <data name="Analytics.3" xml:space="preserve">
+    <value>Допомогти Dell покращити свої продукти та послуги в автоматичному режимі</value>
+  </data>
+  <data name="AddDevice" xml:space="preserve">
+    <value>Додати пристрій</value>
+  </data>
+  <data name="AddDevice.Display" xml:space="preserve">
+    <value>Екран</value>
+  </data>
+  <data name="AddDevice.Webcam" xml:space="preserve">
+    <value>Вебкамера</value>
+  </data>
+  <data name="AddDevice.KnM" xml:space="preserve">
+    <value>Клавіатура\nй миша</value>
+  </data>
+  <data name="AddDevice.Pen" xml:space="preserve">
+    <value>Перо</value>
+  </data>
+  <data name="AddDevice.Headset" xml:space="preserve">
+    <value>Гарнітура</value>
+  </data>
+  <data name="AddDevice.Speaker" xml:space="preserve">
+    <value>Спікерфон\nі звукова панель</value>
+  </data>
+  <data name="AddDevice.Dock" xml:space="preserve">
+    <value>Док-станція</value>
+  </data>
+  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+    <value>Wireless receiver</value>
+  </data>
+  <data name="AddDevice.Type.Wired" xml:space="preserve">
+    <value>Wired</value>
+  </data>
+  <data name="AddDevice.Type.Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+    <value>Додавання пристрою, зачекайте…</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+    <value>Сполучення</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+    <value>Сполучення може зайняти деякий час. Не відключайте пристрій.</value>
+  </data>
+  <data name="AddDevice.Display.1" xml:space="preserve">
+    <value>Підключіть дисплей через порт HDMI/USB-C у системі.</value>
+  </data>
+  <data name="AddDevice.Webcam.0" xml:space="preserve">
+    <value>Підключіть вебкамеру через USB-порт системи.</value>
+  </data>
+  <data name="AddDevice.KnM.0" xml:space="preserve">
+    <value>З’єднання Bluetooth</value>
+  </data>
+  <data name="AddDevice.KnM.1" xml:space="preserve">
+    <value>Додайте пристрій Bluetooth, створивши сполучення в налаштуваннях Windows.</value>
+  </data>
+  <data name="AddDevice.KnM.2" xml:space="preserve">
+    <value>Пересуньте повзунок перемикача живлення в положення УВІМК.</value>
+  </data>
+  <data name="AddDevice.KnM.3" xml:space="preserve">
+    <value>Виберіть канал Bluetooth, а потім натисніть і утримуйте 3 секунди, щоб зробити пристрій доступним для виявлення.</value>
+  </data>
+  <data name="AddDevice.KnM.4" xml:space="preserve">
+    <value>Дозвольте сполучення із пристроєм або запустіть налаштування Windows і виберіть відповідний пристрій, коли він буде виявлений.</value>
+  </data>
+  <data name="AddDevice.KnM.6" xml:space="preserve">
+    <value>Підключіть бездротовий USB-приймач до системи.</value>
+  </data>
+  <data name="AddDevice.KnM.7" xml:space="preserve">
+    <value>Пересуньте повзунок перемикача живлення в положення ВИМК.</value>
+  </data>
+  <data name="AddDevice.KnM.8" xml:space="preserve">
+    <value>Натисніть і утримуйте будь-яку клавішу чи кнопку та переведіть повзунок перемикача живлення в положення УВІМК.</value>
+  </data>
+  <data name="AddDevice.KnM.9" xml:space="preserve">
+    <value>Не закривайте це вікно. Сполучення почнеться за кілька секунд. Якщо ні, повторіть кроки 2 і 3.</value>
+  </data>
+  <data name="AddDevice.KnM.10" xml:space="preserve">
+    <value>Виявлено кілька бездротових приймачів. Від’єднайте всі бездротові приймачі Dell для клавіатури й миші, потім підключіть той, який хочете сполучити.</value>
+  </data>
+  <data name="AddDevice.KnM.11" xml:space="preserve">
+    <value>Бездротовий USB-приймач не підключено. Підключіть бездротовий USB-приймач і сполучіть до шести сумісних пристроїв.</value>
+  </data>
+  <data name="AddDevice.KnM.12" xml:space="preserve">
+    <value>Бездротовий USB-приймач не підключено. Підключіть бездротовий USB-приймач для кращої UC-сумісності, меншої затримки та стабільнішого з’єднання.</value>
+  </data>
+  <data name="AddDevice.KnM.13" xml:space="preserve">
+    <value>Підключіть клавіатуру та мишу через USB-порт системи.</value>
+  </data>
+  <data name="AddDevice.Pen.0" xml:space="preserve">
+    <value>Підключення пера</value>
+  </data>
+  <data name="AddDevice.Pen.1" xml:space="preserve">
+    <value>Торкніться екрана кінчиком пера.</value>
+  </data>
+  <data name="AddDevice.Pen.2" xml:space="preserve">
+    <value>Натисніть і утримуйте верхню кнопку 3 секунди. Зачекайте, доки Windows не виявить пристрій.</value>
+  </data>
+  <data name="AddDevice.Pen.3" xml:space="preserve">
+    <value>Дозвольте сполучення із пристроєм або запустіть налаштування Windows і виберіть відповідний пристрій, коли він буде виявлений.</value>
+  </data>
+  <data name="AddDevice.Pen.4" xml:space="preserve">
+    <value>Виберіть «Yes», щоб підтвердити сполучення у вікні з пропозицією налаштувати сполучення із пером.</value>
+  </data>
+  <data name="AddDevice.Headset.0" xml:space="preserve">
+    <value>Для підключення без бездротового USB-приймача і в дорозі</value>
+  </data>
+  <data name="AddDevice.Headset.1" xml:space="preserve">
+    <value>Увімкнення гарнітури</value>
+  </data>
+  <data name="AddDevice.Headset.2" xml:space="preserve">
+    <value>Натисніть і утримуйте кнопку живлення 3 секунди, щоб зробити гарнітуру доступною для виявлення за допомогою Bluetooth.</value>
+  </data>
+  <data name="AddDevice.Headset.3" xml:space="preserve">
+    <value>Дозвольте сполучення із пристроєм або запустіть налаштування Windows і виберіть відповідний пристрій, коли він буде виявлений.</value>
+  </data>
+  <data name="AddDevice.Headset.4" xml:space="preserve">
+    <value>Вимкнення гарнітури. Утримуйте кнопку вимкнення мікрофона та знов увімкніть пристрій.</value>
+  </data>
+  <data name="AddDevice.Headset.5" xml:space="preserve">
+    <value>Сполучення автоматично почнеться за кілька секунд</value>
+  </data>
+  <data name="AddDevice.Headset.6" xml:space="preserve">
+    <value>Підключіть гарнітуру через USB-порт системи.</value>
+  </data>
+  <data name="AddDevice.Speaker.0" xml:space="preserve">
+    <value>Підключіть динамік або звукову панель через USB-порт системи.</value>
+  </data>
+  <data name="AddDevice.Dock.0" xml:space="preserve">
+    <value>Підключіть док-станцію через USB-порт системи.</value>
+  </data>
+  <data name="HomePage.0" xml:space="preserve">
+    <value>Зачекайте…</value>
+  </data>
+  <data name="UpdateFirmware" xml:space="preserve">
+    <value>Оновити мікропрограму</value>
+  </data>
+  <data name="Dock.0" xml:space="preserve">
+    <value>{0} із {1} доступних слотів</value>
+  </data>
+  <data name="Dock.1" xml:space="preserve">
+    <value>Ключ {0}</value>
+  </data>
+  <data name="Keyboard.2" xml:space="preserve">
+    <value>Налаштування клавіш</value>
+  </data>
+  <data name="Keyboard.3" xml:space="preserve">
+    <value>Співпраця</value>
+  </data>
+  <data name="Keyboard.4" xml:space="preserve">
+    <value>Освітлення</value>
+  </data>
+  <data name="Mouse.0" xml:space="preserve">
+    <value>Призначення дій для</value>
+  </data>
+  <data name="Mouse.1" xml:space="preserve">
+    <value>Усі програми</value>
+  </data>
+  <data name="Mouse.2" xml:space="preserve">
+    <value>Microsoft Word</value>
+  </data>
+  <data name="Mouse.3" xml:space="preserve">
+    <value>Microsoft Excel</value>
+  </data>
+  <data name="Mouse.4" xml:space="preserve">
+    <value>Microsoft PowerPoint</value>
+  </data>
+  <data name="Mouse.5" xml:space="preserve">
+    <value>Microsoft Outlook</value>
+  </data>
+  <data name="EOL.0" xml:space="preserve">
+    <value>На цьому пристрої немає додаткових функцій</value>
+  </data>
+  <data name="Mouse.6" xml:space="preserve">
+    <value>Налаштування миші</value>
+  </data>
+  <data name="Mouse.7" xml:space="preserve">
+    <value>Налаштування\nкнопок</value>
+  </data>
+  <data name="Pen.0" xml:space="preserve">
+    <value>Налаштування пера</value>
+  </data>
+  <data name="Soundbar.0" xml:space="preserve">
+    <value>Звукова схема</value>
+  </data>
+  <data name="Soundbar.1" xml:space="preserve">
+    <value>Взаємодії</value>
+  </data>
+  <data name="Camera.0" xml:space="preserve">
+    <value>Керування камерою</value>
+  </data>
+  <data name="Camera.1" xml:space="preserve">
+    <value>Колір і зображення</value>
+  </data>
+  <data name="Camera.2" xml:space="preserve">
+    <value>Виявлення присутності</value>
+  </data>
+  <data name="Camera.3" xml:space="preserve">
+    <value>Захоплення</value>
+  </data>
+  <data name="Camera.4" xml:space="preserve">
+    <value>Мікрофон</value>
+  </data>
+  <data name="WiredConnection" xml:space="preserve">
+    <value>Дротове з’єднання</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="Brightness.0" xml:space="preserve">
+    <value>Перевірте налаштування і переконайтеся, що значення часу початку схеми та довжини переходу не накладаються</value>
+  </data>
+  <data name="Brightness.1" xml:space="preserve">
+    <value>Налаштування яскравості й контрастності недоступні, якщо </value>
+  </data>
+  <data name="Brightness.2" xml:space="preserve">
+    <value>Smart HDR </value>
+  </data>
+  <data name="Brightness.3" xml:space="preserve">
+    <value>увімкнено</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Яскравість</value>
+  </data>
+  <data name="Contrast" xml:space="preserve">
+    <value>Контрастність</value>
+  </data>
+  <data name="Brightness.4" xml:space="preserve">
+    <value>Синхронізація між моніторами</value>
+  </data>
+  <data name="Brightness.5" xml:space="preserve">
+    <value>Застосування зазначених вище налаштувань яскравості/освітленості, контрастності та колірної схеми до підключених моніторів.</value>
+  </data>
+  <data name="Luminance" xml:space="preserve">
+    <value>Освітленість</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Автоматичне</value>
+  </data>
+  <data name="Brightness.6" xml:space="preserve">
+    <value>Автоматична яскравість  </value>
+  </data>
+  <data name="Brightness.7" xml:space="preserve">
+    <value>Регулює яскравість дисплея залежно від умов освітлення навколо.</value>
+  </data>
+  <data name="Brightness.8" xml:space="preserve">
+    <value>Рівень діапазону автоматичної яскравості  </value>
+  </data>
+  <data name="Brightness.9" xml:space="preserve">
+    <value>Має три діапазони яскравості залежно від умов освітлення навколо (високий/середній/низький).</value>
+  </data>
+  <data name="Brightness.10" xml:space="preserve">
+    <value>Автоматична колірна температура  </value>
+  </data>
+  <data name="Brightness.11" xml:space="preserve">
+    <value>Автоматично регулює колірну температуру дисплея залежно від умов освітлення навколо.</value>
+  </data>
+  <data name="Brightness.12" xml:space="preserve">
+    <value>Основний монітор для синхронізації  </value>
+  </data>
+  <data name="Brightness.13" xml:space="preserve">
+    <value>Синхронізація яскравості, контрастності, колірної схеми та колірної температури інших моніторів ALS з основним монітором.</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>Заплановано</value>
+  </data>
+  <data name="Brightness.14" xml:space="preserve">
+    <value>Назва схеми 1</value>
+  </data>
+  <data name="Brightness.15" xml:space="preserve">
+    <value>Час початку</value>
+  </data>
+  <data name="AM" xml:space="preserve">
+    <value>AM</value>
+  </data>
+  <data name="Brightness.16" xml:space="preserve">
+    <value>Довжина переходу</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>ТЕСТ.</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>хв</value>
+  </data>
+  <data name="Brightness.18" xml:space="preserve">
+    <value>Назва схеми 2</value>
+  </data>
+  <data name="PM" xml:space="preserve">
+    <value>PM</value>
+  </data>
+  <data name="Hotkeys" xml:space="preserve">
+    <value>Гарячі клавіші</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Скидання</value>
+  </data>
+  <data name="Hotkey.0" xml:space="preserve">
+    <value>Яскравість –</value>
+  </data>
+  <data name="Hotkey.1" xml:space="preserve">
+    <value>Яскравість +</value>
+  </data>
+  <data name="Hotkey.2" xml:space="preserve">
+    <value>Контрастність –</value>
+  </data>
+  <data name="Hotkey.3" xml:space="preserve">
+    <value>Контрастність +</value>
+  </data>
+  <data name="Hotkey.4" xml:space="preserve">
+    <value>Освітленість –</value>
+  </data>
+  <data name="Hotkey.5" xml:space="preserve">
+    <value>Освітленість +</value>
+  </data>
+  <data name="Hotkey.6" xml:space="preserve">
+    <value>Приклад: ALT+P, SHIFT+F, CTRL+SHIFT+F.\nЗверніть увагу, що в конфігурації з кількома моніторами курсор миші має бути на екрані цільового монітора, щоб можна було користуватися функціями гарячих клавіш.</value>
+  </data>
+  <data name="ButtonSettings.0" xml:space="preserve">
+    <value>Клацання коліщатком прокручування</value>
+  </data>
+  <data name="ButtonSettings.1" xml:space="preserve">
+    <value>Прокручування – нахил вліво</value>
+  </data>
+  <data name="ButtonSettings.2" xml:space="preserve">
+    <value>Прокручування – нахил вправо</value>
+  </data>
+  <data name="ButtonSettings.3" xml:space="preserve">
+    <value>Бічна кнопка вперед</value>
+  </data>
+  <data name="ButtonSettings.4" xml:space="preserve">
+    <value>Бічна кнопка назад</value>
+  </data>
+  <data name="ButtonSettings.5" xml:space="preserve">
+    <value>Для налаштування клацніть одну із виділених областей на зображенні ліворуч</value>
+  </data>
+  <data name="ButtonSettings.6" xml:space="preserve">
+    <value>Відновити для всіх програм</value>
+  </data>
+  <data name="ButtonSettings.7" xml:space="preserve">
+    <value>Запропоновані операції</value>
+  </data>
+  <data name="ButtonSettings.8" xml:space="preserve">
+    <value>Операції для продуктивної роботи</value>
+  </data>
+  <data name="ButtonSettings.9" xml:space="preserve">
+    <value>Операції Windows</value>
+  </data>
+  <data name="ButtonSettings.10" xml:space="preserve">
+    <value>Мультимедійні операції</value>
+  </data>
+  <data name="ButtonSettings.11" xml:space="preserve">
+    <value>Розширені операції</value>
+  </data>
+  <data name="ButtonSettings.12" xml:space="preserve">
+    <value>Результати пошуку</value>
+  </data>
+  <data name="ButtonSettings.13" xml:space="preserve">
+    <value>Налаштування кнопок</value>
+  </data>
+  <data name="Customize" xml:space="preserve">
+    <value>Налаштувати</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Редагувати</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="Collaboration.0" xml:space="preserve">
+    <value>Піктограми спільної роботи</value>
+  </data>
+  <data name="Collaboration.1" xml:space="preserve">
+    <value>Забезпечує швидкий доступ до елементів керування конференціями. Перемикайте клавіші,\nщоб показати або приховати їх на клавіатурі під час \nконференц-виклику Microsoft Teams або Zoom.</value>
+  </data>
+  <data name="Collaboration.3" xml:space="preserve">
+    <value>Увімкнення ефекту миготіння, коли з’являється нове повідомлення чату\nпід час конференц-виклику</value>
+  </data>
+  <data name="Collaboration.4" xml:space="preserve">
+    <value>Активація піктограм на клавіатурі подвійним торканням\nзамість одинарного</value>
+  </data>
+  <data name="Collaboration.5" xml:space="preserve">
+    <value>Для використання клавіатури спільної роботи в Microsoft Teams ввійдіть в останню версію Microsoft Teams і ввімкніть API сторонніх програм.</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Докладніше</value>
+  </data>
+  <data name="Video" xml:space="preserve">
+    <value>Відео</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Поділитися</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Чат</value>
+  </data>
+  <data name="Mic" xml:space="preserve">
+    <value>Мікрофон</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="Collaboration" xml:space="preserve">
+    <value>Співпраця</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Підтвердити</value>
+  </data>
+  <data name="Color.0" xml:space="preserve">
+    <value>Додати програму</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Пошук</value>
+  </data>
+  <data name="Color.1" xml:space="preserve">
+    <value>Сортувати за назвою</value>
+  </data>
+  <data name="Color.2" xml:space="preserve">
+    <value>Сортувати за датою</value>
+  </data>
+  <data name="Color.3" xml:space="preserve">
+    <value>Автоматичне налаштування колірного профілю ICC на основі колірної схеми</value>
+  </data>
+  <data name="WindowsSettings" xml:space="preserve">
+    <value>Параметри Windows</value>
+  </data>
+  <data name="Color.4" xml:space="preserve">
+    <value>Автоматичне налаштування колірної схеми на основі</value>
+  </data>
+  <data name="Color.5" xml:space="preserve">
+    <value>Профіль ICC</value>
+  </data>
+  <data name="Color.6" xml:space="preserve">
+    <value>Колірний профіль</value>
+  </data>
+  <data name="Color.7" xml:space="preserve">
+    <value>Колірна схема для конкретної програми</value>
+  </data>
+  <data name="Color.8" xml:space="preserve">
+    <value>Нічне освітлення </value>
+  </data>
+  <data name="Color.9" xml:space="preserve">
+    <value>Показ на дисплеї комфортних кольорів для сну.</value>
+  </data>
+  <data name="Color.11" xml:space="preserve">
+    <value>Керування кольором</value>
+  </data>
+  <data name="Color.12" xml:space="preserve">
+    <value>Автоматична синхронізація профілю ICC з колірною схемою монітора.</value>
+  </data>
+  <data name="Color.13" xml:space="preserve">
+    <value>Програма Dell Color Management є рекомендованим рішенням для керування розширеними параметрами кольорів.</value>
+  </data>
+  <data name="DisplayHotkeys.0" xml:space="preserve">
+    <value>Джерело вхідного сигналу</value>
+  </data>
+  <data name="DisplayHotkeys.1" xml:space="preserve">
+    <value>Перемкнутися на наступне джерело вхідного сигналу</value>
+  </data>
+  <data name="DisplayHotkeys.2" xml:space="preserve">
+    <value>Обране джерело вхідного сигналу</value>
+  </data>
+  <data name="DisplayHotkeys.3" xml:space="preserve">
+    <value>Перемикання між 2 джерелами вхідного сигналу</value>
+  </data>
+  <data name="VideoSwap" xml:space="preserve">
+    <value>Заміна відео</value>
+  </data>
+  <data name="PIPorPBP" xml:space="preserve">
+    <value>PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.4" xml:space="preserve">
+    <value>Перемикання між 2 джерелами вхідного сигналу вікон PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.5" xml:space="preserve">
+    <value>Змінити положення PIP</value>
+  </data>
+  <data name="DisplayOthers.0" xml:space="preserve">
+    <value>Зменшити яскравість</value>
+  </data>
+  <data name="DisplayOthers.1" xml:space="preserve">
+    <value>Перевести дисплей у режим сну</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Імпорт</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Експорт</value>
+  </data>
+  <data name="DisplayOthers.2" xml:space="preserve">
+    <value>Автоматичне застосування налаштувань у разі виявлення тієї ж моделі</value>
+  </data>
+  <data name="PowerNap" xml:space="preserve">
+    <value>PowerNap</value>
+  </data>
+  <data name="DisplayOthers.3" xml:space="preserve">
+    <value>PowerNap допомагає заощаджувати енергію, коли активовано заставку.</value>
+  </data>
+  <data name="DisplayOthers.4" xml:space="preserve">
+    <value>Коли активується заставка (виберіть один варіант):</value>
+  </data>
+  <data name="DisplayOthers.5" xml:space="preserve">
+    <value>Налаштування параметрів заставки </value>
+  </data>
+  <data name="DisplayOthers.6" xml:space="preserve">
+    <value>Параметри програми</value>
+  </data>
+  <data name="DisplayOthers.7" xml:space="preserve">
+    <value>Експорт конфігурації та важливих елементів на інший монітор тієї ж моделі</value>
+  </data>
+  <data name="DisplayProperties.0" xml:space="preserve">
+    <value>Висока швидкість передачі даних</value>
+  </data>
+  <data name="DisplayProperties.1" xml:space="preserve">
+    <value>Висока роздільна здатність</value>
+  </data>
+  <data name="DisplayProperties.2" xml:space="preserve">
+    <value>Роздільна здатність і частота оновлення</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>Орієнтація</value>
+  </data>
+  <data name="SmartHDR" xml:space="preserve">
+    <value>Smart HDR</value>
+  </data>
+  <data name="DisplayProperties.3" xml:space="preserve">
+    <value>Змінення розміру тексту, програм та інших елементів</value>
+  </data>
+  <data name="AdvancedSettings" xml:space="preserve">
+    <value>Додаткові параметри</value>
+  </data>
+  <data name="DisplayProperties.4" xml:space="preserve">
+    <value>Пріоритет USB-C </value>
+  </data>
+  <data name="DisplayProperties.5" xml:space="preserve">
+    <value>Пріоритет швидкості передавання даних і мережі над продуктивністю екрана.</value>
+  </data>
+  <data name="DisplayProperties.6" xml:space="preserve">
+    <value>Пріоритет продуктивності екрана над швидкістю передавання даних і мережі.</value>
+  </data>
+  <data name="Windows" xml:space="preserve">
+    <value>Windows</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Персоналізований</value>
+  </data>
+  <data name="EzArrange.1" xml:space="preserve">
+    <value>Windows або більше</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Нещодавні</value>
+  </data>
+  <data name="AudioSettings" xml:space="preserve">
+    <value>Налаштування звуку</value>
+  </data>
+  <data name="HeadsetAudioSettings.0" xml:space="preserve">
+    <value>Керування шумом</value>
+  </data>
+  <data name="HeadsetAudioSettings.1" xml:space="preserve">
+    <value>Активне усунення шуму</value>
+  </data>
+  <data name="HeadsetAudioSettings.2" xml:space="preserve">
+    <value>Прозорість.</value>
+  </data>
+  <data name="HeadsetAudioSettings.3" xml:space="preserve">
+    <value>Вимк.</value>
+  </data>
+  <data name="HeadsetAudioSettings.4" xml:space="preserve">
+    <value>Рівень прозорості</value>
+  </data>
+  <data name="HeadsetAudioSettings.5" xml:space="preserve">
+    <value>Налаштування режимів звуку</value>
+  </data>
+  <data name="Multimedia" xml:space="preserve">
+    <value>Мультимедіа</value>
+  </data>
+  <data name="HeadsetAudioSettings.6" xml:space="preserve">
+    <value>Попередні налаштування аудіовиходу</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>За замовчуванням</value>
+  </data>
+  <data name="HeadsetAudioSettings.7" xml:space="preserve">
+    <value>Підсилення басів</value>
+  </data>
+  <data name="HeadsetAudioSettings.8" xml:space="preserve">
+    <value>Підсилення частот мовлення</value>
+  </data>
+  <data name="HeadsetAudioSettings.9" xml:space="preserve">
+    <value>Підвищення високих частот</value>
+  </data>
+  <data name="HeadsetAudioSettings.10" xml:space="preserve">
+    <value>Еквалайзер звуку</value>
+  </data>
+  <data name="HeadsetAudioSettings.11" xml:space="preserve">
+    <value>Регулювання діапазонів звукових частот, що сприймаються слухом</value>
+  </data>
+  <data name="HeadsetAudioSettings.12" xml:space="preserve">
+    <value>db</value>
+  </data>
+  <data name="HeadsetAudioSettings.13" xml:space="preserve">
+    <value>Баси</value>
+  </data>
+  <data name="HeadsetAudioSettings.14" xml:space="preserve">
+    <value>Середній діапазон</value>
+  </data>
+  <data name="HeadsetAudioSettings.15" xml:space="preserve">
+    <value>Високі частоти</value>
+  </data>
+  <data name="HeadsetAudioSettings.16" xml:space="preserve">
+    <value>Усунення шуму мікрофона</value>
+  </data>
+  <data name="HeadsetAudioSettings.17" xml:space="preserve">
+    <value>Вихідний звук</value>
+  </data>
+  <data name="HeadsetAudioSettings.18" xml:space="preserve">
+    <value>Вхідний звук</value>
+  </data>
+  <data name="HeadsetAudioSettings.19" xml:space="preserve">
+    <value>Самопрослуховування</value>
+  </data>
+  <data name="AutomatedActions" xml:space="preserve">
+    <value>Автоматизовані дії</value>
+  </data>
+  <data name="HeadsetAutomatedActions.0" xml:space="preserve">
+    <value>Виявлення використання</value>
+  </data>
+  <data name="HeadsetAutomatedActions.1" xml:space="preserve">
+    <value>Чутливість</value>
+  </data>
+  <data name="HeadsetAutomatedActions.2" xml:space="preserve">
+    <value>Низька</value>
+  </data>
+  <data name="HeadsetAutomatedActions.3" xml:space="preserve">
+    <value>Нормальна</value>
+  </data>
+  <data name="HeadsetAutomatedActions.4" xml:space="preserve">
+    <value>Коли гарнітуру знято:</value>
+  </data>
+  <data name="HeadsetAutomatedActions.5" xml:space="preserve">
+    <value>Призупинення відтворення музики</value>
+  </data>
+  <data name="HeadsetAutomatedActions.6" xml:space="preserve">
+    <value>Вимкнення мікрофона</value>
+  </data>
+  <data name="HeadsetAutomatedActions.7" xml:space="preserve">
+    <value>Швидке призупинення</value>
+  </data>
+  <data name="HeadsetAutomatedActions.8" xml:space="preserve">
+    <value>Приймання дзвінків</value>
+  </data>
+  <data name="DeviceSettings" xml:space="preserve">
+    <value>Налаштування пристрою</value>
+  </data>
+  <data name="HeadsetDeviceSettings.0" xml:space="preserve">
+    <value>Індикатор виклику</value>
+  </data>
+  <data name="HeadsetDeviceSettings.1" xml:space="preserve">
+    <value>Голосові підказки</value>
+  </data>
+  <data name="HeadsetDeviceSettings.2" xml:space="preserve">
+    <value>Важливі</value>
+  </data>
+  <data name="HeadsetDeviceSettings.3" xml:space="preserve">
+    <value>Усі</value>
+  </data>
+  <data name="HeadsetDeviceSettings.4" xml:space="preserve">
+    <value>Завантажити Dell Audio</value>
+  </data>
+  <data name="HeadsetDeviceSettings.5" xml:space="preserve">
+    <value>Завантажте Dell Audio, щоб мати змогу оптимізувати та персоналізувати налаштування гарнітури із пристрою iPhone або Android.</value>
+  </data>
+  <data name="HeadsetDeviceSettings.6" xml:space="preserve">
+    <value>Докладніше</value>
+  </data>
+  <data name="Illumination.0" xml:space="preserve">
+    <value>Управління освітленістю</value>
+  </data>
+  <data name="Illumination.1" xml:space="preserve">
+    <value>Освітлення</value>
+  </data>
+  <data name="InputSource.0" xml:space="preserve">
+    <value>Поточне джерело вхідного сигналу</value>
+  </data>
+  <data name="InputSource.1" xml:space="preserve">
+    <value>Перейменування джерела вхідного сигналу та призначення USB-з’єднання</value>
+  </data>
+  <data name="InputSource.2" xml:space="preserve">
+    <value>Вхід</value>
+  </data>
+  <data name="InputSource.3" xml:space="preserve">
+    <value>Назва входу</value>
+  </data>
+  <data name="InputSource.4" xml:space="preserve">
+    <value>USB-порт вище</value>
+  </data>
+  <data name="KeyCustomization.0" xml:space="preserve">
+    <value>Для налаштування клавіші клацніть одну із виділених клавіш на зображенні ліворуч</value>
+  </data>
+  <data name="KeyCustomization.1" xml:space="preserve">
+    <value>Відновити стандартні налаштування для всіх дій</value>
+  </data>
+  <data name="KeyCustomization.2" xml:space="preserve">
+    <value>Налаштування клавіш</value>
+  </data>
+  <data name="Kvm.0" xml:space="preserve">
+    <value>ПК</value>
+  </data>
+  <data name="Kvm.1" xml:space="preserve">
+    <value>Далі</value>
+  </data>
+  <data name="Kvm.2" xml:space="preserve">
+    <value>НАЛАШТУВАННЯ KVM USB</value>
+  </data>
+  <data name="Kvm.3" xml:space="preserve">
+    <value>Підключити мишу\nта клавіатуру</value>
+  </data>
+  <data name="Kvm.4" xml:space="preserve">
+    <value>Миша й клавіатура підключаються із заднього боку монітора (USB-A).\n Примітка: ви також можете підключити інші периферійні USB-пристрої, такі як вебкамера.</value>
+  </data>
+  <data name="Kvm.5" xml:space="preserve">
+    <value>USB-A</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Закрити</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
+  <data name="Kvm.6" xml:space="preserve">
+    <value>Підключення до\nваших пристроїв</value>
+  </data>
+  <data name="Kvm.7" xml:space="preserve">
+    <value>Підключіть відеокабель і USB-кабель від кожного ПК до\n монітора. Можна підключити до 4 ПК (комп’ютерів, ігрових\n консолей тощо). \r\n\r\nВиберіть тип кабелю та призначте назву кожному джерелу.</value>
+  </data>
+  <data name="Kvm.8" xml:space="preserve">
+    <value>Перемикання між ПК</value>
+  </data>
+  <data name="Kvm.9" xml:space="preserve">
+    <value>Перемикання клавіатури та миші</value>
+  </data>
+  <data name="Kvm.10" xml:space="preserve">
+    <value>Змінити положення PIP</value>
+  </data>
+  <data name="Kvm.11" xml:space="preserve">
+    <value>Автоматичне перемикання USB-порту вище в режимі PBP поруч</value>
+  </data>
+  <data name="Kvm.12" xml:space="preserve">
+    <value>Гарячі клавіші джерела вхідного сигналу</value>
+  </data>
+  <data name="Kvm.13" xml:space="preserve">
+    <value>Редагувати джерело вхідного сигналу</value>
+  </data>
+  <data name="Kvm.14" xml:space="preserve">
+    <value>Редагувати PIP/PBP</value>
+  </data>
+  <data name="Kvm.15" xml:space="preserve">
+    <value>Перемикання між позиціями</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Завершити</value>
+  </data>
+  <data name="Kvm.16" xml:space="preserve">
+    <value>НАЛАШТУВАННЯ PIP/PBP</value>
+  </data>
+  <data name="Kvm.17" xml:space="preserve">
+    <value>Налаштуйте PIP/PBP\nдля свого монітора</value>
+  </data>
+  <data name="Kvm.18" xml:space="preserve">
+    <value>Ваш монітор може відображати сигнал з одного ПК чи джерела одночасно (повноекранний режим)\nабо показувати зображення, розділене між джерелами (картинка в картинці / картинки поруч).</value>
+  </data>
+  <data name="Kvm.19" xml:space="preserve">
+    <value>Без KVM</value>
+  </data>
+  <data name="Kvm.20" xml:space="preserve">
+    <value>KVM USB</value>
+  </data>
+  <data name="Kvm.21" xml:space="preserve">
+    <value>Налаштування KVM USB</value>
+  </data>
+  <data name="Kvm.22" xml:space="preserve">
+    <value>Запустити новий KVM USB</value>
+  </data>
+  <data name="Kvm.23" xml:space="preserve">
+    <value>KVM мережі</value>
+  </data>
+  <data name="Kvm.24" xml:space="preserve">
+    <value>Вибір типу налаштування KVM</value>
+  </data>
+  <data name="Kvm.25" xml:space="preserve">
+    <value>Підходить для налаштування одного монітора</value>
+  </data>
+  <data name="Kvm.26" xml:space="preserve">
+    <value>Налаштування через USB-порт монітора</value>
+  </data>
+  <data name="Kvm.27" xml:space="preserve">
+    <value>Гарячі клавіші – перемикання між ПК: немає</value>
+  </data>
+  <data name="Kvm.28" xml:space="preserve">
+    <value>Підходить для налаштування кількох моніторів</value>
+  </data>
+  <data name="Kvm.29" xml:space="preserve">
+    <value>Налаштування через мережу</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>Зручний і безпечний обмін файлами між ПК (Mac і Windows)</value>
+  </data>
+  <data name="Kvm.31" xml:space="preserve">
+    <value>Відкрити KVM мережі</value>
+  </data>
+  <data name="Kvm.32" xml:space="preserve">
+    <value>Відкриває інше вікно для налаштування або редагування KVM мережі.</value>
+  </data>
+  <data name="MouseSettings.0" xml:space="preserve">
+    <value>Посуньте мишу, щоб завершити зміну значення DPI</value>
+  </data>
+  <data name="MouseSettings.1" xml:space="preserve">
+    <value>Збільшення частоти оновлення може призвести до зменшення часу роботи миші від акумулятора.</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>Середня</value>
+  </data>
+  <data name="Slow" xml:space="preserve">
+    <value>Повільна</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>Висока</value>
+  </data>
+  <data name="PenButtonSettings.0" xml:space="preserve">
+    <value>Верхня кнопка</value>
+  </data>
+  <data name="PenButtonSettings.1" xml:space="preserve">
+    <value>Верхня кнопка на корпусі</value>
+  </data>
+  <data name="PenButtonSettings.2" xml:space="preserve">
+    <value>Нижня кнопка на корпусі</value>
+  </data>
+  <data name="PenButtonSettings.3" xml:space="preserve">
+    <value>Одне клацання</value>
+  </data>
+  <data name="PenButtonSettings.4" xml:space="preserve">
+    <value>Подвійне клацання</value>
+  </data>
+  <data name="PenButtonSettings.5" xml:space="preserve">
+    <value>Натискання та утримання</value>
+  </data>
+  <data name="PenButtonSettings.6" xml:space="preserve">
+    <value>Наведення і клацання</value>
+  </data>
+  <data name="PenButtonSettings.7" xml:space="preserve">
+    <value>Для налаштування кнопки клацніть одну із виділених кнопок на зображенні ліворуч</value>
+  </data>
+  <data name="PenButtonSettings.8" xml:space="preserve">
+    <value>Відновити стандартні налаштування для дій</value>
+  </data>
+  <data name="PenSettings.0" xml:space="preserve">
+    <value>Налаштування пера</value>
+  </data>
+  <data name="PenSettings.1" xml:space="preserve">
+    <value>Чутливість кінчика</value>
+  </data>
+  <data name="PenSettings.2" xml:space="preserve">
+    <value>Переміщення повзунка праворуч поступово зменшує чутливість до натискання,\nі вам потрібно буде сильніше\nнатискати на перо</value>
+  </data>
+  <data name="PenSettings.3" xml:space="preserve">
+    <value>Чутливість до нахилу</value>
+  </data>
+  <data name="PenSettings.4" xml:space="preserve">
+    <value>Пересування повзунка праворуч поступово збільшує ефект нахилу,\nі вам потрібно буде\nвикористовувати менший кут нахилу</value>
+  </data>
+  <data name="PenSettings.5" xml:space="preserve">
+    <value>Сполучення з Tile</value>
+  </data>
+  <data name="PenSettings.6" xml:space="preserve">
+    <value>Сполучення пера з мобільним пристроєм за допомогою\nпрограми Tile</value>
+  </data>
+  <data name="PenSettings.7" xml:space="preserve">
+    <value>Початок роботи</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>Повний екран</value>
+  </data>
+  <data name="PipPbp.0" xml:space="preserve">
+    <value>PIP</value>
+  </data>
+  <data name="PipPbp.1" xml:space="preserve">
+    <value>PBP</value>
+  </data>
+  <data name="PipPbp.2" xml:space="preserve">
+    <value>Вхід 1 (основний)</value>
+  </data>
+  <data name="PipPbp.3" xml:space="preserve">
+    <value>Вхід 2 (додатковий)</value>
+  </data>
+  <data name="PipPbp.4" xml:space="preserve">
+    <value>Вхід 3 (додатковий)</value>
+  </data>
+  <data name="PipPbp.5" xml:space="preserve">
+    <value>Вхід 4 (додатковий)</value>
+  </data>
+  <data name="PipPbp.6" xml:space="preserve">
+    <value>USB-комутатор</value>
+  </data>
+  <data name="PipPbp.7" xml:space="preserve">
+    <value>Перемикання між позиціями</value>
+  </data>
+  <data name="SpeakerAudioPreset.0" xml:space="preserve">
+    <value>Звукова схема</value>
+  </data>
+  <data name="SpeakerAudioPreset.1" xml:space="preserve">
+    <value>Ці налаштування застосовуються лише до мультимедіа</value>
+  </data>
+  <data name="SpeakerAudioPreset.2" xml:space="preserve">
+    <value>Мовлення</value>
+  </data>
+  <data name="SpeakerAudioPreset.3" xml:space="preserve">
+    <value>Налаштуйте звукові діапазони за своїми уподобаннями. Ці налаштування застосовуються лише до звуку мультимедійних файлів.</value>
+  </data>
+  <data name="SpeakerAudioSettings.0" xml:space="preserve">
+    <value>Інтелектуальне усунення шуму мікрофона</value>
+  </data>
+  <data name="SpeakerAudioSettings.1" xml:space="preserve">
+    <value>Вимкнути звук повідомлень</value>
+  </data>
+  <data name="SpeakerAudioSettings.2" xml:space="preserve">
+    <value>Регулювання гучності звуку</value>
+  </data>
+  <data name="SpeakerAudioSettings.3" xml:space="preserve">
+    <value>Кожен рівень</value>
+  </data>
+  <data name="SpeakerAudioSettings.4" xml:space="preserve">
+    <value>Лише мінімальні та максимальні</value>
+  </data>
+  <data name="SpeakerInteractions.0" xml:space="preserve">
+    <value>Взаємодії</value>
+  </data>
+  <data name="SpeakerInteractions.1" xml:space="preserve">
+    <value>Наводьте курсор на назви програм нижче для перегляду доступних кнопок спікерфона (вони позначаються зеленим кольором)</value>
+  </data>
+  <data name="SpeakerInteractions.2" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="SpeakerInteractions.3" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="SpeakerInteractions.4" xml:space="preserve">
+    <value>Google Meet</value>
+  </data>
+  <data name="SpeakerInteractions.5" xml:space="preserve">
+    <value>Skype для бізнесу</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>Зворотний відлік 3-2-1</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Сітка кадрів</value>
+  </data>
+  <data name="WebCameraCapture.2" xml:space="preserve">
+    <value>Відкрити</value>
+  </data>
+  <data name="WebCameraCapture.3" xml:space="preserve">
+    <value>Змінити</value>
+  </data>
+  <data name="WebCameraCapture.4" xml:space="preserve">
+    <value>Роздільна здатність</value>
+  </data>
+  <data name="WebCameraCapture.5" xml:space="preserve">
+    <value>4K UHD</value>
+  </data>
+  <data name="WebCameraCapture.6" xml:space="preserve">
+    <value>Full HD</value>
+  </data>
+  <data name="WebCameraCapture.7" xml:space="preserve">
+    <value>HD</value>
+  </data>
+  <data name="WebCameraCapture.8" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="WebCameraCapture.9" xml:space="preserve">
+    <value>Керування чіткістю та стилем відео через регулювання кількості зображень, що захоплюються за секунду.</value>
+  </data>
+  <data name="WebCameraCapture.10" xml:space="preserve">
+    <value>Розташування медіафайлів</value>
+  </data>
+  <data name="WebCameraColorImage.0" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="WebCameraColorImage.1" xml:space="preserve">
+    <value>Функція розширеного динамічного діапазону автоматично коригує оптимальну якість зображення за різних умов освітлення.</value>
+  </data>
+  <data name="WebCameraColorImage.2" xml:space="preserve">
+    <value>Автоматичний баланс білого</value>
+  </data>
+  <data name="WebCameraColorImage.3" xml:space="preserve">
+    <value>Яскравість</value>
+  </data>
+  <data name="WebCameraColorImage.4" xml:space="preserve">
+    <value>Різкість</value>
+  </data>
+  <data name="WebCameraColorImage.5" xml:space="preserve">
+    <value>Контрастність</value>
+  </data>
+  <data name="WebCameraColorImage.6" xml:space="preserve">
+    <value>Насиченість</value>
+  </data>
+  <data name="WebCameraColorImage.7" xml:space="preserve">
+    <value>Захист від мерехтіння</value>
+  </data>
+  <data name="WebCameraColorImage.8" xml:space="preserve">
+    <value>Зменшення мерехтіння під час запису за умов штучного освітлення.</value>
+  </data>
+  <data name="WebCameraColorImage.9" xml:space="preserve">
+    <value>Гц</value>
+  </data>
+  <data name="WebCameraMicrophone.0" xml:space="preserve">
+    <value>Мікрофон</value>
+  </data>
+  <data name="WebCameraMicrophone.1" xml:space="preserve">
+    <value>Мікрофон камери</value>
+  </data>
+  <data name="WebCameraMicrophone.2" xml:space="preserve">
+    <value>Примітка: цей мікрофон не сертифікований для Microsoft Teams. Для оптимального досвіду під час викликів Microsoft Teams використовуйте аудіопристрої, сертифіковані Dell для Microsoft Teams.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.0" xml:space="preserve">
+    <value>Виявлення присутності</value>
+  </data>
+  <data name="WebCameraPresenceDetection.1" xml:space="preserve">
+    <value>Датчик наближення</value>
+  </data>
+  <data name="WebCameraPresenceDetection.2" xml:space="preserve">
+    <value>Виявляє вашу присутність, коли ви перебуваєте в полі зору.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.3" xml:space="preserve">
+    <value>Вихід з режиму сну в разі наближення</value>
+  </data>
+  <data name="WebCameraPresenceDetection.4" xml:space="preserve">
+    <value>Виводить комп’ютер із режиму сну, коли ви до нього підходите.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.5" xml:space="preserve">
+    <value>Блокування в разі віддалення</value>
+  </data>
+  <data name="WebCameraPresenceDetection.6" xml:space="preserve">
+    <value>Блокує комп’ютер і вимикає дисплей, коли ви йдете.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.7" xml:space="preserve">
+    <value>Затримка</value>
+  </data>
+  <data name="WebCameraPresenceDetection.8" xml:space="preserve">
+    <value>Відкласти</value>
+  </data>
+  <data name="WebCameraPresenceDetection.9" xml:space="preserve">
+    <value>Тривалість відкладення</value>
+  </data>
+  <data name="WebCameraPresenceDetection.10" xml:space="preserve">
+    <value>Windows Hello</value>
+  </data>
+  <data name="WebCameraPresenceDetection.11" xml:space="preserve">
+    <value>Вхід здійснюється через розпізнавання обличчя. За цим посиланням ви перейдете до параметрів Windows.</value>
+  </data>
+  <data name="WebCameraSettings.0" xml:space="preserve">
+    <value>Керування камерою</value>
+  </data>
+  <data name="WebCameraSettings.1" xml:space="preserve">
+    <value>Автоматичне кадрування на основі ШІ</value>
+  </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>Використовує алгоритми інтелектуального аналізу сцени та відстеження обличчя для масштабування та панорамування зображення, коли ви рухаєтеся.</value>
+  </data>
+  <data name="WebCameraSettings.3" xml:space="preserve">
+    <value>Перехід між камерами</value>
+  </data>
+  <data name="WebCameraSettings.4" xml:space="preserve">
+    <value>Забезпечує плавний перехід за допомогою панорамування та масштабування, коли камера коригує ваше положення в кадрі.</value>
+  </data>
+  <data name="WebCameraSettings.5" xml:space="preserve">
+    <value>Чутливість відстеження</value>
+  </data>
+  <data name="WebCameraSettings.6" xml:space="preserve">
+    <value>Регулює швидкість реакції камери на ваші рухи та коригує ваше положення в кадрі.</value>
+  </data>
+  <data name="WebCameraSettings.7" xml:space="preserve">
+    <value>Нормально</value>
+  </data>
+  <data name="WebCameraSettings.8" xml:space="preserve">
+    <value>Швидко</value>
+  </data>
+  <data name="WebCameraSettings.9" xml:space="preserve">
+    <value>Розмір кадру</value>
+  </data>
+  <data name="WebCameraSettings.10" xml:space="preserve">
+    <value>Вузький</value>
+  </data>
+  <data name="WebCameraSettings.11" xml:space="preserve">
+    <value>Стандартний</value>
+  </data>
+  <data name="WebCameraSettings.12" xml:space="preserve">
+    <value>Поле зору</value>
+  </data>
+  <data name="WebCameraSettings.13" xml:space="preserve">
+    <value>Звужує або розширює кут поля зору камери.</value>
+  </data>
+  <data name="WebCameraSettings.14" xml:space="preserve">
+    <value>°</value>
+  </data>
+  <data name="WebCameraSettings.15" xml:space="preserve">
+    <value>Масштаб</value>
+  </data>
+  <data name="WebCameraSettings.16" xml:space="preserve">
+    <value>Автофокусування</value>
+  </data>
+  <data name="WebCameraSettings.17" xml:space="preserve">
+    <value>Інтелектуальне налаштування об’єктива камери для найкращого фокусу та різкості.</value>
+  </data>
+  <data name="WebCameraSettings.18" xml:space="preserve">
+    <value>Пріоритет</value>
+  </data>
+  <data name="WebCameraSettings.19" xml:space="preserve">
+    <value>Надає пріоритет частоті кадрів відео або експозиції для забезпечення ідеального рівня освітлення.</value>
+  </data>
+  <data name="WebCameraSettings.20" xml:space="preserve">
+    <value>Експозиція</value>
+  </data>
+  <data name="WebCameraSettings.21" xml:space="preserve">
+    <value>Частота</value>
+  </data>
+  <data name="WebCameraSettings.22" xml:space="preserve">
+    <value>Частота кадрів/експозиція не враховуватимуться, коли ввімкнено HDR.\rКлацніть </value>
+  </data>
+  <data name="WebCameraSettings.23" xml:space="preserve">
+    <value>тут </value>
+  </data>
+  <data name="WebCameraSettings.24" xml:space="preserve">
+    <value>для змінення налаштувань HDR.</value>
+  </data>
+  <data name="WebCameraSettings.25" xml:space="preserve">
+    <value>Пріоритет зовнішньої вебкамери</value>
+  </data>
+  <data name="WebCameraSettings.26" xml:space="preserve">
+    <value>Автоматичне перемикання між вебкамерою Dell UltraSharp та іншими вебкамерами (інтегрованими та зовнішніми). Windows Hello використовуватиме активну вебкамеру для розпізнавання обличчя. Примітка: одночасно можна ввімкнути та використовувати лише одну камеру.</value>
+  </data>
+  <data name="Mouse.8" xml:space="preserve">
+    <value>Чутливість прокручування дотиком</value>
+  </data>
+  <data name="Mouse.9" xml:space="preserve">
+    <value>Регулювання швидкості прокручування</value>
+  </data>
+  <data name="Mouse.10" xml:space="preserve">
+    <value>Основна кнопка миші</value>
+  </data>
+  <data name="Mouse.11" xml:space="preserve">
+    <value>Налаштування DPI</value>
+  </data>
+  <data name="Mouse.12" xml:space="preserve">
+    <value>Частота оновлення</value>
+  </data>
+  <data name="Mouse.13" xml:space="preserve">
+    <value>Кількість повідомлень положення миші системі на секунду</value>
+  </data>
+  <data name="Wired" xml:space="preserve">
+    <value>Дротове</value>
+  </data>
+  <data name="Tooltip.0" xml:space="preserve">
+    <value>Ви підключили кілька пристроїв однієї моделі. Дії дублюватимуться на кожному екземплярі пристрою.</value>
+  </data>
+  <data name="Tooltip.1" xml:space="preserve">
+    <value>Пристрій не знайдено. Переконайтеся, що бездротовий пристрій заряджено та ввімкнено.</value>
+  </data>
+  <data name="Tooltip.2" xml:space="preserve">
+    <value>Цей пристрій вже сполучено. Спочатку скасуйте сполучення з пристроєм, якщо ви хочете створити пару знову.</value>
+  </data>
+  <data name="Tooltip.3" xml:space="preserve">
+    <value>Пристрій, який ви сполучаєте, не сумісний, якщо підключено бездротовий USB-приймач. Використовуйте приймач із комплекту пристрою.</value>
+  </data>
+  <data name="Tooltip.4" xml:space="preserve">
+    <value>На цьому бездротовому USB-приймачі немає доступних слотів. Для його використання скасуйте його сполучення із пристроєм, натиснувши кнопку \&quot;Unpair\&quot; на сторінці налаштувань пристрою.</value>
+  </data>
+  <data name="Mouse.14" xml:space="preserve">
+    <value>Натисніть, щоб призначити дію</value>
+  </data>
+  <data name="Mouse.15" xml:space="preserve">
+    <value>Виберіть дію зі\nсписку праворуч</value>
+  </data>
+  <data name="USBWirelessReceiver" xml:space="preserve">
+    <value>Бездротовий USB-приймач</value>
+  </data>
+  <data name="ReceiverFirmwareVersion" xml:space="preserve">
+    <value>Версія мікропрограми приймача</value>
+  </data>
+  <data name="ReadyToBePaired" xml:space="preserve">
+    <value>Готово до сполучення</value>
+  </data>
+  <data name="BrightnessOrContrast" xml:space="preserve">
+    <value>Яскравість/контрастність</value>
+  </data>
+  <data name="DisplayProperties" xml:space="preserve">
+    <value>Властивості дисплея</value>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>Розкладка</value>
+  </data>
+  <data name="EasyMemory" xml:space="preserve">
+    <value>Зручне запам’ятовування</value>
+  </data>
+  <data name="VisionEngine" xml:space="preserve">
+    <value>Підсистема бачення</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Жодних</value>
+  </data>
+  <data name="Copilot" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>Пристрої</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Блокування</value>
+  </data>
+  <data name="NotificationCenter" xml:space="preserve">
+    <value>Центр сповіщень</value>
+  </data>
+  <data name="ScreenSnip" xml:space="preserve">
+    <value>Фрагмент екрана</value>
+  </data>
+  <data name="ShowHideDesktop" xml:space="preserve">
+    <value>Показати/приховати робочий стіл</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Завершити роботу</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Вийти</value>
+  </data>
+  <data name="Sleep" xml:space="preserve">
+    <value>Режим сну</value>
+  </data>
+  <data name="SwitchApplications" xml:space="preserve">
+    <value>Перемикання програм</value>
+  </data>
+  <data name="TaskView" xml:space="preserve">
+    <value>Подання завдань</value>
+  </data>
+  <data name="BarrelButton" xml:space="preserve">
+    <value>Кнопка на корпусі</value>
+  </data>
+  <data name="DefineBySystem" xml:space="preserve">
+    <value>Визначено системою</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>Електронна пошта</value>
+  </data>
+  <data name="OneNote" xml:space="preserve">
+    <value>One Note</value>
+  </data>
+  <data name="PenMenu" xml:space="preserve">
+    <value>Меню пера</value>
+  </data>
+  <data name="QuickNote" xml:space="preserve">
+    <value>Швидка примітка</value>
+  </data>
+  <data name="ScreenSnipping" xml:space="preserve">
+    <value>Фрагменти екрана</value>
+  </data>
+  <data name="StickyNotes" xml:space="preserve">
+    <value>Стікери</value>
+  </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>Віджети</value>
+  </data>
+  <data name="WindowsSearch" xml:space="preserve">
+    <value>Windows Search</value>
+  </data>
+  <data name="SwitchApplication" xml:space="preserve">
+    <value>Перемикання програм</value>
+  </data>
+  <data name="AssignKeystroke" xml:space="preserve">
+    <value>Призначити натискання клавіш</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Колір</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Calculator" xml:space="preserve">
+    <value>Калькулятор</value>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>Закрити вікно</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Копіювати</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>Вирізати</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>Документи</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Вперед</value>
+  </data>
+  <data name="MaximizeWindow" xml:space="preserve">
+    <value>Розгорнути вікно</value>
+  </data>
+  <data name="MinimizeWindow" xml:space="preserve">
+    <value>Згорнути вікно</value>
+  </data>
+  <data name="MyHome" xml:space="preserve">
+    <value>Головна</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>Відкрити файл</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Відкрити папку</value>
+  </data>
+  <data name="OpenNewBrowserTab" xml:space="preserve">
+    <value>Відкрити нову вкладку браузера</value>
+  </data>
+  <data name="OpenWebPage" xml:space="preserve">
+    <value>Відкрити вебсторінку</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Вставити</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>Збільшити</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>Зменшити</value>
+  </data>
+  <data name="ZoomReset" xml:space="preserve">
+    <value>Відновити масштаб</value>
+  </data>
+  <data name="4thClick" xml:space="preserve">
+    <value>4-те клацання</value>
+  </data>
+  <data name="5thClick" xml:space="preserve">
+    <value>5-те клацання</value>
+  </data>
+  <data name="Erase" xml:space="preserve">
+    <value>Очистити</value>
+  </data>
+  <data name="LeftClick" xml:space="preserve">
+    <value>Клацання лівою кнопкою</value>
+  </data>
+  <data name="MiddleClick" xml:space="preserve">
+    <value>Клацання середньою кнопкою</value>
+  </data>
+  <data name="OpenRun" xml:space="preserve">
+    <value>Відкрити/запустити</value>
+  </data>
+  <data name="OpenRun2" xml:space="preserve">
+    <value>Відкрити й запустити</value>
+  </data>
+  <data name="PenPageDown" xml:space="preserve">
+    <value>Сторінка вниз</value>
+  </data>
+  <data name="PenPageUp" xml:space="preserve">
+    <value>Сторінка вгору</value>
+  </data>
+  <data name="RadialMenu" xml:space="preserve">
+    <value>Радіальне меню</value>
+  </data>
+  <data name="Redo" xml:space="preserve">
+    <value>Повторити</value>
+  </data>
+  <data name="RightClick" xml:space="preserve">
+    <value>Клацання правою кнопкою</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Відмінити</value>
+  </data>
+</root>
