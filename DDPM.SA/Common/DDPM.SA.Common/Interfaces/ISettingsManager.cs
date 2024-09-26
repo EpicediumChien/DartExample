@@ -100,5 +100,9 @@ namespace DDPM.SA.Common
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
 
         event EventHandler SettingReadyEvent;
+
+        //Migration
+        Task<bool> isDDMMigration(out string folder_appdatapath_migration);
+        Task<bool> ReadDDMSettings(string path);
     }
 }

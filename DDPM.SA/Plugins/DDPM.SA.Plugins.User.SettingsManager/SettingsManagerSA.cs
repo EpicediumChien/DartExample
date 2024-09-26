@@ -66,6 +66,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static string folder_localappdata_Appicon = "Icons";
         private static string folder_localappdata_Display = "Display";
+        private static string folder_localappdata_Migration = "Migration";
 
         //private static string folder_programdata_DownloadInstaller = path_programdata + "\\" + folder_product + "\\Downloaded Installations";
         //private static string folder_programdata_DownloadInstallerLog = path_programdata + "\\" + folder_product + "\\InstallationLogs";
@@ -999,6 +1000,29 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         }
 
         #endregion DisplayImpExpSettings
+
+        #region Migration
+        public Task<bool> isDDMMigration(out string folder_appdatapath_migration)
+        {
+            string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
+            folder_appdatapath_migration = folder + "\\" + folder_product + "\\" + folder_localappdata_Migration;
+            if (Directory.Exists(folder_appdatapath_migration))
+            {
+                return Task<bool>.FromResult(true);
+            }
+            return Task<bool>.FromResult(false);
+        }
+
+        public Task<bool> ReadDDMSettings(string path)
+        {
+            if (File.Exists(path))
+            {
+                return Task.FromResult(true);
+            }
+            return Task<bool>.FromResult(false);
+        }
+        #endregion Migration
 
         #endregion ISettingManagerDev implementation
 
