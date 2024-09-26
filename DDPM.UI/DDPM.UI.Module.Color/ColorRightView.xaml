@@ -211,7 +211,7 @@
                                                                     <ComboBox Grid.Column="2" x:Name="appPreset"
                                                                               Style="{StaticResource DdpmComboBoxStyle}"
                                                                               ItemsSource="{Binding SupportPreset, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding AppPresetIdx, UpdateSourceTrigger=PropertyChanged}" Width="150"
-                                                                              VerticalAlignment="Center" HorizontalAlignment="Stretch"  Background="DimGray" SelectionChanged="appPreset_SelectionChanged" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
+                                                                              VerticalAlignment="Center" HorizontalAlignment="Stretch"  Background="DimGray" SelectionChanged="appPreset_SelectionChanged" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}"  />
 
                                                                     <!--
                                                                     <UXControls:UXComboBox Grid.Column="2" x:Name="appPreset"
