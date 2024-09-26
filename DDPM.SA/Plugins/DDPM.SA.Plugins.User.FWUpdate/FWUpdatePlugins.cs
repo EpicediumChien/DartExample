@@ -147,7 +147,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <summary>
         /// 回傳更新事件進度
         /// </summary>
-        public event EventHandler<FWUpdateInfo>? ProgressUpdate_Notify;
+        public event EventHandler<UpdateProgressInfo>? ProgressUpdate_Notify;
 
         /// <summary>
         /// 將延遲更新包傳給DeviceManager進行儲存
@@ -658,14 +658,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                     bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo);
                     _downloadTimer.Stop();
-                    FWUpdateInfo fWUpdateInfo_Status = new FWUpdateInfo()
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
                         DeviceName = fwUpdateInfos[i].DeviceName,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Downloading",
                         ProcessProgress = 100,
                     };
-                    sendMessageToEvent(fWUpdateInfo_Status);
+                    sendMessageToEvent(updateProgressInfo);
                     if (!downloadRet)
                     {
                         if (downloadInfo.Equals("CA check fail"))
@@ -849,14 +849,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             if (download != null)
             {
-                FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                if (download.DownloadFileStream != null)
                 {
-                    DeviceName = _fWUpdateInfo.DeviceName,
-                    TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                    ProcessName = "Downloading",
-                    ProcessProgress = download.GetProgress(),
-                };
-                sendMessageToEvent(fWUpdateInfo);
+                    if (download.DownloadFileSize == null)
+                    {
+                        download.DownloadFileSize = 1;
+                    }
+                    double d = Math.Round(((double)download.DownloadFileStream.Length / (double)download.DownloadFileSize) * 100.0, 2);
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    {
+                        DeviceName = _fWUpdateInfo.DeviceName,
+                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                        ProcessName = "Downloading",
+                        ProcessProgress = d,
+                    };
+                    sendMessageToEvent(updateProgressInfo);
+                }
             }
         }
 
@@ -1144,19 +1152,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     //Bruce 0913 Add exe file check Thumbprint.
                     bool isCheckSHA = false;
                     string FileCAInfo = string.Empty;
-                    isCheckSHA = certificateCheck.CheckFile_Thumbprint(fwUpdateInfo.InstallPaths, fwUpdateInfo.Thumbprint, out FileCAInfo);
-                    if (!isCheckSHA)
-                    {
-                        _notificationStr = $"Firmware update unsuccessful.";
-                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
-                        return FWUErrorCode.FileCheckFail;
-                    }
                     string FileInfo;
                     if (!DDPMFileSecurity.IsFilePathValid(fwUpdateInfo.InstallPaths, out FileInfo))//0815 Bruce Add Security
                     {
                         _notificationStr = $"Firmware update unsuccessful.";
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " FileIsNoSafe:" + FileInfo);
                         return FWUErrorCode.FileIsNoSafe;
+                    }
+                    isCheckSHA = certificateCheck.CheckFile_Thumbprint(fwUpdateInfo.InstallPaths, fwUpdateInfo.Thumbprint, out FileCAInfo);
+                    if (!isCheckSHA)
+                    {
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
+                        return FWUErrorCode.FileCheckFail;
                     }
                 }
                 else
@@ -1247,20 +1255,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     //WTSFunction.RunElevatedProcess(fwUpdateInfo.InstallPaths, arguments);
                     if (fwUpdateInfo.IsDisplay)
                     {
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Installing",
                             ProcessProgress = 50,
                         };
-                        sendMessageToEvent(fWUpdateInfo);
+                        sendMessageToEvent(updateProgressInfo);
                     }
                     UserImpersonator.RunAsUser(token, () =>
                     {
-                        using (Process clientProcess = new Process())
+                        using (_clientProcess = new Process())
                         {
-                            _clientProcess = new Process();
                             _clientProcess.StartInfo.UseShellExecute = false;
                             _clientProcess.StartInfo.FileName = fwUpdateInfo.InstallPaths;
                             _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
@@ -1322,14 +1329,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         ret = "Dock FW loaded failed.";
                         _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
                     }
-                    FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = ret
                     };
                     _notificationStr = ret;
-                    sendMessageToEvent(fWUpdateInfo);
+                    sendMessageToEvent(updateProgressInfo);
                 }
                 if (_DelayFWUpdateInfoPackage != null && _updateErrorCode == FWUErrorCode.NoError)
                 {
@@ -1421,7 +1428,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             if (_timeOutCount < _fwTimeOutCount)
             {
-                FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                UpdateProgressInfo fWUpdateInfo = new UpdateProgressInfo()
                 {
                     DeviceName = _fWUpdateInfo.DeviceName,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
@@ -1486,24 +1493,24 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     if (msg1Node.InnerText == "M1")
                     {
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Please double click mouse left button to start firmware update"
                         };
-                        sendMessageToEvent(fWUpdateInfo);
+                        sendMessageToEvent(updateProgressInfo);
                         _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
                     }
                     else if (msg1Node.InnerText == "M2")
                     {
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Please press \"U\" key on keyboard to start firmware update"
                         };
-                        sendMessageToEvent(fWUpdateInfo);
+                        sendMessageToEvent(updateProgressInfo);
                         _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
                     }
                     else
@@ -1533,37 +1540,37 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     if (stateFlowNode.InnerText == "A0")
                     {
                         _logs.DebugMsg_1("Get A0:Device connected");
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Device connected",
                         };
-                        sendMessageToEvent(fWUpdateInfo);
+                        sendMessageToEvent(updateProgressInfo);
                     }
                     else if (stateFlowNode.InnerText == "A1")
                     {
                         _logs.DebugMsg_1("Get A1:Firmware update started");
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Firmware update started",
                         };
-                        sendMessageToEvent(fWUpdateInfo);
+                        sendMessageToEvent(updateProgressInfo);
                     }
                     else if (stateFlowNode.InnerText == "A2")
                     {
                         _updateErrorCode = FWUErrorCode.NoError;
                         _notificationStr = $"{_fWUpdateInfo.DeviceName} A2:Firmware update successful";
                         _logs.DebugMsg_1("Get A2:Firmware update successful");
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Firmware update successful",
                         };
-                        sendMessageToEvent(fWUpdateInfo);
+                        sendMessageToEvent(updateProgressInfo);
                         resetState();
                     }
                     else if (stateFlowNode.InnerText == "AF")
@@ -1602,13 +1609,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 _notificationStr = $"{_fWUpdateInfo.DeviceName} update failed with unknown error ";
                                 _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ErrorCode should got E2,E4,E5 but got : " + errorCodeNode.InnerText);
                             }
-                            FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                             {
                                 DeviceName = _fWUpdateInfo.DeviceName,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                                 ProcessName = "Error Code:" + errorCodeNode.InnerText,
                             };
-                            sendMessageToEvent(fWUpdateInfo);
+                            sendMessageToEvent(updateProgressInfo);
                         }
                         else
                         {
@@ -1642,13 +1649,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _updateErrorCode = FWUErrorCode.NoError;
                         _notificationStr = $"{_fWUpdateInfo.DeviceName} U9:Firmware update successful";
                         _logs.DebugMsg_1("Get U9:Firmware update successful");
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _fWUpdateInfo.DeviceName,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                             ProcessName = "Firmware update successful",
                         };
-                        sendMessageToEvent(fWUpdateInfo);
+                        sendMessageToEvent(updateProgressInfo);
                         resetState();
                     }
                     else
@@ -1658,26 +1665,26 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (progressNode != null)
                 {
-                    FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Installing",
                         ProcessProgress = int.Parse(progressNode.InnerText),
                     };
-                    sendMessageToEvent(fWUpdateInfo);
+                    sendMessageToEvent(updateProgressInfo);
                 }
                 if (timeOut != null)
                 {
                     int.TryParse(timeOut.InnerText, out _fwTimeOutCount);
-                    FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                         ProcessName = "Timeout",
                         ProcessProgress = _fwTimeOutCount,
                     };
-                    sendMessageToEvent(fWUpdateInfo);
+                    sendMessageToEvent(updateProgressInfo);
                 }
             }
         }
@@ -1702,7 +1709,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
         }
 
-        private void sendMessageToEvent(FWUpdateInfo fWUpdateInfo)
+        private void sendMessageToEvent(UpdateProgressInfo fWUpdateInfo)
         {
             ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
             _logs.DebugMsg_1("sendMessageToEvent" + " " + fWUpdateInfo.ProcessName + " " + fWUpdateInfo.ProcessProgress + " " + DateTime.Now);
