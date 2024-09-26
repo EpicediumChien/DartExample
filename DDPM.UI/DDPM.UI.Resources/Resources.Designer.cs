@@ -4066,7 +4066,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Controls video clarity and style by adjusting the number of images captured per second.
+        ///   Looks up a localized string similar to Controls video clarity and style by adjusting the number of images captured per second..
         /// </summary>
         internal static string WebCameraCapture_9 {
             get {

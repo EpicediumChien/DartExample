@@ -446,8 +446,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Thread.Sleep(100);
             //}
 
-            //show OSD over colorpreset plugin
-            _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
+            // Jim add 20240925
+            if (_GlobalSettingParam.GlobalSetting_General.Display_Color_Preset_and_Easy_Memory)
+            {
+                //show OSD over colorpreset plugin
+                _ColorPresetPlugin.ShowOSD_ColoPreset(m, ColorPreset_Name);
+            }
 
             //if (r) // 20240717 jim remove
             //{
