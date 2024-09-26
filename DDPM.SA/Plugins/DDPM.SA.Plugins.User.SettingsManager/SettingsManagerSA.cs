@@ -627,9 +627,21 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             //string temp = RunSerializeObject(colorPresetSettings);
             //if (!string.IsNullOrWhiteSpace(temp))
             //    return Task.FromResult(true);
-            JObject obj = new JObject(colorPresetSettings);
             string info;
-            bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
+            //JObject obj = new JObject(colorPresetSettings);
+            JToken token = JToken.FromObject(colorPresetSettings);
+            if (token.Type == JTokenType.Object)
+            {
+                JObject obj = (JObject)token;
+                // Handle object
+                bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
+            }
+            else if (token.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)token;
+                // Handle array
+                bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _colorsettings_path, out info);
+            }            
 
             return Task.FromResult(false);
         }
