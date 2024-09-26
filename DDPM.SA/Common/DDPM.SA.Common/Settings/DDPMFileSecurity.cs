@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -136,10 +137,34 @@ namespace DDPM.SA.Common.Settings
             string write_string;
             try
             {
-                JObject jObject = JObject.Parse(serialized_string);
+                //JObject jObject = JObject.Parse(serialized_string);
+                JToken token = JToken.Parse(serialized_string);
+                string temp = string.Empty;
+                if (token.Type == JTokenType.Object)
+                {
+                    JObject obj = (JObject)token;
+                    // Handle object
+                    obj.Add("Signature", signature);
+                    temp = obj.ToString();
+                }
+                else if (token.Type == JTokenType.Array)
+                {
+                    JArray array = (JArray)token;
+                    // Handle array
+                    //JObject newObject = new JObject();
+                    //newObject["Signature"] = signature;
+                    //array.Add(newObject);
+                    array.Add("Signature : " + signature);
+                    temp = array.ToString();
+                }
+                if(string.IsNullOrEmpty(temp))
+                {
+                    info = "Add sign to json object failed";
+                    return false;
+                }
                 //2. Add signature
-                jObject.Add("Signature", signature);
-                string modifiedJson = jObject.ToString();
+                //jObject.Add("Signature", signature);
+                string modifiedJson = temp;// jObject.ToString();
                 //convert whole content and protect it as bytes array
                 byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
                 //3. Data protect if need
@@ -227,30 +252,66 @@ namespace DDPM.SA.Common.Settings
                 return string.Empty;
             }
             // Parse the JSON string into a JObject
-            string modifiedJson;
-            string signature;
+            string modifiedJson = string.Empty;
+            string signature = string.Empty;
             JObject jObject;
             try
             {
-                jObject = JObject.Parse(serialized);
-                //3. retrieve signature for comparison
-                signature = (string)jObject["Signature"];
-                if (!string.IsNullOrEmpty(signature))
+                //jObject = JObject.Parse(serialized);
+                JToken token = JToken.Parse(serialized);
+                string temp = string.Empty;
+                if (token.Type == JTokenType.Object)
                 {
+                    JObject obj = (JObject)token;
+                    // Handle object
+                    signature = (string)obj["Signature"];
                     // Remove the "signature" property for hash generating
-                    if (!jObject.Remove("Signature"))
+                    if (!obj.Remove("Signature"))
                     {
                         info = "Remove signature field of json failed";
                         Console.WriteLine(info);
                         return string.Empty;
                     }
+                    modifiedJson = obj.ToString();
                 }
-                else
+                else if (token.Type == JTokenType.Array)
+                {
+                    JArray array = (JArray)token;
+                    // Handle array
+                    var signatureStrings = array.Where(token => token.Type == JTokenType.String && token.ToString().StartsWith("Signature"));
+                    foreach (var sign in signatureStrings)
+                    {
+                        if (sign != null && !string.IsNullOrEmpty(sign.ToString()))
+                        {
+                            signature = sign.ToString().Replace("Signature", "").Trim();
+                            if(signature.StartsWith(":"))
+                            {
+                                signature = signature.Substring(1).Trim();
+                            }
+                            array.Remove(sign);
+                            break;
+                        }
+                    }
+
+                    modifiedJson = array.ToString();
+                }
+                if (string.IsNullOrEmpty(signature))
                 {
                     info = "No signature in json file";
                     Console.WriteLine(info);
                     return string.Empty;
                 }
+                //jObject = (JObject)JsonConvert.SerializeObject(serialized, Formatting.Indented);
+                //3. retrieve signature for comparison
+                //signature = (string)jObject["Signature"];
+
+                // Remove the "signature" property for hash generating
+                //if (!jObject.Remove("Signature"))
+                //{
+                //    info = "Remove signature field of json failed";
+                //    Console.WriteLine(info);
+                //    return string.Empty;
+                //}
             }
             catch (Exception ex)
             {
@@ -258,18 +319,18 @@ namespace DDPM.SA.Common.Settings
                 Console.WriteLine(info);
                 return string.Empty;
             }
-            if (jObject == null || jObject.Count == 0)
-            {
-                info = "Convert from json content got no object";
-                Console.WriteLine(info);
-                return string.Empty;
-            }
+            //if (jObject == null)// || jObject.Count == 0)
+            //{
+            //    info = "Convert from json content got no object";
+            //    Console.WriteLine(info);
+            //    return string.Empty;
+            //}
             // Convert the modified JObject back to a JSON string
             string cal_sign;
             try
             {
                 //0905 apply DDPM private key rule
-                modifiedJson = jObject.ToString();
+            //    modifiedJson = jObject.ToString();
                 //byte[] body_array = Encoding.UTF8.GetBytes(modifiedJson);
                 //byte[] sign = GetSHA512(body_array, 0, body_array.Length);
                 //cal_sign = Encoding.UTF8.GetString(sign);//target for comparison
@@ -1774,7 +1835,7 @@ namespace DDPM.SA.Common.Settings
             }
             //NTAccount f = new NTAccount(accountName);
             //writelog($"GetUserSid: final using: {accountName}");
-            String sidString;
+            string sidString;
             try
             {
                 SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));

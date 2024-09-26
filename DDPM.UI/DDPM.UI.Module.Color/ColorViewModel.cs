@@ -325,8 +325,8 @@ namespace DDPM.UI.Module.Color
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
                 }
             }
             return index;
@@ -346,7 +346,8 @@ namespace DDPM.UI.Module.Color
             {
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
                 {
-                    DeviceInfo = mo.edid,
+                    ModelName = mo.edid.ModelName,
+                    SerialNumber = mo.edid.SerialNumber,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
                     PresetForManual = "Standard/Native",

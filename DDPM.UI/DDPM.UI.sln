@@ -224,9 +224,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.AddPen_BL.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.EzArrange.Tests", "UnitTest\DDPM.UI.Module.EzArrange.Tests\DDPM.UI.Module.EzArrange.Tests.csproj", "{E01AD0D1-AA56-4C62-B638-170E92A91F67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.HeadsetDeviceSettings.Tests", "UnitTest\DDPM.UI.Module.HeadsetDeviceSettings.Tests\DDPM.UI.Module.HeadsetDeviceSettings.Tests.csproj", "{FDB446E2-AAFD-4958-B62E-79C50DC48B1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.HeadsetDeviceSettings.Tests", "UnitTest\DDPM.UI.Module.HeadsetDeviceSettings.Tests\DDPM.UI.Module.HeadsetDeviceSettings.Tests.csproj", "{FDB446E2-AAFD-4958-B62E-79C50DC48B1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.HeadsetAutomatedActions.Tests", "UnitTest\DDPM.UI.Module.HeadsetAutomatedActions.Tests\DDPM.UI.Module.HeadsetAutomatedActions.Tests.csproj", "{28A75972-35B7-4BCF-AE02-17F42AB24EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.HeadsetAutomatedActions.Tests", "UnitTest\DDPM.UI.Module.HeadsetAutomatedActions.Tests\DDPM.UI.Module.HeadsetAutomatedActions.Tests.csproj", "{28A75972-35B7-4BCF-AE02-17F42AB24EAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

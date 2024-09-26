@@ -117,8 +117,1486 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="WebCameraMicrophone.3" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="About" xml:space="preserve">
+    <value>バージョン情報</value>
+  </data>
+  <data name="AdaptiveLight" xml:space="preserve">
+    <value>アダプティブ ライト</value>
+  </data>
+  <data name="Display" xml:space="preserve">
+    <value>ディスプレイ</value>
+  </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>ディスプレイの設定</value>
+  </data>
+  <data name="EasyArrange" xml:space="preserve">
+    <value>EasyArrange</value>
+  </data>
+  <data name="FirmwareVersion" xml:space="preserve">
+    <value>ファームウェア バージョン</value>
+  </data>
+  <data name="Gaming" xml:space="preserve">
+    <value>ゲーミング</value>
+  </data>
+  <data name="InputSource" xml:space="preserve">
+    <value>入力ソース</value>
+  </data>
+  <data name="KVM" xml:space="preserve">
+    <value>KVM</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>手動</value>
+  </data>
+  <data name="ManufactureMonth" xml:space="preserve">
+    <value>製造</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>オフ</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>オン</value>
+  </data>
+  <data name="RestoreToDefault" xml:space="preserve">
+    <value>デフォルトに戻す</value>
+  </data>
+  <data name="ServiceTag" xml:space="preserve">
+    <value>サービス タグ</value>
+  </data>
+  <data name="Unpair" xml:space="preserve">
+    <value>ペアリング解除</value>
+  </data>
+  <data name="VbarText_DisplayOthers" xml:space="preserve">
+    <value>その他</value>
+  </data>
+  <data name="QuickSettings" xml:space="preserve">
+    <value>クイック設定</value>
+  </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>分析</value>
+  </data>
+  <data name="Updates" xml:space="preserve">
+    <value>更新プログラム</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>全般</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Updates.0" xml:space="preserve">
+    <value>アップデートが利用可能です</value>
+  </data>
+  <data name="Updates.1" xml:space="preserve">
+    <value>アップデートが完了すると、Dell Peripheral Managerが閉じて再度開きます。一度開始したアップデートをキャンセルすることはできません。</value>
+  </data>
+  <data name="Updates.2" xml:space="preserve">
+    <value>アップデートの確認</value>
+  </data>
+  <data name="Updates.3" xml:space="preserve">
+    <value>現在、利用可能なアップデートはありません。</value>
+  </data>
+  <data name="Updates.4" xml:space="preserve">
+    <value>ネットワーク エラー。やり直してください。</value>
+  </data>
+  <data name="Updates.5" xml:space="preserve">
+    <value>ダウンロードとインストール</value>
+  </data>
+  <data name="Updates.6" xml:space="preserve">
+    <value>アップデートの準備をしています。しばらくお待ちください...</value>
+  </data>
+  <data name="Analytics.0" xml:space="preserve">
+    <value>分析</value>
+  </data>
+  <data name="Analytics.1" xml:space="preserve">
+    <value>診断データと使用状況データを送信して、Dellの製品とサービスの自動的な改善を支援します。</value>
+  </data>
+  <data name="Analytics.2" xml:space="preserve">
+    <value>Dellのプライバシー ポリシー</value>
+  </data>
+  <data name="Analytics.3" xml:space="preserve">
+    <value>Dellの製品とサービスの自動的な改善を支援します</value>
+  </data>
+  <data name="AddDevice" xml:space="preserve">
+    <value>デバイスの追加</value>
+  </data>
+  <data name="AddDevice.Display" xml:space="preserve">
+    <value>ディスプレイ</value>
+  </data>
+  <data name="AddDevice.Webcam" xml:space="preserve">
+    <value>Webカメラ</value>
+  </data>
+  <data name="AddDevice.KnM" xml:space="preserve">
+    <value>キーボード\nとマウス</value>
+  </data>
+  <data name="AddDevice.Pen" xml:space="preserve">
+    <value>ペン</value>
+  </data>
+  <data name="AddDevice.Headset" xml:space="preserve">
+    <value>ヘッドセット</value>
+  </data>
+  <data name="AddDevice.Speaker" xml:space="preserve">
+    <value>スピーカーフォン\nとサウンドバー</value>
+  </data>
+  <data name="AddDevice.Dock" xml:space="preserve">
+    <value>ドック</value>
+  </data>
+  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+    <value>Wireless receiver</value>
+  </data>
+  <data name="AddDevice.Type.Wired" xml:space="preserve">
+    <value>Wired</value>
+  </data>
+  <data name="AddDevice.Type.Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+    <value>デバイスを追加しています。しばらくお待ちください...</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+    <value>ペアリング</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+    <value>ペアリングには時間がかかる場合があります。デバイスの接続を解除しないでください</value>
+  </data>
+  <data name="AddDevice.Display.1" xml:space="preserve">
+    <value>システムのHDMI/USB-Cポートを介してディスプレイを接続します</value>
+  </data>
+  <data name="AddDevice.Webcam.0" xml:space="preserve">
+    <value>システムのUSBポートを介してWebカメラを接続します</value>
+  </data>
+  <data name="AddDevice.KnM.0" xml:space="preserve">
+    <value>Bluetooth接続</value>
+  </data>
+  <data name="AddDevice.KnM.1" xml:space="preserve">
+    <value>Windows設定でBluetoothデバイスをペアリングして追加します</value>
+  </data>
+  <data name="AddDevice.KnM.2" xml:space="preserve">
+    <value>電源スイッチ スライダーをオンにスライドします</value>
+  </data>
+  <data name="AddDevice.KnM.3" xml:space="preserve">
+    <value>Bluetoothチャンネルを選択し、3秒間長押ししてデバイスを検出可能にします</value>
+  </data>
+  <data name="AddDevice.KnM.4" xml:space="preserve">
+    <value>デバイスのペアリングを許可するか、Windows設定を起動し、デバイスが検出されたらそのデバイスを選択します</value>
+  </data>
+  <data name="AddDevice.KnM.6" xml:space="preserve">
+    <value>USBワイヤレス レシーバーをシステムに接続します</value>
+  </data>
+  <data name="AddDevice.KnM.7" xml:space="preserve">
+    <value>電源スイッチをオフにスライドします。</value>
+  </data>
+  <data name="AddDevice.KnM.8" xml:space="preserve">
+    <value>任意のキー/ボタンを押したまま、電源をオンにスライドします</value>
+  </data>
+  <data name="AddDevice.KnM.9" xml:space="preserve">
+    <value>このウィンドウは開いたままにしておきます。数秒後にペアリングが開始されます。開始されない場合は、ステップ2と3を繰り返してやり直してください。</value>
+  </data>
+  <data name="AddDevice.KnM.10" xml:space="preserve">
+    <value>複数のワイヤレス レシーバーが検出されました。キーボードとマウスのDellワイヤレス レシーバーをすべて取り外し、ペアリングしたいレシーバーを接続してください。</value>
+  </data>
+  <data name="AddDevice.KnM.11" xml:space="preserve">
+    <value>USBワイヤレス レシーバーが接続されていません。USBワイヤレス レシーバーを接続してください。ペアリングできるのは互換性のある最大6台のデバイスです。</value>
+  </data>
+  <data name="AddDevice.KnM.12" xml:space="preserve">
+    <value>USBワイヤレス レシーバーが接続されていません。USBワイヤレスレシーバーを接続すると、UCとの互換性が向上し、レイテンシーが低く、安定した接続が可能になります。</value>
+  </data>
+  <data name="AddDevice.KnM.13" xml:space="preserve">
+    <value>システムのUSBポートを介してキーボードとマウスを接続します</value>
+  </data>
+  <data name="AddDevice.Pen.0" xml:space="preserve">
+    <value>ペンを接続します</value>
+  </data>
+  <data name="AddDevice.Pen.1" xml:space="preserve">
+    <value>ペン先を画面にタッチします</value>
+  </data>
+  <data name="AddDevice.Pen.2" xml:space="preserve">
+    <value>トップ ボタンを3秒間長押しします。デバイスがWindowsに検出されるまで待ちます。</value>
+  </data>
+  <data name="AddDevice.Pen.3" xml:space="preserve">
+    <value>デバイスのペアリングを許可するか、Windows設定を起動し、デバイスが検出されたらそのデバイスを選択します。</value>
+  </data>
+  <data name="AddDevice.Pen.4" xml:space="preserve">
+    <value>ペンをペアリングするためのプロンプト ボックスで、［はい］を選択してペアリングを確認します</value>
+  </data>
+  <data name="AddDevice.Headset.0" xml:space="preserve">
+    <value>USBワイヤレス レシーバーを外出先の無料接続で使用する場合</value>
+  </data>
+  <data name="AddDevice.Headset.1" xml:space="preserve">
+    <value>ヘッドセットの電源をオンにします</value>
+  </data>
+  <data name="AddDevice.Headset.2" xml:space="preserve">
+    <value>電源ボタンを3秒間長押しして、ヘッドセットをBluetoothで検出できるようにします</value>
+  </data>
+  <data name="AddDevice.Headset.3" xml:space="preserve">
+    <value>デバイスのペアリングを許可するか、Windows設定を起動し、デバイスが検出されたらそのデバイスを選択します。</value>
+  </data>
+  <data name="AddDevice.Headset.4" xml:space="preserve">
+    <value>ヘッドセットの電源をオフにします。マイク ミュート ボタンを押したまま、再度電源をオンにします。</value>
+  </data>
+  <data name="AddDevice.Headset.5" xml:space="preserve">
+    <value>数秒後にペアリングが自動的に開始されます</value>
+  </data>
+  <data name="AddDevice.Headset.6" xml:space="preserve">
+    <value>システムのUSBポートを介してヘッドセットを接続します。</value>
+  </data>
+  <data name="AddDevice.Speaker.0" xml:space="preserve">
+    <value>システムのUSBポートを介してスピーカーまたはサウンドバーを接続します。</value>
+  </data>
+  <data name="AddDevice.Dock.0" xml:space="preserve">
+    <value>システムのUSBポートを介してドックを接続します</value>
+  </data>
+  <data name="HomePage.0" xml:space="preserve">
+    <value>しばらくお待ちください...</value>
+  </data>
+  <data name="UpdateFirmware" xml:space="preserve">
+    <value>ファームウェアのアップデート</value>
+  </data>
+  <data name="Dock.0" xml:space="preserve">
+    <value>{0} /{1}個のスロットが利用可能です</value>
+  </data>
+  <data name="Dock.1" xml:space="preserve">
+    <value>ドングル {0}</value>
+  </data>
+  <data name="Keyboard.2" xml:space="preserve">
+    <value>キーのカスタマイズ</value>
+  </data>
+  <data name="Keyboard.3" xml:space="preserve">
+    <value>コラボレーション</value>
+  </data>
+  <data name="Keyboard.4" xml:space="preserve">
+    <value>照明</value>
+  </data>
+  <data name="Mouse.0" xml:space="preserve">
+    <value>次に対するアクションを割り当てます</value>
+  </data>
+  <data name="Mouse.1" xml:space="preserve">
+    <value>すべてのアプリケーション</value>
+  </data>
+  <data name="Mouse.2" xml:space="preserve">
+    <value>Microsoft Word</value>
+  </data>
+  <data name="Mouse.3" xml:space="preserve">
+    <value>Microsoft Excel</value>
+  </data>
+  <data name="Mouse.4" xml:space="preserve">
+    <value>Microsoft PowerPoint</value>
+  </data>
+  <data name="Mouse.5" xml:space="preserve">
+    <value>Microsoft Outlook</value>
+  </data>
+  <data name="EOL.0" xml:space="preserve">
+    <value>このデバイスには高度な機能はありません</value>
+  </data>
+  <data name="Mouse.6" xml:space="preserve">
+    <value>マウス設定</value>
+  </data>
+  <data name="Mouse.7" xml:space="preserve">
+    <value>ボタンの\nカスタマイズ</value>
+  </data>
+  <data name="Pen.0" xml:space="preserve">
+    <value>ペン設定</value>
+  </data>
+  <data name="Soundbar.0" xml:space="preserve">
+    <value>オーディオ プリセット</value>
+  </data>
+  <data name="Soundbar.1" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="Camera.0" xml:space="preserve">
+    <value>カメラ コントロール</value>
+  </data>
+  <data name="Camera.1" xml:space="preserve">
+    <value>色と画像</value>
+  </data>
+  <data name="Camera.2" xml:space="preserve">
+    <value>プレゼンス検出</value>
+  </data>
+  <data name="Camera.3" xml:space="preserve">
+    <value>キャプチャ</value>
+  </data>
+  <data name="Camera.4" xml:space="preserve">
+    <value>マイク</value>
+  </data>
+  <data name="WiredConnection" xml:space="preserve">
+    <value>有線接続</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Brightness.0" xml:space="preserve">
+    <value>設定を確認して、プリセットの開始時刻とトランジションの長さが重複していないことを確認します</value>
+  </data>
+  <data name="Brightness.1" xml:space="preserve">
+    <value>明るさ/コントラストは、次の場合には使用できません </value>
+  </data>
+  <data name="Brightness.2" xml:space="preserve">
+    <value>スマートHDR </value>
+  </data>
+  <data name="Brightness.3" xml:space="preserve">
+    <value>がオンになっている</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>明るさ</value>
+  </data>
+  <data name="Contrast" xml:space="preserve">
+    <value>コントラスト</value>
+  </data>
+  <data name="Brightness.4" xml:space="preserve">
+    <value>モニター間の同期</value>
+  </data>
+  <data name="Brightness.5" xml:space="preserve">
+    <value>上記の明るさ/輝度、コントラスト、カラー &amp;#x000A;プリセットの制御を、接続されているモニターに適用します。</value>
+  </data>
+  <data name="Luminance" xml:space="preserve">
+    <value>輝度</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="Brightness.6" xml:space="preserve">
+    <value>明るさの自動調整  </value>
+  </data>
+  <data name="Brightness.7" xml:space="preserve">
+    <value>周囲の空間の照明条件に基づいてディスプレイの明るさを調整します</value>
+  </data>
+  <data name="Brightness.8" xml:space="preserve">
+    <value>明るさ範囲レベルの自動調整  </value>
+  </data>
+  <data name="Brightness.9" xml:space="preserve">
+    <value>周囲の空間の照明条件に基づいて3段階の明るさ範囲（高/中/低）を提供します</value>
+  </data>
+  <data name="Brightness.10" xml:space="preserve">
+    <value>色温度の自動調整  </value>
+  </data>
+  <data name="Brightness.11" xml:space="preserve">
+    <value>周囲の空間の光に合わせてディスプレイの色温度を自動的に調整します。</value>
+  </data>
+  <data name="Brightness.12" xml:space="preserve">
+    <value>同期するプライマリー モニター  </value>
+  </data>
+  <data name="Brightness.13" xml:space="preserve">
+    <value>プライマリー モニターに基づく明るさ、コントラスト、カラー プリセット、色温度を、他のALSモニターに同期します</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>スケジュール</value>
+  </data>
+  <data name="Brightness.14" xml:space="preserve">
+    <value>プリセット1の名前</value>
+  </data>
+  <data name="Brightness.15" xml:space="preserve">
+    <value>開始時刻</value>
+  </data>
+  <data name="AM" xml:space="preserve">
+    <value>午前</value>
+  </data>
+  <data name="Brightness.16" xml:space="preserve">
+    <value>トランジションの長さ</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>テスト。</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="Brightness.18" xml:space="preserve">
+    <value>プリセット2の名前</value>
+  </data>
+  <data name="PM" xml:space="preserve">
+    <value>午後</value>
+  </data>
+  <data name="Hotkeys" xml:space="preserve">
+    <value>ホットキー</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="Hotkey.0" xml:space="preserve">
+    <value>明るさ -</value>
+  </data>
+  <data name="Hotkey.1" xml:space="preserve">
+    <value>明るさ +</value>
+  </data>
+  <data name="Hotkey.2" xml:space="preserve">
+    <value>コントラスト -</value>
+  </data>
+  <data name="Hotkey.3" xml:space="preserve">
+    <value>コントラスト +</value>
+  </data>
+  <data name="Hotkey.4" xml:space="preserve">
+    <value>輝度 -</value>
+  </data>
+  <data name="Hotkey.5" xml:space="preserve">
+    <value>輝度 +</value>
+  </data>
+  <data name="Hotkey.6" xml:space="preserve">
+    <value>例：「Alt + P」、「Shift + F」、「Ctrl + Shift + F」。\n複数のモニターを使用する場合、ホットキー機能をトリガーするには、対象のモニター画面にマウス カーソルを置く必要があります。</value>
+  </data>
+  <data name="ButtonSettings.0" xml:space="preserve">
+    <value>スクロール ホイール クリック</value>
+  </data>
+  <data name="ButtonSettings.1" xml:space="preserve">
+    <value>スクロール チルト（左）</value>
+  </data>
+  <data name="ButtonSettings.2" xml:space="preserve">
+    <value>スクロール チルト（右）</value>
+  </data>
+  <data name="ButtonSettings.3" xml:space="preserve">
+    <value>サイド ボタン（進む）</value>
+  </data>
+  <data name="ButtonSettings.4" xml:space="preserve">
+    <value>サイド ボタン（戻る）</value>
+  </data>
+  <data name="ButtonSettings.5" xml:space="preserve">
+    <value>カスタマイズするには、左側の画像で輪郭が示されているいずれかのセクションをクリックします</value>
+  </data>
+  <data name="ButtonSettings.6" xml:space="preserve">
+    <value>すべてのアプリケーションにリストア</value>
+  </data>
+  <data name="ButtonSettings.7" xml:space="preserve">
+    <value>推奨アクション</value>
+  </data>
+  <data name="ButtonSettings.8" xml:space="preserve">
+    <value>生産性アクション</value>
+  </data>
+  <data name="ButtonSettings.9" xml:space="preserve">
+    <value>Windowsのアクション</value>
+  </data>
+  <data name="ButtonSettings.10" xml:space="preserve">
+    <value>マルチメディア アクション</value>
+  </data>
+  <data name="ButtonSettings.11" xml:space="preserve">
+    <value>高度なアクション</value>
+  </data>
+  <data name="ButtonSettings.12" xml:space="preserve">
+    <value>検索結果</value>
+  </data>
+  <data name="ButtonSettings.13" xml:space="preserve">
+    <value>ボタンのカスタマイズ</value>
+  </data>
+  <data name="Customize" xml:space="preserve">
+    <value>カスタマイズ</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>編集</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>削除(R)</value>
+  </data>
+  <data name="Collaboration.0" xml:space="preserve">
+    <value>コラボレーション アイコン</value>
+  </data>
+  <data name="Collaboration.1" xml:space="preserve">
+    <value>会議のコントロールにすばやくアクセスできます。\nキーのオン/オフを切り替えると、Microsoft TeamsやZoomで通話中に\nキーボードのキーが表示または非表示になります。</value>
+  </data>
+  <data name="Collaboration.3" xml:space="preserve">
+    <value>電話会議に新しいチャット メッセージがあるときに点滅効果を有効にします\n</value>
+  </data>
+  <data name="Collaboration.4" xml:space="preserve">
+    <value>シングル タップではなく、ダブル タップでキーボードのアイコンをアクティブにします\n</value>
+  </data>
+  <data name="Collaboration.5" xml:space="preserve">
+    <value>Microsoft Teamsでコラボレーション キーボードを使用するには、最新バージョンのMicrosoft Teamsを使用してサイン インしていること、およびサード パーティー製アプリAPIが有効になっていることを確認します</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>詳細を見る</value>
+  </data>
+  <data name="Video" xml:space="preserve">
+    <value>ビデオ</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>共有</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>チャット</value>
+  </data>
+  <data name="Mic" xml:space="preserve">
+    <value>マイク</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Collaboration" xml:space="preserve">
+    <value>コラボレーション</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="Color.0" xml:space="preserve">
+    <value>アプリケーションの追加</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>検索</value>
+  </data>
+  <data name="Color.1" xml:space="preserve">
+    <value>名前順に並べ替え</value>
+  </data>
+  <data name="Color.2" xml:space="preserve">
+    <value>日付順に並べ替え</value>
+  </data>
+  <data name="Color.3" xml:space="preserve">
+    <value>カラー プリセットに基づいてICCカラー プロファイルを自動調整します</value>
+  </data>
+  <data name="WindowsSettings" xml:space="preserve">
+    <value>Windows 設定</value>
+  </data>
+  <data name="Color.4" xml:space="preserve">
+    <value>次に基づいてカラー プリセットを自動調整します</value>
+  </data>
+  <data name="Color.5" xml:space="preserve">
+    <value>ICCプロファイル</value>
+  </data>
+  <data name="Color.6" xml:space="preserve">
+    <value>カラー プロファイル</value>
+  </data>
+  <data name="Color.7" xml:space="preserve">
+    <value>アプリケーション固有のカラー プリセット</value>
+  </data>
+  <data name="Color.8" xml:space="preserve">
+    <value>ナイト ライト </value>
+  </data>
+  <data name="Color.9" xml:space="preserve">
+    <value>ディスプレイを心地よい色で表示して、眠りをサポートします。</value>
+  </data>
+  <data name="Color.11" xml:space="preserve">
+    <value>色管理</value>
+  </data>
+  <data name="Color.12" xml:space="preserve">
+    <value>ICCプロファイルとモニターのカラー プリセットを自動的に同期します。</value>
+  </data>
+  <data name="Color.13" xml:space="preserve">
+    <value>高度な色管理には、Dell Color Managementアプリケーションをお勧めします。</value>
+  </data>
+  <data name="DisplayHotkeys.0" xml:space="preserve">
+    <value>入力ソース</value>
+  </data>
+  <data name="DisplayHotkeys.1" xml:space="preserve">
+    <value>次の入力ソースに切り替える</value>
+  </data>
+  <data name="DisplayHotkeys.2" xml:space="preserve">
+    <value>お気に入りの入力</value>
+  </data>
+  <data name="DisplayHotkeys.3" xml:space="preserve">
+    <value>2つの入力ソースを切り替える</value>
+  </data>
+  <data name="VideoSwap" xml:space="preserve">
+    <value>ビデオ スワップ</value>
+  </data>
+  <data name="PIPorPBP" xml:space="preserve">
+    <value>PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.4" xml:space="preserve">
+    <value>PIP/PBPウィンドウの2つの入力を入れ替える</value>
+  </data>
+  <data name="DisplayHotkeys.5" xml:space="preserve">
+    <value>PIPの位置の変更</value>
+  </data>
+  <data name="DisplayOthers.0" xml:space="preserve">
+    <value>明るさの低減</value>
+  </data>
+  <data name="DisplayOthers.1" xml:space="preserve">
+    <value>ディスプレイをスリープ状態にする</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>インポート</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>エクスポート</value>
+  </data>
+  <data name="DisplayOthers.2" xml:space="preserve">
+    <value>同じモデルが検出されたときに設定を自動的に適用します</value>
+  </data>
+  <data name="PowerNap" xml:space="preserve">
+    <value>PowerNap</value>
+  </data>
+  <data name="DisplayOthers.3" xml:space="preserve">
+    <value>PowerNapは、スクリーンセーバーが作動したときに電力を節約するのに役立ちます</value>
+  </data>
+  <data name="DisplayOthers.4" xml:space="preserve">
+    <value>スクリーンセーバーが作動したら（次のいずれかを選択）:</value>
+  </data>
+  <data name="DisplayOthers.5" xml:space="preserve">
+    <value>スクリーンセーバー設定の構成 </value>
+  </data>
+  <data name="DisplayOthers.6" xml:space="preserve">
+    <value>アプリケーションの設定</value>
+  </data>
+  <data name="DisplayOthers.7" xml:space="preserve">
+    <value>同じモデルの別のモニターにインポートできるように構成をエクスポート</value>
+  </data>
+  <data name="DisplayProperties.0" xml:space="preserve">
+    <value>高データ速度</value>
+  </data>
+  <data name="DisplayProperties.1" xml:space="preserve">
+    <value>高解像度</value>
+  </data>
+  <data name="DisplayProperties.2" xml:space="preserve">
+    <value>解像度とリフレッシュ レート</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>向き</value>
+  </data>
+  <data name="SmartHDR" xml:space="preserve">
+    <value>スマートHDR</value>
+  </data>
+  <data name="DisplayProperties.3" xml:space="preserve">
+    <value>テキスト、アプリ、その他の項目のサイズを変更</value>
+  </data>
+  <data name="AdvancedSettings" xml:space="preserve">
+    <value>詳細設定</value>
+  </data>
+  <data name="DisplayProperties.4" xml:space="preserve">
+    <value>USB-C優先順位 </value>
+  </data>
+  <data name="DisplayProperties.5" xml:space="preserve">
+    <value>画面のパフォーマンスよりも、データやネットワークの速度を優先します。</value>
+  </data>
+  <data name="DisplayProperties.6" xml:space="preserve">
+    <value>データやネットワーク速度よりも、画面のパフォーマンスを優先します。</value>
+  </data>
+  <data name="Windows" xml:space="preserve">
+    <value>Windows</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>カスタム</value>
+  </data>
+  <data name="EzArrange.1" xml:space="preserve">
+    <value>つ以上のウィンドウ</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>最近</value>
+  </data>
+  <data name="AudioSettings" xml:space="preserve">
+    <value>オーディオ設定</value>
+  </data>
+  <data name="HeadsetAudioSettings.0" xml:space="preserve">
+    <value>聞こえるノイズを制御</value>
+  </data>
+  <data name="HeadsetAudioSettings.1" xml:space="preserve">
+    <value>アクティブ ノイズ キャンセリング</value>
+  </data>
+  <data name="HeadsetAudioSettings.2" xml:space="preserve">
+    <value>透明性</value>
+  </data>
+  <data name="HeadsetAudioSettings.3" xml:space="preserve">
+    <value>オフ</value>
+  </data>
+  <data name="HeadsetAudioSettings.4" xml:space="preserve">
+    <value>外音取り込みレベル</value>
+  </data>
+  <data name="HeadsetAudioSettings.5" xml:space="preserve">
+    <value>オーディオ モードの設定</value>
+  </data>
+  <data name="Multimedia" xml:space="preserve">
+    <value>マルチメディア</value>
+  </data>
+  <data name="HeadsetAudioSettings.6" xml:space="preserve">
+    <value>オーディオ出力プリセット</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>デフォルト</value>
+  </data>
+  <data name="HeadsetAudioSettings.7" xml:space="preserve">
+    <value>低音ブースト</value>
+  </data>
+  <data name="HeadsetAudioSettings.8" xml:space="preserve">
+    <value>会話ブースト</value>
+  </data>
+  <data name="HeadsetAudioSettings.9" xml:space="preserve">
+    <value>高音ブースト</value>
+  </data>
+  <data name="HeadsetAudioSettings.10" xml:space="preserve">
+    <value>オーディオ イコライザー</value>
+  </data>
+  <data name="HeadsetAudioSettings.11" xml:space="preserve">
+    <value>聞こえる音のオーディオ範囲を調整</value>
+  </data>
+  <data name="HeadsetAudioSettings.12" xml:space="preserve">
+    <value>db</value>
+  </data>
+  <data name="HeadsetAudioSettings.13" xml:space="preserve">
+    <value>低音</value>
+  </data>
+  <data name="HeadsetAudioSettings.14" xml:space="preserve">
+    <value>ミッドレンジ</value>
+  </data>
+  <data name="HeadsetAudioSettings.15" xml:space="preserve">
+    <value>高音</value>
+  </data>
+  <data name="HeadsetAudioSettings.16" xml:space="preserve">
+    <value>マイク ノイズ キャンセリング</value>
+  </data>
+  <data name="HeadsetAudioSettings.17" xml:space="preserve">
+    <value>出力オーディオ</value>
+  </data>
+  <data name="HeadsetAudioSettings.18" xml:space="preserve">
+    <value>入力オーディオ</value>
+  </data>
+  <data name="HeadsetAudioSettings.19" xml:space="preserve">
+    <value>サイドトーン</value>
+  </data>
+  <data name="AutomatedActions" xml:space="preserve">
+    <value>自動アクション</value>
+  </data>
+  <data name="HeadsetAutomatedActions.0" xml:space="preserve">
+    <value>装着検出</value>
+  </data>
+  <data name="HeadsetAutomatedActions.1" xml:space="preserve">
+    <value>感度</value>
+  </data>
+  <data name="HeadsetAutomatedActions.2" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="HeadsetAutomatedActions.3" xml:space="preserve">
+    <value>標準</value>
+  </data>
+  <data name="HeadsetAutomatedActions.4" xml:space="preserve">
+    <value>ヘッドセットを取り外すと、次のように動作します。</value>
+  </data>
+  <data name="HeadsetAutomatedActions.5" xml:space="preserve">
+    <value>音楽の一時停止</value>
+  </data>
+  <data name="HeadsetAutomatedActions.6" xml:space="preserve">
+    <value>マイクのミュート</value>
+  </data>
+  <data name="HeadsetAutomatedActions.7" xml:space="preserve">
+    <value>クイック ポーズ</value>
+  </data>
+  <data name="HeadsetAutomatedActions.8" xml:space="preserve">
+    <value>通話に応答</value>
+  </data>
+  <data name="DeviceSettings" xml:space="preserve">
+    <value>デバイス設定</value>
+  </data>
+  <data name="HeadsetDeviceSettings.0" xml:space="preserve">
+    <value>ビジー ライト</value>
+  </data>
+  <data name="HeadsetDeviceSettings.1" xml:space="preserve">
+    <value>音声ガイダンス</value>
+  </data>
+  <data name="HeadsetDeviceSettings.2" xml:space="preserve">
+    <value>必須</value>
+  </data>
+  <data name="HeadsetDeviceSettings.3" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="HeadsetDeviceSettings.4" xml:space="preserve">
+    <value>Dell Audioのダウンロード</value>
+  </data>
+  <data name="HeadsetDeviceSettings.5" xml:space="preserve">
+    <value>Dell Audioを今すぐダウンロードして、iPhoneまたはAndroidデバイスからヘッドセットの設定を最適化し、パーソナライズしましょう。</value>
+  </data>
+  <data name="HeadsetDeviceSettings.6" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="Illumination.0" xml:space="preserve">
+    <value>照明の制御</value>
+  </data>
+  <data name="Illumination.1" xml:space="preserve">
+    <value>照明</value>
+  </data>
+  <data name="InputSource.0" xml:space="preserve">
+    <value>現在の入力ソース</value>
+  </data>
+  <data name="InputSource.1" xml:space="preserve">
+    <value>入力ソースの名前変更とUSB接続の割り当て</value>
+  </data>
+  <data name="InputSource.2" xml:space="preserve">
+    <value>入力</value>
+  </data>
+  <data name="InputSource.3" xml:space="preserve">
+    <value>入力名</value>
+  </data>
+  <data name="InputSource.4" xml:space="preserve">
+    <value>USBアップストリーム</value>
+  </data>
+  <data name="KeyCustomization.0" xml:space="preserve">
+    <value>キーをカスタマイズするには、左側の画像で輪郭が示されているいずれかのキーをクリックします</value>
+  </data>
+  <data name="KeyCustomization.1" xml:space="preserve">
+    <value>すべてのアクションをデフォルトに戻す</value>
+  </data>
+  <data name="KeyCustomization.2" xml:space="preserve">
+    <value>キーのカスタマイズ</value>
+  </data>
+  <data name="Kvm.0" xml:space="preserve">
+    <value>パソコン</value>
+  </data>
+  <data name="Kvm.1" xml:space="preserve">
+    <value>次へ</value>
+  </data>
+  <data name="Kvm.2" xml:space="preserve">
+    <value>USB KVMのセットアップ</value>
+  </data>
+  <data name="Kvm.3" xml:space="preserve">
+    <value>マウスと\nキーボードの接続</value>
+  </data>
+  <data name="Kvm.4" xml:space="preserve">
+    <value>マウスとキーボードは、モニターの背面(USB-A)に接続します。\nメモ：Webカメラなど他のUSB周辺機器を\n接続することもできます。</value>
+  </data>
+  <data name="Kvm.5" xml:space="preserve">
+    <value>USB-A</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
+  <data name="Kvm.6" xml:space="preserve">
+    <value>デバイスに\n接続しています</value>
+  </data>
+  <data name="Kvm.7" xml:space="preserve">
+    <value>各パソコンとモニター間のビデオ ケーブルやUSBケーブルを\n接続してください。最大4台のパソコン（コンピューター、ゲーミング \nコンソールなど）を接続できます。\r\n\r\nケーブル タイプを選択し、各ソースに名前を割り当ててください。</value>
+  </data>
+  <data name="Kvm.8" xml:space="preserve">
+    <value>パソコンの切り替え</value>
+  </data>
+  <data name="Kvm.9" xml:space="preserve">
+    <value>キーボードとマウスの切り替え</value>
+  </data>
+  <data name="Kvm.10" xml:space="preserve">
+    <value>PIPの位置の変更</value>
+  </data>
+  <data name="Kvm.11" xml:space="preserve">
+    <value>PBPサイドバイサイド モードでのUSBアップストリーム ポートの自動切り替え</value>
+  </data>
+  <data name="Kvm.12" xml:space="preserve">
+    <value>入力ソースのホットキー</value>
+  </data>
+  <data name="Kvm.13" xml:space="preserve">
+    <value>入力ソースの編集</value>
+  </data>
+  <data name="Kvm.14" xml:space="preserve">
+    <value>PIP/PBPの編集</value>
+  </data>
+  <data name="Kvm.15" xml:space="preserve">
+    <value>位置の切り替え</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>完了</value>
+  </data>
+  <data name="Kvm.16" xml:space="preserve">
+    <value>PIP/PBPのセットアップ</value>
+  </data>
+  <data name="Kvm.17" xml:space="preserve">
+    <value>モニターでPIP/PBPを\nセットアップします</value>
+  </data>
+  <data name="Kvm.18" xml:space="preserve">
+    <value>モニターには、一度に1台のパソコンまたはソースを表示（全画面表示）することも、ソース間で分割（ピクチャー イン ピクチャー/ピクチャー バイ ピクチャー）することもできます。</value>
+  </data>
+  <data name="Kvm.19" xml:space="preserve">
+    <value>KVMなし</value>
+  </data>
+  <data name="Kvm.20" xml:space="preserve">
+    <value>USB KVM</value>
+  </data>
+  <data name="Kvm.21" xml:space="preserve">
+    <value>USB KVMのセットアップ</value>
+  </data>
+  <data name="Kvm.22" xml:space="preserve">
+    <value>新しいUSB KVMを開始</value>
+  </data>
+  <data name="Kvm.23" xml:space="preserve">
+    <value>ネットワークKVM</value>
+  </data>
+  <data name="Kvm.24" xml:space="preserve">
+    <value>KVMセットアップ タイプの選択</value>
+  </data>
+  <data name="Kvm.25" xml:space="preserve">
+    <value>単一モニターのセットアップに適しています</value>
+  </data>
+  <data name="Kvm.26" xml:space="preserve">
+    <value>モニターのUSBポートを使用したセットアップ</value>
+  </data>
+  <data name="Kvm.27" xml:space="preserve">
+    <value>ホットキー - パソコン間の切り替え: なし</value>
+  </data>
+  <data name="Kvm.28" xml:space="preserve">
+    <value>複数モニターのセットアップに適しています</value>
+  </data>
+  <data name="Kvm.29" xml:space="preserve">
+    <value>ネットワークを使用したセットアップ</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>パソコン（MacとWindows）間で安全かつ簡単にファイルを共有</value>
+  </data>
+  <data name="Kvm.31" xml:space="preserve">
+    <value>ネットワークKVMを開く</value>
+  </data>
+  <data name="Kvm.32" xml:space="preserve">
+    <value>別のウィンドウを開いて、ネットワークKVMをステップ アップまたは編集します</value>
+  </data>
+  <data name="MouseSettings.0" xml:space="preserve">
+    <value>マウスを動かして、DPI値への変更を完了します</value>
+  </data>
+  <data name="MouseSettings.1" xml:space="preserve">
+    <value>ポーリング レートを上げると、マウスのバッテリー寿命に影響する可能性があります。</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>中</value>
+  </data>
+  <data name="Slow" xml:space="preserve">
+    <value>遅い</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="PenButtonSettings.0" xml:space="preserve">
+    <value>トップ ボタン</value>
+  </data>
+  <data name="PenButtonSettings.1" xml:space="preserve">
+    <value>上部バレル ボタン</value>
+  </data>
+  <data name="PenButtonSettings.2" xml:space="preserve">
+    <value>下部バレル ボタン</value>
+  </data>
+  <data name="PenButtonSettings.3" xml:space="preserve">
+    <value>シングル クリック</value>
+  </data>
+  <data name="PenButtonSettings.4" xml:space="preserve">
+    <value>ダブルクリック</value>
+  </data>
+  <data name="PenButtonSettings.5" xml:space="preserve">
+    <value>長押し</value>
+  </data>
+  <data name="PenButtonSettings.6" xml:space="preserve">
+    <value>カーソルを合わせてクリック</value>
+  </data>
+  <data name="PenButtonSettings.7" xml:space="preserve">
+    <value>ボタンをカスタマイズするには、左側の画像で輪郭が示されているボタンをクリックします</value>
+  </data>
+  <data name="PenButtonSettings.8" xml:space="preserve">
+    <value>デフォルトのアクションに戻す</value>
+  </data>
+  <data name="PenSettings.0" xml:space="preserve">
+    <value>ペン設定</value>
+  </data>
+  <data name="PenSettings.1" xml:space="preserve">
+    <value>ペン先の感度</value>
+  </data>
+  <data name="PenSettings.2" xml:space="preserve">
+    <value>スライダーを右に動かすと\n筆圧に対する感度が徐々に低下するため、\nより強い筆圧をかける必要があります</value>
+  </data>
+  <data name="PenSettings.3" xml:space="preserve">
+    <value>傾き検知</value>
+  </data>
+  <data name="PenSettings.4" xml:space="preserve">
+    <value>スライダーを右に動かすと\n傾き効果が徐々に高まるため、\n傾斜角度を少なくする必要があります</value>
+  </data>
+  <data name="PenSettings.5" xml:space="preserve">
+    <value>Tileとのペアリング</value>
+  </data>
+  <data name="PenSettings.6" xml:space="preserve">
+    <value>Tileアプリを使用して、ペンをモバイル デバイスと\nペアリングします</value>
+  </data>
+  <data name="PenSettings.7" xml:space="preserve">
+    <value>はじめに</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>全画面表示</value>
+  </data>
+  <data name="PipPbp.0" xml:space="preserve">
+    <value>PIP</value>
+  </data>
+  <data name="PipPbp.1" xml:space="preserve">
+    <value>PBP</value>
+  </data>
+  <data name="PipPbp.2" xml:space="preserve">
+    <value>入力1（メイン）</value>
+  </data>
+  <data name="PipPbp.3" xml:space="preserve">
+    <value>入力2（サブ）</value>
+  </data>
+  <data name="PipPbp.4" xml:space="preserve">
+    <value>入力3（サブ）</value>
+  </data>
+  <data name="PipPbp.5" xml:space="preserve">
+    <value>入力4（サブ）</value>
+  </data>
+  <data name="PipPbp.6" xml:space="preserve">
+    <value>USBスイッチ</value>
+  </data>
+  <data name="PipPbp.7" xml:space="preserve">
+    <value>位置の切り替え</value>
+  </data>
+  <data name="SpeakerAudioPreset.0" xml:space="preserve">
+    <value>オーディオ プリセット</value>
+  </data>
+  <data name="SpeakerAudioPreset.1" xml:space="preserve">
+    <value>これらの設定は、マルチメディアにのみ適用されます</value>
+  </data>
+  <data name="SpeakerAudioPreset.2" xml:space="preserve">
+    <value>スピーチ</value>
+  </data>
+  <data name="SpeakerAudioPreset.3" xml:space="preserve">
+    <value>お好みに合わせてオーディオ範囲を調整します。これらの設定は、マルチメディア オーディオにのみ適用されます。</value>
+  </data>
+  <data name="SpeakerAudioSettings.0" xml:space="preserve">
+    <value>インテリジェント マイク ノイズ キャンセリング</value>
+  </data>
+  <data name="SpeakerAudioSettings.1" xml:space="preserve">
+    <value>通知音のミュート</value>
+  </data>
+  <data name="SpeakerAudioSettings.2" xml:space="preserve">
+    <value>音量調整トーン</value>
+  </data>
+  <data name="SpeakerAudioSettings.3" xml:space="preserve">
+    <value>すべてのレベル</value>
+  </data>
+  <data name="SpeakerAudioSettings.4" xml:space="preserve">
+    <value>最小および最大のみ</value>
+  </data>
+  <data name="SpeakerInteractions.0" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="SpeakerInteractions.1" xml:space="preserve">
+    <value>以下のアプリケーション名にカーソルを合わせると、使用可能なスピーカーフォンのボタンが（緑色で）表示されます</value>
+  </data>
+  <data name="SpeakerInteractions.2" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="SpeakerInteractions.3" xml:space="preserve">
+    <value>拡大縮小</value>
+  </data>
+  <data name="SpeakerInteractions.4" xml:space="preserve">
+    <value>Google Meet</value>
+  </data>
+  <data name="SpeakerInteractions.5" xml:space="preserve">
+    <value>Skype for Business</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>3-2-1 Countdown</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Framing Grid</value>
+  </data>
+  <data name="WebCameraCapture.2" xml:space="preserve">
+    <value>開く</value>
+  </data>
+  <data name="WebCameraCapture.3" xml:space="preserve">
+    <value>変更</value>
+  </data>
+  <data name="WebCameraCapture.4" xml:space="preserve">
+    <value>解像度</value>
+  </data>
+  <data name="WebCameraCapture.5" xml:space="preserve">
+    <value>4K UHD</value>
+  </data>
+  <data name="WebCameraCapture.6" xml:space="preserve">
+    <value>フルHD</value>
+  </data>
+  <data name="WebCameraCapture.7" xml:space="preserve">
+    <value>HD</value>
+  </data>
+  <data name="WebCameraCapture.8" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="WebCameraCapture.9" xml:space="preserve">
+    <value>1秒あたりにキャプチャーされる画像の数を調整して、動画の鮮明さとスタイルを制御します</value>
+  </data>
+  <data name="WebCameraCapture.10" xml:space="preserve">
+    <value>メディア ファイルの場所</value>
+  </data>
+  <data name="WebCameraColorImage.0" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="WebCameraColorImage.1" xml:space="preserve">
+    <value>ハイ ダイナミック レンジは、さまざまな照明条件で最適な画質となるよう自動補正します</value>
+  </data>
+  <data name="WebCameraColorImage.2" xml:space="preserve">
+    <value>ホワイトバランスの自動調整</value>
+  </data>
+  <data name="WebCameraColorImage.3" xml:space="preserve">
+    <value>明るさ</value>
+  </data>
+  <data name="WebCameraColorImage.4" xml:space="preserve">
+    <value>シャープネス</value>
+  </data>
+  <data name="WebCameraColorImage.5" xml:space="preserve">
+    <value>コントラスト</value>
+  </data>
+  <data name="WebCameraColorImage.6" xml:space="preserve">
+    <value>彩度</value>
+  </data>
+  <data name="WebCameraColorImage.7" xml:space="preserve">
+    <value>フリッカー防止</value>
+  </data>
+  <data name="WebCameraColorImage.8" xml:space="preserve">
+    <value>人工照明下で録画する際にフリッカーを低減します</value>
+  </data>
+  <data name="WebCameraColorImage.9" xml:space="preserve">
+    <value>Hz</value>
+  </data>
+  <data name="WebCameraMicrophone.0" xml:space="preserve">
+    <value>マイク</value>
+  </data>
+  <data name="WebCameraMicrophone.1" xml:space="preserve">
+    <value>カメラのマイク</value>
+  </data>
+  <data name="WebCameraMicrophone.2" xml:space="preserve">
+    <value>メモ：このマイクは、Microsoft Teams認定ではありません。最適なMicrosoft Teams通話を体験するには、DellのMicrosoft Teams認定オーディオ デバイスを使用してください。</value>
+  </data>
+  <data name="WebCameraPresenceDetection.0" xml:space="preserve">
+    <value>プレゼンス検出</value>
+  </data>
+  <data name="WebCameraPresenceDetection.1" xml:space="preserve">
+    <value>近接センサー</value>
+  </data>
+  <data name="WebCameraPresenceDetection.2" xml:space="preserve">
+    <value>視野内に人がいるとその存在を検知します</value>
+  </data>
+  <data name="WebCameraPresenceDetection.3" xml:space="preserve">
+    <value>接近時ウェイク</value>
+  </data>
+  <data name="WebCameraPresenceDetection.4" xml:space="preserve">
+    <value>ユーザーが近づくとパソコンがスリープから復帰します</value>
+  </data>
+  <data name="WebCameraPresenceDetection.5" xml:space="preserve">
+    <value>退席中ロック</value>
+  </data>
+  <data name="WebCameraPresenceDetection.6" xml:space="preserve">
+    <value>ユーザーが席を離れるとパソコンをロックし、ディスプレイをオフにします</value>
+  </data>
+  <data name="WebCameraPresenceDetection.7" xml:space="preserve">
+    <value>遅延</value>
+  </data>
+  <data name="WebCameraPresenceDetection.8" xml:space="preserve">
+    <value>スヌーズ</value>
+  </data>
+  <data name="WebCameraPresenceDetection.9" xml:space="preserve">
+    <value>スヌーズの長さ</value>
+  </data>
+  <data name="WebCameraPresenceDetection.10" xml:space="preserve">
+    <value>Windows Hello</value>
+  </data>
+  <data name="WebCameraPresenceDetection.11" xml:space="preserve">
+    <value>顔認識でサインインします。このリンクからWindows設定に移動できます。</value>
+  </data>
+  <data name="WebCameraSettings.0" xml:space="preserve">
+    <value>カメラ コントロール</value>
+  </data>
+  <data name="WebCameraSettings.1" xml:space="preserve">
+    <value>AI自動フレーミング</value>
+  </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>インテリジェントなシーン分析と顔追跡を利用して、ユーザーが移動するとビューを拡大縮小したり、パンしたりします</value>
+  </data>
+  <data name="WebCameraSettings.3" xml:space="preserve">
+    <value>カメラ トランジション</value>
+  </data>
+  <data name="WebCameraSettings.4" xml:space="preserve">
+    <value>カメラがフレーム内のユーザーの位置を調整するときに、パンや拡大縮小によりスムーズに移行します</value>
+  </data>
+  <data name="WebCameraSettings.5" xml:space="preserve">
+    <value>追従感度</value>
+  </data>
+  <data name="WebCameraSettings.6" xml:space="preserve">
+    <value>カメラがユーザーの動きに反応する速度を調整し、フレーム内の位置を調整します</value>
+  </data>
+  <data name="WebCameraSettings.7" xml:space="preserve">
+    <value>標準</value>
+  </data>
+  <data name="WebCameraSettings.8" xml:space="preserve">
+    <value>速い</value>
+  </data>
+  <data name="WebCameraSettings.9" xml:space="preserve">
+    <value>フレーム サイズ</value>
+  </data>
+  <data name="WebCameraSettings.10" xml:space="preserve">
+    <value>狭い</value>
+  </data>
+  <data name="WebCameraSettings.11" xml:space="preserve">
+    <value>標準</value>
+  </data>
+  <data name="WebCameraSettings.12" xml:space="preserve">
+    <value>視野</value>
+  </data>
+  <data name="WebCameraSettings.13" xml:space="preserve">
+    <value>カメラの視野を狭くしたり拡げたりします</value>
+  </data>
+  <data name="WebCameraSettings.14" xml:space="preserve">
+    <value>°</value>
+  </data>
+  <data name="WebCameraSettings.15" xml:space="preserve">
+    <value>拡大縮小</value>
+  </data>
+  <data name="WebCameraSettings.16" xml:space="preserve">
+    <value>オートフォーカス</value>
+  </data>
+  <data name="WebCameraSettings.17" xml:space="preserve">
+    <value>カメラ レンズをインテリジェントに調整して焦点を合わせ、鮮明にします</value>
+  </data>
+  <data name="WebCameraSettings.18" xml:space="preserve">
+    <value>優先度</value>
+  </data>
+  <data name="WebCameraSettings.19" xml:space="preserve">
+    <value>FPSビデオの滑らかさや露出を優先して、理想的な光レベルを維持します</value>
+  </data>
+  <data name="WebCameraSettings.20" xml:space="preserve">
+    <value>露出</value>
+  </data>
+  <data name="WebCameraSettings.21" xml:space="preserve">
+    <value>フレーム レート</value>
+  </data>
+  <data name="WebCameraSettings.22" xml:space="preserve">
+    <value>HDRがオンの場合、フレーム レート/露出は機能しません。\rHDR設定を変更するには </value>
+  </data>
+  <data name="WebCameraSettings.23" xml:space="preserve">
+    <value>こちら </value>
+  </data>
+  <data name="WebCameraSettings.24" xml:space="preserve">
+    <value>をクリックします。</value>
+  </data>
+  <data name="WebCameraSettings.25" xml:space="preserve">
+    <value>外部Webカメラの優先順位付け</value>
+  </data>
+  <data name="WebCameraSettings.26" xml:space="preserve">
+    <value>Dellデジタル ハイエンド シリーズWebカメラと他のWebカメラ（内蔵および外付け）を自動的に切り替えます。Windows Helloは、アクティブなWebカメラを使用して顔認識を行います。メモ：一度に有効にしてアクセスできるカメラは1つだけです。</value>
+  </data>
+  <data name="Mouse.8" xml:space="preserve">
+    <value>タッチ スクロール感度</value>
+  </data>
+  <data name="Mouse.9" xml:space="preserve">
+    <value>スクロール速度の調整</value>
+  </data>
+  <data name="Mouse.10" xml:space="preserve">
+    <value>プライマリー マウス ボタン</value>
+  </data>
+  <data name="Mouse.11" xml:space="preserve">
+    <value>DPIの設定</value>
+  </data>
+  <data name="Mouse.12" xml:space="preserve">
+    <value>ポーリング レート</value>
+  </data>
+  <data name="Mouse.13" xml:space="preserve">
+    <value>マウスの位置がシステムに報告される1秒あたりの回数</value>
+  </data>
+  <data name="Wired" xml:space="preserve">
+    <value>有線</value>
+  </data>
+  <data name="Tooltip.0" xml:space="preserve">
+    <value>複数の同じモデルのデバイスを接続しました。デバイスの各インスタンスでアクションが複製されます</value>
+  </data>
+  <data name="Tooltip.1" xml:space="preserve">
+    <value>デバイスが見つかりません。ワイヤレス デバイスが充電されていて、電源がオンになっていることを確認します。</value>
+  </data>
+  <data name="Tooltip.2" xml:space="preserve">
+    <value>このデバイスはすでにペアリングされています。再度ペアリングするには、まずデバイスのペアリングを解除してください。</value>
+  </data>
+  <data name="Tooltip.3" xml:space="preserve">
+    <value>ペアリングしようとしているこのデバイスは、接続されているUSBワイヤレス レシーバーではサポートされていません。デバイスに付属のレシーバーを使用してください。</value>
+  </data>
+  <data name="Tooltip.4" xml:space="preserve">
+    <value>このUSBワイヤレス レシーバーで使用可能なスロットがいっぱいです。使用するには、［デバイス設定］ページの［ペアリング解除］ボタンをクリックして、デバイスのペアリングを解除してください。</value>
+  </data>
+  <data name="Mouse.14" xml:space="preserve">
+    <value>クリックしてアクションを割り当てます</value>
+  </data>
+  <data name="Mouse.15" xml:space="preserve">
+    <value>右側のリストから\nアクションを選択します</value>
+  </data>
+  <data name="USBWirelessReceiver" xml:space="preserve">
+    <value>USBワイヤレス レシーバー</value>
+  </data>
+  <data name="ReceiverFirmwareVersion" xml:space="preserve">
+    <value>レシーバーのファームウェア バージョン</value>
+  </data>
+  <data name="ReadyToBePaired" xml:space="preserve">
+    <value>ペアリングの準備完了</value>
+  </data>
+  <data name="BrightnessOrContrast" xml:space="preserve">
+    <value>明るさ/コントラスト</value>
+  </data>
+  <data name="DisplayProperties" xml:space="preserve">
+    <value>画面プロパティ</value>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>レイアウト</value>
+  </data>
+  <data name="EasyMemory" xml:space="preserve">
+    <value>Easy Memory</value>
+  </data>
+  <data name="VisionEngine" xml:space="preserve">
+    <value>Vision Engine</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="Copilot" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>デバイス（D）</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>ロック</value>
+  </data>
+  <data name="NotificationCenter" xml:space="preserve">
+    <value>通知センター</value>
+  </data>
+  <data name="ScreenSnip" xml:space="preserve">
+    <value>画面切り取り</value>
+  </data>
+  <data name="ShowHideDesktop" xml:space="preserve">
+    <value>デスクトップの表示/非表示</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>シャットダウン</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>サイン アウト</value>
+  </data>
+  <data name="Sleep" xml:space="preserve">
+    <value>スリープ</value>
+  </data>
+  <data name="SwitchApplications" xml:space="preserve">
+    <value>スイッチ アプリケーション</value>
+  </data>
+  <data name="TaskView" xml:space="preserve">
+    <value>タスク ビュー</value>
+  </data>
+  <data name="BarrelButton" xml:space="preserve">
+    <value>バレル ボタン</value>
+  </data>
+  <data name="DefineBySystem" xml:space="preserve">
+    <value>システムによる定義</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>Eメール</value>
+  </data>
+  <data name="OneNote" xml:space="preserve">
+    <value>One Note</value>
+  </data>
+  <data name="PenMenu" xml:space="preserve">
+    <value>ペン メニュー</value>
+  </data>
+  <data name="QuickNote" xml:space="preserve">
+    <value>Quick Note</value>
+  </data>
+  <data name="ScreenSnipping" xml:space="preserve">
+    <value>画面切り取り</value>
+  </data>
+  <data name="StickyNotes" xml:space="preserve">
+    <value>Sticky Notes</value>
+  </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>ウィジェット</value>
+  </data>
+  <data name="WindowsSearch" xml:space="preserve">
+    <value>Windows検索</value>
+  </data>
+  <data name="SwitchApplication" xml:space="preserve">
+    <value>スイッチ アプリケーション</value>
+  </data>
+  <data name="AssignKeystroke" xml:space="preserve">
+    <value>キーストロークの割り当て</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>色</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>戻る</value>
+  </data>
+  <data name="Calculator" xml:space="preserve">
+    <value>電卓</value>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>ウィンドウを閉じる</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>コピー</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>切り取り</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>ドキュメント</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>進む</value>
+  </data>
+  <data name="MaximizeWindow" xml:space="preserve">
+    <value>ウィンドウを最大化</value>
+  </data>
+  <data name="MinimizeWindow" xml:space="preserve">
+    <value>ウィンドウを最小化</value>
+  </data>
+  <data name="MyHome" xml:space="preserve">
+    <value>マイ ホーム</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>ファイルを開く</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>フォルダーを開く</value>
+  </data>
+  <data name="OpenNewBrowserTab" xml:space="preserve">
+    <value>新しいブラウザー タブを開く</value>
+  </data>
+  <data name="OpenWebPage" xml:space="preserve">
+    <value>Webページを開く</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>貼り付け</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>ズーム イン</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>ズーム アウト</value>
+  </data>
+  <data name="ZoomReset" xml:space="preserve">
+    <value>ズーム リセット</value>
+  </data>
+  <data name="4thClick" xml:space="preserve">
+    <value>4回目のクリック</value>
+  </data>
+  <data name="5thClick" xml:space="preserve">
+    <value>5回目のクリック</value>
+  </data>
+  <data name="Erase" xml:space="preserve">
+    <value>消去</value>
+  </data>
+  <data name="LeftClick" xml:space="preserve">
+    <value>左クリック</value>
+  </data>
+  <data name="MiddleClick" xml:space="preserve">
+    <value>ミドル クリック</value>
+  </data>
+  <data name="OpenRun" xml:space="preserve">
+    <value>開く/実行</value>
+  </data>
+  <data name="OpenRun2" xml:space="preserve">
+    <value>開いて実行</value>
+  </data>
+  <data name="PenPageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="PenPageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="RadialMenu" xml:space="preserve">
+    <value>ラジアル メニュー</value>
+  </data>
+  <data name="Redo" xml:space="preserve">
+    <value>やり直す</value>
+  </data>
+  <data name="RightClick" xml:space="preserve">
+    <value>右クリック</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>元に戻す</value>
   </data>
 </root>
