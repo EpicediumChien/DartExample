@@ -1060,10 +1060,10 @@ namespace NetworkKVM.Plugins
                                                         pipeSecurity);
             cancellationTokenSource = new CancellationTokenSource();
             var c = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
-            if (NKVMState)
-            {
+            //if (NKVMState)
+            //{
                 CallNKVMConnent();
-            }
+            //}
             StartAsync().Wait();
         }
 
