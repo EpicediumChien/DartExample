@@ -6,6 +6,8 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
+using VcpCore.Common;
 using Windows.System;
 
 namespace DDPM.UI.Module.DisplayHotkeys
@@ -142,6 +144,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 SaveHotkeySettings(new InputSourceObj(value.inputDisplayText), "0");
             }
         }
+
+        public Visibility PxPkeySettings_Visibility { get; set; } = Visibility.Collapsed;
 
         private void SaveHotkeySettings(InputSourceObj inputSourceObj, string inputNo)
         {
