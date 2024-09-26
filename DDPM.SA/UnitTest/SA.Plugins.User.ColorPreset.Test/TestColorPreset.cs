@@ -113,7 +113,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             Edid = "00FFFFFFFFFFFF0010ACDC4255383230202001ED"
 
         };
-        private List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard" } };
+        private List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() {  ModelName = "DELLU2724DE", SerialNumber = "808597589", PresetForManual = "Standard" } };
 
         [Test]
         public void TestColorPresetPlugin()
@@ -168,16 +168,16 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
                 var Curpreset_Result = colorPresetPlugin.get_cur_monitor_preset_config(monitorInfo1, monitorConfigs2);
                 Assert.IsNotNull(Curpreset_Result);
                 Assert.Greater(Curpreset_Result.AppInfo.Count, 0);
-                Assert.That(serialNumber, Is.EqualTo(Curpreset_Result.DeviceInfo.SerialNumber));
-                Assert.That(modelName, Is.EqualTo(Curpreset_Result.DeviceInfo.ModelName));
+                Assert.That(serialNumber, Is.EqualTo(Curpreset_Result.SerialNumber));
+                Assert.That(modelName, Is.EqualTo(Curpreset_Result.ModelName));
                 Assert.That(presetForManual, Is.EqualTo(Curpreset_Result.PresetForManual));
             }
             else
             {
                 var resullt = colorPresetPlugin.get_cur_monitor_preset_config(monitorInfo1, monitorConfigs1);
                 Assert.IsNotNull(resullt);
-                Assert.That(serialNumber, Is.EqualTo(resullt.DeviceInfo.SerialNumber));
-                Assert.That(modelName, Is.EqualTo(resullt.DeviceInfo.ModelName));
+                Assert.That(serialNumber, Is.EqualTo(resullt.SerialNumber));
+                Assert.That(modelName, Is.EqualTo(resullt.ModelName));
             }
         }
 
@@ -218,7 +218,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
             appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
             int index_config = 0;
-            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
             int count = 0;
             if (index_config >= 0)
             {
@@ -249,7 +249,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
             appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
             int index_config = 0;
-            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
             int count = 0;
             if (index_config >= 0)
             {
@@ -295,7 +295,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             int index_config = 0;
             int runType = 1;
             int runType2 = 0;
-            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 0, AppInfo = appInfo } };
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", PresetForManual = "Standard", RunType = 0, AppInfo = appInfo } };
             ISettingsManagerDev settingsPlugin_;
             IDeviceManagerSA _deviceManagerPlugin;
             bool WriteColorPresetSettings = true;
@@ -386,7 +386,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
             int index_config = 0;
             int runType = 0; //Manual 0,auto 1
-            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
             int count = 0;
             Mock<ISettingsManagerDev> SettingsManagerPluginService = new Mock<ISettingsManagerDev>();
             var settingsPluginManagerDev_ = SettingsManagerPluginService.Object;
@@ -424,7 +424,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
             int index_config = 0;
             int runType = 1; //Manual 0,auto 1
-            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
             int count = 0;
             if (index_config >= 0)
             {
@@ -573,7 +573,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             string supported_preset = monitorInfo1.CapabilityString;
             Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
             appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { ColorPresetName = "Standard", IconName = "cmd.exe" });
-            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID() { ModelName = "DELLU2724DE", SerialNumber = "808597589", }, PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
+            List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", PresetForManual = "Standard", RunType = 1, AppInfo = appInfo } };
             var result = colorPresetPlugin.SetMonitorProfile(monitorInfo1, colorpreset).Result;
             Assert.That(result, Is.EqualTo(true));
         }
