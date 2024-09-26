@@ -54,6 +54,7 @@ using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
 using DDPM.SA.Common.Method;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
+using DDMSettings;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
