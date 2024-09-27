@@ -57,7 +57,7 @@ namespace DDPM.SA.Common.Method
                     DownloadFileSize = null;
                     DownloadFileStream = null;
                 }
-                _logs.DebugMsg_1(nameof(DownloadFile) + " done");
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " done");
                 FailInfo = "Pass";
                 return true;
             }
@@ -72,7 +72,7 @@ namespace DDPM.SA.Common.Method
         {
             try
             {
-                _logs.DebugMsg_1(nameof(DownloadFile_OnLocal) + " start");
+                _logs?.DebugMsg_1(nameof(DownloadFile_OnLocal) + " start");
                 using (FileStream sourceStream = new FileStream(URLPath, FileMode.Open, FileAccess.Read))
                 {
                     DownloadFileSize= sourceStream.Length;
@@ -84,7 +84,7 @@ namespace DDPM.SA.Common.Method
             catch (Exception ex)
             {
                 FailInfo = "Network fail";
-                _logs.DebugMsg_1(nameof(DownloadFile_OnLocal) + " fail:" + ex.ToString());
+                _logs?.DebugMsg_1(nameof(DownloadFile_OnLocal) + " fail:" + ex.ToString());
                 return false;
             }
         }
