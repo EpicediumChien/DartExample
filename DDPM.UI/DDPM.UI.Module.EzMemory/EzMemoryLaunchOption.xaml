@@ -143,53 +143,56 @@
                 </Grid>
 
                 <!-- Keyboard Image and Settings -->
-                <Grid x:Name="RightGridPage2" Visibility="{Binding RightGridPage2Visibility}" Grid.Column="1" Width="657" Margin="64, 96, 96, 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+                <Grid x:Name="RightGridPage2" Visibility="{Binding RightGridPage2Visibility}" Grid.Column="1"  Margin="64, 96, 96, 0">
+                    <!-- Launch Option Selection Panel with CSS-based adjustments -->
+                    <Border Background="#132F54" BorderBrush="#1E3F6C" BorderThickness="1" CornerRadius="6" Margin="200,90,0,0" Padding="16,16,16,32" Width="353" Height="auto" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+                            <!-- Title -->
+                                <UXControls:UXTextBlock Grid.Row="0" Text="Select a launch option" FontSize="16" Foreground="White" Margin="0,0,0,8" />
 
-                    <!-- Bottom Control Panel -->
-                    <Border Grid.Row="1" Background="#1B385F" CornerRadius="10" Margin="0,16,0,0" Padding="16" Width="415" Height="128" HorizontalAlignment="Center">
-                        <StackPanel>
-                            <!-- Window 1 Control -->
-                            <Grid Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <UXControls:UXTextBlock Text="Window 1" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
-
-                                <UXControls:UXComboBox x:Name="Window1ComboBox" Grid.Column="1" Margin="8,0" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" Foreground="White" Background="#141D2B"  BorderThickness="1"/>
-
-                                <StackPanel Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center">
-                                    <UXControls:UXButton x:Name="AddButton1" Content="+" Width="24" Height="24" Background="#3B82F6" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <!-- Radio Buttons for Manual or Automatic Launch -->
+                                <StackPanel Orientation="Vertical" Margin="0,8,0,0">
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
+                                        <UXControls:UXRadioButton Grid.Row="1" Content="Manually select the profiles created" IsChecked="True" FontSize="16" Height="36" Foreground="White" GroupName="LaunchOption" Margin="8,2,0,2"/>
                                 </StackPanel>
-                            </Grid>
 
-                            <!-- Window 2 Control -->
-                            <Grid Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <UXControls:UXTextBlock Text="Window 2" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
-
-                                <UXControls:UXComboBox x:Name="Window2ComboBox" Grid.Column="1" Margin="8,0" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" Foreground="White" Background="#141D2B" BorderThickness="1"/>
-
-                                <StackPanel Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center">
-                                    <UXControls:UXButton x:Name="AddButton2" Content="+" Width="24" Height="24" Background="#3B82F6" Foreground="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
+                                        <UXControls:UXRadioButton Grid.Row="2" x:Name="autoLaunchOption" Content="Automatically launch by time" FontSize="16" Height="36" Foreground="White" GroupName="LaunchOption" Margin="8,2,0,2"/>
                                 </StackPanel>
+
+                                <!-- Time Picker Controls (Disabled when manually select is checked) -->
+                                    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="46,8,0,0" Width="305" Height="36" IsEnabled="{Binding ElementName=autoLaunchOption, Path=IsChecked}">
+                                        <UXControls:UXComboBox Background="#293B4D" Width="81" Height="36" BorderThickness="0.3" Margin="0,0,4,0">
+
+                                            <!-- 需添加更多時間選項 -->
+                                        </UXControls:UXComboBox>
+                                        <UXControls:UXComboBox Background="#293B4D" Width="81" Height="36" BorderThickness="0.3" Margin="4,0,4,0">
+                                        </UXControls:UXComboBox>
+
+                                        <UXControls:UXComboBox Background="#293B4D" Width="81" Height="36" BorderThickness="0.3" Margin="4,0,4,0">
+                                            <ComboBoxItem Content="AM" Background="#293B4D"/>
+                                            <ComboBoxItem Content="PM" Background="#293B4D"/>
+                                        </UXControls:UXComboBox>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Launch during PC startup Checkbox -->
+                                <StackPanel Grid.Row="4" Orientation="Horizontal">
+                                    <UXControls:UXCheckBox Content="Launch during PC startup" FontSize="18" Foreground="White" Margin="0,16,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
                             </Grid>
-                        </StackPanel>
                     </Border>
+
                 </Grid>
 
 

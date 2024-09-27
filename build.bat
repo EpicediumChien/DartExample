@@ -24,7 +24,7 @@ if "%GetGotoUI%"=="UI" goto BuildUI
 
 ::goto FileCopy
 
-ech Clean DDPM.UI\DDPM.Easy.Common
+echo Clean DDPM.UI\DDPM.Easy.Common
 dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
 if errorlevel 1 goto errorEAComm
 echo Build VCPSDK
