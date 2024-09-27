@@ -9,26 +9,32 @@ namespace DDPM.SA.Common.Method
 {
     public class Download
     {
-        private Logs _logs;
+        private Logs? _logs;
         public long? DownloadFileSize = null;
         public FileStream? DownloadFileStream = null;
-
+        
         public Download(Logs logs)
         {
             _logs = logs;
+        }
+        /// <summary>
+        /// Only for MiniInstaller use.
+        /// </summary>
+        public Download()
+        {
         }
 
         public bool DownloadFile(string URLPath, string SavePath, out string FailInfo)
         {
             try
             {
-                _logs.DebugMsg_1(nameof(DownloadFile) + " start");
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " start");
                 CertificateCheck caCheck = new CertificateCheck();
                 {
                     if (!caCheck.CheckURLCACertificate(URLPath))//0815 Bruce Add Security
                     {
                         FailInfo = "CA check fail";
-                        _logs.DebugMsg_1(FailInfo);
+                        _logs?.DebugMsg_1(FailInfo);
                         return false;
                     }
                     string url = URLPath;
@@ -58,7 +64,7 @@ namespace DDPM.SA.Common.Method
             catch (Exception ex)
             {
                 FailInfo = "Network fail";
-                _logs.DebugMsg_1(nameof(DownloadFile) + " fail:" + ex.ToString());
+                _logs?.DebugMsg_1(nameof(DownloadFile) + " fail:" + ex.ToString());
                 return false;
             }
         }

@@ -200,7 +200,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         [Test]
         public void TestRunDeserializeColorPresetSettingsObject()
         {
-            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID(), RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(), PresetForManual = "testpre" } };
+            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU3224KB", SerialNumber = "808792396", RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(), PresetForManual = "testpre" } };
             string colorpresettingsObject_path1_ = "test_writeCroPresetpath.json";
             string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
             File.WriteAllText(colorpresettingsObject_path1_, jsonData);
@@ -218,7 +218,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         [Test]
         public void TestRunSerializeColorPresetSettingsObject()
         {
-            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { DeviceInfo = new EDID(), RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(), PresetForManual = "testpre" } };
+            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU3224KB", SerialNumber = "808792396", RunType = 1, AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(), PresetForManual = "testpre" } };
             string colorpresettingsObject_path1_ = "test_writeCroPresetpath.json";
             string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
             File.WriteAllText(colorpresettingsObject_path1_, jsonData);

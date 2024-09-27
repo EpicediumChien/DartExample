@@ -316,8 +316,8 @@ namespace DDPM.ColorApp
                         }
 
                         //Check if actived monitor has its color preset section in config file
-                        if (actived_mi.edid.ModelName.Trim().IndexOf(config.DeviceInfo.ModelName.Trim()) >= 0 &&
-                            actived_mi.edid.SerialNumber.Trim() == config.DeviceInfo.SerialNumber.Trim())
+                        if (actived_mi.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
+                            actived_mi.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
                         {
                             if (config.RunType != (int)ColorPresetRunType.Auto)
                             {

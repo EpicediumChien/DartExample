@@ -139,8 +139,8 @@ namespace DDPM.UI.Module.Color
         private int get_index_of_json_config_for_cur_monitor(MonitorInfo mo)
         {
             int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                            x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                            x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                                            x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                            x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
 
             return index;
         }
