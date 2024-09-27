@@ -268,7 +268,7 @@
               <Border Background="#99132F54" CornerRadius="6" Margin="0,10,0,0">
                 <StackPanel Orientation="Vertical">
                   <StackPanel Orientation="Vertical" Margin="16,25,16,0">
-                    <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.15], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                    <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.15], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"/>
                     <Grid Margin="0,15,0,20">
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="16" />
@@ -277,8 +277,8 @@
                       </Grid.ColumnDefinitions>
                       <Image Grid.Column="0" Source="/DDPM.UI.Resources;component/Resources/Images/ZoomOutS.png" Stretch="Uniform" Width="16" />
                       <UXControls:UXSlider Name="ZoomSlider" Grid.Column="1" Margin="0,0,0,0" Width="360" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="TopLeft" AutomationProperties.AutomationId="UXSlider_HorizontalToolTipNone"
-                                                             IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" LargeChange="1"
-                                                             ValueChanged="ZoomSlider_ValueChanged" />
+                                                             IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" LargeChange="1" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"
+                                                             ValueChanged="ZoomSlider_ValueChanged" Thumb.DragStarted="ZoomSlider_DragStarted" Thumb.DragCompleted="ZoomSlider_DragCompleted"/>
                       <Image Grid.Column="2" Source="/DDPM.UI.Resources;component/Resources/Images/ZoomInS.png" Height="16" Stretch="Uniform" />
                     </Grid>
                   </StackPanel>

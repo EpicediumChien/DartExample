@@ -593,6 +593,17 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
             }
         }
+        public int Zoom
+        {
+            get => CurrentProfile.Zoom;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(Zoom), value);
+                OnPropertyChanged();
+            }
+        }
+
 
         private bool isMicEnumerationOnEnabled = true;
         public bool IsMicEnumerationOnEnabled
