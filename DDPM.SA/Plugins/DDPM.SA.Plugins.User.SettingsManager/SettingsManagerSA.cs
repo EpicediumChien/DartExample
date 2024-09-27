@@ -7,6 +7,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.VisualBasic.Logging;
+using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -624,26 +625,24 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (colorPresetSettings == null)
                 return Task.FromResult(false);
 
-            //string temp = RunSerializeObject(colorPresetSettings);
-            //if (!string.IsNullOrWhiteSpace(temp))
-            //    return Task.FromResult(true);
             string info;
-            //JObject obj = new JObject(colorPresetSettings);
+            bool result = false;
+
             JToken token = JToken.FromObject(colorPresetSettings);
             if (token.Type == JTokenType.Object)
             {
                 JObject obj = (JObject)token;
                 // Handle object
-                bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
             }
             else if (token.Type == JTokenType.Array)
             {
                 JArray array = (JArray)token;
                 // Handle array
-                bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _colorsettings_path, out info);
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _colorsettings_path, out info);
             }            
 
-            return Task.FromResult(false);
+            return Task.FromResult(result);
         }
 
         #endregion color preset settings
@@ -1417,10 +1416,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     return Task.FromResult(_GlobalSettingParam);
                 }
                 string strReadJson = string.Empty;
-                using (var reader = new StreamReader(strFilePath))
-                {
-                    strReadJson = reader.ReadToEnd();
-                }
+                //using (var reader = new StreamReader(strFilePath))
+                //{
+                //    strReadJson = reader.ReadToEnd();
+                //}
+                string info;
+                strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+
                 if (strReadJson == string.Empty || strReadJson.Length == 0)
                 {
                     return Task.FromResult(_GlobalSettingParam);
@@ -1447,12 +1449,27 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 return Task.FromResult(false);
             }
-            string temp = RunSerializeObject(globalSettingParam);
-            if (!string.IsNullOrWhiteSpace(temp))
+            //string temp = RunSerializeObject(globalSettingParam);
+            string info;
+            bool result = false;
+            JToken token = JToken.FromObject(globalSettingParam);
+            if (token.Type == JTokenType.Object)
             {
-                return Task.FromResult(true);
+                JObject obj = (JObject)token;
+                // Handle object
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, obj.ToString(), _colorsettings_path, out info);
             }
-            return Task.FromResult(false);
+            else if (token.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)token;
+                // Handle array
+                result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _colorsettings_path, out info);
+            }
+            //if (!string.IsNullOrWhiteSpace(temp))
+            //{
+            //    return Task.FromResult(true);
+            //}
+            return Task.FromResult(result);
         }
         private string RunSerializeObject(GlobalSettingParam globalSettingParam, string filePath)
         {
