@@ -7,6 +7,7 @@ using Microsoft.Win32.SafeHandles;
 using Windows.Devices.Geolocation;
 using System.IO;
 using PInvoke;
+using PInvoke;
 using System.Diagnostics;
 using System.Security;
 
@@ -281,8 +282,8 @@ namespace DDPM.SA.Common.Settings
         }
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes,ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PInvoke.PROCESS_INFORMATION lpProcessInformation);
-        private static bool _CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes,ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PInvoke.PROCESS_INFORMATION lpProcessInformation)
+        private static extern bool CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes, ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PInvoke.PROCESS_INFORMATION lpProcessInformation);
+        private static bool _CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes, ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PInvoke.PROCESS_INFORMATION lpProcessInformation)
         {
             return CreateProcessAsUser(hToken, lpApplicationName, lpCommandLine, ref lpProcessAttributes, ref lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, ref lpStartupInfo, out lpProcessInformation);
         }
@@ -331,10 +332,8 @@ namespace DDPM.SA.Common.Settings
                 if (_DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
                 {
                     STARTUPINFO startupInfo = new STARTUPINFO();
-                    startupInfo.cb = Marshal.SizeOf(startupInfo);
-                    PInvoke.PROCESS_INFORMATION processInfo = new PInvoke.PROCESS_INFORMATION();
-                    SECURITY_ATTRIBUTES processAttributes = new SECURITY_ATTRIBUTES();
-                    SECURITY_ATTRIBUTES threadAttributes = new SECURITY_ATTRIBUTES();
+                    PROCESS_INFORMATION processInfo = new PROCESS_INFORMATION();
+
                     bool result = _CreateProcessAsUser(
                         duplicatedToken,
                         applicationPath,
@@ -380,17 +379,16 @@ namespace DDPM.SA.Common.Settings
                     SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
                     sa.Length = Marshal.SizeOf(sa);
                     if (_DuplicateTokenEx(
-                        userToken, 0xF01FF, ref sa, 
+                        userToken, 0xF01FF, ref sa,
                         (int)PInvoke.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation,
-                        (int)PInvoke.TOKEN_TYPE.TokenPrimary, 
+                        (int)PInvoke.TOKEN_TYPE.TokenPrimary,
                         out duplicatedToken))
                     {
                         STARTUPINFO si = new STARTUPINFO();
                         PInvoke.PROCESS_INFORMATION pi = new PInvoke.PROCESS_INFORMATION();
                         SECURITY_ATTRIBUTES processAttributes = new SECURITY_ATTRIBUTES();
                         SECURITY_ATTRIBUTES threadAttributes = new SECURITY_ATTRIBUTES();
-                        si.cb = Marshal.SizeOf(si);
-                        si.lpDesktop = @"winsta0\default"; //or using winlogon
+                        
 
                         if (!_CreateProcessAsUser(duplicatedToken, applicationPath, null, ref processAttributes, ref threadAttributes, false, 0, IntPtr.Zero, null, ref si, out pi))
                         {
@@ -453,9 +451,9 @@ namespace DDPM.SA.Common.Settings
 
             // copy the access token of the winlogon process; the newly created token will be a primary token
             if (!_DuplicateTokenEx(
-                hPToken, MAXIMUM_ALLOWED, ref sa, 
-                (int)PInvoke.SECURITY_IMPERSONATION_LEVEL.SecurityIdentification, 
-                (int)PInvoke.TOKEN_TYPE.TokenPrimary, 
+                hPToken, MAXIMUM_ALLOWED, ref sa,
+                (int)PInvoke.SECURITY_IMPERSONATION_LEVEL.SecurityIdentification,
+                (int)PInvoke.TOKEN_TYPE.TokenPrimary,
                 out hUserTokenDup))
             {
                 _CloseHandle(hProcess);
@@ -468,8 +466,8 @@ namespace DDPM.SA.Common.Settings
             // user input. To remedy this we set the lpDesktop parameter to indicate we want to enable user 
             // interaction with the new process.
             STARTUPINFO si = new STARTUPINFO();
-            si.cb = (int)Marshal.SizeOf(si);
-            si.lpDesktop = @"winsta0\default"; // interactive window station parameter; basically this indicates that the process created can display a GUI on the desktop
+            //si.cb = (int)Marshal.SizeOf(si);
+            //si.lpDesktop = @"winsta0\default"; // interactive window station parameter; basically this indicates that the process created can display a GUI on the desktop
 
             // flags that specify the priority and creation method of the process
             int dwCreationFlags = NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE;
@@ -493,7 +491,7 @@ namespace DDPM.SA.Common.Settings
             _CloseHandle(hPToken);
             _CloseHandle(hUserTokenDup);
 
-            return result; 
+            return result;
         }
     }
 }
