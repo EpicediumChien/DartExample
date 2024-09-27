@@ -403,7 +403,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Easy Memory", new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
-                moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
+                moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule(_vmDisplay));
+                //moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
                 sw.Stop();
                 _log?.Info($"* EzMemoryModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
