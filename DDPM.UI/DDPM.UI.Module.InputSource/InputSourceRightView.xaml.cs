@@ -71,19 +71,17 @@ namespace DDPM.UI.Module.InputSource
 
         private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            KeyConverter kc = new KeyConverter();
-            var str = kc.ConvertToString(e.Key);
-
-            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            if ((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3)) && (Keyboard.Modifiers == ModifierKeys.Shift))
             {
-                if (Keyboard.IsKeyDown(Key.D2))
-                {
-                    // Handle "@"
-                }
-                else
-                {
-                    e.Handled = true;
-                }
+                e.Handled = true;
+            }
+            else if ((e.KeyStates == Keyboard.GetKeyStates(Key.D2)) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                // Handle "@"
+            }
+            else if ((Keyboard.Modifiers == ModifierKeys.Shift))
+            {
+                e.Handled = true;
             }
             else if (Keyboard.IsKeyDown(Key.D0) || Keyboard.IsKeyDown(Key.D1) || Keyboard.IsKeyDown(Key.D2) || Keyboard.IsKeyDown(Key.D3) || Keyboard.IsKeyDown(Key.D4) ||
                 Keyboard.IsKeyDown(Key.D5) || Keyboard.IsKeyDown(Key.D6) || Keyboard.IsKeyDown(Key.D7) || Keyboard.IsKeyDown(Key.D8) || Keyboard.IsKeyDown(Key.D9) ||
@@ -92,7 +90,7 @@ namespace DDPM.UI.Module.InputSource
                 Keyboard.IsKeyDown(Key.K) || Keyboard.IsKeyDown(Key.L) || Keyboard.IsKeyDown(Key.M) || Keyboard.IsKeyDown(Key.N) || Keyboard.IsKeyDown(Key.O) ||
                 Keyboard.IsKeyDown(Key.P) || Keyboard.IsKeyDown(Key.Q) || Keyboard.IsKeyDown(Key.R) || Keyboard.IsKeyDown(Key.S) || Keyboard.IsKeyDown(Key.T) ||
                 Keyboard.IsKeyDown(Key.U) || Keyboard.IsKeyDown(Key.V) || Keyboard.IsKeyDown(Key.W) || Keyboard.IsKeyDown(Key.X) || Keyboard.IsKeyDown(Key.Y) ||
-                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus))
+                Keyboard.IsKeyDown(Key.Z) || Keyboard.IsKeyDown(Key.OemMinus) || Keyboard.IsKeyDown(Key.Space))
             {
                 // Handle 0-9, a-z, A-Z, " ", "-" 
             }

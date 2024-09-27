@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
@@ -125,34 +126,67 @@ namespace DDPM.UI.Module.WebCameraColorImage
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
+                    _vm.ShowLockMask = data.LockSettings.Lock_Webcam_hdr;
+                    _vm.isTabStoppable = !data.LockSettings.Lock_Webcam_hdr;
+
+                    if (_vm.ShowLockMask)
+                        _vm.TabNavigation = "None";
+                    else
+                        _vm.TabNavigation = "Cycle";
+
+                    _vm.LockMaskVisible = _vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;
+
                     //if (data.LockSettings.Lock_Webcam_hdr)
-                    {
-                        //_vm.isHdrLocked = Visibility.Visible;
-                        //_vm.isHdrTabStopped = false;
-                    }
+                    //{
+                    //_vm.isHdrLocked = Visibility.Visible;
+                    //_vm.isHdrTabStopped = false;
+                    //}
                     //else
-                    {
-                        //_vm.isHdrLocked = Visibility.Collapsed;
-                        //_vm.isHdrTabStopped = true;
-                    }
+                    //{
+                    //_vm.isHdrLocked = Visibility.Collapsed;
+                    //_vm.isHdrTabStopped = true;
+                    //}
 
                     //if (data.LockSettings.Lock_Webcam_AntiFlicker)
-                    {
-                        //_vm.isAntiLocked = Visibility.Visible;
-                        //_vm.isAntiTabStopped = false;
-                    }
+                    //{
+                    //_vm.isAntiLocked = Visibility.Visible;
+                    //_vm.isAntiTabStopped = false;
+                    //}
                     //else
-                    {
-                        //_vm.isAntiLocked = Visibility.Collapsed;
-                        //_vm.isAntiTabStopped = true;
-                    }
+                    //{
+                    //_vm.isAntiLocked = Visibility.Collapsed;
+                    //_vm.isAntiTabStopped = true;
+                    //}
                 }
             }
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_hdr", e);
+            //bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_hdr", e);
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_hdr", e);
+
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {                
+                    if (_vm != null)
+                    {
+                        _vm.isTabStoppable = !(bool)isLocked;
+                        _vm.ShowLockMask = (bool)isLocked;
+
+                        if (_vm.ShowLockMask)
+                            _vm.TabNavigation = "None";
+                        else
+                            _vm.TabNavigation = "Cycle";
+
+                        _vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] WebCameraColorImageRightView(Lock) : {isLocked}");
+                    }
+                }));
+            }
+
+            /*
             Dispatcher.Invoke(new Action(() =>
             {
                 if (_vm != null)
@@ -178,6 +212,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     //_vm.isAntiTabStopped = !locked;
                 }
             }));
+            */
         }
 
         //  Jim add 20240628

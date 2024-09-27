@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
+using Windows.System;
 
 namespace DDPM.UI.Module.EzSettings
 {
@@ -19,7 +21,7 @@ namespace DDPM.UI.Module.EzSettings
         //Span across multiple monitors IsEnabled
         private bool _isSpanAcrossEnabled = false;
 
-        private HomeDevice _homeDevice;
+        public HomeDevice _homeDevice;
         #endregion Private members
 
         public IModuleOwner? ModuleOwner { get; set; }
@@ -28,7 +30,7 @@ namespace DDPM.UI.Module.EzSettings
         public EzSettingsViewModel(IModuleOwner moduleOwner)
         {
             _homeDevice = moduleOwner.SelectedHomeDevice;
-            
+
         }
         #endregion
 
@@ -45,7 +47,19 @@ namespace DDPM.UI.Module.EzSettings
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
                     //Read Recent Hotkey settings (TO be implemented by Gavin)
-
+                    HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(_homeDevice.MonitorInfo.edid).Result;
+                    if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
+                    {
+                        HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(HotkeyType.ToggleEzRecentSetting));
+                        if (hotkeyInfo != null)
+                        {
+                            List<VirtualKey> hotkeys = hotkeyInfo?.Hotkey;
+                            string swHortcutText = string.Empty;
+                            KeysHelper.ReSetHotKeyText(ref swHortcutText, ref hotkeys);
+                            hotkeys.Clear();
+                            RecentHotkey = swHortcutText;
+                        }
+                    }
                     //Read other settings
                     DDPM.SA.Common.Settings.EzSettings ezSettings =
                     DdpmCommonHelper.DeviceManagerSA.ReadEzSettings().Result;
@@ -71,7 +85,12 @@ namespace DDPM.UI.Module.EzSettings
         public string RecentHotkey
         {
             get => _recentHotkey;
-            set => SetProperty(ref _recentHotkey, value);
+            set
+            {
+                SetProperty(ref _recentHotkey, value);
+                OnPropertyChanged("RecentHotkey");
+            }
+
         }
         #endregion Recent Hotkey
 
