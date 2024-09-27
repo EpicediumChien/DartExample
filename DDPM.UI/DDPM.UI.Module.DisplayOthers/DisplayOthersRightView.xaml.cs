@@ -116,6 +116,7 @@ namespace DDPM.UI.Module.DisplayOthers
                         IsPowerNapLockinUI(vm, (bool)isLocked);
                         Trace.WriteLine($"[SettingsPage] Apply PowerNap(Lock) : {isLocked}");
                         vm.OnPropertyChanged_Lock();
+                        vm.updatePowerNapUISetting();
                     }
                 }));
             }

@@ -5514,7 +5514,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(HotkeyWarning.ConflictInbox);
             }
         }
-
+        private bool _OSDKeyLock = false;
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
@@ -5526,6 +5526,57 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Debug.WriteLine($"Keyboard_KeyUpProc :altPressed = {_altPressed}");
             Debug.WriteLine($"Keyboard_KeyUpProc :ctrlPressed = {_ctrlPressed}");
             Debug.WriteLine($"Keyboard_KeyUpProc :shiftPressed = {_shiftPressed}");
+
+            //osd
+            GlobalSettingParam result = GetGlobalSettingParam().Result;
+            if (result != null)
+            {
+                Debug.WriteLine($"GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key={result.GlobalSetting_General.Keyboard_Lock_Key}");
+                if (result.GlobalSetting_General.Keyboard_Lock_Key)
+                {
+                    if (e.KeyCode == Keys.CapsLock)
+                    {
+                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                        _OSDKeyLock = true;
+                        e.Handled = true;
+                    }
+                    if (e.KeyCode == Keys.Scroll)
+                    {
+                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, true);
+                        _OSDKeyLock = true;
+                        e.Handled = true;
+                    }
+                    if (e.KeyCode == Keys.NumLock)
+                    {
+                        ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, true);
+                        _OSDKeyLock = true;
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+                    if (_OSDKeyLock)
+                    {
+                        if (e.KeyCode == Keys.CapsLock)
+                        {
+                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                            _OSDKeyLock = false;
+                        }
+                        if (e.KeyCode == Keys.Scroll)
+                        {
+                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                            _OSDKeyLock = false;
+                        }
+                        if (e.KeyCode == Keys.NumLock)
+                        {
+                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                            _OSDKeyLock = false;
+                        }
+                    }
+                }
+            }
+
+            //osd
             if (_hotkeySettings != null && _hotkeySettings.Count == 0)
             {
                 _hotkeySettings = _SettingsPlugin.ReadHotkeySettings().Result;
@@ -5688,6 +5739,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
 
+        private bool IsHotkeyFuncLock(HotkeyType type)
+        {
+            DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (config != null)
+            {
+                switch (type)
+                {
+                    case HotkeyType.LockBriCont:
+                        return config.LockSettings.Lock_Display_BriCont;
+
+                    case HotkeyType.LockActiveInputSource:
+                        return config.LockSettings.Lock_Display_ActiveInputSource;
+                }
+
+            }
+            return false;
+        }
         private void Gaming_VisionEngineToggle(MonitorInfo monitorInfo, Object[] param)
         {
             GamingDisplayPropertiesInfo gamingDisplayProperties = GetGamingProperties_SupportedList(monitorInfo).Result;
@@ -5922,31 +5990,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Change_PIPPosition(MonitorInfo monitorInfo, Object[] param)
         {
-            ObjGetVCP pxpMode = GetPxpMode(monitorInfo).Result;
-            if (pxpMode != null && pxpMode.result == true && !IsPIPMode((UInt32)pxpMode.value))
+            if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                //not in pip mode
-                ushort[] pxpCap = GetPipPbpCapabilitiesWords(monitorInfo).Result;
-                if (pxpCap == null)
+                ObjGetVCP pxpMode = GetPxpMode(monitorInfo).Result;
+                if (pxpMode != null && pxpMode.result == true && !IsPIPMode((UInt32)pxpMode.value))
                 {
-                    return;
-                }
-                else
-                {
-                    foreach (UInt16 mode in pxpCap)
+                    //not in pip mode
+                    ushort[] pxpCap = GetPipPbpCapabilitiesWords(monitorInfo).Result;
+                    if (pxpCap == null)
                     {
-                        PxpModeObj? obj = Array.Find(PxpModeObj.Table, x => x.ModeCode == mode && x.Arg.ToLower().Contains("pip"));
-                        if (obj != null)
+                        return;
+                    }
+                    else
+                    {
+                        foreach (UInt16 mode in pxpCap)
                         {
-                            bool setPxp = SetPbpMode(monitorInfo, (UInt16)obj.ModeCode).Result;
+                            PxpModeObj? obj = Array.Find(PxpModeObj.Table, x => x.ModeCode == mode && x.Arg.ToLower().Contains("pip"));
+                            if (obj != null)
+                            {
+                                bool setPxp = SetPbpMode(monitorInfo, (UInt16)obj.ModeCode).Result;
+                            }
                         }
                     }
                 }
-            }
-            else
-            {
-                bool changePip = TogglePipPosition(monitorInfo).Result;
-                writelog($"Change_PIPPosition:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] " + (changePip ? "success" : "fail"));
+                else
+                {
+                    bool changePip = TogglePipPosition(monitorInfo).Result;
+                    writelog($"Change_PIPPosition:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] " + (changePip ? "success" : "fail"));
+                }
             }
         }
 
@@ -5962,100 +6033,112 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Swap_IputPIPPBP(MonitorInfo monitorInfo, Object[] param)
         {
-            ObjGetVCP pxpMode = GetPxpMode(monitorInfo).Result;
-            if (pxpMode != null && pxpMode.result == true && (UInt32)pxpMode.value == 0)
+            if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                //pxp off
-                return;
+                ObjGetVCP pxpMode = GetPxpMode(monitorInfo).Result;
+                if (pxpMode != null && pxpMode.result == true && (UInt32)pxpMode.value == 0)
+                {
+                    //pxp off
+                    return;
+                }
+                //0 = main, 1 = sub1, 2 = sub2, 3 = sub3
+                Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
+                //pip/pbp subinput should only one
+                List<InputSourceObj> subInputs = GetSubInputs(monitorInfo).Result;
+                List<InputSourceObj> allInputs = new List<InputSourceObj>();
+                //inputList.ForEach(input => allInputs.Add(new InputSourceObj(input.Value.InputName)));
+                //[Dean] remove WinCopies utilties and fix code conflict
+                foreach (var input in inputList)
+                {
+                    allInputs.Add(new InputSourceObj(input.Value.InputName));
+                }
+                List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
+                if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
+                {
+                    return;
+                }
+                bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
+                writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
+                /*if (subInputs != null && subInputs.Count > 0)
+                {
+                    allInputs.AddRange(subInputs);
+                }
+                //main inputsource :0
+                KeyValuePair<string, InputInfo> keyValuePair = result.Where(x => x.Key.Equals(monitorInfo.inputSource)).SingleOrDefault();
+                if (keyValuePair.Value != null)
+                {
+                    allInputs.Insert(0, new InputSourceObj(keyValuePair.Value.InputName));
+                }
+                int x = -1;
+                int y = -1;
+                List<int> swapList = hotkey.InputSource.Select(tmp =>allInputs.IndexOf( allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
+                if (swapList.Count != 2 && swapList.Any(x=>x.Equals(-1)))
+                {
+                    return;
+                }
+                x = swapList[0];
+                y = swapList[1];
+                bool swap= VideoSwap(monitorInfo, (UInt16)x, (UInt16)y).Result;*/
             }
-            //0 = main, 1 = sub1, 2 = sub2, 3 = sub3
-            Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
-            //pip/pbp subinput should only one
-            List<InputSourceObj> subInputs = GetSubInputs(monitorInfo).Result;
-            List<InputSourceObj> allInputs = new List<InputSourceObj>();
-            //inputList.ForEach(input => allInputs.Add(new InputSourceObj(input.Value.InputName)));
-            //[Dean] remove WinCopies utilties and fix code conflict
-            foreach (var input in inputList)
-            {
-                allInputs.Add(new InputSourceObj(input.Value.InputName));
-            }
-            List<int> swapList = subInputs.Select(tmp => allInputs.IndexOf(allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
-            if (swapList.Count != 1 && swapList.Any(x => x.Equals(-1)))
-            {
-                return;
-            }
-            bool swapPxp = VideoSwap(monitorInfo, (UInt16)0, (UInt16)swapList[0]).Result;
-            writelog($"Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [0] to [{(UInt16)swapList[0]}]" + (swapPxp ? "success" : "fail"));
-            /*if (subInputs != null && subInputs.Count > 0)
-            {
-                allInputs.AddRange(subInputs);
-            }
-            //main inputsource :0
-            KeyValuePair<string, InputInfo> keyValuePair = result.Where(x => x.Key.Equals(monitorInfo.inputSource)).SingleOrDefault();
-            if (keyValuePair.Value != null)
-            {
-                allInputs.Insert(0, new InputSourceObj(keyValuePair.Value.InputName));
-            }
-            int x = -1;
-            int y = -1;
-            List<int> swapList = hotkey.InputSource.Select(tmp =>allInputs.IndexOf( allInputs.First(x => x.Name.Equals(tmp.Name) && x.Code.Equals(tmp.Code)))).ToList();
-            if (swapList.Count != 2 && swapList.Any(x=>x.Equals(-1)))
-            {
-                return;
-            }
-            x = swapList[0];
-            y = swapList[1];
-            bool swap= VideoSwap(monitorInfo, (UInt16)x, (UInt16)y).Result;*/
         }
 
         private void Switch_InputSource(MonitorInfo monitorInfo, Object[] param)
         {
-            HotkeyInfo hotkey = (HotkeyInfo)param[0];
-            if (hotkey.InputSource.Count == 0)
+            if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                //hotkey.InputSource Count must not 0
-                return;
-            }
-            string crtInput = monitorInfo.inputSource;
-            InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
-            if (switchTo != null)
-            {
-                bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
-                writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo.Name}]" + (setInput ? "success" : "fail"));
+                HotkeyInfo hotkey = (HotkeyInfo)param[0];
+                if (hotkey.InputSource.Count == 0)
+                {
+                    //hotkey.InputSource Count must not 0
+                    return;
+                }
+                string crtInput = monitorInfo.inputSource;
+                InputSourceObj switchTo = hotkey.InputSource.FirstOrDefault(x => !x.Name.Equals(crtInput));
+                if (switchTo != null)
+                {
+                    bool setInput = SetVCPCapability(monitorInfo, "Input Select", switchTo.Name).Result;
+                    writelog($"Switch_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{switchTo.Name}]" + (setInput ? "success" : "fail"));
+                }
             }
         }
 
         private void Favorite_InputSource(MonitorInfo monitorInfo, Object[] param)
         {
-            HotkeyInfo hotkey = (HotkeyInfo)param[0];
-            InputSourceObj changeInput = hotkey.InputSource[0];
-            bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput.Name).Result;
-            writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput.Name}]" + (setNextInput ? "success" : "fail"));
+            if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
+            {
+                HotkeyInfo hotkey = (HotkeyInfo)param[0];
+                InputSourceObj changeInput = hotkey.InputSource[0];
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", changeInput.Name).Result;
+                writelog($"Favorite_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] to [{changeInput.Name}]" + (setNextInput ? "success" : "fail"));
+            }
         }
 
         private void Toggle_InputSource(MonitorInfo monitorInfo, Object[] param)
         {
-            Dictionary<string, InputInfo> result = GetInputSourcelist(monitorInfo).Result;
-            string nextInput = string.Empty;
-            //get current main input source
-            string crtInput = monitorInfo.inputSource;
-            List<KeyValuePair<string, InputInfo>> list = result.OrderBy(x => x.Key).ToList();
-            for (int i = 0; i < list.Count; i++)
+            if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                if (list[i].Key.Equals(crtInput))
+                Dictionary<string, InputInfo> result = GetInputSourcelist(monitorInfo).Result;
+                string nextInput = string.Empty;
+                //get current main input source
+                string crtInput = monitorInfo.inputSource;
+                List<KeyValuePair<string, InputInfo>> list = result.OrderBy(x => x.Key).ToList();
+                for (int i = 0; i < list.Count; i++)
                 {
-                    if (i < (list.Count - 1))
+                    if (list[i].Key.Equals(crtInput))
                     {
-                        nextInput = list[i + 1].Key;
-                    }
-                    else
-                    {
-                        nextInput = list[0].Key;
+                        if (i < (list.Count - 1))
+                        {
+                            nextInput = list[i + 1].Key;
+                        }
+                        else
+                        {
+                            nextInput = list[0].Key;
+                        }
                     }
                 }
+                bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
+                writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
             }
-            bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
-            writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
         }
 
         private string GetCurrentInputSource(MonitorInfo monitorInfo)
@@ -6278,68 +6361,86 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Reduce_Brightness_Value(MonitorInfo monitorInfo, Object[] param)
         {
-            ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-            if (obBrightness.result)
+            if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                uint brightnessValue = ((uint)obBrightness.value) <= 1 ? 0 : (uint)obBrightness.value - 1;
-                bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
-                writelog($"Reduce_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
+                ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
+                if (obBrightness.result)
+                {
+                    uint brightnessValue = ((uint)obBrightness.value) <= 1 ? 0 : (uint)obBrightness.value - 1;
+                    bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
+                    writelog($"Reduce_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
+                }
             }
         }
 
         private void Increase_Brightness_Value(MonitorInfo monitorInfo, Object[] param)
         {
-            ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-            if (obBrightness.result)
+            if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                uint brightnessValue = ((uint)obBrightness.value) + 1 >= 100 ? 100 : (uint)obBrightness.value + 1;
-                bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
-                writelog($"Increase_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
+                ObjGetVCP obBrightness = GetVCPCapability(monitorInfo, 0x10, 0).Result;
+                if (obBrightness.result)
+                {
+                    uint brightnessValue = ((uint)obBrightness.value) + 1 >= 100 ? 100 : (uint)obBrightness.value + 1;
+                    bool ret = SetVCPCapability(monitorInfo, 0x10, brightnessValue).Result;
+                    writelog($"Increase_Brightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obBrightness.value}] to [{brightnessValue}]" + (ret ? "success" : "fail"));
+                }
             }
         }
 
         private void Reduce_Contrast_Value(MonitorInfo monitorInfo, Object[] param)
         {
-            ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
-            if (obContrast.result)
+            if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                uint contrastValue = ((uint)obContrast.value) <= 1 ? 0 : (uint)obContrast.value - 1;
-                bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
-                writelog($"Reduce_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
+                ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
+                if (obContrast.result)
+                {
+                    uint contrastValue = ((uint)obContrast.value) <= 1 ? 0 : (uint)obContrast.value - 1;
+                    bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
+                    writelog($"Reduce_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
+                }
             }
         }
 
         private void Increase_Contrast_Value(MonitorInfo monitorInfo, Object[] param)
         {
-            ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
-            if (obContrast.result)
+            if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                uint contrastValue = ((uint)obContrast.value) + 1 >= 100 ? 100 : (uint)obContrast.value + 1;
-                bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
-                writelog($"Increase_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
+                ObjGetVCP obContrast = GetVCPCapability(monitorInfo, 0x12, 0).Result;
+                if (obContrast.result)
+                {
+                    uint contrastValue = ((uint)obContrast.value) + 1 >= 100 ? 100 : (uint)obContrast.value + 1;
+                    bool ret = SetVCPCapability(monitorInfo, 0x12, contrastValue).Result;
+                    writelog($"Increase_Contrast:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obContrast.value}] to [{contrastValue}]" + (ret ? "success" : "fail"));
+                }
             }
         }
 
         private void Reduce_Luminance_Value(MonitorInfo monitorInfo, Object[] param)
         {
-            ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-            if (obLuminance.result)
+            if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                uint luminanceValue = ((uint)obLuminance.value) <= 1 ? 0 : (uint)obLuminance.value - 1;
-                bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
-                writelog($"Reduce_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
+                ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
+                if (obLuminance.result)
+                {
+                    uint luminanceValue = ((uint)obLuminance.value) <= 1 ? 0 : (uint)obLuminance.value - 1;
+                    bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
+                    writelog($"Reduce_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
+                }
             }
         }
 
         private void Increase_Luminance_Value(MonitorInfo monitorInfo, Object[] param)
         {
-            ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
-            ObjGetVCP obLuminanceMax = GetVCPCapability(monitorInfo, 0x10, 1).Result;
-            if (obLuminance.result && obLuminanceMax.result)
+            if (!IsHotkeyFuncLock(HotkeyType.LockBriCont))
             {
-                uint luminanceValue = ((uint)obLuminance.value) + 1 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 1;
-                bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
-                writelog($"Increase_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
+                ObjGetVCP obLuminance = GetVCPCapability(monitorInfo, 0x10, 0).Result;
+                ObjGetVCP obLuminanceMax = GetVCPCapability(monitorInfo, 0x10, 1).Result;
+                if (obLuminance.result && obLuminanceMax.result)
+                {
+                    uint luminanceValue = ((uint)obLuminance.value) + 1 >= (uint)obLuminanceMax.value ? (uint)obLuminanceMax.value : (uint)obLuminance.value + 1;
+                    bool ret = SetVCPCapability(monitorInfo, 0x10, luminanceValue).Result;
+                    writelog($"Increase_Luminance:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{(uint)obLuminance.value}] to [{luminanceValue}]" + (ret ? "success" : "fail"));
+                }
             }
         }
 

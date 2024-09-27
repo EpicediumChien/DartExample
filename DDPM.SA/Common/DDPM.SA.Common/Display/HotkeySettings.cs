@@ -85,6 +85,8 @@ namespace DDPM.SA.Common.Display
         DarkStabilizerToggle,
         DualResolutionToggle,
         VisionEngineToggle,
-        NkvmConflict
+        NkvmConflict,
+        LockBriCont,
+        LockActiveInputSource
     }
 }
