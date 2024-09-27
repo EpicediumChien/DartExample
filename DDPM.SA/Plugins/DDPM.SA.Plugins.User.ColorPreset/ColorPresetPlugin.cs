@@ -779,6 +779,8 @@ namespace ColorPreset.Plugins
                 return Task.FromResult(ColorPresetSupportList);
             }
 
+            Log.Info($"ReadColorPreset requested [vcp_capbilities] = {vcp_capbilities}");
+
             // 20240619 jim add
             if (!string.IsNullOrEmpty(vcp_capbilities))
             {
@@ -788,12 +790,23 @@ namespace ColorPreset.Plugins
                     var CapsDataMap = (JObject)Capabilities["CapsDataMap"];
                     if (CapsDataMap.ContainsKey("ColorPreset"))
                     {
-                        JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
+                        if (CapsDataMap["ColorPreset"].Type == JTokenType.Null)
+                        {
+                            ColorPresetSupportList.Clear();
+                            ColorPresetSupportList.Add("Standard/Native");
+                        }
+                        else
+                        {
+                           
 
-                        ColorPresetSupportList.Clear();
+                            JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
 
-                        foreach (var tmp in colorrreset)
-                            ColorPresetSupportList.Add(new string(tmp.ToString()));
+                            ColorPresetSupportList.Clear();
+
+                            foreach (var tmp in colorrreset)
+                                ColorPresetSupportList.Add(new string(tmp.ToString()));
+
+                        }                     
                     }
                 }
             }
