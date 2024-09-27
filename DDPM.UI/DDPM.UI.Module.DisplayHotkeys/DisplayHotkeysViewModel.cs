@@ -225,6 +225,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
+            IsBusy = true;
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -344,6 +345,14 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         }
                     }
                 }
+                else
+                {
+                    ToggleInputSourceKey = "None";
+                    FavoriteInputSourceKey = "None";
+                    SwitchInputSourceKey = "None";
+                    SwapPIPPBPInputSourceKey = "None";
+                    ChangePIPPositionKey = "None";
+                }
             }
             catch (Exception)
             {
@@ -354,7 +363,20 @@ namespace DDPM.UI.Module.DisplayHotkeys
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process
+            IsBusy = false;
+            OnPropertyChanged("IsBusy");
             Debug.WriteLine("InputSource-->Hotkey tab data refresh done");
         }
+        #region UI Enable Flags
+
+        private bool _isBusy = false;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        #endregion UI Enable Flags
     }
 }

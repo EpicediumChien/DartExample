@@ -5523,9 +5523,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _altPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.Menu);
             bool _ctrlPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ControlKey);
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
-            Debug.WriteLine($"Keyboard_KeyUpProc :altPressed = {_altPressed}");
-            Debug.WriteLine($"Keyboard_KeyUpProc :ctrlPressed = {_ctrlPressed}");
-            Debug.WriteLine($"Keyboard_KeyUpProc :shiftPressed = {_shiftPressed}");
+            //Debug.WriteLine($"Keyboard_KeyUpProc :altPressed = {_altPressed}");
+            //Debug.WriteLine($"Keyboard_KeyUpProc :ctrlPressed = {_ctrlPressed}");
+            //Debug.WriteLine($"Keyboard_KeyUpProc :shiftPressed = {_shiftPressed}");
 
             //osd
             GlobalSettingParam result = GetGlobalSettingParam().Result;
@@ -5735,10 +5735,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.VisionEngineToggle:
                     _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Gaming_VisionEngineToggle));
                     break;
+
+                case HotkeyType.ToggleEzRecentSetting:
+                    _hotkeyJobQueue.Enqueue(new JobInfo(monitorInfo, null, Toggle_EzRecentSetting));
+                    break;
             }
             return Task.FromResult(true);
         }
-
+        private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
+        {
+            //todo Toggle_EzRecentSetting
+        }
         private bool IsHotkeyFuncLock(HotkeyType type)
         {
             DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
@@ -6557,7 +6564,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     int getvalue = (Convert.ToInt32(rc.value) & 0x0c);
                     if (cs)
                     {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (1|(uint)getvalue)).Result;
+                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (1 | (uint)getvalue)).Result;
                         writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] ON and setVcp:]" + (ret ? "success" : "fail"));
                     }
                     else

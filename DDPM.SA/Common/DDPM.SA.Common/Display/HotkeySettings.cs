@@ -87,6 +87,7 @@ namespace DDPM.SA.Common.Display
         VisionEngineToggle,
         NkvmConflict,
         LockBriCont,
-        LockActiveInputSource
+        LockActiveInputSource,
+        ToggleEzRecentSetting
     }
 }
