@@ -509,6 +509,7 @@ namespace DDPM.UI.Common.Models
         private Dictionary<string, ObservableObject> _moduleData = new Dictionary<string, ObservableObject>();
 
         public EzArrangeViewModel vmEzArrange { get; set; }
+        public EzMemoryViewModel vmEzMemory { get; set; }
         #endregion Module Data - Robert_Lin, 2024-6-23 added
 
         #region Sort and Grouping
