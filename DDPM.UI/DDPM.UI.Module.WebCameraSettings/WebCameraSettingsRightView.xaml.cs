@@ -1,8 +1,11 @@
-﻿using DDPM.SA.Common.Settings;
+﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -46,6 +49,39 @@ namespace DDPM.UI.Module.WebCameraSettings
                     //}
                 }
             }
+
+            if (_vm.CurrentDeviceInfo!.IsPropertyFOVSupported)
+                InitializeFOV();
+        }
+
+        private void InitializeFOV()
+        {
+            var FOV = _vm.CurrentDeviceInfo!.FOVValues;
+            switch (FOV.Length)
+            {
+                case 2:
+                    btnFOV0.Width = 201;
+                    txtFOV0.Text = $"{FOV[0]}°";
+                    btnFOV1.Width = 201;
+                    txtFOV1.Text = $"{FOV[1]}°";
+                    btnFOV1.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    btnFOV2.Visibility = Visibility.Collapsed;
+                    break;
+                case 3:
+                    btnFOV0.Width = 134;
+                    txtFOV0.Text = $"{FOV[0]}°";
+                    btnFOV1.Width = 134;
+                    txtFOV1.Text = $"{FOV[1]}°";
+                    btnFOV1.CornerRadius = new CornerRadius(0);
+                    btnFOV2.Width = 134;
+                    txtFOV2.Text = $"{FOV[2]}°";
+                    btnFOV2.Visibility = Visibility.Visible;
+                    btnFOV2.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                    break;
+                default:
+                    bdrFOV.Visibility = Visibility.Collapsed;
+                    break;
+            }
         }
 
         ~WebCameraSettingsRightView()
@@ -63,7 +99,7 @@ namespace DDPM.UI.Module.WebCameraSettings
             if (isLocked != null)
             {
                 Dispatcher.Invoke(new Action(() =>
-                {                    
+                {
                     if (_vm != null)
                     {
                         _vm.isTabStoppable = !(bool)isLocked;
@@ -162,6 +198,7 @@ namespace DDPM.UI.Module.WebCameraSettings
         //  Jim add 20240628
         private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            return;
             SetZoomLevel((float)ZoomSlider.Value);
         }
 
@@ -261,25 +298,18 @@ namespace DDPM.UI.Module.WebCameraSettings
         {
         }
 
-        private void FOV_65_Button_Click(object sender, MouseButtonEventArgs e)
+        private void FOV_Click(object sender, MouseButtonEventArgs e)
         {
-            _vm.FOV_IsSelected[0] = true;
-            _vm.FOV_IsSelected[1] = false;
-            _vm.FOV_IsSelected[2] = false;
-        }
+            if (sender is Border bdr)
+            {
+                var index = int.Parse(bdr.Tag.ToString()!);
+                var val = _vm.FOVs[index];
+                if (val == _vm.FieldOfView)
+                { return; }
 
-        private void FOV_78_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-            _vm.FOV_IsSelected[0] = false;
-            _vm.FOV_IsSelected[1] = true;
-            _vm.FOV_IsSelected[2] = false;
-        }
-
-        private void FOV_90_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-            _vm.FOV_IsSelected[0] = false;
-            _vm.FOV_IsSelected[1] = false;
-            _vm.FOV_IsSelected[2] = true;
+                _vm.SetFOV_Selected(index);
+                _vm.FieldOfView = val;
+            }
         }
 
         private void Priority_Exposure_Button_Click(object sender, MouseButtonEventArgs e)
@@ -302,6 +332,41 @@ namespace DDPM.UI.Module.WebCameraSettings
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void AutoFramingSensitivity_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border bdr)
+            {
+                var val = int.Parse(bdr.Tag.ToString()!);
+                if (val == _vm.AutoFramingSensitivity)
+                { return; }
+
+                _vm.AutoFramingSensitivity = val;
+            }
+        }
+
+        private void AutoFramingSize_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border bdr)
+            {
+                var val = int.Parse(bdr.Tag.ToString()!);
+                if (val == _vm.AutoFramingFrameSize)
+                { return; }
+
+                _vm.AutoFramingFrameSize = val;
+            }
+        }
+
+        private void ZoomSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
+
+        private void ZoomSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+
         }
     }
 }

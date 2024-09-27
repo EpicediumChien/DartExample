@@ -1363,7 +1363,7 @@
     <value>Prioritize External Webcam</value>
   </data>
   <data name="WebCameraSettings.26" xml:space="preserve">
-    <value>Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition. Note: Only one camera can be enabled and accessible at a time.</value>
+    <value>Automatically switches between Dell UltraSharp Webcam and other webcams (integrated and external). Windows Hello will use the active webcam for facial recognition.\n\nNote: Only one camera can be enabled and accessible at a time.</value>
   </data>
   <data name="Mouse.8" xml:space="preserve">
     <value>Touch Scroll Sensitivity</value>
@@ -1640,5 +1640,8 @@
   </data>
   <data name="Camera.9" xml:space="preserve">
     <value>Pause Recording</value>
+  </data>
+  <data name="WebCameraSettings.27" xml:space="preserve">
+    <value>Adjusts the frame size</value>
   </data>
 </root>

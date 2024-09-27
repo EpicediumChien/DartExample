@@ -798,6 +798,19 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        public void SetCurrentSelectedProfile(string newValue, Guid deviceId)
+        {
+            foreach (var device in _iDeviceManager.Devices)
+            {
+                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+                if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
+                {
+                    Debug.WriteLine($"{newValue}");
+                    _iLogicalDeviceWebcam.ProfileManager.SetCurrentSelectedProfile(newValue);
+                }
+            }
+        }
+
         #endregion
 
         #region Overriding methods
