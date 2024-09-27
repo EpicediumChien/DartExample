@@ -25,9 +25,10 @@
                 </Style.Triggers>
             </Style>
 
- 
 
-        </ResourceDictionary>    </UserControl.Resources>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
             <Border Style="{StaticResource RightGroupBorderStyle}">
@@ -76,7 +77,7 @@
                                                       ContextMenuOpening="tbToggleInputSource_ContextMenuOpening"
                         -->
                             <UXControls:UXTextBox Grid.Column="2" Name="tbRecentHotkey" Margin="0"
-                                              Text="{Binding RecentHoKey,Mode=TwoWay}"
+                                              Text="{Binding RecentHotkey,Mode=TwoWay}"
                                               Background="#141D28" Foreground="White" Width="230"
                                               BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
                                               HorizontalAlignment="Center" VerticalContentAlignment="Center"

@@ -66,6 +66,8 @@ namespace DDPM.UI.Module.DisplayOthers
         //Handle new device coming
         private void InitNewViewModel()
         {
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            vm.Invoke_RefreshData();
         }
 
         public void OnActivated()
