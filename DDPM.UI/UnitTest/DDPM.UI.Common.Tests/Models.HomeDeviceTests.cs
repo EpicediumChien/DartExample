@@ -1,0 +1,552 @@
+using DDPM.SA.Common;
+using DDPM.UI.Common.EAEM;
+using DDPM.UI.Common.Interfaces;
+using DDPM.UI.Common.Models;
+using DDPM.UI.Common.ViewModels;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
+using Moq;
+using System.Security.Policy;
+using System.Windows.Media;
+using System.Xml.Linq;
+using VcpCore.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+
+namespace DDPM.UI.Common.Tests
+{
+    [Apartment(ApartmentState.STA)]
+    public class HomeDeviceTests
+    {
+        private HomeDevice? homeDevice;
+
+        [SetUp]
+        public void Setup()
+        {
+            homeDevice = new HomeDevice();
+        }
+
+        [Test]
+        public void TestConstructor_HomeDevice()
+        {
+            // Assert
+            Assert.That(homeDevice, Is.Not.Null);
+        }
+
+        [Test]
+        public void TestDeviceImage()
+        {
+            // Act
+            var deviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Product_Display.png");
+            homeDevice.DeviceImage=deviceImage;
+            // Assert
+            Assert.That(homeDevice.DeviceImage, Is.EqualTo(deviceImage));
+        }
+
+        [Test]
+        public void TestDeviceName()
+        {
+            // Act
+            homeDevice.DeviceName = "Display 1";
+            // Assert
+            Assert.That(homeDevice.DeviceName, Is.EqualTo("Display 1"));
+        }
+
+        [Test]
+        public void TestDeviceCategory()
+        {
+            // Act
+            homeDevice.DeviceCategory = eDeviceCategory.KB;
+            // Assert
+            Assert.That(homeDevice.DeviceCategory, Is.EqualTo(eDeviceCategory.KB));
+        }
+
+        [Test]
+        public void TestMonitorInfo()
+        {
+            // Act
+            var monitorInfo = new MonitorInfo();
+            homeDevice.MonitorInfo = monitorInfo;
+            // Assert
+            Assert.That(homeDevice.MonitorInfo, Is.EqualTo(monitorInfo));
+        }
+
+        [Test]
+        public void TestDeviceInfo()
+        {
+            // Act
+            var deviceInfo = new DeviceInfo() { ID = new Guid(), Name = "A" };
+            homeDevice.DeviceInfo = deviceInfo;
+            // Assert
+            Assert.That(homeDevice.DeviceInfo, Is.EqualTo(deviceInfo));
+        }
+
+
+        [Test]
+        public void TestIsSamePeripheralDevice()
+        {
+            // Act
+            var result = homeDevice.IsSamePeripheralDevice(null);
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+
+            // Act
+            var deviceInfo = new DeviceInfo() { ID = new Guid(),Name="A" };
+            homeDevice.DeviceInfo = deviceInfo;
+            result = homeDevice.IsSamePeripheralDevice(deviceInfo);
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestNormalWidth()
+        {
+            // Act
+            homeDevice.NormalWidth = 2;
+            // Assert
+            Assert.That(homeDevice.NormalWidth, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TestHoverWidth()
+        {
+            // Act
+            homeDevice.NormalWidth = 2;
+            // Assert
+            Assert.That(homeDevice.HoverWidth, Is.EqualTo(2.20));
+        }
+
+        [Test]
+        public void TestItemWidth()
+        {
+            // Act
+            homeDevice.NormalWidth = 2;
+            // Assert
+            Assert.That(homeDevice.ItemWidth, Is.EqualTo(2.32));
+        }
+
+        [Test]
+        public void TestFwVer()
+        {
+            // Assert
+            Assert.That(homeDevice.FwVer, Is.EqualTo("(N/A)"));
+
+            // Act
+            homeDevice.MonitorInfo = new MonitorInfo() { FwVersion = "1A" };
+            // Assert
+            Assert.That(homeDevice.FwVer, Is.EqualTo("1A"));
+        }
+
+        [Test]
+        public void TestServiceTag()
+        {
+            // Assert
+            Assert.That(homeDevice.ServiceTag, Is.EqualTo("(N/A)"));
+
+            // Act
+            var edid = new VcpCore.Common.EDID();
+            edid.ServiceTag = "2A";
+            var monitorinfo= new MonitorInfo() { edid = edid };
+            homeDevice.MonitorInfo= monitorinfo;
+            // Assert
+            Assert.That(homeDevice.ServiceTag, Is.EqualTo("2A"));
+        }
+
+        [Test]
+        public void TestMfgDate()
+        {
+            // Assert
+            Assert.That(homeDevice.MfgDate, Is.EqualTo("(N/A)"));
+
+            // Act
+            var edid = new VcpCore.Common.EDID();
+            edid.Year = 2024;
+            edid.Month = 1;
+            var monitorinfo = new MonitorInfo() { edid = edid };
+            homeDevice.MonitorInfo = monitorinfo;
+            // Assert
+            Assert.That(homeDevice.MfgDate, Is.EqualTo("Jan 2024"));
+        }
+
+        [Test]
+        public void TestTooltipModelName()
+        {
+            // Assert
+            homeDevice.DeviceCategory = eDeviceCategory.KB;
+            var result = homeDevice.TooltipModelName;
+            Assert.That(result, Is.EqualTo("KB"));
+
+            // Act
+            var monitorinfo = new MonitorInfo() { MarketingName = "" };
+            homeDevice.MonitorInfo = monitorinfo;
+            result = homeDevice.TooltipModelName;
+            // Assert
+            Assert.That(result, Is.EqualTo(null));
+
+            // Act
+            monitorinfo = new MonitorInfo() { MarketingName="Aa" };
+            homeDevice.MonitorInfo = monitorinfo;
+            result = homeDevice.TooltipModelName;
+            // Assert
+            Assert.That(result, Is.EqualTo("Aa"));
+
+            // Act
+            var deviceInfo = new DeviceInfo() { Name= "WD19" };
+            homeDevice.DeviceInfo = deviceInfo;
+            result = homeDevice.TooltipModelName;
+            // Assert
+            Assert.That(result, Is.EqualTo("WD19"));
+
+            // Act
+            deviceInfo = new DeviceInfo() { Name = "_WD19S" };
+            homeDevice.DeviceInfo = deviceInfo;
+            result = homeDevice.TooltipModelName;
+            // Assert
+            Assert.That(result, Is.EqualTo(" WD19S"));
+        }
+
+
+        [Test]
+        public void TestUpdateBatteryIndicator()
+        {
+            try
+            {
+                homeDevice.UpdateBatteryIndicator();
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestBatteryLevel()
+        {
+            // Assert
+            Assert.That(homeDevice.BatteryLevel, Is.EqualTo(0));
+
+            // Act
+            var deviceInfo = new DeviceInfo() { Name = "A", BatteryLevel =2 };
+            homeDevice.DeviceInfo = deviceInfo;
+            var result = homeDevice.BatteryLevel;
+            // Assert
+            Assert.That(result, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TestBatteryStatus()
+        {
+            // Assert
+            Assert.That(homeDevice.BatteryStatus, Is.EqualTo(string.Empty));
+
+            // Act
+            var monitorinfo = new MonitorInfo();
+            homeDevice.MonitorInfo = monitorinfo;
+            var result = homeDevice.BatteryStatus;
+            // Assert
+            Assert.That(result, Is.EqualTo(""));
+
+            // Act
+            var deviceInfo = new DeviceInfo() {Name ="A", BatteryStatus = "save" };
+            homeDevice.DeviceInfo = deviceInfo;
+            result = homeDevice.BatteryStatus;
+            // Assert
+            Assert.That(result, Is.EqualTo("save"));
+        }
+
+        [Test]
+        public void TestConnectionType()
+        {
+            // Assert
+            Assert.That(homeDevice.ConnectionType, Is.EqualTo(string.Empty));
+
+            // Act
+            var monitorinfo = new MonitorInfo();
+            homeDevice.MonitorInfo = monitorinfo;
+            var result = homeDevice.ConnectionType;
+            // Assert
+            Assert.That(result, Is.EqualTo("Port"));
+
+            // Act
+            var deviceInfo = new DeviceInfo() { Name = "A", BatteryStatus = "save" };
+            homeDevice.DeviceInfo = deviceInfo;
+            result = homeDevice.ConnectionType;
+            // Assert
+            Assert.That(result, Is.EqualTo("Unknown"));
+        }
+
+        [Test]
+        public void TestNoBattery()
+        {
+            // Assert
+            Assert.That(homeDevice.NoBattery, Is.EqualTo(false));
+
+            // Act
+            var monitorinfo = new MonitorInfo();
+            homeDevice.MonitorInfo = monitorinfo;
+            var result = homeDevice.NoBattery;
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+
+            // Act
+            var deviceInfo = new DeviceInfo() { Name = "A", BatteryStatus = "save" };
+            homeDevice.DeviceInfo = deviceInfo;
+            result = homeDevice.NoBattery;
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+
+        [Test]
+        public void TestText1()
+        {
+            // Assert
+            Assert.That(homeDevice.Text1, Is.EqualTo(""));
+
+            // Act
+            var monitorinfo = new MonitorInfo() { inputSource = "inputSource" };
+            homeDevice.MonitorInfo = monitorinfo;
+            var result = homeDevice.Text1;
+            // Assert
+            Assert.That(result, Is.EqualTo("inputSource"));
+
+            // Act
+            var deviceInfo = new DeviceInfo() { Name = "A", BatteryStatus = "save" };
+            homeDevice.DeviceInfo = deviceInfo;
+            result = homeDevice.Text1;
+            // Assert
+            Assert.That(result, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void TestDisplayName()
+        {
+            // Assert
+            Assert.That(homeDevice.DisplayName, Is.EqualTo(""));
+
+            // Act
+            var deviceInfo = new DeviceInfo() { Name = "A", ModelNumber = "ModelNumber" };
+            homeDevice.DeviceInfo = deviceInfo;
+            var result = homeDevice.DisplayName;
+            // Assert
+            Assert.That(result, Is.EqualTo("ModelNumber"));
+
+            // Act
+            var monitorinfo = new MonitorInfo() { inputSource = "inputSource" };
+            homeDevice.MonitorInfo = monitorinfo;
+            homeDevice.InstanceNo = 1;
+            result = homeDevice.DisplayName;
+            // Assert
+            Assert.That(result, Is.EqualTo(" (1)"));
+        }
+
+
+        [Test]
+        public void TestIsSameModel()
+        {
+            // Act
+            var result = homeDevice.IsSameModel(new HomeDevice());
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestIsSameModelstring()
+        {
+            // Act
+            var result = homeDevice.IsSameModel(string.Empty);
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestInstanceNo()
+        {
+            // Act
+            homeDevice.InstanceNo=1;
+            // Assert
+            Assert.That(homeDevice.InstanceNo, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TestIsSamePeripheralModel()
+        {
+            // Act
+            var result = homeDevice.IsSamePeripheralModel(new HomeDevice() { DeviceName= "DeviceName" });
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+
+            // Act
+            var deviceInfo = new DeviceInfo() { Name = "A", ModelNumber = "ModelNumber" };
+            homeDevice.DeviceInfo = deviceInfo;
+            var other=new HomeDevice() { DeviceInfo = homeDevice.DeviceInfo };
+            result = homeDevice.IsSamePeripheralModel(other);
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestvmEzArrange()
+        {
+            // Act
+            var vmEzArrange = new EzArrangeViewModel(new HomeDevice());
+            homeDevice.vmEzArrange=vmEzArrange;
+            // Assert
+            Assert.That(homeDevice.vmEzArrange, Is.EqualTo(vmEzArrange));
+        }
+
+        [Test]
+        public void TestCompareTo()
+        {
+            // Act
+            var result = homeDevice.CompareTo(null);
+            // Assert
+            Assert.That(result, Is.EqualTo(0));
+
+            // Act
+            homeDevice.DeviceCategory = eDeviceCategory.KB;
+            result = homeDevice.CompareTo(new HomeDevice() { DeviceCategory = eDeviceCategory.KB });
+            // Assert
+            Assert.That(result, Is.EqualTo(0));
+
+            // Act
+            homeDevice.DeviceCategory = eDeviceCategory.Mouse;
+            result = homeDevice.CompareTo(new HomeDevice() { DeviceCategory = eDeviceCategory.KB });
+            // Assert
+            Assert.That(result, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TestSortOrder()
+        {
+            // Act
+            homeDevice.SortOrder=1;
+            // Assert
+            Assert.That(homeDevice.SortOrder, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TestDeviceManagerSA()
+        {
+            // Act
+            var deviceManagerSA = new Mock<IDeviceManagerSA>();
+            HomeDevice.DeviceManagerSA = deviceManagerSA.Object;
+            // Assert
+            Assert.That(HomeDevice.DeviceManagerSA, Is.EqualTo(deviceManagerSA.Object));
+        }
+
+        [Test]
+        public void TestIsConnectionHoverViewShow()
+        {
+            // Act
+            homeDevice.IsConnectionHoverViewShow=true;
+            // Assert
+            Assert.That(homeDevice.IsConnectionHoverViewShow, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestConnectionHoverMode()
+        {
+            // Act
+            homeDevice.ConnectionHoverMode = "ConnectionHoverMode";
+            // Assert
+            Assert.That(homeDevice.ConnectionHoverMode, Is.EqualTo("ConnectionHoverMode"));
+        }
+
+        [Test]
+        public void TestDongleHostText()
+        {
+            // Act
+
+            // Assert
+            Assert.That(homeDevice.DongleHostText, Is.EqualTo("USB Wireless Receiver"));
+        }
+
+        [Test]
+        public void TestDongleFwVersion()
+        {
+            // Act
+            homeDevice.DongleFwVersion = "DongleFwVersion";
+            // Assert
+            Assert.That(homeDevice.DongleFwVersion, Is.EqualTo("DongleFwVersion"));
+        }
+
+        [Test]
+        public void TestDongleSlot()
+        {
+            // Act
+            homeDevice.DongleSlot = "DongleSlot";
+            // Assert
+            Assert.That(homeDevice.DongleSlot, Is.EqualTo("DongleSlot"));
+        }
+
+        [Test]
+        public void TestBleHost1Style()
+        {
+            // Act
+            homeDevice.BleHost1Style = "BleHost1Style";
+            // Assert
+            Assert.That(homeDevice.BleHost1Style, Is.EqualTo("BleHost1Style"));
+        }
+
+        [Test]
+        public void TestBleHost2Style()
+        {
+            // Act
+            homeDevice.BleHost2Style = "BleHost2Style";
+            // Assert
+            Assert.That(homeDevice.BleHost2Style, Is.EqualTo("BleHost2Style"));
+        }
+
+        [Test]
+        public void TestBleHost3Style()
+        {
+            // Act
+            homeDevice.BleHost3Style = "BleHost3Style";
+            // Assert
+            Assert.That(homeDevice.BleHost3Style, Is.EqualTo("BleHost3Style"));
+        }
+
+        [Test]
+        public void TestBleHost1Text()
+        {
+            // Act
+            homeDevice.BleHost1Text = "BleHost1Text";
+            // Assert
+            Assert.That(homeDevice.BleHost1Text, Is.EqualTo("BleHost1Text"));
+        }
+
+        [Test]
+        public void TestBleHost2Text()
+        {
+            // Act
+            homeDevice.BleHost2Text = "BleHost2Text";
+            // Assert
+            Assert.That(homeDevice.BleHost2Text, Is.EqualTo("BleHost2Text"));
+        }
+
+        [Test]
+        public void TestBleHost3Text()
+        {
+            // Act
+            homeDevice.BleHost3Text = "BleHost3Text";
+            // Assert
+            Assert.That(homeDevice.BleHost3Text, Is.EqualTo("BleHost3Text"));
+        }
+
+        [Test]
+        public void TestAudioBleText()
+        {
+            // Act
+            homeDevice.AudioBleText = "AudioBleText";
+            // Assert
+            Assert.That(homeDevice.AudioBleText, Is.EqualTo("AudioBleText"));
+        }
+
+
+
+
+
+
+    }
+}
