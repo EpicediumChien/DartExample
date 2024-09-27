@@ -803,11 +803,14 @@ namespace DDPM.SA.Common.CLI
                         }
                     }
                     else if (value.ToUpper().Equals("FALSE"))
-                    { 
-                        if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
-                            data_user.UserSettings.isTelemetryConsentOn = false;
-                        else
-                            return CLI_Response_TypeNotSupport(commandLineInput, result);
+                    {
+                        if (data_user != null)
+                        {
+                            if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
+                                data_user.UserSettings.isTelemetryConsentOn = false;
+                            else
+                                return CLI_Response_TypeNotSupport(commandLineInput, result);
+                        }
                     }
                     else if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("UNLOCK"))
                     {

@@ -1159,30 +1159,30 @@ namespace DDPM.UI.Module.Kvm
                 proc.StartInfo.Arguments = $"/ShowNKVM {index} {x} {y}";
                 proc.Start();
 
-                try
-                {
-                    proc.WaitForInputIdle();
-                }
-                catch (Exception)
-                {
-                }
+                //try
+                //{
+                //    proc.WaitForInputIdle();
+                //}
+                //catch (Exception)
+                //{
+                //}
 
-                if (NkvmdHandle == IntPtr.Zero)
-                {
-                    // Get the handle of the NKVM main window
-                    NkvmdHandle = proc.MainWindowHandle;
-                }
+                //if (NkvmdHandle == IntPtr.Zero)
+                //{
+                //    // Get the handle of the NKVM main window
+                //    NkvmdHandle = proc.MainWindowHandle;
+                //}
 
-                Window mainWindow = System.Windows.Application.Current.MainWindow;
-                IntPtr mainWindowHandle = new WindowInteropHelper(mainWindow).Handle;
+                //Window mainWindow = System.Windows.Application.Current.MainWindow;
+                //IntPtr mainWindowHandle = new WindowInteropHelper(mainWindow).Handle;
 
-                if (NkvmdHandle != IntPtr.Zero && mainWindowHandle != IntPtr.Zero)
-                {
-                    //SetParent(NkvmdHandle, mainWindowHandle);
-                    DDPMWindowPos windowPos = new DDPMWindowPos(NkvmdHandle, mainWindowHandle);
-                    //SetWindowPos(mainWindowHandle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOREDRAW);
-                    //EnableWindow(mainWindowHandle, false);
-                }
+                //if (NkvmdHandle != IntPtr.Zero && mainWindowHandle != IntPtr.Zero)
+                //{
+                //    //SetParent(NkvmdHandle, mainWindowHandle);
+                //    DDPMWindowPos windowPos = new DDPMWindowPos(NkvmdHandle, mainWindowHandle);
+                //    //SetWindowPos(mainWindowHandle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOREDRAW);
+                //    //EnableWindow(mainWindowHandle, false);
+                //}
 
                 //WindowInteropHelper helper = new WindowInteropHelper(mainWindow);
                 //helper.Owner = NkvmdHandle;

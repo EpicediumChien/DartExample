@@ -190,5 +190,55 @@ namespace DDPM.UI.Common.UserControls
                     LeftArrowClick(sender, e);
             }
         }
+
+        #region Lock/Unlock
+        public bool SetLockModuleGroup(string groupName, bool isLocked)
+        {
+            //Find the group index from groupName
+            int groupIndex = viewModel.FindGroupIndexByGroupName(groupName);
+            if (groupIndex < 0)
+                return false;
+            //Set the IsLocked for the VbatItem
+            VbarItem1 vbarItem = viewModel.VbarItems[groupIndex];
+            vbarItem.IsLocked = isLocked;
+
+            //Get the IsDdcciOn flag from SelectedHomeDevice
+            bool isDdciOn = true;
+            if (viewModel.SelectedHomeDevice != null)
+            {
+                if (viewModel.SelectedHomeDevice.MonitorInfo != null)
+                {
+                    isDdciOn = viewModel.SelectedHomeDevice.MonitorInfo.DDCisON;
+                }
+            }
+
+
+            //If we are not in Landing mode which has selected group
+            if ((!viewModel.IsLandingMode) && isLocked)
+            {
+                //If DDC/CI is on
+                if (isDdciOn)
+                {
+                    //If current locked group is currently selected
+                    //then always change selection to the first group (DisplaySettings)
+                    if (groupIndex == viewModel.GroupSelectedIndex)
+                    {
+                        //If current Selected Monitor DDC/CI is off => switch
+                        viewModel.GroupSelectedIndex = 0;
+                    }
+                }
+                else
+                {
+                    //DDC/CI is off => Only EasyArrange can be selected and should has been selected
+                    //If we just lock EasyArrange, then should return to homepage
+                    if (groupName.Equals(Constants.GroupName_EasyArrange))
+                    {
+                        viewModel.GotoHomepage();
+                    }
+                }
+            }
+            return true;
+        }
+        #endregion
     }
 }
