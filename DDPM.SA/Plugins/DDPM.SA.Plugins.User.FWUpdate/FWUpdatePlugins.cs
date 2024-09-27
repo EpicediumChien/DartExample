@@ -567,30 +567,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     Directory.CreateDirectory(savePath);
                 }
-                //0909 Bruce Add Security
-                string FolderInfo;
-                string PathSymbolicLinInfo;
-                int count = 0;
-                bool folderValid = false;
-                do
-                {
-                    FolderInfo = string.Empty;
-                    PathSymbolicLinInfo = string.Empty;
-                    folderValid = false;
-                    folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(savePath, out PathSymbolicLinInfo);//0924 Bruce Add Security
-                    if (!folderValid)
-                    {
-                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
-                    }
-                    folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo) && folderValid;
-                    if (!folderValid)
-                    {
-                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                        Directory.Delete(savePath, true);
-                        Directory.CreateDirectory(savePath);
-                    }
-                } while (!folderValid && count < 2);
-                if (!folderValid)
+                //0926 Bruce Add Security
+                if (!CheckFold(savePath, out string FolderInfo, out string PathSymbolicLinInfo))
                 {
                     foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
                     {
@@ -598,7 +576,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     _notificationStr = $"Firmware update unsuccessful.";
                     NotificationFWupdate("Error", _notificationStr);
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo);
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                     return Task.FromResult(fwUpdateInfos);
                 }
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
@@ -619,28 +597,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         continue;
                     }
                     string url = fwUpdateInfos[i].ServerPath;
-                    //0909 Bruce Add Security
-                    count = 0;
-                    do
-                    {
-                        FolderInfo = string.Empty;
-                        PathSymbolicLinInfo = string.Empty;
-                        folderValid = false;
-                        folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(savePath, out PathSymbolicLinInfo);//0924 Bruce Add Security
-                        if (!folderValid)
-                        {
-                            _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
-                        }
-                        folderValid = DDPMFileSecurity.IsFolderPathValid(savePath, out FolderInfo) && folderValid;
-                        if (!folderValid)
-                        {
-                            _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                            //Do remove Symbolic Link than delete folder
-                            Directory.Delete(savePath, true);
-                            Directory.CreateDirectory(savePath);
-                        }
-                    } while (!folderValid && count < 2);
-                    if (!folderValid)
+                    //0926 Bruce Add Security
+                    if (!CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _notificationStr = $"Firmware update unsuccessful.";
@@ -688,22 +646,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         Directory.CreateDirectory(extractPath);
                     }
-                    //0909 Bruce Add Security
-                    FolderInfo = string.Empty;
-                    count = 0;
-                    folderValid = false;
-                    do
-                    {
-                        FolderInfo = string.Empty;
-                        folderValid = DDPMFileSecurity.IsFolderPathValid(extractPath, out FolderInfo);
-                        if (!folderValid)
-                        {
-                            _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                            Directory.Delete(extractPath, true);
-                            Directory.CreateDirectory(extractPath);
-                        }
-                    } while (!folderValid && count < 2);
-                    if (!folderValid)
+                    //0926 Bruce Add Security
+                    if (!CheckFold(extractPath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " FolderIsNotSafe:" + FolderInfo);
@@ -711,80 +655,25 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
-
-                    CertificateCheck certificateCheck = new CertificateCheck();
-                    bool isCheckSHA = false;
-                    string FileCAInfo = string.Empty;
-                    if (!fwUpdateInfos[i].IsDisplay)
+                    if (!CheckSHA(_installationFileStoragePath, out string FileCAInfo))
                     {
-                        //Bruce 0913 Add zip file check SHA512, SHA256.
-                        if (!string.IsNullOrEmpty(fwUpdateInfos[i].SHA512))
-                        {
-                            isCheckSHA = certificateCheck.CheckFile_SHA512(_installationFileStoragePath, fwUpdateInfos[i].SHA512, out FileCAInfo);
-                        }
-                        else
-                        {
-                            isCheckSHA = certificateCheck.CheckFile_SHA256(_installationFileStoragePath, fwUpdateInfos[i].SHA256, out FileCAInfo);
-                        }
-                        if (!isCheckSHA)
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FileCheckFail;
-                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " File check fail. Ex:" + FileCAInfo);
-                            _notificationStr = $"Firmware update unsuccessful.";
-                            NotificationFWupdate("Error", _notificationStr);
-                            continue;
-                        }
-                        string exeFilePath;
-                        Unzip unzip = new Unzip(_logs);
-                        if (!unzip.ExecuteUnzip(_installationFileStoragePath, extractPath, out exeFilePath))
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile");
-                            _notificationStr = $"Firmware update unsuccessful.";
-                            NotificationFWupdate("Error", _notificationStr);
-                            continue;
-                        }
-                        //Bruce 0913 Add exe file check Thumbprint.
-                        isCheckSHA = false;
-                        FileCAInfo = string.Empty;
-                        isCheckSHA = certificateCheck.CheckFile_Thumbprint(exeFilePath, fwUpdateInfos[i].Thumbprint, out FileCAInfo);
-                        if (isCheckSHA)
-                        {
-                            fwUpdateInfos[i].InstallPaths = exeFilePath;
-                            fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
-                        }
-                        else
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FileCheckFail;
-                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " File check fail. Ex:" + FileCAInfo);
-                            _notificationStr = $"Firmware update unsuccessful.";
-                        }
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FileCheckFail;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " File check fail. Ex:" + FileCAInfo);
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
+                        continue;
                     }
-                    else//Display FWU
+                    string exeFilePath;
+                    if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                     {
-                        string exeFilePath = _installationFileStoragePath;
-                        isCheckSHA = false;
-                        FileCAInfo = string.Empty;
-                        if (!string.IsNullOrEmpty(fwUpdateInfos[i].SHA512))
-                        {
-                            isCheckSHA = certificateCheck.CheckFile_SHA512(_installationFileStoragePath, fwUpdateInfos[i].SHA512, out FileCAInfo);
-                        }
-                        else
-                        {
-                            isCheckSHA = certificateCheck.CheckFile_SHA256(_installationFileStoragePath, fwUpdateInfos[i].SHA256, out FileCAInfo);
-                        }
-                        if (isCheckSHA)
-                        {
-                            fwUpdateInfos[i].InstallPaths = exeFilePath;
-                            fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
-                        }
-                        else
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FileCheckFail;
-                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " File check fail. Ex:" + FileCAInfo);
-                            _notificationStr = $"Firmware update unsuccessful.";
-                        }
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Unzip Faile");
+                        _notificationStr = $"Firmware update unsuccessful.";
+                        NotificationFWupdate("Error", _notificationStr);
+                        continue;
                     }
+                    fwUpdateInfos[i].InstallPaths = exeFilePath;
+                    fwUpdateInfos[i].FWUErrorCode = Install(fwUpdateInfos[i]);
                     if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
                     {
                         NotificationFWupdate("FW info", _notificationStr);
@@ -1161,17 +1050,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    bool isCheckSHA = false;
                     string FileCAInfo = string.Empty;
-                    if (!string.IsNullOrEmpty(fwUpdateInfo.SHA512))
-                    {
-                        isCheckSHA = certificateCheck.CheckFile_SHA512(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA512, out FileCAInfo);
-                    }
-                    else
-                    {
-                        isCheckSHA = certificateCheck.CheckFile_SHA256(fwUpdateInfo.InstallPaths, fwUpdateInfo.SHA256, out FileCAInfo);
-                    }
-                    if (!isCheckSHA)
+                    if (!CheckSHA(fwUpdateInfo.InstallPaths, out FileCAInfo))
                     {
                         _notificationStr = $"Firmware update unsuccessful.";
                         _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
@@ -1705,6 +1585,76 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             ProgressUpdate_Notify?.AsyncFireAndForget(this, fWUpdateInfo, System.Threading.CancellationToken.None);
             _logs.DebugMsg_1("sendMessageToEvent" + " " + fWUpdateInfo.ProcessName + " " + fWUpdateInfo.ProcessProgress + " " + DateTime.Now);
+        }
+        private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
+        {
+            folderInfo = "Error";
+            pathSymbolicLinInfo = "Error";
+            int count = 0;
+            bool folderValid = false;
+            do
+            {
+                folderInfo = string.Empty;
+                pathSymbolicLinInfo = string.Empty;
+                folderValid = false;
+                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
+                if (!folderValid)
+                {
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
+                }
+                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                if (!folderValid)
+                {
+                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
+                    Directory.Delete(path, true);
+                    Directory.CreateDirectory(path);
+                }
+            } while (!folderValid && count < 2);
+            return folderValid;
+        }
+        private bool CheckSHA(string filePath, out string fileCAInfo)
+        {
+            CertificateCheck certificateCheck = new CertificateCheck();
+            bool isCheckSHA = false;
+            fileCAInfo = "Error";
+            if (!string.IsNullOrEmpty(_fWUpdateInfo.SHA512))
+            {
+                isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _fWUpdateInfo.SHA512, out fileCAInfo);
+            }
+            else
+            {
+                isCheckSHA = certificateCheck.CheckFile_SHA256(filePath, _fWUpdateInfo.SHA256, out fileCAInfo);
+            }
+            return isCheckSHA;
+        }
+        private bool Unzip(string filePath, string extractPath, out string exeFilePath)
+        {
+            _fWUpdateInfo.FWUErrorCode = FWUErrorCode.Unknow;
+            bool ret = false;
+            Unzip unzip = new Unzip(_logs);
+            exeFilePath = "";
+            if (unzip.CheckFileIsZip(filePath))
+            {
+                if (!unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                {
+                    _logs.DebugMsg_1(_fWUpdateInfo.DeviceName + " Unzip Faile");
+                }
+                if (!string.IsNullOrEmpty(exeFilePath))
+                {
+                    CertificateCheck certificateCheck = new CertificateCheck();
+                    if (!certificateCheck.CheckFile_Thumbprint(exeFilePath, _fWUpdateInfo.Thumbprint, out string FileCAInfo))
+                    {
+                        _logs.DebugMsg_1(_fWUpdateInfo.DeviceName + " File check fail. Ex:" + FileCAInfo);
+                        _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
+                    }
+                }
+            }
+            else
+            {
+                exeFilePath = filePath;
+                ret = true;
+            }
+            return ret;
         }
     }
 }
