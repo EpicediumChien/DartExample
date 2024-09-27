@@ -45,10 +45,31 @@
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
+
+                                    <Image Visibility="{Binding LockMaskVisible}" 
+                                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                            VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0" Width="16" Height="16">
+                                        <Image.ToolTip>
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+
                                 </StackPanel>
-                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_HDR}" ContentTextVisibility="True" Content="{Binding Path=HDRStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_HDR}" ContentTextVisibility="True" Content="{Binding Path=HDRStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                             </Grid>
                         </Border>
+                        <Border Background="#132F5499" Opacity="0.6" Visibility="{Binding LockMaskVisible}"/>
                     </Grid>
                     <Grid Margin="16,0,16,10">
                         <Border Background="#99132F54" CornerRadius="6">
@@ -110,6 +131,26 @@
                                                 </ToolTip>
                                             </Image.ToolTip>
                                         </Image>
+
+                                        <Image Visibility="{Binding LockMaskVisible}" 
+                                                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                                VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0" Width="16" Height="16">
+                                            <Image.ToolTip>
+                                                <ToolTip>
+                                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Border.Resources>
+                                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                        </Border.Resources>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ToolTip>
+                                            </Image.ToolTip>
+                                        </Image>
+
                                     </StackPanel>
                                     <Grid Margin="0,15,0,0">
                                         <Grid.ColumnDefinitions>
@@ -150,6 +191,7 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
+                        <Border Background="#132F5499" Opacity="0.6" Visibility="{Binding LockMaskVisible}"/>
                     </Grid>
                 </StackPanel>
             </Border>
