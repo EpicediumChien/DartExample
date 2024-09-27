@@ -1289,7 +1289,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
         private bool isDownload, isInstalling;
 
-        private void _FWUpdatePlugin_ProgressUpdate(object sender, FWUpdateInfo e)
+        private void _FWUpdatePlugin_ProgressUpdate(object sender, UpdateProgressInfo e)
         {
             if (e.ProcessName.Equals("Installing"))
             {

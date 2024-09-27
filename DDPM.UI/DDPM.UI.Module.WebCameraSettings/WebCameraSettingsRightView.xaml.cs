@@ -1,6 +1,7 @@
 ﻿using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,6 +29,10 @@ namespace DDPM.UI.Module.WebCameraSettings
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
+                    vm.ShowLockMask = data.LockSettings.Lock_Webcam_AIAutoFraming;
+                    vm.isTabStoppable = !data.LockSettings.Lock_Webcam_AIAutoFraming;
+                    vm.LockMaskVisible = vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;
+
                     //if (data.LockSettings.Lock_Webcam_AIAutoFraming)
                     //{
                     //_vm.lockIcon = Visibility.Visible;
@@ -53,7 +58,30 @@ namespace DDPM.UI.Module.WebCameraSettings
         }
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_AIAutoFraming", e);
+            //bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_AIAutoFraming", e);
+            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_AIAutoFraming", e);
+
+            if (isLocked != null)
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {                    
+                    if (_vm != null)
+                    {
+                        _vm.isTabStoppable = !(bool)isLocked;
+                        _vm.ShowLockMask = (bool)isLocked;
+
+                        if (_vm.ShowLockMask)
+                            _vm.TabNavigation = "None";
+                        else
+                            _vm.TabNavigation = "Cycle";
+
+                        _vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] WebCameraSettingsRightView(Lock) : {isLocked}");
+                    }
+                }));
+            }
+
+            /*
             Dispatcher.Invoke(new Action(() =>
             {
                 //if (_vm != null)
@@ -67,6 +95,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                     //_vm.tabStop = !locked;
                 }
             }));
+            */
         }
 
         //  Jim add 20240628

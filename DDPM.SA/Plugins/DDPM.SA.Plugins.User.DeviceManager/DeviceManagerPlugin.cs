@@ -239,7 +239,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public event EventHandler<CommandOutput_DeviceConnection> CMA_notify;
 
         //FW Update by Bruce
-        public event EventHandler<FWUpdateInfo> ProgressUpdate_Notify;
+        public event EventHandler<UpdateProgressInfo> ProgressUpdate_Notify;
 
         public event EventHandler<bool> FWU_UILock_Notify;
 
@@ -743,8 +743,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
                 }
             }
             return index;
@@ -2014,7 +2014,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, string installPath = "")
         {
             _UpdateProgress = null;
-            CallUI().Wait();
+            CallUpdateProgressUI().Wait();
             List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, installPath).Result;
             if (_UpdateProgress != null)
             {
@@ -2155,7 +2155,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        private Task CallUI()
+        private Task CallUpdateProgressUI()
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread1 = new Thread(() =>
@@ -4238,10 +4238,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region FW Update
 
-        private void OnProgressUpdateEvent(FWUpdateInfo fWUpdateInfo)
+        private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
             //ProgressUpdate_Notify?.Invoke(this, fWUpdateInfo);
-            EventHandler<FWUpdateInfo> handler = ProgressUpdate_Notify;
+            EventHandler<UpdateProgressInfo> handler = ProgressUpdate_Notify;
             if (handler != null)
                 handler.Invoke(this, fWUpdateInfo);
         }
@@ -4518,7 +4518,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnPeripheralsUpdateNotify(e);
         }
 
-        private void show_fwProgressUpdateEvent(object sender, FWUpdateInfo e)
+        private void show_fwProgressUpdateEvent(object sender, UpdateProgressInfo e)
         {
             OnProgressUpdateEvent(e);
         }
@@ -4947,8 +4947,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
                     //Check if actived monitor has its color preset section in config file
-                    if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.DeviceInfo.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.DeviceInfo.SerialNumber.Trim())
+                    if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
+                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
                     {
                         if (config.RunType == (int)ColorPresetRunType.Auto)
                         {
@@ -5009,8 +5009,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 foreach (var _InfoMonitors in _AllInfoMonitors)
                 {
                     //Check if actived monitor has its color preset section in config file
-                    if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.DeviceInfo.ModelName.Trim()) >= 0 &&
-                         _InfoMonitors.edid.SerialNumber.Trim() == config.DeviceInfo.SerialNumber.Trim())
+                    if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
+                         _InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
                     {
                         if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
                         {

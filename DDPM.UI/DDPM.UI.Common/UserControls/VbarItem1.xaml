@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
+             xmlns:Common="clr-namespace:DDPM.UI.Common"
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
              mc:Ignorable="d"
              HorizontalAlignment="Right"
@@ -19,6 +20,7 @@
             <!-- Background Color -->
             <Color x:Key="Vbar_BkColor_Default">#99132F54</Color>
             <Color x:Key="Vbar_BkColor_Disabled">#FF596067</Color>
+            <Color x:Key="Vbar_BkColor_LockHover">#FFB6B6B6</Color>
             <!-- The Selected state is LinearGradientBrush see below in Brush section -->
 
             <!-- Border Color
@@ -28,6 +30,7 @@
             <Color x:Key="Vbar_BdColor_Hover">#991B385F</Color>
             -->
             <Color x:Key="Vbar_BdColor_Hover">#FF1B385F</Color>
+            <Color x:Key="Vbar_BdColor_LockHover">#FF1B385F</Color>
 
             <!-- Foreground or Icon/Text Color -->
             <Color x:Key="Vbar_FgColor_Default">White</Color>
@@ -49,6 +52,9 @@
             <!-- Disabled -->
             <SolidColorBrush x:Key="Vbar_BkBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}" />
             <SolidColorBrush x:Key="Vbar_BdBrush_Disabled" Color="{StaticResource Vbar_BkColor_Disabled}" />
+            <!-- LockHover -->
+            <SolidColorBrush x:Key="Vbar_BdBrush_LockHover" Color="{StaticResource Vbar_BdColor_LockHover}" />
+            <SolidColorBrush x:Key="Vbar_BkBrush_LockHover" Color="{StaticResource Vbar_BkColor_LockHover}" />
             <!-- Selected
             BkBrush: Brush_GradientButtonCyan
             BdBrush: Brush_GradientBorderCyan
@@ -56,6 +62,8 @@
             <!-- Foreground -->
             <SolidColorBrush x:Key="Vbar_FgBrush_Default" Color="{StaticResource Vbar_FgColor_Default}" />
             <SolidColorBrush x:Key="Vbar_FgBrush_Disabled" Color="{StaticResource Vbar_FgColor_Disabled}" />
+
+            <Common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -95,6 +103,7 @@
             <VisualStateGroup x:Name="ItemStates">
                 <VisualState x:Name="Default" />
                 <VisualState x:Name="LandingDefault" />
+                <VisualState x:Name="LandingLock" />
 
                 <!-- In Landing mode, when hovering, show the Border color to (Vbar_BdColor_Hover) -->
                 <VisualState x:Name="LandingHover">
@@ -102,6 +111,18 @@
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}" />
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="LandingLockHover">
+                    <Storyboard>
+                        <ColorAnimation Storyboard.TargetName="bdOuter"
+                                        Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_LockHover}" />
+                        <!--
+                        <ColorAnimation Storyboard.TargetName="bdOuter"
+                                        Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BkColor_LockHover}" />
+                        -->
                     </Storyboard>
                 </VisualState>
                 <!-- In non-Landing mode (default mode), when hovering will change rootGrid.Wdith and BdColor
@@ -114,6 +135,16 @@
                         <ColorAnimation Storyboard.TargetName="bdOuter"
                                         Storyboard.TargetProperty="BorderBrush.(SolidColorBrush.Color)"
                                         Duration="0:0:0.3" To="{StaticResource Vbar_BdColor_Hover}" />
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="LockHover">
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="bdOuter"
+                                         Storyboard.TargetProperty="Width"
+                                         Duration="0:0:0.5" To="212" FillBehavior="HoldEnd" />
+                        <ColorAnimation Storyboard.TargetName="bdOuter"
+                                        Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                                        Duration="0:0:0.3" To="{StaticResource Vbar_BkColor_LockHover}" />
                     </Storyboard>
                 </VisualState>
             </VisualStateGroup>
@@ -143,6 +174,24 @@
                         <Trigger Property="IsKeyboardFocused" Value="True">
                             <Setter Property="BorderBrush" Value="{StaticResource FocusDotBrush}" />
                         </Trigger>
+                        <!-- Locked & Landing -->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                                <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
+                        </MultiDataTrigger>
+                        <!-- Locked & NonLanding -->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                                <Condition Binding="{Binding IsLandingMode, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background"  Value="{StaticResource Vbar_BkBrush_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource Vbar_BdBrush_Disabled}" />
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
@@ -179,6 +228,15 @@
                                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         VerticalAlignment="Center" HorizontalAlignment="Left" />
+                
+                <!-- LockIcon -->
+                <Grid Grid.Column="1"
+                      Visibility="{Binding IsLocked, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BoolToVisibilityConverter}}"
+                      VerticalAlignment="Center" HorizontalAlignment="Right" Width="16" Height="16"
+                      Margin="0,0,20,0">
+                    <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
+                                     Fill="white" />
+                </Grid>
             </Grid>
         </Border>
     </Grid>

@@ -28,7 +28,7 @@ ech Clean DDPM.UI\DDPM.Easy.Common
 dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
 if errorlevel 1 goto errorEAComm
 echo Build VCPSDK
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
 if errorlevel 1 goto errorEAComm
 echo *************************************
 echo BUILD DDPM.Easy.Common SUCCESS
@@ -46,7 +46,7 @@ dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTar
 if errorlevel 1 goto errorVCPSDK
 :: pause
 echo Build VCPSDK
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\VCPSDK\VCPSDK.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\VCPSDK\VCPSDK.sln"
 :: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorVCPSDK
 echo *************************************
@@ -66,7 +66,7 @@ dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTar
 if errorlevel 1 goto errorSA
 :: pause
 echo Build SA
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\DDPM.SA.sln"
 :: msbuild .\DDPM.SA\DDPM.SA.sln  /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorSA
 echo *************************************
@@ -86,11 +86,29 @@ dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTar
 if errorlevel 1 goto errorUI
 :: pause
 echo Build UI
-dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform="Any CPU" /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.UI.sln"
 :: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
 if errorlevel 1 goto errorUI
 echo *************************************
 echo BUILD UI SUCCESS
+echo BUILD UI SUCCESS
+echo BUILD UI SUCCESS
+echo BUILD UI SUCCESS
+echo *************************************
+
+
+
+echo Clean Mini installer
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\MiniInstaller\MiniInstaller.sln"
+:: msbuild .\DDPM.UI\DDPM.UI.sln  /t:clean /p:platform=%build_arch% /p:configuration=%ConfigType%
+if errorlevel 1 goto errorUI
+:: pause
+echo Build UI
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\MiniInstaller\MiniInstaller.sln"
+:: msbuild .\DDPM.UI\DDPM.UI.sln /p:platform=%build_arch% /p:configuration=%ConfigType%
+if errorlevel 1 goto errorUI
+echo *************************************
+echo BUILD Mini SUCCESS
 echo *************************************
 
 

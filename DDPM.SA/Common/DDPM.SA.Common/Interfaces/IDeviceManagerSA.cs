@@ -413,7 +413,7 @@ namespace DDPM.SA.Common
 
         #region public for FW Update by Bruce
 
-        event EventHandler<FWUpdateInfo> ProgressUpdate_Notify;
+        event EventHandler<UpdateProgressInfo> ProgressUpdate_Notify;
 
         event EventHandler<bool> FWU_UILock_Notify;
 
