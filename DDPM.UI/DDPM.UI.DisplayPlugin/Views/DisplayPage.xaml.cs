@@ -862,7 +862,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 }
                 if (isEALocked != null)
                 {
-                    basePage.SetLockModuleGroup(Constants.GroupName_EasyArrange, isEALocked == true);
+                    basePage.SetLockModuleGroup(Constants.GroupName_InputSource, isEALocked == true);
                     Trace.WriteLine($"Apply EasyArrange(Lock) : {isEALocked}");
                 }
             }));

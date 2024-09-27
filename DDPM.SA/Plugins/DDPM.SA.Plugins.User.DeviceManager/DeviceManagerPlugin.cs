@@ -3716,7 +3716,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void SettingsReady(object o, EventArgs eventArgs)
         {
             LoadGlobalSettingParam();
+            ReloadHotkeyConfigData();
+            ToNKVM_initHotKeys();
 
+            //hook keyboard
+            if (_HotkeyPlugin != null)
+            {
+                _HotkeyPlugin.Hook();
+                _HotkeyPlugin.KeyUp += Keyboard_KeyUpProc;
+            }
             CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
             CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
         }
@@ -4865,12 +4873,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
-                        LoadGlobalSettingParam();
+                        //LoadGlobalSettingParam();
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a started condition");
-                        LoadGlobalSettingParam();
+                        //LoadGlobalSettingParam(); //here is too early, please refer to function "SettingsReady"
                     }
                 }
             });
@@ -5059,9 +5067,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             SetDelayFWUpdateInfoPackage();
                             CheckUODFWUInfoPackage();
                             //load hotkeysetting
-                            ReloadHotkeyConfigData();
+                            //ReloadHotkeyConfigData();
                             ToNKVM_SupportedMonitorList();
-                            ToNKVM_initHotKeys();
+                            //ToNKVM_initHotKeys();
                         }
 
                         //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
@@ -5186,7 +5194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
                         ToNKVM_SupportedMonitorList();
-                        ToNKVM_initHotKeys();
+                        //ToNKVM_initHotKeys();
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -5195,7 +5203,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _NKVMPlugin.NKVMCLIEvent += NKVMCLIEvent;
                         _NKVMPlugin.NKVMSetHotkey += NKVMSetHotkey;
                         ToNKVM_SupportedMonitorList();
-                        ToNKVM_initHotKeys();
+                        //ToNKVM_initHotKeys();
                     }
                 }
             });
@@ -5226,8 +5234,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentHotkeyPluginCondition)} - Hotkey Plugin is in a started condition");
                         //_HotkeyPluginCondition = pluginCondition;
                         //hook keyboard
-                        _HotkeyPlugin.Hook();
-                        _HotkeyPlugin.KeyUp += Keyboard_KeyUpProc;
+                        //_HotkeyPlugin.Hook();
+                        //_HotkeyPlugin.KeyUp += Keyboard_KeyUpProc;
                     }
                 }
             });
@@ -5313,7 +5321,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings)
         {
             List<HotkeySettings> settings = ReadHotkeySettings().Result;
-            HotkeySettings find = settings.Find(x => x.DeviceInfo.SerialNumber.Equals(hotkeySettings.DeviceInfo.SerialNumber));
+            HotkeySettings find = settings.Find(x => x.SerialNumber.Equals(hotkeySettings.SerialNumber));
             if (find == null)
             {
                 //new
@@ -5336,13 +5344,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             List<HotkeyInfo> hotkeyInfoList = new List<HotkeyInfo>();
             HotkeySettings curHotkey = ReadCurrentHotkey(monitorEdid).Result;
             List<HotkeySettings> allSettings = ReadHotkeySettings().Result;
-            if (curHotkey.DeviceInfo == null)
+            //if (curHotkey.DeviceInfo == null)
+            if (curHotkey.ModelName == null || curHotkey.ServiceTag == null || curHotkey.SerialNumber == null)
             {
                 //new monitor
                 hotkeyInfoList.Add(info);
                 HotkeySettings hotkeySettings = new HotkeySettings();
                 hotkeySettings.HotkeyInfo = hotkeyInfoList;
-                hotkeySettings.DeviceInfo = monitorEdid;
+                hotkeySettings.SerialNumber = monitorEdid.SerialNumber;
+                hotkeySettings.ServiceTag = monitorEdid.ServiceTag;
+                hotkeySettings.ModelName = monitorEdid.ModelName;
                 saveList.Add(hotkeySettings);
             }
             else
@@ -5355,7 +5366,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     if (findHotkeyInfoList != null)
                     {
-                        monitorSnList.Add(hotkeySetting.DeviceInfo.SerialNumber);
+                        monitorSnList.Add(hotkeySetting.SerialNumber);
                     }
                 }
                 int allCount = monitorSnList.Count;
@@ -5366,7 +5377,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     string overWiteMonitorSn = monitorSnList.SingleOrDefault(x => !x.Equals(monitorEdid.SerialNumber));
                     if (overWiteMonitorSn != null)
                     {
-                        HotkeySettings overWitrHotkeysettings = allSettings.SingleOrDefault(x => x.DeviceInfo.SerialNumber.Equals(overWiteMonitorSn));
+                        HotkeySettings overWitrHotkeysettings = allSettings.SingleOrDefault(x => x.SerialNumber.Equals(overWiteMonitorSn));
                         HotkeyInfo overWitehotkeyInfo = overWitrHotkeysettings.HotkeyInfo.SingleOrDefault(x => KeysTostr(x.Hotkey).Equals(KeysTostr(hotkeys)));
                         if (overWitehotkeyInfo != null)
                         {
@@ -5405,7 +5416,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         hotkeyInfoList.Add(info);
                         HotkeySettings hotkeySettings = new HotkeySettings();
                         hotkeySettings.HotkeyInfo = hotkeyInfoList;
-                        hotkeySettings.DeviceInfo = monitorEdid;
+                        //hotkeySettings.DeviceInfo = monitorEdid;
+                        hotkeySettings.SerialNumber = monitorEdid.SerialNumber;
+                        hotkeySettings.ModelName = monitorEdid.ModelName;
+                        hotkeySettings.ServiceTag = monitorEdid.ServiceTag;
                         saveList.Add(hotkeySettings);
                     }
                 }
@@ -5413,7 +5427,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             foreach (HotkeySettings setting in allSettings)
             {
-                if (saveList.Any(x => x.DeviceInfo.SerialNumber.Equals(setting.DeviceInfo.SerialNumber)))
+                if (saveList.Any(x => x.SerialNumber.Equals(setting.SerialNumber)))
                     continue;
                 saveList.Add(setting);
             }
@@ -5498,7 +5512,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     if (findHotkeyInfo != null)
                     {
-                        monitorSnList.Add(hotkeySetting.DeviceInfo.SerialNumber);
+                        monitorSnList.Add(hotkeySetting.SerialNumber);
                     }
                 }
                 int allCount = monitorSnList.Count;
@@ -5547,7 +5561,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Task<bool> ExecHotkeyJob(HotkeySettings settings, HotkeyType job)
         {
-            MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.edid.SerialNumber.ToUpper().Equals(settings.DeviceInfo.SerialNumber.ToUpper()));
+            MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.edid.SerialNumber.ToUpper().Equals(settings.SerialNumber.ToUpper()));
             if (monitorInfo == null)
             {
                 //after PxP etc. operation and immediately trigger hotkey then _AllInfoMonitors could be empty
@@ -6581,7 +6595,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<HotkeySettings> ReadCurrentHotkey(EDID monitorEdid)
         {
             List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result;
-            HotkeySettings hotkeySettings = read.Where(x => x.DeviceInfo.ModelName.Equals(monitorEdid.ModelName) && x.DeviceInfo.SerialNumber.Equals(monitorEdid.SerialNumber)).SingleOrDefault();
+            HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals(monitorEdid.ModelName) && x.SerialNumber.Equals(monitorEdid.SerialNumber)).SingleOrDefault();
 
             if (hotkeySettings != null && hotkeySettings.HotkeyInfo.Count > 0)
             {
