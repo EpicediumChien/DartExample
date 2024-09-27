@@ -651,7 +651,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<List<HotkeySettings>> ReadHotkeySettings()
         {
-            _hotkeySettings?.Clear();
+            //_hotkeySettings?.Clear();
 
             string strFilePath = _hotkeysettings_path;
 
