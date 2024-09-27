@@ -72,7 +72,7 @@ namespace DDPM.Easy.Common
         {
             cellListH.Clear();
             cellListH.Add(new CellObj("4b1", cell_4b1));
-            cellListH.Add(new CellObj("4eb", cell_4b2));
+            cellListH.Add(new CellObj("4b2", cell_4b2));
             cellListH.Add(new CellObj("4b3", cell_4b3));
             cellListH.Add(new CellObj("4b4", cell_4b4));
 

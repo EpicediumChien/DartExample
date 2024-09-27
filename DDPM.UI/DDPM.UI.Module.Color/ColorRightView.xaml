@@ -30,7 +30,7 @@
                         <!--
                         <Expander x:Name="Expander_Manual" Style="{StaticResource GroupExpanderStyle}" Expanded="expanderHasExpanded">
                         -->
-                        <Expander x:Name="Expander_Manual" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}" >
+                        <Expander x:Name="Expander_Manual" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}"  >
                             <Expander.Header>
                                 <!-- Group Header: Manual-->
                                 <Grid Height="60">
@@ -96,7 +96,7 @@
                                             <ComboBox x:Name="cbManualPreset" Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                                     Width="184"
                                                     ItemsSource="{Binding ColorPresets_ItemsCollection}"
-                                                    SelectedIndex="{Binding ColorPresetSelectedIndex}" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}" />
+                                                    SelectedIndex="{Binding ColorPresetSelectedIndex}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                         </Grid>
                                     </Border>
                                     <Border Background="#132F5499" Opacity="0.6"  Visibility="{Binding LockMaskVisible}"/>
@@ -108,7 +108,7 @@
 
                     <!-- RightGroupBorder.Auto -->
                     <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0">
-                        <Expander  x:Name="Expander_Auto" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}" >
+                        <Expander  x:Name="Expander_Auto" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                             <Expander.Header>
                                 <!-- Group Header: Auto-->
                                 <Grid Height="60">
@@ -165,7 +165,7 @@
                                                              ScrollViewer.CanContentScroll="True"
                                                              PreviewDragEnter="lb_AppList_PreviewDragEnter"
                                                              AllowDrop="True"
-                                                             KeyboardNavigation.TabNavigation="{Binding isTabStoppable}"
+                                                             KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}"
                                                              >
                                                         <ListBox.Resources>
                                                             <Style TargetType="Border">
@@ -175,6 +175,21 @@
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <Grid Margin="0,4">
+
+                                                                    <Grid.Style>
+                                                                        <Style TargetType="Grid">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding LockMaskVisible}" Value="Visible">
+                                                                                    <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+                                                                                </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding LockMaskVisible}" Value="Collapsed">
+                                                                                    <Setter Property="KeyboardNavigation.TabNavigation" Value="Local" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Grid.Style>
+
+
                                                                     <Grid.ColumnDefinitions>
                                                                         <ColumnDefinition Width="Auto" />     <!-- App Icon-->
                                                                         <ColumnDefinition Width="*" />      <!-- App Name-->
@@ -196,7 +211,7 @@
                                                                     <ComboBox Grid.Column="2" x:Name="appPreset"
                                                                               Style="{StaticResource DdpmComboBoxStyle}"
                                                                               ItemsSource="{Binding SupportPreset, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding AppPresetIdx, UpdateSourceTrigger=PropertyChanged}" Width="150"
-                                                                              VerticalAlignment="Center" HorizontalAlignment="Stretch"  Background="DimGray" SelectionChanged="appPreset_SelectionChanged" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}"/>
+                                                                              VerticalAlignment="Center" HorizontalAlignment="Stretch"  Background="DimGray" SelectionChanged="appPreset_SelectionChanged" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}"  />
 
                                                                     <!--
                                                                     <UXControls:UXComboBox Grid.Column="2" x:Name="appPreset"
@@ -215,7 +230,7 @@
                                                                             Background="Transparent"
                                                                             Visibility="{Binding IsDeleteAble, UpdateSourceTrigger=PropertyChanged}"
                                                                             BorderBrush="Transparent"
-                                                                            Click="appDeleteBtn_Click" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}" />
+                                                                            Click="appDeleteBtn_Click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                                                 </Grid>
                                                             </DataTemplate>
                                                         </ListBox.ItemTemplate>
@@ -230,7 +245,7 @@
                                                                          ButtonType="Secondary" ButtonSemanticColorType="Neutral"
                                                                          Foreground="White" HorizontalAlignment="Center"
                                                                          CornerRadius="2" Padding="24,8"
-                                                                         Click="btn_AddApp_Click" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}" />
+                                                                         Click="btn_AddApp_Click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
 
                                                     <!--
                                                     <Button x:Name="btn_AddApp" Grid.Row="2" Content="Add Application" VerticalAlignment="Top" Height="30" Width="140" Margin="0,60,0,0"
@@ -297,7 +312,7 @@
 
                     <!-- RightGroupBorder.AdvancedSettings -->
                     <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
-                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}"  >
+                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->
                                 <Grid Height="60">
@@ -398,16 +413,16 @@
                                                     AutomationProperties.Name="ToggleSwitchLeft"
                                                     Click="Color_Management_Switch_Click"
                                                     ContentPlacement="Left"
-                                                    ContentTextVisibility="True" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}" />
+                                                    ContentTextVisibility="True" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                             </Grid>
 
                                             <Grid Grid.Column="1" Grid.Row="2"  Margin="0,0,0,0">
-                                                <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False" Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}" Foreground="WhiteSmoke" FontSize="14" Click="rb_ICCprofile_based_Colorpreset_click" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}" />
+                                                <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False" Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}" Foreground="WhiteSmoke" FontSize="14" Click="rb_ICCprofile_based_Colorpreset_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                             </Grid>
 
                                             <Grid Grid.Column="1" Grid.Row="3"  Margin="0,0,0,0">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" Content="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}}" Foreground="WhiteSmoke" FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" KeyboardNavigation.TabNavigation="{Binding isTabStoppable}" />
+                                                    <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" Content="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}}" Foreground="WhiteSmoke" FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                                     <UXControls:UXLink Margin="-8,0,0,0" Name="ICC_profile_config" Content="{Binding [Color.5], Source={x:Static lang:LangHelper.Instance}}" Click="ICC_profile_config_Click"
                                                                        IconPosition="IconRight" LinkSize="Medium" LinkColorScheme="Primary"
                                                                        HorizontalAlignment="Left" VerticalAlignment="Center" />

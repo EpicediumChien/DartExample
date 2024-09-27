@@ -3,6 +3,7 @@ using DDPM.MonitorBorker;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Common.UpdateProgressPage;
 using DDPM.SA.Plugins.PeripheralsPlugin;
 using DDPM.SA.Plugins.User.DeviceManager;
 using Dell.Client.Framework.Common;
@@ -433,8 +434,8 @@ namespace SA.Plugins.User.DeviceManager.Test
         public void Testget_index_of_json_config_for_cur_monitor()
         {
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
-            temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
-            var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
+            temp.Add(new ColorPresetSettings() { ModelName = "DELLU3224KB", SerialNumber = "808792396" });
+            var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "DELLU3224KB", SerialNumber = "808792396" } };
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = temp;
 
             var result = deviceMangerPlugin.get_index_of_json_config_for_cur_monitor(monitorInfo);
@@ -997,6 +998,8 @@ namespace SA.Plugins.User.DeviceManager.Test
         {
             // Setup
             var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            DeviceHelper deviceHelper = new DeviceHelper() { deviceInfo = new List<DeviceInfo>() { new DeviceInfo() { DeviceName = "Mouse" } } };
+            _PeripheralsPluginMock.Setup(x => x.GetDevices()).Returns(Task.FromResult(deviceHelper));
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
 
             // Execute and Verify
@@ -1606,7 +1609,49 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.IsNotNull(deviceMangerPlugin.UsbSwitch1(new MonitorInfo(), 0), $"UsbSwitch1() returns null");
         }
 
+        [Test]
+        public void TestGetFWUpdateInfo()
+        {
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true, false, false, null, false), $"GetFWUpdateInfo() returns null");
 
+            //_PeripheralsPlugin != null && _FWUpdatePlugin != null
+            // Setup
+            var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
+            privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
+            _PeripheralsPluginMock.Setup(x => x.GetFWUpdateInfo()).Returns(Task.FromResult(new UpdateHelper()));
+            var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.GetFWUpdateInfo(true,false,false,null, false), $"GetFWUpdateInfo() returns null");
+        }
+
+        [Test]
+        public void TestDownloadAndInstall()
+        {
+            // Setup
+            var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
+            _FWUpdatePluginMock.Setup(x => x.DownloadAndInstall(It.IsAny<List<FWUpdateInfo>>(),It.IsAny<string>())).Returns(Task.FromResult(new List<FWUpdateInfo>()));
+
+            // Execute and Verify
+            Assert.IsNotNull(deviceMangerPlugin.DownloadAndInstall(new List<FWUpdateInfo>(), ""), $"DownloadAndInstall() returns null");
+        }
+
+        [Test]
+        public void TestInstall()
+        {
+            Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
+
+            // Setup
+            var _FWUpdatePluginMock = new Mock<IFWUpdateService>();
+            privateObject.SetFieldOrProperty("_FWUpdatePlugin", _FWUpdatePluginMock.Object);
+            _FWUpdatePluginMock.Setup(x => x.Install(It.IsAny<string>())).Returns(Task.FromResult(new FWUErrorCode()));
+            privateObject.SetFieldOrProperty("_UpdateProgress", new UpdateProgress());
+            // Execute and Verify
+
+            Assert.IsNotNull(deviceMangerPlugin.Install(""), $"Install() returns null");
+        }
 
     }
 }

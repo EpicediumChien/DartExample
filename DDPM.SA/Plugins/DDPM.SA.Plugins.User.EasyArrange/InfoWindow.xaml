@@ -23,6 +23,10 @@
 
             <TextBlock Text="IsMoving=" />
             <TextBlock Text="{Binding IsMoving}" />
+            <TextBlock Text=", IsOnlyShift=" />
+            <TextBlock Text="{Binding IsOnlyShift}" />
+            <TextBlock Text=", IsShiftPressed=" />
+            <TextBlock Text="{Binding IsShiftPressed}" />
 
             <!-- -->
             <TextBlock Text=", IsWorkUIEnabled=" />

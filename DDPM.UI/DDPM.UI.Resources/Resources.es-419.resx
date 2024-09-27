@@ -1,0 +1,1602 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>Acerca de</value>
+  </data>
+  <data name="AdaptiveLight" xml:space="preserve">
+    <value>Luz adaptable</value>
+  </data>
+  <data name="Display" xml:space="preserve">
+    <value>Pantalla</value>
+  </data>
+  <data name="DisplaySettings" xml:space="preserve">
+    <value>Ajustes de la pantalla</value>
+  </data>
+  <data name="EasyArrange" xml:space="preserve">
+    <value>EasyArrange</value>
+  </data>
+  <data name="FirmwareVersion" xml:space="preserve">
+    <value>Versión de firmware</value>
+  </data>
+  <data name="Gaming" xml:space="preserve">
+    <value>Gaming</value>
+  </data>
+  <data name="InputSource" xml:space="preserve">
+    <value>Fuente de entrada</value>
+  </data>
+  <data name="KVM" xml:space="preserve">
+    <value>KVM</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="ManufactureMonth" xml:space="preserve">
+    <value>Fabricado</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>APAGADO</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>ACTIVADO</value>
+  </data>
+  <data name="RestoreToDefault" xml:space="preserve">
+    <value>Restaurar al valor predeterminado</value>
+  </data>
+  <data name="ServiceTag" xml:space="preserve">
+    <value>Etiqueta de servicio</value>
+  </data>
+  <data name="Unpair" xml:space="preserve">
+    <value>Desemparejar</value>
+  </data>
+  <data name="VbarText_DisplayOthers" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="QuickSettings" xml:space="preserve">
+    <value>Ajustes rápidos</value>
+  </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>Análisis</value>
+  </data>
+  <data name="Updates" xml:space="preserve">
+    <value>Actualizaciones</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="Updates.0" xml:space="preserve">
+    <value>Actualización disponible</value>
+  </data>
+  <data name="Updates.1" xml:space="preserve">
+    <value>Dell Peripheral Manager se cerrará y se volverá a abrir una vez que se completen las actualizaciones. Una vez que se hayan iniciado las actualizaciones, estas no se podrán cancelar.</value>
+  </data>
+  <data name="Updates.2" xml:space="preserve">
+    <value>Buscar actualizaciones</value>
+  </data>
+  <data name="Updates.3" xml:space="preserve">
+    <value>No hay actualizaciones disponibles en este momento.</value>
+  </data>
+  <data name="Updates.4" xml:space="preserve">
+    <value>Error de red. Vuelva a intentarlo.</value>
+  </data>
+  <data name="Updates.5" xml:space="preserve">
+    <value>Descargar e instalar</value>
+  </data>
+  <data name="Updates.6" xml:space="preserve">
+    <value>En preparación para las actualizaciones. Espere…</value>
+  </data>
+  <data name="Analytics.0" xml:space="preserve">
+    <value>Análisis</value>
+  </data>
+  <data name="Analytics.1" xml:space="preserve">
+    <value>Ayude a Dell a mejorar sus productos y servicios automáticamente mediante el envío de diagnósticos y datos de uso.</value>
+  </data>
+  <data name="Analytics.2" xml:space="preserve">
+    <value>Política de privacidad de Dell</value>
+  </data>
+  <data name="Analytics.3" xml:space="preserve">
+    <value>Ayude a Dell a mejorar sus productos y servicios automáticamente</value>
+  </data>
+  <data name="AddDevice" xml:space="preserve">
+    <value>Agregar dispositivo</value>
+  </data>
+  <data name="AddDevice.Display" xml:space="preserve">
+    <value>Pantalla</value>
+  </data>
+  <data name="AddDevice.Webcam" xml:space="preserve">
+    <value>Cámara web</value>
+  </data>
+  <data name="AddDevice.KnM" xml:space="preserve">
+    <value>Teclado\ny mouse</value>
+  </data>
+  <data name="AddDevice.Pen" xml:space="preserve">
+    <value>Lápiz</value>
+  </data>
+  <data name="AddDevice.Headset" xml:space="preserve">
+    <value>Auriculares</value>
+  </data>
+  <data name="AddDevice.Speaker" xml:space="preserve">
+    <value>Altavoz\ny barra de sonido</value>
+  </data>
+  <data name="AddDevice.Dock" xml:space="preserve">
+    <value>Estación de acoplamiento</value>
+  </data>
+  <data name="AddDevice.Type.Bluetooth" xml:space="preserve">
+    <value>Bluetooth</value>
+  </data>
+  <data name="AddDevice.Type.Wireless" xml:space="preserve">
+    <value>Wireless receiver</value>
+  </data>
+  <data name="AddDevice.Type.Wired" xml:space="preserve">
+    <value>Wired</value>
+  </data>
+  <data name="AddDevice.Type.Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="AddDevice.Msg.CancelBtn" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingCap" xml:space="preserve">
+    <value>Agregando dispositivo, espere…</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingMsg" xml:space="preserve">
+    <value>Emparejamiento</value>
+  </data>
+  <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
+    <value>El emparejamiento puede tomar un tiempo. No desconecte el dispositivo</value>
+  </data>
+  <data name="AddDevice.Display.1" xml:space="preserve">
+    <value>Conecte la pantalla a través del puerto HDMI/USB-C del sistema</value>
+  </data>
+  <data name="AddDevice.Webcam.0" xml:space="preserve">
+    <value>Conecte la cámara web a través del puerto USB del sistema</value>
+  </data>
+  <data name="AddDevice.KnM.0" xml:space="preserve">
+    <value>Conexión Bluetooth</value>
+  </data>
+  <data name="AddDevice.KnM.1" xml:space="preserve">
+    <value>A través de la configuración de Windows, empareje un dispositivo Bluetooth para agregarlo</value>
+  </data>
+  <data name="AddDevice.KnM.2" xml:space="preserve">
+    <value>Deslice el control deslizante del switch de alimentación a la posición de ENCENDIDO</value>
+  </data>
+  <data name="AddDevice.KnM.3" xml:space="preserve">
+    <value>Seleccione un canal de Bluetooth y, a continuación, manténgalo presionado durante 3 segundos para que el dispositivo sea detectable</value>
+  </data>
+  <data name="AddDevice.KnM.4" xml:space="preserve">
+    <value>Permita que el dispositivo se empareje o inicie la configuración de Windows y seleccione el dispositivo correspondiente una vez que se haya detectado</value>
+  </data>
+  <data name="AddDevice.KnM.6" xml:space="preserve">
+    <value>Conecte el receptor inalámbrico USB al sistema</value>
+  </data>
+  <data name="AddDevice.KnM.7" xml:space="preserve">
+    <value>Deslice el switch de alimentación a la posición de APAGADO.</value>
+  </data>
+  <data name="AddDevice.KnM.8" xml:space="preserve">
+    <value>Mantenga presionada cualquier tecla/botón y deslice el switch de alimentación a la posición de ENCENDIDO</value>
+  </data>
+  <data name="AddDevice.KnM.9" xml:space="preserve">
+    <value>Mantenga esta ventana abierta. El emparejamiento comenzará después de unos segundos. Si no es así, repita los pasos 2 y 3 para volver a intentarlo.</value>
+  </data>
+  <data name="AddDevice.KnM.10" xml:space="preserve">
+    <value>Se detectaron varios receptores inalámbricos. Desconecte todos los receptores inalámbricos de Dell del teclado y del mouse. Conecte el que desea emparejar.</value>
+  </data>
+  <data name="AddDevice.KnM.11" xml:space="preserve">
+    <value>No hay ningún receptor inalámbrico USB conectado. Conecte su receptor inalámbrico USB y empareje hasta seis dispositivos compatibles.</value>
+  </data>
+  <data name="AddDevice.KnM.12" xml:space="preserve">
+    <value>No hay ningún receptor inalámbrico USB conectado. Conecte un receptor inalámbrico USB para obtener una mejor compatibilidad con comunicación unificada, menor latencia y una conexión más estable.</value>
+  </data>
+  <data name="AddDevice.KnM.13" xml:space="preserve">
+    <value>Conecte el teclado y el mouse mediante el puerto USB del sistema</value>
+  </data>
+  <data name="AddDevice.Pen.0" xml:space="preserve">
+    <value>Conexión del lápiz</value>
+  </data>
+  <data name="AddDevice.Pen.1" xml:space="preserve">
+    <value>Toque la pantalla con la punta del lápiz</value>
+  </data>
+  <data name="AddDevice.Pen.2" xml:space="preserve">
+    <value>Mantenga presionado el botón superior durante 3 segundos. Espere a que Windows detecte el dispositivo.</value>
+  </data>
+  <data name="AddDevice.Pen.3" xml:space="preserve">
+    <value>Permita que el dispositivo se empareje o inicie la configuración de Windows y seleccione el dispositivo correspondiente una vez que se haya detectado.</value>
+  </data>
+  <data name="AddDevice.Pen.4" xml:space="preserve">
+    <value>Seleccione “Sí” para confirmar el emparejamiento en el cuadro de diálogo y emparejar el lápiz</value>
+  </data>
+  <data name="AddDevice.Headset.0" xml:space="preserve">
+    <value>Para obtener un receptor inalámbrico USB gratuito y conectividad en movimiento</value>
+  </data>
+  <data name="AddDevice.Headset.1" xml:space="preserve">
+    <value>Encienda los auriculares</value>
+  </data>
+  <data name="AddDevice.Headset.2" xml:space="preserve">
+    <value>Mantenga presionado el botón de encendido durante 3 segundos para que el Bluetooth pueda detectar los auriculares</value>
+  </data>
+  <data name="AddDevice.Headset.3" xml:space="preserve">
+    <value>Permita que el dispositivo se empareje o inicie la configuración de Windows y seleccione el dispositivo correspondiente una vez que se haya detectado.</value>
+  </data>
+  <data name="AddDevice.Headset.4" xml:space="preserve">
+    <value>Apague los auriculares. Mantenga presionado el botón de silencio del micrófono y vuelva a encenderlo.</value>
+  </data>
+  <data name="AddDevice.Headset.5" xml:space="preserve">
+    <value>El emparejamiento comenzará automáticamente después de unos segundos</value>
+  </data>
+  <data name="AddDevice.Headset.6" xml:space="preserve">
+    <value>Conecte los auriculares a través del puerto USB del sistema.</value>
+  </data>
+  <data name="AddDevice.Speaker.0" xml:space="preserve">
+    <value>Conecte el parlante o la barra de sonido a través del puerto USB del sistema.</value>
+  </data>
+  <data name="AddDevice.Dock.0" xml:space="preserve">
+    <value>Conecte la estación de acoplamiento a través del puerto USB del sistema</value>
+  </data>
+  <data name="HomePage.0" xml:space="preserve">
+    <value>Espere…</value>
+  </data>
+  <data name="UpdateFirmware" xml:space="preserve">
+    <value>Actualizar firmware</value>
+  </data>
+  <data name="Dock.0" xml:space="preserve">
+    <value>{0} de {1} ranuras disponibles</value>
+  </data>
+  <data name="Dock.1" xml:space="preserve">
+    <value>Llave {0}</value>
+  </data>
+  <data name="Keyboard.2" xml:space="preserve">
+    <value>Personalización de claves</value>
+  </data>
+  <data name="Keyboard.3" xml:space="preserve">
+    <value>Colaboración</value>
+  </data>
+  <data name="Keyboard.4" xml:space="preserve">
+    <value>Iluminación</value>
+  </data>
+  <data name="Mouse.0" xml:space="preserve">
+    <value>Asignar acciones para</value>
+  </data>
+  <data name="Mouse.1" xml:space="preserve">
+    <value>Todas las aplicaciones</value>
+  </data>
+  <data name="Mouse.2" xml:space="preserve">
+    <value>Microsoft Word</value>
+  </data>
+  <data name="Mouse.3" xml:space="preserve">
+    <value>Microsoft Excel</value>
+  </data>
+  <data name="Mouse.4" xml:space="preserve">
+    <value>Microsoft PowerPoint</value>
+  </data>
+  <data name="Mouse.5" xml:space="preserve">
+    <value>Microsoft Outlook</value>
+  </data>
+  <data name="EOL.0" xml:space="preserve">
+    <value>No hay características avanzadas en este dispositivo</value>
+  </data>
+  <data name="Mouse.6" xml:space="preserve">
+    <value>Configuración del mouse</value>
+  </data>
+  <data name="Mouse.7" xml:space="preserve">
+    <value>Botón\nPersonalización</value>
+  </data>
+  <data name="Pen.0" xml:space="preserve">
+    <value>Ajustes del lápiz</value>
+  </data>
+  <data name="Soundbar.0" xml:space="preserve">
+    <value>Ajustes preestablecidos de audio</value>
+  </data>
+  <data name="Soundbar.1" xml:space="preserve">
+    <value>Interacciones</value>
+  </data>
+  <data name="Camera.0" xml:space="preserve">
+    <value>Control de la cámara</value>
+  </data>
+  <data name="Camera.1" xml:space="preserve">
+    <value>Color e imagen</value>
+  </data>
+  <data name="Camera.2" xml:space="preserve">
+    <value>Detección de presencia</value>
+  </data>
+  <data name="Camera.3" xml:space="preserve">
+    <value>Capturar</value>
+  </data>
+  <data name="Camera.4" xml:space="preserve">
+    <value>Micrófono</value>
+  </data>
+  <data name="WiredConnection" xml:space="preserve">
+    <value>Conexión por cable</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Brightness.0" xml:space="preserve">
+    <value>Compruebe los ajustes para asegurarse de que no se superpongan las horas de inicio preestablecidas y las longitudes de transición</value>
+  </data>
+  <data name="Brightness.1" xml:space="preserve">
+    <value>El brillo/contraste no está disponible cuando </value>
+  </data>
+  <data name="Brightness.2" xml:space="preserve">
+    <value>HDR inteligente </value>
+  </data>
+  <data name="Brightness.3" xml:space="preserve">
+    <value>está encendido</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Brillo</value>
+  </data>
+  <data name="Contrast" xml:space="preserve">
+    <value>Contraste</value>
+  </data>
+  <data name="Brightness.4" xml:space="preserve">
+    <value>Realice la sincronización entre los monitores</value>
+  </data>
+  <data name="Brightness.5" xml:space="preserve">
+    <value>Aplique los controles de brillo/luminosidad, contraste y ajuste preestablecido de color anteriores&amp;#x000A;en los monitores conectados.</value>
+  </data>
+  <data name="Luminance" xml:space="preserve">
+    <value>Luminosidad</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Automático</value>
+  </data>
+  <data name="Brightness.6" xml:space="preserve">
+    <value>Brillo automático  </value>
+  </data>
+  <data name="Brightness.7" xml:space="preserve">
+    <value>Ajusta el brillo de la pantalla en función de las condiciones de iluminación del espacio circundante</value>
+  </data>
+  <data name="Brightness.8" xml:space="preserve">
+    <value>Nivel de rango de brillo automático  </value>
+  </data>
+  <data name="Brightness.9" xml:space="preserve">
+    <value>Proporciona tres niveles de rangos de brillo en función de las condiciones de iluminación en el espacio circundante (alto/medio/bajo)</value>
+  </data>
+  <data name="Brightness.10" xml:space="preserve">
+    <value>Temperatura del color automática  </value>
+  </data>
+  <data name="Brightness.11" xml:space="preserve">
+    <value>Ajusta automáticamente la temperatura del color de la pantalla para que coincida con la luz del espacio circundante.</value>
+  </data>
+  <data name="Brightness.12" xml:space="preserve">
+    <value>Monitor principal para sincronización  </value>
+  </data>
+  <data name="Brightness.13" xml:space="preserve">
+    <value>Sincronice el brillo, el contraste, el ajuste preestablecido de color y la temperatura del color en función del monitor principal con otros monitores ALS</value>
+  </data>
+  <data name="Scheduled" xml:space="preserve">
+    <value>Programado</value>
+  </data>
+  <data name="Brightness.14" xml:space="preserve">
+    <value>Nombre del ajuste preestablecido 1</value>
+  </data>
+  <data name="Brightness.15" xml:space="preserve">
+    <value>Hora de inicio</value>
+  </data>
+  <data name="AM" xml:space="preserve">
+    <value>A. M.</value>
+  </data>
+  <data name="Brightness.16" xml:space="preserve">
+    <value>Longitud de transición</value>
+  </data>
+  <data name="Brightness.17" xml:space="preserve">
+    <value>PRUEBA.</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="Brightness.18" xml:space="preserve">
+    <value>Nombre del ajuste preestablecido 2</value>
+  </data>
+  <data name="PM" xml:space="preserve">
+    <value>P. M.</value>
+  </data>
+  <data name="Hotkeys" xml:space="preserve">
+    <value>Teclas de acceso rápido</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Restablecer</value>
+  </data>
+  <data name="Hotkey.0" xml:space="preserve">
+    <value>Brillo -</value>
+  </data>
+  <data name="Hotkey.1" xml:space="preserve">
+    <value>Brillo +</value>
+  </data>
+  <data name="Hotkey.2" xml:space="preserve">
+    <value>Contraste -</value>
+  </data>
+  <data name="Hotkey.3" xml:space="preserve">
+    <value>Contraste +</value>
+  </data>
+  <data name="Hotkey.4" xml:space="preserve">
+    <value>Luminosidad -</value>
+  </data>
+  <data name="Hotkey.5" xml:space="preserve">
+    <value>Luminosidad +</value>
+  </data>
+  <data name="Hotkey.6" xml:space="preserve">
+    <value>Por ejemplo: “Alt + P”, “Mayús + F”, “Ctrl + Mayús + F”.\nTenga en cuenta que, para varios monitores, el cursor del mouse debe estar en la pantalla del monitor de destino para activar la función de tecla de acceso rápido.</value>
+  </data>
+  <data name="ButtonSettings.0" xml:space="preserve">
+    <value>Clic de la rueda de desplazamiento</value>
+  </data>
+  <data name="ButtonSettings.1" xml:space="preserve">
+    <value>Desplazar inclinación hacia la izquierda</value>
+  </data>
+  <data name="ButtonSettings.2" xml:space="preserve">
+    <value>Desplazar inclinación hacia la derecha</value>
+  </data>
+  <data name="ButtonSettings.3" xml:space="preserve">
+    <value>Botón lateral para avanzar</value>
+  </data>
+  <data name="ButtonSettings.4" xml:space="preserve">
+    <value>Botón lateral para retroceder</value>
+  </data>
+  <data name="ButtonSettings.5" xml:space="preserve">
+    <value>Para personalizar la característica, haga clic en una de las secciones indicadas en la imagen de la izquierda</value>
+  </data>
+  <data name="ButtonSettings.6" xml:space="preserve">
+    <value>Restaurar todas las aplicaciones</value>
+  </data>
+  <data name="ButtonSettings.7" xml:space="preserve">
+    <value>Acciones sugeridas</value>
+  </data>
+  <data name="ButtonSettings.8" xml:space="preserve">
+    <value>Acciones de productividad</value>
+  </data>
+  <data name="ButtonSettings.9" xml:space="preserve">
+    <value>Acciones de Windows</value>
+  </data>
+  <data name="ButtonSettings.10" xml:space="preserve">
+    <value>Acciones multimedia</value>
+  </data>
+  <data name="ButtonSettings.11" xml:space="preserve">
+    <value>Acciones avanzadas</value>
+  </data>
+  <data name="ButtonSettings.12" xml:space="preserve">
+    <value>Resultados de búsqueda</value>
+  </data>
+  <data name="ButtonSettings.13" xml:space="preserve">
+    <value>Personalización de los botones</value>
+  </data>
+  <data name="Customize" xml:space="preserve">
+    <value>Personalizar</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="Collaboration.0" xml:space="preserve">
+    <value>Íconos de colaboración</value>
+  </data>
+  <data name="Collaboration.1" xml:space="preserve">
+    <value>Proporciona acceso rápido a los controles de conferencia. Activar o desactivar las\nteclas las mostrará u ocultará en el teclado mientras se encuentra en\nuna llamada de Microsoft Teams o Zoom.</value>
+  </data>
+  <data name="Collaboration.3" xml:space="preserve">
+    <value>Habilitar parpadeo cuando hay un nuevo mensaje de chat en una llamada\nde conferencia</value>
+  </data>
+  <data name="Collaboration.4" xml:space="preserve">
+    <value>Toque dos veces los íconos en el teclado en lugar de una vez\npara activarlos</value>
+  </data>
+  <data name="Collaboration.5" xml:space="preserve">
+    <value>Para utilizar el teclado colaborativo con Microsoft Teams, asegúrese de haber iniciado sesión en Microsoft Teams y de tener instalada la versión más reciente, y de que la opción API de aplicaciones de otros fabricantes esté habilitada</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Más información</value>
+  </data>
+  <data name="Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Share" xml:space="preserve">
+    <value>Compartir</value>
+  </data>
+  <data name="Chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="Mic" xml:space="preserve">
+    <value>Micrófono</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="Collaboration" xml:space="preserve">
+    <value>Colaboración</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="Color.0" xml:space="preserve">
+    <value>Agregar aplicación</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="Color.1" xml:space="preserve">
+    <value>Ordenar por nombre</value>
+  </data>
+  <data name="Color.2" xml:space="preserve">
+    <value>Ordenar por fecha</value>
+  </data>
+  <data name="Color.3" xml:space="preserve">
+    <value>Ajuste automático del perfil de color ICC según el ajuste preestablecido de color</value>
+  </data>
+  <data name="WindowsSettings" xml:space="preserve">
+    <value>Configuración de Windows</value>
+  </data>
+  <data name="Color.4" xml:space="preserve">
+    <value>Ajuste automático del ajuste preestablecido de color en función de</value>
+  </data>
+  <data name="Color.5" xml:space="preserve">
+    <value>Perfil de ICC</value>
+  </data>
+  <data name="Color.6" xml:space="preserve">
+    <value>Perfil de color</value>
+  </data>
+  <data name="Color.7" xml:space="preserve">
+    <value>Ajuste preestablecido de color específico de la aplicación</value>
+  </data>
+  <data name="Color.8" xml:space="preserve">
+    <value>Luz nocturna </value>
+  </data>
+  <data name="Color.9" xml:space="preserve">
+    <value>Muestre colores cómodos en su pantalla para ayudarlo a dormir.</value>
+  </data>
+  <data name="Color.11" xml:space="preserve">
+    <value>Administración del color</value>
+  </data>
+  <data name="Color.12" xml:space="preserve">
+    <value>Sincroniza automáticamente el perfil de ICC con el ajuste preestablecido de color del monitor.</value>
+  </data>
+  <data name="Color.13" xml:space="preserve">
+    <value>Se recomienda la aplicación Dell Color Management para una administración avanzada del color.</value>
+  </data>
+  <data name="DisplayHotkeys.0" xml:space="preserve">
+    <value>Fuente de entrada</value>
+  </data>
+  <data name="DisplayHotkeys.1" xml:space="preserve">
+    <value>Cambiar a la siguiente fuente de entrada</value>
+  </data>
+  <data name="DisplayHotkeys.2" xml:space="preserve">
+    <value>Entrada favorita</value>
+  </data>
+  <data name="DisplayHotkeys.3" xml:space="preserve">
+    <value>Alternar entre dos fuentes de entrada</value>
+  </data>
+  <data name="VideoSwap" xml:space="preserve">
+    <value>Intercambio de video</value>
+  </data>
+  <data name="PIPorPBP" xml:space="preserve">
+    <value>PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.4" xml:space="preserve">
+    <value>Intercambio de dos entradas de ventanas PIP/PBP</value>
+  </data>
+  <data name="DisplayHotkeys.5" xml:space="preserve">
+    <value>Cambiar posición de PIP</value>
+  </data>
+  <data name="DisplayOthers.0" xml:space="preserve">
+    <value>Reducir el brillo</value>
+  </data>
+  <data name="DisplayOthers.1" xml:space="preserve">
+    <value>Poner la pantalla en reposo</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Importar</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="DisplayOthers.2" xml:space="preserve">
+    <value>Aplicar automáticamente la configuración cuando se detecta el mismo modelo</value>
+  </data>
+  <data name="PowerNap" xml:space="preserve">
+    <value>PowerNap</value>
+  </data>
+  <data name="DisplayOthers.3" xml:space="preserve">
+    <value>PowerNap lo ayuda a ahorrar energía cuando se activa el protector de pantalla</value>
+  </data>
+  <data name="DisplayOthers.4" xml:space="preserve">
+    <value>Cuando se active el protector de pantalla (elija uno):</value>
+  </data>
+  <data name="DisplayOthers.5" xml:space="preserve">
+    <value>Configurar los ajustes del protector de pantalla </value>
+  </data>
+  <data name="DisplayOthers.6" xml:space="preserve">
+    <value>Configuración de la aplicación</value>
+  </data>
+  <data name="DisplayOthers.7" xml:space="preserve">
+    <value>Exportar una configuración e importar a otro monitor del mismo modelo</value>
+  </data>
+  <data name="DisplayProperties.0" xml:space="preserve">
+    <value>Alta velocidad de datos</value>
+  </data>
+  <data name="DisplayProperties.1" xml:space="preserve">
+    <value>Alta resolución</value>
+  </data>
+  <data name="DisplayProperties.2" xml:space="preserve">
+    <value>Resolución y velocidad de actualización</value>
+  </data>
+  <data name="Orientation" xml:space="preserve">
+    <value>Orientación</value>
+  </data>
+  <data name="SmartHDR" xml:space="preserve">
+    <value>HDR inteligente</value>
+  </data>
+  <data name="DisplayProperties.3" xml:space="preserve">
+    <value>Cambiar el tamaño del texto, de las aplicaciones y otros elementos</value>
+  </data>
+  <data name="AdvancedSettings" xml:space="preserve">
+    <value>Configuración avanzada</value>
+  </data>
+  <data name="DisplayProperties.4" xml:space="preserve">
+    <value>Priorización de USB-C </value>
+  </data>
+  <data name="DisplayProperties.5" xml:space="preserve">
+    <value>Prioridad en las velocidades de datos y red por sobre el rendimiento de la pantalla.</value>
+  </data>
+  <data name="DisplayProperties.6" xml:space="preserve">
+    <value>Prioridad en el rendimiento de la pantalla por sobre la velocidad de datos y red.</value>
+  </data>
+  <data name="Windows" xml:space="preserve">
+    <value>Windows</value>
+  </data>
+  <data name="Custom" xml:space="preserve">
+    <value>Personalizado</value>
+  </data>
+  <data name="EzArrange.1" xml:space="preserve">
+    <value>Windows o más</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Reciente</value>
+  </data>
+  <data name="AudioSettings" xml:space="preserve">
+    <value>Configuración del audio</value>
+  </data>
+  <data name="HeadsetAudioSettings.0" xml:space="preserve">
+    <value>Controlar el ruido que escucho</value>
+  </data>
+  <data name="HeadsetAudioSettings.1" xml:space="preserve">
+    <value>Cancelación de ruido activa</value>
+  </data>
+  <data name="HeadsetAudioSettings.2" xml:space="preserve">
+    <value>Transparencia</value>
+  </data>
+  <data name="HeadsetAudioSettings.3" xml:space="preserve">
+    <value>Apagado</value>
+  </data>
+  <data name="HeadsetAudioSettings.4" xml:space="preserve">
+    <value>Nivel de transparencia</value>
+  </data>
+  <data name="HeadsetAudioSettings.5" xml:space="preserve">
+    <value>Configurar mis modos de audio</value>
+  </data>
+  <data name="Multimedia" xml:space="preserve">
+    <value>Multimedia</value>
+  </data>
+  <data name="HeadsetAudioSettings.6" xml:space="preserve">
+    <value>Ajustes preestablecidos de salida de audio</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Predeterminado</value>
+  </data>
+  <data name="HeadsetAudioSettings.7" xml:space="preserve">
+    <value>Refuerzo de graves</value>
+  </data>
+  <data name="HeadsetAudioSettings.8" xml:space="preserve">
+    <value>Refuerzo de voz</value>
+  </data>
+  <data name="HeadsetAudioSettings.9" xml:space="preserve">
+    <value>Refuerzo de agudos</value>
+  </data>
+  <data name="HeadsetAudioSettings.10" xml:space="preserve">
+    <value>Ecualizador de audio</value>
+  </data>
+  <data name="HeadsetAudioSettings.11" xml:space="preserve">
+    <value>Ajustar los rangos de audio del sonido que escucha</value>
+  </data>
+  <data name="HeadsetAudioSettings.12" xml:space="preserve">
+    <value>db</value>
+  </data>
+  <data name="HeadsetAudioSettings.13" xml:space="preserve">
+    <value>Graves</value>
+  </data>
+  <data name="HeadsetAudioSettings.14" xml:space="preserve">
+    <value>Rango medio</value>
+  </data>
+  <data name="HeadsetAudioSettings.15" xml:space="preserve">
+    <value>Agudos</value>
+  </data>
+  <data name="HeadsetAudioSettings.16" xml:space="preserve">
+    <value>Cancelación del ruido del micrófono</value>
+  </data>
+  <data name="HeadsetAudioSettings.17" xml:space="preserve">
+    <value>Audio saliente</value>
+  </data>
+  <data name="HeadsetAudioSettings.18" xml:space="preserve">
+    <value>Audio entrante</value>
+  </data>
+  <data name="HeadsetAudioSettings.19" xml:space="preserve">
+    <value>Tono lateral</value>
+  </data>
+  <data name="AutomatedActions" xml:space="preserve">
+    <value>Acciones automatizadas</value>
+  </data>
+  <data name="HeadsetAutomatedActions.0" xml:space="preserve">
+    <value>Detección de desgaste</value>
+  </data>
+  <data name="HeadsetAutomatedActions.1" xml:space="preserve">
+    <value>Sensibilidad</value>
+  </data>
+  <data name="HeadsetAutomatedActions.2" xml:space="preserve">
+    <value>Bajo</value>
+  </data>
+  <data name="HeadsetAutomatedActions.3" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="HeadsetAutomatedActions.4" xml:space="preserve">
+    <value>Cuando el usuario se quita los auriculares:</value>
+  </data>
+  <data name="HeadsetAutomatedActions.5" xml:space="preserve">
+    <value>Pausar música</value>
+  </data>
+  <data name="HeadsetAutomatedActions.6" xml:space="preserve">
+    <value>Silenciar micrófono</value>
+  </data>
+  <data name="HeadsetAutomatedActions.7" xml:space="preserve">
+    <value>Pausa rápida</value>
+  </data>
+  <data name="HeadsetAutomatedActions.8" xml:space="preserve">
+    <value>Responder llamadas</value>
+  </data>
+  <data name="DeviceSettings" xml:space="preserve">
+    <value>Ajuste del dispositivo</value>
+  </data>
+  <data name="HeadsetDeviceSettings.0" xml:space="preserve">
+    <value>Luz de actividad</value>
+  </data>
+  <data name="HeadsetDeviceSettings.1" xml:space="preserve">
+    <value>Orientación de voz</value>
+  </data>
+  <data name="HeadsetDeviceSettings.2" xml:space="preserve">
+    <value>Esencial</value>
+  </data>
+  <data name="HeadsetDeviceSettings.3" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="HeadsetDeviceSettings.4" xml:space="preserve">
+    <value>Descargar Dell Audio</value>
+  </data>
+  <data name="HeadsetDeviceSettings.5" xml:space="preserve">
+    <value>Descargue Dell Audio ahora para optimizar y personalizar la configuración de sus auriculares desde la comodidad de su dispositivo iPhone o Android.</value>
+  </data>
+  <data name="HeadsetDeviceSettings.6" xml:space="preserve">
+    <value>Más información</value>
+  </data>
+  <data name="Illumination.0" xml:space="preserve">
+    <value>Control de iluminación</value>
+  </data>
+  <data name="Illumination.1" xml:space="preserve">
+    <value>Iluminación</value>
+  </data>
+  <data name="InputSource.0" xml:space="preserve">
+    <value>Fuente de entrada actual</value>
+  </data>
+  <data name="InputSource.1" xml:space="preserve">
+    <value>Cambiar el nombre de la fuente de entrada y asignar conectividad USB</value>
+  </data>
+  <data name="InputSource.2" xml:space="preserve">
+    <value>Entrada</value>
+  </data>
+  <data name="InputSource.3" xml:space="preserve">
+    <value>Nombre de entrada</value>
+  </data>
+  <data name="InputSource.4" xml:space="preserve">
+    <value>USB ascendente</value>
+  </data>
+  <data name="KeyCustomization.0" xml:space="preserve">
+    <value>Para personalizar una clave, haga clic en una de las teclas indicadas en la imagen de la izquierda</value>
+  </data>
+  <data name="KeyCustomization.1" xml:space="preserve">
+    <value>Restaurar todas las acciones a los valores predeterminados</value>
+  </data>
+  <data name="KeyCustomization.2" xml:space="preserve">
+    <value>Personalización de claves</value>
+  </data>
+  <data name="Kvm.0" xml:space="preserve">
+    <value>PC</value>
+  </data>
+  <data name="Kvm.1" xml:space="preserve">
+    <value>Siguiente</value>
+  </data>
+  <data name="Kvm.2" xml:space="preserve">
+    <value>CONFIGURACIÓN DE USB PARA KVM</value>
+  </data>
+  <data name="Kvm.3" xml:space="preserve">
+    <value>Conectar mouse\n y teclado</value>
+  </data>
+  <data name="Kvm.4" xml:space="preserve">
+    <value>En el caso del mouse y el teclado, conéctelos a la parte posterior del monitor (USB-A).\n Nota: También puede conectar otros periféricos USB como\n la cámara web.</value>
+  </data>
+  <data name="Kvm.5" xml:space="preserve">
+    <value>USB-A</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
+  <data name="Kvm.6" xml:space="preserve">
+    <value>Conectándose a\n sus dispositivos</value>
+  </data>
+  <data name="Kvm.7" xml:space="preserve">
+    <value>Conecte un cable de video y un cable USB entre cada PC\n y monitor. Puede conectar hasta cuatro PC (computadoras, consolas\n de juegos, etc.). \r\n\r\nSeleccione el tipo de cable y asigne un nombre a cada fuente.</value>
+  </data>
+  <data name="Kvm.8" xml:space="preserve">
+    <value>Alternar entre PC</value>
+  </data>
+  <data name="Kvm.9" xml:space="preserve">
+    <value>Alternar teclado y mouse</value>
+  </data>
+  <data name="Kvm.10" xml:space="preserve">
+    <value>Cambiar posición de PIP</value>
+  </data>
+  <data name="Kvm.11" xml:space="preserve">
+    <value>Switch automático del puerto USB ascendente en el modo PBP lado a lado</value>
+  </data>
+  <data name="Kvm.12" xml:space="preserve">
+    <value>Teclas de acceso rápido de fuente de entrada</value>
+  </data>
+  <data name="Kvm.13" xml:space="preserve">
+    <value>Editar fuente de entrada</value>
+  </data>
+  <data name="Kvm.14" xml:space="preserve">
+    <value>Editar PIP/PBP</value>
+  </data>
+  <data name="Kvm.15" xml:space="preserve">
+    <value>Alternar entre posiciones</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Finalizar</value>
+  </data>
+  <data name="Kvm.16" xml:space="preserve">
+    <value>CONFIGURACIÓN DE PIP/PBP</value>
+  </data>
+  <data name="Kvm.17" xml:space="preserve">
+    <value>Configurar PIP/PBP\npara el monitor</value>
+  </data>
+  <data name="Kvm.18" xml:space="preserve">
+    <value>El monitor puede mostrar una PC o una fuente a la vez (pantalla completa)\no dividirse entre fuentes (imagen en/por imagen).</value>
+  </data>
+  <data name="Kvm.19" xml:space="preserve">
+    <value>Sin KVM</value>
+  </data>
+  <data name="Kvm.20" xml:space="preserve">
+    <value>USB para KVM</value>
+  </data>
+  <data name="Kvm.21" xml:space="preserve">
+    <value>Configurar USB para KVM</value>
+  </data>
+  <data name="Kvm.22" xml:space="preserve">
+    <value>Iniciar nuevo USB para KVM</value>
+  </data>
+  <data name="Kvm.23" xml:space="preserve">
+    <value>KVM de red</value>
+  </data>
+  <data name="Kvm.24" xml:space="preserve">
+    <value>Seleccionar tipo de configuración de KVM</value>
+  </data>
+  <data name="Kvm.25" xml:space="preserve">
+    <value>Adecuado para la configuración de un solo monitor</value>
+  </data>
+  <data name="Kvm.26" xml:space="preserve">
+    <value>Configuración a través del puerto USB del monitor</value>
+  </data>
+  <data name="Kvm.27" xml:space="preserve">
+    <value>Teclas de acceso rápido (alternar entre PC): ninguna</value>
+  </data>
+  <data name="Kvm.28" xml:space="preserve">
+    <value>Adecuado para la configuración de varios monitores</value>
+  </data>
+  <data name="Kvm.29" xml:space="preserve">
+    <value>Configuración a través de la red</value>
+  </data>
+  <data name="Kvm.30" xml:space="preserve">
+    <value>Fácil uso compartido de archivos entre PC (Mac y Windows) de forma segura</value>
+  </data>
+  <data name="Kvm.31" xml:space="preserve">
+    <value>Abrir KVM de redes</value>
+  </data>
+  <data name="Kvm.32" xml:space="preserve">
+    <value>Abre otra ventana para configurar o editar KVM de redes</value>
+  </data>
+  <data name="MouseSettings.0" xml:space="preserve">
+    <value>Mueva el mouse para completar el cambio al valor de PPP</value>
+  </data>
+  <data name="MouseSettings.1" xml:space="preserve">
+    <value>El aumento de la velocidad de sondeo puede afectar la duración de la batería del mouse.</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>Medio</value>
+  </data>
+  <data name="Slow" xml:space="preserve">
+    <value>Lento</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>Alto</value>
+  </data>
+  <data name="PenButtonSettings.0" xml:space="preserve">
+    <value>Botón superior</value>
+  </data>
+  <data name="PenButtonSettings.1" xml:space="preserve">
+    <value>Botón cilíndrico superior</value>
+  </data>
+  <data name="PenButtonSettings.2" xml:space="preserve">
+    <value>Botón cilíndrico inferior</value>
+  </data>
+  <data name="PenButtonSettings.3" xml:space="preserve">
+    <value>Haga clic una vez</value>
+  </data>
+  <data name="PenButtonSettings.4" xml:space="preserve">
+    <value>Haga doble clic</value>
+  </data>
+  <data name="PenButtonSettings.5" xml:space="preserve">
+    <value>Mantener presionado</value>
+  </data>
+  <data name="PenButtonSettings.6" xml:space="preserve">
+    <value>Pasar el cursor para hacer clic</value>
+  </data>
+  <data name="PenButtonSettings.7" xml:space="preserve">
+    <value>Para personalizar un botón, haga clic en el botón indicado en la imagen de la izquierda</value>
+  </data>
+  <data name="PenButtonSettings.8" xml:space="preserve">
+    <value>Restaurar a las acciones predeterminadas</value>
+  </data>
+  <data name="PenSettings.0" xml:space="preserve">
+    <value>Ajustes del lápiz</value>
+  </data>
+  <data name="PenSettings.1" xml:space="preserve">
+    <value>Sensibilidad de la punta</value>
+  </data>
+  <data name="PenSettings.2" xml:space="preserve">
+    <value>Mover el control deslizante hacia la derecha disminuirá gradualmente\nla sensibilidad a la presión y\ndeberá ejercer más presión con el lápiz</value>
+  </data>
+  <data name="PenSettings.3" xml:space="preserve">
+    <value>Sensibilidad a la inclinación</value>
+  </data>
+  <data name="PenSettings.4" xml:space="preserve">
+    <value>Mover el control deslizante hacia la derecha aumentará\ngradualmente el efecto de inclinación y deberá\naplicar un menor ángulo de inclinación</value>
+  </data>
+  <data name="PenSettings.5" xml:space="preserve">
+    <value>Emparejar con Tile</value>
+  </data>
+  <data name="PenSettings.6" xml:space="preserve">
+    <value>Empareje el lápiz con su dispositivo móvil mediante\nla aplicación Tile</value>
+  </data>
+  <data name="PenSettings.7" xml:space="preserve">
+    <value>Introducción</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>Pantalla completa</value>
+  </data>
+  <data name="PipPbp.0" xml:space="preserve">
+    <value>PIP</value>
+  </data>
+  <data name="PipPbp.1" xml:space="preserve">
+    <value>PBP</value>
+  </data>
+  <data name="PipPbp.2" xml:space="preserve">
+    <value>Entrada 1 (principal)</value>
+  </data>
+  <data name="PipPbp.3" xml:space="preserve">
+    <value>Entrada 2 (secundaria)</value>
+  </data>
+  <data name="PipPbp.4" xml:space="preserve">
+    <value>Entrada 3 (secundaria)</value>
+  </data>
+  <data name="PipPbp.5" xml:space="preserve">
+    <value>Entrada 4 (secundaria)</value>
+  </data>
+  <data name="PipPbp.6" xml:space="preserve">
+    <value>Switch USB</value>
+  </data>
+  <data name="PipPbp.7" xml:space="preserve">
+    <value>Alternar entre posiciones</value>
+  </data>
+  <data name="SpeakerAudioPreset.0" xml:space="preserve">
+    <value>Ajustes preestablecidos de audio</value>
+  </data>
+  <data name="SpeakerAudioPreset.1" xml:space="preserve">
+    <value>Esta configuración se aplica únicamente a los elementos multimedia</value>
+  </data>
+  <data name="SpeakerAudioPreset.2" xml:space="preserve">
+    <value>Palabra hablada</value>
+  </data>
+  <data name="SpeakerAudioPreset.3" xml:space="preserve">
+    <value>Ajuste los rangos de audio según sus preferencias. Esta configuración se aplica únicamente al audio multimedia.</value>
+  </data>
+  <data name="SpeakerAudioSettings.0" xml:space="preserve">
+    <value>Cancelación inteligente de ruido del micrófono</value>
+  </data>
+  <data name="SpeakerAudioSettings.1" xml:space="preserve">
+    <value>Silenciar notificación de sonido</value>
+  </data>
+  <data name="SpeakerAudioSettings.2" xml:space="preserve">
+    <value>Tono de ajuste del volumen</value>
+  </data>
+  <data name="SpeakerAudioSettings.3" xml:space="preserve">
+    <value>Todos los niveles</value>
+  </data>
+  <data name="SpeakerAudioSettings.4" xml:space="preserve">
+    <value>Solo mín. y máx.</value>
+  </data>
+  <data name="SpeakerInteractions.0" xml:space="preserve">
+    <value>Interacciones</value>
+  </data>
+  <data name="SpeakerInteractions.1" xml:space="preserve">
+    <value>Pase el cursor sobre los nombres de las aplicaciones a continuación para ver los botones del altavoz disponibles (indicados en verde)</value>
+  </data>
+  <data name="SpeakerInteractions.2" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="SpeakerInteractions.3" xml:space="preserve">
+    <value>Ampliar</value>
+  </data>
+  <data name="SpeakerInteractions.4" xml:space="preserve">
+    <value>Google Meet</value>
+  </data>
+  <data name="SpeakerInteractions.5" xml:space="preserve">
+    <value>Skype Empresarial</value>
+  </data>
+  <data name="WebCameraCapture.0" xml:space="preserve">
+    <value>Cuenta regresiva (3, 2, 1)</value>
+  </data>
+  <data name="WebCameraCapture.1" xml:space="preserve">
+    <value>Cuadrícula de marco</value>
+  </data>
+  <data name="WebCameraCapture.2" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="WebCameraCapture.3" xml:space="preserve">
+    <value>Cambiar</value>
+  </data>
+  <data name="WebCameraCapture.4" xml:space="preserve">
+    <value>Resolución</value>
+  </data>
+  <data name="WebCameraCapture.5" xml:space="preserve">
+    <value>UHD 4K</value>
+  </data>
+  <data name="WebCameraCapture.6" xml:space="preserve">
+    <value>Full HD</value>
+  </data>
+  <data name="WebCameraCapture.7" xml:space="preserve">
+    <value>HD</value>
+  </data>
+  <data name="WebCameraCapture.8" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="WebCameraCapture.9" xml:space="preserve">
+    <value>Controla la claridad y el estilo del video mediante el ajuste del número de imágenes capturadas por segundo</value>
+  </data>
+  <data name="WebCameraCapture.10" xml:space="preserve">
+    <value>Ubicación de los archivos multimedia</value>
+  </data>
+  <data name="WebCameraColorImage.0" xml:space="preserve">
+    <value>HDR</value>
+  </data>
+  <data name="WebCameraColorImage.1" xml:space="preserve">
+    <value>El alto rango dinámico corrige los detalles automáticamente para brindar una calidad de imagen óptima en diversas condiciones de iluminación</value>
+  </data>
+  <data name="WebCameraColorImage.2" xml:space="preserve">
+    <value>Equilibrio automático de blancos</value>
+  </data>
+  <data name="WebCameraColorImage.3" xml:space="preserve">
+    <value>Brillo</value>
+  </data>
+  <data name="WebCameraColorImage.4" xml:space="preserve">
+    <value>Nitidez</value>
+  </data>
+  <data name="WebCameraColorImage.5" xml:space="preserve">
+    <value>Contraste</value>
+  </data>
+  <data name="WebCameraColorImage.6" xml:space="preserve">
+    <value>Saturación</value>
+  </data>
+  <data name="WebCameraColorImage.7" xml:space="preserve">
+    <value>Antiparpadeo</value>
+  </data>
+  <data name="WebCameraColorImage.8" xml:space="preserve">
+    <value>Reducción del parpadeo cuando se graba con luz artificial</value>
+  </data>
+  <data name="WebCameraColorImage.9" xml:space="preserve">
+    <value>Hz</value>
+  </data>
+  <data name="WebCameraMicrophone.0" xml:space="preserve">
+    <value>Micrófono</value>
+  </data>
+  <data name="WebCameraMicrophone.1" xml:space="preserve">
+    <value>Micrófono de la cámara</value>
+  </data>
+  <data name="WebCameraMicrophone.2" xml:space="preserve">
+    <value>Nota: Este micrófono no tiene certificación para Microsoft Teams. A fin de obtener una experiencia de llamada óptima con Microsoft Teams, utilice los dispositivos de audio con certificación para Microsoft Teams de Dell.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.0" xml:space="preserve">
+    <value>Detección de presencia</value>
+  </data>
+  <data name="WebCameraPresenceDetection.1" xml:space="preserve">
+    <value>Sensor de proximidad</value>
+  </data>
+  <data name="WebCameraPresenceDetection.2" xml:space="preserve">
+    <value>Detecta su presencia cuando está en el campo de visión</value>
+  </data>
+  <data name="WebCameraPresenceDetection.3" xml:space="preserve">
+    <value>Activación por acercamiento</value>
+  </data>
+  <data name="WebCameraPresenceDetection.4" xml:space="preserve">
+    <value>Activa la PC a medida que se acerca a ella</value>
+  </data>
+  <data name="WebCameraPresenceDetection.5" xml:space="preserve">
+    <value>Bloqueo por alejamiento</value>
+  </data>
+  <data name="WebCameraPresenceDetection.6" xml:space="preserve">
+    <value>Bloquea la PC y apaga la pantalla cuando se aleja de ella</value>
+  </data>
+  <data name="WebCameraPresenceDetection.7" xml:space="preserve">
+    <value>Retraso</value>
+  </data>
+  <data name="WebCameraPresenceDetection.8" xml:space="preserve">
+    <value>Postergar</value>
+  </data>
+  <data name="WebCameraPresenceDetection.9" xml:space="preserve">
+    <value>Duración de la postergación</value>
+  </data>
+  <data name="WebCameraPresenceDetection.10" xml:space="preserve">
+    <value>Windows Hello</value>
+  </data>
+  <data name="WebCameraPresenceDetection.11" xml:space="preserve">
+    <value>Inicia sesión con el reconocimiento facial. Este enlace lo dirigirá a la configuración de Windows.</value>
+  </data>
+  <data name="WebCameraSettings.0" xml:space="preserve">
+    <value>Control de la cámara</value>
+  </data>
+  <data name="WebCameraSettings.1" xml:space="preserve">
+    <value>Encuadre automático con IA</value>
+  </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>Utiliza análisis inteligente de escenas y seguimiento facial para acercar y desplazar la vista mientras se mueve</value>
+  </data>
+  <data name="WebCameraSettings.3" xml:space="preserve">
+    <value>Transición de la cámara</value>
+  </data>
+  <data name="WebCameraSettings.4" xml:space="preserve">
+    <value>Transiciones fluidas mediante el desplazamiento y acercamiento cuando la cámara reajusta su posición en el marco</value>
+  </data>
+  <data name="WebCameraSettings.5" xml:space="preserve">
+    <value>Sensibilidad de seguimiento</value>
+  </data>
+  <data name="WebCameraSettings.6" xml:space="preserve">
+    <value>Ajusta la rapidez con la que la cámara responde a su movimiento y reajusta su posición en el marco</value>
+  </data>
+  <data name="WebCameraSettings.7" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="WebCameraSettings.8" xml:space="preserve">
+    <value>Rápido</value>
+  </data>
+  <data name="WebCameraSettings.9" xml:space="preserve">
+    <value>Tamaño de marco</value>
+  </data>
+  <data name="WebCameraSettings.10" xml:space="preserve">
+    <value>Estrecho</value>
+  </data>
+  <data name="WebCameraSettings.11" xml:space="preserve">
+    <value>Estándar</value>
+  </data>
+  <data name="WebCameraSettings.12" xml:space="preserve">
+    <value>Campo de visión</value>
+  </data>
+  <data name="WebCameraSettings.13" xml:space="preserve">
+    <value>Reduce o amplía el ángulo del campo de visión de la cámara</value>
+  </data>
+  <data name="WebCameraSettings.14" xml:space="preserve">
+    <value>°</value>
+  </data>
+  <data name="WebCameraSettings.15" xml:space="preserve">
+    <value>Ampliar</value>
+  </data>
+  <data name="WebCameraSettings.16" xml:space="preserve">
+    <value>Enfoque automático</value>
+  </data>
+  <data name="WebCameraSettings.17" xml:space="preserve">
+    <value>Ajusta de forma inteligente la lente de la cámara para enfocarse y obtener nitidez</value>
+  </data>
+  <data name="WebCameraSettings.18" xml:space="preserve">
+    <value>Prioridad</value>
+  </data>
+  <data name="WebCameraSettings.19" xml:space="preserve">
+    <value>Prioriza la fluidez o la exposición del video FPS para mantener el nivel ideal de luz</value>
+  </data>
+  <data name="WebCameraSettings.20" xml:space="preserve">
+    <value>Exposición</value>
+  </data>
+  <data name="WebCameraSettings.21" xml:space="preserve">
+    <value>Velocidad de fotogramas</value>
+  </data>
+  <data name="WebCameraSettings.22" xml:space="preserve">
+    <value>La velocidad de fotogramas/exposición no funcionarán cuando el HDR esté activado.\rHaga clic </value>
+  </data>
+  <data name="WebCameraSettings.23" xml:space="preserve">
+    <value>aquí </value>
+  </data>
+  <data name="WebCameraSettings.24" xml:space="preserve">
+    <value>para cambiar la configuración del HDR.</value>
+  </data>
+  <data name="WebCameraSettings.25" xml:space="preserve">
+    <value>Priorizar la cámara web externa</value>
+  </data>
+  <data name="WebCameraSettings.26" xml:space="preserve">
+    <value>Cambia automáticamente entre la cámara web Dell UltraSharp y otras cámaras web (integradas y externas). Windows Hello utilizará la cámara web activa para realizar el reconocimiento facial. Nota: Solo se puede habilitar una cámara a la vez, además de acceder a esta.</value>
+  </data>
+  <data name="Mouse.8" xml:space="preserve">
+    <value>Sensibilidad de desplazamiento táctil</value>
+  </data>
+  <data name="Mouse.9" xml:space="preserve">
+    <value>Ajustar la velocidad de desplazamiento</value>
+  </data>
+  <data name="Mouse.10" xml:space="preserve">
+    <value>Botón principal del mouse</value>
+  </data>
+  <data name="Mouse.11" xml:space="preserve">
+    <value>Configuración del DPI</value>
+  </data>
+  <data name="Mouse.12" xml:space="preserve">
+    <value>Velocidad de sondeo</value>
+  </data>
+  <data name="Mouse.13" xml:space="preserve">
+    <value>Número de veces por segundo que se le informa la posición del mouse al sistema</value>
+  </data>
+  <data name="Wired" xml:space="preserve">
+    <value>Cableado</value>
+  </data>
+  <data name="Tooltip.0" xml:space="preserve">
+    <value>Conectó varios dispositivos del mismo modelo. Las acciones se duplicarán en cada instancia del dispositivo</value>
+  </data>
+  <data name="Tooltip.1" xml:space="preserve">
+    <value>No se encontró ningún dispositivo. Asegúrese de que su dispositivo inalámbrico esté cargado y encendido.</value>
+  </data>
+  <data name="Tooltip.2" xml:space="preserve">
+    <value>Este dispositivo ya está emparejado. Primero, desempareje el dispositivo si desea volver a emparejarlo.</value>
+  </data>
+  <data name="Tooltip.3" xml:space="preserve">
+    <value>Este dispositivo que está emparejando no soporta el receptor inalámbrico USB conectado. Utilice el receptor que viene con el dispositivo.</value>
+  </data>
+  <data name="Tooltip.4" xml:space="preserve">
+    <value>Las ranuras disponibles en este receptor inalámbrico USB están llenas. Para utilizarlas, haga clic en el botón \“Desemparejar\” en la página de configuración del dispositivo a fin de desemparejar un dispositivo del receptor.</value>
+  </data>
+  <data name="Mouse.14" xml:space="preserve">
+    <value>Hacer clic para asignar una acción</value>
+  </data>
+  <data name="Mouse.15" xml:space="preserve">
+    <value>Seleccione una acción de\nla lista en el lado derecho</value>
+  </data>
+  <data name="USBWirelessReceiver" xml:space="preserve">
+    <value>Receptor inalámbrico USB</value>
+  </data>
+  <data name="ReceiverFirmwareVersion" xml:space="preserve">
+    <value>Versión de firmware del receptor</value>
+  </data>
+  <data name="ReadyToBePaired" xml:space="preserve">
+    <value>Listo para emparejar</value>
+  </data>
+  <data name="BrightnessOrContrast" xml:space="preserve">
+    <value>Brillo/contraste</value>
+  </data>
+  <data name="DisplayProperties" xml:space="preserve">
+    <value>Propiedades de la pantalla</value>
+  </data>
+  <data name="Layout" xml:space="preserve">
+    <value>Diseño</value>
+  </data>
+  <data name="EasyMemory" xml:space="preserve">
+    <value>Memoria fácil</value>
+  </data>
+  <data name="VisionEngine" xml:space="preserve">
+    <value>Motor de visión</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>Ninguno</value>
+  </data>
+  <data name="Copilot" xml:space="preserve">
+    <value>Copilot</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>Dispositivos</value>
+  </data>
+  <data name="Lock" xml:space="preserve">
+    <value>Bloqueo</value>
+  </data>
+  <data name="NotificationCenter" xml:space="preserve">
+    <value>Centro de notificaciones</value>
+  </data>
+  <data name="ScreenSnip" xml:space="preserve">
+    <value>Recorte de pantalla</value>
+  </data>
+  <data name="ShowHideDesktop" xml:space="preserve">
+    <value>Mostrar/ocultar escritorio</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>Apagado</value>
+  </data>
+  <data name="SignOut" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="Sleep" xml:space="preserve">
+    <value>Suspensión</value>
+  </data>
+  <data name="SwitchApplications" xml:space="preserve">
+    <value>Aplicaciones de switch</value>
+  </data>
+  <data name="TaskView" xml:space="preserve">
+    <value>Vista de tareas</value>
+  </data>
+  <data name="BarrelButton" xml:space="preserve">
+    <value>Botón cilíndrico</value>
+  </data>
+  <data name="DefineBySystem" xml:space="preserve">
+    <value>Definir por sistema</value>
+  </data>
+  <data name="EMail" xml:space="preserve">
+    <value>Correo electrónico</value>
+  </data>
+  <data name="OneNote" xml:space="preserve">
+    <value>OneNote</value>
+  </data>
+  <data name="PenMenu" xml:space="preserve">
+    <value>Menú del lápiz</value>
+  </data>
+  <data name="QuickNote" xml:space="preserve">
+    <value>Nota rápida</value>
+  </data>
+  <data name="ScreenSnipping" xml:space="preserve">
+    <value>Recortes de pantalla</value>
+  </data>
+  <data name="StickyNotes" xml:space="preserve">
+    <value>Notas adhesivas</value>
+  </data>
+  <data name="Widgets" xml:space="preserve">
+    <value>Widgets</value>
+  </data>
+  <data name="WindowsSearch" xml:space="preserve">
+    <value>Búsqueda de Windows</value>
+  </data>
+  <data name="SwitchApplication" xml:space="preserve">
+    <value>Cambiar aplicación</value>
+  </data>
+  <data name="AssignKeystroke" xml:space="preserve">
+    <value>Asignar pulsaciones de teclas</value>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Atrás</value>
+  </data>
+  <data name="Calculator" xml:space="preserve">
+    <value>Calculadora</value>
+  </data>
+  <data name="CloseWindow" xml:space="preserve">
+    <value>Cerrar ventana</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>Cortar</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Avanzar</value>
+  </data>
+  <data name="MaximizeWindow" xml:space="preserve">
+    <value>Maximizar ventana</value>
+  </data>
+  <data name="MinimizeWindow" xml:space="preserve">
+    <value>Minimizar ventana</value>
+  </data>
+  <data name="MyHome" xml:space="preserve">
+    <value>Mi página principal</value>
+  </data>
+  <data name="OpenFile" xml:space="preserve">
+    <value>Abrir archivo</value>
+  </data>
+  <data name="OpenFolder" xml:space="preserve">
+    <value>Abrir carpeta</value>
+  </data>
+  <data name="OpenNewBrowserTab" xml:space="preserve">
+    <value>Abrir nueva pestaña del navegador</value>
+  </data>
+  <data name="OpenWebPage" xml:space="preserve">
+    <value>Abrir página web</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Pegar</value>
+  </data>
+  <data name="ZoomIn" xml:space="preserve">
+    <value>Acercar</value>
+  </data>
+  <data name="ZoomOut" xml:space="preserve">
+    <value>Alejar</value>
+  </data>
+  <data name="ZoomReset" xml:space="preserve">
+    <value>Restablecimiento de acercamiento</value>
+  </data>
+  <data name="4thClick" xml:space="preserve">
+    <value>Cuarto clic</value>
+  </data>
+  <data name="5thClick" xml:space="preserve">
+    <value>Quinto clic</value>
+  </data>
+  <data name="Erase" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="LeftClick" xml:space="preserve">
+    <value>Hacer clic con el botón izquierdo</value>
+  </data>
+  <data name="MiddleClick" xml:space="preserve">
+    <value>Hacer clic con el botón central</value>
+  </data>
+  <data name="OpenRun" xml:space="preserve">
+    <value>Abrir/Ejecutar</value>
+  </data>
+  <data name="OpenRun2" xml:space="preserve">
+    <value>Abrir Ejecutar</value>
+  </data>
+  <data name="PenPageDown" xml:space="preserve">
+    <value>Avanzar página</value>
+  </data>
+  <data name="PenPageUp" xml:space="preserve">
+    <value>Retroceder página</value>
+  </data>
+  <data name="RadialMenu" xml:space="preserve">
+    <value>Menú circular</value>
+  </data>
+  <data name="Redo" xml:space="preserve">
+    <value>Rehacer</value>
+  </data>
+  <data name="RightClick" xml:space="preserve">
+    <value>Hacer clic con el botón secundario</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Deshacer</value>
+  </data>
+</root>

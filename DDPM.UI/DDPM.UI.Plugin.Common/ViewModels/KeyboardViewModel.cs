@@ -179,6 +179,9 @@ namespace DDPM.UI.Plugin.ViewModels
                             case "BackLightingLevelChanged":
                                 BackLightingLevel = di.BackLightingLevel;
                                 break;
+                            case "CollaborationScreenShareEnable":
+                                IsCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
+                                break;
 
                             default:
                                 break;

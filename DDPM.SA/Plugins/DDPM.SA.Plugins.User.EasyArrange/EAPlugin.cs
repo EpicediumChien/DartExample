@@ -45,7 +45,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
         private IAgent _agent;
-        private const string PluginLogId = "SAEA";
+        private const string PluginLogId = "EAPlugin";
 
         //private Logs _logs;
         private ILog? _log;
@@ -140,7 +140,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 #endif
         }
 
-        #endregion Overriding methods
+#endregion Overriding methods
 
         #region PluginManager related
 
@@ -349,100 +349,101 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             bool res = workWin.SetWorkingSplit(cellCount, splitKey, settings);
             return Task.FromResult(res);
-        }
+         }
 
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
         //Robert_Lin, 2024-0910, unused method, will be removed
-        public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
-        {
-            return Task.FromResult(false); //Remove this statement if you would like it be executed.
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
+        //{
+        //    return Task.FromResult(false); //Remove this statement if you would like it be executed.
 
-            //To avoid reenter Edit mode. If we are in Edit mode already, then return false
-            if (_editWindow != null)
-            {
-                return Task.FromResult(false);
-            }
+        //    //To avoid reenter Edit mode. If we are in Edit mode already, then return false
+        //    if (_editWindow != null)
+        //    {
+        //        return Task.FromResult(false);
+        //    }
 
-            Thread thread = new Thread(() =>
-            {
-                Console.WriteLine("[EAPlugin] RequestEditSplit().");
-                UI_RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
-                System.Windows.Threading.Dispatcher.Run();
-            });
+        //    Thread thread = new Thread(() =>
+        //    {
+        //        Console.WriteLine("[EAPlugin] RequestEditSplit().");
+        //        UI_RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
+        //        System.Windows.Threading.Dispatcher.Run();
+        //    });
 
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
+        //    thread.SetApartmentState(ApartmentState.STA);
+        //    thread.Start();
 
-            return Task.FromResult(true);
-        }
+        //    return Task.FromResult(true);
+        //}
 
         //Robert_Lin, 2024-8-5 Old interface, to be removed.
-        private bool UI_RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
-        {
-            /*
-            //Get the DisplayName from MonitorInfo
-            string displayName = monitorInfo.DisplayName;
-            //Get the target Screen from the displayName
-            Screen? scr = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
-            //If no matched screen found, then report error
-            if (scr == null)
-            {
-                return false;
-            }
-            bool isVertical = (scr.Bounds.Width < scr.Bounds.Height);
+        //private bool UI_RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
+        //{
+        //    /*
+        //    //Get the DisplayName from MonitorInfo
+        //    string displayName = monitorInfo.DisplayName;
+        //    //Get the target Screen from the displayName
+        //    Screen? scr = Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
+        //    //If no matched screen found, then report error
+        //    if (scr == null)
+        //    {
+        //        return false;
+        //    }
+        //    bool isVertical = (scr.Bounds.Width < scr.Bounds.Height);
 
-            //Find the WorkWindow of the target screen
-            EAWorkWindow? workWin = FindWorkWindowByMonitorInfo(monitorInfo);
-            if (workWin != null)
-            {
-            }
+        //    //Find the WorkWindow of the target screen
+        //    EAWorkWindow? workWin = FindWorkWindowByMonitorInfo(monitorInfo);
+        //    if (workWin != null)
+        //    {
+        //    }
 
-            //Stop WorkWindow fade out animation
+        //    //Stop WorkWindow fade out animation
 
-            //Create a new EAEditWindow
-            if (_editWindow != null)
-            {
-                _editWindow.Close();
-                _editWindow = null;
-            }
-            EAEditWindow editWin = new EAEditWindow();
-            editWin.EditCompleted += (object? sender, string result) =>
-            {
-                _vmArrange.IsWorkUIEnabled = true;
-                _editWindow?.Close();
-                _editWindow= null;
+        //    //Create a new EAEditWindow
+        //    if (_editWindow != null)
+        //    {
+        //        _editWindow.Close();
+        //        _editWindow = null;
+        //    }
+        //    EAEditWindow editWin = new EAEditWindow();
+        //    editWin.EditCompleted += (object? sender, string result) =>
+        //    {
+        //        _vmArrange.IsWorkUIEnabled = true;
+        //        _editWindow?.Close();
+        //        _editWindow= null;
 
-                if (EditCompleted != null)
-                {
-                    EditCompleted(this, result);
-                }
-            };
+        //        if (EditCompleted != null)
+        //        {
+        //            EditCompleted(this, result);
+        //        }
+        //    };
 
-            double dpiX = 1.000;
-            var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-            if (dpiXProperty != null)
-            {
-                var varX = (int)dpiXProperty.GetValue(null, null);
-                dpiX = (double)varX / (double)96;
-            }
+        //    double dpiX = 1.000;
+        //    var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+        //    if (dpiXProperty != null)
+        //    {
+        //        var varX = (int)dpiXProperty.GetValue(null, null);
+        //        dpiX = (double)varX / (double)96;
+        //    }
 
-            editWin.SetSplitCtrl(cellCount, splitKey, settings, isVertical);
+        //    editWin.SetSplitCtrl(cellCount, splitKey, settings, isVertical);
 
-            editWin.Left = scr.WorkingArea.Left / (double)dpiX;
-            editWin.Top = scr.WorkingArea.Top / (double)dpiX;
-            editWin.Width = scr.WorkingArea.Width / (double)dpiX;
-            editWin.Height = scr.WorkingArea.Height / (double)dpiX;
+        //    editWin.Left = scr.WorkingArea.Left / (double)dpiX;
+        //    editWin.Top = scr.WorkingArea.Top / (double)dpiX;
+        //    editWin.Width = scr.WorkingArea.Width / (double)dpiX;
+        //    editWin.Height = scr.WorkingArea.Height / (double)dpiX;
 
-            editWin.Show();
-            _editWindow = editWin;
+        //    editWin.Show();
+        //    _editWindow = editWin;
 
-            //Signal EditStart event
-            if (EditStarted != null)
-                EditStarted(this, "");
+        //    //Signal EditStart event
+        //    if (EditStarted != null)
+        //        EditStarted(this, "");
 
-            _vmArrange.IsWorkUIEnabled = false;
-            */
-            return true;
-        }
+        //    _vmArrange.IsWorkUIEnabled = false;
+        //    */
+        //    return true;
+        //}
 
         // EditCommand() and related events (Robert_Lin 2024-0910)
         // 1 UI call EditCommand() to initiate a Edit command to edit a layout.
@@ -458,7 +459,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         // 8 EAPlugin will notify UI the editing result with EditReturn event
 
         //Unused event to be removed
-        public event EventHandler<string> EditCompleted;
+        //public event EventHandler<string> EditCompleted;
 
         /// <summary>
         /// Notify to DDPM.UI (EasyArrangeModule) that the EditCommand request has been accepted.
@@ -595,9 +596,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             };
 
 
-            if (!editWin.SetInputArg(args, scr))
+            //if (!editWin.SetInputArg(args, scr))
+            if (!editWin.ShowAndEdit(args, scr))
             {
-                if (EditStarted != null)
+                    if (EditStarted != null)
                 {
                     EditStarted(this, editWin.LastError);
                 }
@@ -693,6 +695,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return true;
         }
 
+        //public Task<bool> EAReloadMonitorSettings(MonitorInfo monitorInfo)
+        //{
+        //    return Task.FromResult(_vmArrange.ReloadMonitorSettings(monitorInfo));
+        //}
+
+        /// <summary>
+        /// Called by DeviceManagerSA when UI call WriteEzSettings_XXXXXX() method to update EzSettings.
+        /// In EAPluging, will reload EzSettings from DDPMSettings file, and update to ArrangeViewModel.
+        /// </summary>
+        /// <returns></returns>
+        public Task<bool> ReloadEzSettings()
+        {
+            //Reload settings
+            if ((_deviceManagerPlugin != null) && (_vmArrange != null))
+            {
+                _vmArrange.EzSettings = _deviceManagerPlugin.ReadEzSettings().Result;
+                _vmArrange.LogInfo($"@ EAPlugin.ReloadEzSettings(), Refresh values: IsWidthoutGap={_vmArrange.EzSettings.IsWidthoutGap}, IsOnlyShift={_vmArrange.EzSettings.IsOnlyAllowWhenShiftKeyPressed}, IsSpan ={_vmArrange.EzSettings.IsSpanAcrossMultiMonitors}, IsAwsEnabled ={_vmArrange.EzSettings.IsAwsEnabled}");
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+
         #endregion IEasyArrangeService Implementation
 
         #region EA Broker
@@ -710,7 +734,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private SaveCustomWindow? _saveCustomWindow = null;
         private EAArgs _eaArgs;
 
-        public void EABroker_Start()
+         public void EABroker_Start()
         {
             lock (_eaBrokerLock)
             {
@@ -732,13 +756,24 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //InitSaveCustomWindow();
 
                 //[InfoWin Solution]
-                InitEditWindow();
-                InitSaveCustomWindow();
-                InitInfoWindow();
-                InitWorkWindows();
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                //InitEditWindow();
+                //InitSaveCustomWindow();
+                //InitInfoWindow();
+                //InitWorkWindows();
 
+                InitAllWindows();
+                sw.Stop();
+                LogInfo($"EABroker Init Windows duration=[{sw.ElapsedMilliseconds} msec]");
+
+                ReloadEzSettings();
                 if (_displayManagerPlugin != null)
+                {
                     _displayManagerPlugin.Displaychanged += _displayManagerPlugin_Displaychanged;
+                   
+                }
+                
 
                 //Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
                 _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
@@ -787,6 +822,241 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             PluginIoc.ConfigureServices(services.BuildServiceProvider());
         }
 
+        private EAWorkWindow? _workWin0, _workWin1, _workWin2, _workWin3, _workWin4;
+        private SaveCustomWindow? _save2;
+
+        private void InitAllWindows()
+        {
+            int added = 0;
+            Thread thread = new Thread(() =>
+            {
+
+                if (_editWindow == null)
+                {
+                    try
+                    {
+                        LogInfo("Before new EAEditWindow");
+                        _editWindow = new EAEditWindow();
+                        LogInfo("After new EAEditWindow");
+                        _editWindow.DataContext = _vmArrange;
+                        _editWindow.Show();
+                    }
+                    catch (Exception exA)
+                    {
+                        LogInfo("EXCEPTION: " + exA.Message);
+                    }
+                }
+                if (_saveCustomWindow == null)
+                {
+                    LogInfo("Before new SaveCustomWindow");
+                    _saveCustomWindow = new SaveCustomWindow();
+                    LogInfo("After new SaveCustomWindow");
+                    if (_editWindow != null)
+                    {
+                        LogInfo("Setting up SaveCustomWindow");
+                        _saveCustomWindow.Owner = _editWindow;
+                        _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
+                        _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
+                        LogInfo("Setting up SaveCustomWindow - done");
+
+                    }
+                }
+                //if (_save2 == null)
+                //{
+                //    _save2 = new SaveCustomWindow();
+                //}
+
+                if (_infoWindow == null)
+                {
+                    LogInfo("Before new InfoWindow");
+                    _infoWindow = new InfoWindow(_vmArrange);
+                    LogInfo("After new InfoWindow");
+                    //_infoWindow.DataContext = _vmArrange;
+                    _infoWindow.Show();
+                }
+
+                if (_workWin0 == null)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(0)");
+                        _workWin0 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(0)");
+                        _workWin0.Show();
+                        _vmArrange.AddWorkWindow(_workWin0);
+                    }
+                    catch (Exception exW0)
+                    {
+                        LogInfo("EXCEPTION: " + exW0.Message);
+                    }
+                }
+
+                if (_workWin1 == null)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(1)");
+                        _workWin1 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(1)");
+                        _workWin1.Show();
+                        _vmArrange.AddWorkWindow(_workWin1);
+                    }
+                    catch (Exception exW1)
+                    {
+                        LogInfo("EXCEPTION: " + exW1.Message);
+                    }
+                }
+
+                if (_workWin2 == null)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(2)");
+                        _workWin2 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(2)");
+                        _workWin2.Show();
+                        _vmArrange.AddWorkWindow(_workWin2);
+                    }
+                    catch (Exception exW2)
+                    {
+                        LogInfo("EXCEPTION: " + exW2.Message);
+                    }
+                }
+
+                if (_workWin3 == null)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(3)");
+                        _workWin3 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(3)");
+                        _workWin3.Show();
+                        _vmArrange.AddWorkWindow(_workWin3);
+                    }
+                    catch (Exception exW3)
+                    {
+                        LogInfo("EXCEPTION: " + exW3.Message);
+                    }
+                }
+
+                if (_workWin4 == null)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(4)");
+                        _workWin4 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(4)");
+                        _workWin4.Show();
+                        _vmArrange.AddWorkWindow(_workWin4);
+                    }
+                    catch (Exception exW4)
+                    {
+                        LogInfo("EXCEPTION: " + exW4.Message);
+                    }
+                }
+
+                //_vmArrange.STA_CreateWorkWindowsAddToList();
+                //_vmArrange.STA_CreateAndAddWorkWindowToList();
+                //_vmArrange.STA_CreateAndAddWorkWindowToList();
+                //_vmArrange.STA_CreateAndAddWorkWindowToList();
+                /*
+                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(0)");
+                        EAWorkWindow workWin0 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(0)");
+                        workWin0.Show();
+                        _vmArrange.AddWorkWindow(workWin0);
+                    }
+                    catch (Exception exW0)
+                    {
+                        LogInfo("EXCEPTION: " + exW0.Message);
+                    }
+                }
+
+ 
+
+                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(1)");
+                        EAWorkWindow workWin1 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(1)");
+                        workWin1.Show();
+                        _vmArrange.AddWorkWindow(workWin1);
+
+                    }
+                    catch (Exception exW1)
+                    {
+                        LogInfo("EXCEPTION: " + exW1.Message);
+                    }
+                }
+
+                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(2)");
+                        EAWorkWindow workWin2 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(2)");
+                        workWin2.Show();
+                        _vmArrange.AddWorkWindow(workWin2);
+                    }
+                    catch (Exception exW2)
+                    {
+                        LogInfo("EXCEPTION: " + exW2.Message);
+                    }
+
+                }
+                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(3)");
+                        EAWorkWindow workWin3 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(3)");
+                        workWin3.Show();
+                        _vmArrange.AddWorkWindow(workWin3);
+                    }
+                    catch (Exception exW3)
+                    {
+                        LogInfo("EXCEPTION: " + exW3.Message);
+                    }
+                }
+
+                if (_vmArrange.WorkWindowCount < ArrangeVM.maxWorkWindowCount)
+                {
+                    try
+                    {
+                        LogInfo($"Before new EAWorkWindow(4)");
+                        EAWorkWindow workWin4 = new EAWorkWindow(_vmArrange);
+                        LogInfo($"After new EAWorkWindow(4)");
+                        workWin4.Show();
+                        _vmArrange.AddWorkWindow(workWin4);
+                    }
+                    catch (Exception exW4)
+                    {
+                        LogInfo("EXCEPTION: " + exW4.Message);
+                    }
+                }
+                */
+
+                added++;
+
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+
+            while (added <= 0)
+            {
+                Thread.Sleep(10);
+            }
+        }
         #endregion EA Broker
 
         #region Display Changed event
@@ -824,16 +1094,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_infoWindow != null)
                 return;
 
-
+            int added = 0;
             Task.Run(() =>
             {
                 int addCount = 0;
                 Thread thread = new Thread(() =>
                 {
+                    LogInfo("Before new InfoWindow");
                     _infoWindow = new InfoWindow(_vmArrange);
+                    LogInfo("After new InfoWindow");
                     //_infoWindow.DataContext = _vmArrange;
                     _infoWindow.Show();
                     addCount++;
+                    added++;
                     System.Windows.Threading.Dispatcher.Run();
                 });
 
@@ -848,6 +1121,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 //thread.Abort();
                 return Task.CompletedTask;
             });
+            while (added <= 0)
+            {
+                Thread.Sleep(10);
+            }
+
+
         }
 
         #endregion InfoWindow
@@ -1188,26 +1467,40 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #region EditWindow and SaveCustomWindow
 
-        //[Standalone solution]
+        /// <summary>
+        /// Create a EAEditWindow (assign to unique _editWindow)
+        /// And display it (but the Window is transparent until we are handing EditCommand())
+        /// </summary>
         private void InitEditWindow()
         {
             if (_editWindow != null)
                 return;
 
+            int added = 0;
             Task.Run(() =>
             {
+                //Robert_Lin
                 int addCount = 0;
                 Thread thread = new Thread(() =>
                 {
+                    LogInfo("Before new EAEditWindow");
                     _editWindow = new EAEditWindow();
+                    LogInfo("After new EAEditWindow");
                     _editWindow.DataContext = _vmArrange;
                     _editWindow.Show();
+
+                    _saveCustomWindow = new SaveCustomWindow();
+
                     addCount++;
+                    added++;
+
                     System.Windows.Threading.Dispatcher.Run();
                 });
 
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.Start();
+
+                //thread.Abort
 
                 while (addCount <= 0)
                 {
@@ -1215,23 +1508,33 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
 
                 return Task.CompletedTask;
-            });
+            }); //Task.Run()
+
+            while (added <= 0)
+            {
+                Thread.Sleep(100);
+            }
         }
+
 
         private void InitSaveCustomWindow()
         {
             if (_saveCustomWindow != null)
                 return;
 
+            int added = 0;
             Task.Run(() =>
             {
                 int addCount = 0;
                 Thread thread = new Thread(() =>
                 {
+                    LogInfo("Before new SaveCustomWindow");
                     _saveCustomWindow = new SaveCustomWindow();
+                    LogInfo("After new SaveCustomWindow");
                     //_saveCustomWindow.Show();
 
                     addCount++;
+                    added++;
 
                     _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
                     _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
@@ -1249,6 +1552,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 }
                 return Task.CompletedTask;
             });
+            while (added <= 0)
+            {
+                Thread.Sleep(10);
+            }
         }
 
         private void saveCustomWidow_CancelButtonClick(object sender, string e)
@@ -1298,166 +1605,166 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         //private void WinEventHook_Start()
         //{
-        //_winEventHook.OnStartMoving += OnWindowStartMovingProc;
-        //_winEventHook.OnEndMoving += OnWindowEndMovingProc;
-        //_winEventHook.OnLocationChanged += OnLocationChangedProc;
-        //_winEventHook.OnForegroundWindowChanged += OnForegroundWindowChangedProc;
-        //_winEventHook.Hook();
+            //_winEventHook.OnStartMoving += OnWindowStartMovingProc;
+            //_winEventHook.OnEndMoving += OnWindowEndMovingProc;
+            //_winEventHook.OnLocationChanged += OnLocationChangedProc;
+            //_winEventHook.OnForegroundWindowChanged += OnForegroundWindowChangedProc;
+            //_winEventHook.Hook();
         //}
 
         //private void WinEventHook_Stop()
         //{
-        //_winEventHook.Unhook();
-        //_winEventHook.OnStartMoving -= OnWindowStartMovingProc;
-        //_winEventHook.OnEndMoving -= OnWindowEndMovingProc;
-        //_winEventHook.OnLocationChanged -= OnLocationChangedProc;
-        //_winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
+            //_winEventHook.Unhook();
+            //_winEventHook.OnStartMoving -= OnWindowStartMovingProc;
+            //_winEventHook.OnEndMoving -= OnWindowEndMovingProc;
+            //_winEventHook.OnLocationChanged -= OnLocationChangedProc;
+            //_winEventHook.OnForegroundWindowChanged -= OnForegroundWindowChangedProc;
         //}
 
         //private void OnForegroundWindowChangedProc(IntPtr hWndNew, IntPtr hWndOld)
         //{
-        //Noting to do in this project
+            //Noting to do in this project
         //}
 
         //private bool _isDebuggingOnWindowStartMoving_Unused = true;
 
         //private void OnWindowStartMovingProc(IntPtr hWnd)
         //{
-        //if (_isDebuggingOnWindowStartMoving)
-        //    _log?.Info($"Enter OnWindowStartMovingProc(), hWnd=0x{hWnd:X}");
+            //if (_isDebuggingOnWindowStartMoving)
+            //    _log?.Info($"Enter OnWindowStartMovingProc(), hWnd=0x{hWnd:X}");
 
-        //if (!_vmArrange.IsFunctionEnabled)
-        //    return;
+            //if (!_vmArrange.IsFunctionEnabled)
+            //    return;
 
-        //Process process;
-        //string msg;
-        //if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
-        //{
-        //    //Try to get the PathName of the process
-        //    try
-        //    {
-        //        if (process.MainModule != null)
-        //        {
-        //            if (!String.IsNullOrEmpty(process.MainModule.FileName))
-        //            {
-        //                string pathName = process.MainModule.FileName;
-        //                if (_isDebuggingOnWindowStartMoving)
-        //                    _log?.Info($"Process.PathName={pathName}");
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e1)
-        //    {
-        //        _log?.Info($"@OnWindowStartMovingProc, access to process causes an exception, msg: {e1.Message}");
+            //Process process;
+            //string msg;
+            //if (WinEventHook.GetProcessFromWindowHandle(hWnd, out process, out msg))
+            //{
+            //    //Try to get the PathName of the process
+            //    try
+            //    {
+            //        if (process.MainModule != null)
+            //        {
+            //            if (!String.IsNullOrEmpty(process.MainModule.FileName))
+            //            {
+            //                string pathName = process.MainModule.FileName;
+            //                if (_isDebuggingOnWindowStartMoving)
+            //                    _log?.Info($"Process.PathName={pathName}");
+            //            }
+            //        }
+            //    }
+            //    catch (Exception e1)
+            //    {
+            //        _log?.Info($"@OnWindowStartMovingProc, access to process causes an exception, msg: {e1.Message}");
 
-        //        //Temporary allow to continue moving
-        //        _vmArrange.IsMoving = true;
-        //        //Robert_Lin Debug, let it contine
-        //        //return;
-        //    }
-        //}
-        //else
-        //{
-        //    _log.Info($"@OnWindowStartMovingProc, GetProcessFromWindowHandle error, msg:{msg}");
-        //}
+            //        //Temporary allow to continue moving
+            //        _vmArrange.IsMoving = true;
+            //        //Robert_Lin Debug, let it contine
+            //        //return;
+            //    }
+            //}
+            //else
+            //{
+            //    _log.Info($"@OnWindowStartMovingProc, GetProcessFromWindowHandle error, msg:{msg}");
+            //}
 
-        //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
-        //var varX = (int)dpiXProperty.GetValue(null, null);
-        //double dpiX = (double)varX / (double)96;
+            //var dpiXProperty = typeof(SystemParameters).GetProperty("DpiX", BindingFlags.NonPublic | BindingFlags.Static);
+            //var varX = (int)dpiXProperty.GetValue(null, null);
+            //double dpiX = (double)varX / (double)96;
 
-        //_vmArrange.ScreenScale = dpiX;
-        //_vmArrange.IsMoving = true;
-        //RefreshCellRects();
+            //_vmArrange.ScreenScale = dpiX;
+            //_vmArrange.IsMoving = true;
+            //RefreshCellRects();
         //}
 
         //private void OnWindowEndMovingProc(IntPtr hWnd, bool isCanceled = false)
         //{
-        //bool isWorkUIShowing = _vmArrange.IsWorkUIShowing;
+            //bool isWorkUIShowing = _vmArrange.IsWorkUIShowing;
 
-        //if (!_vmArrange.IsMoving)
-        //    return;
+            //if (!_vmArrange.IsMoving)
+            //    return;
 
-        //_vmArrange.IsMoving = false;
+            //_vmArrange.IsMoving = false;
 
-        //if (!isWorkUIShowing)
-        //    return;
+            //if (!isWorkUIShowing)
+            //    return;
 
-        //if (_vmArrange.HoveringCellObj == null)
-        //    return;
+            //if (_vmArrange.HoveringCellObj == null)
+            //    return;
 
-        ////Check if user cancel the window moving by pressing [Esc] key
-        ////Assumption:
-        //// When user moving window, the mouse [LeftButton] is pressed and hold.
-        //// When user canceling the moving, he/she press [Esc] key and the
-        ////     mouse [LeftButton] is strll pressed and hold.
-        ////
-        //if (WinEventHook.IsUserCancelMoving())
-        //    return;
+            ////Check if user cancel the window moving by pressing [Esc] key
+            ////Assumption:
+            //// When user moving window, the mouse [LeftButton] is pressed and hold.
+            //// When user canceling the moving, he/she press [Esc] key and the
+            ////     mouse [LeftButton] is strll pressed and hold.
+            ////
+            //if (WinEventHook.IsUserCancelMoving())
+            //    return;
 
-        //Rect rcArrange = _vmArrange.HoveringCellObj.rc;
+            //Rect rcArrange = _vmArrange.HoveringCellObj.rc;
 
-        ////Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
-        //rcArrange.Inflate(6, 6);
-        //WinEventHook.SetWindowPosition(hWnd, rcArrange);
+            ////Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
+            //rcArrange.Inflate(6, 6);
+            //WinEventHook.SetWindowPosition(hWnd, rcArrange);
         //}
 
         //private void OnLocationChangedProc(int x, int y)
         //{
-        //_vmArrange.xCursor = x;
-        //_vmArrange.yCursor = y;
+            //_vmArrange.xCursor = x;
+            //_vmArrange.yCursor = y;
 
-        //if (!_vmArrange.IsWorkUIShowing)
-        //    return;
+            //if (!_vmArrange.IsWorkUIShowing)
+            //    return;
 
-        //CellObj orgCell = _vmArrange.HoveringCellObj;
-        //_vmArrange.HoveringCellObj = DetermineHoveringCellObj(x, y);
+            //CellObj orgCell = _vmArrange.HoveringCellObj;
+            //_vmArrange.HoveringCellObj = DetermineHoveringCellObj(x, y);
 
-        //if (orgCell != _vmArrange.HoveringCellObj)
-        //{
-        //    string strOrg = "null";
-        //    if (orgCell != null)
-        //        strOrg = orgCell.Name;
-        //    string strNew = "null";
-        //    if (_vmArrange.HoveringCellObj != null)
-        //        strNew = _vmArrange.HoveringCellObj.Name;
+            //if (orgCell != _vmArrange.HoveringCellObj)
+            //{
+            //    string strOrg = "null";
+            //    if (orgCell != null)
+            //        strOrg = orgCell.Name;
+            //    string strNew = "null";
+            //    if (_vmArrange.HoveringCellObj != null)
+            //        strNew = _vmArrange.HoveringCellObj.Name;
 
-        //    //Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
-        //}
-        //if (_vmArrange.HoveringCellObj != null)
-        //{
-        //    _vmArrange.HoveringCell = _vmArrange.HoveringCellObj.Name;
-        //}
-        //else
-        //{
-        //    _vmArrange.HoveringCell = "";
-        //}
-        ////if (_workingSplit != null)
-        ////    _workingSplit.VM.HoveringCell = vm.HoveringCell;
+            //    //Trace.WriteLine($" * HoveringCell: {strOrg}->{strNew}");
+            //}
+            //if (_vmArrange.HoveringCellObj != null)
+            //{
+            //    _vmArrange.HoveringCell = _vmArrange.HoveringCellObj.Name;
+            //}
+            //else
+            //{
+            //    _vmArrange.HoveringCell = "";
+            //}
+            ////if (_workingSplit != null)
+            ////    _workingSplit.VM.HoveringCell = vm.HoveringCell;
 
-        ////Set WorkWins to topmost
+            ////Set WorkWins to topmost
         //}
 
         //private void RefreshCellRects()
         //{
-        //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
-        //{
-        //    EAWorkWindow workWin = keyValuePair.Value;
-        //    workWin.Invoke_RefreshCellRects();
-        //}
+            //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+            //{
+            //    EAWorkWindow workWin = keyValuePair.Value;
+            //    workWin.Invoke_RefreshCellRects();
+            //}
         //}
 
         //private CellObj? DetermineHoveringCellObj(int x, int y)
         //{
-        //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
-        //{
-        //    EAWorkWindow workWin = keyValuePair.Value;
-        //    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
-        //    if (cellObj != null)
-        //    {
-        //        return cellObj;
-        //    }
-        //}
-        //return null;
+            //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
+            //{
+            //    EAWorkWindow workWin = keyValuePair.Value;
+            //    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
+            //    if (cellObj != null)
+            //    {
+            //        return cellObj;
+            //    }
+            //}
+            //return null;
         //}
 
         #region GetAsyncKeyState

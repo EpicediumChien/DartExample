@@ -30,6 +30,25 @@
                 <StackPanel>
                     <Grid Margin="14,16,14,16">
                         <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.0], Source={x:Static lang:LangHelper.Instance}}" Margin="0,6,0,6" Style="{StaticResource ModuleCaptionStyle}" />
+                        <Image  Visibility="{Binding LockMaskVisible}" 
+                                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                VerticalAlignment="Center" HorizontalAlignment="Left" Margin="85,0,0,0" Width="16" Height="16">
+                            <Image.ToolTip>
+                                <ToolTip>
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+
                     </Grid>
                     <Grid Margin="16,0,16,10">
                         <Border Background="#99132F54" CornerRadius="6">
@@ -45,7 +64,7 @@
                                             </Image.ToolTip>
                                         </Image>
                                     </StackPanel>
-                                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
+                                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                                 </Grid>
                                 <Border Background="#132F54" CornerRadius="6" Margin="16">
                                     <StackPanel Orientation="Vertical">
@@ -60,7 +79,7 @@
                                                     </Image.ToolTip>
                                                 </Image>
                                             </StackPanel>
-                                            <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WakeOnApproach}" ContentTextVisibility="True" Content="{Binding Path=WakeOnApproachStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                                            <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WakeOnApproach}" ContentTextVisibility="True" Content="{Binding Path=WakeOnApproachStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                                         </Grid>
                                         <StackPanel Orientation="Vertical" Margin="18,20,18,0">
                                             <Grid>
@@ -74,7 +93,7 @@
                                                         </Image.ToolTip>
                                                     </Image>
                                                 </StackPanel>
-                                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WalkAwayLock}" ContentTextVisibility="True" Content="{Binding Path=WalkAwayLockStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_WalkAwayLock}" ContentTextVisibility="True" Content="{Binding Path=WalkAwayLockStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                                             </Grid>
                                         </StackPanel>
                                         <StackPanel Orientation="Vertical" Margin="28,20,18,0">
@@ -82,23 +101,26 @@
                                                 <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                                                 <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding Delay_ItemsCollection}"
                                                           SelectedItem="{Binding SelectedDelay, Mode=TwoWay}"
-                                                          TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" />
+                                                          TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
                                             </Grid>
                                             <Grid Margin="0,20,0,0">
                                                 <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
-                                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                                                <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_Snooze}" ContentTextVisibility="True" Content="{Binding Path=SnoozeStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                                             </Grid>
                                             <Grid Margin="0,20,0,15">
                                                 <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                                                 <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
                                                           SelectedItem="{Binding SelectedSnoozeLength, Mode=TwoWay}"
-                                                          TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" />
+                                                          TabIndex="1" DisplayMemberPath="DisplayText" Width="184" Height="40" IsTabStop="{Binding isTabStoppable}"/>
                                             </Grid>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
                         </Border>
+
+                        <Border Background="#132F5499" Opacity="0.6"  Visibility="{Binding LockMaskVisible}"/>
+
                     </Grid>
                     <Grid VerticalAlignment="top" Margin="16,0,16,10">
                         <Border Background="#99132F54" CornerRadius="6">

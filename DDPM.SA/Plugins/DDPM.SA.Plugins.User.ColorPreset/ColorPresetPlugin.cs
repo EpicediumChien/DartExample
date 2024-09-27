@@ -166,8 +166,8 @@ namespace ColorPreset.Plugins
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
                 }
             }
             return index;
@@ -184,7 +184,8 @@ namespace ColorPreset.Plugins
                 //data not exist, create new to config for current monitor
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
                 {
-                    DeviceInfo = mo.edid,
+                    ModelName = mo.edid.ModelName,
+                    SerialNumber = mo.edid.SerialNumber,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
                     PresetForManual = "Standard/Native",
@@ -237,7 +238,8 @@ namespace ColorPreset.Plugins
                 //data not exist, create new to config for current monitor
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
                 {
-                    DeviceInfo = mo.edid,
+                    ModelName = mo.edid.ModelName,
+                    SerialNumber = mo.edid.SerialNumber,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
                     PresetForManual = "Standard/Native",
@@ -723,8 +725,8 @@ namespace ColorPreset.Plugins
 
                             double dbscale = dbfactor * dpiX;
 
-                            OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
-                            OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
+                            //OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
+                            //OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
 
                             if (is_ShowUI)
                                 OsdWin.Show();
@@ -741,8 +743,8 @@ namespace ColorPreset.Plugins
 
                             double dbscale = dbfactor * dpiX;
 
-                            OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
-                            OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
+                            //OsdWin.Height = (sreen.WorkingArea.Height * dbscale) / ((40 * dbscale));
+                            //OsdWin.Width = (sreen.WorkingArea.Width) / ((40 * dbfactor));
 
                             if (is_ShowUI)
                                 OsdWin.Show();
@@ -824,7 +826,7 @@ namespace ColorPreset.Plugins
 
                 int index = get_index_of_json_config_for_cur_monitor(m);
 
-                /*
+                
                 if (colorPresetRunType == (int)ColorPresetRunType.Manual)
                 {
                     if (index >= 0)
@@ -846,7 +848,7 @@ namespace ColorPreset.Plugins
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 Thread.Sleep(100);
-                */
+                
                 if (index >= 0)
                 {
                     if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.On &&

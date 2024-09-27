@@ -108,6 +108,21 @@ namespace DDPM.UI.Common.UserControls
         public static readonly DependencyProperty IsSelectedProperty =
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(VbarItem1), new PropertyMetadata(false));
 
+
+        //Robert_Lin, 2024-9-25 Locked state
+
+
+        public bool IsLocked
+        {
+            get { return (bool)GetValue(IsLockedProperty); }
+            set { SetValue(IsLockedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsLocked.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsLockedProperty =
+            DependencyProperty.Register("IsLocked", typeof(bool), typeof(VbarItem1), new PropertyMetadata(false));
+
+
         #endregion Flags and States
 
         #region Events / Commands
@@ -145,11 +160,25 @@ namespace DDPM.UI.Common.UserControls
             }
             if (IsLandingMode)
             {
-                VisualStateManager.GoToState(this, "LandingHover", false);
+                if (IsLocked)
+                {
+                    VisualStateManager.GoToState(this, "LandingLockHover", false);
+                }
+                else
+                {
+                    VisualStateManager.GoToState(this, "LandingHover", false);
+                }
             }
             else
             {
-                VisualStateManager.GoToState(this, "Hover", false);
+                if (IsLocked)
+                {
+                    VisualStateManager.GoToState(this, "LockHover", false);
+                }
+                else
+                {
+                    VisualStateManager.GoToState(this, "Hover", false);
+                }
             }
         }
 
@@ -168,7 +197,15 @@ namespace DDPM.UI.Common.UserControls
 
             if (IsLandingMode)
             {
-                VisualStateManager.GoToState(this, "LandingDefault", false);
+                if (IsLocked)
+                {
+                    VisualStateManager.GoToState(this, "LandingLock", false);
+                }
+                else
+                {
+                    VisualStateManager.GoToState(this, "LandingDefault", false);
+
+                }
             }
             else
             {
@@ -184,6 +221,10 @@ namespace DDPM.UI.Common.UserControls
         private void rootGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!IsEnabled)
+            {
+                return;
+            }
+            if (IsLocked)
             {
                 return;
             }

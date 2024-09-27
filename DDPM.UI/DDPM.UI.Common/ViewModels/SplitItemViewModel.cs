@@ -112,5 +112,14 @@ namespace DDPM.UI.Common.ViewModels
 
         #endregion Screen Orientation
 
+        #region Add Custom Layout Button
+        private bool _isHoverable = true;
+        public bool IsHoverable
+        {
+            get => _isHoverable;
+            set => SetProperty(ref _isHoverable, value);
+        }
+        #endregion Add Custom Layout Button
+
     }
 }

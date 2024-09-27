@@ -48,6 +48,11 @@ namespace DDPM.UI.Module.DisplayOthers
                     if (data.LockSettings.Lock_Display_PowerNap)
                     {
                         //Do lock ui init here (direct set or binding via vm)
+                        IsPowerNapLockinUI(vm, true);
+                    }
+                    else
+                    {
+                        IsPowerNapLockinUI(vm, false);
                     }
                 }
             }
@@ -68,6 +73,16 @@ namespace DDPM.UI.Module.DisplayOthers
                 vm.LockSettings_Visibility = isLocked ? Visibility.Visible : Visibility.Collapsed;
                 vm.isSettingsEnable = isLocked ? false : true;
                 vm.Settings_Opacity = isLocked ? 0.5 : 1;
+            }
+        }
+
+        private void IsPowerNapLockinUI(DisplayOthersViewModel vm, bool isLocked)
+        {
+            if (vm != null)
+            {
+                vm.LockPowerNap_Visibility = isLocked ? Visibility.Visible : Visibility.Collapsed;
+                vm.isLockPowerNapEnable = isLocked ? false : true;
+                vm.LockPowerNap_Opacity = isLocked ? 0.5 : 1;
             }
         }
 
@@ -98,7 +113,9 @@ namespace DDPM.UI.Module.DisplayOthers
                     if (vm != null)
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        IsPowerNapLockinUI(vm, (bool)isLocked);
                         Trace.WriteLine($"[SettingsPage] Apply PowerNap(Lock) : {isLocked}");
+                        vm.OnPropertyChanged_Lock();
                     }
                 }));
             }

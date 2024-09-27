@@ -38,8 +38,8 @@
               <StackPanel Orientation="Vertical">
                 <Grid Margin="18,22,16,8">
                   <StackPanel Orientation="Horizontal">
-                    <UXControls:UXTextBlock  Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                    <Grid>
+                    <UXControls:UXTextBlock  Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" Height="16" />
+                    <Grid  VerticalAlignment="Center">
                       <Path Data="M8 5.05078C8.55228 5.05078 9 4.60307 9 4.05078C9 3.4985 8.55228 3.05078 8 3.05078C7.44772 3.05078 7 3.4985 7 4.05078C7 4.60307 7.44772 5.05078 8 5.05078Z M8.75 6.44922H7.25V12.6492H8.75V6.44922Z M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z" Fill="#B6B6B6">
                         <Path.ToolTip>
                           <ToolTip>
@@ -52,9 +52,33 @@
                             </Border>
                           </ToolTip>
                         </Path.ToolTip>
-                      </Path>
+                      </Path>                        
                     </Grid>
-                    <!--<Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
+
+                    <Grid >
+
+                        <Image Grid.Column="1" Visibility="{Binding LockMaskVisible}" 
+                            Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                            VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                            <Image.ToolTip>
+                                <ToolTip>
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+
+                    </Grid>
+
+                                        <!--<Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                         <Image.ToolTip>
                                         <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                         <TextBlock Text="Utilizes intelligent scene analysis and facial tracking to zoom and pan the view when you move" Style="{StaticResource TabInfoToolTipTextStyle}" />
@@ -62,7 +86,7 @@
                                         </Image.ToolTip>
                                         </Image>-->
                   </StackPanel>
-                  <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_AIAutoFraming}" ContentTextVisibility="True" Content="{Binding Path=AIAutoFramingStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" />
+                                    <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_AIAutoFraming}" ContentTextVisibility="True" Content="{Binding Path=AIAutoFramingStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                 </Grid>
                 <Grid Margin="38,22,16,8">
                   <StackPanel Orientation="Horizontal">
@@ -75,7 +99,7 @@
                       </Image.ToolTip>
                     </Image>
                   </StackPanel>
-                  <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_CameraTransition}" ContentTextVisibility="True" Content="{Binding Path=CameraTransitionStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" />
+                  <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsChecked_CameraTransition}" ContentTextVisibility="True" Content="{Binding Path=CameraTransitionStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" IsTabStop="{Binding isTabStoppable}" />
                 </Grid>
                 <StackPanel Orientation="Vertical" Margin="38,22,16,8">
                   <StackPanel Orientation="Horizontal">
@@ -175,6 +199,11 @@
                 </StackPanel>
               </StackPanel>
             </Border>
+
+            <Border Background="#132F54"
+             Opacity="0.6"
+             CornerRadius="13" Visibility="{Binding LockMaskVisible}"/>
+
           </Grid>
           <Grid Margin="16,0,16,10">
             <Border Background="#99132F54" CornerRadius="6">

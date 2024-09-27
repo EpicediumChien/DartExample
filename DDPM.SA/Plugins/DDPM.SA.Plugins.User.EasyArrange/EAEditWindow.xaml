@@ -12,5 +12,6 @@
 
     <Grid>
         <ContentControl Name="splitCtrl" />
+        <Canvas Name="canvas"/>
     </Grid>
 </Window>

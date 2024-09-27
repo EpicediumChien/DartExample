@@ -6,6 +6,7 @@ using System.Security.Principal;
 using Microsoft.Win32.SafeHandles;
 using Windows.Devices.Geolocation;
 using System.IO;
+using PInvoke;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -303,6 +304,7 @@ namespace DDPM.SA.Common.Settings
                 if (_DuplicateTokenEx(userToken, 0xF01FF, IntPtr.Zero, 2, 1, out IntPtr duplicatedToken))
                 {
                     STARTUPINFO startupInfo = new STARTUPINFO();
+                    startupInfo.cb = Marshal.SizeOf(startupInfo);
                     PROCESS_INFORMATION processInfo = new PROCESS_INFORMATION();
 
                     bool result = _CreateProcessAsUser(
@@ -334,6 +336,43 @@ namespace DDPM.SA.Common.Settings
             {
                 int errorCode = Marshal.GetLastWin32Error();
                 throw new System.ComponentModel.Win32Exception(errorCode);
+            }
+        }
+
+        public static void LaunchProcessWithUserAccountAndElevated(string applicationPath)
+        {
+            IntPtr userToken = IntPtr.Zero;
+            IntPtr duplicatedToken = IntPtr.Zero;
+
+            try
+            {
+                int sessionId = _WTSGetActiveConsoleSessionId();
+                if (_WTSQueryUserToken((uint)sessionId, out userToken))
+                {
+                    if (_DuplicateTokenEx(
+                        userToken, 0xF01FF, IntPtr.Zero, 
+                        (int)PInvoke.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation,
+                        (int)PInvoke.TOKEN_TYPE.TokenPrimary, 
+                        out duplicatedToken))
+                    {
+                        STARTUPINFO si = new STARTUPINFO();
+                        PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
+                        si.cb = Marshal.SizeOf(si);
+                        si.lpDesktop = @"winsta0\default"; //or using winlogon
+
+                        if (!_CreateProcessAsUser(duplicatedToken, applicationPath, null, IntPtr.Zero, IntPtr.Zero, false, 0, IntPtr.Zero, null, ref si, out pi))
+                        {
+                            throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (userToken != IntPtr.Zero)
+                    CloseHandle(userToken);
+                if (duplicatedToken != IntPtr.Zero)
+                    CloseHandle(duplicatedToken);
             }
         }
     }

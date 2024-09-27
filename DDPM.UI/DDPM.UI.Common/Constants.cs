@@ -87,4 +87,16 @@ public class Constants
     //public const int MaxCustomItems = 5; //DDPMW-843
     //public const int MaxCustomNameLenth = 30; //DDPMW-843, should be implemented in DDPM.SA
     //#endregion
+
+    #region ModuleGroupNames
+    //Used to find a specific ModuleGroup and the associate VBarItem
+
+    public const string GroupName_DisplaySettings = "DisplaySettings";
+    public const string GroupName_InputSource = "InputSource";
+    public const string GroupName_EasyArrange = "EasyArrange";
+    public const string GroupName_Gaming = "Gaming";
+    public const string GroupName_KVM = "KVM";
+    public const string GroupName_DisplayOthers = "Others";
+
+    #endregion ModuleGroupNames
 }

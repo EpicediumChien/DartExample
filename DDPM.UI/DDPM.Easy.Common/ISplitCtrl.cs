@@ -32,6 +32,11 @@ namespace DDPM.Easy.Common
             new SplitCtrl0A()
         };
 
+        public static bool IsExisted(int cellCount, char splitKey)
+        {
+            ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
+            return (iSplit != null);
+        }
         #endregion Collection of support SplitCtrl classes
 
         #region Native members - value not be changed once created
@@ -79,6 +84,10 @@ namespace DDPM.Easy.Common
 
         public static ISplitCtrl? Create(int cellCount, char splitKey)
         {
+            if ((cellCount == 0) && (splitKey == 'B'))
+            {
+                return new SplitCtrl0B();
+            }
             ISplitCtrl? iSplit = ISplitCtrl.Splits_EA.Find(x => (x.CellCount == cellCount) && (x.SplitKey == splitKey));
             if (iSplit == null)
                 return null;
@@ -197,7 +206,6 @@ namespace DDPM.Easy.Common
 
         #endregion Screen Orientation
 
-
         #region Bitmap - Currently is not used in DDPM
 
         /// <summary>
@@ -224,5 +232,12 @@ namespace DDPM.Easy.Common
         }
 
         #endregion Bitmap - Currently is not used in DDPM
+
+        #region Added Custom Layout
+        public bool IsAddedCustomLayout
+        {
+            get { return ((CellCount==0) && (SplitKey=='B')); }
+        }
+        #endregion
     }
 }
