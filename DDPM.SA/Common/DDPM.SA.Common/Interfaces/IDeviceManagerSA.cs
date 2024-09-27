@@ -599,6 +599,9 @@ namespace DDPM.SA.Common
         Task SetZoom(string Guid, int newValue);
         Task SetIsAutoFramingOn(string Guid, bool newValue);
         Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+        Task SetAutoFramingSensitivity(string Guid, int newValue);
+        Task SetAutoFramingFrameSize(string Guid, int newValue);
+        Task SetFieldOfView(string Guid, int newValue);
 
         #endregion
 

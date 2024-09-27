@@ -35,6 +35,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool[] Resolution_IsSelected { get; set; } = new bool[4];
         public bool[] FPS_IsSelected { get; set; } = new bool[3];
+        public bool[] FOV_IsSelected { get; set; } = new bool[3];
 
 
 
@@ -137,6 +138,15 @@ namespace DDPM.UI.Plugin.ViewModels
             WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution] = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][index];
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(FPS_IsSelected));
+        }
+        public void SetFOV_Selected(int index)
+        {
+            for (int j = 0; j < FOV_IsSelected.Length; j++)
+            {
+                FOV_IsSelected[j] = false;
+            }
+            FOV_IsSelected[index] = true;
+            OnPropertyChanged(nameof(FOV_IsSelected));
         }
 
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -285,6 +295,12 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             }
+
+            for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
+            {
+                _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
+            }
+
             SetProfile();
 
             _resolutions = WebcamSettings.Resolutions.Keys.ToList();
@@ -310,6 +326,26 @@ namespace DDPM.UI.Plugin.ViewModels
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn);
                     OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
                 }
+                if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity);
+                }
+                if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize);
+                    OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
+                }
+            }
+
+            if (CurrentDeviceInfo.IsPropertyFOVSupported)
+            {
+                if (_fOVs[0] == CurrentProfile.FieldOfView)
+                    SetFOV_Selected(0);
+                else if (_fOVs[1] == CurrentProfile.FieldOfView)
+                    SetFOV_Selected(1);
+                else
+                    SetFOV_Selected(2);
+
             }
 
             DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
@@ -430,16 +466,10 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private bool[] _fOV_IsSelected = new bool[3];
-
-        public bool[] FOV_IsSelected
+        private int[] _fOVs = [0, 0, 0];
+        public int[] FOVs
         {
-            get { return _fOV_IsSelected; }
-            set
-            {
-                _fOV_IsSelected = value;
-                OnPropertyChanged("FOV_IsSelected");
-            }
+            get => _fOVs;
         }
 
         private Visibility isChecked_FramingGrid;
@@ -536,10 +566,31 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.AutoFramingSensitivity;
             set
             {
-                //DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), value);
+                DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(AutoFramingSensitivity), value);
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(AutoFramingSensitivity));
+            }
+        }
+
+        public int AutoFramingFrameSize
+        {
+            get => CurrentProfile.AutoFramingFrameSize;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(AutoFramingFrameSize), value);
+                OnPropertyChanged();
+            }
+        }
+
+        public int FieldOfView
+        {
+            get => CurrentProfile.FieldOfView;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(FieldOfView), value);
+                OnPropertyChanged();
             }
         }
 
@@ -580,6 +631,11 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility AutoFramingTransitionVisibility
         {
             get => CurrentDeviceInfo!.IsPropertyAutoFramingTransitionSupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public Visibility FOVVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyFOVSupported ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public Visibility FunctionsVisibility

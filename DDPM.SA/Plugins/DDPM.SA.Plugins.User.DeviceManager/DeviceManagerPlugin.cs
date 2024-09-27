@@ -3618,6 +3618,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetZoom(guid, newValue);
             return Task.FromResult(true);
         }
+        public Task SetAutoFramingSensitivity(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetAutoFramingSensitivity requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetAutoFramingFrameSize(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetAutoFramingFrameSize requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
+            return Task.FromResult(true);
+        }
         public Task SetIsAutoFramingOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
@@ -3632,6 +3648,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetFieldOfView(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetFieldOfView(guid, newValue);
             return Task.FromResult(true);
         }
         #endregion

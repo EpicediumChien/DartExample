@@ -578,6 +578,36 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
+        public async Task SetAutoFramingSensitivity(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "AutoFramingSensitivity", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+        public async Task SetAutoFramingFrameSize(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "AutoFramingSensitivity", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
         public async Task SetIsAutoFramingOn(string Guid, bool newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -601,6 +631,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
                 SetPropertyValue(_webcamInterfaceType, commodity, "IsAutoFramingTransitionOn", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
+        public async Task SetFieldOfView(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "FieldOfView", newValue);
             }
             else
             {
@@ -1044,18 +1089,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return null;
             }
         }
-
-        //private bool IsAssemblyCanditate(Assembly a)
-        //    => !a.IsDynamic
-        //    && a.FullName is var fullName
-        //    && IsCanditate(fullName, "Dell.")
-        //    && !IsCanditate(fullName, "Dell.TechHub.Sdk.")
-        //    && !IsCanditate(fullName, "Dell.UnifiedAgent.")
-        //    && !IsCanditate(fullName, "Dell.Client.")
-        //    && !IsCanditate(fullName, "Dell.RPC.");
-
-        private bool IsCanditate(string name, string startsWith)
-            => name.StartsWith(startsWith, StringComparison.OrdinalIgnoreCase);
 
         private void InitializeDTPProxy()
         {
