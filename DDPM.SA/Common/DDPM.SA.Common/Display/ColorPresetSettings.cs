@@ -36,16 +36,15 @@ namespace DDPM.SA.Common
 
     public class ColorPresetSettings
     {
-        public EDID DeviceInfo { get; set; }
+        //public EDID DeviceInfo { get; set; }
+        public string ModelName { get; set; }
+        public string SerialNumber { get; set; }
 
         // 0 is Manual
         // 1 is by AppInfo Settings.
         public int RunType { get; set; }
 
-        //public Dictionary<string, string>? AppInfo { get; set; }
         public Dictionary<string, ColorPresetSettings_AppInfo> AppInfo { get; set; }
-
-        //public Dictionary<string, string> AppInfo { get; set; } = new Dictionary<string, string>() { };
 
         public string PresetForManual { get; set; }
 
@@ -53,8 +52,8 @@ namespace DDPM.SA.Common
         // 1 is on
         public int ColorManagement_Status { get; set; }
 
-        // 1 is Bymonitor - automatically adjust the ICC color profile based on monitor color preset
-        // 2 is Byhost - Automatically adjust the monitor color preset based on ICC color profile 
+        // 1 is ByMonitor - automatically adjust the ICC color profile based on monitor color preset
+        // 2 is ByHost - Automatically adjust the monitor color preset based on ICC color profile 
         public int ColorManagement_RunType { get; set; }
 
 

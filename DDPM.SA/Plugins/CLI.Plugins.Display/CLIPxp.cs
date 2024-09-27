@@ -705,9 +705,11 @@ namespace CLI.Plugins.Display
             //Find the first -value option
             CommandType_Option? valueOption = _cmdLineInput.Options.FirstOrDefault(x => x.Option_Name.Equals("value", StringComparison.OrdinalIgnoreCase));
             //Dean 0626 fix SAST issue
+            string rawValue = string.Empty;
             if (valueOption == null)
             {
-                CLI_RESPONSE response = new CLI_RESPONSE()
+                rawValue = "1";
+                /*CLI_RESPONSE response = new CLI_RESPONSE()
                 {
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
@@ -718,9 +720,12 @@ namespace CLI.Plugins.Display
                 response.Result = "No keyword -value";
                 response.Message = "source=target in (-value=source,target).";
                 _responses.Add(response);
-                return (int)CLI_ExitCode.nothing_to_do;
+                return (int)CLI_ExitCode.nothing_to_do;*/
             }
-            string rawValue = valueOption.Option_Value;
+            else
+            {
+                rawValue = valueOption.Option_Value;
+            }
             int target = 0;
 
             //Not Case_1

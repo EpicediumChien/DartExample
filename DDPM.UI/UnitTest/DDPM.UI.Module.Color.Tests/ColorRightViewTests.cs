@@ -24,7 +24,7 @@ namespace DDPM.UI.Module.Color.Tests
         {
             ColorRightView colorRightView = new ColorRightView();
             List<ColorPresetSettings> temp = new List<ColorPresetSettings>();
-            temp.Add(new ColorPresetSettings() { DeviceInfo = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } });
+            temp.Add(new ColorPresetSettings() { ModelName = "123", SerialNumber = "111" });
             var monitorInfo = new MonitorInfo() { edid = new VcpCore.Common.EDID() { ModelName = "123", SerialNumber = "111" } };
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = temp;
 

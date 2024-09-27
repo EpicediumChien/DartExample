@@ -75,6 +75,8 @@ namespace DDPM.UI.Module.Color
                 else
                     vm.TabNavigation = "Cycle";
 
+                vm.LockMaskVisible = vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;
+
                 //vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -133,7 +135,7 @@ namespace DDPM.UI.Module.Color
                         else
                             vm.TabNavigation = "Cycle";
 
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Color right view(Lock) : {isLocked}");
                     }
                 }));
@@ -155,8 +157,8 @@ namespace DDPM.UI.Module.Color
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.DeviceInfo.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.DeviceInfo.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
                 }
             }
             return index;

@@ -7,6 +7,7 @@ using Microsoft.Win32.SafeHandles;
 using Windows.Devices.Geolocation;
 using System.IO;
 using PInvoke;
+using PInvoke;
 using System.Diagnostics;
 using System.Security;
 
@@ -331,10 +332,8 @@ namespace DDPM.SA.Common.Settings
                 if (_DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
                 {
                     STARTUPINFO startupInfo = new STARTUPINFO();
-                    startupInfo.cb = Marshal.SizeOf(startupInfo);
-                    PInvoke.PROCESS_INFORMATION processInfo = new PInvoke.PROCESS_INFORMATION();
-                    SECURITY_ATTRIBUTES processAttributes = new SECURITY_ATTRIBUTES();
-                    SECURITY_ATTRIBUTES threadAttributes = new SECURITY_ATTRIBUTES();
+                    PROCESS_INFORMATION processInfo = new PROCESS_INFORMATION();
+
                     bool result = _CreateProcessAsUser(
                         duplicatedToken,
                         applicationPath,
