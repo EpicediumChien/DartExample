@@ -118,6 +118,8 @@ namespace DDPM.SA.Common
 
         void SetIsMicEnumerationOn(bool newValue, Guid deviceId);
 
+        void SetCurrentSelectedProfile(string newValue, Guid deviceId);
+
         void SetSideTopSwitchSinglePressSetting(byte[] newValue, Guid deviceId);
     }
 
