@@ -2161,9 +2161,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Thread thread1 = new Thread(() =>
             {
                 _UpdateProgress = new UpdateProgress();
-                _UpdateProgress.Width = 800;
-                _UpdateProgress.Height = 440;
-                _UpdateProgress.Topmost = true;
                 _UpdateProgress.Closed += (sender2, e2) =>
                 {
                     _UpdateProgress.Dispatcher.InvokeShutdown();
@@ -3064,7 +3061,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_SWUpdatePlugin != null)
             {
-                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isDefer, isForce).Result);
+                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isDefer, isForce, _GlobalSettingParam.GlobalSetting_About.SWVersion).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
         }
@@ -3090,7 +3087,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SWUpdatePlugin == null)
                 return Task.FromResult(false);
             SW_SetDelaySWUpdateInfoPackage();
-            List<SWUpdateInfo> swUpdateInfos = _SWUpdatePlugin.CheckUpdate(true).Result;
+            List<SWUpdateInfo> swUpdateInfos = _SWUpdatePlugin.CheckUpdate(true, _GlobalSettingParam.GlobalSetting_About.SWVersion).Result;
             bool b = true;
             foreach (SWUpdateInfo swUpdateInfo in swUpdateInfos)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace DDPM.SA.Common
 {
@@ -100,9 +101,13 @@ namespace DDPM.SA.Common
     /// </summary>
     public class ChangeLog
     {
+        [JsonPropertyName("version")]
         public string Version { get; set; }
+        [JsonPropertyName("server_path")]
         public string ServerPath { get; set; }
+        [JsonPropertyName("supportedOS")]
         public List<string> SupportedOS { get; set; }
+        [JsonPropertyName("minimumSoftware")]
         public string MinimumSoftware { get; set; }
     }
 
@@ -113,17 +118,21 @@ namespace DDPM.SA.Common
     {
         public string SoftwareName { get; set; }
         public string SoftwareVersion { get; set; }
+        [JsonPropertyName("server_path")]
         public string ServerPath { get; set; }
+        [JsonPropertyName("install_path")]
         public string InstallPath { get; set; }
+        [JsonPropertyName("supportedOS")]
         public List<string> SupportedOS { get; set; }
+        [JsonPropertyName("minimumSoftware")]
         public string MinimumSoftware { get; set; }
     }
-
     /// <summary>
     /// Metadata結構
     /// </summary>
     public class SWUpdateHelper
     {
+        [JsonPropertyName("version")]
         public int Version { get; set; }
         public ChangeLog ChangeLog { get; set; }
         public List<Software> Softwares { get; set; }

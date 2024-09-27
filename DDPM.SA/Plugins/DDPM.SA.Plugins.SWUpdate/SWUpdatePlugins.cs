@@ -79,9 +79,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         private bool _IsShowNotify = true;
         private bool _isDefer = false;
         private bool _isForce = false;
-        private string URL = $"https://clientperipherals.dell.com/DDPM/";
-        private string URL_Folder = $"/Windows/Application/";
-        private string TestURL_Folder = $"/ddpm/Application/";
+
 
         #region Events
 
@@ -201,11 +199,11 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳更新資訊包</returns>
-        public Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer)
+        public Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion)
         {
             _isDefer = isDefer;
             _isForce = isForce;
-            _ = CheckUpdate(isShowNotify).Result;
+            _ = CheckUpdate(isShowNotify, currentVersion).Result;
             return Task.FromResult(_SWUpdateInfoPackage);
         }
 
@@ -215,31 +213,39 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="updateHelper">IL的更新資訊</param>
         /// <param name="isShowNotify">是否顯示右下角通知圖示</param>
         /// <returns>回傳裝置資訊表(如果有需強制安裝更新的話，該裝置資訊表會被寫入對應裝置的安裝結果)</returns>
-        public Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify)
+        public Task<List<SWUpdateInfo>> CheckUpdate(bool isShowNotify, string currentVersion)
         {
-            SetSWUServer();
-            _IsShowNotify = isShowNotify;
             _logs.DebugMsg_1(nameof(CheckUpdate) + " start");
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _SWUpdateInfoPackage.TheLastCheckTime = DateTime.Now;
-            //暫時直接Return
-            return Task.FromResult(new List<SWUpdateInfo>());
-            SWUpdateHelper swUpdateHelper = GetSWMetadata();
+            _IsShowNotify = isShowNotify;
+            if (string.IsNullOrEmpty(currentVersion))
+            {
+                return Task.FromResult(new List<SWUpdateInfo>());
+            }
+            if (currentVersion.Contains("."))
+            {
+                currentVersion = currentVersion.Replace(".", "");
+            }
+            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(out string getMetadataInfo);
+            _logs.DebugMsg_1($"{nameof(CheckUpdate)} {getMetadataInfo}");
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
             {
                 for (int i = 0; i < swUpdateHelper.Softwares.Count; i++)
                 {
-                    string CurrentVersion = "20001";
                     SWUpdateInfo SWUpdateInfo = new SWUpdateInfo()
                     {
                         TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
-                        SoftwareVersion = Regex.Replace(Convert.ToInt32(CurrentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(CurrentVersion).ToString("D4").Length * 2) - 1),
-                        NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(CurrentVersion) ? true : false,
+                        SoftwareVersion = Regex.Replace(Convert.ToInt32(currentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(currentVersion).ToString("D4").Length * 2) - 1),
+                        NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(currentVersion) ? true : false,
                         ServerPath = swUpdateHelper.Softwares[i].ServerPath,
                         SoftwareName = "DDPM",
                         FileSavepath = swUpdateHelper.Softwares[i].InstallPath
                     };
-                    _SWUpdateInfoPackage.SWUpdateInfo.Add(SWUpdateInfo);
+                    if (SWUpdateInfo.NeedUpdated)
+                    {
+                        _SWUpdateInfoPackage.SWUpdateInfo.Add(SWUpdateInfo);
+                    }
                 }
                 HandleUpdateInfo();
                 _IsShowNotify = true;
@@ -249,62 +255,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             }
             return Task.FromResult(new List<SWUpdateInfo>());
         }
-        private void SetSWUServer()
-        {
-            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            URL = URL + URL_Folder;
-            if (localKey64 != null)
-            {
-                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
-                if (registryKey != null)
-                {
-                    var obj = registryKey?.GetValue("TestServerURL");
-                    if (obj != null)
-                    {
-                        string s = obj.ToString();
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            URL = obj + TestURL_Folder;
-                        }
-                    }
-                }
-            }
-        }
-        private SWUpdateHelper GetSWMetadata()
-        {
-            _logs.DebugMsg_1(nameof(GetSWMetadata) + " start.");
-            CertificateCheck certificateCheck = new CertificateCheck();
-            if (!certificateCheck.CheckURLCACertificate(URL))
-            {
-                _logs.DebugMsg_1(nameof(GetSWMetadata) + " URL CA check fail");
-                return new SWUpdateHelper();
-            }
-            using (HttpClient client = new HttpClient())
-            {
-                try
-                {
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                    HttpResponseMessage response = client.GetAsync(URL + "MetaData.json").Result;
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = response.Content.ReadAsStringAsync().Result;
-                    jsonString = jsonString.Replace("%1/", URL);
-                    SWUpdateHelper data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
-                    foreach (Software software in data.Softwares)
-                    {
-                        string version =
-                        Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
-                        software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup_v{version}");
-                    }
-                    _logs.DebugMsg_1(nameof(GetSWMetadata) + " done.");
-                    return data;
-                }
-                catch (Exception ex)
-                {
-                    _logs.DebugMsg_1(nameof(GetSWMetadata) + " error: " + ex.Message);
-                }
-            }
-            return new SWUpdateHelper();
-        }
+
         private void HandleUpdateInfo()
         {
             _logs.DebugMsg_1("HandleUpdateInfo");
@@ -481,21 +432,15 @@ namespace DDPM.SA.Plugins.SWUpdate
                         continue;
                     }
                     swUpdateInfos[i].InstallPaths = exeFilePath;
-                    swUpdateInfos[i].SWUErrorCode = Install();
+                    swUpdateInfos[i].SWUErrorCode = Install(swUpdateInfos[i]).Result;
                     if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.NoError)
                     {
-                        NotificationFWupdate("FW info", _notificationStr);
+                        NotificationFWupdate("SW info", _notificationStr);
                     }
                     else
                     {
                         NotificationFWupdate("Error", _notificationStr);
                     }
-                }
-                // 檢查資料夾是否存在
-                if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
-                {
-                    // 刪除資料夾及其所有內容
-                    Directory.Delete(savePath, true);
                 }
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " done");
                 if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
@@ -633,7 +578,10 @@ namespace DDPM.SA.Plugins.SWUpdate
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
             SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
             List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
-            Install();
+            if (sWUpdateInfo.Count > 0)
+            {
+                Install(sWUpdateInfo[0]);
+            }
         }
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
@@ -657,32 +605,41 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <summary>
         /// 安裝下載好的更新檔
         /// </summary>
-        private SWUErrorCode Install()
+        private Task<SWUErrorCode> Install(SWUpdateInfo swUpdateInfos)
         {
             try
             {
-                string miniInstallPath = $"";
-                string arguments = $"";
-                using (FileLock fileLock = new FileLock(miniInstallPath, PathCheckOption.None, lockNow: true))
-                {
-                    using (Process _clientProcess = new Process())
-                    {
-                        _clientProcess.StartInfo.UseShellExecute = false;
-                        _clientProcess.StartInfo.FileName = miniInstallPath;
-                        _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
-                        _clientProcess.StartInfo.Arguments = arguments;
-                        _clientProcess.Start();
-                    }
-                }
+                _logs.DebugMsg_1($"{nameof(Install)} start");
+                string miniInstallPath = swUpdateInfos.InstallPaths;
+                PInvoke.PROCESS_INFORMATION procInfo;
+                WTSFunction.StartProcessAndBypassUACWithAdmin(miniInstallPath, out procInfo);
+                //var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
+                //if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
+                //IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
+                //using (FileLock fileLock = new FileLock(miniInstallPath, PathCheckOption.None, lockNow: true))
+                //{
+                //    UserImpersonator.RunAsUser(token, () =>
+                //    {
+                //        using (Process _clientProcess = new Process())
+                //        {
+                //            _clientProcess.StartInfo.UseShellExecute = false;
+                //            _clientProcess.StartInfo.FileName = miniInstallPath;
+                //            _clientProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(_clientProcess.StartInfo.FileName);
+                //            _clientProcess.StartInfo.Arguments = arguments;
+                //            _clientProcess.Start();
+                //        }
+                //    });
+                //}
                 _updateErrorCode = SWUErrorCode.NoError;
-                return _updateErrorCode;
+                _logs.DebugMsg_1($"{nameof(Install)} done");
+                return Task.FromResult(_updateErrorCode);
             }
             catch (Exception ex)
             {
                 _updateErrorCode = SWUErrorCode.Unknow;
                 _logs.DebugMsg_1(nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = $"{_SWUpdateInfo.SoftwareName} Service not running. Try again.";
-                return _updateErrorCode;
+                return Task.FromResult(_updateErrorCode);
             }
         }
         private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
