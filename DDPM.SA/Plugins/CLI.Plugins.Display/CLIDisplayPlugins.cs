@@ -9875,7 +9875,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                 case "ON":
                                     writelog($"PowerSetting D6 set on");
-                                    retcode = SetVCPCode(devMgr, monitor, "0xD0", "0x01").Result;
+                                    retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x01").Result;
                                     cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                     break;
 
