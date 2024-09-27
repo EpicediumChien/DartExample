@@ -26,12 +26,12 @@ namespace MiniInstaller
         }
         public Task<SWUErrorCode> LaunchUpdate()
         {
+            LogManage.LogMessage($"{nameof(LaunchUpdate)} start");
             SWUErrorCode ret = SWUErrorCode.NoError;
-            List<SWUpdateInfo> swUpdate = _SWUpdatePlugins.CheckUpdate().Result;
-            if (swUpdate != null && swUpdate.Count > 0)
+            CloseDDPM();
             {
                 CallUpdateProgressUI().Wait();
-                List<SWUpdateInfo> retSWUpdate = _SWUpdatePlugins.DownloadAndInstall(swUpdate, "").Result;
+                List<SWUpdateInfo> retSWUpdate = _SWUpdatePlugins.DownloadAndInstall("").Result;
                 if (_UpdateProgress != null)
                 {
                     _SWUpdatePlugins.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
@@ -46,44 +46,53 @@ namespace MiniInstaller
                     }
                 }
             }
+            LogManage.LogMessage($"{nameof(LaunchUpdate)} done");
             return Task.FromResult(ret);
+        }
+        private void CloseDDPM()
+        {
+            try
+            {
+                LogManage.LogMessage($"{nameof(CloseDDPM)} start");
+                string processName = "DDPM";
+                Process[] processes = Process.GetProcessesByName(processName);
+                LogManage.LogMessage($"{nameof(CloseDDPM)} processes.Length {processes.Length}");
+                if (processes.Length > 0)
+                {
+                    foreach (Process process in processes)
+                    {
+                        // Close process by sending a close message to its main window.
+                        process.CloseMainWindow();
+                        // Free resources associated with process.
+                        process.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManage.LogMessage($"{nameof(CloseDDPM)} Error:{ex.Message}");
+            }
+            LogManage.LogMessage($"{nameof(CloseDDPM)} done");
         }
         private Task CallUpdateProgressUI()
         {
+            LogManage.LogMessage($"{nameof(CallUpdateProgressUI)} start");
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
-            if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
-            IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
-            VerifierOption myVerifierOptions = VerifierOption.FailOnNoErrorsAndSelfSignedCert;
-            SubjectPublicKeyInfoHashes hashes = new SubjectPublicKeyInfoHashes(HashType.Sha256);
-            var constraints = new LeafCertConstraints(hashes)
+            Thread thread1 = new Thread(() =>
             {
-                RequireAllCerts = false
-            };
-            PeAuthenticodeVerifier verifier = new PeAuthenticodeVerifier(myVerifierOptions, omitDefaultOptions: true)
-            {
-                Constraints = constraints
-            };
-            UserImpersonator.RunAsUser(token, () =>
-            {
-                Thread thread1 = new Thread(() =>
+                _UpdateProgress = new UpdateProgress();
+                _UpdateProgress.Closed += (sender2, e2) =>
                 {
-                    _UpdateProgress = new UpdateProgress();
-                    _UpdateProgress.Width = 800;
-                    _UpdateProgress.Height = 440;
-                    _UpdateProgress.Topmost = true;
-                    _UpdateProgress.Closed += (sender2, e2) =>
-                    {
-                        _UpdateProgress.Dispatcher.InvokeShutdown();
-                    };
-                    _UpdateProgress.Show();
-                    _SWUpdatePlugins.ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
-                    tcs.SetResult(true);
-                    Dispatcher.Run();
-                });
-                thread1.SetApartmentState(ApartmentState.STA);
-                thread1.Start();
+                    _UpdateProgress.Dispatcher.InvokeShutdown();
+                };
+                _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
+                _SWUpdatePlugins.ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
+                tcs.SetResult(true);
+                Dispatcher.Run();
             });
+            thread1.SetApartmentState(ApartmentState.STA);
+            thread1.Start();
+            LogManage.LogMessage($"{nameof(CallUpdateProgressUI)} done");
             return tcs.Task;
         }
     }
