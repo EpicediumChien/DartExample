@@ -81,7 +81,7 @@ namespace VcpCore.Plugins
         private static CancellationTokenSource _cancellationTokenSource;
 
         private static string _supportClassification = string.Empty;
-        private static Dictionary<string, List<string>> _supportDictionary = new Dictionary<string, List<string>>();
+        private static Dictionary<string, List<modelinfos>> _supportDictionary = new Dictionary<string, List<modelinfos>>();
 
         private static string privateKey = @"<RSAKeyValue><Modulus>tNMQHhw9frzoI/qHNUdkzYyTRUVbLL3aouurIXPd0cd4MzfUus/OS3IHQTolb8zAec3iuIYEK7tMXTg5rzfRfnMAACGFHeWwC/HPdj32FE2eGNdi33cuWsxSrKlPd3GvlMww2Z7NRQsNJ+tpSMXZ9DrxQuwBwQaWgXLdUQMjKzk=</Modulus><Exponent>AQAB</Exponent><P>49VK8O6kRncB4wQoWmQEznt2L+G9JabusLPiWJmdV4NSI4h7UTdr0loPP2P1Hayq/8bp1LWNsZbBDUIvL4Dsrw==</P><Q>yy39CjdZPTXA1r0fCFOrboOtQD3gMkuL0ZWuJI9soWFRu/kWH0vpavS3+uSsFAR59nx2ULTIT6C7pEyBguVwlw==</Q><DP>SNLghWqCL9PSUpH9pAbcUnO8L0nkf6iAGxMkglV3qYVcN+dkI22nlTEcNpLowndyoRcfntH5XI5nXqmNE44OGQ==</DP><DQ>nl2oH7BohEdDmZ0rdQgSVT+ZaLtR5qHvx1qNs71/BIKgfI136sj2lQFN7ecTIT8j+TWl2t4uS7KSz0s6n1ZK3Q==</DQ><InverseQ>sohCLNyTq38pSF8908WBFNHQUwXwlOs9HSe9+dk7dHB3R6TV7LP/md8MiX4dLlItNtM4BzzcmeYOlZ4Szp6JDg==</InverseQ><D>Pc3mNGRyoF7w+Vsn244LZjYmIAcUorZBhG4Ij+aKaqlC7D6o9zEP0bmnwSOeqBfTsc4tL+SeiFP8ReBx1vG9KGfUeRykZu0ZMm12a42ERa9opXgmBPOoA4FKm9Z7S+99bdt4DbPEkbJA38uq3ZxGVpGi3WADYRD06SspNKJj5gE=</D></RSAKeyValue>";
         private static readonly string targetFile = "SupportEncrypted.txt";
@@ -1163,6 +1163,7 @@ namespace VcpCore.Plugins
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
+                                    ImageFileName = monitorInfoX.ImageFileName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1215,6 +1216,7 @@ namespace VcpCore.Plugins
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
+                                    ImageFileName = monitorInfoX.ImageFileName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1249,6 +1251,7 @@ namespace VcpCore.Plugins
                                     modelName = monitorInfoX.modelName,
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
+                                    ImageFileName = monitorInfoX.ImageFileName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1386,6 +1389,7 @@ namespace VcpCore.Plugins
                                                 modelName = monitorInfoX.modelName,
                                                 series = monitorInfoX.series,
                                                 MarketingName = monitorInfoX.MarketingName,
+                                                ImageFileName = monitorInfoX.ImageFileName,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgs);
                                         }
@@ -1458,6 +1462,7 @@ namespace VcpCore.Plugins
                                                 modelName = monitorInfoX.modelName,
                                                 series = monitorInfoX.series,
                                                 MarketingName = monitorInfoX.MarketingName,
+                                                ImageFileName = monitorInfoX.ImageFileName,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgIIs);
                                         }
@@ -1484,6 +1489,7 @@ namespace VcpCore.Plugins
                                             modelName = monitorInfoX.modelName,
                                             series = monitorInfoX.series,
                                             MarketingName = monitorInfoX.MarketingName,
+                                            ImageFileName = monitorInfoX.ImageFileName,
                                         };
                                         OnVCPchanged(_VCPchangedEventArgs);
                                     }
@@ -1693,6 +1699,7 @@ namespace VcpCore.Plugins
                                                 modelName = m.modelName,
                                                 series = m.series,
                                                 MarketingName = m.MarketingName,
+                                                ImageFileName = m.ImageFileName,
                                             };
                                             _tmp.Add(minfo);
                                         }
@@ -1798,6 +1805,7 @@ namespace VcpCore.Plugins
                         monitorInfo.modelName = MonitorInfoX.modelName;
                         monitorInfo.series = MonitorInfoX.series;
                         monitorInfo.MarketingName = MonitorInfoX.MarketingName;
+                        monitorInfo.ImageFileName = MonitorInfoX.ImageFileName;
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
                     }
                 }
@@ -2160,21 +2168,23 @@ namespace VcpCore.Plugins
                                 {
                                     var modelNode = node.Nodes.RecursiveSelect(n => n.Nodes).Single(n => n.Value == "model");
                                     foreach (var _node in modelNode.Nodes)
-                                    {
                                         _TargetMonitor.modelName = _node.Value;
-                                        _TargetMonitor.MarketingName = WhichMarketingName(_TargetMonitor.modelName);
-                                    }
 
                                     _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.modelName: " + _TargetMonitor.modelName);
                                     _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.MarketingName: " + _TargetMonitor.MarketingName);
 
                                     _TargetMonitor.series = string.Empty;
-                                    foreach (KeyValuePair<string, List<string>> kv in _supportDictionary)
+                                    foreach (KeyValuePair<string, List<modelinfos>> kv in _supportDictionary)
                                     {
-                                        if (kv.Value.Contains(_TargetMonitor.modelName))
+                                        foreach (var tx in kv.Value)
                                         {
-                                            _TargetMonitor.series = kv.Key;
-                                            break;
+                                            if (tx.ModelName.Equals(_TargetMonitor.modelName))
+                                            {
+                                                _TargetMonitor.series = kv.Key;
+                                                _TargetMonitor.ImageFileName = tx.ImageFileName;
+                                                _TargetMonitor.MarketingName = tx.MarketingName;
+                                                break;
+                                            }
                                         }
                                     }
                                     _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.series: " + _TargetMonitor.series);
@@ -2480,6 +2490,7 @@ namespace VcpCore.Plugins
                         modelName = monitorInfoX.modelName,
                         series = monitorInfoX.series,
                         MarketingName = monitorInfoX.MarketingName,
+                        ImageFileName = monitorInfoX.ImageFileName,
                     };
                     OnVCPchanged(_VCPchangedEventArgs);
 
@@ -3687,61 +3698,7 @@ namespace VcpCore.Plugins
             }
 
             if (!string.IsNullOrEmpty(_supportClassification))
-                DecryptSupportList();
-        }
-
-        private void DecryptSupportList()
-        {
-            var support_list = (JObject)JsonConvert.DeserializeObject(_supportClassification);
-            if (support_list.ContainsKey("SUPPORTLIST"))
-            {
-                var support_lists = (JObject)support_list["SUPPORTLIST"];
-                if (support_lists.ContainsKey("Alienware Monitors"))
-                {
-                    var AlienwareMonitors = (JArray)support_lists["Alienware Monitors"];
-                    _supportDictionary.Add("Alienware Monitors", AlienwareMonitors.ToObject<List<string>>());
-                }
-                if (support_lists.ContainsKey("Dell Gaming Monitors"))
-                {
-                    var DellGamingMonitors = (JArray)support_lists["Dell Gaming Monitors"];
-                    _supportDictionary.Add("Dell Gaming Monitors", DellGamingMonitors.ToObject<List<string>>());
-                }
-                if (support_lists.ContainsKey("Dell C Series Displays"))
-                {
-                    var DellCSeriesDisplays = (JArray)support_lists["Dell C Series Displays"];
-                    _supportDictionary.Add("Dell C Series Displays", DellCSeriesDisplays.ToObject<List<string>>());
-                }
-                if (support_lists.ContainsKey("Dell SE Series Monitors"))
-                {
-                    var DellSESeriesMonitors = (JArray)support_lists["Dell SE Series Monitors"];
-                    _supportDictionary.Add("Dell SE Series Monitors", DellSESeriesMonitors.ToObject<List<string>>());
-                }
-                if (support_lists.ContainsKey("Dell P Series Monitors"))
-                {
-                    var DellPSeriesMonitors = (JArray)support_lists["Dell P Series Monitors"];
-                    _supportDictionary.Add("Dell P Series Monitors", DellPSeriesMonitors.ToObject<List<string>>());
-                }
-                if (support_lists.ContainsKey("Dell S Series Monitors"))
-                {
-                    var DellSSeriesMonitors = (JArray)support_lists["Dell S Series Monitors"];
-                    _supportDictionary.Add("Dell S Series Monitors", DellSSeriesMonitors.ToObject<List<string>>());
-                }
-                if (support_lists.ContainsKey("Dell E Series Monitors"))
-                {
-                    var DellESeriesMonitors = (JArray)support_lists["Dell E Series Monitors"];
-                    _supportDictionary.Add("Dell E Series Monitors", DellESeriesMonitors.ToObject<List<string>>());
-                }
-                if (support_lists.ContainsKey("Dell UltraSharp (U) Series Monitors"))
-                {
-                    var DellUltraSharpSeriesMonitors = (JArray)support_lists["Dell UltraSharp (U) Series Monitors"];
-                    _supportDictionary.Add("Dell UltraSharp (U) Series Monitors", DellUltraSharpSeriesMonitors.ToObject<List<string>>());
-                }
-                if (support_lists.ContainsKey("Dell Ultrasharp Premier Color (UP) Series Monitors"))
-                {
-                    var DellUltrasharpPremierColorSeriesMonitors = (JArray)support_lists["Dell Ultrasharp Premier Color (UP) Series Monitors"];
-                    _supportDictionary.Add("Dell Ultrasharp Premier Color (UP) Series Monitors", DellUltrasharpPremierColorSeriesMonitors.ToObject<List<string>>());
-                }
-            }
+                _supportDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<modelinfos>>>(_supportClassification);
         }
 
         //---------------------------------------------------
