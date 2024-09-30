@@ -68,7 +68,7 @@ namespace DDPM.UI.Module.Color
         }
 
         //If caller is not the same as UI main thread, please using Dispatcher to execute it
-        private void PerformLockUnlockUIAction(bool isColorLocked, bool isAutoBriLocked)
+        private void PerformLockUnlockUIAction(bool isColorLocked, bool isAutoBriTempLocked)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace DDPM.UI.Module.Color
                     // 1) "Auto Color Temperature", 
                     // 2) Manual color controls, Auto color controls, Color management found under the "Color" Tab,
                     // 3) the conditions listed in the first 3 bullet points
-                    if (cfg != null && cfg.isAutoColorTemp)
+                    if (cfg != null && cfg.isAutoColorTemp && isAutoBriTempLocked)
                     {
                         isColorLocked = true;
                     }
@@ -128,14 +128,35 @@ namespace DDPM.UI.Module.Color
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", e);
-            if (isLocked != null)
+            bool? isLockColor = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_ColorPreset", e);            
+            bool? isLockAutoTemp = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_AutoBriTemp", e);
+            
+            if (isLockColor != null || isLockAutoTemp != null)
             {
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data == null)
                     return;
                 if (data.LockSettings == null)
                     return;
+
+                bool isLock_Color = false;
+                if (isLockColor.HasValue)
+                {
+                    isLock_Color = isLockColor.Value;
+                }
+                else
+                {
+                    isLock_Color = data.LockSettings.Lock_Display_ColorPreset;
+                }
+                bool isLock_AutoBriTemp = false;
+                if (isLockAutoTemp.HasValue)
+                {
+                    isLock_AutoBriTemp = isLockAutoTemp.Value;
+                }
+                else
+                {
+                    isLock_AutoBriTemp = data.LockSettings.Lock_Display_AutoBriTemp;
+                }
 
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -153,7 +174,7 @@ namespace DDPM.UI.Module.Color
                         vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Color right view(Lock) : {isLocked}");
                     }*/
-                    PerformLockUnlockUIAction((bool)isLocked, data.LockSettings.Lock_Display_AutoBriTemp);
+                    PerformLockUnlockUIAction(isLock_Color, isLock_AutoBriTemp);
                 }));
             }
         }
