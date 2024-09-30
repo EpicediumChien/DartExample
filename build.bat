@@ -24,6 +24,28 @@ if "%GetGotoUI%"=="UI" goto BuildUI
 
 ::goto FileCopy
 
+::
+:: Build DdmLibrary.dll
+::
+echo Clean DDPM.SA\DdmLibrary(Decrypt)
+dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\Decrypt\Decrypt.sln"
+if errorlevel 1 goto errorDdmLibrary
+echo Build DdmLibrary
+dotnet.exe build -c %ConfigType% /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA\Decrypt\Decrypt.sln"
+if errorlevel 1 goto errorDdmLibrary
+echo *************************************
+echo BUILD DdmLibrary SUCCESS
+echo BUILD DdmLibrary SUCCESS
+echo BUILD DdmLibrary SUCCESS
+echo *************************************
+xcopy /Y ".\DDPM.SA\Decrypt\ConsoleApp2\bin\%ConfigType%\%NET%-windows10.0.19041.0\DdmLibrary.dll" ".\DDPM.SA\dll\"  
+xcopy /Y ".\DDPM.SA\Decrypt\ConsoleApp2\bin\%ConfigType%\%NET%-windows10.0.19041.0\DdmLibrary.deps.json" ".\DDPM.SA\dll\"  
+
+
+
+::
+:: Build DDPM.Easy.Common
+::
 echo Clean DDPM.UI\DDPM.Easy.Common
 dotnet.exe clean /p:Framework=%NET% /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.UI\DDPM.Easy.Common\DDPM.Easy.Common.sln"
 if errorlevel 1 goto errorEAComm
@@ -116,6 +138,12 @@ echo *************************************
 
 
 goto PassDone
+
+:errorDdmLibrary
+echo ----------------------------------------
+echo ---- ERROR : Build DdmLibrary ERROR ----
+echo ----------------------------------------
+goto errorDone
 
 :errorEAComm
     @echo.
