@@ -22,7 +22,7 @@ namespace DDPM.UI.Common.ViewModels
         #region ctor
         public DeviceBasePageViewModel()
         {
-            
+
         }
         #endregion ctor
 
@@ -682,7 +682,7 @@ namespace DDPM.UI.Common.ViewModels
             HomeDevice homeDev = SelectedHomeDevice as HomeDevice;
             LogInfo($"  * HomeDevice: {homeDev.DisplayName}");
 
-            
+
 
             //PIP/PBP capability
             LogInfo($"  * Has PIP/PBP Capability={homeDev.HasCapability_PipPbp}");
@@ -753,16 +753,39 @@ namespace DDPM.UI.Common.ViewModels
 
                     //Robert_Lin, 2024-8-28, If "KVM" vbar item become Collapsed, and it's current selected Group
                     //Then we will change the selected Group to another visible vbarItem
-                    if ((!homeDev.HasCapability_Gaming) && (SelectedGroup != null))
+                    if ((homeDev.HasCapability_Gaming) && (SelectedGroup != null))
                     {
                         if (SelectedGroup.GroupName.Equals("Gaming"))
                         {
-                            //Change to EasyArrange
-                            int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
-                            if (idxEaGroup < 0)
-                                idxEaGroup = 0;
-                            GroupSelectedIndex = idxEaGroup;
+                            RightViewHeader? rightHeader = SelectedGroup.FindRightViewHeaderByModuleName("VisionEngineModule");
+                            //If Vision Engine is shown, AND current selected module is Vision Engine
+                            if ((rightHeader.IsShown) && (SelectedGroup.HeaderSelectedIndex == 1))
+                            {
+                                //Need update the index to 0 (InputSource)
+                                SelectedGroup.HeaderSelectedIndex = 0;
+
+                                if (SelectedGroup == SelectedGroup)
+                                {
+                                    RightViewHeaderSelectedIndex = SelectedGroup.HeaderSelectedIndex;
+                                }
+                            }
+                            //else
+                            //{
+                            //    //Change to EasyArrange
+                            //    int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                            //    if (idxEaGroup < 0)
+                            //        idxEaGroup = 0;
+                            //    GroupSelectedIndex = idxEaGroup;
+                            //}
                         }
+                    }
+                    else if (SelectedGroup != null && SelectedGroup.GroupName.Equals("Gaming"))
+                    {
+                        //Change to EasyArrange
+                        int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                        if (idxEaGroup < 0)
+                            idxEaGroup = 0;
+                        GroupSelectedIndex = idxEaGroup;
                     }
                 }
             }
@@ -867,13 +890,13 @@ namespace DDPM.UI.Common.ViewModels
             }
 
             //Disable/Enable all other (non EA) Groups (it it's visible)
-            for (int i=0; i<VbarItems.Count; i++)
+            for (int i = 0; i < VbarItems.Count; i++)
             {
                 //For the non-visible groupes. we don't need to change them
                 if (VbarItems[i].Visibility != Visibility.Visible)
                     continue;
                 //If it's not EasyArrange group
-                if (i!=idxEA)
+                if (i != idxEA)
                 {
                     VbarItems[i].LeaveHoverState();
                     VbarItems[i].IsEnabled = isDdcCiOn;

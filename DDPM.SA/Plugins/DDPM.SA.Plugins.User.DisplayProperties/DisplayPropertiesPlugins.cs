@@ -136,6 +136,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 devMode.dmSize = (short)Marshal.SizeOf(typeof(DEVMODE));
                 if (_EnumDisplaySettings(DisplayName, ENUM_CURRENT_SETTINGS, ref devMode))
                 {
+                    if ((int)orientation >= 0)
+                    {
+                        devMode.dmDisplayOrientation = (int)orientation;
+                    }
                     if (properties.Resolutions_Width > 0 && properties.Resolutions_High > 0)
                     {
                         devMode.dmPelsWidth = properties.Resolutions_Width;
