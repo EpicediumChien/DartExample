@@ -18,6 +18,10 @@ namespace MiniInstaller
         {
             DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
             logFilePath = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-MiniInstall\\DDPM-Setup-MiniInstall.log";
+            if (!Directory.Exists(DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-MiniInstall"))
+            {
+                Directory.CreateDirectory(DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-MiniInstall");
+            }
         }
 
         public static void LogMessage(string message)

@@ -63,7 +63,7 @@ namespace DDPM.SA.Common.Security
         {
             info = "Valid";
             bool bResult = true;
-            string FileName = FilePathFileName.Substring(FilePathFileName.LastIndexOf("\\"));
+            string FileName = FilePathFileName.Substring(FilePathFileName.LastIndexOf("\\")+1);
             int len = FilePathFileName.Length;
             if ((!bLongPath && (len < 1 || len > 260)) || (bLongPath && (len < 1 || len > 32767)))
             {

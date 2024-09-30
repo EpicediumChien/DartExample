@@ -146,6 +146,9 @@ namespace DDPM.UI.Module.EzArrange
                         spItem = splitListView_2w.AddItemToList(newSplit.UC);
                         break;
 
+                    case 3:
+                        spItem = splitListView_3w.AddItemToList(newSplit.UC);
+                        break;
                     case 4:
                         spItem = splitListView_4w.AddItemToList(newSplit.UC);
                         break;

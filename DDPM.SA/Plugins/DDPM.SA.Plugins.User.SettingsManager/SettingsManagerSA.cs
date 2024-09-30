@@ -1747,6 +1747,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[InitDDPMUserSettings_Common]: File:{ConfigPath}, empty file info");
                 return null;
             }
+            if (string.IsNullOrEmpty(fileInfo.DirectoryName))
+            {
+                WriteLog($"[InitDDPMUserSettings_Common]: empty DirectoryName of fileInfo");
+                return null;
+            }
             string fileFolder = fileInfo.DirectoryName;
             try
             {
