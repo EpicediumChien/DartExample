@@ -281,6 +281,7 @@ namespace DDPM.UI.Module.Gaming
         {
             try
             {
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
                 Resolution_ItemsCollection = new List<UI_Properties>();
                 GameEnhanceMode_ItemsCollection = new List<UI_GameEnhancementMode>();
                 ResponseTime_ItemsCollection = new List<UI_ResponseTime>();
@@ -288,31 +289,31 @@ namespace DDPM.UI.Module.Gaming
                 HDRType_ItemsCollection = new List<UI_HDRType>();
                 DualResolution_ItemsCollection = new List<UI_DualResolution>();
 
-                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(currentMonitorInfo).Result;
                 if (displayPropertiesInfo.IsSupported_GameEnhancementMode)
                 {
-                    displayPropertiesInfo.Current_GameEnhancementMode = DdpmCommonHelper.DeviceManagerSA.GetCurrentGame_EnhancementMode(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    displayPropertiesInfo.Current_GameEnhancementMode = DdpmCommonHelper.DeviceManagerSA.GetCurrentGame_EnhancementMode(currentMonitorInfo).Result;
                     IsSupported_GameEnhanceMode = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_ResponseTime)
                 {
-                    displayPropertiesInfo.Current_ResponseTime = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_ResponseTime(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    displayPropertiesInfo.Current_ResponseTime = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_ResponseTime(currentMonitorInfo).Result;
                     IsSupported_ResponseTime = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_DarkStabilizer)
                 {
-                    displayPropertiesInfo.Current_DarkStabilizer = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DarkStabilizer(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    displayPropertiesInfo.Current_DarkStabilizer = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DarkStabilizer(currentMonitorInfo).Result;
                     IsSupported_DarkStabilizer = Visibility.Visible;
                 }
                 if (displayPropertiesInfo.IsSupported_HDRType)
                 {
-                    displayPropertiesInfo.Current_HDRType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_HDRType(MyModule.SelectedHomeDevice.MonitorInfo).Result;
-                    IsGameSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
-                    IsAWSeries = MyModule.SelectedHomeDevice.MonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
+                    displayPropertiesInfo.Current_HDRType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_HDRType(currentMonitorInfo).Result;
+                    IsGameSeries = currentMonitorInfo.modelName.ToUpper().StartsWith("G") ? Visibility.Visible : Visibility.Collapsed;
+                    IsAWSeries = currentMonitorInfo.modelName.ToUpper().StartsWith("AW") ? Visibility.Visible : Visibility.Collapsed;
                 }
                 if (displayPropertiesInfo.IsSupported_DualResolutionType)
                 {
-                    displayPropertiesInfo.Current_DualResolutionType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DualResolutionType(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    displayPropertiesInfo.Current_DualResolutionType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_DualResolutionType(currentMonitorInfo).Result;
                     IsSupported_DualResolution = Visibility.Visible;
                 }
 
