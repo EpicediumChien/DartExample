@@ -140,7 +140,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         //Only for init (entering Landing page)
         private void ApplyockStatusFromSettingsFile()
         {
-            DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
             if (data == null)
                 return;
             if (data.UserSettings == null)

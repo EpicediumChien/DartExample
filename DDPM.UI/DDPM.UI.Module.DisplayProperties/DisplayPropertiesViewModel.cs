@@ -325,7 +325,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == displayPropertiesInfo.CurrentOrientation));
 
                 //Lock/unlock UI init data here (user's lock data should be synced up from IT config, so read user's data directly)
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_RefreshRate = (bool)data.LockSettings.Lock_Display_ResolutionRefreshRate;
                 Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {Lock_RefreshRate}");
                 Lock_USBCrioritization = (bool)data.LockSettings.Lock_Display_USBCPrioritization;

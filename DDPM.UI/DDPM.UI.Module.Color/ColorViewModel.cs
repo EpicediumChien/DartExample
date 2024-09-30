@@ -200,7 +200,7 @@ namespace DDPM.UI.Module.Color
         {
             int idex = ColorPresetSelectedIndex;// cbManualPreset.SelectedIndex;
 
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
 
             //this.Dispatcher.Invoke((Action)(() =>
             Task.Run(() =>
@@ -725,8 +725,8 @@ namespace DDPM.UI.Module.Color
                 */
                
                 //Lock/unlock mask and tabstop init here
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
-                                                                                                  //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here                
+                                                                        //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
 
                 LockMaskVisible = data.LockSettings.Lock_Display_ColorPreset ? Visibility.Visible : Visibility.Collapsed;
                 ShowLockMask = data.LockSettings.Lock_Display_ColorPreset;
