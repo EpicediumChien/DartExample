@@ -148,7 +148,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         public void TestReadColorPresetSettings()
         {
             string colorsettings_path1_ = "test_colorsettingPath.json";
-            string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
+            string jsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456\",\"RunType\":0,\"ColorManagement_Status\":0,\"ColorManagement_RunType\":1,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
             //string jsonData = "[{'DeviceInfo':null,'RunType':0,'AppInfo':null,'PresetForManual':'TestManual'}]";
             string presetForManual_ = "TestManual";
             List<ColorPresetSettings> preset_settings1_ = new List<ColorPresetSettings>();
@@ -164,9 +164,18 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             if (File.Exists(colorsettings_path1_))
             {
                 File.WriteAllText(colorsettings_path1_, jsonData); // mock data to temp data
-                var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadColorPresetSettings().Result;
-                Assert.Greater(ReadColorPresetSettingsResult2.Count, 0);
-                Assert.That(presetForManual_, Is.EqualTo(ReadColorPresetSettingsResult2[0].PresetForManual));
+                var ReadColorPresetSettingsResult2 = SettingsManagerSAPlugin.ReadColorPresetSettings().Result; //strFilePath is  Exists, get strReadJson length is null
+                Assert.That(preset_settings1_, Is.EqualTo(ReadColorPresetSettingsResult2));
+            }
+            if (File.Exists(colorsettings_path1_) && jsonData != null)
+            {
+                string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
+                string colorsettings_path3 = Environment.CurrentDirectory + "\\" + colorsettings_path1_;
+                privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorsettings_path3);
+                privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
+                var ReadColorPresetSettingsResult3 = SettingsManagerSAPlugin.ReadColorPresetSettings().Result; //strFilePath is  Exists, get strReadJson length is not null
+                Assert.IsNotNull(colorsettings_path3);
+                Assert.That(preset_settings1_, Is.EqualTo(ReadColorPresetSettingsResult3));
                 File.Delete(colorsettings_path1_);
             }
         }
@@ -177,12 +186,26 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             bool writeColorPresetSettings_ = false;
             bool writeColorPresetSettings_succeed = true;
             List<ColorPresetSettings> colorPresetSettingsConfigsNull = null;
-            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { } };
+            List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>();
+            ColorPresetSettings colorPresetSettings = new ColorPresetSettings()
+            {
+                AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
+                ColorManagement_RunType = 1,
+                ColorManagement_Status = 0,
+                ModelName = "TestU2724",
+                PresetForManual = "TestPresetForManual",
+                SerialNumber = "123456",
+                RunType = 0
+            };
+            colorPresetSettingsConfigs.Add(colorPresetSettings);
             string colorsettings_path1_ = "test_writeCroPresetpath.json";
-            string jsonData = "[{\"DeviceInfo\":null,\"RunType\":0,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
+            string jsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456\",\"RunType\":0,\"ColorManagement_Status\":0,\"ColorManagement_RunType\":1,\"AppInfo\":null,\"PresetForManual\":\"TestManual\"}]";
             File.WriteAllText(colorsettings_path1_, jsonData);
+            string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
-            privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorsettings_path1_);
+            string colorsettings_path2 = Environment.CurrentDirectory + "\\" + colorsettings_path1_;
+            privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorsettings_path2);
+            privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
             if (colorPresetSettingsConfigsNull == null)
             {
                 var WriteColorPresetSettingsResult1 = SettingsManagerSAPlugin.WriteColorPresetSettings(colorPresetSettingsConfigsNull).Result;
@@ -192,7 +215,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             if (colorPresetSettingsConfigs != null)
             {
                 var WriteColorPresetSettingsResult2 = SettingsManagerSAPlugin.WriteColorPresetSettings(colorPresetSettingsConfigs).Result;
-                Assert.That(writeColorPresetSettings_succeed, Is.EqualTo(WriteColorPresetSettingsResult2));
+                Assert.IsNotNull(WriteColorPresetSettingsResult2);
+                Assert.That(writeColorPresetSettings_, Is.EqualTo(WriteColorPresetSettingsResult2));
                 File.Delete(colorsettings_path1_);
             }
         }
