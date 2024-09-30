@@ -7,7 +7,10 @@ namespace DDPM.SA.Common.Display
 {
     public class HotkeySettings
     {
-        public EDID DeviceInfo { get; set; }
+        //public EDID DeviceInfo { get; set; }
+        public string ModelName { get; set; }
+        public string SerialNumber { get; set; }
+        public string ServiceTag { get; set; }
         public List<HotkeyOption> HotkeyOptions { get; set; } = new List<HotkeyOption>();
 
         public List<HotkeyInfo> HotkeyInfo { get; set; }

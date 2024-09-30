@@ -467,7 +467,10 @@ namespace DDPM.UI.Module.Kvm
         {
             HotkeySettings hotkeySettings = new HotkeySettings
             {
-                DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
+                //DeviceInfo = KvmModule.SelectedHomeDevice.MonitorInfo.edid,
+                ModelName = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ModelName,
+                SerialNumber = KvmModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber,
+                ServiceTag = KvmModule.SelectedHomeDevice.MonitorInfo.edid.ServiceTag,
                 HotkeyOptions = new List<HotkeyOption> { _autoSwitchChecked ? HotkeyOption.KvmAutoApply : HotkeyOption.None }
             };
             DdpmCommonHelper.DeviceManagerSA.SaveHotkeyOptionOnly(hotkeySettings);

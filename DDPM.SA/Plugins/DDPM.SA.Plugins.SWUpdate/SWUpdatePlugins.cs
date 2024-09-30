@@ -415,7 +415,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
-                    if (!CheckSHA(swUpdateInfos[i].InstallPaths, out string FileCAInfo))
+                    if (!CheckSHA(_installationFileStoragePath, out string FileCAInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FileCheckFail;
                         _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " File check fail. Ex:" + FileCAInfo);
