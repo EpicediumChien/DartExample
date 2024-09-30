@@ -18,8 +18,8 @@ namespace DDPM.Easy.Common
         public static List<ISplitCtrl> Splits_EA = new List<ISplitCtrl>()
         {
             new SplitCtrl2A(), new SplitCtrl2B(), new SplitCtrl2C(), new SplitCtrl2D(),
-            //new SplitCtrl3A(), new SplitCtrl3B(), new SplitCtrl3C(), new SplitCtrl3D(), new SplitCtrl3E(), new SplitCtrl3F(),
-            //new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
+            new SplitCtrl3A(), new SplitCtrl3B(), new SplitCtrl3C(), new SplitCtrl3D(), new SplitCtrl3E(), new SplitCtrl3F(),
+            new SplitCtrl3G(), new SplitCtrl3H(), new SplitCtrl3I(),
             new SplitCtrl4A(), new SplitCtrl4B(), new SplitCtrl4C(), new SplitCtrl4D(),
             new SplitCtrl4E(), new SplitCtrl4F(),
             //new SplitCtrl5A(), new SplitCtrl5B(), new SplitCtrl5C(), new SplitCtrl5D(), new SplitCtrl5E(), new SplitCtrl5F(),
