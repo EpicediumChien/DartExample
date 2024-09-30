@@ -53,7 +53,6 @@ using IDs = DDPM.SA.Common.IDs;
 using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
 using DDPM.SA.Common.Method;
-//using MonitorProfile = DDPM.SA.Common.MonitorProfile;
 using DdmLibrary;
 using DdmLibrary.Utility;
 
