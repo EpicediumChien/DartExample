@@ -819,7 +819,7 @@ namespace DDPM.UI.Common.ViewModels
                     LogInfo($"  * DisplayProperties page isShown={rightHeader.IsShown}");
 
                     //If CurrentSelected module is "DisplayProperties" 
-                    if (mg.HeaderSelectedIndex == 2)
+                    if (!rightHeader.IsShown && mg.HeaderSelectedIndex == 2)
                     {
                         //Need update the index to 1
                         mg.HeaderSelectedIndex = 1;
