@@ -9,9 +9,6 @@ namespace DDPM.UI.Module.WebCameraSettings
 {
     public class WebCameraSettingsModule : IDdpmModule
     {
-        // 20240628 jim add
-        private readonly WebCameraViewModel? _vm;
-
         private UserControl? _leftView = null;
         private UserControl _rightView;
 
@@ -21,9 +18,6 @@ namespace DDPM.UI.Module.WebCameraSettings
         public WebCameraSettingsModule(WebCameraViewModel vm)
         {
             _rightView = new WebCameraSettingsRightView(vm);
-
-            // 20240628 jim add
-            _vm = vm;
         }
 
         public string ModuleName { get => "WebCameraSettingsModule"; }

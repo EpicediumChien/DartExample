@@ -124,6 +124,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             RecordingTimer.Tick += RecordingTimer_Tick;
 
             _vm!.WebcamSettingChanged += WebcamSettingChanged;
+
             Preview();
         }
 
