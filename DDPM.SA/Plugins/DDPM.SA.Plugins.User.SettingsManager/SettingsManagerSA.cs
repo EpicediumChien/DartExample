@@ -16,6 +16,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using DdmLibrary;
+using DdmLibrary.Utility;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -924,12 +926,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCPCode> vcps)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             DDPMImpExpSettings ImpExpSettings = ReadImportSettingsFile(path);
-            vcps = new List<VCP>();
+            vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
                 DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
@@ -1014,11 +1016,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task<bool>.FromResult(false);
         }
 
-        public Task<bool> ReadDDMSettings(string path)
+        public Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings)
         {
             if (File.Exists(path))
             {
-                return Task.FromResult(true);
+                if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
+                {
+                    return Task<bool>.FromResult(true);
+                }
             }
             return Task<bool>.FromResult(false);
         }

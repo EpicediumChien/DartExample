@@ -54,7 +54,8 @@ using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
 using DDPM.SA.Common.Method;
 //using MonitorProfile = DDPM.SA.Common.MonitorProfile;
-using DDMSettings;
+using DdmLibrary;
+using DdmLibrary.Utility;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -2938,7 +2939,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             Dictionary<object, object> cacheTable = new Dictionary<object, object>();
                             cacheTable = FindVCPTable(VCPTable, monitorInfo.edid);
-                            foreach (VCP vcp in monitorSettings.VCPs)
+                            foreach (VCPCode vcp in monitorSettings.VCPs)
                             {
                                 if (vcp.Value != null)
                                 {
@@ -2978,7 +2979,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
         {
             ImportVCP importVCP = new ImportVCP();
-            if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCP> vcps).Result)
+            if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCPCode> vcps).Result)
             {
                 if (vcps != null)
                 {
@@ -2986,7 +2987,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         //set ImportVCPSequence
                         SetVCPSequence(monitorInfo, vcps);
-                        foreach (VCP code in vcps)
+                        foreach (VCPCode code in vcps)
                         {
                             writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
                             if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
@@ -6306,40 +6307,41 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         //----------暫存
-        public class FriendlyName
-        {
-            public int Input { get; set; }
-            public string Name { get; set; }
-            public FriendlyName(int input, string name)
-            {
-                Input = input;
-                Name = name;
-            }
-        }
+        //public class FriendlyName
+        //{
+        //    public int Input { get; set; }
+        //    public string Name { get; set; }
+        //    public FriendlyName(int input, string name)
+        //    {
+        //        Input = input;
+        //        Name = name;
+        //    }
+        //}
 
-        public class Input
-        {
-            public List<FriendlyName> FriendlyNames { get; set; }
-            public List<int> SwitchInputHotkeysInfo { get; set; }
-            public List<int> Toogle2InputHotkeysInfo { get; set; }
-            public int FavoriteHotkeyInput { get; set; }
-            //deprecated
-            //        public List<SwitchInputHotkey> SwitchInputHotkeys { get; set; }
-            //deprecated
-            //        public Toogle2InputHotkeys Toogle2InputHotkeys { get; set; }
-            public Input()
-            {
-                FriendlyNames = new List<FriendlyName>();
-                SwitchInputHotkeysInfo = new List<int>();
-                Toogle2InputHotkeysInfo = new List<int>();
-                //deprecated
-                //            SwitchInputHotkeys = new List<SwitchInputHotkey>();
-            }
-        }
+        //public class Input
+        //{
+        //    public List<FriendlyName> FriendlyNames { get; set; }
+        //    public List<int> SwitchInputHotkeysInfo { get; set; }
+        //    public List<int> Toogle2InputHotkeysInfo { get; set; }
+        //    public int FavoriteHotkeyInput { get; set; }
+        //    //deprecated
+        //    //        public List<SwitchInputHotkey> SwitchInputHotkeys { get; set; }
+        //    //deprecated
+        //    //        public Toogle2InputHotkeys Toogle2InputHotkeys { get; set; }
+        //    public Input()
+        //    {
+        //        FriendlyNames = new List<FriendlyName>();
+        //        SwitchInputHotkeysInfo = new List<int>();
+        //        Toogle2InputHotkeysInfo = new List<int>();
+        //        //deprecated
+        //        //            SwitchInputHotkeys = new List<SwitchInputHotkey>();
+        //    }
+        //}
         //--------------------------------------------
 
         private Dictionary<string, InputInfo> DDMtoDDPM_Input(Input input)
         {
+            
             InputTypeString inputTypeString = new InputTypeString();
             Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
             Dictionary<string, InputInfo> newinputlist = new Dictionary<string, InputInfo>();
@@ -6600,18 +6602,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Settings
 
-        private List<VCP> GetAllVCPcode(MonitorInfo monitorInfo)
+        private List<VCPCode> GetAllVCPcode(MonitorInfo monitorInfo)
         {
-            List<VCP> vcps = new List<VCP>();
+            List<VCPCode> vcps = new List<VCPCode>();
             foreach (string key in monitorInfo.CapabilityDic.Keys)
             {
-                VCP vcp = new VCP(Int32.Parse(key, System.Globalization.NumberStyles.HexNumber), null);
+                VCPCode vcp = new VCPCode(Int32.Parse(key, System.Globalization.NumberStyles.HexNumber), null);
                 vcps.Add(vcp);
             }
             return vcps;
         }
 
-        private void SetVCPSequence(MonitorInfo monitorInfo, List<VCP> vcps)
+        private void SetVCPSequence(MonitorInfo monitorInfo, List<VCPCode> vcps)
         {
             if (vcps.Count != 0)
             {
@@ -6626,7 +6628,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (vcps.Exists(x => x.Code == code))
                     {
-                        VCP vcp = vcps.Find(x => x.Code == code);
+                        VCPCode vcp = vcps.Find(x => x.Code == code);
                         writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
                         ObjGetVCP objGetVCP = new ObjGetVCP();
                         objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
@@ -6722,18 +6724,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string migration = string.Empty;
                 if (_SettingsPlugin.isDDMMigration(out migration).Result)
                 {
-                    if (_SettingsPlugin.ReadDDMSettings(migration).Result)
+                    DDMMonitorSettings DDMmonitorsettings = new DDMMonitorSettings();
+                    if (_SettingsPlugin.ReadDDMMonitorSettings(migration, ref DDMmonitorsettings).Result)
                     {
                         //DDM settings -> DDPM settings
-                        ImportDDMSettings();
+                        ImportDDMMonitorSettings(DDMmonitorsettings);
                     }
                 }
             }
         }
 
-        private void ImportDDMSettings()
+        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings)
         {
-            //DDMtoDDPM_Input();
+            DDMtoDDPM_Input(DDMmonitorsettings.Input);
         }
         #endregion Migration
 
