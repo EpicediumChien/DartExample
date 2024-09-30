@@ -52,7 +52,9 @@ using static VcpCore.Common.EDIDReader;
 using IDs = DDPM.SA.Common.IDs;
 using Microsoft.WindowsAPICodePack.Win32Native;
 using System.IO.Compression;
-//using MonitorProfile = DDPM.SA.Common.MonitorProfile;
+using DDPM.SA.Common.Method;
+using DdmLibrary;
+using DdmLibrary.Utility;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -1039,6 +1041,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //_inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
             //DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
             Dictionary<string, InputInfo> inputSourcelist = new Dictionary<string, InputInfo>();
+            Dictionary<string, InputInfo> inputSourcelist2 = new Dictionary<string, InputInfo>();
             //get monitor settings
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null)
@@ -1059,6 +1062,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (monitorSetting.Input.strInputSourceList != null && monitorSetting.Input.strInputSourceList != string.Empty)
                             {
                                 inputSourcelist = InputSourceListDeserialize(monitorSetting.Input.strInputSourceList);
+                                foreach(var input in inputSourcelist) 
+                                {
+                                    if (input.Value.USBUpstream == string.Empty)
+                                    {
+                                        if (inputSourcelist2 == null)
+                                        {
+                                            inputSourcelist2 = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                        }
+                                        else
+                                        {
+                                            if(inputSourcelist2.Count==0)
+                                            {
+                                                inputSourcelist2 = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                            }
+                                        }
+                                        input.Value.USBUpstream = inputSourcelist2[input.Key].USBUpstream;
+                                        
+                                    }
+                                }
+                                if (inputSourcelist2 != null)
+                                {
+                                    if (inputSourcelist2 != inputSourcelist)
+                                    {
+                                        bool b1 = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                                    }
+                                }
                                 return Task.FromResult(inputSourcelist);
                             }
                         }
@@ -3150,7 +3179,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             Dictionary<object, object> cacheTable = new Dictionary<object, object>();
                             cacheTable = FindVCPTable(VCPTable, monitorInfo.edid);
-                            foreach (VCP vcp in monitorSettings.VCPs)
+                            foreach (VCPCode vcp in monitorSettings.VCPs)
                             {
                                 if (vcp.Value != null)
                                 {
@@ -3190,7 +3219,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
         {
             ImportVCP importVCP = new ImportVCP();
-            if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCP> vcps).Result)
+            if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCPCode> vcps).Result)
             {
                 if (vcps != null)
                 {
@@ -3198,7 +3227,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         //set ImportVCPSequence
                         SetVCPSequence(monitorInfo, vcps);
-                        foreach (VCP code in vcps)
+                        foreach (VCPCode code in vcps)
                         {
                             writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
                             if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
@@ -6772,6 +6801,81 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return inputlist;
         }
 
+        //----------暫存
+        //public class FriendlyName
+        //{
+        //    public int Input { get; set; }
+        //    public string Name { get; set; }
+        //    public FriendlyName(int input, string name)
+        //    {
+        //        Input = input;
+        //        Name = name;
+        //    }
+        //}
+
+        //public class Input
+        //{
+        //    public List<FriendlyName> FriendlyNames { get; set; }
+        //    public List<int> SwitchInputHotkeysInfo { get; set; }
+        //    public List<int> Toogle2InputHotkeysInfo { get; set; }
+        //    public int FavoriteHotkeyInput { get; set; }
+        //    //deprecated
+        //    //        public List<SwitchInputHotkey> SwitchInputHotkeys { get; set; }
+        //    //deprecated
+        //    //        public Toogle2InputHotkeys Toogle2InputHotkeys { get; set; }
+        //    public Input()
+        //    {
+        //        FriendlyNames = new List<FriendlyName>();
+        //        SwitchInputHotkeysInfo = new List<int>();
+        //        Toogle2InputHotkeysInfo = new List<int>();
+        //        //deprecated
+        //        //            SwitchInputHotkeys = new List<SwitchInputHotkey>();
+        //    }
+        //}
+        //--------------------------------------------
+
+        private Dictionary<string, InputInfo> DDMtoDDPM_Input(Input input)
+        {
+            
+            InputTypeString inputTypeString = new InputTypeString();
+            Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
+            Dictionary<string, InputInfo> newinputlist = new Dictionary<string, InputInfo>();
+            List<string> inputType = new List<string>();
+            List<string> newinputType = new List<string>();
+            foreach (FriendlyName friendlyName in input.FriendlyNames)
+            {
+                foreach (var vcpcode in VcpCodeList.VCP60)
+                {
+                    InputInfo inputInfo = new InputInfo();
+                    if (vcpcode.Value == (uint)friendlyName.Input)
+                    {
+                        inputType.Add(vcpcode.Key);
+                        inputInfo.InputName = friendlyName.Name;
+                        inputInfo.Code = vcpcode.Value;
+                        inputInfo.USBUpstream = string.Empty;
+                        inputlist.Add(vcpcode.Key, inputInfo);
+                        break;
+                    }
+                }
+            }
+            
+            newinputType = inputTypeString.SubInputType(inputType);
+
+            foreach (var inputsource in inputlist)
+            {
+                if (newinputType.Exists(x => x == inputsource.Key))
+                {
+                    newinputlist.Add(inputsource.Key, inputsource.Value);
+                }
+                else if (newinputType.Exists(x => x == inputsource.Key.Substring(0, inputsource.Key.Length - 1)))
+                {
+                    newinputlist.Add(inputsource.Key.Substring(0, inputsource.Key.Length - 1), inputsource.Value);
+                }
+            }
+
+            return newinputlist;
+        }
+
         #endregion
 
         public Task<string> GetAppIconFolderPath()
@@ -6993,18 +7097,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Settings
 
-        private List<VCP> GetAllVCPcode(MonitorInfo monitorInfo)
+        private List<VCPCode> GetAllVCPcode(MonitorInfo monitorInfo)
         {
-            List<VCP> vcps = new List<VCP>();
+            List<VCPCode> vcps = new List<VCPCode>();
             foreach (string key in monitorInfo.CapabilityDic.Keys)
             {
-                VCP vcp = new VCP(Int32.Parse(key, System.Globalization.NumberStyles.HexNumber), null);
+                VCPCode vcp = new VCPCode(Int32.Parse(key, System.Globalization.NumberStyles.HexNumber), null);
                 vcps.Add(vcp);
             }
             return vcps;
         }
 
-        private void SetVCPSequence(MonitorInfo monitorInfo, List<VCP> vcps)
+        private void SetVCPSequence(MonitorInfo monitorInfo, List<VCPCode> vcps)
         {
             if (vcps.Count != 0)
             {
@@ -7019,7 +7123,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (vcps.Exists(x => x.Code == code))
                     {
-                        VCP vcp = vcps.Find(x => x.Code == code);
+                        VCPCode vcp = vcps.Find(x => x.Code == code);
                         writelog("[SetVCPSequence] VCP code : " + vcp.Code.ToString());
                         ObjGetVCP objGetVCP = new ObjGetVCP();
                         objGetVCP = GetVCPCapability(monitorInfo, (byte)vcp.Code).Result;
@@ -7106,6 +7210,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
+
+        #region Migration
+        private void Migration()
+        {
+            if (_SettingsPlugin != null)
+            {
+                string migration = string.Empty;
+                if (_SettingsPlugin.isDDMMigration(out migration).Result)
+                {
+                    DDMMonitorSettings DDMmonitorsettings = new DDMMonitorSettings();
+                    if (_SettingsPlugin.ReadDDMMonitorSettings(migration, ref DDMmonitorsettings).Result)
+                    {
+                        //DDM settings -> DDPM settings
+                        ImportDDMMonitorSettings(DDMmonitorsettings);
+                    }
+                }
+            }
+        }
+
+        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings)
+        {
+            DDMtoDDPM_Input(DDMmonitorsettings.Input);
+        }
+        #endregion Migration
 
         #region Event Handler
 
