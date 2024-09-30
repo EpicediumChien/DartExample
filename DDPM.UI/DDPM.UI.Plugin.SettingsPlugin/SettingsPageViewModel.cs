@@ -106,7 +106,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             try 
             {
                 GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
                 Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_Settings_TelemetryConsent}");
                 Lock_UpdatesPage = data.LockSettings.Lock_Settings_Updates;
@@ -132,6 +132,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             get
             {
+                //avoid null
+                if (GlobalSettingParam == null || GlobalSettingParam.GlobalSetting_WidgetSettings == null)
+                    return "OFF";
                 if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                 {
                     return "ON";
@@ -143,6 +146,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             get
             {
+                //avoid null
+                if (GlobalSettingParam == null || GlobalSettingParam.GlobalSetting_WidgetSettings == null)
+                    return "OFF";
                 if (GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
                 {
                     return "ON";

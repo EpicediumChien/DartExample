@@ -26,7 +26,7 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
 
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data))
@@ -127,7 +127,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 Dispatcher.Invoke(new Action(() =>
                 {
                     DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
-                    data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    data = DdpmCommonHelper.ReadDDPMSettings(true);//DeviceManagerSA.ReloadAppConfigData().Result;
                     if (vm != null)
                     {
                         if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)

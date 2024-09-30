@@ -61,7 +61,7 @@ namespace DDPM.UI.Module.Color
                 return;
             try
             {
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data == null)
                     return;
                 if (data.UserSettings == null)
