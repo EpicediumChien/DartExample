@@ -9,35 +9,35 @@ namespace DDPM.SA.Common.Settings
         public List<int> ImportVCPSequence = new List<int>() { 0x66, 0x10, 0x12, /*0xF0,*/ 0xE9 };
     }
 
-    public class Input
+    public class InputSource
     {
         public string strInputSourceList { get; set; }
     }
 
-    public class KVM
+    public class KVMSettings
     {
         public string strUSBKVMPCsList { get; set; }
         public bool isOnUSBKVM { get; set; }
         public bool isOnNKVM { get; set; }
     }
 
-    public class VCP
+    public class VCPCode
     {
         public int Code { get; set; }
         public List<int> Value { get; set; }
 
-        public VCP()
+        public VCPCode()
         {
         }
 
-        public VCP(int code, int value)
+        public VCPCode(int code, int value)
         {
             Code = code;
             Value = new List<int>();
             Value.Add(value);
         }
 
-        public VCP(int code, List<int> value)
+        public VCPCode(int code, List<int> value)
         {
             Code = code;
             Value = ((value == null) ? new List<int>() : new List<int>(value));
@@ -97,9 +97,9 @@ namespace DDPM.SA.Common.Settings
         public double Version { get; set; }
         public string Model { get; set; }
         public string ServiceTag { get; set; }
-        public Input Input { get; set; } = new Input();
-        public KVM KVM { get; set; } = new KVM();
-        public List<VCP> VCPs { get; set; } = new List<VCP>();
+        public InputSource Input { get; set; } = new InputSource();
+        public KVMSettings KVM { get; set; } = new KVMSettings();
+        public List<VCPCode> VCPs { get; set; } = new List<VCPCode>();
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
         public DisplayPropertiesInfo DisplayPropertiesInfo { get; set; }
     }
