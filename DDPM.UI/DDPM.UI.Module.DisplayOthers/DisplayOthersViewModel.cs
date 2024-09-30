@@ -238,8 +238,17 @@ namespace DDPM.UI.Module.DisplayOthers
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = saveFileDialog.FileName;
-                ImpExpSettings("Exp", filename);
-                return true;
+                string info = string.Empty;
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                {
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+                else 
+                { 
+                    ImpExpSettings("Exp", filename);
+                    return true;
+                }
             }
             else
             {
@@ -259,8 +268,17 @@ namespace DDPM.UI.Module.DisplayOthers
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
-                ImpExpSettings("Imp", filename);
-                return true;
+                string info = string.Empty;
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                {
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+                else
+                {
+                    ImpExpSettings("Imp", filename);
+                    return true;
+                }
             }
             else
             {
