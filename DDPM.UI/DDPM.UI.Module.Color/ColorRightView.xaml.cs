@@ -75,6 +75,8 @@ namespace DDPM.UI.Module.Color
                 else
                     vm.TabNavigation = "Cycle";
 
+                vm.LockMaskVisible = vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;
+
                 //vm.isConsentChecked = data.UserSettings.isTelemetryConsentOn;
 
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
@@ -133,7 +135,7 @@ namespace DDPM.UI.Module.Color
                         else
                             vm.TabNavigation = "Cycle";
 
-                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         Trace.WriteLine($"[SettingsPage] Color right view(Lock) : {isLocked}");
                     }
                 }));

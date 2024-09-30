@@ -6,6 +6,8 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
+using VcpCore.Common;
 using Windows.System;
 
 namespace DDPM.UI.Module.DisplayHotkeys
@@ -143,6 +145,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
             }
         }
 
+        public Visibility PxPkeySettings_Visibility { get; set; } = Visibility.Collapsed;
+
         private void SaveHotkeySettings(InputSourceObj inputSourceObj, string inputNo)
         {
             HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid).Result;
@@ -221,6 +225,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             bw.DoWork += DoWork_RefreshData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
+            IsBusy = true;
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
@@ -340,6 +345,14 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         }
                     }
                 }
+                else
+                {
+                    ToggleInputSourceKey = "None";
+                    FavoriteInputSourceKey = "None";
+                    SwitchInputSourceKey = "None";
+                    SwapPIPPBPInputSourceKey = "None";
+                    ChangePIPPositionKey = "None";
+                }
             }
             catch (Exception)
             {
@@ -350,7 +363,20 @@ namespace DDPM.UI.Module.DisplayHotkeys
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process
+            IsBusy = false;
+            OnPropertyChanged("IsBusy");
             Debug.WriteLine("InputSource-->Hotkey tab data refresh done");
         }
+        #region UI Enable Flags
+
+        private bool _isBusy = false;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
+        #endregion UI Enable Flags
     }
 }

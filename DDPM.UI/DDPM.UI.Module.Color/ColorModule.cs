@@ -70,6 +70,10 @@ namespace DDPM.UI.Module.Color
         //Handle new device coming
         private void InitNewViewModel()
         {
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            vm = new ColorViewModel();
+            _rightView.DataContext = vm;
+            vm.MyModule = this;
         }
 
         public void OnActivated()

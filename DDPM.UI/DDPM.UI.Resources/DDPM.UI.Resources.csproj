@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Resources.zh-TW.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\Images\Alert.png" />
     <None Remove="Resources\Images\arrow-left.png" />
     <None Remove="Resources\Images\AW.png" />
@@ -277,7 +281,9 @@
     <None Remove="Resources\Images\WM126.png" />
     <None Remove="Resources\Images\WM514.png" />
     <None Remove="Resources\Images\ZoomIn.png" />
+    <None Remove="Resources\Images\ZoomInS.png" />
     <None Remove="Resources\Images\ZoomOut.png" />
+    <None Remove="Resources\Images\ZoomOutS.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -671,10 +677,12 @@
     <Resource Include="Resources\Images\ZoomIn.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\ZoomInS.png" />
     <Resource Include="Resources\Images\ZoomOut.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\WM126.png" />
+    <Resource Include="Resources\Images\ZoomOutS.png" />
   </ItemGroup>
 
   <ItemGroup>

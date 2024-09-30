@@ -56,8 +56,7 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.LockMaskVisible = (bool)isLocked_BriCont ? Visibility.Visible : Visibility.Collapsed;
-                        vm.TabSTOP = (bool)isLocked_BriCont ? "None" : "Cycle";
+                        vm.Update_BriContLockStatus(isLocked_BriCont ?? false);
                         Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}");
                     }
                 }));
@@ -84,7 +83,7 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.synchronizeLock= isSyncLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Update_SyncLockStatus(isSyncLocked);                        
                         Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
                     }
                 }));

@@ -6,6 +6,10 @@ using System.Security.Principal;
 using Microsoft.Win32.SafeHandles;
 using Windows.Devices.Geolocation;
 using System.IO;
+using PInvoke;
+using PInvoke;
+using System.Diagnostics;
+using System.Security;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -64,13 +68,32 @@ namespace DDPM.SA.Common.Settings
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
-        private static extern bool DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, IntPtr lpTokenAttributes,
+        private static extern bool DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, ref SECURITY_ATTRIBUTES lpTokenAttributes,
                                         int ImpersonationLevel, int TokenType, out IntPtr phNewToken);
-        private static bool _DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, IntPtr lpTokenAttributes,
+        private static bool _DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, ref SECURITY_ATTRIBUTES lpTokenAttributes,
                                         int ImpersonationLevel, int TokenType, out IntPtr phNewToken)
         {
-            return DuplicateTokenEx(hExistingToken, dwDesiredAccess, lpTokenAttributes, ImpersonationLevel, TokenType, out phNewToken);
+            return DuplicateTokenEx(hExistingToken, dwDesiredAccess, ref lpTokenAttributes, ImpersonationLevel, TokenType, out phNewToken);
         }
+
+        [DllImport("advapi32", SetLastError = true), SuppressUnmanagedCodeSecurityAttribute]
+        private static extern bool OpenProcessToken(IntPtr ProcessHandle, int DesiredAccess, ref IntPtr TokenHandle);
+        public static bool _OpenProcessToken(IntPtr ProcessHandle, int DesiredAccess, ref IntPtr TokenHandle)
+        {
+            return OpenProcessToken(ProcessHandle, DesiredAccess, ref TokenHandle);
+        }
+
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
+        public static IntPtr _OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId)
+        {
+            return OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId);
+        }
+
+        private const uint MAXIMUM_ALLOWED = 0x2000000;
+        private const int TOKEN_DUPLICATE = 0x0002;
+        private const int CREATE_NEW_CONSOLE = 0x00000010;
+        private const int NORMAL_PRIORITY_CLASS = 0x20;
 
         private enum log_type
         {
@@ -211,7 +234,9 @@ namespace DDPM.SA.Common.Settings
             uint sessionId = (uint)_WTSGetActiveConsoleSessionId();
             if (WTSQueryUserToken(sessionId, out IntPtr userToken))
             {
-                if (DuplicateTokenEx(userToken, 0xF01FF, IntPtr.Zero, 2, 1, out IntPtr duplicatedToken))
+                SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
+                sa.Length = Marshal.SizeOf(sa);
+                if (DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
                 {
                     WindowsIdentity.RunImpersonated(new SafeAccessTokenHandle(duplicatedToken), () =>
                     {
@@ -235,7 +260,9 @@ namespace DDPM.SA.Common.Settings
             uint sessionId = (uint)_WTSGetActiveConsoleSessionId();
             if (WTSQueryUserToken(sessionId, out IntPtr userToken))
             {
-                if (DuplicateTokenEx(userToken, 0xF01FF, IntPtr.Zero, 2, 1, out IntPtr duplicatedToken))
+                SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
+                sa.Length = Marshal.SizeOf(sa);
+                if (DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
                 {
                     WindowsIdentity.RunImpersonated(new SafeAccessTokenHandle(duplicatedToken), () =>
                     {
@@ -255,10 +282,10 @@ namespace DDPM.SA.Common.Settings
         }
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);
-        private static bool _CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, IntPtr lpProcessAttributes, IntPtr lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation)
+        private static extern bool CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes, ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PInvoke.PROCESS_INFORMATION lpProcessInformation);
+        private static bool _CreateProcessAsUser(IntPtr hToken, string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes, ref SECURITY_ATTRIBUTES lpThreadAttributes, bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PInvoke.PROCESS_INFORMATION lpProcessInformation)
         {
-            return CreateProcessAsUser(hToken, lpApplicationName, lpCommandLine, lpProcessAttributes, lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, ref lpStartupInfo, out lpProcessInformation);
+            return CreateProcessAsUser(hToken, lpApplicationName, lpCommandLine, ref lpProcessAttributes, ref lpThreadAttributes, bInheritHandles, dwCreationFlags, lpEnvironment, lpCurrentDirectory, ref lpStartupInfo, out lpProcessInformation);
         }
         [StructLayout(LayoutKind.Sequential)]
         private struct STARTUPINFO
@@ -290,7 +317,7 @@ namespace DDPM.SA.Common.Settings
             public uint dwProcessId;
             public uint dwThreadId;
         }
-        public static void RunElevatedProcess(string applicationPath, string arguments)
+        /*public static void RunElevatedProcess(string applicationPath, string arguments)
         {
             uint sessionId = (uint)_WTSGetActiveConsoleSessionId();
             if (sessionId == 0xFFFFFFFF)
@@ -298,9 +325,11 @@ namespace DDPM.SA.Common.Settings
                 throw new InvalidOperationException("No active session found.");
             }
 
-            if (WTSQueryUserToken(sessionId, out IntPtr userToken))
+            if (_WTSQueryUserToken(sessionId, out IntPtr userToken))
             {
-                if (_DuplicateTokenEx(userToken, 0xF01FF, IntPtr.Zero, 2, 1, out IntPtr duplicatedToken))
+                SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
+                sa.Length = Marshal.SizeOf(sa);
+                if (_DuplicateTokenEx(userToken, 0xF01FF, ref sa, 2, 1, out IntPtr duplicatedToken))
                 {
                     STARTUPINFO startupInfo = new STARTUPINFO();
                     PROCESS_INFORMATION processInfo = new PROCESS_INFORMATION();
@@ -309,8 +338,8 @@ namespace DDPM.SA.Common.Settings
                         duplicatedToken,
                         applicationPath,
                         arguments,
-                        IntPtr.Zero,
-                        IntPtr.Zero,
+                        ref processAttributes,
+                        ref threadAttributes,
                         false,
                         0,
                         IntPtr.Zero,
@@ -324,17 +353,145 @@ namespace DDPM.SA.Common.Settings
                         throw new System.ComponentModel.Win32Exception(errorCode);
                     }
 
-                    CloseHandle(processInfo.hProcess);
-                    CloseHandle(processInfo.hThread);
-                    CloseHandle(duplicatedToken);
+                    _CloseHandle(processInfo.hProcess);
+                    _CloseHandle(processInfo.hThread);
+                    _CloseHandle(duplicatedToken);
                 }
-                CloseHandle(userToken);
+                _CloseHandle(userToken);
             }
             else
             {
                 int errorCode = Marshal.GetLastWin32Error();
                 throw new System.ComponentModel.Win32Exception(errorCode);
             }
+        }*/
+
+        public static void LaunchProcessWithUserAccountAndElevated(string applicationPath)
+        {
+            IntPtr userToken = IntPtr.Zero;
+            IntPtr duplicatedToken = IntPtr.Zero;
+
+            try
+            {
+                int sessionId = _WTSGetActiveConsoleSessionId();
+                if (_WTSQueryUserToken((uint)sessionId, out userToken))
+                {
+                    SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
+                    sa.Length = Marshal.SizeOf(sa);
+                    if (_DuplicateTokenEx(
+                        userToken, 0xF01FF, ref sa,
+                        (int)PInvoke.SECURITY_IMPERSONATION_LEVEL.SecurityImpersonation,
+                        (int)PInvoke.TOKEN_TYPE.TokenPrimary,
+                        out duplicatedToken))
+                    {
+                        STARTUPINFO si = new STARTUPINFO();
+                        PInvoke.PROCESS_INFORMATION pi = new PInvoke.PROCESS_INFORMATION();
+                        SECURITY_ATTRIBUTES processAttributes = new SECURITY_ATTRIBUTES();
+                        SECURITY_ATTRIBUTES threadAttributes = new SECURITY_ATTRIBUTES();
+                        
+
+                        if (!_CreateProcessAsUser(duplicatedToken, applicationPath, null, ref processAttributes, ref threadAttributes, false, 0, IntPtr.Zero, null, ref si, out pi))
+                        {
+                            throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error());
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (userToken != IntPtr.Zero)
+                    CloseHandle(userToken);
+                if (duplicatedToken != IntPtr.Zero)
+                    CloseHandle(duplicatedToken);
+            }
+        }
+
+        /// <summary>
+        /// Launches the given application with full admin rights, and in addition bypasses the Vista UAC prompt
+        /// </summary>
+        /// <param name="applicationName">The name of the application to launch</param>
+        /// <param name="procInfo">Process information regarding the launched application that gets returned to the caller</param>
+        /// <returns></returns>
+        public static bool StartProcessAndBypassUACWithAdmin(string applicationName, out PInvoke.PROCESS_INFORMATION procInfo)
+        {
+            uint winlogonPid = 0;
+            IntPtr hUserTokenDup = IntPtr.Zero, hPToken = IntPtr.Zero, hProcess = IntPtr.Zero;
+            procInfo = new PInvoke.PROCESS_INFORMATION();
+
+            // obtain the currently active session id; every logged on user in the system has a unique session id
+            uint dwSessionId = (uint)_WTSGetActiveConsoleSessionId();
+
+            // obtain the process id of the winlogon process that is running within the currently active session
+            Process[] processes = Process.GetProcessesByName("winlogon");
+            foreach (Process p in processes)
+            {
+                if ((uint)p.SessionId == dwSessionId)
+                {
+                    winlogonPid = (uint)p.Id;
+                }
+            }
+
+            // obtain a handle to the winlogon process
+            hProcess = _OpenProcess(MAXIMUM_ALLOWED, false, winlogonPid);
+
+            // obtain a handle to the access token of the winlogon process
+            if (!_OpenProcessToken(hProcess, TOKEN_DUPLICATE, ref hPToken))
+            {
+                _CloseHandle(hProcess);
+                return false;
+            }
+
+            // Security attibute structure used in DuplicateTokenEx and CreateProcessAsUser
+            // I would prefer to not have to use a security attribute variable and to just 
+            // simply pass null and inherit (by default) the security attributes
+            // of the existing token. However, in C# structures are value types and therefore
+            // cannot be assigned the null value.
+            SECURITY_ATTRIBUTES sa = new SECURITY_ATTRIBUTES();
+            sa.Length = Marshal.SizeOf(sa);
+
+            // copy the access token of the winlogon process; the newly created token will be a primary token
+            if (!_DuplicateTokenEx(
+                hPToken, MAXIMUM_ALLOWED, ref sa,
+                (int)PInvoke.SECURITY_IMPERSONATION_LEVEL.SecurityIdentification,
+                (int)PInvoke.TOKEN_TYPE.TokenPrimary,
+                out hUserTokenDup))
+            {
+                _CloseHandle(hProcess);
+                _CloseHandle(hPToken);
+                return false;
+            }
+
+            // By default CreateProcessAsUser creates a process on a non-interactive window station, meaning
+            // the window station has a desktop that is invisible and the process is incapable of receiving
+            // user input. To remedy this we set the lpDesktop parameter to indicate we want to enable user 
+            // interaction with the new process.
+            STARTUPINFO si = new STARTUPINFO();
+            //si.cb = (int)Marshal.SizeOf(si);
+            //si.lpDesktop = @"winsta0\default"; // interactive window station parameter; basically this indicates that the process created can display a GUI on the desktop
+
+            // flags that specify the priority and creation method of the process
+            int dwCreationFlags = NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE;
+
+            // create a new process in the current user's logon session
+            bool result = _CreateProcessAsUser(hUserTokenDup,        // client's access token
+                                            null,                   // file to execute
+                                            applicationName,        // command line
+                                            ref sa,                 // pointer to process SECURITY_ATTRIBUTES
+                                            ref sa,                 // pointer to thread SECURITY_ATTRIBUTES
+                                            false,                  // handles are not inheritable
+                                            (uint)dwCreationFlags,        // creation flags
+                                            IntPtr.Zero,            // pointer to new environment block 
+                                            null,                   // name of current directory 
+                                            ref si,                 // pointer to STARTUPINFO structure
+                                            out procInfo            // receives information about new process
+                                            );
+
+            // invalidate the handles
+            _CloseHandle(hProcess);
+            _CloseHandle(hPToken);
+            _CloseHandle(hUserTokenDup);
+
+            return result;
         }
     }
 }

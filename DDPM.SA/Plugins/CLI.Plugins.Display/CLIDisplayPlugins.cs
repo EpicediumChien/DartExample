@@ -349,7 +349,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 case "AUTOBRIGHTNESS":
                 case "AUTOBRIGHTNESSRANGELEVEL"://Mark 0723
-                case "AUTOCOLORTEMP":
+                case "AUTOTEMP":
                 case "PRIMARYMONITORSYNC":
                 case "MULTIMONITORSYNC":
                     var tmp = ProcessAlsFunction(devMgr, commandLineInput);
@@ -597,7 +597,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (commandLineInput.TargetType == "APP")
                         {
-                            var ret = ScreenNotifacationx(devMgr, commandLineInput);
+                            var ret = ScreenNotificationx(devMgr, commandLineInput);
                             result.ExitCode = ret.code;
                             result.serialize_Json_response = ret.result;
                         }
@@ -1060,7 +1060,7 @@ namespace DDPM.CLI.Plugins.Display
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
         }
 
-        private (int code, string result) ScreenNotifacationx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        private (int code, string result) ScreenNotificationx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command.Equals("GET"))
             {
@@ -1074,7 +1074,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return ScreenNotifacation(devMgr, commandLineInput).Result;
+                    return ScreenNotification(devMgr, commandLineInput).Result;
                 }
             }
             else if (commandLineInput.Command.Equals("SET"))
@@ -1089,7 +1089,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return ScreenNotifacation(devMgr, commandLineInput).Result;
+                    return ScreenNotification(devMgr, commandLineInput).Result;
                 }
             }
             else
@@ -1102,7 +1102,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> ScreenNotifacation(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        private async Task<(int code, string result)> ScreenNotification(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
             bool retcode = false;
@@ -1140,7 +1140,7 @@ namespace DDPM.CLI.Plugins.Display
                         switch (v.ToUpper())
                         {
                             case "ON":
-                                writelog($"ScreenNotifacation on entry");
+                                writelog($"ScreenNotification on entry");
                                 devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(true);
                                 devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(true);
                                 devMgr.Set_GlobalSetting_DisplayWB7022CoverState(true);
@@ -1152,7 +1152,7 @@ namespace DDPM.CLI.Plugins.Display
                                 break;
 
                             case "OFF":
-                                writelog($"ScreenNotifacation off entry");
+                                writelog($"ScreenNotification off entry");
                                 devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(false);
                                 devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(false);
                                 devMgr.Set_GlobalSetting_DisplayWB7022CoverState(false);
@@ -1193,7 +1193,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 foreach (int idx in _monitorIndeies)
                 {
-                    writelog($"ScreenNotifacation get entry");
+                    writelog($"ScreenNotification get entry");
 
                     MonitorInfo monitor = _AllInfoMonitors[idx];
                     GlobalSettingParam param = new GlobalSettingParam();
@@ -1213,7 +1213,7 @@ namespace DDPM.CLI.Plugins.Display
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
-            writelog($"ScreenNotifacation exit return value : {output}");
+            writelog($"ScreenNotification exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
@@ -5960,7 +5960,7 @@ namespace DDPM.CLI.Plugins.Display
                                 {
                                     //USBCPrioritization_RESPONSE.USBCPrioritizationType = commandLineInput.Options[i].Option_Value;                                  
                                     USBCPrioritization_RESPONSE.Value = commandLineInput.Options[i].Option_Value;
-                                    USBCPrioritizationType usbcPrioritizationType = commandLineInput.Options[i].Option_Value.ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
+                                    USBCPrioritizationType usbcPrioritizationType = commandLineInput.Options[i].Option_Value.ToUpper().Equals(USBCPrioritizationType.HighDataSpeed.ToString().ToUpper()) ? USBCPrioritizationType.HighDataSpeed : USBCPrioritizationType.HighResolution;
                                     ret = _devMgr.SetUSBCPrioritizationType(monitorInfo, usbcPrioritizationType).Result;
                                 }
                             }
@@ -6393,7 +6393,7 @@ namespace DDPM.CLI.Plugins.Display
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
 
-                case "AUTOCOLORTEMP":
+                case "AUTOTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
 
@@ -6442,7 +6442,7 @@ namespace DDPM.CLI.Plugins.Display
                     type = ALSFeatureQueryType.AutoBrightnessRangeLevel;
                     break;
 
-                case "AUTOCOLORTEMP":
+                case "AUTOTEMP":
                     type = ALSFeatureQueryType.AutoColorTemperature;
                     break;
 
@@ -6605,7 +6605,7 @@ namespace DDPM.CLI.Plugins.Display
                             ALS_RESPONSE.Value = param.AutoBrightnessRangeLevel[0].level_name.ToUpper();
                             break;
 
-                        case "AUTOCOLORTEMP":
+                        case "AUTOTEMP":
                             ALS_RESPONSE.Value = param.isAutoColorTemp ? "ON" : "OFF";
                             break;
 
@@ -9875,7 +9875,7 @@ namespace DDPM.CLI.Plugins.Display
 
                                 case "ON":
                                     writelog($"PowerSetting D6 set on");
-                                    retcode = SetVCPCode(devMgr, monitor, "0xD0", "0x01").Result;
+                                    retcode = SetVCPCode(devMgr, monitor, "0xD6", "0x01").Result;
                                     cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                     break;
 

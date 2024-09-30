@@ -779,6 +779,8 @@ namespace ColorPreset.Plugins
                 return Task.FromResult(ColorPresetSupportList);
             }
 
+            Log.Info($"ReadColorPreset requested [vcp_capbilities] = {vcp_capbilities}");
+
             // 20240619 jim add
             if (!string.IsNullOrEmpty(vcp_capbilities))
             {
@@ -788,12 +790,23 @@ namespace ColorPreset.Plugins
                     var CapsDataMap = (JObject)Capabilities["CapsDataMap"];
                     if (CapsDataMap.ContainsKey("ColorPreset"))
                     {
-                        JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
+                        if (CapsDataMap["ColorPreset"].Type == JTokenType.Null)
+                        {
+                            ColorPresetSupportList.Clear();
+                            ColorPresetSupportList.Add("Standard/Native");
+                        }
+                        else
+                        {
+                           
 
-                        ColorPresetSupportList.Clear();
+                            JArray colorrreset = (JArray)CapsDataMap["ColorPreset"];
 
-                        foreach (var tmp in colorrreset)
-                            ColorPresetSupportList.Add(new string(tmp.ToString()));
+                            ColorPresetSupportList.Clear();
+
+                            foreach (var tmp in colorrreset)
+                                ColorPresetSupportList.Add(new string(tmp.ToString()));
+
+                        }                     
                     }
                 }
             }
@@ -826,7 +839,7 @@ namespace ColorPreset.Plugins
 
                 int index = get_index_of_json_config_for_cur_monitor(m);
 
-                /*
+                
                 if (colorPresetRunType == (int)ColorPresetRunType.Manual)
                 {
                     if (index >= 0)
@@ -848,7 +861,7 @@ namespace ColorPreset.Plugins
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 Thread.Sleep(100);
-                */
+                
                 if (index >= 0)
                 {
                     if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.On &&

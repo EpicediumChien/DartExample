@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common.Display;
 using System.Collections.Generic;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -102,5 +103,6 @@ namespace DDPM.SA.Common.Settings
         public List<VCPCode> VCPs { get; set; } = new List<VCPCode>();
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
         public DisplayPropertiesInfo DisplayPropertiesInfo { get; set; }
+        public HotkeySettings hotkeySettings { get; set; }
     }
 }
