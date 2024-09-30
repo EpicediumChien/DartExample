@@ -176,7 +176,7 @@ namespace DDPM.UI.Common
                 Trace.WriteLine($"Apply Global restore factory default(Lock) : {isLocked}");
                 if ((bool)isLocked == false)
                 {
-                    DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
+                    DDPMSettings data = ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
                     if (data != null)// && data.LockSettings.Lock_Audio_RestoreFactoryDefaults)
                     {
                         bool retrieve = false;
@@ -206,7 +206,7 @@ namespace DDPM.UI.Common
             if (isLocked != null)
             {
                 Trace.WriteLine($"Apply restore factory default(Lock) to feature {device_lock_string} : {isLocked}");
-                DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     if (data.LockSettings.Lock_Setting_RestoreDefaults)
@@ -223,6 +223,36 @@ namespace DDPM.UI.Common
                 }
             }
             return (isEnabled, visibility);
+        }
+
+        public static bool WriteDDPMSettings(DDPMSettings data)
+        {            
+            if(data == null || data.LockSettings == null || data.UserSettings == null)
+                return false;
+
+            Settings_Cache = data;
+
+            if (DeviceManagerSA == null)
+                return false;            
+            
+            return DeviceManagerSA.SetAppConfigData(data).Result;
+        }
+
+        //Default data from cache, load from user subagent if force_reload = true
+        public static DDPMSettings ReadDDPMSettings(bool reload_from_SA = false)
+        {
+            if (reload_from_SA)
+            {
+                if (DeviceManagerSA == null)
+                    return null;
+
+                DDPMSettings data = DeviceManagerSA.ReloadAppConfigData().Result;
+                if (data != null)
+                {
+                    Settings_Cache = data;
+                }
+            }
+            return Settings_Cache;
         }
     }
 }

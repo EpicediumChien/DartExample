@@ -139,7 +139,7 @@ namespace DDPM.UI.Module.DisplayOthers
             try
             {
                 BackgroundWorker bwk = (BackgroundWorker)sender;
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     if (data.LockSettings.Lock_Display_PowerNap)

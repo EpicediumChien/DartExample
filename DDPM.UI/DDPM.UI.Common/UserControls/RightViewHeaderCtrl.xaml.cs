@@ -25,7 +25,7 @@ namespace DDPM.UI.Common
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
                 Dispatcher.Invoke(new Action(() =>
                 {
                     RightViewHeaderCtrlViewModel vm = (RightViewHeaderCtrlViewModel)this.DataContext;
