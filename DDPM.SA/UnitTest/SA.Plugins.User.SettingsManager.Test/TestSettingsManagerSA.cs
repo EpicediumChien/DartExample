@@ -193,7 +193,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 ColorManagement_RunType = 1,
                 ColorManagement_Status = 0,
                 ModelName = "TestU2724",
-                PresetForManual = "TestPresetForManual",
+                //PresetForManual = "TestPresetForManual",
                 SerialNumber = "123456",
                 RunType = 0
             };
