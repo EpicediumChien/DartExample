@@ -5771,7 +5771,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //cursor position
             System.Drawing.Point cursorPosition = Cursor.Position;
 
-            // 獲取包含鼠標位置的屏幕
+            // retrieve the monitor object from cursor's position
             Screen currentScreen = Screen.FromPoint(cursorPosition);
             //Here should change to be (1)last UI selected monitor or (2)dell monitor with mouse placed in [Dean 1001]
             //check (2)
