@@ -17,7 +17,7 @@ namespace DDPM.SA.Common
         Task<DisplaySupportedProperties> GetDisplaySupportedProperties(MonitorInfo monitorInfo);
 
         Task<DisplayOrientation> GetCurrentDisplayOrientation(string DisplayName);
-
+        Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo);
         Task<bool> SetDisplayPropertiest(string DisplayName, Properties properties, DisplayOrientation orientation);
         Task<bool> SetResolutions(string DisplayName, Properties properties);
         Task<bool> SetOrientation(string DisplayName, DisplayOrientation orientation);
