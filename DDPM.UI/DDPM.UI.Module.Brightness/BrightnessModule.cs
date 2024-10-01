@@ -1,3 +1,4 @@
+using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
@@ -65,7 +66,7 @@ namespace DDPM.UI.Module.Brightness
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
-
+            
             isSelectChanged = true;
             if(IsModuleActive)
             {

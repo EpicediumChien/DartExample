@@ -103,6 +103,10 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 _deviceManagerSA.DDCCIStatuschanged += _deviceManagerSA_DDCCIStatuschanged;
                 _deviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                //[Dean 1001]for hotkey to set current selected display device to SA
+                if(_ivm.SelectedHomeDevice != null && _ivm.SelectedHomeDevice.MonitorInfo != null)
+                    _deviceManagerSA.SetLastSelectedMonitorFromUI(_ivm.SelectedHomeDevice.MonitorInfo);
             }
         }
 

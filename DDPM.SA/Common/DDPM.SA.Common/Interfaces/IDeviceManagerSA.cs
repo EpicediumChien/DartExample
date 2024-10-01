@@ -400,6 +400,8 @@ namespace DDPM.SA.Common
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
 
+        public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
+
         #endregion public for hotkey
 
         #region public for PowerNap
