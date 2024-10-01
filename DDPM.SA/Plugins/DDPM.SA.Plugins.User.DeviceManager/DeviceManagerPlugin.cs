@@ -3866,7 +3866,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             LoadGlobalSettingParam();
             //Migration
-            DDMMigration();
+            //DDMMigration();
             ReloadHotkeyConfigData();
             ToNKVM_initHotKeys();
 
