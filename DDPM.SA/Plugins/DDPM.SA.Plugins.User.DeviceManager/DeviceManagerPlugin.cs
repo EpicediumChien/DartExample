@@ -1041,7 +1041,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //_inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
             //DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
             Dictionary<string, InputInfo> inputSourcelist = new Dictionary<string, InputInfo>();
-            Dictionary<string, InputInfo> inputSourcelist2 = new Dictionary<string, InputInfo>();
+            Dictionary<string, InputInfo> readinputlist = new Dictionary<string, InputInfo>();
             //get monitor settings
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
             if (settings != null)
@@ -1051,6 +1051,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (monitorSetting == null)
                 {
                     inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                    //if (DDMinputlist != null)
+                    //{
+                    //    if (DDMinputlist.Count != 0)
+                    //    {
+                    //        foreach (var DDPMinput in inputSourcelist)
+                    //        {
+                    //            foreach (var DDMinput in DDMinputlist)
+                    //            {
+                    //                if (DDPMinput.Value.Code == DDMinput.Value.Code)
+                    //                {
+                    //                    DDPMinput.Value.InputName = DDMinput.Value.InputName;
+                    //                    break;
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //}
                     bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                 }
                 else
@@ -1062,30 +1079,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (monitorSetting.Input.strInputSourceList != null && monitorSetting.Input.strInputSourceList != string.Empty)
                             {
                                 inputSourcelist = InputSourceListDeserialize(monitorSetting.Input.strInputSourceList);
-                                foreach(var input in inputSourcelist) 
+                                foreach (var input in inputSourcelist)
                                 {
+                                    //Maybe Migration...
                                     if (input.Value.USBUpstream == string.Empty)
                                     {
-                                        if (inputSourcelist2 == null)
-                                        {
-                                            inputSourcelist2 = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                                        }
-                                        else
-                                        {
-                                            if(inputSourcelist2.Count==0)
-                                            {
-                                                inputSourcelist2 = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                                            }
-                                        }
-                                        input.Value.USBUpstream = inputSourcelist2[input.Key].USBUpstream;
-                                        
+                                        readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                        break;
                                     }
                                 }
-                                if (inputSourcelist2 != null)
+                                if (readinputlist != null)
                                 {
-                                    if (inputSourcelist2 != inputSourcelist)
+                                    if (readinputlist.Count != 0)
                                     {
-                                        bool b1 = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                                        foreach (var input in readinputlist)
+                                        {
+                                            foreach (var input2 in inputSourcelist)
+                                            {
+                                                if (input.Value.Code == input2.Value.Code)
+                                                {
+                                                    input.Value.InputName = input2.Value.InputName;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                        return Task.FromResult(readinputlist);
                                     }
                                 }
                                 return Task.FromResult(inputSourcelist);
@@ -3806,6 +3825,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void SettingsReady(object o, EventArgs eventArgs)
         {
             LoadGlobalSettingParam();
+            //Migration
+            DDMMigration();
             ReloadHotkeyConfigData();
             ToNKVM_initHotKeys();
 
@@ -6801,79 +6822,75 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return inputlist;
         }
 
-        //----------暫存
-        //public class FriendlyName
-        //{
-        //    public int Input { get; set; }
-        //    public string Name { get; set; }
-        //    public FriendlyName(int input, string name)
-        //    {
-        //        Input = input;
-        //        Name = name;
-        //    }
-        //}
-
-        //public class Input
-        //{
-        //    public List<FriendlyName> FriendlyNames { get; set; }
-        //    public List<int> SwitchInputHotkeysInfo { get; set; }
-        //    public List<int> Toogle2InputHotkeysInfo { get; set; }
-        //    public int FavoriteHotkeyInput { get; set; }
-        //    //deprecated
-        //    //        public List<SwitchInputHotkey> SwitchInputHotkeys { get; set; }
-        //    //deprecated
-        //    //        public Toogle2InputHotkeys Toogle2InputHotkeys { get; set; }
-        //    public Input()
-        //    {
-        //        FriendlyNames = new List<FriendlyName>();
-        //        SwitchInputHotkeysInfo = new List<int>();
-        //        Toogle2InputHotkeysInfo = new List<int>();
-        //        //deprecated
-        //        //            SwitchInputHotkeys = new List<SwitchInputHotkey>();
-        //    }
-        //}
-        //--------------------------------------------
-
-        private Dictionary<string, InputInfo> DDMtoDDPM_Input(Input input)
+        private void DDMtoDDPM_Input(DDMMonitorSettings DDMmonitorsettings, List<DDPMMonitorSettings> ddpmMonitorSettings)
         {
-            
-            InputTypeString inputTypeString = new InputTypeString();
-            Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
-            Dictionary<string, InputInfo> newinputlist = new Dictionary<string, InputInfo>();
-            List<string> inputType = new List<string>();
-            List<string> newinputType = new List<string>();
-            foreach (FriendlyName friendlyName in input.FriendlyNames)
+            Dictionary<string, InputInfo>  DDMinputlist = new Dictionary<string, InputInfo>();
+            Input input = DDMmonitorsettings.Input;
+            if (input.FriendlyNames != null)
             {
-                foreach (var vcpcode in VcpCodeList.VCP60)
+                if (input.FriendlyNames.Count != 0)
                 {
-                    InputInfo inputInfo = new InputInfo();
-                    if (vcpcode.Value == (uint)friendlyName.Input)
+                    foreach (FriendlyName friendlyName in input.FriendlyNames)
                     {
-                        inputType.Add(vcpcode.Key);
-                        inputInfo.InputName = friendlyName.Name;
-                        inputInfo.Code = vcpcode.Value;
-                        inputInfo.USBUpstream = string.Empty;
-                        inputlist.Add(vcpcode.Key, inputInfo);
-                        break;
+                        foreach (var vcpcode in VcpCodeList.VCP60)
+                        {
+                            InputInfo inputInfo = new InputInfo();
+                            if (vcpcode.Value == (byte)(uint)friendlyName.Input)
+                            {
+                                inputInfo.InputName = friendlyName.Name;
+                                inputInfo.Code = vcpcode.Value;
+                                inputInfo.USBUpstream = string.Empty;
+                                DDMinputlist.Add(vcpcode.Key, inputInfo);
+                                break;
+                            }
+                        }
                     }
                 }
+                else
+                {
+                    writelog("FriendlyNames count is 0...");
+                }
             }
-            
-            newinputType = inputTypeString.SubInputType(inputType);
-
-            foreach (var inputsource in inputlist)
+            else
             {
-                if (newinputType.Exists(x => x == inputsource.Key))
-                {
-                    newinputlist.Add(inputsource.Key, inputsource.Value);
-                }
-                else if (newinputType.Exists(x => x == inputsource.Key.Substring(0, inputsource.Key.Length - 1)))
-                {
-                    newinputlist.Add(inputsource.Key.Substring(0, inputsource.Key.Length - 1), inputsource.Value);
-                }
+                writelog("FriendlyNames is null!");
             }
 
-            return newinputlist;
+            //InputTypeString inputTypeString = new InputTypeString();
+            //Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
+            //Dictionary<string, InputInfo> newinputlist = new Dictionary<string, InputInfo>();
+            //List<string> inputType = new List<string>();
+            //List<string> newinputType = new List<string>();
+            //foreach (FriendlyName friendlyName in input.FriendlyNames)
+            //{
+            //    foreach (var vcpcode in VcpCodeList.VCP60)
+            //    {
+            //        InputInfo inputInfo = new InputInfo();
+            //        if (vcpcode.Value == (uint)friendlyName.Input)
+            //        {
+            //            inputType.Add(vcpcode.Key);
+            //            inputInfo.InputName = friendlyName.Name;
+            //            inputInfo.Code = vcpcode.Value;
+            //            inputInfo.USBUpstream = string.Empty;
+            //            inputlist.Add(vcpcode.Key, inputInfo);
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //newinputType = inputTypeString.SubInputType(inputType);
+
+            //foreach (var inputsource in inputlist)
+            //{
+            //    if (newinputType.Exists(x => x == inputsource.Key))
+            //    {
+            //        newinputlist.Add(inputsource.Key, inputsource.Value);
+            //    }
+            //    else if (newinputType.Exists(x => x == inputsource.Key.Substring(0, inputsource.Key.Length - 1)))
+            //    {
+            //        newinputlist.Add(inputsource.Key.Substring(0, inputsource.Key.Length - 1), inputsource.Value);
+            //    }
+            //}
         }
 
         #endregion
@@ -7212,26 +7229,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region Migration
-        private void Migration()
+        private void DDMMigration()
         {
             if (_SettingsPlugin != null)
             {
                 string migration = string.Empty;
                 if (_SettingsPlugin.isDDMMigration(out migration).Result)
                 {
-                    DDMMonitorSettings DDMmonitorsettings = new DDMMonitorSettings();
-                    if (_SettingsPlugin.ReadDDMMonitorSettings(migration, ref DDMmonitorsettings).Result)
+                    DirectoryInfo di = new DirectoryInfo(migration);
+                    foreach (var file in di.GetFiles("*_*"))
                     {
-                        //DDM settings -> DDPM settings
-                        ImportDDMMonitorSettings(DDMmonitorsettings);
+                        DDMMonitorSettings DDMmonitorsettings = new DDMMonitorSettings();
+                        if (_SettingsPlugin.ReadDDMMonitorSettings(migration, ref DDMmonitorsettings).Result)
+                        {
+                            //add settings file in DDPM
+                            bool binit = false;
+                            List<DDPMMonitorSettings> ddpmMonitorSettings = new List<DDPMMonitorSettings>();
+                            ddpmMonitorSettings = _SettingsPlugin.InitDDPMMonitorConfigFile(DDMmonitorsettings.Model, out binit).Result;
+                            if (binit)
+                            {
+                                //DDM settings -> DDPM settings
+                                ImportDDMMonitorSettings(DDMmonitorsettings, ddpmMonitorSettings);
+                            }
+                        }
                     }
                 }
             }
         }
 
-        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings)
+        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings, List<DDPMMonitorSettings> ddpmMonitorSettings)
         {
-            DDMtoDDPM_Input(DDMmonitorsettings.Input);
+            DDMtoDDPM_Input(DDMmonitorsettings, ddpmMonitorSettings);
         }
         #endregion Migration
 

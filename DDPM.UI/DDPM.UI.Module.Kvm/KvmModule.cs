@@ -75,6 +75,9 @@ namespace DDPM.UI.Module.Kvm
         //Handle new device coming
         private void InitNewViewModel()
         {
+            vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            vm.Invoke_RefreshData();
         }
 
         public void OnActivated()
