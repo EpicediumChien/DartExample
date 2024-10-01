@@ -242,6 +242,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         SoftwareName = "DDPM",
                         FileSavepath = swUpdateHelper.Softwares[i].InstallPath
                     };
+                    _logs.DebugMsg_1($"TheLatestVersion:{SWUpdateInfo.TheLatestVersion} SoftwareVersion:{SWUpdateInfo.SoftwareVersion}");
                     if (SWUpdateInfo.NeedUpdated)
                     {
                         _SWUpdateInfoPackage.SWUpdateInfo.Add(SWUpdateInfo);
