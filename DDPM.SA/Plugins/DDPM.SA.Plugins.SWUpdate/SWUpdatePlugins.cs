@@ -347,7 +347,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         swUpdateInfo.SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                     }
-                    _notificationStr = $"Firmware update unsuccessful.";
+                    _notificationStr = $"Software update unsuccessful.";
                     NotificationFWupdate("Error", _notificationStr);
                     _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                     return Task.FromResult(swUpdateInfos);

@@ -240,6 +240,8 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Value = rawValue;
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
@@ -271,6 +273,8 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_PxpMode response = new CLI_RESPONSE_PxpMode();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
 
                 //1 Get supported modes
@@ -459,6 +463,8 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Index = change_0base_to_1base(idx.ToString());
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 response.Value = rawValue;
                 if (isPass || isOK)
@@ -490,6 +496,8 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
 
                 List<InputSourceObj> inputSources = _devMgr.GetSubInputs(_AllInfoMonitors[idx]).Result;
@@ -606,6 +614,8 @@ namespace CLI.Plugins.Display
                 CLI_RESPONSE_SubInput response = new CLI_RESPONSE_SubInput();
                 response.Command = _cmdLineInput.Command;
                 response.TargetFeature = _cmdLineInput.TargetFeature;
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.Sub1InputSource = (sub1 == null) ? "" : sub1.Name;
                 response.Sub2InputSource = (sub2 == null) ? "" : sub2.Name;
@@ -691,6 +701,8 @@ namespace CLI.Plugins.Display
                     Command = _cmdLineInput.Command,
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
@@ -730,6 +742,8 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Value = (rc.value).ToString();
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.Index = change_0base_to_1base(idx.ToString());
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 if (isPass)
@@ -827,6 +841,8 @@ namespace CLI.Plugins.Display
                     TargetFeature = _cmdLineInput.TargetFeature
                 };
                 response.Index = change_0base_to_1base(idx.ToString());
+                response.Model = _AllInfoMonitors[idx].AliasDeviceName;
+                response.SerialNumber = _AllInfoMonitors[idx].edid.SerialNumber;
                 response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                 response.Value = rawValue;
                 if (isPass)
