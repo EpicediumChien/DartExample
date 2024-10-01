@@ -32,7 +32,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 if (data != null)
                 {
                     vm.ShowLockMask = data.LockSettings.Lock_Webcam_AIAutoFraming;
-                    vm.isTabStoppable = !data.LockSettings.Lock_Webcam_AIAutoFraming;
+                    vm.IsTabStoppable = !data.LockSettings.Lock_Webcam_AIAutoFraming;
                     vm.LockMaskVisible = vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;
 
                     //if (data.LockSettings.Lock_Webcam_AIAutoFraming)
@@ -52,6 +52,12 @@ namespace DDPM.UI.Module.WebCameraSettings
 
             if (_vm.CurrentDeviceInfo!.IsPropertyFOVSupported)
                 InitializeFOV();
+
+            if (_vm.CurrentDeviceInfo.IsPropertyZoomSupported)
+                InitializeZoom();
+
+            if (_vm.CurrentDeviceInfo.IsPropertyZoomSupported)
+                InitializeAutofocus();
         }
 
         private void InitializeFOV()
@@ -84,6 +90,19 @@ namespace DDPM.UI.Module.WebCameraSettings
             }
         }
 
+        private void InitializeZoom()
+        {
+            ZoomSlider.Maximum = _vm.CurrentDeviceInfo!.ZoomMax;
+            ZoomSlider.Minimum = _vm.CurrentDeviceInfo!.ZoomMin;
+            ZoomSlider.TickFrequency = _vm.CurrentDeviceInfo!.ZoomSteppingDelta;
+        }
+        private void InitializeAutofocus()
+        {
+            AutofocusSlider.Maximum = _vm.CurrentDeviceInfo!.FocusMax;
+            AutofocusSlider.Minimum = _vm.CurrentDeviceInfo!.FocusMin;
+            AutofocusSlider.TickFrequency = _vm.CurrentDeviceInfo!.FocusSteppingDelta;
+        }
+
         ~WebCameraSettingsRightView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -102,7 +121,7 @@ namespace DDPM.UI.Module.WebCameraSettings
                 {
                     if (_vm != null)
                     {
-                        _vm.isTabStoppable = !(bool)isLocked;
+                        _vm.IsTabStoppable = !(bool)isLocked;
                         _vm.ShowLockMask = (bool)isLocked;
 
                         if (_vm.ShowLockMask)
@@ -140,57 +159,40 @@ namespace DDPM.UI.Module.WebCameraSettings
             {
                 if (_vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
                 {
-                    // Unhook the event handler, so that changing properties on the slider won't trigger an API call
-                    ZoomSlider.ValueChanged -= ZoomSlider_ValueChanged;
-
-                    //var value = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
-                    var zoomControl = _vm.MediaCapture.VideoDeviceController.Zoom;
-
-                    ZoomSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Min;
-                    ZoomSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Max;
-                    ZoomSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Step * 100;
-                    //ZoomSlider.Value = value;
-
-                    double dbvalue = 0.0f;
-                    if (zoomControl.TryGetValue(out dbvalue))
-                        ZoomSlider.Value = dbvalue;
-
-                    ZoomSlider.ValueChanged += ZoomSlider_ValueChanged;
-
                     // 20240702 jim add
                     // Unhook the event handler, so that changing properties on the slider won't trigger an API call
-                    AutofocusSlider.ValueChanged -= AutofocusSlider_ValueChanged;
+                    //AutofocusSlider.ValueChanged -= AutofocusSlider_ValueChanged;
 
                     //var value = _vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Default;
-                    var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
+                    //var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
 
-                    AutofocusSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min;
-                    AutofocusSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max;
-                    AutofocusSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step * 100;
-                    //ZoomSlider.Value = value;
+                    //AutofocusSlider.Minimum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min;
+                    //AutofocusSlider.Maximum = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max;
+                    //AutofocusSlider.TickFrequency = _vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step * 100;
+                    ////ZoomSlider.Value = value;
 
-                    dbvalue = 0.0f;
-                    if (autofocusControl.TryGetValue(out dbvalue))
-                        AutofocusSlider.Value = dbvalue;
+                    //dbvalue = 0.0f;
+                    //if (autofocusControl.TryGetValue(out dbvalue))
+                    //    AutofocusSlider.Value = dbvalue;
 
-                    AutofocusSlider.ValueChanged += AutofocusSlider_ValueChanged;
+                    //AutofocusSlider.ValueChanged += AutofocusSlider_ValueChanged;
 
-                    if (autofocusControl.Capabilities.AutoModeSupported)
-                    {
-                        bool isAuto;
-                        autofocusControl.TryGetAuto(out isAuto);
-                        Autofocus_ToggleSwitch.IsChecked = isAuto;
-                        if (isAuto)
-                        {
-                            _vm.IsChecked_Autofocus = true;
-                            _vm.AutofocusStatus_String = "ON";
-                        }
-                        else
-                        {
-                            _vm.IsChecked_Autofocus = false;
-                            _vm.AutofocusStatus_String = "OFF";
-                        }
-                    }
+                    //if (autofocusControl.Capabilities.AutoModeSupported)
+                    //{
+                    //    bool isAuto;
+                    //    autofocusControl.TryGetAuto(out isAuto);
+                    //    Autofocus_ToggleSwitch.IsChecked = isAuto;
+                    //    if (isAuto)
+                    //    {
+                    //        _vm.IsChecked_Autofocus = true;
+                    //        _vm.AutofocusStatus_String = "ON";
+                    //    }
+                    //    else
+                    //    {
+                    //        _vm.IsChecked_Autofocus = false;
+                    //        _vm.AutofocusStatus_String = "OFF";
+                    //    }
+                    //}
                 }
             }
         }
@@ -240,64 +242,6 @@ namespace DDPM.UI.Module.WebCameraSettings
             }
         }
 
-        //  Jim add 20240702
-        private void Autofocus_Switch_Click(object sender, RoutedEventArgs e)
-        {
-            if ((bool)Autofocus_ToggleSwitch.IsChecked)
-            {
-                _vm.IsChecked_Autofocus = true;
-                _vm.AutofocusStatus_String = "ON";
-            }
-            else
-            {
-                _vm.IsChecked_Autofocus = false;
-                _vm.AutofocusStatus_String = "OFF";
-            }
-
-            if (_vm != null && _vm.MediaCapture != null)
-            {
-                var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
-                autofocusControl.TrySetAuto((bool)Autofocus_ToggleSwitch.IsChecked);
-            }
-        }
-
-        private void Slider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
-        {
-            _vm.IsSliderDragging = true;
-        }
-
-        private void TipSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
-        {
-            _vm.IsSliderDragging = false;
-            //_vm.SetDPIValue();
-        }
-
-        private void TiltSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
-        {
-            _vm.IsSliderDragging = false;
-            //_vm.SetTouchScrollSensitivityLevel();
-        }
-
-        private void btnPair_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void TrackingSensitivity_Normal_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-        }
-
-        private void TrackingSensitivity_Fast_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-        }
-
-        private void FrameSize_Narrow_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-        }
-
-        private void FrameSize_Standard_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-        }
-
         private void FOV_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is Border bdr)
@@ -312,12 +256,16 @@ namespace DDPM.UI.Module.WebCameraSettings
             }
         }
 
-        private void Priority_Exposure_Button_Click(object sender, MouseButtonEventArgs e)
+        private void Priority_Click(object sender, MouseButtonEventArgs e)
         {
-        }
+            if (sender is Border bdr)
+            {
+                var val = int.Parse(bdr.Tag.ToString()!);
+                if (val == _vm.Priority)
+                { return; }
 
-        private void Priority_FrameRate_Button_Click(object sender, MouseButtonEventArgs e)
-        {
+                _vm.Priority = val;
+            }
         }
 
         private void CallWindowsHello_Click(object sender, RoutedEventArgs e)
@@ -366,7 +314,28 @@ namespace DDPM.UI.Module.WebCameraSettings
         private void ZoomSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
+            _vm.SetZoom();
+        }
 
+        private void AutofocusSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
+
+        private void AutofocusSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetFocus();
+        }
+
+        private void ShowHDR_Click(object sender, MouseButtonEventArgs e)
+        {
+            ShowHDR();
+        }
+        private void ShowHDR()
+        {
+            _vm.VbarSelectedIndex = 1;
+            _vm.SelectVBar();
         }
     }
 }

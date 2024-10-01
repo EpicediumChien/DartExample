@@ -17,6 +17,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using DdmLibrary;
+using DdmLibrary.Utility;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -67,6 +69,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static string folder_localappdata_Appicon = "Icons";
         private static string folder_localappdata_Display = "Display";
+        private static string folder_localappdata_Migration = "Migration";
 
         //private static string folder_programdata_DownloadInstaller = path_programdata + "\\" + folder_product + "\\Downloaded Installations";
         //private static string folder_programdata_DownloadInstallerLog = path_programdata + "\\" + folder_product + "\\InstallationLogs";
@@ -1001,12 +1004,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult<bool>(false);
         }
 
-        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps)
+        public Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCPCode> vcps)
         {
             WriteLog("[DisplayImportSettings] path :" + path);
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
             DDPMImpExpSettings ImpExpSettings = ReadImportSettingsFile(path);
-            vcps = new List<VCP>();
+            vcps = new List<VCPCode>();
             if (ImpExpSettings != null)
             {
                 DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
@@ -1077,6 +1080,32 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         }
 
         #endregion DisplayImpExpSettings
+
+        #region Migration
+        public Task<bool> isDDMMigration(out string folder_appdatapath_migration)
+        {
+            string folder = GetActiveUserLocalAppDataPath();
+            WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
+            folder_appdatapath_migration = folder + "\\" + folder_product + "\\" + folder_localappdata_Migration;
+            if (Directory.Exists(folder_appdatapath_migration))
+            {
+                return Task<bool>.FromResult(true);
+            }
+            return Task<bool>.FromResult(false);
+        }
+
+        public Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings)
+        {
+            if (File.Exists(path))
+            {
+                if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
+                {
+                    return Task<bool>.FromResult(true);
+                }
+            }
+            return Task<bool>.FromResult(false);
+        }
+        #endregion Migration
 
         #endregion ISettingManagerDev implementation
 

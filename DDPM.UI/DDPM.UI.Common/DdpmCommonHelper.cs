@@ -38,6 +38,7 @@ namespace DDPM.UI.Common
             return null;
         }
 
+
         //DdpmHomePlugin will set this value
         public static IConsole? MyConsole { get; set; }
 

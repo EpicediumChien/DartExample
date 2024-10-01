@@ -48,10 +48,13 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!-- LeftFrame -->
+            <!-- LeftFrame 
             <Viewbox Grid.Column="0" Name="viewBoxLeftFrame">
                 <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="12" />
-            </Viewbox>
+            </Viewbox>-->
+            <Grid Grid.Column="0">
+                <ContentControl Name="LeftFrame" Content="{Binding LeftView}" Margin="12" />
+            </Grid>
 
             <!-- Right side: init width is 0 (Landing mode), when user click any of Vbar item,
             will transit to TwoView mode by change RightGrid.Width to require width

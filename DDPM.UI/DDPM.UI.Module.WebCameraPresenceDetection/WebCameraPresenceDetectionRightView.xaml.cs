@@ -28,7 +28,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                 if (data != null)
                 {
                     vm.ShowLockMask = data.LockSettings.Lock_Webcam_PresenceDetection;
-                    vm.isTabStoppable = !data.LockSettings.Lock_Webcam_PresenceDetection;
+                    vm.IsTabStoppable = !data.LockSettings.Lock_Webcam_PresenceDetection;
 
                     if (vm.ShowLockMask)
                         vm.TabNavigation = "None";
@@ -71,7 +71,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
                 {                   
                     if (_vm != null)
                     {
-                        _vm.isTabStoppable = !(bool)isLocked;
+                        _vm.IsTabStoppable = !(bool)isLocked;
                         _vm.ShowLockMask = (bool)isLocked;
 
                         if (_vm.ShowLockMask)

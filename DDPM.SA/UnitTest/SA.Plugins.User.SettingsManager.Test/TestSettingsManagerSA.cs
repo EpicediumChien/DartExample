@@ -892,9 +892,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Version = 1.0f,
                 Model = "TestU2724DF",
                 ServiceTag = "12345",
-                Input = new Input() { strInputSourceList = "HDMI-1" },
-                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
-                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                Input = new InputSource() { strInputSourceList = "HDMI-1" },
+                KVM = new KVMSettings() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCPCode> { new VCPCode() { Code = 10, Value = new List<int>(20) } },
                 //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings });
@@ -959,9 +959,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Version = 1.0f,
                 Model = "TestU2724DD",
                 ServiceTag = "12345",
-                Input = new Input() { strInputSourceList = "HDMI-1" },
-                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
-                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                Input = new InputSource() { strInputSourceList = "HDMI-1" },
+                KVM = new KVMSettings() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCPCode> { new VCPCode() { Code = 10, Value = new List<int>(20) } },
                 //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             dDPMMonitorSettingsList2.Add(settings);
@@ -1000,9 +1000,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Version = 1.0f,
                 Model = "TestU2724DD",
                 ServiceTag = "12345",
-                Input = new Input() { strInputSourceList = "HDMI-1" },
-                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
-                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                Input = new InputSource() { strInputSourceList = "HDMI-1" },
+                KVM = new KVMSettings() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCPCode> { new VCPCode() { Code = 10, Value = new List<int>(20) } },
                 //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             dDPMMonitorSettingsList.Add(settings);
@@ -1024,9 +1024,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Version = 1.0f,
                 Model = "TestU2724DD",
                 ServiceTag = "12345",
-                Input = new Input() { strInputSourceList = "HDMI-1" },
-                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
-                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                Input = new InputSource() { strInputSourceList = "HDMI-1" },
+                KVM = new KVMSettings() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCPCode> { new VCPCode() { Code = 10, Value = new List<int>(20) } },
                 //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             monitorSettings.Add(settings);
@@ -1049,9 +1049,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Version = 1.0f,
                 Model = "TestU2724DF",
                 ServiceTag = "12345",
-                Input = new Input() { strInputSourceList = "HDMI-1" },
-                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
-                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                Input = new InputSource() { strInputSourceList = "HDMI-1" },
+                KVM = new KVMSettings() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCPCode> { new VCPCode() { Code = 10, Value = new List<int>(20) } },
                 //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings });
@@ -1122,19 +1122,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                         CustomList = new List<SplitJson>(),
                         RecentList = new List<SplitJson>(),
                     },
-                    Input = new Input()
+                    Input = new InputSource()
                     {
                         strInputSourceList = "HDMI=1"
                     },
-                    KVM = new KVM()
+                    KVM = new KVMSettings()
                     {
                         strUSBKVMPCsList = "TestUSBKVM",
                         isOnNKVM = false,
                         isOnUSBKVM = true,
                     },
-                    VCPs = new List<VCP>()
+                    VCPs = new List<VCPCode>()
             {
-                new VCP()
+                new VCPCode()
                 {
                     Code=0X12,
                     Value=new List<int>() { 1,2}
@@ -1167,7 +1167,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string DisplayImportSettings_path = "TestDDPMImpExpSettings.json";
             string DisplayImportSettings_path2 = "TestU2724DD.json";
             bool isSameModel = false;
-            List<VCP> Testvcps = new List<VCP>();
+            List<VCPCode> Testvcps = new List<VCPCode>();
             bool DisplayImportSettings1 = false;
             bool DisplayImportSettings2 = true;
             string DDPMImpExpSetjsonData = "{\"AppSettings\":{\"Version\":2.0},\"UserSettings\":{\"Version\":1.5,\"Language\":1},\"MonitorSettings\":{\"Version\":1.2,\"Model\":\"TestU2724DD\",\"ServiceTag\":\"12345\",\"Input\":{},\"KVM\":{},\"VCPs\":[],\"EA\":{}}}";
@@ -1192,9 +1192,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Version = 1.0f,
                 Model = "TestU2724DF",
                 ServiceTag = "12345",
-                Input = new Input() { strInputSourceList = "HDMI-1" },
-                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
-                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                Input = new InputSource() { strInputSourceList = "HDMI-1" },
+                KVM = new KVMSettings() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCPCode> { new VCPCode() { Code = 10, Value = new List<int>(20) } },
                 EA = new EAMonitorSettings(),
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings }); //ReloadMonitorSettings
@@ -1282,9 +1282,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Version = 1.0f,
                 Model = "TestU2724DF",
                 ServiceTag = "12345",
-                Input = new Input() { strInputSourceList = "HDMI-1" },
-                KVM = new KVM() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
-                VCPs = new List<VCP> { new VCP() { Code = 10, Value = new List<int>(20) } },
+                Input = new InputSource() { strInputSourceList = "HDMI-1" },
+                KVM = new KVMSettings() { strUSBKVMPCsList = "teststrUSBKVMPCsList", isOnUSBKVM = true, isOnNKVM = false },
+                VCPs = new List<VCPCode> { new VCPCode() { Code = 10, Value = new List<int>(20) } },
                 EA = new EAMonitorSettings(),
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings }); //ReloadMonitorSettings

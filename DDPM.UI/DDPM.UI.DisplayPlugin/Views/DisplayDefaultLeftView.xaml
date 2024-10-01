@@ -10,7 +10,7 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="650" d:DesignWidth="900">
     <UserControl.Resources>
 
         <ResourceDictionary>
@@ -26,6 +26,7 @@
     </UserControl.Resources>
 
     <Grid>
+        <!-- Robert_Lin 2024-9-30 fix for Monitor Product image size is 1000x1000
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -36,19 +37,27 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        -->
 
-        <Grid Grid.Row="1" Grid.Column="1">
+        <Grid Grid.Row="0" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Viewbox Margin="32" Grid.Row="0">
+            <Grid Grid.Row="0">
+                <Viewbox Margin="32" Grid.Row="0" Stretch="Uniform">
 
-                <!-- Width="1378" Height="735"
+                    <!-- Width="1378" Height="735"
                 -->
-                <Grid>
-                    <Image Source="{Binding DeviceImage}" Stretch="Uniform">
+                    <Grid>
+                        <!-- Image Source="{Binding DeviceImage}" Stretch="None"
+                        -->
+
+                        <Image Source="/DDPM.UI.Resources;component/Resources/Monitors/u2424h.png" Stretch="UniformToFill">
+                            
+                            <!-- Robert_Lin, 2024-9-30 The LeftView Product image don't need to show tooltip -->
+                            <!-- 
                         <Image.ToolTip>
                             <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
                                      ToolTipService.HasDropShadow="True"
@@ -69,9 +78,12 @@
                                 </Border>
                             </ToolTip>
                         </Image.ToolTip>
-                    </Image>
-                </Grid>
-            </Viewbox>
+                        -->
+                        </Image>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+
 
             <!-- 2024-6-20 Robert_Lin, move this stackPanel inside image box
             1 Change StackPanel Grid.Row=1 to 0; 2. Add VerticalAlignment=Bottom to StackPanel
