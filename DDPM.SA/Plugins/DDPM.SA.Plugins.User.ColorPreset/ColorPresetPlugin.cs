@@ -1298,19 +1298,75 @@ namespace ColorPreset.Plugins
             jsonfilepath = filepath;    // .json: current no_signature from server
             Console.WriteLine("[CheckICC_JSON_Security] :" + jsonfilepath);
             writelog("[CheckICC_JSON_Security] :" + jsonfilepath);
-            if (ret)
+            if (!ret)
             {
                 return ret;
             }
             else
-            { // Currently the server can not provide json file with signature. Add code here for further use.
+            {   // Currently the server can not provide json file with signature. Add code here for further use.
                 // (for debugging) Public_Key from file. Generate Public/Private Key then generate signature in json file.
                 publickeyfilepath = "C:\\Dell\\Dell Display and Peripheral Manager\\public_key.txt";
                 // (for debugging) .json: with signature 
-                jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
+                //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
+                jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_key2info_key1sig.json";
+               
 
                 ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson(jsonfilepath, publickeyfilepath, out strJson);
             }
+
+            // Handle "Info" section
+            if(ret && (strJson.Length > 1))
+            {
+                JObject jObject = JObject.Parse(strJson);
+                string modifiedJson;
+                string szInfo;
+                try
+                {
+                    szInfo = (string)jObject["Info"];
+                    
+                    jObject.Remove("Info");
+                    // Convert the modified JObject back to a JSON string
+                    modifiedJson = jObject.ToString();
+                    strJson = modifiedJson;
+
+                    List<string> Pub_Key_List_From_DBase = new List<string>();
+                    
+                    // Load the base64-encoded public key from a text file
+                    string publicKeyBase64 = File.ReadAllText(publickeyfilepath);
+                    Pub_Key_List_From_DBase.Add(publicKeyBase64);
+
+                    int nIndexFound = -1;
+                    Console.WriteLine("*** (Remote) Public Key 1: " + Pub_Key_List_From_DBase.Count.ToString() + " " + szInfo);
+                    
+                    for (int i = 0; i < Pub_Key_List_From_DBase.Count; i++) 
+                    {   // Need to replace Public Key here
+                        string current = Pub_Key_List_From_DBase[i];
+                        Console.WriteLine("*** (Local) Public Key 2: " + current);
+
+                        if(szInfo == current)
+                        {
+                            nIndexFound = i;
+                            break;
+                        }
+                    }
+                    if(nIndexFound >= 0)
+                    {   // Key found. 
+                    }
+                    else
+                    {   // Key Not found. Current Key != Remote Key
+                        Pub_Key_List_From_DBase.Insert(0, publicKeyBase64);
+                        // *** ToDo: Must Store Remote Key to DBase ***
+                    }
+
+                    ret = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
+                    return false;
+                }
+            }
+
             return ret;
         }
 
