@@ -51,10 +51,11 @@
                     <!-- Width="1378" Height="735"
                 -->
                     <Grid>
-                        <!-- Image Source="{Binding DeviceImage}" Stretch="None"
+                        <!-- Source="/DDPM.UI.Resources;component/Resources/Monitors/u2424h.png"
+                        Image Source="{Binding DeviceImage}" Stretch="None"
                         -->
 
-                        <Image Source="/DDPM.UI.Resources;component/Resources/Monitors/u2424h.png" Stretch="UniformToFill">
+                        <Image Source="{Binding DeviceImage}" Stretch="UniformToFill">
                             
                             <!-- Robert_Lin, 2024-9-30 The LeftView Product image don't need to show tooltip -->
                             <!-- 
