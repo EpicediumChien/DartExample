@@ -1298,7 +1298,7 @@ namespace ColorPreset.Plugins
             jsonfilepath = filepath;    // .json: current no_signature from server
             Console.WriteLine("[CheckICC_JSON_Security] :" + jsonfilepath);
             writelog("[CheckICC_JSON_Security] :" + jsonfilepath);
-            if (!ret)
+            if (ret)
             {
                 return ret;
             }
