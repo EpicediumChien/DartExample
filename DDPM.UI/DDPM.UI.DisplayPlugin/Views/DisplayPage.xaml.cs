@@ -140,7 +140,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         //Only for init (entering Landing page)
         private void ApplyockStatusFromSettingsFile()
         {
-            DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
             if (data == null)
                 return;
             if (data.UserSettings == null)
@@ -403,7 +403,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 sw.Restart();
                 //moduleGroup.AddHeader("Easy Memory", new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
-                moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
+                moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule(_vmDisplay));
+                //moduleGroup.AddHeader(Strings.RightViewHeader_EasyMemory, new EzMemoryModule() { SelectedHomeDevice = _ivm?.SelectedHomeDevice });
                 sw.Stop();
                 _log?.Info($"* EzMemoryModule ctor consume {sw.ElapsedMilliseconds} msec");
             }
@@ -862,7 +863,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 }
                 if (isEALocked != null)
                 {
-                    basePage.SetLockModuleGroup(Constants.GroupName_InputSource, isEALocked == true);
+                    basePage.SetLockModuleGroup(Constants.GroupName_EasyArrange, isEALocked == true);
                     Trace.WriteLine($"Apply EasyArrange(Lock) : {isEALocked}");
                 }
             }));

@@ -21,6 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DdmLibrary">
+      <HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="DPeMClientBroker">
       <HintPath>..\..\dll\DPeMClientBroker.dll</HintPath>
     </Reference>

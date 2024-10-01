@@ -8,8 +8,9 @@ internal class Program
 
     private static void Main(string[] args)
     {
+        LogManage.SetPath();
         LaunchInstaller launchInstaller = new LaunchInstaller();
         SWUErrorCode ret = launchInstaller.LaunchUpdate().Result;
-        Debug.WriteLine(ret);
+        LogManage.LogMessage(ret.ToString());
     }
 }

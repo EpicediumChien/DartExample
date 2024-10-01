@@ -262,9 +262,9 @@ namespace DDPM.UI.Module.DisplayProperties
             {
                 Resolution_ItemsCollection = new List<UI_Properties>();
                 Orientation_ItemsCollection = new List<UI_Orientation>();
-
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
                 //Robert_Lin 2024-05-15: No this method "GetDisplayPropertiesInfo"
-                DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(currentMonitorInfo).Result;
                 //Add return to let program continue running
                 //return;
                 _SupportedHDR = displayPropertiesInfo.SupportedHDR;
@@ -275,7 +275,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 if (_SupportedHDR)
                 {
                     UInt16 PipMode_Off = 0;
-                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(currentMonitorInfo).Result;
                     if (ret.result)
                     {
                         UInt16 _curPxpMode = Convert.ToUInt16(ret.value);
@@ -298,8 +298,8 @@ namespace DDPM.UI.Module.DisplayProperties
                         _IsHighResolution = true;
                         break;
                 }
-                if (!(MyModule.SelectedHomeDevice.MonitorInfo.inputSource.ToUpper().StartsWith("USB-C") ||
-                    MyModule.SelectedHomeDevice.MonitorInfo.inputSource.ToUpper().StartsWith("THUNDERBOLT"))) // 2024-08-07 By Bruce.
+                if (!(currentMonitorInfo.inputSource.ToUpper().StartsWith("USB-C") ||
+                    currentMonitorInfo.inputSource.ToUpper().StartsWith("THUNDERBOLT"))) // 2024-08-07 By Bruce.
                 {
                     _SupportedUSBCPrioeitization = false;
                 }
@@ -325,7 +325,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 _selectedOrientation = Orientation_ItemsCollection.Find(x => (x.Orientation == displayPropertiesInfo.CurrentOrientation));
 
                 //Lock/unlock UI init data here (user's lock data should be synced up from IT config, so read user's data directly)
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_RefreshRate = (bool)data.LockSettings.Lock_Display_ResolutionRefreshRate;
                 Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {Lock_RefreshRate}");
                 Lock_USBCrioritization = (bool)data.LockSettings.Lock_Display_USBCPrioritization;

@@ -320,7 +320,6 @@ namespace DDPM.SA.Common
 
         //Task SetEqualizerValues(ILogicalDeviceHeadset logicalDeviceHeadset, DeviceInfo info);
         Task SetIsMicEnumerationOn(bool newValue, Guid deviceId);
-        Task SetCurrentSelectedProfile(string newValue, Guid deviceId);
 
         #endregion public for Peripherals
 
@@ -606,6 +605,12 @@ namespace DDPM.SA.Common
         Task SetAutoFramingSensitivity(string Guid, int newValue);
         Task SetAutoFramingFrameSize(string Guid, int newValue);
         Task SetFieldOfView(string Guid, int newValue);
+        Task SetIsFocusOn(string Guid, bool newValue);
+        Task SetFocus(string Guid, int newValue);
+        Task SetPriority(string Guid, int newValue);
+        Task SetIsHDROn(string Guid, bool newValue);
+        Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+        Task SetAutoWhiteBalance(string Guid, int newValue);
 
         #endregion
 

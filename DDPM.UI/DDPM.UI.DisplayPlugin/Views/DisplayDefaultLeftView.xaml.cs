@@ -25,7 +25,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
 
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     if (data.LockSettings.Lock_Setting_RestoreDefaults)
@@ -68,7 +68,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
                 //Lock Functionality 9/7
                 //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Display]
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings(true);// DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null && data.LockSettings != null)
                 {
                     if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Display"))

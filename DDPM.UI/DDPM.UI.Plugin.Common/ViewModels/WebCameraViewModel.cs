@@ -6,6 +6,7 @@ using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -37,8 +38,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool[] FPS_IsSelected { get; set; } = new bool[3];
         public bool[] FOV_IsSelected { get; set; } = new bool[3];
 
-
-
         #endregion Variables
 
         public WebcamProfile CurrentProfile = new();
@@ -55,7 +54,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 showLockMask = value;
                 LockMaskVisible = showLockMask ? Visibility.Visible : Visibility.Collapsed;
-                OnPropertyChanged("ShowLockMask");
+                OnPropertyChanged();
             }
         }
 
@@ -67,19 +66,19 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 lockMaskVisible = value;
-                OnPropertyChanged("LockMaskVisible");
+                OnPropertyChanged();
             }
         }
 
         private bool _isTabStoppable;
 
-        public bool isTabStoppable
+        public bool IsTabStoppable
         {
             get { return _isTabStoppable; }
             set
             {
                 _isTabStoppable = value;
-                OnPropertyChanged("isTabStoppable");
+                OnPropertyChanged();
             }
         }
 
@@ -91,7 +90,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 _TabNavigation = value;
-                OnPropertyChanged("TabNavigation");
+                OnPropertyChanged();
             }
         }
 
@@ -105,13 +104,6 @@ namespace DDPM.UI.Plugin.ViewModels
             Requires.NotNull(log, nameof(log));
 
             _log = log;
-            //_deviceManager = deviceManager;
-
-            IsChecked_FramingGrid = Visibility.Hidden;
-
-            //strCurrent_Resolution = "1920x1080";
-            //strCurrent_Framerate = "30FPS";
-
         }
 
         public void SetResolution_Selected(int index)
@@ -289,6 +281,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 foreach (var profile in CurrentDeviceInfo.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList().OrderBy(x => x.Name))
                 {
+                    profile.Focus = CurrentDeviceInfo.FocusMin;
                     WebcamSettings.PresetProfiles.Add(profile.Name, profile);
                 }
                 WebcamSettings.SelectedProfileName = WebcamSettings.PresetProfiles.Values.ToList()[0].Name;
@@ -320,19 +313,23 @@ namespace DDPM.UI.Plugin.ViewModels
             if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
+                OnPropertyChanged(nameof(IsAutoFramingOn));
                 OnPropertyChanged(nameof(IsAutoFramingOnText));
                 if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn);
+                    OnPropertyChanged(nameof(IsAutoFramingTransitionOn));
                     OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
                 }
                 if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity);
+                    OnPropertyChanged(nameof(AutoFramingSensitivity));
                 }
                 if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize);
+                    OnPropertyChanged(nameof(AutoFramingFrameSize));
                     OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
                 }
             }
@@ -348,7 +345,41 @@ namespace DDPM.UI.Plugin.ViewModels
 
             }
 
-            DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
+            if (CurrentDeviceInfo.IsPropertyZoomSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
+                OnPropertyChanged(nameof(Zoom));
+            }
+
+            if (CurrentDeviceInfo.IsPropertyFocusSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
+                DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus);
+                OnPropertyChanged(nameof(IsFocusOn));
+                OnPropertyChanged(nameof(IsFocusOnText));
+                OnPropertyChanged(nameof(Focus));
+            }
+
+            if (CurrentDeviceInfo.IsPropertyPrioritySupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority);
+                OnPropertyChanged(nameof(Priority));
+            }
+
+            if (CurrentDeviceInfo.IsPropertyHDRSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
+                OnPropertyChanged(nameof(IsHDROn));
+            }
+            if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn);
+                DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance);
+                OnPropertyChanged(nameof(IsAutoWhiteBalanceOn));
+                OnPropertyChanged(nameof(IsAutoWhiteBalanceOnText));
+                OnPropertyChanged(nameof(AutoWhiteBalance));
+            }
+
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -442,46 +473,10 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private bool isChecked_AWB;
-
-        public bool IsChecked_AWB
-        {
-            get { return isChecked_AWB; }
-            set
-            {
-                isChecked_AWB = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string awbStatus_String = "";
-
-        public string AWBStatus_String
-        {
-            get { return awbStatus_String; }
-            set
-            {
-                awbStatus_String = value;
-                OnPropertyChanged();
-            }
-        }
-
         private int[] _fOVs = [0, 0, 0];
         public int[] FOVs
         {
             get => _fOVs;
-        }
-
-        private Visibility isChecked_FramingGrid;
-
-        public Visibility IsChecked_FramingGrid
-        {
-            get { return isChecked_FramingGrid; }
-            set
-            {
-                isChecked_FramingGrid = value;
-                OnPropertyChanged("IsChecked_FramingGrid");
-            }
         }
 
         public string VideoCaptureFolder
@@ -593,17 +588,151 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public Visibility ZoomVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyZoomSupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         public int Zoom
         {
             get => CurrentProfile.Zoom;
             set
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), value);
-                SetProfileProperty(nameof(Zoom), value);
+                if (value != CurrentProfile.Zoom)
+                {
+                    CurrentProfile.Zoom = value;
+                    if (!IsSliderDragging)
+                    {
+                        SetZoom();
+                    }
+                }
                 OnPropertyChanged();
             }
         }
+        public void SetZoom()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), Zoom);
+            SetProfileProperty(nameof(Zoom), Zoom);
+        }
 
+        public Visibility AutofocusVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyFocusSupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public bool IsFocusOn
+        {
+            get => CurrentProfile.IsFocusOn;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(IsFocusOn), value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsFocusOnText));
+            }
+        }
+        public string IsFocusOnText
+        {
+            get => CurrentProfile.IsFocusOn ? Strings.On : Strings.Off;
+        }
+
+        public int Focus
+        {
+            get => CurrentProfile.Focus;
+            set
+            {
+                if (value != CurrentProfile.Focus)
+                {
+                    CurrentProfile.Focus = value;
+                    if (!IsSliderDragging)
+                    {
+                        SetFocus();
+                    }
+                }
+                OnPropertyChanged();
+            }
+        }
+        public void SetFocus()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), Focus);
+            SetProfileProperty(nameof(Focus), Focus);
+        }
+
+        public Visibility PriorityVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyPrioritySupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public int Priority
+        {
+            get => CurrentProfile.Priority;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(Priority), value);
+                OnPropertyChanged();
+            }
+        }
+        public Visibility HDRVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyHDRSupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public bool IsHDROn
+        {
+            get => CurrentProfile.IsHDROn;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(IsHDROn), value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsHDROnText));
+            }
+        }
+        public string IsHDROnText
+        {
+            get => CurrentProfile.IsHDROn ? Strings.On : Strings.Off;
+        }
+
+        public Visibility AutoWhiteBalanceVisibility
+        {
+            get => CurrentDeviceInfo!.IsPropertyWhiteBalanceSupported ? Visibility.Visible : Visibility.Collapsed;
+        }
+        public bool IsAutoWhiteBalanceOn
+        {
+            get => CurrentProfile.IsAutoWhiteBalanceOn;
+            set
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), value);
+                SetProfileProperty(nameof(IsAutoWhiteBalanceOn), value);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsAutoWhiteBalanceOnText));
+            }
+        }
+        public string IsAutoWhiteBalanceOnText
+        {
+            get => CurrentProfile.IsAutoWhiteBalanceOn ? Strings.On : Strings.Off;
+        }
+
+        public int AutoWhiteBalance
+        {
+            get => CurrentProfile.AutoWhiteBalance;
+            set
+            {
+                if (value != CurrentProfile.AutoWhiteBalance)
+                {
+                    CurrentProfile.AutoWhiteBalance = value;
+                    if (!IsSliderDragging)
+                    {
+                        SetAutoWhiteBalance();
+                    }
+                }
+                OnPropertyChanged();
+            }
+        }
+        public void SetAutoWhiteBalance()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), AutoWhiteBalance);
+            SetProfileProperty(nameof(AutoWhiteBalance), AutoWhiteBalance);
+        }
 
         private bool isMicEnumerationOnEnabled = true;
         public bool IsMicEnumerationOnEnabled
