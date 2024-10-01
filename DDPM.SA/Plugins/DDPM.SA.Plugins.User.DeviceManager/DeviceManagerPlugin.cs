@@ -5676,7 +5676,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (result != null)
             {
                 Debug.WriteLine($"GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key={result.GlobalSetting_General.Keyboard_Lock_Key}");
-                if (true)
+                if (result.GlobalSetting_General.Keyboard_Lock_Key)
                 {
                     if (e.KeyCode == Keys.CapsLock)
                     {
@@ -5725,27 +5725,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //e.Handled = true;
                     }
                 }
-                else
-                {
-                    if (_OSDKeyLock)
-                    {
-                        if (e.KeyCode == Keys.CapsLock)
-                        {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
-                            _OSDKeyLock = false;
-                        }
-                        if (e.KeyCode == Keys.Scroll)
-                        {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
-                            _OSDKeyLock = false;
-                        }
-                        if (e.KeyCode == Keys.NumLock)
-                        {
-                            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
-                            _OSDKeyLock = false;
-                        }
-                    }
-                }
+                //else
+                //{
+                //    if (_OSDKeyLock)
+                //    {
+                //        if (e.KeyCode == Keys.CapsLock)
+                //        {
+                //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, false);
+                //            _OSDKeyLock = false;
+                //        }
+                //        if (e.KeyCode == Keys.Scroll)
+                //        {
+                //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.ScrollLock, false);
+                //            _OSDKeyLock = false;
+                //        }
+                //        if (e.KeyCode == Keys.NumLock)
+                //        {
+                //            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.NumLock, false);
+                //            _OSDKeyLock = false;
+                //        }
+                //    }
+                //}
             }
 
             //osd
