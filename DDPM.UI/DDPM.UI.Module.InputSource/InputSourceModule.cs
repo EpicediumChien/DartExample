@@ -69,9 +69,9 @@ namespace DDPM.UI.Module.InputSource
         //Handle new device coming
         private void InitNewViewModel()
         {
-            //vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
-            //this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
-            //vm.Invoke_RefreshData();
+            vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            vm.Invoke_RefreshData();
         }
 
         public void OnActivated()

@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DdmLibrary;
 using DdmLibrary.Utility;
+using System.Linq.Expressions;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -1096,12 +1097,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings)
         {
-            if (File.Exists(path))
+            try
             {
-                if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
+                if (File.Exists(path))
                 {
-                    return Task<bool>.FromResult(true);
+                    if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
+                    {
+                        return Task<bool>.FromResult(true);
+                    }
                 }
+            }
+            catch 
+            {
+                ;
             }
             return Task<bool>.FromResult(false);
         }
