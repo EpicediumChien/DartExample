@@ -51,7 +51,7 @@ using System.Threading;
 [assembly: InternalsVisibleTo("DDPM.UI.Module.Color.Tests")]
 namespace DDPM.UI.Module.Color
 {
-    internal class ColorViewModel : ObservableObject
+    internal class ColorViewModel : ObservableObject, INotifyPropertyChanged
     {
         #region Log
         private ILog? _log;
@@ -82,6 +82,46 @@ namespace DDPM.UI.Module.Color
         public List<string> ColorPresets_ItemsCollection { get; set; }
 
         //private static List<ColorPresetSettings> AddAppist = new List<ColorPresetSettings>();
+
+        public List<string> Support_Game_DeviceName { get; set; } = new List<string> { "AW2724HF", "AW2724DM", "AW2524HF", "G3223Q", "G2724D", "AW2725DF", "AW3225QF", "AW2725QF", "AW2523HF" };
+        public bool Is_Game_DeviceName { get; set; } = false;
+
+
+        private bool IsColorEnable = false;
+
+        public bool ColorEnable
+        {
+            get
+            {
+                OnPropertyChanged(nameof(ColorOpacity));
+                OnPropertyChanged(nameof(GreayoutAlart));
+                return IsColorEnable;
+            }
+        }
+
+        public string ColorOpacity
+        {
+            get
+            {
+                if (IsColorEnable)
+                {
+                    return "1.0";
+                }
+                return "0.5";
+            }
+        }
+
+        public Visibility GreayoutAlart
+        {
+            get
+            {
+                if (IsColorEnable)
+                {
+                    return Visibility.Collapsed;
+                }
+                return Visibility.Visible;
+            }
+        }
 
 
         // 20240920 jim add
@@ -186,6 +226,25 @@ namespace DDPM.UI.Module.Color
                 OnPropertyChanged("ColorPresetSelectedIndex");
             }
         }
+
+        public ColorViewModel()
+        {            
+            DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
+        }
+
+        private void OnHDRChangedEvent(object? sender, EventManagerArgs e)
+        {
+            IsColorEnable = !(bool)e.Tag;
+            OnPropertyChanged(nameof(ColorEnable));
+        }
+
+        public void UpdateHDRStatus()
+        {
+            bool HDRStatus = DdpmCommonHelper.DeviceManagerSA.GetHDRStatus(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+            IsColorEnable = !HDRStatus;
+            OnPropertyChanged(nameof(ColorEnable));
+        }
+
 
         //User to update selected index but do not trigger set VCP
         public void UpdateColorPresetSelectedIndex(int selIndex)
@@ -348,9 +407,11 @@ namespace DDPM.UI.Module.Color
                 {
                     ModelName = mo.edid.ModelName,
                     SerialNumber = mo.edid.SerialNumber,
+                    ServiceTag = mo.edid.ServiceTag,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native",
+                    //PresetForManual = "Standard/Native",
+                    ColorForManual = 0,
                     ColorManagement_Status = (int)ColorManagementStatus.Off,
                     ColorManagement_RunType = (int)ColorManagementRunType.Off
                 });
@@ -359,13 +420,17 @@ namespace DDPM.UI.Module.Color
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
             }
@@ -527,6 +592,9 @@ namespace DDPM.UI.Module.Color
         {
             try //2024-06-19 Elie, add try catch to get exception.
             {
+                if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
+                    Is_Game_DeviceName = true;
+
                 //OSD control back event
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
 
@@ -586,12 +654,16 @@ namespace DDPM.UI.Module.Color
                 {
                     config.AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                     {
-                        ColorPresetName = "Standard/Native",
+                        //ColorPresetName = "Standard/Native",
+                        Color = 0,
+                        HDRColor = -1,
                         IconName = "Assets/palette.png",
                     });
                     config.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                     {
-                        ColorPresetName = "Standard/Native",
+                        //ColorPresetName = "Standard/Native",
+                        Color = 0,
+                        HDRColor = -1,
                         IconName = "Assets/palette.png",
                     });
                 }
@@ -602,8 +674,16 @@ namespace DDPM.UI.Module.Color
                 foreach (string key in config.AppInfo.Keys)
                 {
                     ColorPresetSettings_AppInfo value = config.AppInfo[key];
+
+                    var strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
+
+                    //int pIdx = SupportColorPresets.FindIndex(x =>
+                    //                    x.Trim() == value.ColorPresetName.Trim());
+
                     int pIdx = SupportColorPresets.FindIndex(x =>
-                                        x.Trim() == value.ColorPresetName.Trim());
+                                        x.Trim() == strColorPresetName.Trim());
+
+
                     Visibility vis = (key.Trim() == "Desktop Application" || key.Trim() == "UWP Application") ?
                         Visibility.Collapsed : Visibility.Visible;
 
@@ -860,6 +940,7 @@ namespace DDPM.UI.Module.Color
                     //Result is failed.
                 }
             }
+            UpdateHDRStatus();
         }
 
         private void SyncNightlightStatus()
@@ -986,6 +1067,13 @@ namespace DDPM.UI.Module.Color
 
         private void update_ui_over_runtype(ColorPresetSettings config)
         {
+            if (!IsColorEnable)
+            {
+                DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
+                return;
+            }
+
+
             if (config.RunType == (int)ColorPresetRunType.Auto)
             {
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;

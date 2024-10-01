@@ -47,6 +47,10 @@ namespace DDPM.SA.Common
 
         Task<string> GetColorManagementStatus(MonitorInfo mo, ISettingsManagerDev _SettingsPlugin);
 
+        Task<string> GetColorPresetName(int Color_VCPCore_E2);
+
+        Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
+
         #endregion public for  Color Preset Plugin
     }
 }

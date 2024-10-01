@@ -18,7 +18,8 @@ namespace DDPM.ColorApp
     {
         private IDeviceManagerSA ddmLib;//Dean 0626 fix SAST issue, remove static as recommend and set as private
         private MonitorInfo Mi;//Dean 0626 fix SAST issue, remove static as recommend and set as private
-        private string Pre_reqKey = string.Empty;//Dean 0626 fix SAST issue, remove static as recommend and set as private
+        //private string Pre_reqKey = string.Empty;//Dean 0626 fix SAST issue, remove static as recommend and set as private
+        private int Pre_reqKey = -1;
 
         // 20240823 jim add - declare log variable
         private Logs _logs;
@@ -98,7 +99,8 @@ namespace DDPM.ColorApp
                 appconfigs.Clear();
 
             appconfigs = ddmLib.ReadColorPresetSettings().Result;
-            Pre_reqKey = string.Empty;
+            //Pre_reqKey = string.Empty;
+            Pre_reqKey = -1;
         }
 
         private List<AppCollectionData> load_app_list()
@@ -327,7 +329,8 @@ namespace DDPM.ColorApp
                                 break;
                             }
 
-                            string reqKey = string.Empty;
+                            //string reqKey = string.Empty;
+                            int reqKey = -1;
 
                             /*foreach (var item_appname in config.AppInfo.Keys)
                             {
@@ -375,8 +378,9 @@ namespace DDPM.ColorApp
                                 {
                                     if (config.AppInfo.ContainsKey("Desktop Application"))
                                     {
-                                        reqKey = config.AppInfo["Desktop Application"].ColorPresetName.Trim();
-                                        writelog("[Desktop Application] ColorPresetName = " + reqKey);
+                                        //reqKey = config.AppInfo["Desktop Application"].ColorPresetName.Trim();
+                                        reqKey = config.AppInfo["Desktop Application"].Color;
+                                        writelog("[Desktop Application] ColorPresetName = " + reqKey.ToString());
                                     }
                                     else
                                     {
@@ -388,8 +392,9 @@ namespace DDPM.ColorApp
                                 {
                                     if (config.AppInfo.ContainsKey("UWP Application"))
                                     {
-                                        reqKey = config.AppInfo["UWP Application"].ColorPresetName.Trim();
-                                        writelog("[UWP Application] ColorPresetName = " + reqKey);
+                                        //reqKey = config.AppInfo["UWP Application"].ColorPresetName.Trim();
+                                        reqKey = config.AppInfo["UWP Application"].Color;
+                                        writelog("[UWP Application] ColorPresetName = " + reqKey.ToString());
                                     }
                                     else
                                     {
@@ -400,21 +405,27 @@ namespace DDPM.ColorApp
                             }
                             else
                             {
-                                reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
-                                writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] = " + reqKey);
+                                //reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
+                                reqKey = (config.AppInfo[reqAppName]).Color;
+                                writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] = " + reqKey.ToString());
                             }
 
-                            if (string.IsNullOrEmpty(reqKey))
+                            //if (string.IsNullOrEmpty(reqKey))
+                            if (reqKey == -1)
                             {
                                 writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] is string.IsNullOrEmpty");
                                 //Trace.WriteLine("reqKey is string.IsNullOrEmpty");
                                 return;
                             }
 
-                            if (!Pre_reqKey.Equals(reqKey, StringComparison.OrdinalIgnoreCase))
+                            //if (!Pre_reqKey.Equals(reqKey, StringComparison.OrdinalIgnoreCase))
+                            if ( Pre_reqKey != reqKey)
                             {
-                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
-                                writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey);
+                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
+                                //writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey);
+
+                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
+                                writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey.ToString());
 
                                 Pre_reqKey = reqKey;
                                 //
@@ -426,8 +437,12 @@ namespace DDPM.ColorApp
                             }
                             else
                             {
-                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
-                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey);
+                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
+                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey);
+
+                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
+                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey.ToString());
+
                                 writelog("Pre_reqKey and reqKey is the same");
 
                                 //Trace.WriteLine("Pre_reqKey and reqKey is the same");
@@ -445,9 +460,11 @@ namespace DDPM.ColorApp
             }
         }
 
-        public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, string reqKey, out string outmsg, bool isDrawOSD = true)
+        //public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, string reqKey, out string outmsg, bool isDrawOSD = true)
+        public bool set_monitor_preset_by_request_key(MonitorInfo actived_mi, int reqKey, out string outmsg, bool isDrawOSD = true)
         {
-            if (string.IsNullOrEmpty(reqKey))
+            //if (string.IsNullOrEmpty(reqKey))
+            if (reqKey == -1)
             {
                 outmsg = string.Format($"SetVCP] {actived_mi.AliasDeviceName}, null request key!");
                 writelog("[set_monitor_preset_by_request_key] reqKey is string.IsNullOrEmpty");
@@ -459,7 +476,10 @@ namespace DDPM.ColorApp
             // 20240619 jim modify
             //bool bi = ddmLib.WriteColorPreset_AUTO("0", actived_mi, reqKey).Result;
             //bool bi = ddmLib.WriteColorPreset_AUTO(actived_mi, reqKey).Result;
-            bool bi = ddmLib.WriteColorPreset(actived_mi, reqKey, 1).Result;
+
+            var strColorPresetName = ddmLib.GetColorPresetName(reqKey).Result;
+
+            bool bi = ddmLib.WriteColorPreset(actived_mi, strColorPresetName, 1).Result;
 
             return true;
         }

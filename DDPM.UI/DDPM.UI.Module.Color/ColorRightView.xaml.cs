@@ -189,7 +189,10 @@ namespace DDPM.UI.Module.Color
                         if (index_config >= 0)
                         {
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
-                            Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].ColorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
+                            //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].ColorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
+
+                            var nColorVCPCoreValue = DdpmCommonHelper.DeviceManagerSA.GetColorVCPCoreValue(vm.SupportColorPresets[cb.SelectedIndex]).Result;
+                            Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].Color = nColorVCPCoreValue;
 
                             DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
                             Thread.Sleep(500);
@@ -526,7 +529,9 @@ namespace DDPM.UI.Module.Color
                             {
                                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, new ColorPresetSettings_AppInfo()
                                 {
-                                    ColorPresetName = "Standard/Native",
+                                    //ColorPresetName = "Standard/Native",
+                                    Color = 0,
+                                    HDRColor = -1,
                                     IconName = strAppIcon,
 
                                 });
@@ -542,6 +547,10 @@ namespace DDPM.UI.Module.Color
                 }               
               
             }
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

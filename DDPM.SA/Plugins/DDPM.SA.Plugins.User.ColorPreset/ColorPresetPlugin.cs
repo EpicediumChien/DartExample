@@ -95,6 +95,7 @@ namespace ColorPreset.Plugins
         MonitorInfo Active_monitorInfo = null;
         public RegistryMonitor_ICC registryMonitor_ICC = null;
 
+        public Dictionary<string, int> VCPE2 = new Dictionary<string, int>();
 
         /// <summary>
         /// Colorpreset Manual change event，return Colorpreset name
@@ -124,6 +125,78 @@ namespace ColorPreset.Plugins
             writelog("ColorPresetPlugin constructor ...");
 
             LoadInstalledAppList(true);
+           
+            VCPE2.Add("Standard/Native", 0);
+            VCPE2.Add("Standard", 0);
+            VCPE2.Add("Native", 0);
+            VCPE2.Add("Multimedia", 1);
+            VCPE2.Add("Movie", 2);
+            VCPE2.Add("Nature", 3);
+            VCPE2.Add("Game/Game1", 4); // 20240731 jim add
+            VCPE2.Add("Game", 4);
+            VCPE2.Add("Game1", 4);
+            VCPE2.Add("Sport", 5);
+            VCPE2.Add("Text", 6);
+            VCPE2.Add("AdobeRGB", 7);
+            VCPE2.Add("AdobeRGB1", 42);
+            VCPE2.Add("AdobeRGB2", 43);
+            VCPE2.Add("AdobeRGB1 (D65G2.2L250)", 42);
+            VCPE2.Add("AdobeRGB2 (D50G2.2L250)", 43);
+            VCPE2.Add("xvMode", 8);
+            VCPE2.Add("DICOM", 9);
+            VCPE2.Add("CAL1", 10);
+            VCPE2.Add("sRGB", 11);
+            VCPE2.Add("5000k", 12);
+            VCPE2.Add("5700k", 13);
+            VCPE2.Add("Warm", 14);
+            VCPE2.Add("6500k", 15);
+            VCPE2.Add("7500k", 16);
+            VCPE2.Add("9300k", 17);
+            VCPE2.Add("Cool", 18);
+            VCPE2.Add("10000k", 19);
+            VCPE2.Add("Custom Color", 20);
+            VCPE2.Add("Custom 1 / User 1", 44);
+            VCPE2.Add("Custom 2 / User 2", 45);
+            VCPE2.Add("Custom 3 / User 3", 46);
+            VCPE2.Add("Custom 1", 44);
+            VCPE2.Add("Custom 2", 45);
+            VCPE2.Add("Custom 3", 46);
+            VCPE2.Add("User 1", 44);
+            VCPE2.Add("User 2", 45);
+            VCPE2.Add("User 3", 46);
+            VCPE2.Add("CAL2", 21);
+            VCPE2.Add("Metro", 24);
+            VCPE2.Add("Paper", 25);
+            VCPE2.Add("Rec. 709 / BT.709", 26); // 20240731 jim add
+            VCPE2.Add("Rec. 709/BT.709", 26); // 20240731 jim add
+            VCPE2.Add("Rec.709/BT.709", 26); // 20240731 jim add
+            VCPE2.Add("Rec 709", 26);
+            VCPE2.Add("Rec.709", 26);
+            VCPE2.Add("Rec. 709", 26);
+            VCPE2.Add("BT.709", 26);
+            VCPE2.Add("DCI-P3", 27);
+            VCPE2.Add("Display P3", 61);
+            VCPE2.Add("Rec2020", 28);
+            VCPE2.Add("BT.2020", 28);
+            VCPE2.Add("ComfortView", 29);
+            VCPE2.Add("Game2", 30);
+            VCPE2.Add("Game3", 31);
+            VCPE2.Add("FPS Game", 32);
+            VCPE2.Add("RTS Game", 33);
+            VCPE2.Add("RPG Game", 34);
+            VCPE2.Add("SPORTS Game", 47);
+            VCPE2.Add("Standard HDR", 37);
+            VCPE2.Add("Movie HDR", 35);
+            VCPE2.Add("Game HDR", 36);
+            VCPE2.Add("Vivid HDR", 38);
+            VCPE2.Add("Desktop", 39);
+            VCPE2.Add("Reference", 40);
+            VCPE2.Add("Multiscreen Match", 41);
+            VCPE2.Add("DisplayHDR", 58);
+            VCPE2.Add("HDR10", 59);
+            VCPE2.Add("HLG", 60);
+            VCPE2.Add("Presets Disabled", 127);
+
         }
 
         #endregion
@@ -186,9 +259,11 @@ namespace ColorPreset.Plugins
                 {
                     ModelName = mo.edid.ModelName,
                     SerialNumber = mo.edid.SerialNumber,
+                    ServiceTag = mo.edid.ServiceTag,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native",
+                    //PresetForManual = "Standard/Native",
+                    ColorForManual = 0,
                     ColorManagement_Status = (int)ColorManagementStatus.Off,
                     ColorManagement_RunType = (int)ColorManagementRunType.Off
                 });
@@ -197,13 +272,17 @@ namespace ColorPreset.Plugins
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
             }
@@ -219,12 +298,16 @@ namespace ColorPreset.Plugins
                 //Default items
                 temp.AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
                 temp.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
             }
@@ -240,9 +323,11 @@ namespace ColorPreset.Plugins
                 {
                     ModelName = mo.edid.ModelName,
                     SerialNumber = mo.edid.SerialNumber,
+                    ServiceTag = mo.edid.ServiceTag,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native",
+                    //PresetForManual = "Standard/Native",
+                    ColorForManual = 0,
                     ColorManagement_Status = (int)ColorManagementStatus.Off,
                     ColorManagement_RunType = (int)ColorManagementRunType.Off
                 });
@@ -281,9 +366,13 @@ namespace ColorPreset.Plugins
 
             if (!(Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.ContainsKey(AppName)))
             {
+                var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(AppName, new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = ColorPreset_Name,
+                    //ColorPresetName = ColorPreset_Name,
+                    Color = nColorVCPCoreValue,
+                    HDRColor = -1,
                     IconName = kvp.Value.IconName,
                 });
             }
@@ -298,8 +387,12 @@ namespace ColorPreset.Plugins
             int index_config = get_index_of_json_config_for_cur_monitor(mo);
             if (index_config >= 0)
             {
+                var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[AppName].ColorPresetName = ColorPreset_Name;
+                //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[AppName].ColorPresetName = ColorPreset_Name;
+
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[AppName].Color = nColorVCPCoreValue;
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
@@ -844,20 +937,27 @@ namespace ColorPreset.Plugins
                 {
                     if (index >= 0)
                     {
+                        var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Manual;
-                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+                        //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
                     }
                 }
                 else if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                 {
                     if (index >= 0)
                     {
+                        var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
-                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+                        //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
                     }
 
-                }
-                
+                }                
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 Thread.Sleep(100);
@@ -912,11 +1012,53 @@ namespace ColorPreset.Plugins
 
             if (index >= 0)
             {
+                var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+                //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+        }
+
+        public Task<string> GetColorPresetName(int Color_VCPCore_E2)
+        {
+            if (Log != null)
+            {
+                Log.Info($"GetColorPresetName requested ...");
+            }
+
+            // 判斷Key是否存在
+            // 若存在，回傳True，將Key為Color_VCPCore_E2的Value，帶入tmp
+            if (!VcpCodeList.VCPE2.TryGetValue(Color_VCPCore_E2, out string tmp))
+            {
+                return Task.FromResult(string.Empty);
+            }
+            else
+            {
+                return Task.FromResult(tmp);
+            }           
+        }
+
+        public Task<int> GetColorVCPCoreValue(string ColorPreset_Name)
+        {
+            if (Log != null)
+            {
+                Log.Info($"GetColorVCPCoreValue requested ...");
+            }
+
+            // 判斷Key是否存在
+            // 若存在，回傳True，將Key為ColorPreset_Name的Value，帶入tmp
+            if (!VCPE2.TryGetValue(ColorPreset_Name, out int tmp))
+            {
+                return Task.FromResult(-1);
+            }
+            else
+            {
+                return Task.FromResult(tmp);
+            }
         }
 
         #endregion
