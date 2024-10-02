@@ -343,7 +343,7 @@ namespace ColorPreset.Plugins
         /// 啟動 MonitorBorker 執行抓前景active app name
         /// </summary>
         /// <param name="m"></param>
-        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin)
+        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false)
         {
             if (Log != null)
             {
@@ -365,7 +365,7 @@ namespace ColorPreset.Plugins
                         MonitorBorkerWin = new MainWindow(_DeviceManagerPlugin, m);
 
                         MonitorBorkerWin.Show();
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON);
                     }
                     else
                     {
@@ -377,7 +377,7 @@ namespace ColorPreset.Plugins
             return;
         }
         
-        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin)
+        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false)
         {
             List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
 
@@ -401,7 +401,7 @@ namespace ColorPreset.Plugins
                     newWindowThread_AutoSetColorPresetForMonitorConfig = new Thread(new ThreadStart(() =>
                     {
                         // create and show the window
-                        Launch_MonitorBorker(mo, _DeviceManagerPlugin);
+                        Launch_MonitorBorker(mo, _DeviceManagerPlugin, SmartHDR_ON);
 
                         // start the Dispatcher processing
                         // 啟動消息循環
@@ -423,7 +423,7 @@ namespace ColorPreset.Plugins
                 {
                     // jim add 20240605
                     if (MonitorBorkerWin != null) // jim add 20240809
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON);
                 }
             }
             else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
@@ -444,7 +444,7 @@ namespace ColorPreset.Plugins
                 if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
                 {
                     if (MonitorBorkerWin != null) // jim add 20240809
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, SmartHDR_ON);
                 }
 
             }

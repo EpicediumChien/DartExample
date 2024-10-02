@@ -42,6 +42,7 @@ using System.Diagnostics;
 using System;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Threading;
+using System.Windows.Markup;
 
 
 //using System.Management;
@@ -82,10 +83,12 @@ namespace DDPM.UI.Module.Color
         public List<string> ColorPresets_ItemsCollection { get; set; }
 
         //private static List<ColorPresetSettings> AddAppist = new List<ColorPresetSettings>();
-
-        public List<string> Support_Game_DeviceName { get; set; } = new List<string> { "AW2724HF", "AW2724DM", "AW2524HF", "G3223Q", "G2724D", "AW2725DF", "AW3225QF", "AW2725QF", "AW2523HF" };
+      
         public bool Is_Game_DeviceName { get; set; } = false;
 
+        List<string> HDR_ColorPresetNameList = new List<string>() { "Standard HDR", "Movie HDR", "Game HDR", "Vivid HDR", "Desktop", "Reference", "Multiscreen Match", "DisplayHDR", "HDR10", "HLG" };
+
+        public bool SmartHDR_ON { get; set; } = false;
 
         private bool IsColorEnable = false;
 
@@ -95,7 +98,7 @@ namespace DDPM.UI.Module.Color
             {
                 OnPropertyChanged(nameof(ColorOpacity));
                 OnPropertyChanged(nameof(GreayoutAlart));
-                return IsColorEnable;
+                return (IsColorEnable || !Is_Game_DeviceName);
             }
         }
 
@@ -103,7 +106,7 @@ namespace DDPM.UI.Module.Color
         {
             get
             {
-                if (IsColorEnable)
+                if (IsColorEnable || !Is_Game_DeviceName)
                 {
                     return "1.0";
                 }
@@ -115,7 +118,7 @@ namespace DDPM.UI.Module.Color
         {
             get
             {
-                if (IsColorEnable)
+                if (IsColorEnable || !Is_Game_DeviceName)
                 {
                     return Visibility.Collapsed;
                 }
@@ -236,6 +239,8 @@ namespace DDPM.UI.Module.Color
         {
             IsColorEnable = !(bool)e.Tag;
             OnPropertyChanged(nameof(ColorEnable));
+
+            SmartHDR_ON = !IsColorEnable;
         }
 
         public void UpdateHDRStatus()
@@ -243,6 +248,8 @@ namespace DDPM.UI.Module.Color
             bool HDRStatus = DdpmCommonHelper.DeviceManagerSA.GetHDRStatus(MyModule.SelectedHomeDevice.MonitorInfo).Result;
             IsColorEnable = !HDRStatus;
             OnPropertyChanged(nameof(ColorEnable));
+
+            SmartHDR_ON = HDRStatus;
         }
 
 
@@ -592,6 +599,8 @@ namespace DDPM.UI.Module.Color
         {
             try //2024-06-19 Elie, add try catch to get exception.
             {
+                UpdateHDRStatus();
+
                 if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
                     Is_Game_DeviceName = true;
 
@@ -612,6 +621,23 @@ namespace DDPM.UI.Module.Color
                 // -- begin add jim 20240604
                 SupportColorPresets = new List<string>();
                 SupportColorPresets = DdpmCommonHelper.DeviceManagerSA.ReadColorPreset(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+
+                if (IsColorEnable) // HDR off
+                {
+                    SupportColorPresets.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));
+
+                }
+                else // // HDR on
+                {
+                    List<string> common_ColorPreset = SupportColorPresets.Intersect(HDR_ColorPresetNameList).ToList();                    
+
+                    SupportColorPresets.Clear();
+
+                    foreach (string info in common_ColorPreset)
+                    {
+                        SupportColorPresets.Add(new string(info));
+                    }
+                }
 
                 //Dean 0612 add
                 string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
@@ -675,7 +701,12 @@ namespace DDPM.UI.Module.Color
                 {
                     ColorPresetSettings_AppInfo value = config.AppInfo[key];
 
-                    var strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
+                    string strColorPresetName = string.Empty;
+
+                    if (SmartHDR_ON)
+                        strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.HDRColor).Result;
+                    else 
+                        strColorPresetName = DdpmCommonHelper.DeviceManagerSA.GetColorPresetName(value.Color).Result;
 
                     //int pIdx = SupportColorPresets.FindIndex(x =>
                     //                    x.Trim() == value.ColorPresetName.Trim());
@@ -940,7 +971,7 @@ namespace DDPM.UI.Module.Color
                     //Result is failed.
                 }
             }
-            UpdateHDRStatus();
+            //UpdateHDRStatus();
         }
 
         private void SyncNightlightStatus()
@@ -1067,7 +1098,7 @@ namespace DDPM.UI.Module.Color
 
         private void update_ui_over_runtype(ColorPresetSettings config)
         {
-            if (!IsColorEnable)
+            if (!(IsColorEnable || !Is_Game_DeviceName))
             {
                 DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
                 return;

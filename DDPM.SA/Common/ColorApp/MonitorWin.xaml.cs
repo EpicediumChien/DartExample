@@ -27,6 +27,8 @@ namespace DDPM.ColorApp
         // jim add 20240605
         private bool b_AUTO_ColorPresetConfig = false;//Dean 0626 fix SAST issue, remove static as recommend and set as private
 
+        private bool b_SmartHDR_ON= false;
+
         #region data region
 
         private List<AppCollectionData> _apps = new List<AppCollectionData>();
@@ -64,21 +66,32 @@ namespace DDPM.ColorApp
         }
 
         // jim add 20240605
-        public void Set_AUTO_ColorPresetConfig(bool blAUTO)
+        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON)
         {
             b_AUTO_ColorPresetConfig = blAUTO;
+            b_SmartHDR_ON = blSmartHDR_ON;
 
             if (b_AUTO_ColorPresetConfig)
             {
-                writelog("Set_AUTO_ColorPresetConfig = " + blAUTO);
+                writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
                 AppStatusQuery.SendValue += EventAppStatus_SendValue;
                 AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_AUTO");
             }
             else
             {
-                writelog("Set_AUTO_ColorPresetConfig = " + blAUTO);
+                writelog("Set_AUTO_ColorPresetConfig AUTO_ColorPresetConfig = " + blAUTO);
                 AppStatusQuery.SendValue -= EventAppStatus_SendValue;
                 AppStatusQuery.GetInstance(Log).ClearLastAppRecord("SET_MANUAL");
+            }
+
+            if (b_SmartHDR_ON)
+            {
+                writelog("Set_AUTO_ColorPresetConfig SmartHDR_ON = " + b_SmartHDR_ON);               
+            }
+            else
+            {
+                writelog("Set_AUTO_ColorPresetConfig SmartHDR_ON = " + b_SmartHDR_ON);
+            
             }
         }
 
@@ -379,7 +392,11 @@ namespace DDPM.ColorApp
                                     if (config.AppInfo.ContainsKey("Desktop Application"))
                                     {
                                         //reqKey = config.AppInfo["Desktop Application"].ColorPresetName.Trim();
-                                        reqKey = config.AppInfo["Desktop Application"].Color;
+                                        if (b_SmartHDR_ON)
+                                            reqKey = config.AppInfo["Desktop Application"].HDRColor;
+                                        else
+                                            reqKey = config.AppInfo["Desktop Application"].Color;
+
                                         writelog("[Desktop Application] ColorPresetName = " + reqKey.ToString());
                                     }
                                     else
@@ -393,7 +410,11 @@ namespace DDPM.ColorApp
                                     if (config.AppInfo.ContainsKey("UWP Application"))
                                     {
                                         //reqKey = config.AppInfo["UWP Application"].ColorPresetName.Trim();
-                                        reqKey = config.AppInfo["UWP Application"].Color;
+                                        if (b_SmartHDR_ON)
+                                            reqKey = config.AppInfo["UWP Application"].HDRColor;
+                                        else
+                                            reqKey = config.AppInfo["UWP Application"].Color;
+
                                         writelog("[UWP Application] ColorPresetName = " + reqKey.ToString());
                                     }
                                     else
@@ -406,7 +427,12 @@ namespace DDPM.ColorApp
                             else
                             {
                                 //reqKey = (config.AppInfo[reqAppName]).ColorPresetName.Trim();
-                                reqKey = (config.AppInfo[reqAppName]).Color;
+
+                                if (b_SmartHDR_ON)
+                                    reqKey = (config.AppInfo[reqAppName]).HDRColor;
+                                else
+                                    reqKey = (config.AppInfo[reqAppName]).Color;
+
                                 writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] = " + reqKey.ToString());
                             }
 
