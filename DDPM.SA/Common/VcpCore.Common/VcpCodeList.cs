@@ -441,6 +441,80 @@ namespace VcpCore.Common
             { 0X1D, "Micronas" }
         };
 
+        public static Dictionary<string, int> VCPE2_ref = new Dictionary<string, int>
+        {
+            {"Standard/Native", 0},
+            {"Standard", 0 },
+            {"Native", 0},
+            {"Multimedia", 1},
+            {"Movie", 2},
+            {"Nature", 3},
+            {"Game/Game1", 4}, // 20240731 jim add
+            {"Game", 4},
+            {"Game1", 4},
+            {"Sport", 5},
+            {"Text", 6},
+            {"AdobeRGB", 7},
+            {"AdobeRGB1", 42},
+            {"AdobeRGB2", 43},
+            {"AdobeRGB1 (D65G2.2L250)", 42},
+            {"AdobeRGB2 (D50G2.2L250)", 43},
+            {"xvMode", 8},
+            {"DICOM", 9},
+            {"CAL1", 10},
+            {"sRGB", 11},
+            {"5000k", 12},
+            {"5700k", 13},
+            {"Warm", 14},
+            {"6500k", 15},
+            {"7500k", 16},
+            {"9300k", 17},
+            {"Cool", 18},
+            {"10000k", 19},
+            {"Custom Color", 20},
+            {"Custom 1 / User 1", 44},
+            {"Custom 2 / User 2", 45},
+            {"Custom 3 / User 3", 46},
+            {"Custom 1", 44},
+            {"Custom 2", 45},
+            {"Custom 3", 46},
+            {"User 1", 44},
+            {"User 2", 45},
+            {"User 3", 46},
+            {"CAL2", 21},
+            {"Metro", 24},
+            {"Paper", 25},
+            {"Rec. 709 / BT.709", 26}, // 20240731 jim add
+            {"Rec. 709/BT.709", 26}, // 20240731 jim add
+            {"Rec.709/BT.709", 26}, // 20240731 jim add
+            {"Rec 709", 26},
+            {"Rec.709", 26},
+            {"Rec. 709", 26},
+            {"BT.709", 26},
+            {"DCI-P3", 27},
+            {"Display P3", 61},
+            {"Rec2020", 28},
+            {"BT.2020", 28},
+            {"ComfortView", 29},
+            {"Game2", 30},
+            {"Game3", 31},
+            {"FPS Game", 32},
+            {"RTS Game", 33},
+            {"RPG Game", 34},
+            {"SPORTS Game", 47},
+            {"Standard HDR", 37},
+            {"Movie HDR", 35},
+            {"Game HDR", 36},
+            {"Vivid HDR", 38},
+            {"Desktop", 39},
+            {"Reference", 40},
+            {"Multiscreen Match", 41},
+            {"DisplayHDR", 58},
+            {"HDR10", 59},
+            {"HLG", 60},
+            {"Presets Disabled", 127}            
+        };
+
         public struct VcpValue
         {
             public byte Vcp;

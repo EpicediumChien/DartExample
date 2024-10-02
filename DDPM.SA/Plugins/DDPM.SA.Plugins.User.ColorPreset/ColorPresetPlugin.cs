@@ -93,9 +93,7 @@ namespace ColorPreset.Plugins
 
         //20240905 Jim add
         MonitorInfo Active_monitorInfo = null;
-        public RegistryMonitor_ICC registryMonitor_ICC = null;
-
-        public Dictionary<string, int> VCPE2 = new Dictionary<string, int>();
+        public RegistryMonitor_ICC registryMonitor_ICC = null;       
 
         /// <summary>
         /// Colorpreset Manual change event，return Colorpreset name
@@ -125,78 +123,6 @@ namespace ColorPreset.Plugins
             writelog("ColorPresetPlugin constructor ...");
 
             LoadInstalledAppList(true);
-           
-            VCPE2.Add("Standard/Native", 0);
-            VCPE2.Add("Standard", 0);
-            VCPE2.Add("Native", 0);
-            VCPE2.Add("Multimedia", 1);
-            VCPE2.Add("Movie", 2);
-            VCPE2.Add("Nature", 3);
-            VCPE2.Add("Game/Game1", 4); // 20240731 jim add
-            VCPE2.Add("Game", 4);
-            VCPE2.Add("Game1", 4);
-            VCPE2.Add("Sport", 5);
-            VCPE2.Add("Text", 6);
-            VCPE2.Add("AdobeRGB", 7);
-            VCPE2.Add("AdobeRGB1", 42);
-            VCPE2.Add("AdobeRGB2", 43);
-            VCPE2.Add("AdobeRGB1 (D65G2.2L250)", 42);
-            VCPE2.Add("AdobeRGB2 (D50G2.2L250)", 43);
-            VCPE2.Add("xvMode", 8);
-            VCPE2.Add("DICOM", 9);
-            VCPE2.Add("CAL1", 10);
-            VCPE2.Add("sRGB", 11);
-            VCPE2.Add("5000k", 12);
-            VCPE2.Add("5700k", 13);
-            VCPE2.Add("Warm", 14);
-            VCPE2.Add("6500k", 15);
-            VCPE2.Add("7500k", 16);
-            VCPE2.Add("9300k", 17);
-            VCPE2.Add("Cool", 18);
-            VCPE2.Add("10000k", 19);
-            VCPE2.Add("Custom Color", 20);
-            VCPE2.Add("Custom 1 / User 1", 44);
-            VCPE2.Add("Custom 2 / User 2", 45);
-            VCPE2.Add("Custom 3 / User 3", 46);
-            VCPE2.Add("Custom 1", 44);
-            VCPE2.Add("Custom 2", 45);
-            VCPE2.Add("Custom 3", 46);
-            VCPE2.Add("User 1", 44);
-            VCPE2.Add("User 2", 45);
-            VCPE2.Add("User 3", 46);
-            VCPE2.Add("CAL2", 21);
-            VCPE2.Add("Metro", 24);
-            VCPE2.Add("Paper", 25);
-            VCPE2.Add("Rec. 709 / BT.709", 26); // 20240731 jim add
-            VCPE2.Add("Rec. 709/BT.709", 26); // 20240731 jim add
-            VCPE2.Add("Rec.709/BT.709", 26); // 20240731 jim add
-            VCPE2.Add("Rec 709", 26);
-            VCPE2.Add("Rec.709", 26);
-            VCPE2.Add("Rec. 709", 26);
-            VCPE2.Add("BT.709", 26);
-            VCPE2.Add("DCI-P3", 27);
-            VCPE2.Add("Display P3", 61);
-            VCPE2.Add("Rec2020", 28);
-            VCPE2.Add("BT.2020", 28);
-            VCPE2.Add("ComfortView", 29);
-            VCPE2.Add("Game2", 30);
-            VCPE2.Add("Game3", 31);
-            VCPE2.Add("FPS Game", 32);
-            VCPE2.Add("RTS Game", 33);
-            VCPE2.Add("RPG Game", 34);
-            VCPE2.Add("SPORTS Game", 47);
-            VCPE2.Add("Standard HDR", 37);
-            VCPE2.Add("Movie HDR", 35);
-            VCPE2.Add("Game HDR", 36);
-            VCPE2.Add("Vivid HDR", 38);
-            VCPE2.Add("Desktop", 39);
-            VCPE2.Add("Reference", 40);
-            VCPE2.Add("Multiscreen Match", 41);
-            VCPE2.Add("DisplayHDR", 58);
-            VCPE2.Add("HDR10", 59);
-            VCPE2.Add("HLG", 60);
-            VCPE2.Add("Presets Disabled", 127);
-
         }
 
         #endregion
@@ -1051,7 +977,7 @@ namespace ColorPreset.Plugins
 
             // 判斷Key是否存在
             // 若存在，回傳True，將Key為ColorPreset_Name的Value，帶入tmp
-            if (!VCPE2.TryGetValue(ColorPreset_Name, out int tmp))
+            if (!VcpCodeList.VCPE2_ref.TryGetValue(ColorPreset_Name, out int tmp))
             {
                 return Task.FromResult(-1);
             }
