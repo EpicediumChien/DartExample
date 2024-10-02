@@ -621,6 +621,7 @@ namespace DDPM.UI.Module.Kvm
                         if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
                         {
                             string pathData = string.Empty;
+                            _inputsList.Clear();
                             foreach (string item in inputList.Keys)
                             {
                                 if (item.StartsWith("HDMI"))
@@ -642,6 +643,7 @@ namespace DDPM.UI.Module.Kvm
                                     kvmModule = KvmModule
                                 });
                             }
+                            _usbsList.Clear();
                             foreach (string str in usbsList)
                             {
                                 if (str.StartsWith("USB-C") || str.StartsWith("Thunderbolt"))
