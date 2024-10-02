@@ -60,7 +60,8 @@ namespace DDPM.SA.Common.Settings
                     {
                         string version =
                         Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
-                        software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}").Replace("_Uknown", "-Debug").Replace(".zip", ".exe").Replace("/Firmwares", "");
+                        software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}-Debug");
+                        software.MiniInstallerServer_path = software.MiniInstallerServer_path.Replace("%21", $"MiniInstaller");
                     }
                     info = $"{nameof(GetSWMetadata)} done";
                     return data;

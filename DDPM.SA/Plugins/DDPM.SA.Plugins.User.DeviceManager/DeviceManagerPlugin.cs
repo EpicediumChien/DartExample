@@ -3134,7 +3134,28 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
-
+        private void DeleteMiniInstallerFolder()
+        {
+            writelog("[DeleteMiniInstallerFolder], start.");
+            string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
+            object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller").Result;
+            writelog($"[DeleteMiniInstallerFolder], o={o}.");
+            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            {
+                writelog($"[DeleteMiniInstallerFolder], o_String={o.ToString()}.");
+                DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+                string path = DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                if (Directory.Exists(path))
+                {
+                    writelog($"[DeleteMiniInstallerFolder], Exists.");
+                    Directory.Delete(path, true);
+                    writelog($"[DeleteMiniInstallerFolder], Delete.");
+                }
+                WriteRegistryData(RegistryHive.LocalMachine, registryKey, "MiniInstaller", "");
+                writelog($"[DeleteMiniInstallerFolder], WriteRegistryData.");
+            }
+            writelog("[DeleteMiniInstallerFolder], done.");
+        }
         #endregion
 
         #region ImpExpSettings
@@ -3848,7 +3869,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             LoadGlobalSettingParam();
             ReloadHotkeyConfigData();
             ToNKVM_initHotKeys();
-
+            DeleteMiniInstallerFolder();
             //hook keyboard
             //if (_HotkeyPlugin != null)
             //{
