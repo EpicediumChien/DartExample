@@ -239,7 +239,7 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 string filename = saveFileDialog.FileName;
                 string info = string.Empty;
-                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, false, out info))
                 {
                     IsBusy = false;
                     OnPropertyChanged("IsBusy");
