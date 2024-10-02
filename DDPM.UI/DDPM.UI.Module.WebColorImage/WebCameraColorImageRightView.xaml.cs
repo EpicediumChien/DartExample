@@ -22,15 +22,45 @@ namespace DDPM.UI.Module.WebCameraColorImage
             _vm = vm;
 
             if (_vm.CurrentDeviceInfo!.IsPropertyWhiteBalanceSupported)
-                InitializeAWB();
+            {
+                AWBSlider.Maximum = _vm.CurrentDeviceInfo!.WhiteBalanceMax;
+                AWBSlider.Minimum = _vm.CurrentDeviceInfo.WhiteBalanceMin;
+                AWBSlider.TickFrequency = _vm.CurrentDeviceInfo!.WhiteBalanceSteppingDelta;
+            }
+
+            if (_vm.CurrentDeviceInfo!.IsPropertyBrightnessSupported)
+            {
+                BrightnessSlider.Maximum = _vm.CurrentDeviceInfo!.BrightnessMax;
+                BrightnessSlider.Minimum = _vm.CurrentDeviceInfo.BrightnessMin;
+                BrightnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.BrightnessSteppingDelta;
+                spBrightness.Visibility = Visibility.Visible;
+            }
+
+            if (_vm.CurrentDeviceInfo!.IsPropertySharpnessSupported)
+            {
+                SharpnessSlider.Maximum = _vm.CurrentDeviceInfo!.SharpnessMax;
+                SharpnessSlider.Minimum = _vm.CurrentDeviceInfo.SharpnessMin;
+                SharpnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.SharpnessSteppingDelta;
+                spSharpness.Visibility = Visibility.Visible;
+            }
+
+            if (_vm.CurrentDeviceInfo!.IsPropertyContrastSupported)
+            {
+                ContrastSlider.Maximum = _vm.CurrentDeviceInfo!.ContrastMax;
+                ContrastSlider.Minimum = _vm.CurrentDeviceInfo.ContrastMin;
+                ContrastSlider.TickFrequency = _vm.CurrentDeviceInfo!.ContrastSteppingDelta;
+                spContrast.Visibility = Visibility.Visible;
+            }
+
+            if (_vm.CurrentDeviceInfo!.IsPropertySaturationSupported)
+            {
+                SaturationSlider.Maximum = _vm.CurrentDeviceInfo!.SaturationMax;
+                SaturationSlider.Minimum = _vm.CurrentDeviceInfo.SaturationMin;
+                SaturationSlider.TickFrequency = _vm.CurrentDeviceInfo!.SaturationSteppingDelta;
+                spSaturation.Visibility = Visibility.Visible;
+            }
         }
 
-        private void InitializeAWB()
-        {
-            AWBSlider.Maximum = _vm.CurrentDeviceInfo!.WhiteBalanceMax;
-            AWBSlider.Minimum = _vm.CurrentDeviceInfo.WhiteBalanceMin;
-            AWBSlider.TickFrequency = _vm.CurrentDeviceInfo!.WhiteBalanceSteppingDelta;
-        }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
@@ -86,115 +116,64 @@ namespace DDPM.UI.Module.WebCameraColorImage
             */
         }
 
-        //  Jim add 20240628
-        private void BrightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            // 20240903 Jim add
-            //_vm._deviceManager.SetBrightnessValueByDTP("DellPeripheral.Webcam.0", (int)BrightnessSlider.Value);
-
-
-            //SetBrightnessLevel((float)BrightnessSlider.Value);
-        }
-
-        private void SetBrightnessLevel(float level)
-        {
-            if (_vm != null && _vm.MediaCapture != null)
-            {
-                var brightnessControl = _vm.MediaCapture.VideoDeviceController.Brightness;
-
-                // Make sure brightnessFactor is within the valid range
-                level = Math.Max(Math.Min(level, (float)_vm.MediaCapture.VideoDeviceController.Brightness.Capabilities.Max), (float)_vm.MediaCapture.VideoDeviceController.Brightness.Capabilities.Min);
-
-                // Make sure brightnessFactor is a multiple of Step, snap to the next lower step
-                level -= (level % (float)_vm.MediaCapture.VideoDeviceController.Brightness.Capabilities.Step);
-
-                brightnessControl.TrySetValue(level);
-            }
-        }
-
-        //  Jim add 20240702
-        private void ContrastSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SetContrastLevel((float)ContrastSlider.Value);
-        }
-
-        private void SetContrastLevel(float level)
-        {
-            if (_vm != null && _vm.MediaCapture != null)
-            {
-                var contrastControl = _vm.MediaCapture.VideoDeviceController.Contrast;
-
-                // Make sure brightnessFactor is within the valid range
-                level = Math.Max(Math.Min(level, (float)_vm.MediaCapture.VideoDeviceController.Contrast.Capabilities.Max), (float)_vm.MediaCapture.VideoDeviceController.Contrast.Capabilities.Min);
-
-                // Make sure brightnessFactor is a multiple of Step, snap to the next lower step
-                level -= (level % (float)_vm.MediaCapture.VideoDeviceController.Contrast.Capabilities.Step);
-
-                contrastControl.TrySetValue(level);
-            }
-        }
-
-        //  Jim add 20240702
-        private void SaturationSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SetSaturationLevel((float)SaturationSlider.Value);
-        }
-
-        private void SetSaturationLevel(float level)
-        {
-            if (_vm != null && _vm.MediaCapture != null)
-            {
-                var saturationControl = _vm.MediaCapture.VideoDeviceController.Hue;
-
-                // Make sure brightnessFactor is within the valid range
-                level = Math.Max(Math.Min(level, (float)_vm.MediaCapture.VideoDeviceController.Hue.Capabilities.Max), (float)_vm.MediaCapture.VideoDeviceController.Hue.Capabilities.Min);
-
-                // Make sure brightnessFactor is a multiple of Step, snap to the next lower step
-                level -= (level % (float)_vm.MediaCapture.VideoDeviceController.Hue.Capabilities.Step);
-
-                saturationControl.TrySetValue(level);
-            }
-        }
-
-        private void Slider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
-        {
-            _vm.IsSliderDragging = true;
-        }
-
-        private void TipSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
-        {
-            _vm.IsSliderDragging = false;
-            //_vm.SetDPIValue();
-        }
-
-        private void TiltSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
-        {
-            _vm.IsSliderDragging = false;
-            //_vm.SetTouchScrollSensitivityLevel();
-        }
-
-        private void btnPair_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void AntiFlicker_50Hz_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-        }
-
-        private void AntiFlicker_60Hz_Button_Click(object sender, MouseButtonEventArgs e)
-        {
-        }
-
         private void AWBSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
             _vm.IsSliderDragging = true;
-
         }
 
         private void AWBSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
             _vm.SetAutoWhiteBalance();
+        }
+
+        private void BrightnessSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
+
+        private void BrightnessSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetBrightness();
+        }
+
+        private void SharpnessSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
+
+        private void SharpnessSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetSharpness();
+        }
+
+        private void ContrastSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
+
+        private void ContrastSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetContrast();
+        }
+
+        private void SaturationSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
+
+        private void SaturationSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetSaturation();
+        }
+
+        private void AntiFlicker_Click(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

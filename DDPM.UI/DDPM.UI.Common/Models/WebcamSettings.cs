@@ -30,7 +30,7 @@ namespace DDPM.UI.Common
             try
             {
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
-                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings");
+                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
 
@@ -45,7 +45,7 @@ namespace DDPM.UI.Common
 
         public static WebcamSettings ImportWebcamSettings(string model)
         {
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
             var hasFile = File.Exists(filePath);
             if (hasFile)
             {

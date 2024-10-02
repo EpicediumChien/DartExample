@@ -371,6 +371,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
                 OnPropertyChanged(nameof(IsHDROn));
             }
+
             if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn);
@@ -380,6 +381,30 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(AutoWhiteBalance));
             }
 
+
+            if (CurrentDeviceInfo.IsPropertyBrightnessSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Brightness);
+                OnPropertyChanged(nameof(Brightness));
+            }
+
+            if (CurrentDeviceInfo.IsPropertySharpnessSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Sharpness);
+                OnPropertyChanged(nameof(Sharpness));
+            }
+
+            if (CurrentDeviceInfo.IsPropertyContrastSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Contrast);
+                OnPropertyChanged(nameof(Contrast));
+            }
+
+            if (CurrentDeviceInfo.IsPropertySaturationSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Saturation);
+                OnPropertyChanged(nameof(Saturation));
+            }
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -732,6 +757,94 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), AutoWhiteBalance);
             SetProfileProperty(nameof(AutoWhiteBalance), AutoWhiteBalance);
+        }
+
+        public int Brightness
+        {
+            get => CurrentProfile.Brightness;
+            set
+            {
+                if (value != CurrentProfile.Brightness)
+                {
+                    CurrentProfile.Brightness = value;
+                    if (!IsSliderDragging)
+                    {
+                        SetBrightness();
+                    }
+                }
+                OnPropertyChanged();
+            }
+        }
+        public void SetBrightness()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), Brightness);
+            SetProfileProperty(nameof(Brightness), Brightness);
+        }
+
+        public int Sharpness
+        {
+            get => CurrentProfile.Sharpness;
+            set
+            {
+                if (value != CurrentProfile.Sharpness)
+                {
+                    CurrentProfile.Sharpness = value;
+                    if (!IsSliderDragging)
+                    {
+                        SetSharpness();
+                    }
+                }
+                OnPropertyChanged();
+            }
+        }
+        public void SetSharpness()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), Sharpness);
+            SetProfileProperty(nameof(Sharpness), Sharpness);
+        }
+
+        public int Contrast
+        {
+            get => CurrentProfile.Contrast;
+            set
+            {
+                if (value != CurrentProfile.Contrast)
+                {
+                    CurrentProfile.Contrast = value;
+                    if (!IsSliderDragging)
+                    {
+                        SetContrast();
+                    }
+                }
+                OnPropertyChanged();
+            }
+        }
+        public void SetContrast()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), Contrast);
+            SetProfileProperty(nameof(Contrast), Contrast);
+        }
+
+        public int Saturation
+        {
+            get => CurrentProfile.Saturation;
+            set
+            {
+                if (value != CurrentProfile.Saturation)
+                {
+                    CurrentProfile.Saturation = value;
+                    if (!IsSliderDragging)
+                    {
+                        SetSaturation();
+                    }
+                }
+                OnPropertyChanged();
+            }
+        }
+        public void SetSaturation()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), Saturation);
+            SetProfileProperty(nameof(Saturation), Saturation);
         }
 
         private bool isMicEnumerationOnEnabled = true;

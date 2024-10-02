@@ -3724,6 +3724,38 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetAutoWhiteBalance(guid, newValue);
             return Task.FromResult(true);
         }
+        public Task SetBrightness(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetBrightness requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetBrightness(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetSharpness(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetSharpness requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetSharpness(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetContrast(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetContrast requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetContrast(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetSaturation(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetSaturation requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetSaturation(guid, newValue);
+            return Task.FromResult(true);
+        }
         #endregion
 
 
