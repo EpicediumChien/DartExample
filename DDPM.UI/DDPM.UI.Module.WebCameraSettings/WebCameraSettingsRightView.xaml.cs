@@ -197,13 +197,6 @@ namespace DDPM.UI.Module.WebCameraSettings
             }
         }
 
-        //  Jim add 20240628
-        private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            return;
-            SetZoomLevel((float)ZoomSlider.Value);
-        }
-
         private void SetZoomLevel(float level)
         {
             if (_vm != null && _vm.MediaCapture != null)

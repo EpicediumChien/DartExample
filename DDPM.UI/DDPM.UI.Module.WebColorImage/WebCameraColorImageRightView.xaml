@@ -40,20 +40,20 @@
           <UXControls:UXScrollViewer>
             <Grid>
               <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
               </Grid.RowDefinitions>
-              <Grid Grid.Row="0" Margin="0,0,0,10" Height="72" Visibility="{Binding HDRVisibility}">
+              <Grid Grid.Row="0" Margin="0,0,0,10" Visibility="{Binding HDRVisibility}">
                 <Border Background="#99132F54" CornerRadius="6">
                   <Grid Margin="16,0,16,0">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,25">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                       <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                         <Image.ToolTip>
                           <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                            <TextBlock Text="{Binding [WebCameraColorImage.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding [WebCameraColorImage.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350" TextWrapping="Wrap" />
                           </ToolTip>
                         </Image.ToolTip>
                       </Image>
@@ -81,9 +81,9 @@
                 </Border>
                 <Border Background="#132F5499" Opacity="0.6" Visibility="{Binding LockMaskVisible}"/>
               </Grid>
-              <Grid Grid.Row="1" Margin="0,0,0,10">
+              <Grid Grid.Row="1" Margin="0,0,0,10" Visibility="{Binding AutoWhiteBalanceVisibility}">
                 <Border Background="#99132F54" CornerRadius="6">
-                  <StackPanel Margin="18,25,16,21">
+                  <StackPanel Margin="18,25,16,14">
                     <Grid>
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                       <UXControls:UXToggleSwitch Name="AWB_ToggleSwitch" IsChecked="{Binding Path= IsAutoWhiteBalanceOn}" Content="{Binding Path=IsAutoWhiteBalanceOnText}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" FontFamily="Roboto" FontSize="16" />
@@ -93,33 +93,33 @@
                   </StackPanel>
                 </Border>
               </Grid>
-              <Grid Grid.Row="2" Margin="0,0,0,10">
+              <Grid Name="BSCS" Grid.Row="2" Margin="0,0,0,10" Visibility="Collapsed">
                 <Border Background="#99132F54" CornerRadius="6">
-                  <StackPanel Orientation="Vertical" Margin="18,25,16,21">
-                    <StackPanel x:Name="spBrightness" Orientation="Vertical" Margin="0,0,0,20">
+                  <StackPanel Orientation="Vertical" Margin="18,8,16,14">
+                    <StackPanel x:Name="spBrightness" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="BrightnessSlider" Margin="0,15,0,9"  AutoToolTipPlacement="TopLeft" Thumb.DragStarted="BrightnessSlider_DragStarted" Thumb.DragCompleted="BrightnessSlider_DragCompleted"
+                      <UXControls:UXSlider Name="BrightnessSlider" Margin="0,15,0,9" Thumb.DragStarted="BrightnessSlider_DragStarted" Thumb.DragCompleted="BrightnessSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Path=Brightness}"/>
                     </StackPanel>
-                    <StackPanel x:Name="spSharpness" Orientation="Vertical" Margin="0,0,0,20">
+                    <StackPanel x:Name="spSharpness" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="SharpnessSlider" Margin="0,15,0,9" AutoToolTipPlacement="TopLeft" Thumb.DragStarted="SharpnessSlider_DragStarted" Thumb.DragCompleted="SharpnessSlider_DragCompleted"
+                      <UXControls:UXSlider Name="SharpnessSlider" Margin="0,15,0,9" Thumb.DragStarted="SharpnessSlider_DragStarted" Thumb.DragCompleted="SharpnessSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Sharpness}" />
                     </StackPanel>
-                    <StackPanel x:Name="spContrast" Orientation="Vertical" Margin="0,0,0,20">
+                    <StackPanel x:Name="spContrast" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="ContrastSlider" Margin="0,15,0,9" AutoToolTipPlacement="TopLeft" Thumb.DragStarted="ContrastSlider_DragStarted" Thumb.DragCompleted="ContrastSlider_DragCompleted"
+                      <UXControls:UXSlider Name="ContrastSlider" Margin="0,15,0,9" Thumb.DragStarted="ContrastSlider_DragStarted" Thumb.DragCompleted="ContrastSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Contrast}"/>
                     </StackPanel>
-                    <StackPanel x:Name="spSaturation" Orientation="Vertical" Margin="0,0,0,0">
+                    <StackPanel x:Name="spSaturation" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="SaturationSlider" Margin="0,15,0,0" AutoToolTipPlacement="TopLeft" Thumb.DragStarted="SaturationSlider_DragStarted" Thumb.DragCompleted="SaturationSlider_DragCompleted"
+                      <UXControls:UXSlider Name="SaturationSlider" Margin="0,15,0,0" Thumb.DragStarted="SaturationSlider_DragStarted" Thumb.DragCompleted="SaturationSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Saturation}" />
                     </StackPanel>
                   </StackPanel>
                 </Border>
               </Grid>
-              <Grid Grid.Row="3" Margin="16,0,16,10">
+              <Grid Grid.Row="3" Margin="0,0,0,0">
                 <Border Background="#99132F54" CornerRadius="6" VerticalAlignment="Top">
                   <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Vertical" Margin="18,21,16,21">
@@ -128,7 +128,7 @@
                         <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                           <Image.ToolTip>
                             <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                              <TextBlock Text="{Binding [WebCameraColorImage.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                              <TextBlock Text="{Binding [WebCameraColorImage.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350" TextWrapping="Wrap"/>
                             </ToolTip>
                           </Image.ToolTip>
                         </Image>
@@ -153,42 +153,40 @@
                         </Image>
 
                       </StackPanel>
-                      <Grid Margin="0,15,0,0">
-                        <Grid.ColumnDefinitions>
-                          <ColumnDefinition />
-                          <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="AntiFlicker_Click" Height="30">
+                      <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                        <Border x:Name="btnAntiFlicker0" CornerRadius="5,0,0,5" MouseLeftButtonDown="AntiFlicker_Click" Height="30" Width="201" Tag="1" >
                           <Border.Style>
                             <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
                               <Style.Triggers>
-                                <DataTrigger Binding="{Binding Priority_IsSelected[0]}"  Value="True">
+                                <DataTrigger Binding="{Binding AntiFlicker}"  Value="1">
                                   <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
                                   <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding AntiFlicker}"  Value="2">
+                                  <Setter Property="Cursor" Value="Hand" />
                                 </DataTrigger>
                               </Style.Triggers>
                             </Style>
                           </Border.Style>
-                          <Grid>
-                            <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}50{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
-                          </Grid>
+                          <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}50{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
                         </Border>
-                        <Border Grid.Column="1" BorderThickness="2" CornerRadius="5" Focusable="True" MouseLeftButtonDown="AntiFlicker_Click" Height="30">
+                        <Border x:Name="btnAntiFlicker1" CornerRadius="0,5,5,0" MouseLeftButtonDown="AntiFlicker_Click" Height="30" Width="201" Tag="2">
                           <Border.Style>
                             <Style TargetType="Border" BasedOn="{StaticResource Border_Test}">
                               <Style.Triggers>
-                                <DataTrigger Binding="{Binding Priority_IsSelected[1]}"  Value="True">
+                                <DataTrigger Binding="{Binding AntiFlicker}"  Value="2">
                                   <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
                                   <Setter Property="BorderBrush" Value="{StaticResource VbarItem_HiBdColor}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding AntiFlicker}"  Value="1">
+                                  <Setter Property="Cursor" Value="Hand" />
                                 </DataTrigger>
                               </Style.Triggers>
                             </Style>
                           </Border.Style>
-                          <Grid>
-                            <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}60{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" AutomationProperties.Name="Primary1" />
-                          </Grid>
+                          <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.9], Source={x:Static lang:LangHelper.Instance},StringFormat={}60{0}}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Roboto" />
                         </Border>
-                      </Grid>
+                      </StackPanel>
                     </StackPanel>
                   </StackPanel>
                 </Border>

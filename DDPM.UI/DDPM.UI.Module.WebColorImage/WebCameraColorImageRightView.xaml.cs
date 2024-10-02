@@ -4,6 +4,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
@@ -34,6 +35,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                 BrightnessSlider.Minimum = _vm.CurrentDeviceInfo.BrightnessMin;
                 BrightnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.BrightnessSteppingDelta;
                 spBrightness.Visibility = Visibility.Visible;
+                BSCS.Visibility = Visibility.Visible;
             }
 
             if (_vm.CurrentDeviceInfo!.IsPropertySharpnessSupported)
@@ -42,6 +44,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                 SharpnessSlider.Minimum = _vm.CurrentDeviceInfo.SharpnessMin;
                 SharpnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.SharpnessSteppingDelta;
                 spSharpness.Visibility = Visibility.Visible;
+                BSCS.Visibility = Visibility.Visible;
             }
 
             if (_vm.CurrentDeviceInfo!.IsPropertyContrastSupported)
@@ -50,6 +53,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                 ContrastSlider.Minimum = _vm.CurrentDeviceInfo.ContrastMin;
                 ContrastSlider.TickFrequency = _vm.CurrentDeviceInfo!.ContrastSteppingDelta;
                 spContrast.Visibility = Visibility.Visible;
+                BSCS.Visibility = Visibility.Visible;
             }
 
             if (_vm.CurrentDeviceInfo!.IsPropertySaturationSupported)
@@ -58,6 +62,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                 SaturationSlider.Minimum = _vm.CurrentDeviceInfo.SaturationMin;
                 SaturationSlider.TickFrequency = _vm.CurrentDeviceInfo!.SaturationSteppingDelta;
                 spSaturation.Visibility = Visibility.Visible;
+                BSCS.Visibility = Visibility.Visible;
             }
         }
 
@@ -173,7 +178,14 @@ namespace DDPM.UI.Module.WebCameraColorImage
 
         private void AntiFlicker_Click(object sender, MouseButtonEventArgs e)
         {
+            if (sender is Border bdr)
+            {
+                var val = int.Parse(bdr.Tag.ToString()!);
+                if (val == _vm.AntiFlicker)
+                { return; }
 
+                _vm.AntiFlicker = val;
+            }
         }
     }
 }

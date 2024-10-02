@@ -405,6 +405,12 @@ namespace DDPM.UI.Plugin.ViewModels
                 DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Saturation);
                 OnPropertyChanged(nameof(Saturation));
             }
+
+            if (CurrentDeviceInfo.IsPropertyAntiFlickerSupported)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AntiFlicker);
+                OnPropertyChanged(nameof(AntiFlicker));
+            }
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -845,6 +851,28 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), Saturation);
             SetProfileProperty(nameof(Saturation), Saturation);
+        }
+
+        public int AntiFlicker
+        {
+            get => CurrentProfile.Saturation;
+            set
+            {
+                if (value != CurrentProfile.AntiFlicker)
+                {
+                    CurrentProfile.AntiFlicker = value;
+                    if (!IsSliderDragging)
+                    {
+                        SetAntiFlicker();
+                    }
+                }
+                OnPropertyChanged();
+            }
+        }
+        public void SetAntiFlicker()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), AntiFlicker);
+            SetProfileProperty(nameof(AntiFlicker), AntiFlicker);
         }
 
         private bool isMicEnumerationOnEnabled = true;

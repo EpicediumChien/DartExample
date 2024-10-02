@@ -1062,7 +1062,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (monitorSetting.Input.strInputSourceList != null && monitorSetting.Input.strInputSourceList != string.Empty)
                             {
                                 inputSourcelist = InputSourceListDeserialize(monitorSetting.Input.strInputSourceList);
-                                foreach(var input in inputSourcelist) 
+                                foreach (var input in inputSourcelist)
                                 {
                                     if (input.Value.USBUpstream == string.Empty)
                                     {
@@ -1072,13 +1072,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         }
                                         else
                                         {
-                                            if(inputSourcelist2.Count==0)
+                                            if (inputSourcelist2.Count == 0)
                                             {
                                                 inputSourcelist2 = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                                             }
                                         }
                                         input.Value.USBUpstream = inputSourcelist2[input.Key].USBUpstream;
-                                        
+
                                     }
                                 }
                                 if (inputSourcelist2 != null)
@@ -3754,6 +3754,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetSaturation(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetAntiFlicker(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetAntiFlicker requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetAntiFlicker(guid, newValue);
             return Task.FromResult(true);
         }
         #endregion
@@ -6908,7 +6916,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Dictionary<string, InputInfo> DDMtoDDPM_Input(Input input)
         {
-            
+
             InputTypeString inputTypeString = new InputTypeString();
             Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
             Dictionary<string, InputInfo> newinputlist = new Dictionary<string, InputInfo>();
@@ -6930,7 +6938,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
-            
+
             newinputType = inputTypeString.SubInputType(inputType);
 
             foreach (var inputsource in inputlist)

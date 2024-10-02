@@ -93,6 +93,7 @@ namespace DDPM.SA.Common
         Task SetSharpness(string Guid, int newValue);
         Task SetContrast(string Guid, int newValue);
         Task SetSaturation(string Guid, int newValue);
+        Task SetAntiFlicker(string Guid, int newValue);
 
     }
 }

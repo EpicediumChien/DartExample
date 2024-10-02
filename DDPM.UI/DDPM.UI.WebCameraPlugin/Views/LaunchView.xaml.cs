@@ -19,6 +19,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -85,6 +86,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 //ProfileItems.ItemsSource = _vm.ProfileNames;
                 ProfileItems.ItemsSource = _vm.ProfileItems;
+                Mouse.OverrideCursor = null;
             }
 
             //lock/unlock, no ui element currently

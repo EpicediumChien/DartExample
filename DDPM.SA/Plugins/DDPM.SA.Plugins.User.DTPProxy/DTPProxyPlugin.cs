@@ -803,6 +803,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
             }
         }
+        public async Task SetAntiFlicker(string Guid, int newValue)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                SetPropertyValue(_webcamInterfaceType, commodity, "AntiFlicker", newValue);
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+            }
+        }
 
         public async Task SetIsMicEnumerationOn(string Guid, bool newValue)
         {
