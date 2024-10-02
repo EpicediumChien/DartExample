@@ -7,6 +7,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,14 +60,16 @@ namespace DDPM.UI.Module.EzMemory
             //_vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
             InitializePage();
+
         }
         public void InitializePage()
         {
-            //_vm._currentTotalPage = 0;
-            //_vm._currentPageIndex = 0;
-            //_vm.ProgressValue = 1;
+            //這裡加入分割視窗的個數
+            //_vm.IsRightGridPage2Visible = false;
+            //_vm.SelectedValue = 3;
+            _vm.IsRightGridPage2Visible = true;
+            //_vm.SelectedValue = 3;
             _vm.ezPages = _vm.GetEzPages();
-            //RightGridPage2.Visibility = Visibility.Collapsed;
 
             if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
             {
@@ -84,7 +87,6 @@ namespace DDPM.UI.Module.EzMemory
         {
             _vm._currentPageIndex++;
             EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
-            _ezMemoryAssignProgram.DataContext = _vmDisplay;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
             //UpdatePageContent();
         }
@@ -116,37 +118,18 @@ namespace DDPM.UI.Module.EzMemory
         }
         public void ControlPageGrid(int _currentPageIndex)
         {
-            //if (_vm._currentPageIndex == 0)
-            //{
-            //    RightGridPage1.Visibility = Visibility.Visible;
-            //    RightGridPage2.Visibility = Visibility.Collapsed;
-            //}
-            //if (_vm._currentPageIndex == 1)
-            //{
-            //    RightGridPage1.Visibility = Visibility.Collapsed;
-            //    RightGridPage2.Visibility = Visibility.Visible;
-            //}
+
         }
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             EzMemoryFirst ezMemoryFirst = new EzMemoryFirst(_vmDisplay);
-            ezMemoryFirst.DataContext = _vmDisplay;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezMemoryFirst);
-            //if (_vm._currentPageIndex == 0)
-            //{
-            //    DdpmCommonHelper.ModuleOwner?.CloseFullView();
-            //    return;
-            //}
-            //PreviousPage();
-            //DoProgressAnimation(false);
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
-            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay);
-            _ezMemoryAddApplication.DataContext = _vmDisplay;
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAddApplication);
-            //NextPage();
-            //DoProgressAnimation(true);
+            _vm._currentPageIndex++;
+            EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay);
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryLaunchOption);
         }
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
@@ -183,6 +166,31 @@ namespace DDPM.UI.Module.EzMemory
 
             // refresh ProgressValue
             _vm.ProgressValue = newProgressValue;
+        }
+
+        private void AddButton1_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.Button button = sender as System.Windows.Controls.Button;
+            _vm.ButtonName = button.Name;
+            EzMemoryAddApplication _ezMemoryAddApplication = new EzMemoryAddApplication(_vmDisplay);
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAddApplication);
+        }
+    }
+    public class WindowGridVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int selectedValue && parameter is string gridIndexString && int.TryParse(gridIndexString, out int gridIndex))
+            {
+                // 如果 selectedValue 大於等於 gridIndex，則顯示 (Visible)，否則隱藏 (Collapsed)
+                return selectedValue >= gridIndex ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DDPM.UI.Module.EzMemory"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
-             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources" xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common" d:DataContext="{d:DesignInstance Type=viewmodels:EzMemoryViewModel}"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="#0D121A" Loaded="UserControl_Loaded"
              d:DesignHeight="735" d:DesignWidth="1378">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -46,36 +47,58 @@
             <Grid Grid.Row="1" Margin="50,0,0,0">
                 <StackPanel Orientation="horizontal" Grid.Row="1" >
                     <UXControls:UXButton x:Name="btnSortbyName_Ascending" Content="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}"  Width="237.5" Height="40" Margin="24,8,16,0" Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center"  Click="btnSortbyName_Ascending_Click"/>
+                    <!--<StackPanel Orientation="Horizontal" >-->
+                    <!--<UXControls:UXTextBlock Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"  />-->
+                    <!--<UXControls:UXTextBlock FontFamily="Segoe MDL2 Assets" FontSize="14" Text="&#xE74B;" Margin="10,5,0,0" Foreground="White" />-->
+                    <!--</StackPanel>-->
+
+                    <!--<UXControls:UXButton x:Name="btnSortbyName_Descending"  Width="237.5" Height="40" Margin="24,8,16,0" Background="#293B4D" VerticalAlignment="Center"  Click="btnSortbyName_Descending_Click" Visibility="Collapsed">-->
+                        <!--<StackPanel Orientation="Horizontal">-->
+                            <!--<UXControls:UXTextBlock Text="{Binding [Color.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" HorizontalAlignment="Left"/>-->
+                            <!--<UXControls:UXTextBlock FontFamily="Segoe MDL2 Assets" FontSize="14" Text="&#xE74A;" Margin="10,5,0,0" Foreground="White" HorizontalAlignment="Left"/>-->
+                        <!--</StackPanel>-->
+                    <!--</UXControls:UXButton>-->
+
                     <UXControls:UXButton x:Name="btnSortbyDate_Ascending" Content="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Width="237.5" Height="40" Margin="0,8,24,0" Background="#293B4D" HorizontalContentAlignment="Left" VerticalAlignment="Center" Click="btnSortbyDate_Ascending_Click"/>
+                    <!--<StackPanel Orientation="Horizontal">-->
+                            <!--<UXControls:UXTextBlock Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>-->
+                            <!--<UXControls:UXTextBlock FontFamily="Segoe MDL2 Assets" FontSize="14" Text="&#xE74B;" Margin="10,5,0,0" Foreground="White" />-->
+                        <!--</StackPanel>-->
+                    <!--</UXControls:UXButton>-->
+                    <!--<UXControls:UXButton x:Name="btnSortbyDate_Descending" Width="237.5" Height="40" Margin="0,8,24,0" Background="#293B4D" VerticalAlignment="Center"  Click="btnSortbyDate_Descending_Click" Visibility="Collapsed">-->
+                        <!--<StackPanel Orientation="Horizontal">-->
+                            <!--<UXControls:UXTextBlock Text="{Binding [Color.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"/>-->
+                            <!--<UXControls:UXTextBlock FontFamily="Segoe MDL2 Assets" FontSize="14" Text="&#xE74A;" Margin="10,5,0,0" Foreground="White" />-->
+                        <!--</StackPanel>-->
+                    <!--</UXControls:UXButton>-->
                 </StackPanel>
             </Grid>
 
             <!-- 安裝的應用程式列表 -->
-            <UXControls:UXScrollViewer Grid.Row="2">
-                <Grid Grid.Row="2" Margin="50,10,0,0">
-                    <ListView x:Name="lb_Installed_App" Margin="20,10,0,0" Width="487" Height="275" Background="#132F54" SelectionMode="Multiple" ItemsSource="{Binding InstalledApplications}" SelectedIndex="{Binding Selected}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                        <RowDefinition Height="auto" />
-                                    </Grid.RowDefinitions>
-                                    <UXControls:UXRadioButton  Grid.Column="0" Grid.Row="1" GroupName="Group" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" />
-                                    <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40" Margin="20,0,10,0" VerticalAlignment="Center" />
-                                    <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}" Foreground="White" VerticalAlignment="Center" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </Grid>
-            </UXControls:UXScrollViewer>
+            <Grid Grid.Row="2" Margin="50,10,0,0">
+                <ListView x:Name="lb_Installed_App" Margin="0,10,0,0" Width="487" Height="275" Background="#132F54" SelectionMode="Multiple" SelectedIndex="{Binding Selected}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                <UXControls:UXCheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" />
+                                <Image Grid.Column="1" Grid.Row="1" x:Name="appIcon" Source="{Binding AppIcon}" Width="40"  Margin="20,0,10,0" VerticalAlignment="Center" />
+                                <UXControls:UXTextBlock Grid.Column="2" Grid.Row="1" x:Name="appName" Text="{Binding AppName}" Foreground="White" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+
             <!-- 底部按鈕 -->
             <Grid Grid.Row="3" Margin="0,0,0,0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">

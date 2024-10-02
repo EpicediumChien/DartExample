@@ -112,7 +112,6 @@ namespace DDPM.UI.Module.EzMemory
             _vm._currentPageIndex = 0;
             _vm.ProgressValue = 1;
             _vm.ezPages = _vm.GetEzPages();
-            RightGridPage2.Visibility = Visibility.Collapsed;
 
             if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
             {
@@ -130,9 +129,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             _vm._currentPageIndex++;
             EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
-            _ezMemoryAssignProgram.DataContext = _vmDisplay;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
-            //UpdatePageContent();
         }
 
         /// <summary>
@@ -158,21 +155,8 @@ namespace DDPM.UI.Module.EzMemory
             var pageData = _vm.ezPages["EzMemory"][_vm._currentPageIndex];
             MainText.Text = pageData.MainText!;
             SubText.Text = pageData.SubText!;
-            ControlPageGrid(_vm._currentPageIndex);
         }
-        public void ControlPageGrid(int _currentPageIndex)
-        {
-            //if (_vm._currentPageIndex == 0)
-            //{
-            //    RightGridPage1.Visibility = Visibility.Visible;
-            //    RightGridPage2.Visibility = Visibility.Collapsed;
-            //}
-            //if (_vm._currentPageIndex == 1)
-            //{
-            //    RightGridPage1.Visibility = Visibility.Collapsed;
-            //    RightGridPage2.Visibility = Visibility.Visible;
-            //}
-        }
+
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             if (_vm._currentPageIndex == 0)

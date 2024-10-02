@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using System.Windows;
@@ -29,6 +31,8 @@ namespace DDPM.UI.Common.ViewModels
         public int _currentPageIndex = 0;
         public string _currentDeviceModel = "EzMemory";
 
+        public List<Bind_AddFullPage_AppCollectionData> _seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
+        public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
         public EzMemoryViewModel(HomeDevice homeDev)
         {
             _homeDevice = homeDev;
@@ -248,11 +252,284 @@ namespace DDPM.UI.Common.ViewModels
 
             };
         }
+
+        #region Assign page
+
+        public void UpdateTextBlockAppName(string btnName, string appName)
+        {
+            switch (btnName)
+            {
+                case "AddButton2_1":
+                    Window2_1AppName = appName;
+                    break;
+                case "AddButton2_2":
+                    Window2_2AppName = appName;
+                    break;
+                case "AddButton1":
+                    Window1AppName = appName;
+                    break;
+                case "AddButton2":
+                    Window2AppName = appName;
+                    break;
+                case "AddButton3":
+                    Window3AppName = appName;
+                    break;
+                case "AddButton4":
+                    Window4AppName = appName;
+                    break;
+                case "AddButton5":
+                    Window5AppName = appName;
+                    break;
+                case "AddButton6":
+                    Window6AppName = appName;
+                    break;
+                case "AddButton7":
+                    Window7AppName = appName;
+                    break;
+                case "AddButton8":
+                    Window8AppName = appName;
+                    break;
+                case "AddButton9":
+                    Window9AppName = appName;
+                    break;
+                case "AddButton10":
+                    Window10AppName = appName;
+                    break;
+                case "AddButton11":
+                    Window11AppName = appName;
+                    break;
+                case "AddButton12":
+                    Window12AppName = appName;
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        public void ClearTextBlockAppName()
+        {
+            _sortApps.Clear();
+            _seletcApps.Clear();
+            Window2_1AppName = "";
+            Window2_2AppName = "";
+            Window1AppName = "";
+            Window2AppName = "";
+            Window3AppName = "";
+            Window4AppName = "";
+            Window5AppName = "";
+            Window6AppName = "";
+            Window7AppName = "";
+            Window8AppName = "";
+            Window9AppName = "";
+            Window10AppName = "";
+            Window11AppName = "";
+            Window12AppName = "";
+        }
+
+        private string _window2_1AppName;
+        public string Window2_1AppName
+        {
+            get => _window2_1AppName;
+            set
+            {
+                SetProperty(ref _window2_1AppName, value);
+                OnPropertyChanged("Window2_1AppName");
+            }
+        }
+
+        private string _window2_2AppName;
+        public string Window2_2AppName
+        {
+            get => _window2_2AppName;
+            set
+            {
+                SetProperty(ref _window2_2AppName, value);
+                OnPropertyChanged("Window2_2AppName");
+            }
+        }
+
+        private string _window1AppName;
+        public string Window1AppName
+        {
+            get => _window1AppName;
+            set
+            {
+                SetProperty(ref _window1AppName, value);
+                OnPropertyChanged("Window1AppName");
+            }
+        }
+
+        private string _window2AppName;
+        public string Window2AppName
+        {
+            get => _window2AppName;
+            set
+            {
+                SetProperty(ref _window2AppName, value);
+                OnPropertyChanged("Window2AppName");
+            }
+        }
+
+        private string _window3AppName;
+        public string Window3AppName
+        {
+            get => _window3AppName;
+            set
+            {
+                SetProperty(ref _window3AppName, value);
+                OnPropertyChanged("Window3AppName");
+            }
+        }
+
+        private string _window4AppName;
+        public string Window4AppName
+        {
+            get => _window4AppName;
+            set
+            {
+                SetProperty(ref _window4AppName, value);
+                OnPropertyChanged("Window4AppName");
+            }
+        }
+
+        private string _window5AppName;
+        public string Window5AppName
+        {
+            get => _window5AppName;
+            set
+            {
+                SetProperty(ref _window5AppName, value);
+                OnPropertyChanged("Window5AppName");
+            }
+        }
+
+        private string _window6AppName;
+        public string Window6AppName
+        {
+            get => _window6AppName;
+            set
+            {
+                SetProperty(ref _window6AppName, value);
+                OnPropertyChanged("Window6AppName");
+            }
+        }
+
+        private string _window7AppName;
+        public string Window7AppName
+        {
+            get => _window7AppName;
+            set
+            {
+                SetProperty(ref _window7AppName, value);
+                OnPropertyChanged("Window7AppName");
+            }
+        }
+
+        private string _window8AppName;
+        public string Window8AppName
+        {
+            get => _window8AppName;
+            set
+            {
+                SetProperty(ref _window8AppName, value);
+                OnPropertyChanged("Window8AppName");
+            }
+        }
+
+        private string _window9AppName;
+        public string Window9AppName
+        {
+            get => _window9AppName;
+            set
+            {
+                SetProperty(ref _window9AppName, value);
+                OnPropertyChanged("Window9AppName");
+            }
+        }
+
+        private string _window10AppName;
+        public string Window10AppName
+        {
+            get => _window10AppName;
+            set
+            {
+                SetProperty(ref _window10AppName, value);
+                OnPropertyChanged("Window10AppName");
+            }
+        }
+
+        private string _window11AppName;
+        public string Window11AppName
+        {
+            get => _window11AppName;
+            set
+            {
+                SetProperty(ref _window11AppName, value);
+                OnPropertyChanged("Window11AppName");
+            }
+        }
+
+        private string _window12AppName;
+        public string Window12AppName
+        {
+            get => _window12AppName;
+            set
+            {
+                SetProperty(ref _window12AppName, value);
+                OnPropertyChanged("Window12AppName");
+            }
+        }
+
+        private bool _isRightGridPage2Visible = true;
+
+        public bool IsRightGridPage2Visible
+        {
+            get { return _isRightGridPage2Visible; }
+            set
+            {
+                _isRightGridPage2Visible = value;
+                OnPropertyChanged(nameof(IsRightGridPage2Visible));
+                OnPropertyChanged(nameof(IsRightGridPageTotalVisible));  // 同步
+            }
+        }
+
+        public bool IsRightGridPageTotalVisible => !IsRightGridPage2Visible;
+
+        private int _selectedValue;
+
+        public int SelectedValue
+        {
+            get { return _selectedValue; }
+            set
+            {
+                _selectedValue = value;
+                OnPropertyChanged(nameof(SelectedValue));
+            }
+        }
+
+        private string _buttonName;
+        public string ButtonName
+        {
+            get => _buttonName;
+            set
+            {
+                SetProperty(ref _buttonName, value);
+                OnPropertyChanged("ButtonName");
+            }
+        }
+        #endregion
     }
     public class EzMemoryPageData
     {
         public string? MainText { get; set; }
         public string? SubText { get; set; }
+    }
+    public class ApplicationItem
+    {
+        public string AppName { get; set; }
+        public string AppIcon { get; set; }
+        public string AppPath { get; set; }
     }
 
 }

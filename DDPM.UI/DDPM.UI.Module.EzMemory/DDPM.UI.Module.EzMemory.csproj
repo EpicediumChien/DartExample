@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="EzMemoryAddApplication.xaml.bak" />
+    <None Remove="EzMemoryAddApplication.xaml.cs.bak" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
   </ItemGroup>
 

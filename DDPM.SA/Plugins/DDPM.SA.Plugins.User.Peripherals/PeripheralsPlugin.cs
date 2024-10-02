@@ -128,7 +128,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public async Task<DeviceHelper> GetDevices()
         {
-            //ScanDevices();
+            ScanDevices();
             if (_deviceHelper != null)
             {
                 return await Task.Run(() => _deviceHelper);
@@ -1182,7 +1182,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 }
                 _iDeviceManager_DeviceAddedEvent(device);
             }
-
             Console.WriteLine(_deviceHelper.ToString());
         }
 
@@ -1772,10 +1771,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
-                //if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
-                //{
-                //    Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newMuteStatus));
-                //}
+                if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
+                {
+                    Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newMuteStatus));
+                }
             }
         }
 
@@ -1902,10 +1901,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
-                //if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
-                //{
-                //    Task.Run(async () => _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newValue));
-                //}
+                if (_DeviceManagerPlugin.GetGlobalSettingParam().Result.GlobalSetting_General.Display_MuteState)
+                {
+                    Task.Run(async () => _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newValue));
+                }
             }
         }
 

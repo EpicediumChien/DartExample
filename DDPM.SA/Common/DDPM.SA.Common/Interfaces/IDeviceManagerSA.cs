@@ -37,6 +37,10 @@ namespace DDPM.SA.Common
 
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
+        #region EaM
+        Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
+        #endregion
+
         #region public for SchedulerManger
 
         Task StartSchedulerManger(int millisecond);
