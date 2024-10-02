@@ -246,3 +246,4 @@ testcoverage/
 /DDPM.UI/CommonDll/DDPM.SA.Obfuscation.dll
 /DDPM.UI/CommonDll/DDPM.OSDs.dll
 /_BIN_v41
+/DDPM.UI/CommonDll/DdmLibrary.dll
