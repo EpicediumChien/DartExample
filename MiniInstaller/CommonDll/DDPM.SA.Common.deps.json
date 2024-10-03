@@ -433,6 +433,14 @@
           }
         }
       },
+      "DdmLibrary/1.0.0.0": {
+        "runtime": {
+          "DdmLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "DPeMClientBroker/0.0.0.0": {
         "runtime": {
           "DPeMClientBroker.dll": {
