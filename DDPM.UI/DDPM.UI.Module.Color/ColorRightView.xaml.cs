@@ -195,7 +195,8 @@ namespace DDPM.UI.Module.Color
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
                                                     x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                                                    x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                                                    //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());                                                    
                 }
             }
             return index;
