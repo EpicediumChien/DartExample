@@ -32,8 +32,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
     [Publisher(Name = publisherCompany, Website = publisherWebsite, Support = publisherSupport)]
     [PublishedUnelevatedInterface(new[] { typeof(ISchedulerManager) })]
     [PluginRequires(Id = IDs.Display_Manager_PLUGIN_ID, AllowDynamicResolving = true)]
-    [PluginRequires(Id = IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID, AllowDynamicResolving = true)]
-    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISettingsManagerDev) })]
+    [DependencyKnownTypes(new[] { typeof(IDisplayService) })]
     public class SchedulerMangerPlugin : BaseAgentPlugin, IDisposableObservable, ISchedulerManager
     {
         #region Private Members
@@ -50,15 +49,20 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         private IAgent _agent;
         public const string PluginLogId = "SchedulerManager";
         private IDisplayService _DisplayManagerPlugin;
-        private ISettingsManagerDev _SettingsPlugin;
         private static readonly object _PluginConditionLock = new object();
         private static readonly object _PluginConditionLock_Display = new object();
-        private static readonly object _PluginConditionLock_Settings = new object();
-        private static System.Timers.Timer _SchedulerCheckTimer = new System.Timers.Timer(60000);
+        private static System.Timers.Timer _SchedulerCheckTimer = new System.Timers.Timer(600000);
         private static List<MonitorInfo> _AllInfoMonitors;
-        private static List<scheduleInfo> _ScheduleMaps;
+        private static scheduleInfo _ScheduleMap;
         private static DDPMSettings _DDPMSettings;
         private static readonly object _MoLock = new object();
+        private bool _WaitTag = false;
+
+        #endregion
+
+        #region Public Members
+
+        public event EventHandler<ReadWriteRequest> ServiceRequest;
 
         #endregion
 
@@ -71,11 +75,12 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
             _logs ??= new Logs(Log, PluginLogId);
 
             _AllInfoMonitors ??= new List<MonitorInfo>();
-            _ScheduleMaps ??= new List<scheduleInfo>();
+            _ScheduleMap ??= new scheduleInfo();
 
             _SchedulerCheckTimer.Elapsed += OnSchedulerTimedRaise;
             _SchedulerCheckTimer.AutoReset = true;
             _SchedulerCheckTimer.Enabled = true;
+            _WaitTag = false;
             _logs.DebugMsg_1("SchedulerManagerPlugin constructor ...");
         }
 
@@ -87,7 +92,6 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             PluginCondition = new PluginStartedCondition();
-            InitializeSettingsPlugin();
             InitializeDisplayManagerPlugin();
 
             _logs.DebugMsg_1("SchedulerManager plugin Starting");
@@ -120,40 +124,42 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
             return Task.FromResult(Task.CompletedTask);
         }
 
+        public Task ReceiveScheduleInfo(scheduleInfo info)
+        {
+            _logs.DebugMsg_1("ReceiveScheduleInfo ...");
+            _ScheduleMap = info;
+            _WaitTag = false;
+            _logs.DebugMsg_1("ReceiveScheduleInfo _ScheduleMap is " + ((_ScheduleMap != null) ? "Received" : "Null"));
+            return Task.CompletedTask;
+        }
+
         #endregion
 
         #region Private Methods
-
-        private void InitializeScheduleInfo()
+		
+		protected virtual void OnServiceRequest(ReadWriteRequest e)
         {
-            if (_SettingsPlugin != null)
-            {
-                _logs.DebugMsg_1("SchedulerManager InitializeScheduleInfo ...");
+            _logs.DebugMsg_1("Brocast OnServiceRequest ...");
 
-                if (_ScheduleMaps != null) _ScheduleMaps.Clear();
-                else _ScheduleMaps = new List<scheduleInfo>();
+            //VCPchanged?.Invoke(this, e);
+            EventHandler<ReadWriteRequest> handler = ServiceRequest;
+            if (handler != null)
+                Task.Run(() => handler.Invoke(this, e));
 
-                var Count = 0;
-                do
-                {
-                    _DDPMSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                    Count++;
-                } while ((Count < 3) && (_DDPMSettings == null));
+            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
+            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
+            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
+            //This is discussed in GitHub issue dotnet/corefx #5940.
+        }
 
-                var ScheduleMaps_string = _DDPMSettings.UserSettings.Schedule ?? string.Empty;
-
-                if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
-                {
-                    _ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
-                    _logs.DebugMsg_1("_ScheduleMaps count : " + _ScheduleMaps.Count);
-                }
-                else
-                {
-                    if (_ScheduleMaps != null) _ScheduleMaps.Clear();
-                    else _ScheduleMaps = new List<scheduleInfo>();
-                    _logs.DebugMsg_1("ScheduleMaps setting is null");
-                }
-            }
+        private void InitializeScheduleInfo(MonitorInfo monitor)
+        {
+            _logs.DebugMsg_1("InitializeScheduleInfo ...");
+            _WaitTag = true;
+            ReadWriteRequest _ReadWriteRequestEventArgs = new ReadWriteRequest();
+            _ReadWriteRequestEventArgs.monitor = monitor;
+            _ReadWriteRequestEventArgs.service = ReadWriteRequest_Type.Read;
+            OnServiceRequest(_ReadWriteRequestEventArgs);
         }
 
         private void InitializeMonitorInfo()
@@ -175,10 +181,9 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
         {
             _logs.DebugMsg_1("[Hook] OnSchedulerTimedRaise");
 
-            if (_DisplayManagerPlugin != null && _SettingsPlugin != null)
+            if (_DisplayManagerPlugin != null )
             {
                 InitializeMonitorInfo();
-                InitializeScheduleInfo();
 
                 if (_AllInfoMonitors.Count > 0)
                 {
@@ -195,51 +200,56 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
 
             foreach (MonitorInfo monitor in _AllInfoMonitors)
             {
-                foreach (scheduleInfo scheduleInfo in _ScheduleMaps)
+                InitializeScheduleInfo(monitor);
+                int countx = 0;
+                do
                 {
-                    if (monitor.edid.Equals(scheduleInfo.Monitor))
+                    countx++;
+                } while (_WaitTag && countx < 10);
+
+                if (_ScheduleMap != null)
+                {
+                    if (_ScheduleMap.IsEnable)
                     {
-                        if (scheduleInfo.IsEnable)
+                        if (_ScheduleMap.Hours1 > -1 && _ScheduleMap.Hours2 > -1 && _ScheduleMap.Mins1 > -1 && _ScheduleMap.Mins2 > -1 && _ScheduleMap.Duration1 > -1 && _ScheduleMap.Duration2 > -1)
                         {
-                            if (scheduleInfo.Hours1 > -1 && scheduleInfo.Hours2 > -1 && scheduleInfo.Mins1 > -1 && scheduleInfo.Mins2 > -1 && scheduleInfo.Duration1 > -1 && scheduleInfo.Duration2 > -1)
+                            var CurDateTime = DateTime.Now;
+                            var Brightness_PR1 = _ScheduleMap.Brightness1;
+                            var Brightness_PR2 = _ScheduleMap.Brightness2;
+                            var Brightness_difference = Brightness_PR1 - Brightness_PR2;
+                            var Contrast_PR1 = _ScheduleMap.Contrast1;
+                            var Contrast_PR2 = _ScheduleMap.Contrast2;
+                            var Contrast_difference = Contrast_PR1 - Contrast_PR2;
+                            bool IsBrightnessPR1Plus = Brightness_difference > 0 ? true : false;
+                            bool IsBrightnessPR2Plus = Brightness_difference > 0 ? false : true;
+                            bool IsContrastPR1Plus = Contrast_difference > 0 ? true : false;
+                            bool IsContrastPR2Plus = Contrast_difference > 0 ? false : true;
+                            var Hour_PR1 = (_ScheduleMap.Hours1 < 12) ? _ScheduleMap.Hours1 : (_ScheduleMap.Hours1 - 12);
+                            var Hour_PR2 = (_ScheduleMap.Hours2 < 12) ? (_ScheduleMap.Hours2 + 12) : _ScheduleMap.Hours2;
+                            var Min_PR1 = _ScheduleMap.Mins1;
+                            var Min_PR2 = _ScheduleMap.Mins2;
+                            var Duration_PR1 = _ScheduleMap.Duration1;
+                            var Duration_PR2 = _ScheduleMap.Duration2;
+                            var PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0);
+                            var Pre_PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1);
+                            var PR1Time_ADD1D = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddDays(1);
+                            var Pre_PR1Timee_ADD1D = (new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1)).AddDays(1);
+                            var PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0);
+                            var Pre_PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0).AddMinutes(Duration_PR2 * -1);
+                            if (Brightness_difference < 0) Brightness_difference = Brightness_difference * -1;
+                            if (Contrast_difference < 0) Contrast_difference = Contrast_difference * -1;
+                            var PerStepValue = 5;
+                            byte Bvcp = 0x10;
+                            byte Cvcp = 0x12;
+                            if (CurDateTime.Hour < 12)  // AM
                             {
-                                var CurDateTime = DateTime.Now;
-                                var Brightness_PR1 = scheduleInfo.Brightness1;
-                                var Brightness_PR2 = scheduleInfo.Brightness2;
-                                var Brightness_difference = Brightness_PR1 - Brightness_PR2;
-                                var Contrast_PR1 = scheduleInfo.Contrast1;
-                                var Contrast_PR2 = scheduleInfo.Contrast2;
-                                var Contrast_difference = Contrast_PR1 - Contrast_PR2;
-                                bool IsBrightnessPR1Plus = Brightness_difference > 0 ? true : false;
-                                bool IsBrightnessPR2Plus = Brightness_difference > 0 ? false : true;
-                                bool IsContrastPR1Plus = Contrast_difference > 0 ? true : false;
-                                bool IsContrastPR2Plus = Contrast_difference > 0 ? false : true;
-                                var Hour_PR1 = (scheduleInfo.Hours1 < 12) ? scheduleInfo.Hours1 : (scheduleInfo.Hours1 - 12);
-                                var Hour_PR2 = (scheduleInfo.Hours2 < 12) ? (scheduleInfo.Hours2 + 12) : scheduleInfo.Hours2;
-                                var Min_PR1 = scheduleInfo.Mins1;
-                                var Min_PR2 = scheduleInfo.Mins2;
-                                var Duration_PR1 = scheduleInfo.Duration1;
-                                var Duration_PR2 = scheduleInfo.Duration2;
-                                var PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0);
-                                var Pre_PR1Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1);
-                                var PR1Time_ADD1D = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddDays(1);
-                                var Pre_PR1Timee_ADD1D = (new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR1, Min_PR1, 0).AddMinutes(Duration_PR1 * -1)).AddDays(1);
-                                var PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0);
-                                var Pre_PR2Time = new DateTime(CurDateTime.Year, CurDateTime.Month, CurDateTime.Day, Hour_PR2, Min_PR2, 0).AddMinutes(Duration_PR2 * -1);
-                                if (Brightness_difference < 0) Brightness_difference = Brightness_difference * -1;
-                                if (Contrast_difference < 0) Contrast_difference = Contrast_difference * -1;
-                                var PerStepValue = 5;
-                                byte Bvcp = 0x10;
-                                byte Cvcp = 0x12;
-                                if (CurDateTime.Hour < 12)  // AM
+                                if (DateTime.Compare(CurDateTime, PR1Time) > 0) //CurDateTime is later than PR1Time.
                                 {
-                                    if (DateTime.Compare(CurDateTime, PR1Time) > 0) //CurDateTime is later than PR1Time.
+                                    if (DateTime.Compare(CurDateTime, Pre_PR2Time) > 0)  //CurDateTime is later than Pre_PR2Time.
                                     {
-                                        if (DateTime.Compare(CurDateTime, Pre_PR2Time) > 0)  //CurDateTime is later than Pre_PR2Time.
-                                        {
-                                            var BrightnessSteps = Brightness_difference / PerStepValue;
-                                            var BrightnessSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / BrightnessSteps;
-                                            var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / BrightnessSteps_min);
+                                        var BrightnessSteps = Brightness_difference / PerStepValue;
+                                        var BrightnessSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / BrightnessSteps;
+                                        var Brightness_steps = Convert.ToInt32((CurDateTime - Pre_PR2Time).TotalMinutes / BrightnessSteps_min);
 
                                             var ContrastSteps = Contrast_difference / PerStepValue;
                                             var ContrastSteps_min = (PR2Time - Pre_PR2Time).TotalMinutes / ContrastSteps;
@@ -464,9 +474,8 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                                             var valueII = Convert.ToUInt32(Contrast_PR1);
                                             _DisplayManagerPlugin.SetVCPCapability(monitor, Cvcp, valueII);
 
-                                            _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
-                                            _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
-                                        }
+                                        _logs.DebugMsg_1("CalculateNowValue Set Brightness to : " + valueI.ToString());
+                                        _logs.DebugMsg_1("CalculateNowValue Set Contrast to : " + valueII.ToString());
                                     }
                                 }
                             }
@@ -487,20 +496,6 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
             {
                 pluginCondition.PluginConditionChangeHandler += OnDisplayManagerPluginConditionChangeHandler;
                 GetCurrentDisplayManagerCondition();
-            }
-        }
-
-        private void InitializeSettingsPlugin()
-        {
-            if (_SettingsPlugin != null)
-                return;
-
-            _SettingsPlugin = _agent.PluginManager.FindPluginByType<ISettingsManagerDev>(PluginResolution.Dynamic);
-
-            if (_SettingsPlugin is IFrameworkPluginConditionNotification pluginCondition)
-            {
-                pluginCondition.PluginConditionChangeHandler += OnSettingsPluginConditionChangeHandler;
-                GetCurrentSettingsPluginCondition();
             }
         }
 
@@ -533,34 +528,7 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
             });
         }
 
-        private void GetCurrentSettingsPluginCondition()
-        {
-            _ = Task.Run(async () =>
-            {
-                var pluginCondition = await (_SettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                lock (_PluginConditionLock_Settings)
-                {
-                    if (pluginCondition is PluginErrorCondition)
-                    {
-                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in an error condition");
-                    }
-                    else if (pluginCondition is PluginRunningCondition)
-                    {
-                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running condition");
-
-                        if (_ScheduleMaps != null) _ScheduleMaps.Clear();
-                        else _ScheduleMaps = new List<scheduleInfo>();
-                    }
-                    else if (pluginCondition is PluginStartedCondition)
-                    {
-                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a started condition");
-
-                        if (_ScheduleMaps != null) _ScheduleMaps.Clear();
-                        else _ScheduleMaps = new List<scheduleInfo>();
-                    }
-                }
-            });
-        }
+        
 
         #endregion
 
@@ -600,10 +568,6 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
             GetCurrentDisplayManagerCondition();
         }
 
-        private void OnSettingsPluginConditionChangeHandler(object sender, EventArgs e)
-        {
-            GetCurrentSettingsPluginCondition();
-        }
 
         private void PluginManagerOnPluginsStarted(object sender, PluginsStartedEventArgs e)
         {
@@ -613,9 +577,6 @@ namespace DDPM.SA.Plugins.User.SchedulerManager
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
-
-            if (e.ChangedPlugins.OfType<ISettingsManagerDev>().Any())
-                InitializeSettingsPlugin();
 
             if (e.ChangedPlugins.OfType<IDisplayService>().Any())
                 InitializeDisplayManagerPlugin();

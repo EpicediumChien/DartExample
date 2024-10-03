@@ -866,6 +866,128 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(Task.CompletedTask);
         }
 
+        public Task<bool> WriteScheduleMonitorSettings(MonitorInfo monitorInfo, scheduleInfo scheduleInfo)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ WriteScheduleMonitorSettings: _SettingsPlugin is null.");
+                return Task.FromResult(false);
+            }
+
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
+
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null)
+            {
+                writelog($"@ WriteScheduleMonitorSettings: ReloadMonitorSettings(model={model}) return null.");
+                return Task.FromResult(false);
+            }
+
+            //Find the previous saved device settings
+            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
+            //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
+            if (monitorSettings == null)
+            {
+                writelog($"@ WriteScheduleMonitorSettings: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
+                return Task.FromResult(false);
+            }
+
+            monitorSettings.scheduleInfo = scheduleInfo;
+
+            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+            {
+                writelog($"@ WriteScheduleMonitorSettings(model={model}, serviceTage={serviceTag}) OK.");
+                return Task.FromResult(true);
+            }
+            writelog($"@ WriteScheduleMonitorSettings: WriteMonitorSettings(model={model}, serviceTage={serviceTag}) failed.");
+            return Task.FromResult(false);
+        }
+
+        public Task<scheduleInfo> ReadScheduleMonitorSettings(MonitorInfo monitorInfo)
+        {
+            //Create a default output
+            scheduleInfo defaultOutput = null;
+
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ ReadScheduleMonitorSettings: _SettingsPlugin is null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
+
+            //Read all settings for this model
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null) //never, but check for safe
+            {
+                writelog($"@ ReadScheduleMonitorSettings: ReloadMonitorSettings(model={model}) is null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Find the settings for the specified device
+            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+            //There is no settings found for this device
+            if (monitorSetting == null)
+            {
+                writelog($"@ ReadScheduleMonitorSettings: Settings for (model={model}, serviceTag={serviceTag}) is not found (never be saved before).");
+                return Task.FromResult(defaultOutput);
+            }
+            defaultOutput = new scheduleInfo();
+            defaultOutput = monitorSetting.scheduleInfo;
+            //Return the EA settings from the settings file
+            return Task.FromResult(defaultOutput);
+        }
+
+        public Task<bool> MigrateScheduleMonitorSettings(string Model, string ServiceTag, BriConSchedule DDMSetting)
+        {
+            bool r = false;
+
+            if (DDMSetting != null)
+            {
+                MonitorInfo TempMonitorinfo = new MonitorInfo()
+                {
+
+                    modelName = Model,
+                    edid = new EDID()
+                    {
+                        ServiceTag = ServiceTag
+                    }
+                };
+                scheduleInfo DDPMSetting = ReadScheduleMonitorSettings(TempMonitorinfo).Result;
+
+                if (DDPMSetting == null)
+                    DDPMSetting = new scheduleInfo();
+
+                DDPMSetting.model = Model;
+                DDPMSetting.serviceTag = ServiceTag;
+                DDPMSetting.IsEnable = DDMSetting.IsEnabled;
+                DDPMSetting.Pre1Name = DDMSetting.Profile1.PresetName;
+                DDPMSetting.Pre2Name = DDMSetting.Profile2.PresetName;
+                bool r1 = Int32.TryParse(DDMSetting.Profile1.Time.Replace("AM", string.Empty).Replace("PM", string.Empty).Trim().Split(':')[0], out int h1);
+                DDPMSetting.Hours1 = r1 ? h1 : 8;
+                bool r2 = Int32.TryParse(DDMSetting.Profile1.Time.Replace("AM", string.Empty).Replace("PM", string.Empty).Trim().Split(':')[1], out int m1);
+                DDPMSetting.Mins1 = r2 ? m1 : 0;
+                DDPMSetting.Duration1 = DDMSetting.Profile1.Duration;
+                bool r3 = Int32.TryParse(DDMSetting.Profile2.Time.Replace("AM", string.Empty).Replace("PM", string.Empty).Trim().Split(':')[0], out int h2);
+                DDPMSetting.Hours2 = r3 ? h2 : 8;
+                bool r4 = Int32.TryParse(DDMSetting.Profile2.Time.Replace("AM", string.Empty).Replace("PM", string.Empty).Trim().Split(':')[1], out int m2);
+                DDPMSetting.Mins2 = r4 ? m2 : 0;
+                DDPMSetting.Duration2 = DDMSetting.Profile2.Duration;
+                DDPMSetting.Brightness1 = DDMSetting.Profile1.Brightness;
+                DDPMSetting.Contrast1 = DDMSetting.Profile1.Contrast;
+                DDPMSetting.Brightness2 = DDMSetting.Profile2.Brightness;
+                DDPMSetting.Contrast2 = DDMSetting.Profile2.Contrast;
+
+                r = WriteScheduleMonitorSettings(TempMonitorinfo, DDPMSetting).Result;
+            }
+
+            return Task.FromResult(r);
+        }
+
         #endregion
 
         #region Display Service implementation
@@ -4925,11 +5047,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentScheduleManagerCondition)} - Schedule Manager Plugin is in a running condition");
+                        _ScheduleManagerPlugin.ServiceRequest += _ScheduleManagerPlugin_ServiceRequest;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentScheduleManagerCondition)} - Schedule Manager Plugin is in a started condition");
+                        _ScheduleManagerPlugin.ServiceRequest += _ScheduleManagerPlugin_ServiceRequest;
                     }
+                }
+            });
+        }
+
+        private void _ScheduleManagerPlugin_ServiceRequest(object sender, ReadWriteRequest e)
+        {
+            Task.Run(() =>
+            {
+                var monitor = e.monitor;
+                var type = e.service;
+                if (type == ReadWriteRequest_Type.Read)
+                {
+                    var info = ReadScheduleMonitorSettings(monitor).Result;
+
+                    if (_ScheduleManagerPlugin != null)
+                        _ScheduleManagerPlugin.ReceiveScheduleInfo(info);
                 }
             });
         }
