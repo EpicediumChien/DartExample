@@ -104,5 +104,6 @@ namespace DDPM.SA.Common.Settings
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
         public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
         public HotkeySettings hotkeySettings { get; set; }
+		public scheduleInfo scheduleInfo { get; set; }
     }
 }
