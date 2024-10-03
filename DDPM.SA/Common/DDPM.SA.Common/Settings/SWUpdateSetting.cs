@@ -39,12 +39,13 @@ namespace DDPM.SA.Common.Settings
         }
         public static SWUpdateHelper GetSWMetadata(out string info)
         {
+            SWUpdateHelper data = new SWUpdateHelper();
             SetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck();
             if (!certificateCheck.CheckURLCACertificate(URL))
             {
                 info = $"{nameof(GetSWMetadata)} URL CA check fail";
-                return new SWUpdateHelper();
+                return data;
             }
             using (HttpClient client = new HttpClient())
             {
@@ -55,23 +56,32 @@ namespace DDPM.SA.Common.Settings
                     response.EnsureSuccessStatusCode();
                     string jsonString = response.Content.ReadAsStringAsync().Result;
                     jsonString = jsonString.Replace("%1/", URL);
-                    SWUpdateHelper data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
-                    foreach (Software software in data.Softwares)
+                    data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
+                    if (data != null)
                     {
-                        string version =
-                        Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
-                        software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}-Debug");
-                        software.MiniInstallerServer_path = software.MiniInstallerServer_path.Replace("%21", $"MiniInstaller");
+                        foreach (Software software in data.Softwares)
+                        {
+                            string version =
+                            Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
+                            software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}").Replace("_Uknown", "-Debug").Replace(".zip", ".exe").Replace("/Firmwares", "");
+                        }
+                        info = $"{nameof(GetSWMetadata)} done";
                     }
-                    info = $"{nameof(GetSWMetadata)} done";
-                    return data;
+                    else
+                    {
+                        info = $"{nameof(GetSWMetadata)} done but Deserialize fail";
+                    }
+                }
+                catch (JsonException ex)
+                {
+                    info = $"{nameof(GetSWMetadata)} JSON Deserialize error:{ex.Message}";
                 }
                 catch (Exception ex)
                 {
                     info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
                 }
             }
-            return new SWUpdateHelper();
+            return data;
         }
     }
 }
