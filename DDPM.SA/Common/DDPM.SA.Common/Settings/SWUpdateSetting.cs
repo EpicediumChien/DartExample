@@ -47,40 +47,50 @@ namespace DDPM.SA.Common.Settings
                 info = $"{nameof(GetSWMetadata)} URL CA check fail";
                 return data;
             }
-            using (HttpClient client = new HttpClient())
+            try
             {
-                try
+                using (HttpClient client = new HttpClient())
                 {
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                    HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = response.Content.ReadAsStringAsync().Result;
-                    jsonString = jsonString.Replace("%1/", URL);
-                    data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
-                    if (data != null)
+                    try
                     {
-                        foreach (Software software in data.Softwares)
+                        client.Timeout = TimeSpan.FromSeconds(5);
+                        HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = response.Content.ReadAsStringAsync().Result;
+                        if (string.IsNullOrEmpty(jsonString))
                         {
-                            string version =
-                            Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
-                            software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}-Debug");
-                            software.MiniInstallerServer_path = software.MiniInstallerServer_path.Replace("%21", $"MiniInstaller");
+                            jsonString = jsonString.Replace("%1/", URL);
+                            data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
+                            if (data != null)
+                            {
+                                foreach (Software software in data.Softwares)
+                                {
+                                    string version =
+                                    Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
+                                    software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}-Debug");
+                                    software.MiniInstallerServer_path = software.MiniInstallerServer_path.Replace("%21", $"MiniInstaller");
+                                }
+                                info = $"{nameof(GetSWMetadata)} done";
+                            }
+                            else
+                            {
+                                info = $"{nameof(GetSWMetadata)} done but Deserialize fail";
+                            }
                         }
-                        info = $"{nameof(GetSWMetadata)} done";
+                        else
+                        {
+                            info = $"{nameof(GetSWMetadata)} done but jsonString is null or empty";
+                        }
                     }
-                    else
+                    catch (JsonException ex)
                     {
-                        info = $"{nameof(GetSWMetadata)} done but Deserialize fail";
+                        info = $"{nameof(GetSWMetadata)} JSON Deserialize error:{ex.Message}";
                     }
                 }
-                catch (JsonException ex)
-                {
-                    info = $"{nameof(GetSWMetadata)} JSON Deserialize error:{ex.Message}";
-                }
-                catch (Exception ex)
-                {
-                    info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
-                }
+            }
+            catch (Exception ex)
+            {
+                info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
             }
             return data;
         }
