@@ -41,6 +41,9 @@ namespace DDPM.UI.Common.ViewModels
 
             _splitItemEditCommand = new RelayCommand<SplitItem>(OnSplitItemEditCommand);
             Invoke_InitData();
+
+            HourList = Enumerable.Range(1, 12).Select(i => i.ToString("D2")).ToList();
+            MinuteList = Enumerable.Range(0, 60).Select(i => i.ToString("D2")).ToList();//將數字格式化成兩位數，單位數自動補 0
         }
 
         private double _progressValue = 1;
@@ -252,6 +255,41 @@ namespace DDPM.UI.Common.ViewModels
 
             };
         }
+
+        #region First page
+
+        private string _inputText = "Profile 1";
+        public string InputText
+        {
+            get => _inputText;
+            set => SetProperty(ref _inputText, value);
+        }
+        #endregion First page
+
+        #region RightView page
+
+        private string _automaticStartupValue = "N/A";
+        public string AutomaticStartupValue
+        {
+            get => _automaticStartupValue;
+            set => SetProperty(ref _automaticStartupValue, value);
+        }
+
+        private string _launchByTimeValue = "N/A";
+        public string LaunchByTimeValue
+        {
+            get => _launchByTimeValue;
+            set => SetProperty(ref _launchByTimeValue, value);
+        }
+
+        private string _appDocumentValue = "N/A";
+        public string AppDocumentValue
+        {
+            get => _appDocumentValue;
+            set => SetProperty(ref _appDocumentValue, value);
+        }
+
+        #endregion RightView page
 
         #region Assign page
 
@@ -519,6 +557,66 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
         #endregion
+
+        #region LaunchOption
+
+        private List<string> _hourList;
+        public List<string> HourList
+        {
+            get => _hourList;
+            set => SetProperty(ref _hourList, value);
+        }
+
+        private List<string> _minuteList;
+        public List<string> MinuteList
+        {
+            get => _minuteList;
+            set => SetProperty(ref _minuteList, value);
+        }
+
+        private string _selectedHour = "1";
+        public string SelectedHour
+        {
+            get => _selectedHour;
+            set => SetProperty(ref _selectedHour, value);
+        }
+
+        private string _selectedMinute = "00";
+        public string SelectedMinute
+        {
+            get => _selectedMinute;
+            set => SetProperty(ref _selectedMinute, value);
+        }
+
+        private string _selectedAMPM = "AM";
+        public string SelectedAMPM
+        {
+            get => _selectedAMPM;
+            set => SetProperty(ref _selectedAMPM, value);
+        }
+
+        private bool _isManualLaunch;
+        public bool IsManualLaunch
+        {
+            get => _isManualLaunch;
+            set => SetProperty(ref _isManualLaunch, value);
+        }
+
+        private bool _isAutoLaunch;
+        public bool IsAutoLaunch
+        {
+            get => _isAutoLaunch;
+            set => SetProperty(ref _isAutoLaunch, value);
+        }
+
+        private bool _isLaunchAtStartup;
+        public bool IsLaunchAtStartup
+        {
+            get => _isLaunchAtStartup;
+            set => SetProperty(ref _isLaunchAtStartup, value);
+        }
+        #endregion LaunchOption
+
     }
     public class EzMemoryPageData
     {

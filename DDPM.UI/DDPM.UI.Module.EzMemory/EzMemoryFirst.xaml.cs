@@ -29,6 +29,7 @@ using System.Windows.Shapes;
 using static DDPM.UI.Common.User32;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
+
 namespace DDPM.UI.Module.EzMemory
 {
     /// <summary>
@@ -108,6 +109,25 @@ namespace DDPM.UI.Module.EzMemory
 
         public void InitializePage()
         {
+            //Read other settings
+
+            List<EAProfileDDPM> eaProfile = DdpmCommonHelper.DeviceManagerSA.ReadEzProfiles().Result;
+            List<EAAppInfoDDPM> lea = new List<EAAppInfoDDPM>();
+            EAAppInfoDDPM ea = new EAAppInfoDDPM();
+            ea.IsUWP = false;
+            ea.Name = "11";
+            lea.Add( ea );
+
+            EAAppInfoDDPM ea2 = new EAAppInfoDDPM();
+            ea2.IsUWP = false;
+            ea2.Name = "22";
+            lea.Add(ea2);
+
+
+            EAProfileDDPM test = new EAProfileDDPM(9, "test", 8, lea, false, false, "0", "0", "0", false);
+            EAProfileDDPM test2 = new EAProfileDDPM(11, "test", 11, lea, false, false, "0", "0", "0", false);
+            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(_homeDevice.MonitorInfo, test);
+            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(_homeDevice.MonitorInfo, test2);
             _vm._currentTotalPage = 0;
             _vm._currentPageIndex = 0;
             _vm.ProgressValue = 1;
@@ -564,7 +584,7 @@ namespace DDPM.UI.Module.EzMemory
         private static DisplayOrientation GetDisplayOrientation(string deviceName)
         {
             int ENUM_CURRENT_SETTINGS = -1;
-            DEVMODE devMode = new DEVMODE();
+            Common.User32.DEVMODE devMode = new Common.User32.DEVMODE();
             if (User32._EnumDisplaySettings(deviceName, ENUM_CURRENT_SETTINGS, ref devMode))
             {
                 return (DisplayOrientation)devMode.dmDisplayOrientation;

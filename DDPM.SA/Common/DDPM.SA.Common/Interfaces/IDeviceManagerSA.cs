@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Display;
+﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
@@ -248,6 +249,15 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue);
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
         #endregion EasyArrange
+
+        #region EasyMemory
+
+        public Task<List<EAProfileDDPM>> ReadEzProfiles();
+
+        public Task<bool> WriteEzProfiles(MonitorInfo monitorInfo, EAProfileDDPM eaProfile);
+
+        public Task<bool> CleanEzProfiles();
+        #endregion EasyMemory
 
         #endregion public for Displays
 

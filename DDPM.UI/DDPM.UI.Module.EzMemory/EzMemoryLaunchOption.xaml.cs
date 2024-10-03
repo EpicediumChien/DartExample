@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Windows.Management.Deployment;
 using Microsoft.VisualBasic.Logging;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -30,7 +31,7 @@ namespace DDPM.UI.Module.EzMemory
     /// EzMemoryLaunchOption.xaml 的互動邏輯
     /// </summary>
     public partial class EzMemoryLaunchOption : UserControl
-    {      
+    {
         //For UWP
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -169,20 +170,24 @@ namespace DDPM.UI.Module.EzMemory
             _vm.ProgressValue = 3;
         }
 
-    public void InitializePage()
-    {
-        _vm.ezPages = _vm.GetEzPages();
-
-        if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
+        public void InitializePage()
         {
-            _vm.CurrentAnimationPage = _vm.ezPages[_vm._currentDeviceModel].Count;
-            var pageData = _vm.ezPages[_vm._currentDeviceModel][2];
-            MainText.Text = pageData.MainText!;
-            SubText.Text = pageData.SubText!;
-        }
-    }
+            TitleTB.Text = "Select a launch option";
+            StartupCB.Content = "Launch during PC startup";
+            ManulRB.Content = "Manually select the profiles created";
+            AutoRB.Content = "Automatically launch by time";
+            _vm.ezPages = _vm.GetEzPages();
 
-    private void ArrowButton_Click(object sender, RoutedEventArgs e)
+            if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
+            {
+                _vm.CurrentAnimationPage = _vm.ezPages[_vm._currentDeviceModel].Count;
+                var pageData = _vm.ezPages[_vm._currentDeviceModel][2];
+                MainText.Text = pageData.MainText!;
+                SubText.Text = pageData.SubText!;
+            }
+        }
+
+        private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 2;
             EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
@@ -376,7 +381,7 @@ namespace DDPM.UI.Module.EzMemory
                 }
                 catch (Exception ex)
                 {
-                    _log.Info($"[EzMemoryLaunchOption], UWP Process.Start Exception {ex}");                   
+                    _log.Info($"[EzMemoryLaunchOption], UWP Process.Start Exception {ex}");
                 }
             }
             else

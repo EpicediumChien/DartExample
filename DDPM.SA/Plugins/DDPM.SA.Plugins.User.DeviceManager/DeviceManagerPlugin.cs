@@ -3133,6 +3133,75 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         #endregion EasyArrage
 
+        #region EasyMemory
+
+        public Task<List<EAProfileDDPM>> ReadEzProfiles()
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                return Task.FromResult(ddpmSettings.UserSettings.EAProfile);
+            }
+            return Task.FromResult(new List<EAProfileDDPM>());
+        }
+
+        public Task<bool> WriteEzProfiles(MonitorInfo monitorInfo, EAProfileDDPM eaProfile)
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                if (ddpmSettings.UserSettings.EAProfile == null)
+                {
+                    ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
+                }
+
+                // 找相同 Name
+                var existingProfile = ddpmSettings.UserSettings.EAProfile.FirstOrDefault(p => p.Name == eaProfile.Name);
+
+                if (existingProfile != null)
+                {
+                    // 更新
+                    existingProfile.Name = eaProfile.Name;
+                    existingProfile.Layout = eaProfile.Layout;
+                    existingProfile.AppInfos = eaProfile.AppInfos;
+                    existingProfile.SelectedHour = eaProfile.SelectedHour;
+                    existingProfile.SelectedMinute = eaProfile.SelectedMinute;
+                    existingProfile.SelectedAMPM = eaProfile.SelectedAMPM;
+                    existingProfile.IsManualLaunch = eaProfile.IsManualLaunch;
+                    existingProfile.IsAutoLaunch = eaProfile.IsAutoLaunch;
+                    existingProfile.IsLaunchAtStartup = eaProfile.IsLaunchAtStartup;
+                }
+                else
+                {
+                    // 新增
+                    ddpmSettings.UserSettings.EAProfile.Add(eaProfile);
+                }
+
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> CleanEzProfiles()
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                if (ddpmSettings.UserSettings.EAProfile == null)
+                {
+                    ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
+                }
+                else
+                {
+                    ddpmSettings.UserSettings.EAProfile.Clear();
+                }
+
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+        #endregion EasyMemory
+
         #region SW Update implementation
 
         public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isDefer = false, bool isForce = false)
