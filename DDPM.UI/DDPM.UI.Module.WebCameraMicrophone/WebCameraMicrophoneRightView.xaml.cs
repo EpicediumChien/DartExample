@@ -29,7 +29,7 @@ namespace DDPM.UI.Module.WebCameraMicrophone
                 if (data != null)
                 {
                     vm.ShowLockMask = data.LockSettings.Lock_Webcam_MicSwitch;
-                    vm.isTabStoppable = !data.LockSettings.Lock_Webcam_MicSwitch;
+                    vm.IsTabStoppable = !data.LockSettings.Lock_Webcam_MicSwitch;
 
                     if (vm.ShowLockMask)
                         vm.TabNavigation = "None";
@@ -70,10 +70,10 @@ namespace DDPM.UI.Module.WebCameraMicrophone
             if (isLocked != null)
             {
                 Dispatcher.Invoke(new Action(() =>
-                {                
+                {
                     if (_vm != null)
                     {
-                        _vm.isTabStoppable = !(bool)isLocked;
+                        _vm.IsTabStoppable = !(bool)isLocked;
                         _vm.ShowLockMask = (bool)isLocked;
 
                         if (_vm.ShowLockMask)

@@ -46,7 +46,7 @@ namespace DDPM.UI.Module.Brightness
         {
             DDPMSettings data = null;
             if (DdpmCommonHelper.DeviceManagerSA != null)
-                data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                data = DdpmCommonHelper.ReadDDPMSettings(true);// DeviceManagerSA.ReloadAppConfigData().Result;
 
             bool? isLocked_BriCont = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Display_BriCont", e);
             if (isLocked_BriCont != null)
@@ -56,8 +56,7 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.LockMaskVisible = (bool)isLocked_BriCont ? Visibility.Visible : Visibility.Collapsed;
-                        vm.TabSTOP = (bool)isLocked_BriCont ? "None" : "Cycle";
+                        vm.Update_BriContLockStatus(isLocked_BriCont ?? false);
                         Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}");
                     }
                 }));
@@ -84,7 +83,7 @@ namespace DDPM.UI.Module.Brightness
                     BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
                     if (vm != null)
                     {
-                        vm.synchronizeLock= isSyncLocked ? Visibility.Visible : Visibility.Collapsed;
+                        vm.Update_SyncLockStatus(isSyncLocked);                        
                         Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {isSyncLocked}");
                     }
                 }));
@@ -115,7 +114,7 @@ namespace DDPM.UI.Module.Brightness
         {
             BrightnessViewModel x = (BrightnessViewModel)DataContext;
 
-            DDPMSettings setting = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+            DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
             if ((bool)SynchronizeSwitch.IsChecked)
             {
@@ -129,7 +128,7 @@ namespace DDPM.UI.Module.Brightness
             }
 
             setting.UserSettings.IsSynchronizemonitor = x.IsSynchronize;
-            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(setting);
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
         private void Expander_Manual_Expanded(object sender, RoutedEventArgs e)
@@ -420,7 +419,7 @@ namespace DDPM.UI.Module.Brightness
             var ScheduleMaps_string = string.Empty;
 
             if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
             if (vm.hOurs1 > -1 && vm.hOurs2 > -1 && vm.mIns1 > -1 && vm.mIns2 > -1 && vm.dUration1 > -1 && vm.dUration2 > -1)
             {
@@ -512,7 +511,7 @@ namespace DDPM.UI.Module.Brightness
                 if ((!vm.IsMouseEnterSchedule_1 && !vm.IsMouseEnterSchedule_2) && (!vm.CheckIsTimeOverlap()) && (!vm.IsPR1Preview && !vm.IsPR2Preview))
                 {
                     DdpmCommonHelper.Settings_Cache.UserSettings.Schedule = ScheduleMaps_string;
-                    DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
+                    DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);//DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
 
                     vm.StartScheduleManger(60000);
                 }

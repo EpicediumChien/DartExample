@@ -79,7 +79,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
         Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
-
+        
         //Dean add 0612
         public Task<string> ReadCurrentColorPreset(MonitorInfo m);
 
@@ -96,6 +96,10 @@ namespace DDPM.SA.Common
         Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, string ColorPreset_Name = "", string ICC_profile_Name = "");
 
         Task<string> GetColorManagementStatus(MonitorInfo m);
+
+        Task<string> GetColorPresetName(int Color_VCPCore_E2);
+
+        Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
 
         #endregion public for ColorPreset
 
@@ -322,7 +326,6 @@ namespace DDPM.SA.Common
 
         //Task SetEqualizerValues(ILogicalDeviceHeadset logicalDeviceHeadset, DeviceInfo info);
         Task SetIsMicEnumerationOn(bool newValue, Guid deviceId);
-        Task SetCurrentSelectedProfile(string newValue, Guid deviceId);
 
         #endregion public for Peripherals
 
@@ -406,6 +409,8 @@ namespace DDPM.SA.Common
         public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
+
+        public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
         #endregion public for hotkey
 
@@ -608,6 +613,12 @@ namespace DDPM.SA.Common
         Task SetAutoFramingSensitivity(string Guid, int newValue);
         Task SetAutoFramingFrameSize(string Guid, int newValue);
         Task SetFieldOfView(string Guid, int newValue);
+        Task SetIsFocusOn(string Guid, bool newValue);
+        Task SetFocus(string Guid, int newValue);
+        Task SetPriority(string Guid, int newValue);
+        Task SetIsHDROn(string Guid, bool newValue);
+        Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+        Task SetAutoWhiteBalance(string Guid, int newValue);
 
         #endregion
 

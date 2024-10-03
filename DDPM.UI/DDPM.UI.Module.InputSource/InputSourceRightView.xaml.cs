@@ -71,7 +71,7 @@ namespace DDPM.UI.Module.InputSource
 
         private void KeyDown_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if ((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3)) && (Keyboard.Modifiers == ModifierKeys.Shift))
+            if (((e.KeyStates == Keyboard.GetKeyStates(Key.D1)) || (e.KeyStates == Keyboard.GetKeyStates(Key.D3))) && (Keyboard.Modifiers == ModifierKeys.Shift))
             {
                 e.Handled = true;
             }

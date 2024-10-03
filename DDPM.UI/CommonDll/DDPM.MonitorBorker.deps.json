@@ -682,6 +682,14 @@
           }
         }
       },
+      "DdmLibrary/1.0.0.0": {
+        "runtime": {
+          "DdmLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "Microsoft.Extensions.Logging.Abstractions/8.0.0.0": {
         "runtime": {
           "Microsoft.Extensions.Logging.Abstractions.dll": {
@@ -1169,6 +1177,11 @@
       "sha512": ""
     },
     "DPeMPublic.Common/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DdmLibrary/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

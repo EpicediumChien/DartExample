@@ -601,12 +601,15 @@ namespace DDPM.UI.Module.Brightness
                 Trace.WriteLine($"7 {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
 
                 //Lock/unlock mask and tabstop init here
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;//Be careful if spend much time here
                 Update_ALSLockStatus(data.LockSettings.Lock_Display_AutoBriTemp);
+                Update_BriContLockStatus(data.LockSettings.Lock_Display_BriCont);
+                Update_SyncLockStatus((data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp));
                 //ex: vm.LockMaskVisible = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
                 //Read user default lock value, these values are synced from IT lock event
                 Trace.WriteLine($"[SettingsPage] Apply Brightness/Contrast(Lock) : {data.LockSettings.Lock_Display_BriCont}");
                 Trace.WriteLine($"[SettingsPage] Apply Auto Brightness(Lock) : {data.LockSettings.Lock_Display_AutoBriTemp}");
+                Trace.WriteLine($"[SettingsPage] Apply Synchroniz Button(Lock) : {(data.LockSettings.Lock_Display_BriCont || data.LockSettings.Lock_Display_ColorPreset || data.LockSettings.Lock_Display_AutoBriTemp)}");
             }
         }
 
@@ -1417,7 +1420,7 @@ namespace DDPM.UI.Module.Brightness
                 return;
 
             if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
             if (ScheduleMaps == null)
                 ScheduleMaps = new List<scheduleInfo>();
@@ -1507,7 +1510,7 @@ namespace DDPM.UI.Module.Brightness
             var ScheduleMaps_string = string.Empty;
 
             if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
 
             if (ScheduleMaps == null)
                 ScheduleMaps = new List<scheduleInfo>();
@@ -1534,7 +1537,7 @@ namespace DDPM.UI.Module.Brightness
             }
 
             DdpmCommonHelper.Settings_Cache.UserSettings.Schedule = ScheduleMaps_string;
-            DdpmCommonHelper.DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
+            DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);//DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
         }
 
         public bool CheckIsTimeOverlap()
@@ -1980,7 +1983,7 @@ namespace DDPM.UI.Module.Brightness
         private bool Get_Synchronize()
         {
             if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
             if (DdpmCommonHelper.Settings_Cache != null)
             {
                 IsSynchronizeMonitor = DdpmCommonHelper.Settings_Cache.UserSettings.IsSynchronizemonitor;
@@ -2293,6 +2296,16 @@ namespace DDPM.UI.Module.Brightness
                 IsPrimaryMonitorSyncLockMask = Visibility.Collapsed;
                 IsAutoBrightnessRangeLevelStringLockMask = Visibility.Collapsed;
             }
+        }
+
+        public void Update_BriContLockStatus(bool value)
+        {
+            LockMaskVisible = value ? Visibility.Visible : Visibility.Collapsed;
+            TabSTOP = value ? "None" : "Cycle";
+        }
+        public void Update_SyncLockStatus(bool value)
+        {
+            synchronizeLock = value ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private Visibility _isAutoBrightnessLockMask = Visibility.Collapsed;

@@ -151,6 +151,7 @@ namespace DDPM.UI.Module.InputSource
 
                 if (inputList != null)
                 {
+                    _inputsList.Clear();
                     foreach (string item in inputList.Keys)
                     {
                         _inputsList.Add(new InputSourceList()
@@ -253,7 +254,7 @@ namespace DDPM.UI.Module.InputSource
                 OnPropertyChanged("items"); //0607 Jason
 
                 //Lock/unlock data init here
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     bool isLocked_current_input = data.LockSettings.Lock_Display_ActiveInputSource;

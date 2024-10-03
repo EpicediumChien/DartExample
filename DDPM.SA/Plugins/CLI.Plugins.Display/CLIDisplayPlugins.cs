@@ -7798,8 +7798,12 @@ namespace DDPM.CLI.Plugins.Display
 
                 writelog($"AutoBrightnessRangeLevel Entry");
                 param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
-                get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
-                writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                if (param.AutoBrightnessRangeLevel.Count != 0)
+                {
+                    get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
+                    writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                }
+                writelog($"AutoBrightness Exit return value: FAIL");
 
                 writelog($"AutoColorTemp Entry");
                 param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoColorTemperature, 0).Result;

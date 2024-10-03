@@ -405,7 +405,7 @@
                                 And return to Collaped when Mouse leave.
                                 Copy from KeyboardPlugin.LaunchView.xaml
                                 -->
-                                <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                                <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40">
                                     <!-- Use StackPanel, so (by default) ConnectionHoverView is collapsed. The Indicators Grid will show
                                     the BatteryIndicator only. -->
                                     <StackPanel>

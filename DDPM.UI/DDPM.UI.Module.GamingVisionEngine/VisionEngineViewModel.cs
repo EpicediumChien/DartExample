@@ -68,8 +68,9 @@ namespace DDPM.UI.Module.GamingVisionEngine
             try
             {
                 VisionEngineList = new ObservableCollection<UI_VisionEngine>();
-                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(MyModule.SelectedHomeDevice.MonitorInfo).Result;
-                displayPropertiesInfo.IsEnable_VisionEngineType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_VisionEngineEnableType(MyModule.SelectedHomeDevice.MonitorInfo, displayPropertiesInfo).Result;
+                MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+                GamingDisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetGamingProperties_SupportedList(currentMonitorInfo).Result;
+                displayPropertiesInfo.IsEnable_VisionEngineType = DdpmCommonHelper.DeviceManagerSA.GetCurrentGaming_VisionEngineEnableType(currentMonitorInfo, displayPropertiesInfo).Result;
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
                     for (int i = 0; i < displayPropertiesInfo.Supported_VisionEngineType.Count; i++)
@@ -111,7 +112,8 @@ namespace DDPM.UI.Module.GamingVisionEngine
                     b[i] = true;
                 }
             }
-            bool ret = DdpmCommonHelper.DeviceManagerSA.SetGaming_VisionEngineEnableType(MyModule.SelectedHomeDevice.MonitorInfo, b).Result;
+            MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+            bool ret = DdpmCommonHelper.DeviceManagerSA.SetGaming_VisionEngineEnableType(currentMonitorInfo, b).Result;
         }
         private void Set_VisionEngine_Done(object sender, RunWorkerCompletedEventArgs e)
         {

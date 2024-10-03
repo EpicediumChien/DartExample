@@ -73,10 +73,8 @@ namespace ColorPreset.Plugins
         private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
 
         //private readonly string[] Issuer = { "CN=Entrust Certification Authority - L1F, O=\"Entrust, C=US", "CN=localhost, O=DigiNow, C=US" };
-        private readonly string[] Issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
-
-        private readonly string[] Subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
-
+        //private readonly string[] Issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
+        //private readonly string[] Subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
         private string[] Issuers;
         private string[] Subjects;
 
@@ -93,8 +91,7 @@ namespace ColorPreset.Plugins
 
         //20240905 Jim add
         MonitorInfo Active_monitorInfo = null;
-        public RegistryMonitor_ICC registryMonitor_ICC = null;
-
+        public RegistryMonitor_ICC registryMonitor_ICC = null;       
 
         /// <summary>
         /// Colorpreset Manual change event，return Colorpreset name
@@ -186,9 +183,11 @@ namespace ColorPreset.Plugins
                 {
                     ModelName = mo.edid.ModelName,
                     SerialNumber = mo.edid.SerialNumber,
+                    ServiceTag = mo.edid.ServiceTag,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native",
+                    //PresetForManual = "Standard/Native",
+                    ColorForManual = 0,
                     ColorManagement_Status = (int)ColorManagementStatus.Off,
                     ColorManagement_RunType = (int)ColorManagementRunType.Off
                 });
@@ -197,13 +196,17 @@ namespace ColorPreset.Plugins
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
             }
@@ -219,12 +222,16 @@ namespace ColorPreset.Plugins
                 //Default items
                 temp.AppInfo.Add("Desktop Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
                 temp.AppInfo.Add("UWP Application", new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = "Standard/Native",
+                    //ColorPresetName = "Standard/Native",
+                    Color = 0,
+                    HDRColor = -1,
                     IconName = "Assets/palette.png",
                 });
             }
@@ -240,9 +247,11 @@ namespace ColorPreset.Plugins
                 {
                     ModelName = mo.edid.ModelName,
                     SerialNumber = mo.edid.SerialNumber,
+                    ServiceTag = mo.edid.ServiceTag,
                     RunType = (int)ColorPresetRunType.Manual,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native",
+                    //PresetForManual = "Standard/Native",
+                    ColorForManual = 0,
                     ColorManagement_Status = (int)ColorManagementStatus.Off,
                     ColorManagement_RunType = (int)ColorManagementRunType.Off
                 });
@@ -281,9 +290,13 @@ namespace ColorPreset.Plugins
 
             if (!(Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.ContainsKey(AppName)))
             {
+                var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(AppName, new ColorPresetSettings_AppInfo()
                 {
-                    ColorPresetName = ColorPreset_Name,
+                    //ColorPresetName = ColorPreset_Name,
+                    Color = nColorVCPCoreValue,
+                    HDRColor = -1,
                     IconName = kvp.Value.IconName,
                 });
             }
@@ -298,8 +311,12 @@ namespace ColorPreset.Plugins
             int index_config = get_index_of_json_config_for_cur_monitor(mo);
             if (index_config >= 0)
             {
+                var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[AppName].ColorPresetName = ColorPreset_Name;
+                //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[AppName].ColorPresetName = ColorPreset_Name;
+
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[AppName].Color = nColorVCPCoreValue;
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
@@ -324,7 +341,7 @@ namespace ColorPreset.Plugins
         /// 啟動 MonitorBorker 執行抓前景active app name
         /// </summary>
         /// <param name="m"></param>
-        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin)
+        public void Launch_MonitorBorker(MonitorInfo m, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false)
         {
             if (Log != null)
             {
@@ -346,7 +363,7 @@ namespace ColorPreset.Plugins
                         MonitorBorkerWin = new MainWindow(_DeviceManagerPlugin, m);
 
                         MonitorBorkerWin.Show();
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON);
                     }
                     else
                     {
@@ -358,7 +375,7 @@ namespace ColorPreset.Plugins
             return;
         }
         
-        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin)
+        public Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin, bool SmartHDR_ON = false)
         {
             List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
 
@@ -382,7 +399,7 @@ namespace ColorPreset.Plugins
                     newWindowThread_AutoSetColorPresetForMonitorConfig = new Thread(new ThreadStart(() =>
                     {
                         // create and show the window
-                        Launch_MonitorBorker(mo, _DeviceManagerPlugin);
+                        Launch_MonitorBorker(mo, _DeviceManagerPlugin, SmartHDR_ON);
 
                         // start the Dispatcher processing
                         // 啟動消息循環
@@ -404,7 +421,7 @@ namespace ColorPreset.Plugins
                 {
                     // jim add 20240605
                     if (MonitorBorkerWin != null) // jim add 20240809
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON);
                 }
             }
             else if (on_off.Equals("OFF", StringComparison.OrdinalIgnoreCase))
@@ -425,7 +442,7 @@ namespace ColorPreset.Plugins
                 if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
                 {
                     if (MonitorBorkerWin != null) // jim add 20240809
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, SmartHDR_ON);
                 }
 
             }
@@ -844,20 +861,27 @@ namespace ColorPreset.Plugins
                 {
                     if (index >= 0)
                     {
+                        var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Manual;
-                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+                        //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
                     }
                 }
                 else if (colorPresetRunType == (int)ColorPresetRunType.Auto)
                 {
                     if (index >= 0)
                     {
+                        var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
-                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+                        //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
                     }
 
-                }
-                
+                }                
 
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 Thread.Sleep(100);
@@ -912,11 +936,53 @@ namespace ColorPreset.Plugins
 
             if (index >= 0)
             {
+                var nColorVCPCoreValue = GetColorVCPCoreValue(ColorPreset_Name).Result;
+
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].RunType = (int)ColorPresetRunType.Auto;
-                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+                //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].PresetForManual = ColorPreset_Name;
+
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = nColorVCPCoreValue;
             }
 
             return Task.FromResult(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+        }
+
+        public Task<string> GetColorPresetName(int Color_VCPCore_E2)
+        {
+            if (Log != null)
+            {
+                Log.Info($"GetColorPresetName requested ...");
+            }
+
+            // 判斷Key是否存在
+            // 若存在，回傳True，將Key為Color_VCPCore_E2的Value，帶入tmp
+            if (!VcpCodeList.VCPE2.TryGetValue(Color_VCPCore_E2, out string tmp))
+            {
+                return Task.FromResult(string.Empty);
+            }
+            else
+            {
+                return Task.FromResult(tmp);
+            }           
+        }
+
+        public Task<int> GetColorVCPCoreValue(string ColorPreset_Name)
+        {
+            if (Log != null)
+            {
+                Log.Info($"GetColorVCPCoreValue requested ...");
+            }
+
+            // 判斷Key是否存在
+            // 若存在，回傳True，將Key為ColorPreset_Name的Value，帶入tmp
+            if (!VcpCodeList.VCPE2_ref.TryGetValue(ColorPreset_Name, out int tmp))
+            {
+                return Task.FromResult(-1);
+            }
+            else
+            {
+                return Task.FromResult(tmp);
+            }
         }
 
         #endregion
@@ -1303,14 +1369,70 @@ namespace ColorPreset.Plugins
                 return ret;
             }
             else
-            { // Currently the server can not provide json file with signature. Add code here for further use.
+            {   // Currently the server can not provide json file with signature. Add code here for further use.
                 // (for debugging) Public_Key from file. Generate Public/Private Key then generate signature in json file.
                 publickeyfilepath = "C:\\Dell\\Dell Display and Peripheral Manager\\public_key.txt";
                 // (for debugging) .json: with signature 
-                jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
+                //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
+                jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_key2info_key1sig.json";
+               
 
                 ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson(jsonfilepath, publickeyfilepath, out strJson);
             }
+
+            // Handle "Info" section
+            if(ret && (strJson.Length > 1))
+            {
+                JObject jObject = JObject.Parse(strJson);
+                string modifiedJson;
+                string szInfo;
+                try
+                {
+                    szInfo = (string)jObject["Info"];
+                    
+                    jObject.Remove("Info");
+                    // Convert the modified JObject back to a JSON string
+                    modifiedJson = jObject.ToString();
+                    strJson = modifiedJson;
+
+                    List<string> Pub_Key_List_From_DBase = new List<string>();
+                    
+                    // Load the base64-encoded public key from a text file
+                    string publicKeyBase64 = File.ReadAllText(publickeyfilepath);
+                    Pub_Key_List_From_DBase.Add(publicKeyBase64);
+
+                    int nIndexFound = -1;
+                    Console.WriteLine("*** (Remote) Public Key 1: " + Pub_Key_List_From_DBase.Count.ToString() + " " + szInfo);
+                    
+                    for (int i = 0; i < Pub_Key_List_From_DBase.Count; i++) 
+                    {   // Need to replace Public Key here
+                        string current = Pub_Key_List_From_DBase[i];
+                        Console.WriteLine("*** (Local) Public Key 2: " + current);
+
+                        if(szInfo == current)
+                        {
+                            nIndexFound = i;
+                            break;
+                        }
+                    }
+                    if(nIndexFound >= 0)
+                    {   // Key found. 
+                    }
+                    else
+                    {   // Key Not found. Current Key != Remote Key
+                        Pub_Key_List_From_DBase.Insert(0, publicKeyBase64);
+                        // *** ToDo: Must Store Remote Key to DBase ***
+                    }
+
+                    ret = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Try to get Signature from json fail.\nReason: " + ex.ToString());
+                    return false;
+                }
+            }
+
             return ret;
         }
 
