@@ -3764,6 +3764,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetAntiFlicker(guid, newValue);
             return Task.FromResult(true);
         }
+        public Task SetTilt(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetTilt requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetTilt(guid, newValue);
+            return Task.FromResult(true);
+        }
+        public Task SetPan(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetPan requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetPan(guid, newValue);
+            return Task.FromResult(true);
+        }
         #endregion
 
 

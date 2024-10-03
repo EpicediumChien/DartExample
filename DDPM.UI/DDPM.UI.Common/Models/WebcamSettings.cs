@@ -86,4 +86,11 @@ namespace DDPM.UI.Common
         public bool IsHDROn { get; set; }
 
     }
+
+    public enum OperationModule
+    {
+        CameraControl,
+        ColorAndImage
+    }
+
 }

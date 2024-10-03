@@ -142,6 +142,15 @@
                   <Rectangle Grid.Row="1" Grid.Column="1" Height="1" Fill="Black" VerticalAlignment="Bottom" />
                   <Rectangle Grid.Row="1" Grid.Column="2" Height="1" Fill="Black" VerticalAlignment="Bottom" />
                 </Grid>
+                <Image Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/PanL.png" Stretch="Fill" MouseLeftButtonDown="ChangePan" Tag="L"
+                       VerticalAlignment="Center" HorizontalAlignment="Left" Cursor="" Width="30" Height="31" Visibility="{Binding PanArrowVisibility}"/>
+                <Image Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/PanR.png" Stretch="Fill" MouseLeftButtonDown="ChangePan" Tag="R"
+                       VerticalAlignment="Center" HorizontalAlignment="Right" Cursor="" Width="30" Height="31" Visibility="{Binding PanArrowVisibility}"/>
+                <Image Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/PanT.png" Stretch="Fill" MouseLeftButtonDown="ChangePan" Tag="T"
+                       VerticalAlignment="Top" HorizontalAlignment="Center" Cursor="" Width="30" Height="31" Visibility="{Binding PanArrowVisibility}"/>
+                <Image Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/PanD.png" Stretch="Fill" MouseLeftButtonDown="ChangePan" Tag="D"
+                       VerticalAlignment="Bottom" HorizontalAlignment="Center" Cursor="" Width="30" Height="31" Visibility="{Binding PanArrowVisibility}"/>
+
               </Grid>
             </Grid>
           </Viewbox>
@@ -256,8 +265,8 @@
                                 </Image>
                               </StackPanel>
                               <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Visibility="{Binding ButtonVisibility}" HorizontalAlignment="Right">
-                                <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" />
-                                <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/TrashCan.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" />
+                                <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}"/>
+                                <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/TrashCan.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
                               </StackPanel>
                             </Grid>
                           </DataTemplate>

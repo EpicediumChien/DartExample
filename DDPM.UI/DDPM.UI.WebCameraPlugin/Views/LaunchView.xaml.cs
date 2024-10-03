@@ -725,7 +725,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.SetProfile();
             }
             btnPreset_Click(this, null);
-
         }
 
         private void btnPreset_Click(object sender, System.Windows.Input.MouseButtonEventArgs? e)
@@ -779,6 +778,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void DeletePreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            var profileName = ((Image)sender).Tag.ToString()!;
+            if (profileName == _vm!.CurrentProfileName)
+            {
+                _vm!.CurrentProfileName = "Default";
+                _vm.SetProfile();
+            }
+            btnPreset_Click(this, null);
 
         }
 
@@ -838,6 +844,57 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             catch (Exception ex)
             {
                 MessageBox.Show($"Error initializing camera: {ex.Message}");
+            }
+        }
+
+        private void ChangePan(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image img)
+            {
+                var value = 0;
+                switch (img.Tag.ToString())
+                {
+                    case "L":
+                        if (_vm!.CurrentProfile.Pan == _vm.CurrentDeviceInfo!.PanMin)
+                            return;
+
+                        value = _vm.CurrentProfile.Pan - _vm.CurrentDeviceInfo.PanSteppingDelta;
+                        if (value < _vm.CurrentDeviceInfo!.PanMin)
+                            value = _vm.CurrentDeviceInfo!.PanMin;
+
+                        _vm.SetPan(value);
+                        break;
+                    case "R":
+                        if (_vm!.CurrentProfile.Pan == _vm.CurrentDeviceInfo!.PanMax)
+                            return;
+
+                        value = _vm.CurrentProfile.Pan + _vm.CurrentDeviceInfo.PanSteppingDelta;
+                        if (value > _vm.CurrentDeviceInfo!.PanMax)
+                            value = _vm.CurrentDeviceInfo!.PanMax;
+
+                        _vm.SetPan(value);
+                        break;
+                    case "T":
+                        if (_vm!.CurrentProfile.Tilt == _vm.CurrentDeviceInfo!.TiltMax)
+                            return;
+
+                        value = _vm.CurrentProfile.Tilt + _vm.CurrentDeviceInfo.TiltSteppingDelta;
+                        if (value > _vm.CurrentDeviceInfo!.TiltMax)
+                            value = _vm.CurrentDeviceInfo!.TiltMax;
+
+                        _vm.SetTilt(value);
+                        break;
+                    case "D":
+                        if (_vm!.CurrentProfile.Tilt == _vm.CurrentDeviceInfo!.TiltMin)
+                            return;
+
+                        value = _vm.CurrentProfile.Tilt - _vm.CurrentDeviceInfo.TiltSteppingDelta;
+                        if (value < _vm.CurrentDeviceInfo!.TiltMin)
+                            value = _vm.CurrentDeviceInfo!.TiltMin;
+
+                        _vm.SetTilt(value);
+                        break;
+                }
             }
         }
     }

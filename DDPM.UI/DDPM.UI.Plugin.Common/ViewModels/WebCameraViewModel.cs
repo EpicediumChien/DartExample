@@ -568,6 +568,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 SetProfileProperty(nameof(IsAutoFramingOn), value);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsAutoFramingOnText));
+                OnPropertyChanged(nameof(PanArrowVisibility));
             }
         }
 
@@ -645,6 +646,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), Zoom);
             SetProfileProperty(nameof(Zoom), Zoom);
+            OnPropertyChanged(nameof(PanArrowVisibility));
         }
 
         public Visibility AutofocusVisibility
@@ -855,7 +857,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public int AntiFlicker
         {
-            get => CurrentProfile.Saturation;
+            get => CurrentProfile.AntiFlicker;
             set
             {
                 if (value != CurrentProfile.AntiFlicker)
@@ -874,6 +876,16 @@ namespace DDPM.UI.Plugin.ViewModels
             DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), AntiFlicker);
             SetProfileProperty(nameof(AntiFlicker), AntiFlicker);
         }
+        public void SetTilt(int value)
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetTilt(CurrentDeviceInfo!.ID.ToString(), value);
+            SetProfileProperty("Tilt", value);
+        }
+        public void SetPan(int value)
+        {
+            DdpmCommonHelper.DeviceManagerSA!.SetPan(CurrentDeviceInfo!.ID.ToString(), value);
+            SetProfileProperty("Pan", value);
+        }
 
         private bool isMicEnumerationOnEnabled = true;
         public bool IsMicEnumerationOnEnabled
@@ -885,6 +897,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        public Visibility PanArrowVisibility
+        {
+            get => CurrentProfile.Zoom != CurrentDeviceInfo!.ZoomMin && !CurrentProfile.IsAutoFramingOn ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+
         private Visibility alertVisibility = Visibility.Collapsed;
         public Visibility AlertVisibility
         {

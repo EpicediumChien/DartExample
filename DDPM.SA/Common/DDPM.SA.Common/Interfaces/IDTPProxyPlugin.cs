@@ -94,6 +94,8 @@ namespace DDPM.SA.Common
         Task SetContrast(string Guid, int newValue);
         Task SetSaturation(string Guid, int newValue);
         Task SetAntiFlicker(string Guid, int newValue);
+        Task SetTilt(string Guid, int newValue);
+        Task SetPan(string Guid, int newValue);
 
     }
 }

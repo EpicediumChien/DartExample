@@ -1429,7 +1429,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                 _iCTKMessageHelper = _iClient.CTKMessageHelper;
                 _iCTKMessageHelper.CollaborationMsgChanged += _iCTKMessageHelper_CollaborationMsgChanged;
-                _iCTKMessageHelper.CollabMultipleCallsDetectedChanged += _iCTKMessageHelper_CollabMultipleCallsDetectedChanged;
+
+                // << 241003 Currently not used by Hess
+                //_iCTKMessageHelper.CollabMultipleCallsDetectedChanged += _iCTKMessageHelper_CollabMultipleCallsDetectedChanged;
+                // >>
+
                 _iCTKMessageHelper.IsZoomMultipleCallsDetectedChanged += _iCTKMessageHelper_IsZoomMultipleCallsDetectedChanged;
                 _iCTKMessageHelper.IsZoomCallbacksRegisteredChanged += _iCTKMessageHelper_IsZoomCallbacksRegisteredChanged;
             }
@@ -1750,7 +1754,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         else if (deviceType.Contains("HEADSET"))
                         {
                             type = OSDType_Device.Headset;
-                        }                       
+                        }
                         _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
                     }
                 }
