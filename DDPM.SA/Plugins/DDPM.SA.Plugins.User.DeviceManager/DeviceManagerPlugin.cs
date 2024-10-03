@@ -55,6 +55,7 @@ using System.IO.Compression;
 using DDPM.SA.Common.Method;
 using DdmLibrary;
 using DdmLibrary.Utility;
+using DDPM.QAM;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -220,6 +221,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    displayChange.Initialize_DisplayChangeEvent();
             //});
             //displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
+            CallQAM_UI();
         }
 
         #endregion
@@ -2215,6 +2217,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread1.SetApartmentState(ApartmentState.STA);
             thread1.Start();
             return tcs.Task;
+        }
+        QAMPage qam;
+        private void CallQAM_UI()
+        {
+            Thread thread1 = new Thread(() =>
+            {
+                qam = new QAMPage();
+                qam.Dispatcher.Invoke(() => qam.Show());
+                Dispatcher.Run();
+            });
+            thread1.SetApartmentState(ApartmentState.STA);
+            thread1.Start();
         }
 
         private void CallPopup(object o, PopupContentPackage popupContentPackage)

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <UseWPF>true</UseWPF>
+	  <BaseOutputPath>..\..\bin\CommonDll</BaseOutputPath>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="DCF.UX.WPF" Version="2.2.4.1" />
+	</ItemGroup>
+</Project>
