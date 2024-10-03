@@ -293,7 +293,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             bool writeHotkeySettingsSettings_succeed = true;
             List<HotkeySettings> hotkeySettingsNull = null;
             //List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { new HotkeySettings() { DeviceInfo = new EDID(), HotkeyInfo = new List<HotkeyInfo>(), HotkeyOptions = new List<HotkeyOption>() } };
-            List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { new HotkeySettings() { ModelName = "DELLP2425DE", SerialNumber = "1234567", ServiceTag = "M858P956001U", HotkeyInfo = new List<HotkeyInfo>(), HotkeyOptions = new List<HotkeyOption>() } };
+            List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { new HotkeySettings() { ModelName = "DDOM", SerialNumber = "DDPM", ServiceTag = "DDPM", HotkeyInfo = new List<HotkeyInfo>(), HotkeyOptions = new List<HotkeyOption>() } };
             List<ColorPresetSettings> colorPresetSettingsConfigs = new List<ColorPresetSettings>() { new ColorPresetSettings() { } };
             string WriteHotkeySettings_path1_ = "test_WriteHotkeySettingspath.json";
             string jsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
@@ -317,7 +317,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
         [Test]
         public void TestRunSerializehotkeySettingsObject()
         {
-            List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { new HotkeySettings() { ModelName = "DELLP2425DE", SerialNumber = "1234567", ServiceTag = "M858P956001U", HotkeyInfo = new List<HotkeyInfo>(), HotkeyOptions = new List<HotkeyOption>() } };
+            List<HotkeySettings> hotkeySettingsConfig = new List<HotkeySettings>() { new HotkeySettings() { ModelName = "DDPM", SerialNumber = "DDPM", ServiceTag = "DDPM", HotkeyInfo = new List<HotkeyInfo>(), HotkeyOptions = new List<HotkeyOption>() } };
             string RunSerializehotkeySettingsObject_path1_ = "test_WriteHotkeySettingspath.json";
             string jsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
             File.WriteAllText(RunSerializehotkeySettingsObject_path1_, jsonData);
