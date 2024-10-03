@@ -702,7 +702,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// 啟動 MonitorBorker 執行抓前景active app name
         /// </summary>
         /// <param name="m"></param>
-        public void Launch_MonitorBorker(MonitorInfo m)
+        public void Launch_MonitorBorker(MonitorInfo m , bool SmartHDR_ON = false)
         {
             Log.Info($"Launch_MonitorBorker requested ...");
             writelog("DeviceManagerPlugin Launch_MonitorBorker requested ...");
@@ -721,7 +721,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         MonitorBorkerWin = new MainWindow(this, m);
 
                         MonitorBorkerWin.Show();
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true);
+                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(true, SmartHDR_ON);
                     }
                     else
                     {
@@ -769,7 +769,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(false);
             }
 
-            var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this).Result;
+            bool SmartHDR_ON = GetHDRStatus(mo).Result;
+
+            var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this, SmartHDR_ON).Result;
 
             return Task.FromResult(temp);
         }
@@ -812,6 +814,36 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             _ColorPresetPlugin.ShowOSD_ColoPreset(m, strMsg);
+        }
+
+        public Task<string> GetColorPresetName(int Color_VCPCore_E2)
+        {   
+            writelog("DeviceManagerPlugin received GetColorPresetName requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - GetColorPresetName]");
+                return Task.FromResult(string.Empty);
+            }
+
+            var temp = _ColorPresetPlugin.GetColorPresetName(Color_VCPCore_E2).Result;
+
+            return Task.FromResult(temp);           
+        }
+
+        public Task<int> GetColorVCPCoreValue(string ColorPreset_Name)
+        {
+            writelog("DeviceManagerPlugin received GetColorVCPCoreValue requested ...");
+
+            if (_ColorPresetPlugin == null)
+            {
+                writelog("null _ColorPresetPlugin in [DeviceManagerPlugin - GetColorVCPCoreValue]");
+                return Task.FromResult(-1);
+            }
+
+            var temp = _ColorPresetPlugin.GetColorVCPCoreValue(ColorPreset_Name).Result;
+
+            return Task.FromResult(temp);
         }
 
         #endregion

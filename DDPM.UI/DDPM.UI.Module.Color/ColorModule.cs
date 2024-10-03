@@ -84,6 +84,7 @@ namespace DDPM.UI.Module.Color
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            vm.UpdateHDRStatus();
         }
 
         public void OnDeactivated()
