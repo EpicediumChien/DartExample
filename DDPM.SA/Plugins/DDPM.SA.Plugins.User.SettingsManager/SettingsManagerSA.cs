@@ -1779,6 +1779,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return null;
             }
 
+            if (!DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info))
+            {
+                WriteLog($"{nameof(InitDDPMUserSettings_Common)} {info}");
+                return null;
+            }
+
             //WriteLog($"config path is {ConfigPath}.");
             object new_obj = null;
             bool need_new = false;

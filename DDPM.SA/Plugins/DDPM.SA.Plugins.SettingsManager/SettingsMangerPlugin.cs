@@ -129,6 +129,18 @@ namespace DDPM.SA.Plugins.SettingsManager
 
         public Task<DDPMITConfig> ReadITConfigData(bool force_reload = false)
         {
+            if (string.IsNullOrEmpty(_settings_path))
+            {
+                WriteLog($"ReadITConfigData: Empty system _settings_path, use default data");
+                _settings = new DDPMITConfig(); //use it as default settings
+                return Task.FromResult(_settings);
+            }
+            if (string.IsNullOrEmpty(_settingsAccess))
+            {
+                WriteLog($"ReadITConfigData: Empty system info access, use default data");
+                _settings = new DDPMITConfig(); //use it as default settings
+                return Task.FromResult(_settings);
+            }
             string info = "Success";
             if (force_reload)
             {

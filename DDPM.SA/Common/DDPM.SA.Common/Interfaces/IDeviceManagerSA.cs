@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Display;
+﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
@@ -42,6 +43,12 @@ namespace DDPM.SA.Common
         Task StartSchedulerManger(int millisecond);
 
         Task StopSchedulerManger();
+
+        Task<scheduleInfo> ReadScheduleMonitorSettings(MonitorInfo monitorInfo);
+
+        Task<bool> WriteScheduleMonitorSettings(MonitorInfo monitorInfo, scheduleInfo scheduleInfo);
+
+        Task<bool> MigrateScheduleMonitorSettings(string Model, string ServiceTag, BriConSchedule DDMSetting);
 
         #endregion public for SchedulerManger
 
@@ -403,6 +410,8 @@ namespace DDPM.SA.Common
         public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
+
+        public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
         #endregion public for hotkey
 
