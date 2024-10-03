@@ -5580,7 +5580,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (distCount != 0 && (allCount == distCount))
                 {
                     //overwite
-                    string overWiteMonitorSn = monitorSnList.SingleOrDefault(x => !x.Equals(monitorEdid.SerialNumber));
+                    string overWiteMonitorSn = monitorSnList.SingleOrDefault(x => !x.Equals("DDPM"));// monitorEdid.SerialNumber));
                     if (overWiteMonitorSn != null)
                     {
                         HotkeySettings overWitrHotkeysettings = allSettings.SingleOrDefault(x => x.SerialNumber.Equals("DDPM"));// overWiteMonitorSn));
@@ -5888,7 +5888,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"[ExecHotkeyJob] UI didn't set any selected monitor");
                     return Task.FromResult(false);
                 }
-                monitorInfo = _AllInfoMonitors.Find(x => x.Equals(lastSelectedMonitor_UI));
+                monitorInfo = _AllInfoMonitors.Find(x => x.modelName.Equals(lastSelectedMonitor_UI.modelName) && x.edid.ServiceTag.Equals(lastSelectedMonitor_UI.edid.ServiceTag));
                 if (monitorInfo == null)
                 {
                     writelog($"[ExecHotkeyJob] Selected monitor ({lastSelectedMonitor_UI.modelName}) from UI do not exist in current monitor list");
