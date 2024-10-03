@@ -57,7 +57,7 @@ namespace DDPM.SA.Common.Settings
                         HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
                         response.EnsureSuccessStatusCode();
                         string jsonString = response.Content.ReadAsStringAsync().Result;
-                        if (string.IsNullOrEmpty(jsonString))
+                        if (!string.IsNullOrEmpty(jsonString))
                         {
                             jsonString = jsonString.Replace("%1/", URL);
                             data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
