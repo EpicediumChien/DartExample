@@ -39,6 +39,8 @@ namespace DDPM.SA.Common
     {
         #region EaM
         Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
+
+        Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
         #endregion
 
         #region public for SchedulerManger

@@ -68,33 +68,33 @@ namespace DDPM.UI.Module.EzMemory
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
 
-            //splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-            //splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
-            //splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_3w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_4w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_5w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+            splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+            splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_3w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_4w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_5w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
 
-            //splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_2w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_3w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_4w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_5w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_2w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_3w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_4w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_5w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
 
-            //splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
 
-            //splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
+            splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
 
 

@@ -65,10 +65,16 @@ namespace DDPM.UI.Module.EzMemory
         public void InitializePage()
         {
             //這裡加入分割視窗的個數
-            //_vm.IsRightGridPage2Visible = false;
-            //_vm.SelectedValue = 3;
-            _vm.IsRightGridPage2Visible = true;
-            //_vm.SelectedValue = 3;
+            if (_vm.SelectedSplitItem.CellCount == 2)
+            {
+                _vm.IsRightGridPage2Visible = true;
+                _vm.SelectedValue = 3;
+            }
+            else
+            {
+                _vm.IsRightGridPage2Visible = false;
+                _vm.SelectedValue = _vm.SelectedSplitItem.CellCount;
+            }
             _vm.ezPages = _vm.GetEzPages();
 
             if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))

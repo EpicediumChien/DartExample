@@ -93,7 +93,6 @@ namespace DDPM.UI.Module.EzMemory
             return SetForegroundWindow(hWnd);
         }
 
-        // 检查窗口是否可见
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -194,7 +193,8 @@ namespace DDPM.UI.Module.EzMemory
         {
             if (_vm._sortApps.Count >= 2)
             {
-                LaunchAndArrangeApps();
+                _deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
+                //LaunchAndArrangeApps();
             }
 
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -204,6 +204,68 @@ namespace DDPM.UI.Module.EzMemory
         {
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
+        /// <summary>
+        /// 兩個UWPOK
+        /// </summary>
+        /// <param name="appData"></param>
+        /// <returns></returns>
+        //public void LaunchAndArrangeApps()
+        //{
+        //    //if (_vm._seletcApps.Count < 2)
+        //    //    return;
+
+
+        //    var sortedByKey = _vm._sortApps.OrderBy(x => x.Key).ToList();
+        //    _vm._seletcApps = sortedByKey.Select(x => x.Value).ToList();
+
+        //    var firstApp = _vm._seletcApps[0];
+        //    var secondApp = _vm._seletcApps[1];
+
+        //    Task.Delay(3000).ContinueWith(async t =>
+        //    {
+        //        IntPtr firstHandle = IntPtr.Zero;
+        //        IntPtr secondHandle = IntPtr.Zero;
+        //        Process firstProcess = LaunchApp(firstApp);
+        //        for (int i = 0; i < 10; i++)
+        //        {
+        //            firstHandle = GetWindowHandle(firstApp);
+        //            //secondHandle = GetWindowHandle(secondApp);
+
+        //            if (firstHandle != IntPtr.Zero)
+        //                break;
+
+        //            await Task.Delay(1000);
+        //        }
+        //        Process secondProcess = LaunchApp(secondApp);
+        //        for (int i = 0; i < 10; i++)
+        //        {
+        //            secondHandle = GetWindowHandle(secondApp);
+
+        //            if (secondHandle != IntPtr.Zero && secondHandle != firstHandle)
+        //                break;
+
+        //            await Task.Delay(1000);
+        //        }
+
+        //        if (firstHandle == IntPtr.Zero || secondHandle == IntPtr.Zero)
+        //        {
+        //            //Debug
+        //            return;
+        //        }
+
+        //        Application.Current.Dispatcher.Invoke(() =>
+        //        {
+        //            double screenWidth = SystemParameters.PrimaryScreenWidth;
+        //            double screenHeight = SystemParameters.PrimaryScreenHeight;
+
+        //            SetWindowPos(firstHandle, IntPtr.Zero, 0, 0, (int)(screenWidth / 2), (int)screenHeight, SWP_SHOWWINDOW);
+
+        //            SetWindowPos(secondHandle, IntPtr.Zero, (int)(screenWidth / 2), 0, (int)(screenWidth / 2), (int)screenHeight, SWP_SHOWWINDOW);
+        //        });
+
+        //    });
+        //}
+
 
         public void LaunchAndArrangeApps()
         {
@@ -227,19 +289,19 @@ namespace DDPM.UI.Module.EzMemory
                     var app = _vm._seletcApps[i];
                     IntPtr handle = IntPtr.Zero;
 
+                    // 檢查應用程式是否已經存在
                     Process[] processes = GetProcessesByName(app);
                     Trace.WriteLine("GetProcessesByName(app); " + app.AppName);
-
+                    //Process[] processes = GetProcessesByName(app.AppType == "True" ? System.IO.Path.GetFileNameWithoutExtension(app.AppPath) : app.AppUserModelID);
                     if (processes.Length > 0)
                     {
                         handle = processes[0].MainWindowHandle;
                         Trace.WriteLine("GetProcessesByName(app); " + app.AppName + " || " + handle.ToString());
-                        EzMemorySetForegroundWindow(handle);
+                        EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
                     }
                     else
                     {
                         Process process = LaunchApp(app);
-                        Trace.WriteLine("LaunchApp(app); " + app.AppName);
                         process.WaitForInputIdle();
                         for (int attempt = 0; attempt < 10; attempt++)
                         {
@@ -251,149 +313,51 @@ namespace DDPM.UI.Module.EzMemory
                             {
                                 handle = GetWindowHandle(app);
                             }
-                            Trace.WriteLine("GetWindowHandle(app); " + app.AppName);
-                            if (handle != IntPtr.Zero && IsWindowVisible(handle) && !windowHandles.Contains(handle))
-                            {
-                                EzMemorySetForegroundWindow(handle);
-                                Trace.WriteLine("EzMemorySetForegroundWindow(app); " + app.AppName);
+
+                            if (handle != IntPtr.Zero && !windowHandles.Contains(handle))
                                 break;
-                            }
 
                             await Task.Delay(2000);
                         }
 
                         if (handle == IntPtr.Zero)
                         {
-                            Trace.WriteLine("Ghandle == IntPtr.Zero " + app.AppName);
                             _log.Info($"[EzMemoryLaunchOption], {i} handle null");
                             return;
                         }
                     }
 
+                    // 取得視窗的 DPI 設定
                     float dpiScale = GetDpiScaleForWindow(handle);
-                    Trace.WriteLine("GetDpiScaleForWindow(app); " + app.AppName);
 
-                    EzMemorySetWindowPos(handle, IntPtr.Zero, (int)((i * widthPerApp) * dpiScale), 0, (int)(widthPerApp * dpiScale), (int)(screenHeight * dpiScale), SWP_SHOWWINDOW);
-                    Trace.WriteLine("EzMemorySetWindowPos(app); " + app.AppName);
+                    // 調整視窗位置與大小，考慮 DPI 比例
+                    EzMemorySetWindowPos(handle, IntPtr.Zero,
+                        (int)((i * widthPerApp) * dpiScale),
+                        0,
+                        (int)(widthPerApp * dpiScale),
+                        (int)(screenHeight * dpiScale),
+                        SWP_SHOWWINDOW);
 
-
+                    // 確認視窗是否已移動到預期的位置
                     for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
                     {
                         if (EzMemoryGetWindowRect(handle, out RECT rect))
                         {
-                            Trace.WriteLine("EzMemoryGetWindowRect(app); " + app.AppName);
-                            if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 && rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale) && IsWindowVisible(handle)) // 检查窗口是否可见
+                            if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
+                                rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
                             {
-                                //Trace.WriteLine("GetDpiScaleForWindow(app); " + app.AppName);
                                 break;
-                            }
-                            else
-                            {
-                                Trace.WriteLine("XXXXXXXXXXXXXXXXXXXX " + app.AppName);
                             }
                         }
 
                         await Task.Delay(2000);
                     }
 
-                    await Task.Delay(2000); // 额外的等待时间以确保每个应用程序的启动
-                    Trace.WriteLine("結束; " + app.AppName);
+                    await Task.Delay(2000);
                 }
                 _vm.ClearTextBlockAppName();
             });
         }
-
-        //public void LaunchAndArrangeApps()
-        //{
-        //    int appCount = _vm._sortApps.Count;
-        //    if (appCount == 0)
-        //        return;
-
-        //    double screenWidth = SystemParameters.PrimaryScreenWidth;
-        //    double screenHeight = SystemParameters.PrimaryScreenHeight;
-        //    double widthPerApp = screenWidth / appCount; // 平均分配寬度
-
-        //    var sortedByKey = _vm._sortApps.OrderBy(x => x.Key).ToList();
-        //    _vm._seletcApps = sortedByKey.Select(x => x.Value).ToList();
-
-        //    Task.Run(async () =>
-        //    {
-        //        List<IntPtr> windowHandles = new List<IntPtr>();
-
-        //        for (int i = 0; i < appCount; i++)
-        //        {
-        //            var app = _vm._seletcApps[i];
-        //            IntPtr handle = IntPtr.Zero;
-
-        //            // 檢查應用程式是否已經存在
-        //            Process[] processes = GetProcessesByName(app);
-        //            Trace.WriteLine("GetProcessesByName(app); " + app.AppName);
-        //            //Process[] processes = GetProcessesByName(app.AppType == "True" ? System.IO.Path.GetFileNameWithoutExtension(app.AppPath) : app.AppUserModelID);
-        //            if (processes.Length > 0)
-        //            {
-        //                handle = processes[0].MainWindowHandle;
-        //                Trace.WriteLine("GetProcessesByName(app); " + app.AppName + " || " + handle.ToString());
-        //                EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
-        //            }
-        //            else
-        //            {
-        //                Process process = LaunchApp(app);
-        //                process.WaitForInputIdle();
-        //                for (int attempt = 0; attempt < 10; attempt++)
-        //                {
-        //                    if (app.AppType == "True")
-        //                    {
-        //                        handle = process.MainWindowHandle;
-        //                    }
-        //                    else
-        //                    {
-        //                        handle = GetWindowHandle(app);
-        //                    }
-
-        //                    if (handle != IntPtr.Zero && !windowHandles.Contains(handle))
-        //                        break;
-
-        //                    await Task.Delay(2000);
-        //                }
-
-        //                if (handle == IntPtr.Zero)
-        //                {
-        //                    _log.Info($"[EzMemoryLaunchOption], {i} handle null");
-        //                    return;
-        //                }
-        //            }
-
-        //            // 取得視窗的 DPI 設定
-        //            float dpiScale = GetDpiScaleForWindow(handle);
-
-        //            // 調整視窗位置與大小，考慮 DPI 比例
-        //            EzMemorySetWindowPos(handle, IntPtr.Zero,
-        //                (int)((i * widthPerApp) * dpiScale),
-        //                0,
-        //                (int)(widthPerApp * dpiScale),
-        //                (int)(screenHeight * dpiScale),
-        //                SWP_SHOWWINDOW);
-
-        //            // 確認視窗是否已移動到預期的位置
-        //            for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
-        //            {
-        //                if (EzMemoryGetWindowRect(handle, out RECT rect))
-        //                {
-        //                    if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
-        //                        rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
-        //                    {
-        //                        break;
-        //                    }
-        //                }
-
-        //                await Task.Delay(2000);
-        //            }
-
-        //            await Task.Delay(2000);
-        //        }
-        //        _vm.ClearTextBlockAppName();
-        //    });
-        //}
 
         private Process LaunchApp(Bind_AddFullPage_AppCollectionData appData)
         {

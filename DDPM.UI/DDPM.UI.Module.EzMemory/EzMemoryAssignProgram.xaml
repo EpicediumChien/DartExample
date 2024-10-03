@@ -188,7 +188,7 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Window2_1" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="Window1" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
                                 <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="80,0,0,0">
                                     <UXControls:UXTextBlock Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" Text="{Binding Window2_1AppName}" Tag="{Binding ElementName=Window2_1TextBlock}"/>
                                 </Border>
@@ -203,7 +203,7 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="Window2_2" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
+                                <UXControls:UXTextBlock Text="Window2" VerticalAlignment="Center" Foreground="White" FontSize="14" Grid.Column="0" />
                                 <Border BorderThickness="1.5" CornerRadius="3" BorderBrush="White" Margin="80,0,0,0">
                                     <UXControls:UXTextBlock Grid.Column="1" Width="250" Height="40" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Background="#141D2B" TextAlignment="Left"  Text="{Binding Window2_2AppName}" Tag="{Binding ElementName=Window2_2TextBlock}"/>
                                 </Border>
