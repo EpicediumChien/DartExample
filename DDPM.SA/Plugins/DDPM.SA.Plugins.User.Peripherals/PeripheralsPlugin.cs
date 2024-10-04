@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -1156,20 +1157,23 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             string textString = System.Text.Encoding.UTF8.GetString(_logicalDeviceDock.DockData);
                             Debug.WriteLine(textString);
                             DockData dockData = JsonSerializer.Deserialize<DockData>(textString);
-                            info.DockData = dockData;
-                            info.ModelNumber = dockData.MarketingName;
-                            info.Name = $"Dell Dock {dockData.MarketingName}";
-                            if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
+                            if (dockData != null)
                             {
-                                info.Name = $"Dell Dock {dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
-                            }
-                            if (string.IsNullOrEmpty(info.DockServiceTag))
-                            {
-                                info.DockServiceTag = dockData.ServiceTag;
-                            }
-                            if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
-                            {
-                                info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
+                                info.DockData = dockData;
+                                info.ModelNumber = dockData.MarketingName;
+                                info.Name = $"Dell Dock";
+                                if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
+                                {
+                                    info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
+                                }
+                                if (string.IsNullOrEmpty(info.DockServiceTag))
+                                {
+                                    info.DockServiceTag = dockData.ServiceTag;
+                                }
+                                if (string.IsNullOrEmpty(info.FirmwareVersion) || info.FirmwareVersion.StartsWith("0000"))
+                                {
+                                    info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString("X4");
+                                }
                             }
                         }
                         catch
@@ -1749,7 +1753,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         else if (deviceType.Contains("HEADSET"))
                         {
                             type = OSDType_Device.Headset;
-                        }                       
+                        }
                         _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
                     }
                 }
