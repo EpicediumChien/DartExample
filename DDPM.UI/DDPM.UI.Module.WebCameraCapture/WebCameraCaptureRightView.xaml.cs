@@ -151,5 +151,17 @@ namespace DDPM.UI.Module.WebCameraCapture
                 txtCaptureFolder.Text = Utility.CheckTextLength(_vm.VideoCaptureFolder, 155, 14);
             }
         }
+
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image elm)
+            {
+                var val = elm.Tag.ToString();
+                if (val == "0")
+                    _vm.Undo();
+                else
+                    _vm.Redo();
+            }
+        }
     }
 }

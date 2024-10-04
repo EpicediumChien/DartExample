@@ -111,5 +111,17 @@ namespace DDPM.UI.Module.WebCameraMicrophone
             _vm.AlertType = WebcamAlert.Alert1;
             _vm.AlertVisibility = Visibility.Visible;
         }
+
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image elm)
+            {
+                var val = elm.Tag.ToString();
+                if (val == "0")
+                    _vm.Undo();
+                else
+                    _vm.Redo();
+            }
+        }
     }
 }

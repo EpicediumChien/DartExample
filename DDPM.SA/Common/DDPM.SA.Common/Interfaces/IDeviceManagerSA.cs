@@ -639,6 +639,13 @@ namespace DDPM.SA.Common
         Task SetIsHDROn(string Guid, bool newValue);
         Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
         Task SetAutoWhiteBalance(string Guid, int newValue);
+        Task SetBrightness(string Guid, int newValue);
+        Task SetSharpness(string Guid, int newValue);
+        Task SetContrast(string Guid, int newValue);
+        Task SetSaturation(string Guid, int newValue);
+        Task SetAntiFlicker(string Guid, int newValue);
+        Task SetTilt(string Guid, int newValue);
+        Task SetPan(string Guid, int newValue);
 
         Task SetWALTime(string Guid, int newValue);
         Task SetSnooze(string Guid, int newValue);

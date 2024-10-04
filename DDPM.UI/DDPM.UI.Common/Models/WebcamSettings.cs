@@ -47,7 +47,7 @@ namespace DDPM.UI.Common
 
         public static WebcamSettings ImportWebcamSettings(string model)
         {
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
             var hasFile = File.Exists(filePath);
             if (hasFile)
             {
@@ -89,5 +89,20 @@ namespace DDPM.UI.Common
         public int FieldOfView { get; set; }
         public bool IsHDROn { get; set; }
 
+    }
+
+    public enum OperationModule
+    {
+        CameraControl,
+        ColorAndImage,
+        Other
+    }
+
+    public class WebcamOperation
+    {
+        public OperationModule OPModule;
+        public required string Property;
+        public required object OldValue;
+        public required object NewValue;
     }
 }

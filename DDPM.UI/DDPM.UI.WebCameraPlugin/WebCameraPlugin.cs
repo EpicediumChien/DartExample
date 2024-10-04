@@ -136,9 +136,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
-            { }
-            Mouse.OverrideCursor = null;
+            if (_viewModel != null)
+            {
+                _viewModel.SetCurrentDevice(parameter);
+            }
         }
 
         #endregion Interface IConsolePluginSupportsActivations
