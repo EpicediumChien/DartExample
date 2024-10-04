@@ -76,10 +76,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 {
                     // 獲取選擇的檔案路徑
                     string filePath = saveFileDialog.FileName;
-                    Debug.Write(filePath);
                     filePath = filePath.Substring(0, filePath.IndexOf("."));
-                    Debug.Write(filePath);
-                    vm.SaveDiagnosticReport(filePath);
+
+                    string info = string.Empty;
+                    if (DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filePath, false, out info))
+                    {
+                        vm.SaveDiagnosticReport(filePath);
+                    }
                 }
             }
         }
@@ -100,12 +103,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     // 如果檔案路徑不以 .mif 結尾，則附加 .mif 副檔名
                     if (!filePath.EndsWith(".mif", StringComparison.OrdinalIgnoreCase))
                     {
-                        Debug.Write(filePath);
                         filePath = filePath.Substring(0, filePath.IndexOf("."));
-                        Debug.Write(filePath);
                         filePath += ".mif";
                     }
-                    vm.SaveMonitorAssetReport(filePath);
+                    string info = string.Empty;
+                    if (DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filePath, false, out info))
+                    {
+                        vm.SaveMonitorAssetReport(filePath);
+                    }
                 }
             }
         }
