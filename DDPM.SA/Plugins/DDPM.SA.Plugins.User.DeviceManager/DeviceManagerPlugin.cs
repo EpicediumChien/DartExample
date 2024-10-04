@@ -67,7 +67,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
     [PluginRequires(Id = IDs.DDPM_PERIPHERALS_PLUGIN_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.CLI_Manager_Plugin, AllowDynamicResolving = true)]
-    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService) })]
+    [PluginRequires(Id = IDs.DDPM_EMPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
+    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService), typeof(IEzMemoryPlugin) })]
     public class DeviceMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDeviceManagerSA
     {
         #region Private Members
@@ -92,6 +93,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private ISWUpdateService _SWUpdatePlugin;
         private ISchedulerManager _ScheduleManagerPlugin;
         private IDTPProxyPlugin _DTPProxyPlugin;
+        private IEzMemoryPlugin _IEzMemoryPlugin;
 
         private readonly object _PluginConditionLock = new object();
         private readonly object _PluginConditionLock_Display = new object();
@@ -102,6 +104,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private readonly object _PluginConditionLock_Hotkey = new object();
         private readonly object _PluginConditionLock_ScheduleManager = new object();
         private readonly object _PluginConditionLock_DTPProxy = new object();
+        private readonly object _PluginConditionLock_EzMemory = new object();
         private DisplayChange displayChange;
         //private static Dell.Client.Framework.Common.Log _log;
         // ColorPreset objects
@@ -209,6 +212,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             InitializeSWUpdatePlugin();
             InitializeSchedulerManagerPlugin();
             InitializeDTPProxyPlugin();
+            InitializeEzMemoryPlugin();
 
             PluginCondition = new PluginStartedCondition();
             writelog("DeviceManager plugin started");
@@ -744,12 +748,46 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
             {
+                // chech if ModelName and SerialNumber is null
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                    for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                    {
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                            return -1;
+
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+                            return -1;
+                    }
                 }
+
+                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                      x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+
+                if (index == -1)
+                {
+                    // chech if ModelName and ServiceTag is null
+                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+                    {
+                        for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                        {
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                                return -1;
+
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
+                                return -1;
+                        }
+                    }
+
+                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                               x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                               x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                }
+
+                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
             }
             return index;
         }
@@ -3251,6 +3289,75 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         #endregion EasyArrage
 
+        #region EasyMemory
+
+        public Task<List<EAProfileDDPM>> ReadEzProfiles()
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                return Task.FromResult(ddpmSettings.UserSettings.EAProfile);
+            }
+            return Task.FromResult(new List<EAProfileDDPM>());
+        }
+
+        public Task<bool> WriteEzProfiles(MonitorInfo monitorInfo, EAProfileDDPM eaProfile)
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                if (ddpmSettings.UserSettings.EAProfile == null)
+                {
+                    ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
+                }
+
+                // 找相同 Name
+                var existingProfile = ddpmSettings.UserSettings.EAProfile.FirstOrDefault(p => p.Name == eaProfile.Name);
+
+                if (existingProfile != null)
+                {
+                    // 更新
+                    existingProfile.Name = eaProfile.Name;
+                    existingProfile.Layout = eaProfile.Layout;
+                    existingProfile.AppInfos = eaProfile.AppInfos;
+                    existingProfile.SelectedHour = eaProfile.SelectedHour;
+                    existingProfile.SelectedMinute = eaProfile.SelectedMinute;
+                    existingProfile.SelectedAMPM = eaProfile.SelectedAMPM;
+                    existingProfile.IsManualLaunch = eaProfile.IsManualLaunch;
+                    existingProfile.IsAutoLaunch = eaProfile.IsAutoLaunch;
+                    existingProfile.IsLaunchAtStartup = eaProfile.IsLaunchAtStartup;
+                }
+                else
+                {
+                    // 新增
+                    ddpmSettings.UserSettings.EAProfile.Add(eaProfile);
+                }
+
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> CleanEzProfiles()
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                if (ddpmSettings.UserSettings.EAProfile == null)
+                {
+                    ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
+                }
+                else
+                {
+                    ddpmSettings.UserSettings.EAProfile.Clear();
+                }
+
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+        #endregion EasyMemory
+
         #region SW Update implementation
 
         public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isDefer = false, bool isForce = false)
@@ -3465,7 +3572,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         displayCurrentPropertiesInfo = DDMtoDDPM_DisplayProperties(impSettings.MonitorSettings);
                         if (Import_DisplayProperties(displayCurrentPropertiesInfo))
                         {
-
+                            writelog("[DisplayImportSettings] Import_DisplayProperties");
                         }
                         List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
                         monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
@@ -3517,6 +3624,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (settings.ServiceTag == monitorInfo.edid.ServiceTag)
                     {
+                        if (settings.ImpExpSettings == null)
+                        {
+                            ImpExpSettings impExpSettings = new ImpExpSettings();
+                            impExpSettings.SameModel = false;
+                            settings.ImpExpSettings = impExpSettings;
+                        }
                         settings.ImpExpSettings.SameModel = isSameModel;
                         break;
                     }
@@ -3536,6 +3649,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (settings.ServiceTag == monitorInfo.edid.ServiceTag)
                     {
+                        if (settings.ImpExpSettings == null)
+                        {
+                            ImpExpSettings impExpSettings = new ImpExpSettings();
+                            impExpSettings.SameModel = false;
+                            settings.ImpExpSettings = impExpSettings;
+                        }
                         return Task.FromResult(settings.ImpExpSettings.SameModel);
                     }
                 }
@@ -4010,6 +4129,61 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetAutoWhiteBalance(guid, newValue);
             return Task.FromResult(true);
         }
+
+        public Task SetWALTime(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetWALTime requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetWALTime(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetSnooze(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetSnooze requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetSnooze(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetSnoozeLength(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetSnoozeLength requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetSnoozeLength(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsProximitySensorEnable(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsProximitySensorEnable requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsProximitySensorEnable(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsWakeonApproachEnable(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWakeonApproachEnable requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWakeonApproachEnable(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsWalkAwayLockEnable(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWalkAwayLockEnable requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWalkAwayLockEnable(guid, newValue);
+            return Task.FromResult(true);
+        }
+
 
 
 
@@ -5261,7 +5435,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 GetCurrentSWUpdatePluginCondition();
             }
         }
+        private void InitializeEzMemoryPlugin()
+        {
+            if (_IEzMemoryPlugin != null)
+                return;
 
+            _IEzMemoryPlugin = _agent.PluginManager.FindPluginByType<IEzMemoryPlugin>(PluginResolution.Dynamic);
+
+            if (_IEzMemoryPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnEzMemoryPluginConditionChangeHandler;
+                GetCurrentEzMemoryPluginCondition();
+            }
+        }
         private void GetCurrentScheduleManagerCondition()
         {
             _ = Task.Run(async () =>
@@ -5868,6 +6054,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a started condition");
+                    }
+                }
+            });
+        }
+
+        private void GetCurrentEzMemoryPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_IEzMemoryPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                //PluginCondition _DisplayManagerPluginCondition;
+                lock (_PluginConditionLock_EzMemory)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        writelog($"{nameof(GetCurrentEzMemoryPluginCondition)} - EzMemory Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        writelog($"{nameof(GetCurrentEzMemoryPluginCondition)} - EzMemory Plugin is in a running condition");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        writelog($"{nameof(GetCurrentEzMemoryPluginCondition)} - EzMemory Plugin is in a started condition");
                     }
                 }
             });
@@ -7812,7 +8022,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Input
             DDMtoDDPM_Input(DDMmonitorsettings);
             //Color
+            if (_ColorPresetPlugin != null)
+            {
+                _ColorPresetPlugin.Migration(DDMmonitorsettings.ColorPreset, DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, _SettingsPlugin);
+            }
             //Schedule
+            bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
         }
 
         private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings)
@@ -7968,7 +8183,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             GetCurrentDTPProxyPluginCondition();
         }
-
+        private void OnEzMemoryPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentEzMemoryPluginCondition();
+        }
         //Bruce, 2024-08-09 add new event
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
@@ -8013,6 +8231,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (e.ChangedPlugins.OfType<IDTPProxyPlugin>().Any())
                 InitializeDTPProxyPlugin();
+
+            if (e.ChangedPlugins.OfType<IEzMemoryPlugin>().Any())
+                InitializeEzMemoryPlugin();
         }
 
         //Jim, 2024-09-05 add new event
@@ -8221,57 +8442,57 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 switch (_types)
                                 {
                                     case OSDType.Mute:
-                                    {
-                                        if (State)
                                         {
-                                            if (MuteWinx != null)
-                                                MuteWinx.Close();
+                                            if (State)
+                                            {
+                                                if (MuteWinx != null)
+                                                    MuteWinx.CloseWindow();
 
                                             MuteWinx = new MuteWin(Content);
 
-                                            try
-                                            {
-                                                MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                MuteWinx.Show();
+                                                try
+                                                {
+                                                    MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    MuteWinx.ShowWindow();
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    MuteWinx.Top = sreen.WorkingArea.Top;
+                                                    MuteWinx.Left = sreen.WorkingArea.Left;
+                                                    MuteWinx.ShowWindow();
+                                                }
+                                                finally
+                                                {
+                                                    MuteWinx = null;
+                                                }
                                             }
-                                            catch (Exception)
+                                            else
                                             {
-                                                MuteWinx.Top = sreen.WorkingArea.Top;
-                                                MuteWinx.Left = sreen.WorkingArea.Left;
-                                                MuteWinx.Show();
-                                            }
-                                            finally
-                                            {
-                                                MuteWinx = null;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (UnMuteWinx != null)
-                                                UnMuteWinx.Close();
+                                                if (UnMuteWinx != null)
+                                                    UnMuteWinx.CloseWindow();
 
                                             UnMuteWinx = new UnMuteWin(Content);
 
-                                            try
-                                            {
-                                                UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
-                                                UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                UnMuteWinx.Show();
-                                            }
-                                            catch (Exception)
-                                            {
-                                                UnMuteWinx.Top = sreen.WorkingArea.Top;
-                                                UnMuteWinx.Left = sreen.WorkingArea.Left;
-                                                UnMuteWinx.Show();
-                                            }
-                                            finally
-                                            {
-                                                UnMuteWinx = null;
+                                                try
+                                                {
+                                                    UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
+                                                    UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
+                                                    UnMuteWinx.ShowWindow();
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    UnMuteWinx.Top = sreen.WorkingArea.Top;
+                                                    UnMuteWinx.Left = sreen.WorkingArea.Left;
+                                                    UnMuteWinx.ShowWindow();
+                                                }
+                                                finally
+                                                {
+                                                    UnMuteWinx = null;
+                                                }
                                             }
                                         }
-                                    }
-                                    break;
+                                        break;
 
                                     case OSDType.BatteryLow:
                                     {
@@ -8645,5 +8866,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion OSD
+
+        #region EzM
+        public Task<Dictionary<string, InstalledAppInfo>> GetAllAppList()
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.GetAllAppList().Result);
+            else
+                return null;
+        }
+        public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
+            else
+                return null;
+        }
+        #endregion EzM
     }
 }

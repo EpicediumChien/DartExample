@@ -2934,6 +2934,7 @@ namespace VcpCore.Plugins
             //VCPF0.Add("Raper", "08");
             VCPF0.Add("Paper", "08");
             VCPF0.Add("Rec. 709 / BT.709", "09");
+            VCPF0.Add("Rec. 709/BT.709", "09");
             VCPF0.Add("Rec.709/BT.709", "09");
             VCPF0.Add("Rec 709", "09");
             VCPF0.Add("Rec.709", "09");
@@ -2941,7 +2942,8 @@ namespace VcpCore.Plugins
             VCPF0.Add("BT.709", "09");
             VCPF0.Add("DCI-P3", "0A");
             VCPF0.Add("Display P3", "A1");
-            VCPF0.Add("Rec2020", "0B");
+            VCPF0.Add("Rec.2020 / BT.2020", "0B"); // add 10/04
+            VCPF0.Add("Rec.2020", "0B");
             VCPF0.Add("BT.2020", "0B");
             VCPF0.Add("ComfortView", "0C");
             VCPF0.Add("Game2", "0D");
@@ -2986,22 +2988,22 @@ namespace VcpCore.Plugins
             VCPE2.Add("Sport", "05");
             VCPE2.Add("Text", "06");
             VCPE2.Add("AdobeRGB", "07");
-            VCPE2.Add("AdobeRGB1", "2A");
-            VCPE2.Add("AdobeRGB2", "2B");
             VCPE2.Add("AdobeRGB1 (D65G2.2L250)", "2A");
             VCPE2.Add("AdobeRGB2 (D50G2.2L250)", "2B");
+            VCPE2.Add("AdobeRGB1", "2A");
+            VCPE2.Add("AdobeRGB2", "2B");           
             VCPE2.Add("xvMode", "08");
             VCPE2.Add("DICOM", "09");
             VCPE2.Add("CAL1", "0A");
             VCPE2.Add("sRGB", "0B");
-            VCPE2.Add("5000k", "0C");
-            VCPE2.Add("5700k", "0D");
+            VCPE2.Add("5000K", "0C"); // k -> K
+            VCPE2.Add("5700K", "0D"); // k -> K
             VCPE2.Add("Warm", "0E");
-            VCPE2.Add("6500k", "0F");
-            VCPE2.Add("7500k", "10");
-            VCPE2.Add("9300k", "11");
+            VCPE2.Add("6500K", "0F"); // k -> K
+            VCPE2.Add("7500K", "10"); // k -> K
+            VCPE2.Add("9300K", "11"); // k -> K
             VCPE2.Add("Cool", "12");
-            VCPE2.Add("10000k", "13");
+            VCPE2.Add("10000K", "13"); // k -> K
             VCPE2.Add("Custom Color", "14");
             VCPE2.Add("Custom 1 / User 1", "2C");
             VCPE2.Add("Custom 2 / User 2", "2D");
@@ -3024,7 +3026,8 @@ namespace VcpCore.Plugins
             VCPE2.Add("BT.709", "1A");
             VCPE2.Add("DCI-P3", "1B");
             VCPE2.Add("Display P3", "3D");
-            VCPE2.Add("Rec2020", "1C");
+            VCPE2.Add("Rec.2020 / BT.2020", "1C"); // add 10/14
+            VCPE2.Add("Rec.2020", "1C");
             VCPE2.Add("BT.2020", "1C");
             VCPE2.Add("ComfortView", "1D");
             VCPE2.Add("Game2", "1E");

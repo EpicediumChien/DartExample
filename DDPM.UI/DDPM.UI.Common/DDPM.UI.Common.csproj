@@ -42,6 +42,7 @@
     <None Remove="Resources\Close.png" />
     <None Remove="Resources\Connect_M_K.png" />
     <None Remove="Resources\DP.png" />
+    <None Remove="Resources\EzAdd.png" />
     <None Remove="Resources\G.png" />
     <None Remove="Resources\HD22Q.png" />
     <None Remove="Resources\HDMI.png" />
@@ -185,6 +186,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\CBvector.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\EzAdd.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\G.png">

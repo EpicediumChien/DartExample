@@ -17,8 +17,7 @@ namespace DDPM.UI.Module.EzMemory
         #region Private Members
         private HomeDevice _homeDevice;
         private IDeviceManagerSA _deviceManagerSA;
-        private DDPM.UI.Common.ViewModels.EzMemoryViewModel _vm;
-        //private EzMemoryViewModel _vm;      
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;    
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
@@ -32,12 +31,27 @@ namespace DDPM.UI.Module.EzMemory
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
+
+            InitializeTextBlocks();
+        }
+
+        private void InitializeTextBlocks()
+        {
+            ProfileTitleTextBlock.Text = "Profile";
+            AutomaticStartupTextBlock.Text = "Automatic Startup:";
+            AutomaticStartupValueTextBlock.Text = "N/A"; 
+            LaunchByTimeTextBlock.Text = "Launch by Time:";
+            LaunchByTimeValueTextBlock.Text = "N/A";
+            AppDocumentTextBlock.Text = "App/Document:";
+            AppDocumentValueTextBlock.Text = "N/A";
+
+            applybtn.Content = "Apply";
         }
 
         private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
         {
             EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
-            ezFirst.DataContext = _vm;
+            //ezFirst.DataContext = _vm;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 
