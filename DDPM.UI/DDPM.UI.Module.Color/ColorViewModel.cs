@@ -1354,6 +1354,9 @@ namespace DDPM.UI.Module.Color
                     strSync_CurrentColorPreset = "Game";
             }
 
+            if (System.String.IsNullOrEmpty(strSync_CurrentColorPreset))
+                strSync_CurrentColorPreset = curcolorPreset;
+
             return strSync_CurrentColorPreset;
         }
 
