@@ -88,6 +88,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 {
                     return Task.FromResult(new DisplaySupportedProperties());
                 }
+                if (JudgmentList.AutoRotateOSMonitorList.Contains(monitorInfo.modelName))
+                {
+                    displayPropertiesInfo.CurrentOrientation = DisplayOrientation.Unknow;
+                }
                 displayPropertiesInfo.SupportedProperties.Properties = GetSupportedResolutions(monitorInfo, currentProperties, displayPropertiesInfo.CurrentOrientation);
                 displayPropertiesInfo.SupportedProperties.Orientations = new DisplayOrientation[4]
                 {
@@ -470,6 +474,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     if (!GetCurrentDisplaySetting(displayPropertiesInfo.DisplayName, out currentProperties, out displayPropertiesInfo.CurrentOrientation))
                     {
                         return false;
+                    }
+                    if (JudgmentList.AutoRotateOSMonitorList.Contains(monitorInfo.modelName))
+                    {
+                        displayPropertiesInfo.CurrentOrientation = DisplayOrientation.Unknow;
                     }
                     displayPropertiesInfo.SupportedHDR = isSupportedHDR;
                     hDRSetting.GetWindowsHDRStatus(monitorInfo.edid, out displayPropertiesInfo.isHDREnable);
