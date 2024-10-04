@@ -30,7 +30,7 @@ namespace DDPM.UI.Common
             try
             {
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
-                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings");
+                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
                 string info = string.Empty;
                 DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))

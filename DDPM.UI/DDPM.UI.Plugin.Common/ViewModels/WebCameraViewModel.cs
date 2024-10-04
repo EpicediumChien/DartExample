@@ -1156,6 +1156,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 case "FieldOfView":
                     DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), (int)value);
+                    if (_fOVs[0] == CurrentProfile.FieldOfView)
+                        SetFOV_Selected(0);
+                    else if (_fOVs[1] == CurrentProfile.FieldOfView)
+                        SetFOV_Selected(1);
+                    else
+                        SetFOV_Selected(2);
                     break;
             }
             OnPropertyChanged(property);
