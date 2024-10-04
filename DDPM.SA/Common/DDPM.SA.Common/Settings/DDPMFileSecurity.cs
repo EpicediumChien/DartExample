@@ -1940,15 +1940,17 @@ namespace DDPM.SA.Common.Settings
                 }
                 else
                 {
-                    info = "The Folder is not a Symbolic";
+                    //info = "The Folder is not a Symbolic";
                     string tmpParentPath = string.Empty;
                     tmpParentPath = Path.GetDirectoryName(filePath); // to check parent 
                     if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
                     {
+                        Directory.CreateDirectory(filePath);
                         return true;
                     }
                     else
                     {
+                        Directory.CreateDirectory(filePath);
                         return false;
                     }
                 }
