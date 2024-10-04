@@ -31,6 +31,8 @@ namespace DDPM.UI.Common
             {
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
                 var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings");
+                string info = string.Empty;
+                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
 
@@ -49,6 +51,8 @@ namespace DDPM.UI.Common
             var hasFile = File.Exists(filePath);
             if (hasFile)
             {
+                string info = string.Empty;
+                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
                 return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
             }
             else

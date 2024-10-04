@@ -70,7 +70,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         private static string folder_localappdata_Appicon = "Icons";
         private static string folder_localappdata_Display = "Display";
-        private static string folder_localappdata_Migration = "Migration";
+        private static string folder_localappdata_Migration = "Migration\\UserFolder";
 
         //private static string folder_programdata_DownloadInstaller = path_programdata + "\\" + folder_product + "\\Downloaded Installations";
         //private static string folder_programdata_DownloadInstallerLog = path_programdata + "\\" + folder_product + "\\InstallationLogs";
@@ -1074,10 +1074,85 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             else
             {
-                WriteLog("[DisplayImportSettings] Settings is null...");
+                WriteLog("[DisplayImportSettings] Settings is not DDPMSettings...");
             }
             
             return Task.FromResult<bool>(false);
+        }
+
+        public Task<bool> DisplayImpDDMSettings(string path, bool isSameModel, out DDMImpSettings impSettings)
+        {
+            impSettings = new DDMImpSettings();
+            if (impSettings != null)
+            {
+                DDMMonitorSettings monitorSettings = new DDMMonitorSettings();
+                monitorSettings = impSettings.MonitorSettings;
+                WriteLog("[DisplayImportSettings] monitorSettings.Model :" + monitorSettings.Model);
+                string monitorSettings_path = _display_path + "\\" + monitorSettings.Model + ".json";
+                WriteLog("[DisplayImportSettings] monitorSettings_path :" + monitorSettings_path);
+                if (File.Exists(monitorSettings_path))
+                {
+                    impSettings = ReadDDMImpSettingsFile(path).Result;
+                    if (impSettings != null)
+                    {
+                        return Task.FromResult(true);
+                    }
+                    //if (impSettings != null)
+                    //{
+                    //    if (impSettings.Count != 0)
+                    //    {
+                    //        foreach (DDPMMonitorSettings settings in monitorSettingsList)
+                    //        {
+                    //            if (settings.ServiceTag == monitorSettings.ServiceTag || isSameModel)
+                    //            {
+                    //                settings.Input = monitorSettings.Input;
+                    //                settings.KVM = monitorSettings.KVM;
+                    //                settings.VCPs = monitorSettings.VCPs;
+                    //                settings.EA = monitorSettings.EA;
+                    //                if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
+                    //                {
+                    //                    vcps = monitorSettings.VCPs;
+                    //                    if (!isSameModel)
+                    //                    {
+                    //                        return Task.FromResult<bool>(true);
+                    //                    }
+                    //                }
+                    //                else
+                    //                {
+                    //                    WriteLog("[DisplayImportSettings] ServiceTag : " + settings.ServiceTag);
+                    //                    WriteLog("[DisplayImportSettings] Import settings Fail...");
+                    //                    if (!isSameModel)
+                    //                    {
+                    //                        break;
+                    //                    }
+                    //                }
+                    //            }
+                    //        }
+                    //        if (isSameModel)
+                    //        {
+                    //            return Task.FromResult(true);
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        WriteLog("[DisplayImportSettings] monitorSettingsList Count = 0...");
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    WriteLog("[DisplayImportSettings] monitorSettingsList is null...");
+                    //}
+                }
+                else
+                {
+                    WriteLog("[DisplayImportSettings] Find monitor settings Fail...");
+                }
+            }
+            else
+            {
+                WriteLog("[DisplayImportSettings] Settings is not DDMSettings...");
+            }
+            return Task<bool>.FromResult<bool>(false);
         }
 
         #endregion DisplayImpExpSettings
@@ -1108,6 +1183,25 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
             }
             catch 
+            {
+                ;
+            }
+            return Task<bool>.FromResult(false);
+        }
+
+        public Task<bool> ReadDDMUserSettings(string path, ref DDMUserSettings DDMusersettings)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    if (DDMUserSettings.restoreDDMUserSettings(ref DDMusersettings, path))
+                    {
+                        return Task<bool>.FromResult(true);
+                    }
+                }
+            }
+            catch
             {
                 ;
             }
@@ -1436,6 +1530,22 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return impexpSettings;
         }
 
+        private DDMImpSettings RunDDMImpDeserializeObject(string value)
+        {
+            DDMImpSettings impSettings = new DDMImpSettings();
+
+            try
+            {
+                impSettings = JsonConvert.DeserializeObject<DDMImpSettings>(value);
+            }
+            catch (Exception)
+            {
+                ;
+            }
+
+            return impSettings;
+        }
+
         private bool WriteImpExpSettings(string path, DDPMImpExpSettings impexpSettings)
         {
             if (impexpSettings == null)
@@ -1498,6 +1608,46 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
             }
             return ImpSettings;
+        }
+
+        public Task<DDMImpSettings> ReadDDMImpSettingsFile(string path) 
+        {
+            DDMImpSettings ImpSettings = new DDMImpSettings();
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (File.Exists(path))
+                {
+                    //Elsa Add Security
+                    string FileInfo;
+                    if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                    {
+                        WriteLog($"{nameof(ReadDDMImpSettingsFile)} {FileInfo}");
+                        return Task.FromResult(ImpSettings);
+                    }
+                    string strReadJson = string.Empty;
+                    //using (var reader = new StreamReader(path))
+                    //{
+                    //    strReadJson = reader.ReadToEnd();
+                    //}
+                    //security SA
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                        return Task.FromResult(ImpSettings);
+                    try
+                    {
+
+                        WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
+                        ImpSettings = RunDDMImpDeserializeObject(strReadJson);
+                    }
+                    catch (Exception)
+                    {
+                        ;
+                    }
+                }
+            }
+
+            return Task.FromResult(ImpSettings);
         }
 
         #endregion ImpExpSettings

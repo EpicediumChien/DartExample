@@ -106,5 +106,7 @@ namespace DDPM.SA.Common
         //Migration
         Task<bool> isDDMMigration(out string folder_appdatapath_migration);
         Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings);
+        Task<bool> ReadDDMUserSettings(string path, ref DDMUserSettings DDMusersettings);
+        Task<DDMImpSettings> ReadDDMImpSettingsFile(string path);
     }
 }
