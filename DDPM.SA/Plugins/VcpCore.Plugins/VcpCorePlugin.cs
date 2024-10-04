@@ -11,6 +11,7 @@
 #endregion
 
 using DDPM.SA.Common;
+using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -88,6 +89,10 @@ namespace VcpCore.Plugins
 
         private static Dictionary<EDID, Dictionary<object, object>> _CacheTable;
 
+        private ISettingsManagerSA? _SysSettingsPlugin;
+        private static string _settingsAccessInfo = string.Empty;
+        private readonly object _PluginConditionLock_SysSettings = new object();
+
         #endregion
 
         #region For engineer debug purpose
@@ -159,9 +164,10 @@ namespace VcpCore.Plugins
 
             _logs.DebugMsg("[VcpCorePlugin] Does VcpCorePlugin have Administrator: " + _IsAdministrator.ToString());
 
-            DecryptSupportListFile();
-            InitialColorPresets();
-            InitializeMonitorsList().Wait();
+            InitializeSysSettingsPlugin();
+            //DecryptSupportListFile();
+            //InitialColorPresets();
+            //InitializeMonitorsList().Wait();
         }
 
         #endregion
@@ -3703,8 +3709,13 @@ namespace VcpCore.Plugins
         {
             if (File.Exists(targetFile))
             {
-                string readText = File.ReadAllText(targetFile);
-                _supportClassification = RsaEncrypt.Decrypt(readText, privateKey);
+                //string readText = File.ReadAllText(targetFile);
+                //_supportClassification = RsaEncrypt.Decrypt(readText, privateKey);
+                byte[] data = File.ReadAllBytes(targetFile);
+                if (data != null)
+                {
+                    _supportClassification = EncryptionHelper.DecryptJsonFromFile(data, _settingsAccessInfo);
+                }
             }
 
             if (!string.IsNullOrEmpty(_supportClassification))
@@ -3753,8 +3764,69 @@ namespace VcpCore.Plugins
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
+
+            if (e.ChangedPlugins.OfType<ISettingsManagerSA>().Any())
+                InitializeSysSettingsPlugin();
         }
 
+        #endregion
+
+        #region Info Key
+        private void InitializeSysSettingsPlugin()
+        {
+            if (_SysSettingsPlugin != null)
+                return;
+
+            _SysSettingsPlugin = _agent.PluginManager.FindPluginByType<ISettingsManagerSA>(PluginResolution.Dynamic);
+
+            if (_SysSettingsPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnSysSettingsManagerPluginConditionChangeHandler;
+                GetCurrentSysSettingsManagerPluginCondition();
+            }
+        }
+        private void OnSysSettingsManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentSysSettingsManagerPluginCondition();
+        }
+
+        private void GetCurrentSysSettingsManagerPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_SysSettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+
+                lock (_PluginConditionLock_SysSettings)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        _logs.DebugMsg($"[VCPCore plugin] {nameof(GetCurrentSysSettingsManagerPluginCondition)} - Sys SettingsManager Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
+                    {
+                        _logs.DebugMsg($"[VCPCore plugin] {nameof(GetCurrentSysSettingsManagerPluginCondition)} - Sys SettingsManager Plugin is in a {nameof(pluginCondition)} condition");
+                        if (_SysSettingsPlugin != null)
+                        {
+                            DoRelayRegister();
+                        }
+                    }
+                }
+            });
+        }
+
+        private void DoRelayRegister()
+        {
+            if (_SysSettingsPlugin == null)
+            {
+                _logs.DebugMsg("[VCPCore plugin] System Settings Manager is null, do not register its relay");
+                return;
+            }
+            _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
+            //move init functions from constructer to here
+            DecryptSupportListFile();
+            InitialColorPresets();
+            InitializeMonitorsList().Wait();
+        }
         #endregion
     }
 }
