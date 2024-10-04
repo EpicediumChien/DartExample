@@ -60,6 +60,7 @@ echo "{F6909D0F-C70B-4B84-8EC3-9E506550A998}"="%BaseDir%\\bin\\DDPM.Subagent\\De
 echo "{2B76DC4B-39E7-4DBE-946E-5112CDAF37EA}"="%BaseDir%\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.CLIManager.dll">>%OutFile%
 echo "{F716E8C1-1F8D-4BC6-83DA-51CD26031335}"="%BaseDir%\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.SWUpdate.dll">>%OutFile%
 echo "{7D53B92E-5648-4ADB-9E33-4C74FFE7BE8C}"="%BaseDir%\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.FWUpdate.dll">>%OutFile%
+echo "{BFAA77E8-CADF-4CE4-9473-363E65C6B4E0}"="%BaseDir%\\bin\\DDPM.Subagent\\Debug\\net8.0-windows10.0.19041.0\\DDPM.SA.Plugins.PlatinumSDK.dll">>%OutFile%
 echo.>>%OutFile% 
 echo [HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell TechHub\RPMRegistration\{2E365D80-A333-42E9-B855-F326DFEF2C34}]>>%OutFile%
 echo "ExecutablePath"="%BaseDir%\\bin\\DDPM.Subagent.User\\Debug\\net8.0-windows10.0.19041.0\\DDPM.Subagent.User.exe">>%OutFile%

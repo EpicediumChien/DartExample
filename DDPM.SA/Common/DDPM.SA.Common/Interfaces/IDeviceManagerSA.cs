@@ -50,6 +50,12 @@ namespace DDPM.SA.Common
 
         Task StopSchedulerManger();
 
+        Task<scheduleInfo> ReadScheduleMonitorSettings(MonitorInfo monitorInfo);
+
+        Task<bool> WriteScheduleMonitorSettings(MonitorInfo monitorInfo, scheduleInfo scheduleInfo);
+
+        Task<bool> MigrateScheduleMonitorSettings(string Model, string ServiceTag, BriConSchedule DDMSetting);
+
         #endregion public for SchedulerManger
 
         #region public for ColorPreset

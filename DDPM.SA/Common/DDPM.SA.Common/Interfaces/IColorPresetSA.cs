@@ -1,8 +1,12 @@
+using DdmLibrary.Utility;
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VcpCore.Common;
+
+using DdmLibrary;
+
 
 //using VcpCore.Common;
 //using VcpCore.Interfaces;
@@ -50,6 +54,12 @@ namespace DDPM.SA.Common
         Task<string> GetColorPresetName(int Color_VCPCore_E2);
 
         Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
+
+        Task<bool> Migration(DdmLibrary.Utility.ColorPreset colorPresetSetting_Migration, string Model, string ServiceTag, ISettingsManagerDev _SettingsPlugin, int ColorForManual_VCPE2Code_value =0);
+
+        Task<bool> Import(MonitorInfo MonitorInfo, ColorPresetSettings colorPresetSetting_Import, ISettingsManagerDev _SettingsPlugin);
+
+        Task<ColorPresetSettings> Export(MonitorInfo MonitorInfo, ISettingsManagerDev _SettingsPlugin);
 
         #endregion public for  Color Preset Plugin
     }
