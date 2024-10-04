@@ -747,8 +747,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                                                  x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                  x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+
+                    if (index == -1)
+                    {
+                        index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                   x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                   x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                    }
+
+                    //index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                    //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                    //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
                 }
             }
             return index;

@@ -166,8 +166,19 @@ namespace ColorPreset.Plugins
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                                                  x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                  x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+
+                    if (index == -1)
+                    {
+                        index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                   x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                   x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                    }
+
+                    //index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                    //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                    //x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
                                                     //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
                 }
             }
@@ -1994,7 +2005,7 @@ namespace ColorPreset.Plugins
                             {
                                 if (strAppName == kvp_applist.Value.AppName)
                                 {
-                                    temp.IconName = _SettingsPlugin.GetAppIconFolderPath() + "\\" + strAppName + ".png";
+                                    temp.IconName = _SettingsPlugin.GetAppIconFolderPath() + "\\" + colorPresetSetting_Migration.AppInfos[i].ExeName + ".png";
                                 }
 
                             }
