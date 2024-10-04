@@ -4,6 +4,8 @@ using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DdmLibrary;
+using DdmLibrary.Utility;
 
 namespace DDPM.SA.Common
 {
@@ -86,7 +88,7 @@ namespace DDPM.SA.Common
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, string path);
 
-        Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCP> vcps);
+        Task<bool> DisplayImportSettings(string path, bool isSameModel, out List<VCPCode> vcps);
 
         //GlobalSettings
         Task<GlobalSettingParam> ReadGlobalSettings();
@@ -100,5 +102,9 @@ namespace DDPM.SA.Common
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
 
         event EventHandler SettingReadyEvent;
+
+        //Migration
+        Task<bool> isDDMMigration(out string folder_appdatapath_migration);
+        Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings);
     }
 }

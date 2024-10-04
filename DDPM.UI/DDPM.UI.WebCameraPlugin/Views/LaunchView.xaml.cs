@@ -124,6 +124,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             RecordingTimer.Tick += RecordingTimer_Tick;
 
             _vm!.WebcamSettingChanged += WebcamSettingChanged;
+
             Preview();
         }
 
@@ -134,6 +135,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private async void Preview()
         {
+            //return;
             if (_vm!.MediaCapture != null)
             { _ = CleanupMediaCaptureAsync(); }
 
@@ -560,7 +562,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 var captureFolder = await StorageFolder.GetFolderFromPathAsync(_vm!.VideoCaptureFolder);
 
                 // Create storage file for the capture
-                var videoFile = await captureFolder.CreateFileAsync(DateTime.Now.ToString("DDP'M'Videoyyyy-MM-dd-HH-mm-ss.'mp4'"), CreationCollisionOption.GenerateUniqueName);
+                var videoFile = await captureFolder.CreateFileAsync(DateTime.Now.ToString("'DDPMVideo'yyyy-MM-dd-HH-mm-ss.'mp4'"), CreationCollisionOption.GenerateUniqueName);
 
                 var encodingProfile = MediaEncodingProfile.CreateMp4(VideoEncodingQuality.Auto);
 
@@ -714,7 +716,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void ProfileSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            _vm!.CurrentProfileName = ((UXTextBlock)sender).Tag.ToString()!;
+            var profileName = ((UXTextBlock)sender).Tag.ToString()!;
+            if (profileName != _vm!.CurrentProfileName)
+            {
+                _vm!.CurrentProfileName = profileName;
+                _vm.SetProfile();
+            }
             btnPreset_Click(this, null);
 
         }

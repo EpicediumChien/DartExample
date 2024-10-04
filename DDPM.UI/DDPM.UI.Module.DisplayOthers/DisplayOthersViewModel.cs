@@ -139,10 +139,7 @@ namespace DDPM.UI.Module.DisplayOthers
             try
             {
                 BackgroundWorker bwk = (BackgroundWorker)sender;
-                _powerNapEnabled = false;
-                //todo get powerNapSupport
-                List<SA.Common.Display.PowerNapSetting> settings = DdpmCommonHelper.DeviceManagerSA.ReadPowerNapSettings().Result;
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     if (data.LockSettings.Lock_Display_PowerNap)
@@ -153,34 +150,41 @@ namespace DDPM.UI.Module.DisplayOthers
                         LockPowerNap_Opacity = 0.5;
                     }
                 }
-                string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber;
-                settings.RemoveAll(x => x.SerialNumber == null);
-                PowerNapSetting crtSetting = settings.Find(x => x.SerialNumber == crtSn);
-                if (crtSetting != null)
-                {
-                    _powerNapEnabled = crtSetting.Status;
-                    _powerNapText = _powerNapEnabled ? Strings.On : Strings.Off;
-                    switch (crtSetting.RunType)
-                    {
-                        case PowerNapType.ReduceBrightness:
-                            _reducebrtChecked = true;
-                            _putTosleepChecked = false;
-                            break;
-
-                        case PowerNapType.SleepIfRunning:
-                            _reducebrtChecked = false;
-                            _putTosleepChecked = true;
-                            break;
-                    }
-                }
-                OnPropertyChanged("PowerNap_Enable");
-                OnPropertyChanged("Reducebrt_Checked");
-                OnPropertyChanged("PutTosleep_Checked");
+                updatePowerNapUISetting();
             }
             catch (Exception)
             {
                 ;
             }
+        }
+
+        public void updatePowerNapUISetting()
+        {
+            _powerNapEnabled = false;
+            List<SA.Common.Display.PowerNapSetting> settings = DdpmCommonHelper.DeviceManagerSA.ReadPowerNapSettings().Result;
+            string crtSn = DisplayOthersModule.SelectedHomeDevice.MonitorInfo.edid.SerialNumber;
+            settings.RemoveAll(x => x.SerialNumber == null);
+            PowerNapSetting crtSetting = settings.Find(x => x.SerialNumber == crtSn);
+            if (crtSetting != null)
+            {
+                _powerNapEnabled = crtSetting.Status;
+                _powerNapText = _powerNapEnabled ? Strings.On : Strings.Off;
+                switch (crtSetting.RunType)
+                {
+                    case PowerNapType.ReduceBrightness:
+                        _reducebrtChecked = true;
+                        _putTosleepChecked = false;
+                        break;
+
+                    case PowerNapType.SleepIfRunning:
+                        _reducebrtChecked = false;
+                        _putTosleepChecked = true;
+                        break;
+                }
+            }
+            OnPropertyChanged("PowerNap_Enable");
+            OnPropertyChanged("Reducebrt_Checked");
+            OnPropertyChanged("PutTosleep_Checked");
         }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
@@ -234,8 +238,17 @@ namespace DDPM.UI.Module.DisplayOthers
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = saveFileDialog.FileName;
-                ImpExpSettings("Exp", filename);
-                return true;
+                string info = string.Empty;
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, false, out info))
+                {
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+                else 
+                { 
+                    ImpExpSettings("Exp", filename);
+                    return true;
+                }
             }
             else
             {
@@ -255,8 +268,17 @@ namespace DDPM.UI.Module.DisplayOthers
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filename = openFileDialog.FileName;
-                ImpExpSettings("Imp", filename);
-                return true;
+                string info = string.Empty;
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                {
+                    IsBusy = false;
+                    OnPropertyChanged("IsBusy");
+                }
+                else
+                {
+                    ImpExpSettings("Imp", filename);
+                    return true;
+                }
             }
             else
             {

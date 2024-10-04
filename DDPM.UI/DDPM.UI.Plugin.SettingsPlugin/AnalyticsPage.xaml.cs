@@ -111,7 +111,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return;
             try
             {
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data == null)
                     return;
                 if (data.UserSettings == null)
@@ -149,7 +149,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             //Catch event if belong to telemetry consent
             if(e.UI_Field_Name.ToUpper().Trim().Equals("TELEMETRYCONSENT"))
             {
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings(true);//DeviceManagerSA.ReloadAppConfigData().Result;
                 Dispatcher.Invoke(new Action(() =>
                 {
                     AnalyticsViewModel vm = (AnalyticsViewModel)this.DataContext;

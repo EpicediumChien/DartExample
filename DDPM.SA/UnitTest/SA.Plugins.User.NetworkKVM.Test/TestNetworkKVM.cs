@@ -249,6 +249,91 @@ public class TestNetworkKVM
         }
     }
 
+    [Test]
+    public void TestToNKVM_SupportedMonitorList()
+    {
+        List<string> supportedMonitorList = new List<string> { "Monitor1", "Monitor2", };
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("_SupportedMonitors", supportedMonitorList);
+        var ToNKVM_SupportedMonitorListResult = NkvmPlugin.ToNKVM_SupportedMonitorList(supportedMonitorList);
+        var supportedMonitorList_ = (List<string>)privatevNkvmPluginObject.GetFieldOrProperty("_SupportedMonitors");
+        Assert.IsNotNull(ToNKVM_SupportedMonitorListResult);
+        Assert.That(supportedMonitorList, Is.EqualTo(supportedMonitorList_));
+    }
+
+    [Test]
+    public void TestUpdateSupportMonitors()
+    {
+        int count = 3;
+        List<string> supportedMonitorList2 = new List<string> { "Monitor1", "Monitor2", "Monitor3" };
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("_SupportedMonitors", supportedMonitorList2);
+        var UpdateSupportMonitorsResult2 = NkvmPlugin.UpdateSupportMonitors().Result;    //_SupportedMonitors is not null
+        var supportedMonitorList_ = (List<string>)privatevNkvmPluginObject.GetFieldOrProperty("_SupportedMonitors");
+        Assert.That(count, Is.EqualTo(UpdateSupportMonitorsResult2.Count));
+        Assert.That(supportedMonitorList2, Is.EqualTo(supportedMonitorList_));
+    }
+
+    [Test]
+    public void TestGetSupportedNKVM()
+    {
+        List<MonitorInfo> GetSupportedNKVMmonitorInfos1 = new List<MonitorInfo>();
+        GetSupportedNKVMmonitorInfos1.Add(monitorInfo1);
+        List<string> SupportedMonitors1 = new List<string> { "Monitor1" };
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("_AllInfoMonitors", GetSupportedNKVMmonitorInfos1);
+        privatevNkvmPluginObject.SetFieldOrProperty("_SupportedMonitors", SupportedMonitors1);
+        var GetSupportedNKVMResult1 = NkvmPlugin.GetSupportedNKVM().Result;  //No Supported KVM Monitors monitorInfo.CapabilityDic.No ContainsKey("C6")
+        Assert.Greater(GetSupportedNKVMResult1.Count, 0);
+        Assert.That(SupportedMonitors1, Is.EqualTo(GetSupportedNKVMResult1));
+
+        MonitorInfo monitorInfo2 = new MonitorInfo()
+        {
+            AliasDeviceName = "Dell U2725DE(HDMI)",
+            IsDellMonitor = true,
+            Index = 0,
+            CapabilityString = "(prot(monitor)type(LCD)model(U2424H)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C)E5 E7(02 03) E2(00 02 04 0C 0D 0F) AC AE B2 B6 C6(01) C8 C9 CA CC(02 0A 03 04 08 09 0D 06 )",
+            DisplayName = "DISPLAY8",
+            DDCisON = true,
+            FwVersion = "M3T101",
+            inputSource = "HDMI-1",
+            modelName = "U2725DE",
+            series = "Dell UltraSharp (U) Series Monitors",
+            CapabilityDic = new Dictionary<string, List<string>>() { { "C6", new List<string> { "01" } } },
+            edid = new EDID()
+        };
+        List<string> GetSupportedNKVMmonitorInfos2 = new List<string> { "Monitor1", "U2725DE" };
+        List<MonitorInfo> monitorInfos2 = new List<MonitorInfo>();
+        monitorInfos2.Add(monitorInfo2);
+        privatevNkvmPluginObject.SetFieldOrProperty("_AllInfoMonitors", monitorInfos2);
+        var GetSupportedNKVMResult2 = NkvmPlugin.GetSupportedNKVM().Result;  //Supported KVM Monitors monitorInfo.CapabilityDic.ContainsKey("C6")
+        Assert.IsNotNull(GetSupportedNKVMResult2);
+        Assert.Greater(GetSupportedNKVMResult2.Count, 0);
+        Assert.That(GetSupportedNKVMmonitorInfos2, Is.EqualTo(GetSupportedNKVMResult2));
+    }
+
+    [Test]
+    public void TestOnNKVM()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("TestOnNKVM");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var OnNKVMResult = NkvmPlugin.OnNKVM();
+        Assert.IsNotNull(OnNKVMResult);
+    }
+
+    [Test]
+    public void TestOffNKVM()
+    {
+        NamedPipeServerStream pipeServer_;
+        pipeServer_ = new NamedPipeServerStream("testOffNKVM");
+        PrivateObject privatevNkvmPluginObject = new PrivateObject(NkvmPlugin);
+        privatevNkvmPluginObject.SetFieldOrProperty("pipeServer", pipeServer_);
+        var OffNKVMResult = NkvmPlugin.OffNKVM();
+        Assert.IsNotNull(OffNKVMResult);
+    }
+
     [OneTimeTearDown]
     public void TearDown()
     {

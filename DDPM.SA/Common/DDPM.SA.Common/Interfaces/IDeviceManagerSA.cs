@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Display;
+﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
@@ -43,6 +44,12 @@ namespace DDPM.SA.Common
 
         Task StopSchedulerManger();
 
+        Task<scheduleInfo> ReadScheduleMonitorSettings(MonitorInfo monitorInfo);
+
+        Task<bool> WriteScheduleMonitorSettings(MonitorInfo monitorInfo, scheduleInfo scheduleInfo);
+
+        Task<bool> MigrateScheduleMonitorSettings(string Model, string ServiceTag, BriConSchedule DDMSetting);
+
         #endregion public for SchedulerManger
 
         #region public for ColorPreset
@@ -73,7 +80,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
         Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
-
+        
         //Dean add 0612
         public Task<string> ReadCurrentColorPreset(MonitorInfo m);
 
@@ -90,6 +97,10 @@ namespace DDPM.SA.Common
         Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, string ColorPreset_Name = "", string ICC_profile_Name = "");
 
         Task<string> GetColorManagementStatus(MonitorInfo m);
+
+        Task<string> GetColorPresetName(int Color_VCPCore_E2);
+
+        Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
 
         #endregion public for ColorPreset
 
@@ -374,9 +385,9 @@ namespace DDPM.SA.Common
         Task<List<ColorPresetSettings>> ReadColorPresetSettings();
 
         Task<bool> WriteColorPresetSettings(List<ColorPresetSettings> colorPresetSettings);
-        
+
         Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName);
-        
+
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
         #endregion public for settings
 
@@ -399,6 +410,8 @@ namespace DDPM.SA.Common
         public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
+
+        public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
 
         #endregion public for hotkey
 
@@ -594,6 +607,19 @@ namespace DDPM.SA.Common
 
         Task SetIsAutoFramingOnValueByDTP(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
+        Task SetProfile(string Guid, string newValue);
+        Task SetZoom(string Guid, int newValue);
+        Task SetIsAutoFramingOn(string Guid, bool newValue);
+        Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+        Task SetAutoFramingSensitivity(string Guid, int newValue);
+        Task SetAutoFramingFrameSize(string Guid, int newValue);
+        Task SetFieldOfView(string Guid, int newValue);
+        Task SetIsFocusOn(string Guid, bool newValue);
+        Task SetFocus(string Guid, int newValue);
+        Task SetPriority(string Guid, int newValue);
+        Task SetIsHDROn(string Guid, bool newValue);
+        Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+        Task SetAutoWhiteBalance(string Guid, int newValue);
 
         #endregion
 

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.InputSource
 {
@@ -151,6 +152,7 @@ namespace DDPM.UI.Module.InputSource
 
                 if (inputList != null)
                 {
+                    _inputsList.Clear();
                     foreach (string item in inputList.Keys)
                     {
                         _inputsList.Add(new InputSourceList()
@@ -253,7 +255,7 @@ namespace DDPM.UI.Module.InputSource
                 OnPropertyChanged("items"); //0607 Jason
 
                 //Lock/unlock data init here
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
                     bool isLocked_current_input = data.LockSettings.Lock_Display_ActiveInputSource;
@@ -269,6 +271,46 @@ namespace DDPM.UI.Module.InputSource
         {
             //Handling the result and final process
             IsBusy = false;
+        }
+
+        public InputSourceViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                //OSD/VCP control back event
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
+            }
+        }
+
+        ~InputSourceViewModel()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                //OSD/VCP control back event
+                DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
+            }
+        }
+
+        /// <summary>
+        /// Catch OSD menu event
+        /// </summary>
+        /// <param name="sender">object type</param>
+        /// <param name="e">changed event</param>
+        private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
+        {
+            if (e.vcpcode.Equals("input select")) //input source change 0x52 event
+            {
+                if (InputsList.Count > 0)
+                {
+                    int idx = InputsList.FindIndex(x => x.inputSource == e.value);
+                    if(idx >= 0)
+                    {
+                        InputSourceList item = InputsList[idx];
+                        _selectInput = item;
+                        OnPropertyChanged("Items_Selected");
+                    }
+                }
+            }            
         }
     }
 }

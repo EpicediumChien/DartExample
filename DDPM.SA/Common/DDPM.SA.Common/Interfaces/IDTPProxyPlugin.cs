@@ -76,6 +76,19 @@ namespace DDPM.SA.Common
 
         Task SetIsAutoFramingOnValue(string itemID, bool newValue);
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
+        Task SetProfile(string Guid, string newValue);
+        Task SetZoom(string Guid, int newValue);
+        Task SetIsAutoFramingOn(string Guid, bool newValue);
+        Task SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+        Task SetAutoFramingSensitivity(string Guid, int newValue);
+        Task SetAutoFramingFrameSize(string Guid, int newValue);
+        Task SetFieldOfView(string Guid, int newValue);
+        Task SetIsFocusOn(string Guid, bool newValue);
+        Task SetFocus(string Guid, int newValue);
+        Task SetPriority(string Guid, int newValue);
+        Task SetIsHDROn(string Guid, bool newValue);
+        Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+        Task SetAutoWhiteBalance(string Guid, int newValue);
 
     }
 }

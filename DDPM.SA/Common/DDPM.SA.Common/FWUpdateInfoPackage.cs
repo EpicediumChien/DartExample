@@ -148,6 +148,7 @@ namespace DDPM.SA.Common
         public string CurrentVersion { get; set; }
         public string fileName { get; set; }
         public string SHA256 { get; set; }
+        public string SHA512 { get; set; }
         public string url { get; set; }
         public string date { get; set; }
         [JsonPropertyName("Supported platform")]

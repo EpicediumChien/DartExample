@@ -732,7 +732,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.That(result.Count, Is.EqualTo(0));
 
             //monitorSetting == null
-            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { Input = new Input() { strInputSourceList = "0" } } }));
+            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { Input = new InputSource() { strInputSourceList = "0" } } }));
             var _DisplayManagerPluginMock = new Mock<IDisplayService>();
             var _DisplayManagerPlugin = _DisplayManagerPluginMock.Object;
             privateObject.SetFieldOrProperty("_DisplayManagerPlugin", _DisplayManagerPlugin);
@@ -742,7 +742,7 @@ namespace SA.Plugins.User.DeviceManager.Test
 
             //monitorSetting != null,monitorSetting.Input != null
             string strInputSourceLista = "{\"input\": { \"InputName\":\"InputSourceA\",\"USBUpstream\":\"bbb\"}}";
-            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new Input() { strInputSourceList = strInputSourceLista } } }));
+            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new InputSource() { strInputSourceList = strInputSourceLista } } }));
             result = deviceMangerPlugin.GetInputSourcelist(monitorInfo).Result;
             Assert.Greater(result.Count, 0);
             Assert.That(result["input"].InputName, Is.EqualTo("InputSourceA"));
@@ -762,7 +762,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             //settings != null && inputlist != null
             string strInputSourceLista = "{\"input\": { \"InputName\":\"InputSourceA\",\"USBUpstream\":\"bbb\"}}";
             inputlist = new Dictionary<string, InputInfo>() { { "keya", new InputInfo() { InputName = "xx", USBUpstream = "yy" } } };
-            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new Input() { strInputSourceList = strInputSourceLista } } }));
+            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new InputSource() { strInputSourceList = strInputSourceLista } } }));
             result = deviceMangerPlugin.SetInputSourcelist(monitorInfo, inputlist).Result;
             Assert.That(result, Is.EqualTo(false));
 
@@ -783,7 +783,7 @@ namespace SA.Plugins.User.DeviceManager.Test
 
             //inputSourceList != null
             var strInputSourceLista = "{\"input\": { \"InputName\":\"InputSourceA\",\"USBUpstream\":\"bbb\"}}";
-            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new Input() { strInputSourceList = strInputSourceLista } } }));
+            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new InputSource() { strInputSourceList = strInputSourceLista } } }));
             result = deviceMangerPlugin.GetInputName(monitorInfo, "input").Result;
             Assert.That(result, Is.EqualTo("InputSourceA"));
         }
@@ -799,14 +799,14 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.That(result, Is.EqualTo(false));
 
             var strInputSourceLista = "{\"input\": { \"InputName\":\"InputSourceA\",\"USBUpstream\":\"bbb\"}}";
-            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new Input() { strInputSourceList = strInputSourceLista } } }));
+            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new InputSource() { strInputSourceList = strInputSourceLista } } }));
             result = deviceMangerPlugin.SetInputName(monitorInfo, "input", "A").Result;
             Assert.That(result, Is.EqualTo(false));
 
             //inputSourceList != null
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
             strInputSourceLista = "{\"input\": { \"InputName\":\"InputSourceA\",\"USBUpstream\":\"bbb\"}}";
-            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new Input() { strInputSourceList = strInputSourceLista } } }));
+            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new InputSource() { strInputSourceList = strInputSourceLista } } }));
             result = deviceMangerPlugin.SetInputName(monitorInfo, "input", "A").Result;
             Assert.That(result, Is.EqualTo(true));
         }
@@ -838,7 +838,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             var _SettingsPlugin = _SettingsPluginMock.Object;
             privateObject.SetFieldOrProperty("_SettingsPlugin", _SettingsPlugin);
             var strInputSourceLista = "{\"input\": { \"InputName\":\"inputsource\",\"USBUpstream\":\"bbb\"}}";
-            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new Input() { strInputSourceList = strInputSourceLista } } }));
+            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new InputSource() { strInputSourceList = strInputSourceLista } } }));
             _DisplayManagerPluginMock.Setup(x => x.SetUSBUpstream(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
             result = deviceMangerPlugin.SetUSBUpstream(monitorInfo, "input", "upstream").Result;
@@ -858,7 +858,7 @@ namespace SA.Plugins.User.DeviceManager.Test
             Assert.That(result, Is.EqualTo(false));
 
             var strInputSourceLista = "{\"inputsource1\": { \"InputName\":\"inputsource1\",\"USBUpstream\":\"aaa\"},\"inputsource2\": { \"InputName\":\"inputsource2\",\"USBUpstream\":\"bbb\"}}";
-            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new Input() { strInputSourceList = strInputSourceLista } } }));
+            _SettingsPluginMock.Setup(x => x.ReloadMonitorSettings(It.IsAny<string>())).Returns(Task.FromResult(new List<DDPMMonitorSettings>() { new DDPMMonitorSettings() { ServiceTag = "CN073K0", Input = new InputSource() { strInputSourceList = strInputSourceLista } } }));
             _DisplayManagerPluginMock.Setup(x => x.USBSwitch(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             _SettingsPluginMock.Setup(x => x.WriteMonitorSettings(It.IsAny<string>(), It.IsAny<List<DDPMMonitorSettings>>())).Returns(Task.FromResult(true));
             result = deviceMangerPlugin.USBSwitch(monitorInfo, "inputsource1", "upstream1", "inputsource2", "upstream2").Result;

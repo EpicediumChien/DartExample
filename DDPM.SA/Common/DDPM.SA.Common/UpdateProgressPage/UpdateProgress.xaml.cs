@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Input;
 
 namespace DDPM.SA.Common.UpdateProgressPage
 {
@@ -153,6 +154,26 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 return;
             }
             Close();
+        }
+
+        private void UXWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Width = 800;
+            this.Height = 440;
+            this.Topmost = true;
+            this.MinWidth = 800;
+            this.MinHeight = 440;
+            this.MaxWidth = 800;
+            this.MaxHeight = 440;
+            this.ResizeMode = ResizeMode.NoResize;
+        }
+
+        private void Grid_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
 
         public void _FWUpdatePlugin_ProgressUpdate(object sender, UpdateProgressInfo e)

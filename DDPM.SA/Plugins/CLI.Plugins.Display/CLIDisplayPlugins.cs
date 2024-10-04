@@ -597,7 +597,7 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         if (commandLineInput.TargetType == "APP")
                         {
-                            var ret = ScreenNotifacationx(devMgr, commandLineInput);
+                            var ret = ScreenNotificationx(devMgr, commandLineInput);
                             result.ExitCode = ret.code;
                             result.serialize_Json_response = ret.result;
                         }
@@ -1060,7 +1060,7 @@ namespace DDPM.CLI.Plugins.Display
             return ((int)CLI_ExitCode.unknow_command, JsonConvert.SerializeObject(G_ConnectedDevices_RESPONSE, Formatting.Indented));
         }
 
-        private (int code, string result) ScreenNotifacationx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        private (int code, string result) ScreenNotificationx(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             if (commandLineInput.Command.Equals("GET"))
             {
@@ -1074,7 +1074,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return ScreenNotifacation(devMgr, commandLineInput).Result;
+                    return ScreenNotification(devMgr, commandLineInput).Result;
                 }
             }
             else if (commandLineInput.Command.Equals("SET"))
@@ -1089,7 +1089,7 @@ namespace DDPM.CLI.Plugins.Display
                 }
                 else
                 {
-                    return ScreenNotifacation(devMgr, commandLineInput).Result;
+                    return ScreenNotification(devMgr, commandLineInput).Result;
                 }
             }
             else
@@ -1102,7 +1102,7 @@ namespace DDPM.CLI.Plugins.Display
             }
         }
 
-        private async Task<(int code, string result)> ScreenNotifacation(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        private async Task<(int code, string result)> ScreenNotification(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
             string output = string.Empty;
             bool retcode = false;
@@ -1140,7 +1140,7 @@ namespace DDPM.CLI.Plugins.Display
                         switch (v.ToUpper())
                         {
                             case "ON":
-                                writelog($"ScreenNotifacation on entry");
+                                writelog($"ScreenNotification on entry");
                                 devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(true);
                                 devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(true);
                                 devMgr.Set_GlobalSetting_DisplayWB7022CoverState(true);
@@ -1152,7 +1152,7 @@ namespace DDPM.CLI.Plugins.Display
                                 break;
 
                             case "OFF":
-                                writelog($"ScreenNotifacation off entry");
+                                writelog($"ScreenNotification off entry");
                                 devMgr.Set_GlobalSetting_DisplayLowBatteryLevel(false);
                                 devMgr.Set_GlobalSetting_DisplayKeyboardLockKey(false);
                                 devMgr.Set_GlobalSetting_DisplayWB7022CoverState(false);
@@ -1193,7 +1193,7 @@ namespace DDPM.CLI.Plugins.Display
 
                 foreach (int idx in _monitorIndeies)
                 {
-                    writelog($"ScreenNotifacation get entry");
+                    writelog($"ScreenNotification get entry");
 
                     MonitorInfo monitor = _AllInfoMonitors[idx];
                     GlobalSettingParam param = new GlobalSettingParam();
@@ -1213,7 +1213,7 @@ namespace DDPM.CLI.Plugins.Display
                     output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
                 }
             }
-            writelog($"ScreenNotifacation exit return value : {output}");
+            writelog($"ScreenNotification exit return value : {output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
 
@@ -7798,8 +7798,12 @@ namespace DDPM.CLI.Plugins.Display
 
                 writelog($"AutoBrightnessRangeLevel Entry");
                 param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoBrightnessRangeLevel, 0).Result;
-                get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
-                writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                if (param.AutoBrightnessRangeLevel.Count != 0)
+                {
+                    get_DeviceData.AutoBrightnessRangeLevel = param.AutoBrightnessRangeLevel[0].level_name;
+                    writelog($"AutoBrightness Exit return value: {(param.AutoBrightnessRangeLevel[0].level_name)}");
+                }
+                writelog($"AutoBrightness Exit return value: FAIL");
 
                 writelog($"AutoColorTemp Entry");
                 param = devMgr.GetALSFeatureValue(monitor, ALSFeatureQueryType.AutoColorTemperature, 0).Result;
