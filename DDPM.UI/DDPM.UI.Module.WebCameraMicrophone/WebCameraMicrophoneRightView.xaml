@@ -31,12 +31,19 @@
           <Binding Path="Height" RelativeSource="{RelativeSource AncestorType=Grid}" />
         </MultiBinding>
       </Border.Height>
-      <StackPanel Orientation="Vertical" Margin="16,16,16,0">
-        <StackPanel Margin="0">
-          <UXControls:UXTextBlock Text="{Binding [WebCameraMicrophone.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}"
-                                  Margin="0,10,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" />
-        </StackPanel>
-        <Border Background="#99132F54" CornerRadius="6" Height="72" Margin="0,20,0,5000">
+      <StackPanel Orientation="Vertical" Margin="16,16,2,0">
+        <Grid>
+          <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [WebCameraMicrophone.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
+          <Image Margin="0,0,67,0" Source="/DDPM.UI.Resources;component/Resources/Images/Undo2.png" Stretch="Fill"  
+                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}"/>
+          <Image Margin="0,0,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/Redo2.png" Stretch="Fill"  
+                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Redo2Visibility}"/>
+          <Image Margin="0,0,67,0" Source="/DDPM.UI.Resources;component/Resources/Images/Undo.png" Stretch="Fill" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="0"
+                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}" Cursor="Hand"/>
+          <Image Margin="0,0,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/Redo.png" Stretch="Fill" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1"
+                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}" Cursor="Hand"/>
+        </Grid>
+        <Border Background="#99132F54" CornerRadius="6" Height="72" Margin="0,20,16,5000">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="200" />
@@ -52,26 +59,26 @@
                     </ToolTip>
                   </Image.ToolTip>
                 </Image>
-                
+
                 <Image  Visibility="{Binding LockMaskVisible}" 
                     Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                     VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0" Width="16" Height="16">
-                <Image.ToolTip>
+                  <Image.ToolTip>
                     <ToolTip>
-                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                            <Border.Resources>
-                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                            </Border.Resources>
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
+                      <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                        <Border.Resources>
+                          <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                        </Border.Resources>
+                        <StackPanel>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                          </StackPanel>
+                        </StackPanel>
+                      </Border>
                     </ToolTip>
-                </Image.ToolTip>
-            </Image>
-                  
+                  </Image.ToolTip>
+                </Image>
+
               </StackPanel>
             </Grid>
             <Grid Grid.Column="1">

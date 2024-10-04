@@ -30,7 +30,17 @@
         </MultiBinding>
       </Border.Height>
       <StackPanel Margin="16,16,2,0" Orientation="Vertical">
-        <UXControls:UXTextBlock Text="{Binding [Camera.1], Source={x:Static lang:LangHelper.Instance}}" Margin="0,10,0,6" Style="{StaticResource ModuleCaptionStyle}" />
+        <Grid>
+          <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [Camera.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
+          <Image Margin="0,0,67,0" Source="/DDPM.UI.Resources;component/Resources/Images/Undo2.png" Stretch="Fill"  
+                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}"/>
+          <Image Margin="0,0,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/Redo2.png" Stretch="Fill"  
+                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Redo2Visibility}"/>
+          <Image Margin="0,0,67,0" Source="/DDPM.UI.Resources;component/Resources/Images/Undo.png" Stretch="Fill" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="0"
+                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}" Cursor="Hand"/>
+          <Image Margin="0,0,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/Redo.png" Stretch="Fill" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1"
+                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}" Cursor="Hand"/>
+        </Grid>
         <DockPanel Margin="0,16,0,4000">
           <DockPanel.Height>
             <MultiBinding Converter="{StaticResource HeightConverter}" ConverterParameter="85">

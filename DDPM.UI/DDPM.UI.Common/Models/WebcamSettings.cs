@@ -90,7 +90,15 @@ namespace DDPM.UI.Common
     public enum OperationModule
     {
         CameraControl,
-        ColorAndImage
+        ColorAndImage,
+        Other
     }
 
+    public class WebcamOperation
+    {
+        public OperationModule OPModule;
+        public required string Property;
+        public required object OldValue;
+        public required object NewValue;
+    }
 }

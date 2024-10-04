@@ -330,5 +330,17 @@ namespace DDPM.UI.Module.WebCameraSettings
             _vm.VbarSelectedIndex = 1;
             _vm.SelectVBar();
         }
+
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image elm)
+            {
+                var val = elm.Tag.ToString();
+                if (val == "0")
+                    _vm.Undo();
+                else
+                    _vm.Redo();
+            }
+        }
     }
 }
