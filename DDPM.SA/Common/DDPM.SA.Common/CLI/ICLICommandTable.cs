@@ -36,6 +36,7 @@ namespace DDPM.SA.Common
             "INAPPUPDATE",              //InAppUpdate               DDPMW-1329/1330
             "INAPPBRICONT",             //InAppBriCont              DDPMW-1342/1343
             "INAPPAUTOBRITEMP",         //InAppAutoBriTemp          DDPMW-1341
+            "INAPPAUTOBRIGHTNESSCOLOR",//1004 InAppAutoBrightnessColor DDPMW1341, same as InAppAutoBriTemp
             "INAPPRESTOREDEFAULTS",     //InAppRestoreDefaults      DDPMW-1333
             "INAPPRESTORE",             //InAppRestore              Same as InAppRestoreDefaults
             "RESTOREFACTORYDEFAULTS",   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
