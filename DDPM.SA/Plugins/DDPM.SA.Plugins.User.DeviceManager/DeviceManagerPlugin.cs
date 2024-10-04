@@ -8200,7 +8200,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (State)
                                             {
                                                 if (MuteWinx != null)
-                                                    MuteWinx.Close();
+                                                    MuteWinx.CloseWindow();
 
                                                 MuteWinx = new MuteWin(Content);
 
@@ -8208,13 +8208,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 {
                                                     MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                     MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    MuteWinx.Show();
+                                                    MuteWinx.ShowWindow();
                                                 }
                                                 catch (Exception)
                                                 {
                                                     MuteWinx.Top = sreen.WorkingArea.Top;
                                                     MuteWinx.Left = sreen.WorkingArea.Left;
-                                                    MuteWinx.Show();
+                                                    MuteWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
@@ -8224,7 +8224,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 if (UnMuteWinx != null)
-                                                    UnMuteWinx.Close();
+                                                    UnMuteWinx.CloseWindow();
 
                                                 UnMuteWinx = new UnMuteWin(Content);
 
@@ -8232,13 +8232,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 {
                                                     UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                     UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    UnMuteWinx.Show();
+                                                    UnMuteWinx.ShowWindow();
                                                 }
                                                 catch (Exception)
                                                 {
                                                     UnMuteWinx.Top = sreen.WorkingArea.Top;
                                                     UnMuteWinx.Left = sreen.WorkingArea.Left;
-                                                    UnMuteWinx.Show();
+                                                    UnMuteWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
