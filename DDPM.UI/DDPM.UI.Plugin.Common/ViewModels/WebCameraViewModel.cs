@@ -141,6 +141,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 FOV_IsSelected[j] = false;
             }
             FOV_IsSelected[index] = true;
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(FOV_IsSelected));
         }
 
@@ -1154,7 +1155,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), (int)value);
                     break;
                 case "FieldOfView":
-                    DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), (int)value);
+                    DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), (int)value);
                     break;
             }
             OnPropertyChanged(property);
