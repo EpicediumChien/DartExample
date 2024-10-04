@@ -624,7 +624,7 @@ namespace DDPM.UI.Module.Color
 
                 if (IsColorEnable) // HDR off
                 {
-                    SupportColorPresets.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));
+                    Sync_SupportColorPresets();                 
 
                 }
                 else // // HDR on
@@ -641,6 +641,8 @@ namespace DDPM.UI.Module.Color
 
                 //Dean 0612 add
                 string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
+                string strSync_CurrentColorPreset = string.Empty;
+                strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
 
                 ColorPresets_ItemsCollection = new List<string>();
 
@@ -652,9 +654,9 @@ namespace DDPM.UI.Module.Color
                     }
 
                     //Dean 0612 add
-                    if (!string.IsNullOrEmpty(curPreset))
+                    if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
                     {
-                        int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(curPreset.ToUpper()));
+                        int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_CurrentColorPreset.ToUpper()));
                         if (idx >= 0)
                         {
                             UpdateColorPresetSelectedIndex(idx);
@@ -865,13 +867,14 @@ namespace DDPM.UI.Module.Color
             {
                 
                 string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
-
+                string strSync_CurrentColorPreset = string.Empty;
+                strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {  
-                    if (!string.IsNullOrEmpty(curPreset))
+                    if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
                     {
-                        int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(curPreset.ToUpper()));
+                        int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_CurrentColorPreset.ToUpper()));
                         if (idx >= 0)
                         {
                             UpdateColorPresetSelectedIndex(idx);
@@ -1199,6 +1202,125 @@ namespace DDPM.UI.Module.Color
                 IsisAdvanced_Settings = vis_ad;
             }
 
+        }
+
+        public void Sync_SupportColorPresets()
+        {
+            SupportColorPresets.RemoveAll(r => HDR_ColorPresetNameList.Any(a => a == r));
+
+            int index = -1;
+            if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("UP"))
+            {               
+                index = SupportColorPresets.FindIndex(x => x == "Standard/Native");
+                if (index >= 0)
+                    SupportColorPresets[index] = "Native";
+            }
+            else
+            {
+                index = SupportColorPresets.FindIndex(x => x == "Standard/Native");
+                if (index >= 0)
+                    SupportColorPresets[index] = "Standard";
+            }
+
+            if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("UP3221Q"))
+            {
+                index = SupportColorPresets.FindIndex(x => x == "Custom 1 / User 1");
+                if (index >= 0)
+                    SupportColorPresets[index] = "User 1";
+
+                index = SupportColorPresets.FindIndex(x => x == "Custom 2 / User 2");
+                if (index >= 0)
+                    SupportColorPresets[index] = "User 2";
+
+                index = SupportColorPresets.FindIndex(x => x == "Custom 3 / User 3");
+                if (index >= 0)
+                    SupportColorPresets[index] = "User 3";
+            }
+            else
+            {
+                index = SupportColorPresets.FindIndex(x => x == "Custom 1 / User 1");
+                if (index >= 0)
+                    SupportColorPresets[index] = "Custom 1";
+
+                index = SupportColorPresets.FindIndex(x => x == "Custom 2 / User 2");
+                if (index >= 0)
+                    SupportColorPresets[index] = "Custom 2";
+
+                index = SupportColorPresets.FindIndex(x => x == "Custom 3 / User 3");
+                if (index >= 0)
+                    SupportColorPresets[index] = "Custom 3";
+            }
+
+            index = SupportColorPresets.FindIndex(x => x == "Game2");
+
+            if (index >= 0)
+            {
+                index = SupportColorPresets.FindIndex(x => x == "Game/Game1");
+                if (index >= 0)
+                    SupportColorPresets[index] = "Game1";
+            }
+            else
+            {
+
+                index = SupportColorPresets.FindIndex(x => x == "Game/Game1");
+                if(index >= 0) 
+                    SupportColorPresets[index] = "Game";
+            }
+
+        
+
+        }
+
+        public string Sync_CurrentColorPreset(string curcolorPreset)
+        {
+            string strSync_CurrentColorPreset = string.Empty;
+
+            int index = -1;
+            if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("UP"))
+            {               
+                if (curcolorPreset == "Standard/Native")
+                    strSync_CurrentColorPreset = "Native";
+            }
+            else
+            {
+                if (curcolorPreset == "Standard/Native")
+                    strSync_CurrentColorPreset = "Standard";
+            }
+
+            if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("UP3221Q"))
+            {                
+                if (curcolorPreset == "Custom 1 / User 1")
+                    strSync_CurrentColorPreset = "User 1";
+                else if (curcolorPreset == "Custom 2 / User 2")
+                    strSync_CurrentColorPreset = "User 2";
+                else if (curcolorPreset == "Custom 3 / User 3")
+                    strSync_CurrentColorPreset = "User 3";
+            }
+            else
+            {
+                if (curcolorPreset == "Custom 1 / User 1")
+                    strSync_CurrentColorPreset = "Custom 1";
+                else if (curcolorPreset == "Custom 2 / User 2")
+                    strSync_CurrentColorPreset = "Custom 2";
+                else if (curcolorPreset == "Custom 3 / User 3")
+                    strSync_CurrentColorPreset = "Custom 3";               
+            }
+
+
+            index = SupportColorPresets.FindIndex(x => x == "Game2");
+
+            if (index >= 0)
+            {               
+                if (curcolorPreset == "Game/Game1")
+                    strSync_CurrentColorPreset = "Game1";
+            }
+            else
+            {               
+                if (curcolorPreset == "Game/Game1")
+                    strSync_CurrentColorPreset = "Game";
+            }
+
+            return strSync_CurrentColorPreset;
         }
 
         #region UI Enable Flags

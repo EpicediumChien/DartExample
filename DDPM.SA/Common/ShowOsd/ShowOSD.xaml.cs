@@ -14,7 +14,7 @@ namespace DDPM.ShowOSD
         private TimeSpan time;
         private string showString = string.Empty;
         private double ShowTextFontSize = 80;
-        double tempW = 224.0/ 7.0;
+        double tempW = 224.0/ 6.0;
         double tempH = 80;
 
         public ShowOSDWin(string str, double dbFontSize = 80)
