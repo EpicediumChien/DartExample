@@ -3499,7 +3499,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         displayCurrentPropertiesInfo = DDMtoDDPM_DisplayProperties(impSettings.MonitorSettings);
                         if (Import_DisplayProperties(displayCurrentPropertiesInfo))
                         {
-                            
+                            writelog("[DisplayImportSettings] Import_DisplayProperties");
                         }
                         List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
                         monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
@@ -3551,6 +3551,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (settings.ServiceTag == monitorInfo.edid.ServiceTag)
                     {
+                        if (settings.ImpExpSettings == null)
+                        {
+                            ImpExpSettings impExpSettings = new ImpExpSettings();
+                            impExpSettings.SameModel = false;
+                            settings.ImpExpSettings = impExpSettings;
+                        }
                         settings.ImpExpSettings.SameModel = isSameModel;
                         break;
                     }
@@ -3570,6 +3576,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (settings.ServiceTag == monitorInfo.edid.ServiceTag)
                     {
+                        if (settings.ImpExpSettings == null)
+                        {
+                            ImpExpSettings impExpSettings = new ImpExpSettings();
+                            impExpSettings.SameModel = false;
+                            settings.ImpExpSettings = impExpSettings;
+                        }
                         return Task.FromResult(settings.ImpExpSettings.SameModel);
                     }
                 }
@@ -7761,7 +7773,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Input
             DDMtoDDPM_Input(DDMmonitorsettings);
             //Color
+            if (_ColorPresetPlugin != null)
+            {
+                _ColorPresetPlugin.Migration(DDMmonitorsettings.ColorPreset, DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, _SettingsPlugin);
+            }
             //Schedule
+            bool bSchedule = MigrateScheduleMonitorSettings(DDMmonitorsettings.Model, DDMmonitorsettings.ServiceTag, DDMmonitorsettings.BriConSchedule).Result;
         }
 
         private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings)
