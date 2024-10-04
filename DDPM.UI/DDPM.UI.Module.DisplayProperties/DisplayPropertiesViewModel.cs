@@ -271,6 +271,10 @@ namespace DDPM.UI.Module.DisplayProperties
                 {
                     Orientation_IsVisibility = Visibility.Collapsed;
                 }
+                else
+                {
+                    Orientation_IsVisibility = Visibility.Visible;
+                }
                 _SupportedHDR = displayPropertiesInfo.SupportedHDR;
                 _HDRStatus = displayPropertiesInfo.isHDREnable;
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
