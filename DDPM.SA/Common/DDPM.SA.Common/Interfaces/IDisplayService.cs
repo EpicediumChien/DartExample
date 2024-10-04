@@ -43,7 +43,7 @@ namespace DDPM.SA.Common
         event EventHandler<bool> HDRChangeEvent;
 
         Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos);
-
+        Task<DisplayCurrentPropertiesInfo> GetCurrentDisplayProperties(MonitorInfo monitorInfo);
         Task<bool> SetDisplayPropertiest(MonitorInfo monitorInfos, Properties properties, DisplayOrientation orientation);//Bruce 08-09 Modify the incoming value
         Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties);
         Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation);

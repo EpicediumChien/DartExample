@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DdmLibrary;
 using DdmLibrary.Utility;
+using System.Linq.Expressions;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -1096,12 +1097,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> ReadDDMMonitorSettings(string path, ref DDMMonitorSettings DDMmonitorsettings)
         {
-            if (File.Exists(path))
+            try
             {
-                if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
+                if (File.Exists(path))
                 {
-                    return Task<bool>.FromResult(true);
+                    if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
+                    {
+                        return Task<bool>.FromResult(true);
+                    }
                 }
+            }
+            catch 
+            {
+                ;
             }
             return Task<bool>.FromResult(false);
         }
@@ -1441,12 +1449,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 return false;
             }
-            //string info;
-            //if (!DDPMFileSecurity.SetJsonContentFromSerializedString(jArray.ToString(), monitorSettings_path, out info))//, false))
-            //{
-            //    WriteLog(info);
-            //    return Task.FromResult(false);
-            //}
+            string info;
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, JObject.FromObject(impexpSettings).ToString(), path, out info))
+            {
+                WriteLog(info);
+                return false;
+            }
 
             return true;
         }
@@ -1467,18 +1475,20 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         return ImpSettings;
                     }
                     string strReadJson = string.Empty;
-                    using (var reader = new StreamReader(path))
-                    {
-                        strReadJson = reader.ReadToEnd();
-                    }
+                    //using (var reader = new StreamReader(path))
+                    //{
+                    //    strReadJson = reader.ReadToEnd();
+                    //}
+                    //security SA
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, path, out info);//, false);
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
                         return ImpSettings;
                     try
                     {
-                        //string info;
-                        //string output = DDPMFileSecurity.GetSerializedJsonString(monitorSettings_path, out info);//, false);
-                        WriteLog($"strReadJson: " + strReadJson);
+                        
+                        WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
                     catch (Exception)
