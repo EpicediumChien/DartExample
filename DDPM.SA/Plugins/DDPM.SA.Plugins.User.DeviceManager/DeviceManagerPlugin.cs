@@ -3330,6 +3330,42 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        public Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel)
+        {
+            if (_SettingsPlugin != null)
+            {
+                List<DDPMMonitorSettings> monitorSettingslist = new List<DDPMMonitorSettings>();
+                monitorSettingslist = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                foreach (DDPMMonitorSettings settings in monitorSettingslist)
+                {
+                    if (settings.ServiceTag == monitorInfo.edid.ServiceTag)
+                    {
+                        settings.ImpExpSettings.SameModel = isSameModel;
+                        break;
+                    }
+                }
+                bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, monitorSettingslist).Result;
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> GetSameModel(MonitorInfo monitorInfo)
+        {
+            if (_SettingsPlugin != null)
+            {
+                List<DDPMMonitorSettings> monitorSettingslist = new List<DDPMMonitorSettings>();
+                monitorSettingslist = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                foreach (DDPMMonitorSettings settings in monitorSettingslist)
+                {
+                    if (settings.ServiceTag == monitorInfo.edid.ServiceTag)
+                    {
+                        return Task.FromResult(settings.ImpExpSettings.SameModel);
+                    }
+                }
+            }
+            return Task.FromResult(false);
+        }
+
         #endregion
 
         #region Gaming
@@ -7303,10 +7339,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         settings.ServiceTag = m.edid.ServiceTag;
                         settings.VCPs = GetAllVCPcode(m);
                         settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
+                        settings.EA = new EAMonitorSettings();
+                        settings.ImpExpSettings = new ImpExpSettings();
                         monitorSettingsList.Add(settings);
                         bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                     }
-
                 }
             }
         }

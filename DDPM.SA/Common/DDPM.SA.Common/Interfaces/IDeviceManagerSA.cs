@@ -502,6 +502,10 @@ namespace DDPM.SA.Common
 
         Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
 
+        Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
+
+        Task<bool> GetSameModel(MonitorInfo monitorInfo);
+
         #endregion public for ImpExpSettings
 
         //public for GUI to get the changes of display and peripherals
