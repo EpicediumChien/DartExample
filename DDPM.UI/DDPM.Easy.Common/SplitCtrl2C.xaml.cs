@@ -77,9 +77,30 @@ namespace DDPM.Easy.Common
             cellListV.Clear();
             cellListV.Add(new CellObj("2C1", cell_2C1));
             cellListV.Add(new CellObj("2C2", cell_2C2));
+
+            celBordersH.Clear();
+            celBordersH.Add(cellBd_2c1);
+            celBordersH.Add(cellBd_2c2);
         }
 
         #endregion Cell List
+
+        #region CellBorders
+        private List<CellBorder> celBordersH = new List<CellBorder>();
+        private List<CellBorder> celBordersV = new List<CellBorder>();
+
+        public List<CellBorder> CellBorders
+        {
+            get
+            {
+                if (VM.IsVertical)
+                    return celBordersV;
+                else
+                    return celBordersH;
+            }
+            set { }
+        }
+        #endregion
 
         #region Splitter List
 

@@ -318,6 +318,10 @@ namespace DDPM.UI.Common.UserControls
             return vm.FindItemBySplitJson(spj);
         }
 
+        public SplitItem? GetLatestItem()
+        {
+            return vm.GetLatestItem();
+        }
         //public SplitItem? ReplaceByFriendlyName(string friendlyName, )
         //{
         //    int idx = 0;
@@ -381,8 +385,7 @@ namespace DDPM.UI.Common.UserControls
             DataContext = vm;
             vm.RefreshDisplayItems();
             return spItem;
-        }
-
+        } 
 
         #endregion Recent List 
 
