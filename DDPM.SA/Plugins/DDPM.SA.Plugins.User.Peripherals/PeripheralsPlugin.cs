@@ -129,7 +129,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public async Task<DeviceHelper> GetDevices()
         {
-            ScanDevices();
+            //ScanDevices();
             if (_deviceHelper != null)
             {
                 return await Task.Run(() => _deviceHelper);
