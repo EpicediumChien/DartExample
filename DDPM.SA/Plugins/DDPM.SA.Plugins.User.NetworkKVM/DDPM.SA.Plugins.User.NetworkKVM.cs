@@ -355,16 +355,16 @@ namespace NetworkKVM.Plugins
                             _SupportedMonitors.Add(ModelName);
                             return Task.FromResult(true);
                         }
-                        else
-                        {
-                            string strSupport = ModelName.Substring(0, 1);
-                            switch (strSupport)
-                            {
-                                case "U":
-                                case "C":
-                                    return Task.FromResult(true);
-                            }
-                        }
+                        //else
+                        //{
+                        //    string strSupport = ModelName.Substring(0, 1);
+                        //    switch (strSupport)
+                        //    {
+                        //        case "U":
+                        //        case "C":
+                        //            return Task.FromResult(true);
+                        //    }
+                        //}
                     }
                 }
                 else
@@ -375,16 +375,16 @@ namespace NetworkKVM.Plugins
                         _SupportedMonitors.Add(ModelName);
                         return Task.FromResult(true);
                     }
-                    else
-                    {
-                        string strSupport = ModelName.Substring(0, 1);
-                        switch (strSupport)
-                        {
-                            case "U":
-                            case "C":
-                                return Task.FromResult(true);
-                        }
-                    }
+                    //else
+                    //{
+                    //    string strSupport = ModelName.Substring(0, 1);
+                    //    switch (strSupport)
+                    //    {
+                    //        case "U":
+                    //        case "C":
+                    //            return Task.FromResult(true);
+                    //    }
+                    //}
                 }
             }
             else
