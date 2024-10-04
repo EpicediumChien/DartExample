@@ -71,13 +71,40 @@ namespace DDPM.SA.Common.Security
 
             if (!Settings.DDPMFileSecurity.IsFilePathValid(filePathFileName, opt, out info))
             {
+#if DEBUG 
                 Console.WriteLine(info);
+#endif
                 return false;
             }
 
             if (!Settings.DDPMFileSecurity.IsPathSymbolicLinked(filePathFileName, out info))
             {
+#if DEBUG
                 Console.WriteLine(info);
+#endif
+                return false;
+            }
+
+            string filename = System.IO.Path.GetFileName(filePathFileName);
+            if (filename == null || string.IsNullOrEmpty(filename))
+            {
+                info = "File name - Invalid.";
+                return false;
+            }
+            if (filename.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
+            {
+                info = "File name - Invalid File Name Char.";
+                return false;
+            }
+
+            if (filename.Equals("CON") || filename.Equals("PRN") || filename.Equals("AUX") || filename.Equals("NUL") ||
+                filename.Equals("COM0") || filename.Equals("COM1") || filename.Equals("COM2") || filename.Equals("COM3") ||
+                filename.Equals("COM4") || filename.Equals("COM5") || filename.Equals("COM6") || filename.Equals("COM7") ||
+                filename.Equals("COM8") || filename.Equals("COM9") || filename.Equals("LPT0") || filename.Equals("LPT1") ||
+                filename.Equals("LPT2") || filename.Equals("LPT3") || filename.Equals("LPT4") || filename.Equals("LPT5") ||
+                filename.Equals("LPT6") || filename.Equals("LPT7") || filename.Equals("LPT8") || filename.Equals("LPT9"))
+            {
+                info = $"File name - ({filename}) reserved character.";
                 return false;
             }
 
