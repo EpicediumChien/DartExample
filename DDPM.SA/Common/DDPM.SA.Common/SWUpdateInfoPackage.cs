@@ -122,6 +122,7 @@ namespace DDPM.SA.Common
         public string ServerPath { get; set; }
         [JsonPropertyName("install_path")]
         public string InstallPath { get; set; }
+        public string MiniInstallerServer_path { get; set; }
         [JsonPropertyName("supportedOS")]
         public List<string> SupportedOS { get; set; }
         [JsonPropertyName("minimumSoftware")]

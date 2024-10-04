@@ -23,8 +23,68 @@
             <Grid>
                 <StackPanel>
 
+                    <Grid>
+                        <Border
+                            Width="648"
+                            Height="53"
+                            Margin="0,5,0,15"
+                            Background="#364861"
+                            CornerRadius="5"
+                            Visibility="{Binding GreayoutAlart}">   
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="38" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="7" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Border
+                        Grid.Column="0"
+                        Width="7"
+                        Background="#0E92F2"
+                        CornerRadius="5,0,0,5" />
+                                    <Grid
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                                        <Path Data="M9 1.125C13.3313 1.125 16.875 4.66875 16.875 9C16.875 13.3312 13.3313 16.875 9 16.875C4.66875 16.875 1.125 13.3312 1.125 9C1.125 4.66875 4.66875 1.125 9 1.125ZM9 0C4.05 0 0 4.05 0 9C0 13.95 4.05 18 9 18C13.95 18 18 13.95 18 9C18 4.05 13.95 0 9 0Z" Fill="white" />
+                                        <Path Data="M9.5625 7.3125L8.4375 7.3125L8.4375 14.2875L9.5625 14.2875L9.5625 7.3125Z" Fill="white" />
+                                        <Path Data="M9 5.40039C9.46599 5.40039 9.84375 5.02263 9.84375 4.55664C9.84375 4.09065 9.46599 3.71289 9 3.71289C8.53401 3.71289 8.15625 4.09065 8.15625 4.55664C8.15625 5.02263 8.53401 5.40039 9 5.40039Z" Fill="white" />
+                                    </Grid>
+                                </Grid>
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                    <TextBlock
+                        FontFamily="Roboto"
+                        FontSize="13"
+                        Foreground="White">
+                        <Run Text="Color is not available when" />
+                        <Hyperlink Click="Hyperlink_Click">
+                            <Hyperlink.Style>
+                                <Style TargetType="Hyperlink">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#31A2E3" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Hyperlink.Style>
+                            <Run Text="{Binding [Brightness.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
+                        </Hyperlink>
+                        <Run Text="{Binding [Brightness.3], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
                     <!-- RightGroupBorder.Manual -->
-                    <Border Style="{StaticResource RightGroupBorderStyle}">
+                    <Border 
+                        IsEnabled="{Binding ColorEnable}"
+                        Opacity="{Binding ColorOpacity}"
+                        Style="{StaticResource RightGroupBorderStyle}">
 
                         <!-- Group: Manual -->
                         <!--
@@ -107,7 +167,11 @@
                     </Border>
 
                     <!-- RightGroupBorder.Auto -->
-                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0">
+                    <Border 
+                        IsEnabled="{Binding ColorEnable}"
+                        Opacity="{Binding ColorOpacity}"
+                        Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0">
+                        
                         <Expander  x:Name="Expander_Auto" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                             <Expander.Header>
                                 <!-- Group Header: Auto-->
@@ -264,7 +328,10 @@
                     </Border>
 
                     <!-- RightGroupBorder.Nightlight -->
-                    <Border Style="{StaticResource RightGroupBorderStyle}"  Margin="0,16,0,0">
+                    <Border 
+                        IsEnabled="{Binding ColorEnable}"
+                        Opacity="{Binding ColorOpacity}"
+                        Style="{StaticResource RightGroupBorderStyle}"  Margin="0,16,0,0">
                         <Grid x:Name="Nightlight_bar">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -311,7 +378,10 @@
                     </Border>
 
                     <!-- RightGroupBorder.AdvancedSettings -->
-                    <Border Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
+                    <Border 
+                         IsEnabled="{Binding ColorEnable}"
+                         Opacity="{Binding ColorOpacity}"
+                         Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
                         <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dell.Client.Framework.Security.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,57 +60,27 @@ namespace DDPM.SA.Common.Security
             return true;
         }
 
-        public static bool InputValidation_FilePathFileName(string FilePathFileName, bool bLongPath, out string info)
+        public static bool InputValidation_FilePathFileName(string filePathFileName, bool ImportExistFileTrue, out string info)
         {
             info = "Valid";
-            bool bResult = true;
-            string FileName = FilePathFileName.Substring(FilePathFileName.LastIndexOf("\\")+1);
-            int len = FilePathFileName.Length;
-            if ((!bLongPath && (len < 1 || len > 260)) || (bLongPath && (len < 1 || len > 32767)))
+            PathCheckOption opt = PathCheckOption.None;
+            if (ImportExistFileTrue == false)
             {
-                info = $"InputValidation:  ({FilePathFileName}) length does not match";
-                Console.WriteLine(" Fail " + info);
+                opt = PathCheckOption.IgnoreFileExists;
+            }
+
+            if (!Settings.DDPMFileSecurity.IsFilePathValid(filePathFileName, opt, out info))
+            {
+                Console.WriteLine(info);
                 return false;
             }
 
-            for (int idx = 0; idx < FileName.Length; idx++)
+            if (!Settings.DDPMFileSecurity.IsPathSymbolicLinked(filePathFileName, out info))
             {
-                char temp = FileName[idx];
-                switch (temp)
-                {
-                    case '<':
-                    case '>':
-                    case ':':
-                    case '"':
-                    case '/':
-                    case '\\':
-                    case '|':
-                    case '?':
-                        info = $"InputValidation:  ({FileName}) invalid character";
-                        Console.WriteLine(" Fail " + info);
-                        bResult = false;
-                        break;
-                }
-            }
-
-            if (!bResult)
-            {
+                Console.WriteLine(info);
                 return false;
             }
 
-            if (FileName.Contains("CON") || FileName.Contains("PRN") || FileName.Contains("AUX") || FileName.Contains("NUL") ||
-                FileName.Contains("COM0") || FileName.Contains("COM1") || FileName.Contains("COM2") || FileName.Contains("COM3") ||
-                FileName.Contains("COM4") || FileName.Contains("COM5") || FileName.Contains("COM6") || FileName.Contains("COM7") ||
-                FileName.Contains("COM8") || FileName.Contains("COM9") || FileName.Contains("LPT0") || FileName.Contains("LPT1") ||
-                FileName.Contains("LPT2") || FileName.Contains("LPT3") || FileName.Contains("LPT4") || FileName.Contains("LPT5") ||
-                FileName.Contains("LPT6") || FileName.Contains("LPT7") || FileName.Contains("LPT8") || FileName.Contains("LPT9"))
-            {
-                bResult = false;
-                info = $"InputValidation:  ({FileName}) reserved character";
-                return bResult;
-            }
-
-            Console.WriteLine("InputValidation_FilePathFileName: Pass");
             return true;
         }
 

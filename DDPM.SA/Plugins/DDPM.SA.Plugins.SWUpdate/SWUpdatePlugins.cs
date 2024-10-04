@@ -238,7 +238,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         TheLatestVersion = Regex.Replace(Convert.ToInt32(swUpdateHelper.Softwares[i].SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4"),
                         SoftwareVersion = Regex.Replace(Convert.ToInt32(currentVersion).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(currentVersion).ToString("D4").Length * 2) - 1),
                         NeedUpdated = int.Parse(swUpdateHelper.Softwares[i].SoftwareVersion) > int.Parse(currentVersion) ? true : false,
-                        ServerPath = swUpdateHelper.Softwares[i].ServerPath,
+                        ServerPath = swUpdateHelper.Softwares[i].MiniInstallerServer_path,
                         SoftwareName = "DDPM",
                         FileSavepath = swUpdateHelper.Softwares[i].InstallPath
                     };
@@ -415,6 +415,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         NotificationFWupdate("Error", _notificationStr);
                         continue;
                     }
+                    /*Waiting for signature, temporary annotation
                     if (!CheckSHA(_installationFileStoragePath, out string FileCAInfo))
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FileCheckFail;
@@ -422,7 +423,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         _notificationStr = $"Software update unsuccessful.";
                         NotificationFWupdate("Error", _notificationStr);
                         continue;
-                    }
+                    }*/
                     string exeFilePath;
                     if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                     {
@@ -695,7 +696,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
                 }
-                if (!string.IsNullOrEmpty(exeFilePath))
+                /*Waiting for signature, temporary annotation
+                 if (!string.IsNullOrEmpty(exeFilePath))
                 {
                     CertificateCheck certificateCheck = new CertificateCheck();
                     if (!certificateCheck.CheckFile_Thumbprint(exeFilePath, _SWUpdateInfo.Thumbprint, out string FileCAInfo))
@@ -703,7 +705,12 @@ namespace DDPM.SA.Plugins.SWUpdate
                         _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " File check fail. Ex:" + FileCAInfo);
                         _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
                     }
-                }
+                    else
+                    {
+                        ret = true;
+                    }
+                }*/
+                ret = true;//Waiting for signature, to remove
             }
             else
             {
