@@ -260,7 +260,7 @@ namespace DDPM.SA.Common
 
         public Task<List<EAProfileDDPM>> ReadEzProfiles();
 
-        public Task<bool> WriteEzProfiles(MonitorInfo monitorInfo, EAProfileDDPM eaProfile);
+        public Task<bool> WriteEzProfiles(EAProfileDDPM eaProfile);
 
         public Task<bool> CleanEzProfiles();
         #endregion EasyMemory

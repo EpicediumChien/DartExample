@@ -123,10 +123,10 @@ namespace DDPM.UI.Module.EzMemory
             lea.Add(ea2);
 
 
-            EAProfileDDPM test = new EAProfileDDPM(9, "test", 8, lea, false, false, "0", "0", "0", false);
-            EAProfileDDPM test2 = new EAProfileDDPM(11, "test", 11, lea, false, false, "0", "0", "0", false);
-            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(_homeDevice.MonitorInfo, test);
-            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(_homeDevice.MonitorInfo, test2);
+            EAProfileDDPM test = new EAProfileDDPM(9, "test", 8, true, 111, true, "TEST", "TEST", lea);
+            EAProfileDDPM test2 = new EAProfileDDPM(11, "test", 11, true, 111, true, "TEST1", "TEST1", lea);
+            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test);
+            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test2);
             _vm._currentTotalPage = 0;
             _vm._currentPageIndex = 0;
             _vm.ProgressValue = 1;
