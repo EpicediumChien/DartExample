@@ -198,6 +198,40 @@ namespace DDPM.UI.Module.EzMemory
         {
             if (_vm._sortApps.Count >= 2)
             {
+                
+                int profileID = 0; 
+                string profileName = _vm.InputText;
+                int layout = 0; // Layout 可以先設為 0 
+
+                // 準備應用程式資訊
+                List<EAAppInfoDDPM> appInfos = _vm._sortApps.Select(app => new EAAppInfoDDPM(
+                    app.Value.AppName,
+                    app.Value.AppPath,
+                    app.Value.AppType == "False", // 判斷是否為 UWP 應用程式
+                    app.Value.AppUserModelID,
+                    string.Empty  // 假設 Param 預設為空，根據需求填入
+                )).ToList();
+
+                // 收集 UI 資料
+                bool isManualLaunch = ManulRB.IsChecked ?? false;
+                bool isAutoLaunch = AutoRB.IsChecked ?? false;
+                string selectedHour = isAutoLaunch ? HourCB.SelectedItem?.ToString() : string.Empty;
+                string selectedMinute = isAutoLaunch ? MinuteCB.SelectedItem?.ToString() : string.Empty;
+                string selectedAMPM = isAutoLaunch ? AMPMCB.SelectedItem?.ToString() : string.Empty;
+                bool isLaunchAtStartup = StartupCB.IsChecked ?? false;
+
+                EAProfileDDPM newProfile = new EAProfileDDPM(
+                    profileID,
+                    profileName,
+                    layout,
+                    appInfos,
+                    isManualLaunch,
+                    isAutoLaunch,
+                    selectedHour,
+                    selectedMinute,
+                    selectedAMPM,
+                    isLaunchAtStartup);
+
                 _deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
                 //LaunchAndArrangeApps();
             }
