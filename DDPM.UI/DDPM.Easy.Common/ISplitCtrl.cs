@@ -152,6 +152,10 @@ namespace DDPM.Easy.Common
 
         #endregion Cell list
 
+        #region CellBorders
+        public List<CellBorder> CellBorders { get; set; }
+        #endregion
+
         #region Settings
 
         //1 Settings are not stored in a SplitCtrl class member, instead, it apply to UI directly.
