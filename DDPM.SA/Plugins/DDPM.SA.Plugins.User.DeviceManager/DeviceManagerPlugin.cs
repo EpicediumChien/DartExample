@@ -7407,7 +7407,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (mos.Count == 0)
                 return mos;
 
-            return mos.GroupBy(p => new { p.DisplayName, p.edid.SerialNumber }).Select(g => g.First()).ToList();
+            return mos.GroupBy(p => new { p.DisplayName, p.Display_DeviceName, p.edid.SerialNumber }).Select(g => g.First()).ToList();
         }
 
         private void ReviewAllMonitorToAvoidDuplicatedInfo()
@@ -7427,14 +7427,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     for (int n = 0; n < nCount; n++)
                     {
-                        writelog($"[Original] Monitor: {_HadleMonitors[n].DisplayName}, SN: {_HadleMonitors[n].edid.SerialNumber}");
+                        writelog($"[Original] Monitor: {_HadleMonitors[n].DisplayName}, Device: {_HadleMonitors[n].Display_DeviceName},SN: {_HadleMonitors[n].edid.SerialNumber}");
                     }
 
                     List<MonitorInfo> distinctMonitor = RemoveDuplicatesByDisplayName(_HadleMonitors);
                     nCount = distinctMonitor.Count;
                     for (int n = 0; n < nCount; n++)
                     {
-                        writelog($"[Reviewed] Monitor: {distinctMonitor[n].DisplayName}, SN: {distinctMonitor[n].edid.SerialNumber}");
+                        writelog($"[Reviewed] Monitor: {distinctMonitor[n].DisplayName}, Device: {distinctMonitor[n].Display_DeviceName}SN: {distinctMonitor[n].edid.SerialNumber}");
                     }
 
                     _AllInfoMonitors = distinctMonitor;

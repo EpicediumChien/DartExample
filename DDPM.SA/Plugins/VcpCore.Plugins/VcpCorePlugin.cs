@@ -1164,6 +1164,7 @@ namespace VcpCore.Plugins
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
                                     ImageFileName = monitorInfoX.ImageFileName,
+                                    Display_DeviceName = monitorInfoX.Display_DeviceName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1217,6 +1218,7 @@ namespace VcpCore.Plugins
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
                                     ImageFileName = monitorInfoX.ImageFileName,
+                                    Display_DeviceName = monitorInfoX.Display_DeviceName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1252,6 +1254,7 @@ namespace VcpCore.Plugins
                                     series = monitorInfoX.series,
                                     MarketingName = monitorInfoX.MarketingName,
                                     ImageFileName = monitorInfoX.ImageFileName,
+                                    Display_DeviceName = monitorInfoX.Display_DeviceName,
                                 };
                                 OnVCPchanged(_VCPchangedEventArgs);
                             }
@@ -1390,6 +1393,7 @@ namespace VcpCore.Plugins
                                                 series = monitorInfoX.series,
                                                 MarketingName = monitorInfoX.MarketingName,
                                                 ImageFileName = monitorInfoX.ImageFileName,
+                                                Display_DeviceName = monitorInfoX.Display_DeviceName,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgs);
                                         }
@@ -1463,6 +1467,7 @@ namespace VcpCore.Plugins
                                                 series = monitorInfoX.series,
                                                 MarketingName = monitorInfoX.MarketingName,
                                                 ImageFileName = monitorInfoX.ImageFileName,
+                                                Display_DeviceName = monitorInfoX.Display_DeviceName,
                                             };
                                             OnVCPchanged(_VCPchangedEventArgIIs);
                                         }
@@ -1490,6 +1495,7 @@ namespace VcpCore.Plugins
                                             series = monitorInfoX.series,
                                             MarketingName = monitorInfoX.MarketingName,
                                             ImageFileName = monitorInfoX.ImageFileName,
+                                            Display_DeviceName = monitorInfoX.Display_DeviceName,
                                         };
                                         OnVCPchanged(_VCPchangedEventArgs);
                                     }
@@ -1700,6 +1706,7 @@ namespace VcpCore.Plugins
                                                 series = m.series,
                                                 MarketingName = m.MarketingName,
                                                 ImageFileName = m.ImageFileName,
+                                                Display_DeviceName = m.Display_DeviceName,
                                             };
                                             _tmp.Add(minfo);
                                         }
@@ -1806,6 +1813,7 @@ namespace VcpCore.Plugins
                         monitorInfo.series = MonitorInfoX.series;
                         monitorInfo.MarketingName = MonitorInfoX.MarketingName;
                         monitorInfo.ImageFileName = MonitorInfoX.ImageFileName;
+                        monitorInfo.Display_DeviceName = MonitorInfoX.Display_DeviceName;
                         _AllInfoMonitors_Mix.Add((MonitorInfoX, monitorInfo));
                     }
                 }
@@ -2044,6 +2052,7 @@ namespace VcpCore.Plugins
                             _TargetMonitor.Handle = hdcMonitor;
                             _TargetMonitor.pDevmode = devmode;
                             _TargetMonitor.displaydevice = dd;
+                            _TargetMonitor.Display_DeviceName = dd.DeviceName;
                             _TargetMonitor.hPhysicalMonitor = pPhysicalMonitors[realindex].hPhysicalMonitor;
                             _TargetMonitor.szPhysicalMonitorDescription = pPhysicalMonitors[realindex].szPhysicalMonitorDescription;
                             _TargetMonitor.ColorPresentDescription = new Dictionary<string, Dictionary<string, string>>();
@@ -2491,6 +2500,7 @@ namespace VcpCore.Plugins
                         series = monitorInfoX.series,
                         MarketingName = monitorInfoX.MarketingName,
                         ImageFileName = monitorInfoX.ImageFileName,
+                        Display_DeviceName = monitorInfoX.Display_DeviceName,
                     };
                     OnVCPchanged(_VCPchangedEventArgs);
 
