@@ -3190,6 +3190,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             Dictionary<object, object> cacheTable = new Dictionary<object, object>();
                             cacheTable = FindVCPTable(VCPTable, monitorInfo.edid);
+                            monitorSettings.DisplayPropertiesInfo = Export_DisplayProperties(monitorInfo);
                             foreach (VCPCode vcp in monitorSettings.VCPs)
                             {
                                 if (vcp.Value != null)
@@ -3230,13 +3231,69 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
         {
             ImportVCP importVCP = new ImportVCP();
-            if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCPCode> vcps).Result)
+            if (_SettingsPlugin != null)
             {
-                if (vcps != null)
+                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, out List<VCPCode> vcps).Result)
                 {
-                    if (vcps.Count > 0)
+                    if (vcps != null)
                     {
-                        //set ImportVCPSequence
+                        if (vcps.Count > 0)
+                        {
+                            //set ImportVCPSequence
+                            SetVCPSequence(monitorInfo, vcps);
+                            foreach (VCPCode code in vcps)
+                            {
+                                writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                    importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                {
+                                    bool b = false;
+                                    ObjGetVCP objGetVCP = new ObjGetVCP();
+                                    //SHR on/off need load settings
+                                    //if (code.Code == 0xF0)
+                                    //{
+                                    //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                    //}
+                                    //get vcp code
+                                    objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                    if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                    {
+                                        //set vcp code
+                                        writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                    }
+                                }
+                            }
+                            return Task.FromResult(true);
+                        }
+                        else
+                        {
+                            writelog("[DisplayImportSettings] VCPs List count is 0");
+                        }
+                    }
+                    else
+                    {
+                        writelog("[DisplayImportSettings] VCPs List is null");
+                    }
+                }
+                else
+                {
+                    //Import DDMSettings
+                    DDMImpSettings impSettings = new DDMImpSettings();
+                    impSettings = _SettingsPlugin.ReadDDMImpSettingsFile(path).Result;
+                    if (impSettings != null)
+                    {
+                        DDMtoDDPM_Input(impSettings.MonitorSettings);
+                        DisplayCurrentPropertiesInfo displayCurrentPropertiesInfo = new DisplayCurrentPropertiesInfo();
+                        displayCurrentPropertiesInfo = DDMtoDDPM_DisplayProperties(impSettings.MonitorSettings);
+                        if (Import_DisplayProperties(displayCurrentPropertiesInfo))
+                        {
+                            
+                        }
+                        List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
+                        monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                        int index = monitorSettingsList.FindIndex(x => (x.ServiceTag == monitorInfo.edid.ServiceTag));
+                        vcps = monitorSettingsList[index].VCPs;
                         SetVCPSequence(monitorInfo, vcps);
                         foreach (VCPCode code in vcps)
                         {
@@ -3262,15 +3319,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             }
                         }
                         return Task.FromResult(true);
+
                     }
                     else
                     {
-                        writelog("[DisplayImportSettings] VCPs List count is 0");
+                        writelog("[DisplayImportSettings]DDMImpSettingsFile is null");
                     }
-                }
-                else
-                {
-                    writelog("[DisplayImportSettings] VCPs List is null");
                 }
             }
             return Task.FromResult(false);
@@ -6890,75 +6944,74 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return inputlist;
         }
 
-        private void DDMtoDDPM_Input(DDMMonitorSettings DDMmonitorsettings, List<DDPMMonitorSettings> ddpmMonitorSettings)
+        private void DDMtoDDPM_Input(DDMMonitorSettings DDMmonitorsettings)
         {
-            Dictionary<string, InputInfo>  DDMinputlist = new Dictionary<string, InputInfo>();
-            Input input = DDMmonitorsettings.Input;
-            if (input.FriendlyNames != null)
+            if (DDMmonitorsettings != null)
             {
-                if (input.FriendlyNames.Count != 0)
+                Dictionary<string, InputInfo> DDMinputlist = new Dictionary<string, InputInfo>();
+                string model = DDMmonitorsettings.Model;
+                string serviceTag = DDMmonitorsettings.ServiceTag;
+                Input input = DDMmonitorsettings.Input;
+                if (input.FriendlyNames != null)
                 {
-                    foreach (FriendlyName friendlyName in input.FriendlyNames)
+                    if (input.FriendlyNames.Count != 0)
                     {
-                        foreach (var vcpcode in VcpCodeList.VCP60)
+                        foreach (FriendlyName friendlyName in input.FriendlyNames)
                         {
-                            InputInfo inputInfo = new InputInfo();
-                            if (vcpcode.Value == (byte)(uint)friendlyName.Input)
+                            foreach (var vcpcode in VcpCodeList.VCP60)
                             {
-                                inputInfo.InputName = friendlyName.Name;
-                                inputInfo.Code = vcpcode.Value;
-                                inputInfo.USBUpstream = string.Empty;
-                                DDMinputlist.Add(vcpcode.Key, inputInfo);
-                                break;
+                                InputInfo inputInfo = new InputInfo();
+                                if (vcpcode.Value == (byte)(uint)friendlyName.Input)
+                                {
+                                    inputInfo.InputName = friendlyName.Name;
+                                    inputInfo.Code = vcpcode.Value;
+                                    inputInfo.USBUpstream = string.Empty;
+                                    DDMinputlist.Add(vcpcode.Key, inputInfo);
+                                    break;
+                                }
                             }
                         }
+                        string strDDMinputlist = InputSourceListSerialize(DDMinputlist);
+                        if (_SettingsPlugin != null)
+                        {
+                            List<DDPMMonitorSettings> ddpmMonitorSettings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+                            if (ddpmMonitorSettings != null)
+                            {
+                                int index = ddpmMonitorSettings.FindIndex(x => x.ServiceTag == serviceTag);
+                                if (index != -1)
+                                {
+                                    ddpmMonitorSettings[index].Input.strInputSourceList = strDDMinputlist;
+                                }
+                                else
+                                {
+                                    DDPMMonitorSettings monitorSettings = new DDPMMonitorSettings();
+                                    monitorSettings.ServiceTag = serviceTag;
+                                    monitorSettings.Model = model;
+                                    monitorSettings.Input.strInputSourceList = strDDMinputlist;
+                                }
+
+                                bool b = _SettingsPlugin.WriteMonitorSettings(model, ddpmMonitorSettings).Result;
+                            }
+                        }
+                        else
+                        {
+                            writelog("[DDMtoDDPM_Input]ddpmMonitorSettings is null!");
+                        }
+                    }
+                    else
+                    {
+                        writelog("[DDMtoDDPM_Input]FriendlyNames count is 0...");
                     }
                 }
                 else
                 {
-                    writelog("FriendlyNames count is 0...");
+                    writelog("[DDMtoDDPM_Input]FriendlyNames is null!");
                 }
             }
             else
             {
-                writelog("FriendlyNames is null!");
+                writelog("[DDMtoDDPM_Input]DDMmonitorsettings is null!");
             }
-
-            //InputTypeString inputTypeString = new InputTypeString();
-            //Dictionary<string, InputInfo> inputlist = new Dictionary<string, InputInfo>();
-            //Dictionary<string, InputInfo> newinputlist = new Dictionary<string, InputInfo>();
-            //List<string> inputType = new List<string>();
-            //List<string> newinputType = new List<string>();
-            //foreach (FriendlyName friendlyName in input.FriendlyNames)
-            //{
-            //    foreach (var vcpcode in VcpCodeList.VCP60)
-            //    {
-            //        InputInfo inputInfo = new InputInfo();
-            //        if (vcpcode.Value == (uint)friendlyName.Input)
-            //        {
-            //            inputType.Add(vcpcode.Key);
-            //            inputInfo.InputName = friendlyName.Name;
-            //            inputInfo.Code = vcpcode.Value;
-            //            inputInfo.USBUpstream = string.Empty;
-            //            inputlist.Add(vcpcode.Key, inputInfo);
-            //            break;
-            //        }
-            //    }
-            //}
-
-            //newinputType = inputTypeString.SubInputType(inputType);
-
-            //foreach (var inputsource in inputlist)
-            //{
-            //    if (newinputType.Exists(x => x == inputsource.Key))
-            //    {
-            //        newinputlist.Add(inputsource.Key, inputsource.Value);
-            //    }
-            //    else if (newinputType.Exists(x => x == inputsource.Key.Substring(0, inputsource.Key.Length - 1)))
-            //    {
-            //        newinputlist.Add(inputsource.Key.Substring(0, inputsource.Key.Length - 1), inputsource.Value);
-            //    }
-            //}
         }
 
         #endregion
@@ -7249,6 +7302,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         settings.Model = m.modelName;
                         settings.ServiceTag = m.edid.ServiceTag;
                         settings.VCPs = GetAllVCPcode(m);
+                        settings.DisplayPropertiesInfo = new DisplayCurrentPropertiesInfo();
                         monitorSettingsList.Add(settings);
                         bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                     }
@@ -7304,11 +7358,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string migration = string.Empty;
                 if (_SettingsPlugin.isDDMMigration(out migration).Result)
                 {
+                    DDMUserSettings ddmUserSettings = new DDMUserSettings();
+                    string path = migration + "\\" + "UserSettings";
                     DirectoryInfo di = new DirectoryInfo(migration);
+                    if (_SettingsPlugin.ReadDDMUserSettings(path, ref ddmUserSettings).Result)
+                    {
+                        //Hotkey
+                        DDMtoDDPM_Hotkey(ddmUserSettings);
+                    }
+                    else
+                    {
+                        writelog($"[DDMMigration] read DDM UserSettings file fail: {path}");
+                    }
                     foreach (var file in di.GetFiles("*_*"))
                     {
                         DDMMonitorSettings DDMmonitorsettings = new DDMMonitorSettings();
-                        if (_SettingsPlugin.ReadDDMMonitorSettings(migration, ref DDMmonitorsettings).Result)
+                        path = migration + "\\" + file.Name;
+                        if (_SettingsPlugin.ReadDDMMonitorSettings(path, ref DDMmonitorsettings).Result)
                         {
                             //add settings file in DDPM
                             bool binit = false;
@@ -7317,18 +7383,84 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (binit)
                             {
                                 //DDM settings -> DDPM settings
-                                ImportDDMMonitorSettings(DDMmonitorsettings, ddpmMonitorSettings);
+                                ImportDDMMonitorSettings(DDMmonitorsettings);
+                            }
+                            else
+                            {
+                                writelog("[DDMMigration] InitDDPMMonitorConfigFile fail");
                             }
                         }
+                        else
+                        {
+                            writelog($"[DDMMigration] read DDM MonitorSettings file fail: {path}");
+                        }
                     }
+                }
+                else
+                {
+                    writelog("[DDMMigration] not find Migration folder.");
                 }
             }
         }
 
-        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings, List<DDPMMonitorSettings> ddpmMonitorSettings)
+        private void ImportDDMMonitorSettings(DDMMonitorSettings DDMmonitorsettings)
         {
-            DDMtoDDPM_Input(DDMmonitorsettings, ddpmMonitorSettings);
+            //Input
+            DDMtoDDPM_Input(DDMmonitorsettings);
+            //Color
+            //Schedule
         }
+
+        private void DDMtoDDPM_Hotkey(DDMUserSettings ddmUserSettings)
+        {
+            if (ddmUserSettings != null && _SettingsPlugin != null)
+            {
+                List<HotkeySettings> hotkeySettingList = _SettingsPlugin.ReadHotkeySettings().Result;
+                HotkeySettings hotkeySettings = new HotkeySettings();
+                HotkeyInfo hotkeyInfo = new HotkeyInfo();
+                hotkeySettings.ServiceTag = "DDPM";
+                hotkeySettings.SerialNumber = "DDPM";
+                hotkeySettings.ModelName = "DDPM";
+                foreach (var Hotkey in ddmUserSettings.Hotkeys)
+                {
+                    if (Hotkey.Keys != null)
+                    {
+                        if (Hotkey.Keys.Count != 0)
+                        {
+                            DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
+                            if (dDMtodDPM.HotkeyMap.TryGetValue(Hotkey.Function, out HotkeyType hotkeyType))
+                            {
+                                hotkeyInfo = new HotkeyInfo();
+                                hotkeyInfo.Job = dDMtodDPM.HotkeyMap[Hotkey.Function];
+                                foreach (var key in Hotkey.Keys)
+                                {
+                                    if (key == 262144)
+                                    {
+                                        hotkeyInfo.Hotkey.Add(VirtualKey.Menu);
+                                    }
+                                    else if (key == 131072)
+                                    {
+                                        hotkeyInfo.Hotkey.Add(VirtualKey.Control);
+                                    }
+                                    else if (key == 65536)
+                                    {
+                                        hotkeyInfo.Hotkey.Add(VirtualKey.Shift);
+                                    }
+                                    else
+                                    {
+                                        hotkeyInfo.Hotkey.Add((VirtualKey)key);
+                                    }
+                                }
+                                hotkeySettings.HotkeyInfo.Add(hotkeyInfo);
+                            }
+                        }
+                    }
+                }
+                hotkeySettingList.Add(hotkeySettings);
+                bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
+            }
+        }
+
         private DisplayCurrentPropertiesInfo DDMtoDDPM_DisplayProperties(DDMMonitorSettings DDMmonitorsettings)
         {
             DisplayCurrentPropertiesInfo ret = null;

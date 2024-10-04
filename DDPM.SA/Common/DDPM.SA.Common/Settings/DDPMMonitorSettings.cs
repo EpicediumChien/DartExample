@@ -93,6 +93,11 @@ namespace DDPM.SA.Common.Settings
         */
     }
 
+    public class ImpExpSettings
+    {
+        public bool SameModel { get; set; } = false;
+    }
+
     public class DDPMMonitorSettings
     {
         public double Version { get; set; }
@@ -103,6 +108,7 @@ namespace DDPM.SA.Common.Settings
         public List<VCPCode> VCPs { get; set; } = new List<VCPCode>();
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
         public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
-        public HotkeySettings hotkeySettings { get; set; }
+        //public HotkeySettings hotkeySettings { get; set; }
+        public ImpExpSettings ImpExpSettings { get; set; }
     }
 }
