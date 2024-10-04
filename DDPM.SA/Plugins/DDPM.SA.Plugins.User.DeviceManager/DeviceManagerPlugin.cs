@@ -221,7 +221,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //    displayChange.Initialize_DisplayChangeEvent();
             //});
             //displayChange.DisplayChange_Event += SystemEvents_DisplaySettingsChanged;
-            CallQAM_UI();
+            
         }
 
         #endregion
@@ -2219,11 +2219,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return tcs.Task;
         }
         QAMPage qam;
-        private void CallQAM_UI()
+        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
         {
             Thread thread1 = new Thread(() =>
             {
-                qam = new QAMPage();
+                qam = new QAMPage(deviceMangerPlugin);
                 qam.Dispatcher.Invoke(() => qam.Show());
                 Dispatcher.Run();
             });
@@ -4784,6 +4784,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     CheckDocks();
                 });
                 thread.Start();
+                CallQAM_UI(this);
             }
             //>>
 

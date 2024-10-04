@@ -20,29 +20,35 @@
         </ResourceDictionary>
     </Window.Resources>
     <Border Background="#0A0E14"
-            CornerRadius="10"
-            Height="{Binding QAMPage_Height}">
+            CornerRadius="10">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="56" />
                 <RowDefinition Height="72" />
-                <RowDefinition Height="{Binding FullView_Height}"/>
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <UXControls:UXTextBlock FontSize="16"
                                     TextBlockType="Header1"
                                     FontFamily="Roboto"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding DeviceModel}" />
-            <StackPanel Orientation="Horizontal"
-                        Grid.Row="1">
+                                    Text="{Binding DeviceModel}"
+                                    Foreground="White" />
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
                 <Border x:Name="btnRes0"
+                        Grid.Column="0"
                         Focusable="True"
                         MouseLeftButtonDown="Presets_Click"
                         Height="72"
-                        Width="72"
                         Tag="0"
-                        IsEnabled="{Binding IsEnable[0]}">
+                        IsEnabled="{Binding Settings_IsEnable[0]}"
+                        Visibility="{Binding Settings_IsVisibility[0]}">
                     <Border.Style>
                         <Style TargetType="Border"
                                BasedOn="{StaticResource Border_Test}">
@@ -72,12 +78,13 @@
                           VerticalAlignment="Center" />
                 </Border>
                 <Border x:Name="btnRes1"
+                        Grid.Column="1"
                         Focusable="True"
                         MouseLeftButtonDown="AutoFraming_Click"
                         Height="72"
-                        Width="72"
                         Tag="1"
-                        IsEnabled="{Binding IsEnable[1]}">
+                        IsEnabled="{Binding Settings_IsEnable[1]}"
+                        Visibility="{Binding Settings_IsVisibility[1]}">
                     <Border.Style>
                         <Style TargetType="Border"
                                BasedOn="{StaticResource Border_Test}">
@@ -107,12 +114,13 @@
                           VerticalAlignment="Center" />
                 </Border>
                 <Border x:Name="btnRes2"
+                        Grid.Column="2"
                         Focusable="True"
                         MouseLeftButtonDown="FOV_Click"
                         Height="72"
-                        Width="72"
                         Tag="2"
-                        IsEnabled="{Binding IsEnable[2]}">
+                        IsEnabled="{Binding Settings_IsEnable[2]}"
+                        Visibility="{Binding Settings_IsVisibility[2]}">
                     <Border.Style>
                         <Style TargetType="Border"
                                BasedOn="{StaticResource Border_Test}">
@@ -147,12 +155,13 @@
                     </Grid>
                 </Border>
                 <Border x:Name="btnRes3"
+                        Grid.Column="3"
                         Focusable="True"
                         MouseLeftButtonDown="Zoom_Click"
                         Height="72"
-                        Width="72"
                         Tag="3"
-                        IsEnabled="{Binding IsEnable[3]}">
+                        IsEnabled="{Binding Settings_IsEnable[3]}"
+                        Visibility="{Binding Settings_IsVisibility[3]}">
                     <Border.Style>
                         <Style TargetType="Border"
                                BasedOn="{StaticResource Border_Test}">
@@ -180,7 +189,7 @@
                               VerticalAlignment="Center" />
                     </Grid>
                 </Border>
-            </StackPanel>
+            </Grid>
             <ContentControl Grid.Row="2"
                             Content="{Binding FullView}" />
         </Grid>

@@ -19,56 +19,61 @@
             Height="216"
             CornerRadius="0,0,10,10">
         <StackPanel>
-            <Border Style="{StaticResource BorderUnpair}"
+            <Border x:Name="btnFOV0"
+                    Style="{StaticResource BorderUnpair}"
                     Background="Transparent"
                     Width="256"
                     Height="36"
-                    MouseLeftButtonDown="FOV65_Click"
+                    MouseLeftButtonDown="FOV_Click"
                     Cursor="Hand"
                     Margin="8,30,8,10"
-                    Visibility="Visible">
+                    Tag="0"
+                    Visibility="{Binding FOV_Visibility[0]}">
                 <Grid>
                     <UXControls:UXTextBlock Foreground="#F5F6F7"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             FontFamily="Roboto"
                                             FontSize="14"
-                                            Text="65°" />
+                                            Name="txtFOV0" />
                 </Grid>
             </Border>
-            <Border Style="{StaticResource BorderUnpair}"
+            <Border x:Name="btnFOV1"
+                    Style="{StaticResource BorderUnpair}"
                     Background="Transparent"
                     Width="256"
                     Height="36"
-                    MouseLeftButtonDown="FOV78_Click"
+                    MouseLeftButtonDown="FOV_Click"
                     Cursor="Hand"
                     Margin="8,10,8,10"
-                    Visibility="Visible">
+                    Tag="1"
+                    Visibility="{Binding FOV_Visibility[1]}">
                 <Grid>
                     <UXControls:UXTextBlock Foreground="#F5F6F7"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             FontFamily="Roboto"
                                             FontSize="14"
-                                            Text="78°" />
+                                            Name="txtFOV1" />
                 </Grid>
             </Border>
-            <Border Style="{StaticResource BorderUnpair}"
+            <Border x:Name="btnFOV2"
+                    Style="{StaticResource BorderUnpair}"
                     Background="Transparent"
                     Width="256"
                     Height="36"
-                    MouseLeftButtonDown="FOV90_Click"
+                    MouseLeftButtonDown="FOV_Click"
                     Cursor="Hand"
                     Margin="8,10,8,10"
-                    Visibility="Visible">
+                    Tag="2"
+                    Visibility="{Binding FOV_Visibility[2]}">
                 <Grid>
-                    <UXControls:UXTextBlock Name="txtFWUpdate"
-                                            Foreground="#F5F6F7"
+                    <UXControls:UXTextBlock Foreground="#F5F6F7"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"
                                             FontFamily="Roboto"
                                             FontSize="14"
-                                            Text="90°" />
+                                            Name="txtFOV2" />
                 </Grid>
             </Border>
         </StackPanel>

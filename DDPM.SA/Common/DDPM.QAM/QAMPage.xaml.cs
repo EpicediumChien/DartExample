@@ -1,4 +1,6 @@
-﻿using Dell.Client.Framework.UX.WPF.Controls;
+﻿using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +23,16 @@ namespace DDPM.QAM
     public partial class QAMPage : Window
     {
         CameraSetting CameraSetting;
-        public QAMPage()
+        private QAMPageViewModel vm
+        {
+            get { return (QAMPageViewModel)DataContext; }
+        }
+        public QAMPage(IDeviceManagerSA deviceMangerPlugin)
         {
             InitializeComponent();
+            DdpmCommonHelper.DeviceManagerSA = deviceMangerPlugin;
+            DdpmCommonHelper.QAMPageViewModel = new QAMPageViewModel();
+            DataContext = DdpmCommonHelper.QAMPageViewModel;
         }
         private void Close_Click(object sender, MouseButtonEventArgs e)
         {
@@ -47,6 +56,8 @@ namespace DDPM.QAM
                 CameraSetting = new CameraSetting();
                 CameraSetting.Left = this.Left + this.Width;
                 CameraSetting.Top = this.Top;
+                CameraSetting.Width = 288;
+                CameraSetting.Height = 128;
                 CameraSetting.Show();
             }
         }
@@ -61,6 +72,11 @@ namespace DDPM.QAM
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 this.DragMove();
+                if (CameraSetting != null)
+                {
+                    CameraSetting.Left = this.Left + this.Width;
+                    CameraSetting.Top = this.Top;
+                }
             }
         }
     }

@@ -23,21 +23,52 @@ namespace DDPM.QAM
         public FOVPage()
         {
             InitializeComponent();
+            DataContext = DdpmCommonHelper.QAMPageViewModel;
+            InitializeFOV();
         }
-
-        private void FOV65_Click(object sender, MouseButtonEventArgs e)
+        private void InitializeFOV()
         {
+            QAMPageViewModel vm = DataContext as QAMPageViewModel;
+            if (vm != null && vm.CurrentDeviceInfo != null)
+            {
+                var FOV = vm.CurrentDeviceInfo!.FOVValues;
+                btnFOV0.Visibility = Visibility.Collapsed;
+                btnFOV1.Visibility = Visibility.Collapsed;
+                btnFOV2.Visibility = Visibility.Collapsed;
+                switch (FOV.Length)
+                {
+                    case 2:
+                        vm.FullView_Height = "172";
+                        txtFOV0.Text = $"{FOV[0]}°";
+                        txtFOV1.Text = $"{FOV[1]}°";
+                        btnFOV0.Visibility = Visibility.Visible;
+                        btnFOV1.Visibility = Visibility.Visible;
+                        break;
+                    case 3:
+                        vm.FullView_Height = "216";
+                        txtFOV0.Text = $"{FOV[0]}°";
+                        txtFOV1.Text = $"{FOV[1]}°";
+                        txtFOV2.Text = $"{FOV[2]}°";
+                        btnFOV0.Visibility = Visibility.Visible;
+                        btnFOV1.Visibility = Visibility.Visible;
+                        btnFOV2.Visibility = Visibility.Visible;
+                        break;
+                }
+            }
 
         }
-
-        private void FOV78_Click(object sender, MouseButtonEventArgs e)
+        private void FOV_Click(object sender, MouseButtonEventArgs e)
         {
+            if (sender is Border bdr)
+            {
+                QAMPageViewModel vm = DataContext as QAMPageViewModel;
+                var index = int.Parse(bdr.Tag.ToString()!);
+                var val = vm.FOVs[index];
+                if (val == vm.FieldOfView)
+                { return; }
 
-        }
-
-        private void FOV90_Click(object sender, MouseButtonEventArgs e)
-        {
-
+                vm.FieldOfView = val;
+            }
         }
     }
 }

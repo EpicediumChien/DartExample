@@ -26,7 +26,7 @@ namespace DDPM.QAM
         public CameraSetting()
         {
             InitializeComponent();
-            DataContext = new QAMPageViewModel();
+            DataContext = DdpmCommonHelper.QAMPageViewModel;
             vm.RefreshUI();
         }
 
@@ -36,8 +36,9 @@ namespace DDPM.QAM
             {
                 PresetsPage presetsPage = new PresetsPage();
                 presetsPage.DataContext = vm;
-                vm.QAMPage_Height = "344";
-                vm.FullView_Height = "216";
+                double newHeight = 128 + presetsPage.Height;
+                this.Height = newHeight;
+                vm.FullView_Height = presetsPage.Height.ToString();
                 vm.Settings_Selected(0);
                 vm.RefreshUI();
                 vm.OpenFullView(presetsPage);
@@ -50,8 +51,9 @@ namespace DDPM.QAM
             {
                 AutoFramingPage autoFramingPage = new AutoFramingPage();
                 autoFramingPage.DataContext = vm;
-                vm.QAMPage_Height = "200";
-                vm.FullView_Height = "72";
+                double newHeight = 128 + autoFramingPage.Height;
+                this.Height = newHeight;
+                vm.FullView_Height = autoFramingPage.Height.ToString();
                 vm.Settings_Selected(1);
                 vm.RefreshUI();
                 vm.OpenFullView(autoFramingPage);
@@ -64,8 +66,9 @@ namespace DDPM.QAM
             {
                 FOVPage fOVPage = new FOVPage();
                 fOVPage.DataContext = vm;
-                vm.QAMPage_Height = "344";
-                vm.FullView_Height = "216";
+                double newHeight = 128 + fOVPage.Height;
+                this.Height = newHeight;
+                vm.FullView_Height = fOVPage.Height.ToString();
                 vm.Settings_Selected(2);
                 vm.RefreshUI();
                 vm.OpenFullView(fOVPage);
@@ -78,8 +81,9 @@ namespace DDPM.QAM
             {
                 ZoomPage zoomPage = new ZoomPage();
                 zoomPage.DataContext = vm;
-                vm.QAMPage_Height = "200";
-                vm.FullView_Height = "72";
+                double newHeight = 128 + zoomPage.Height;
+                this.Height = newHeight;
+                vm.FullView_Height = zoomPage.Height.ToString();
                 vm.Settings_Selected(3);
                 vm.RefreshUI();
                 vm.OpenFullView(zoomPage);

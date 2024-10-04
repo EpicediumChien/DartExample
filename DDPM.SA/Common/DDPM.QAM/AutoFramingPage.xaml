@@ -13,6 +13,58 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!-- ToggleButton的样式 -->
+            <Style TargetType="ToggleButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Grid Width="67"
+                                  Height="20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="24" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" x:Name="SwitchText"
+                                           Text="OFF"
+                                           Width="24"
+                                           Height="20"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Right"
+                                           Foreground="White" />
+                                <Border Grid.Column="2" x:Name="BackgroundBorder"
+                                        Width="37"
+                                        Height="17"
+                                        CornerRadius="9"
+                                        Background="#A4B8CD" />
+                                <Ellipse Grid.Column="2" x:Name="SwitchThumb"
+                                         Width="12"
+                                         Height="12"
+                                         Fill="White"
+                                         HorizontalAlignment="Left"
+                                         Margin="5,0,0,0" />
+                                
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked"
+                                         Value="True">
+                                    <Setter TargetName="BackgroundBorder"
+                                            Property="Background"
+                                            Value="#0672CB" />
+                                    <Setter TargetName="SwitchThumb"
+                                            Property="HorizontalAlignment"
+                                            Value="Right" />
+                                    <Setter TargetName="SwitchThumb"
+                                            Property="Margin"
+                                            Value="0,0,5,0" />
+                                    <Setter TargetName="SwitchText"
+                                            Property="Text"
+                                            Value="ON" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Border Background="#141D28"
@@ -49,10 +101,9 @@
             </StackPanel>
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center">
-                <UXControls:UXToggleSwitch IsChecked="{Binding Path= AutoFramingStatus}"
-                                           ContentTextVisibility="True"
-                                           Content="{Binding Path=AutoFramingStatus_String}"
-                                           Foreground="White" />
+                <ToggleButton Width="67"
+                              Height="20"
+                              IsChecked="{Binding AutoFramingStatus}"/>
             </Grid>
         </Grid>
     </Border>
