@@ -79,7 +79,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     filePath = filePath.Substring(0, filePath.IndexOf("."));
 
                     string info = string.Empty;
-                    if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filePath, false, out info))
+                    if (DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filePath, false, out info))
                     {
                         vm.SaveDiagnosticReport(filePath);
                     }
@@ -107,7 +107,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         filePath += ".mif";
                     }
                     string info = string.Empty;
-                    if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filePath, false, out info))
+                    if (DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filePath, false, out info))
                     {
                         vm.SaveMonitorAssetReport(filePath);
                     }
