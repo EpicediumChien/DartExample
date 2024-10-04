@@ -23,6 +23,9 @@ namespace DDPM.UI.Module.Color
             string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
             strFolder += "\\";
 
+            string info = string.Empty;
+            DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
+
             if (!System.IO.Directory.Exists(strFolder))
                 System.IO.Directory.CreateDirectory(strFolder);
 
