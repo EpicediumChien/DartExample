@@ -101,25 +101,25 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private DDPMSettings _settings { get; set; }
         private string _settings_path { get; set; } = string.Empty;
         private List<ColorPresetSettings> _colorPresetSettings { get; set; }
-        private string _colorsettings_path { get; set; }
-        private string _appiconfolder_path { get; set; }
+        private string _colorsettings_path { get; set; } = string.Empty;
+        private string _appiconfolder_path { get; set; } = string.Empty;
         private Dictionary<string, InstalledAppInfo> _AllAppData = new Dictionary<string, InstalledAppInfo>();
         private Dictionary<string, List<DDPMMonitorSettings>>? _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
-        private string _display_path { get; set; }
+        private string _display_path { get; set; } = string.Empty;
         private List<ColorPresetSettings> _preset_settings = new List<ColorPresetSettings>();//Dean 0626 fix SAST issue
 
         private List<HotkeySettings> _hotkeySettings { get; set; }
-        private string _hotkeysettings_path { get; set; }
+        private string _hotkeysettings_path { get; set; } = string.Empty ;
         //private static List<HotkeySettings> _present_hotkey_settings = new List<HotkeySettings>();
 
         private List<PowerNapSetting> _powerNapSettings { get; set; }
-        private string _powerNapsettings_path { get; set; }
+        private string _powerNapsettings_path { get; set; } = string.Empty;
         //private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
         private static string _settingsAccessInfoAddr = string.Empty;
 
-        private string _GlobalSetting_path;
+        private string _GlobalSetting_path { get; set; } = string.Empty;
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
         public event EventHandler SettingReadyEvent;
 
@@ -590,7 +590,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<List<ColorPresetSettings>> ReadColorPresetSettings()
         {
-            _preset_settings.Clear();
+            //_preset_settings.Clear();
+            if(string.IsNullOrEmpty(_colorsettings_path))
+                return Task.FromResult(_preset_settings);
 
             string strFilePath = _colorsettings_path;// GetMonitorColorPresetJsonPath();
 
@@ -656,32 +658,36 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<HotkeySettings>> ReadHotkeySettings()
         {
             //_hotkeySettings?.Clear();
-
-            string strFilePath = _hotkeysettings_path;
-
-            if (File.Exists(strFilePath))
-            {
-                string strReadJson = string.Empty;
-                string info;
-                strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
-
-                if (strReadJson == string.Empty || strReadJson.Length == 0)
-                {
-                    _hotkeySettings = null;
-                    return Task.FromResult(_hotkeySettings);
-                }
-                try
-                {
-                    _hotkeySettings = RunHotkeyDeserializeObject(strReadJson);
-                }
-                catch (Exception)// ex)
-                {
-                    _hotkeySettings = null;
-                }
-            }
+            if (string.IsNullOrEmpty(_hotkeysettings_path))
+                _hotkeySettings = null;
             else
             {
-                _hotkeySettings = null;
+                string strFilePath = _hotkeysettings_path;
+
+                if (File.Exists(strFilePath))
+                {
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        _hotkeySettings = null;
+                        return Task.FromResult(_hotkeySettings);
+                    }
+                    try
+                    {
+                        _hotkeySettings = RunHotkeyDeserializeObject(strReadJson);
+                    }
+                    catch (Exception)// ex)
+                    {
+                        _hotkeySettings = null;
+                    }
+                }
+                else
+                {
+                    _hotkeySettings = null;
+                }
             }
             return Task.FromResult(_hotkeySettings);
 
@@ -757,42 +763,45 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<List<PowerNapSetting>> ReadPowerNapSettings()
         {
             _powerNapSettings?.Clear();
-
-            string strFilePath = _powerNapsettings_path;
-
-            if (File.Exists(strFilePath))
-            {
-                //string strReadJson = string.Empty;
-                //using (var reader = new StreamReader(strFilePath))
-                //{
-                //    strReadJson = reader.ReadToEnd();
-                //}
-
-                string strReadJson = string.Empty;
-                string info;
-                strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
-
-                if (strReadJson == string.Empty || strReadJson.Length == 0)
-                {
-                    _powerNapSettings = null;
-                    return Task.FromResult(_powerNapSettings);
-                }
-                try
-                {
-                    _powerNapSettings = RunPowerNapDeserializeObject(strReadJson);
-                }
-                catch (Exception)// ex)
-                {
-                    _powerNapSettings = null;
-                    return Task.FromResult(_powerNapSettings);
-                }
-            }
+            if (string.IsNullOrEmpty(_powerNapsettings_path))
+                _powerNapSettings = null;
             else
             {
-                //File.Create(strFilePath).Close();
-                _powerNapSettings = null;
-            }
+                string strFilePath = _powerNapsettings_path;
 
+                if (File.Exists(strFilePath))
+                {
+                    //string strReadJson = string.Empty;
+                    //using (var reader = new StreamReader(strFilePath))
+                    //{
+                    //    strReadJson = reader.ReadToEnd();
+                    //}
+
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        _powerNapSettings = null;
+                        return Task.FromResult(_powerNapSettings);
+                    }
+                    try
+                    {
+                        _powerNapSettings = RunPowerNapDeserializeObject(strReadJson);
+                    }
+                    catch (Exception)// ex)
+                    {
+                        _powerNapSettings = null;
+                        return Task.FromResult(_powerNapSettings);
+                    }
+                }
+                else
+                {
+                    //File.Create(strFilePath).Close();
+                    _powerNapSettings = null;
+                }
+            }
             return Task.FromResult(_powerNapSettings);
         }
 
@@ -1505,33 +1514,40 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         #region Global settings
         public Task<GlobalSettingParam> ReadGlobalSettings()
         {
-            string strFilePath = _GlobalSetting_path;
-
-            if (File.Exists(strFilePath))
+            if (string.IsNullOrEmpty(_GlobalSetting_path))
             {
-                string strReadJson = string.Empty;
-                string info;
-                strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
-
-                if (strReadJson == string.Empty || strReadJson.Length == 0)
-                {
-                    _GlobalSettingParam = null;
-                    return Task.FromResult(_GlobalSettingParam);
-                }
-                try
-                {
-                    _GlobalSettingParam = RunGlobalSettinDeserializeObject(strReadJson);
-                    _GlobalSettingParam.GlobalSetting_About.SWVersion = _settingsAccessInfoVer;
-                }
-                catch (Exception)// ex)
-                {
-                    _GlobalSettingParam = null;
-                    //return Task.FromResult(_GlobalSettingParam);
-                }
+                _GlobalSettingParam = null;
             }
             else
             {
-                _GlobalSettingParam = null;// File.Create(strFilePath).Close();
+                string strFilePath = _GlobalSetting_path;
+
+                if (File.Exists(strFilePath))
+                {
+                    string strReadJson = string.Empty;
+                    string info;
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(_settingsAccessInfo, strFilePath, out info);
+
+                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    {
+                        _GlobalSettingParam = null;
+                        return Task.FromResult(_GlobalSettingParam);
+                    }
+                    try
+                    {
+                        _GlobalSettingParam = RunGlobalSettinDeserializeObject(strReadJson);
+                        _GlobalSettingParam.GlobalSetting_About.SWVersion = _settingsAccessInfoVer;
+                    }
+                    catch (Exception)// ex)
+                    {
+                        _GlobalSettingParam = null;
+                        //return Task.FromResult(_GlobalSettingParam);
+                    }
+                }
+                else
+                {
+                    _GlobalSettingParam = null;// File.Create(strFilePath).Close();
+                }
             }
             return Task.FromResult(_GlobalSettingParam);
         }
