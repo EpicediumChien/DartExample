@@ -744,12 +744,46 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
             {
+                // chech if ModelName and SerialNumber is null
                 if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
-                                                    x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+                    for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                    {
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                            return -1;
+
+                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+                            return -1;
+                    }
                 }
+
+                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                      x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                                      x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
+
+                if (index == -1)
+                {
+                    // chech if ModelName and ServiceTag is null
+                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
+                    {
+                        for (int i = 0; i < Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count; i++)
+                        {
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
+                                return -1;
+
+                            if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ServiceTag))
+                                return -1;
+                        }
+                    }
+
+                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                               x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                                               x.ServiceTag.Trim() == mo.edid.ServiceTag.Trim());
+                }
+
+                //int index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                //x.ModelName.Trim() == mo.edid.ModelName.Trim() &&
+                //x.SerialNumber.Trim() == mo.edid.SerialNumber.Trim());
             }
             return index;
         }
@@ -4022,6 +4056,61 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DTPProxyPlugin.SetAutoWhiteBalance(guid, newValue);
             return Task.FromResult(true);
         }
+
+        public Task SetWALTime(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetWALTime requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetWALTime(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetSnooze(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetSnooze requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetSnooze(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetSnoozeLength(string guid, int newValue)
+        {
+            writelog("DeviceMangerPlugin received SetSnoozeLength requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetSnoozeLength(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsProximitySensorEnable(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsProximitySensorEnable requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsProximitySensorEnable(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsWakeonApproachEnable(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWakeonApproachEnable requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWakeonApproachEnable(guid, newValue);
+            return Task.FromResult(true);
+        }
+
+        public Task SetIsWalkAwayLockEnable(string guid, bool newValue)
+        {
+            writelog("DeviceMangerPlugin received SetIsWalkAwayLockEnable requested ...");
+            writelog($"Target Guid is {guid}");
+            writelog($"Target Value is {newValue}");
+            _DTPProxyPlugin.SetIsWalkAwayLockEnable(guid, newValue);
+            return Task.FromResult(true);
+        }
+
         #endregion
 
 

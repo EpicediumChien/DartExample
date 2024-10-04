@@ -90,5 +90,14 @@ namespace DDPM.SA.Common
         Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
         Task SetAutoWhiteBalance(string Guid, int newValue);
 
+        // webcam presence detection
+        Task SetWALTime(string Guid, int newValue);
+        Task SetSnooze(string Guid, int newValue);
+        Task SetSnoozeLength(string Guid, int newValue);
+        Task SetIsProximitySensorEnable(string Guid, bool newValue);
+        Task SetIsWakeonApproachEnable(string Guid, bool newValue);
+        Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
+
+
     }
 }
