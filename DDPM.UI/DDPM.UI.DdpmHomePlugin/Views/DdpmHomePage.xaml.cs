@@ -128,10 +128,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             Dispatcher.BeginInvoke(new Action(RenderingDone), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
         }
 
-        private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
-        {
-            //_ = Task.Run(RefreshHomeDeviceListAsync);
-        }
+        //private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        //{
+        //    //_ = Task.Run(RefreshHomeDeviceListAsync);
+        //}
 
         //Robert_Lin, 2024-6-26, fix SAST issue: [Bug] Return 'Task' instead
         //This method should be unused, rename the method, and add the suggest solution.
@@ -139,7 +139,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //OLD Code:
         //  private async void RefreshHomeDeviceListAsync()
         //NEW Code:
-        private async Task RefreshHomeDeviceListAsync_Unused()
+        /*private async Task RefreshHomeDeviceListAsync_Unused()
         {
             //if (_ddpmHomePageViewModel != null)
             //{
@@ -165,7 +165,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //    }
 
             //}
-        }
+        }*/
 
         #region RWD HomeDevices
 

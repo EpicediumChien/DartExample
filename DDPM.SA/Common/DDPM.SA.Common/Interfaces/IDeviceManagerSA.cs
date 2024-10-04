@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Display;
+﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
@@ -43,6 +44,12 @@ namespace DDPM.SA.Common
 
         Task StopSchedulerManger();
 
+        Task<scheduleInfo> ReadScheduleMonitorSettings(MonitorInfo monitorInfo);
+
+        Task<bool> WriteScheduleMonitorSettings(MonitorInfo monitorInfo, scheduleInfo scheduleInfo);
+
+        Task<bool> MigrateScheduleMonitorSettings(string Model, string ServiceTag, BriConSchedule DDMSetting);
+
         #endregion public for SchedulerManger
 
         #region public for ColorPreset
@@ -73,7 +80,7 @@ namespace DDPM.SA.Common
         Task<bool> SetMonitorProfile(MonitorInfo m, string ColorPreset_Name);
 
         Task<bool> WriteColorPresetByColorProfile(MonitorInfo m, string ColorProfile_Name);
-
+        
         //Dean add 0612
         public Task<string> ReadCurrentColorPreset(MonitorInfo m);
 
@@ -90,6 +97,10 @@ namespace DDPM.SA.Common
         Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, string ColorPreset_Name = "", string ICC_profile_Name = "");
 
         Task<string> GetColorManagementStatus(MonitorInfo m);
+
+        Task<string> GetColorPresetName(int Color_VCPCore_E2);
+
+        Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
 
         #endregion public for ColorPreset
 
@@ -400,6 +411,8 @@ namespace DDPM.SA.Common
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
 
+        public Task SetLastSelectedMonitorFromUI(MonitorInfo mo);
+
         #endregion public for hotkey
 
         #region public for PowerNap
@@ -501,6 +514,10 @@ namespace DDPM.SA.Common
         Task<bool> DisplayExportSettings(MonitorInfo monitorInfo, string path);
 
         Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path);
+
+        Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel);
+
+        Task<bool> GetSameModel(MonitorInfo monitorInfo);
 
         #endregion public for ImpExpSettings
 

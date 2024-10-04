@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,8 @@ namespace MiniInstaller
             {
                 Directory.CreateDirectory(DDPMFileSecurity.GetActiveUserLocalAppDataPath() + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-MiniInstall");
             }
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            LogMessage($"MiniInstaller Ver:{version}");
         }
 
         public static void LogMessage(string message)

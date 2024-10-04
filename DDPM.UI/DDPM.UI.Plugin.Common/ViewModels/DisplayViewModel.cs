@@ -560,6 +560,10 @@ namespace DDPM.UI.Plugin.Common.ViewModels
                         header.DdpmModule.OnSelectedHomeDeviceChanged();
                 }
             }
+
+            //[Dean 1001]for hotkey to set current selected display device to SA
+            if (_deviceMnagerSA != null && _selectedHomeDevice != null && _selectedHomeDevice.MonitorInfo != null)
+                _deviceMnagerSA.SetLastSelectedMonitorFromUI(_selectedHomeDevice.MonitorInfo);
         }
 
         #endregion HandleSelectedHomeDeviceChanged

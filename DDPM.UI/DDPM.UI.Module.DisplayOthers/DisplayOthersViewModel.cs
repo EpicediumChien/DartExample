@@ -96,7 +96,17 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public System.Windows.Media.Brush PowerNap_Color { get; set; }
 
-        public bool AutoApply_Checked { get; set; }
+        private bool _autoApply_Checked;
+
+        public bool AutoApply_Checked 
+        {
+            get => _autoApply_Checked;
+            set
+            { 
+                SetProperty(ref _autoApply_Checked, value);
+                DdpmCommonHelper.DeviceManagerSA.SetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, _autoApply_Checked).Wait();
+            }
+        }
 
         public bool isSettingsEnable { get; set; } = true;
 
@@ -139,6 +149,7 @@ namespace DDPM.UI.Module.DisplayOthers
             try
             {
                 BackgroundWorker bwk = (BackgroundWorker)sender;
+                AutoApply_Checked = DdpmCommonHelper.DeviceManagerSA.GetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo).Result;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
                 {
@@ -150,6 +161,7 @@ namespace DDPM.UI.Module.DisplayOthers
                         LockPowerNap_Opacity = 0.5;
                     }
                 }
+                OnPropertyChanged("AutoApply_Checked");
                 updatePowerNapUISetting();
             }
             catch (Exception)
@@ -239,7 +251,7 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 string filename = saveFileDialog.FileName;
                 string info = string.Empty;
-                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
+                if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, false, out info))
                 {
                     IsBusy = false;
                     OnPropertyChanged("IsBusy");

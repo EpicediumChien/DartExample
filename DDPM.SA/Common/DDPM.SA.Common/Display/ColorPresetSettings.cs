@@ -17,21 +17,35 @@ namespace DDPM.SA.Common
 {
     public class ColorPresetSettings_AppInfo
     {
-        public string ColorPresetName;
+        //public string ColorPresetName;
+        public int Color;
+        public int HDRColor;
 
         public string IconName;
 
         public ColorPresetSettings_AppInfo()
         {
-            ColorPresetName = "";
+            //ColorPresetName = "";
+            Color = 0;
+            HDRColor = -1;
             IconName = "";
         }
 
-        public ColorPresetSettings_AppInfo(string name, string iconName)
+        public ColorPresetSettings_AppInfo(int nColor,int nHDRColor, string iconName)
         {
-            ColorPresetName = name;
+            //ColorPresetName = name;
+            Color = nColor;
+            HDRColor = nHDRColor;
             IconName = iconName;
         }
+
+        //public ColorPresetSettings_AppInfo(string name, string iconName)
+        //{
+        //ColorPresetName = name;
+        //    Color = 0;
+        //    HDRColor = -1;
+        //    IconName = iconName;
+        //}
     }
 
     public class ColorPresetSettings
@@ -39,6 +53,7 @@ namespace DDPM.SA.Common
         //public EDID DeviceInfo { get; set; }
         public string ModelName { get; set; }
         public string SerialNumber { get; set; }
+        public string ServiceTag { get; set; }
 
         // 0 is Manual
         // 1 is by AppInfo Settings.
@@ -46,7 +61,8 @@ namespace DDPM.SA.Common
 
         public Dictionary<string, ColorPresetSettings_AppInfo> AppInfo { get; set; }
 
-        public string PresetForManual { get; set; }
+        //public string PresetForManual { get; set; }
+        public int ColorForManual { get; set; } = 0;
 
         // 0 is Off
         // 1 is on

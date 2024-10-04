@@ -23,6 +23,9 @@ namespace DDPM.UI.Module.Color
             string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
             strFolder += "\\";
 
+            string info = string.Empty;
+            DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
+
             if (!System.IO.Directory.Exists(strFolder))
                 System.IO.Directory.CreateDirectory(strFolder);
 
@@ -85,7 +88,8 @@ namespace DDPM.UI.Module.Color
                 {
                     RunType = (int)ColorPresetRunType.Auto,
                     AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-                    PresetForManual = "Standard/Native"
+                    //PresetForManual = "Standard/Native"
+                    ColorForManual = 0
                 });
 
                 index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
@@ -117,7 +121,9 @@ namespace DDPM.UI.Module.Color
                 {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(temp_selApps.AppName, new ColorPresetSettings_AppInfo()
                     {
-                        ColorPresetName = "Standard/Native",
+                        //ColorPresetName = "Standard/Native",
+                        Color = 0,
+                        HDRColor = -1,
                         IconName = temp_selApps.AppIcon,
                     });
                 }

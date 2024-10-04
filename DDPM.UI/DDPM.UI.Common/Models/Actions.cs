@@ -265,7 +265,10 @@ namespace DDPM.UI.Common
             try
             {
                 string json = JsonConvert.SerializeObject(actions, Formatting.Indented);
-                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
+                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions");
+
+                string info = string.Empty;
+                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
 
@@ -284,11 +287,14 @@ namespace DDPM.UI.Common
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
+            string info = string.Empty;
+
             switch (type)
             {
                 case eDeviceCategory.KB:
                     if (hasFile)
                     {
+                        DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
                         return JsonConvert.DeserializeObject<KeyboardActions>(File.ReadAllText(filePath))!;
                     }
                     else
@@ -300,6 +306,7 @@ namespace DDPM.UI.Common
                 case eDeviceCategory.Mouse:
                     if (hasFile)
                     {
+                        DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
                         return JsonConvert.DeserializeObject<MouseActions>(File.ReadAllText(filePath))!;
                     }
                     else
@@ -311,6 +318,7 @@ namespace DDPM.UI.Common
                 case eDeviceCategory.Pen:
                     if (hasFile)
                     {
+                        DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
                         return JsonConvert.DeserializeObject<PenActions>(File.ReadAllText(filePath))!;
                     }
                     else

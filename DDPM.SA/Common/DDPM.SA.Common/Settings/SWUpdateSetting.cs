@@ -39,38 +39,60 @@ namespace DDPM.SA.Common.Settings
         }
         public static SWUpdateHelper GetSWMetadata(out string info)
         {
+            SWUpdateHelper data = new SWUpdateHelper();
             SetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck();
             if (!certificateCheck.CheckURLCACertificate(URL))
             {
                 info = $"{nameof(GetSWMetadata)} URL CA check fail";
-                return new SWUpdateHelper();
+                return data;
             }
-            using (HttpClient client = new HttpClient())
+            try
             {
-                try
+                using (HttpClient client = new HttpClient())
                 {
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                    HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = response.Content.ReadAsStringAsync().Result;
-                    jsonString = jsonString.Replace("%1/", URL);
-                    SWUpdateHelper data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
-                    foreach (Software software in data.Softwares)
+                    try
                     {
-                        string version =
-                        Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
-                        software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}").Replace("_Uknown", "-Debug").Replace(".zip", ".exe").Replace("/Firmwares", "");
+                        client.Timeout = TimeSpan.FromSeconds(5);
+                        HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = response.Content.ReadAsStringAsync().Result;
+                        if (!string.IsNullOrEmpty(jsonString))
+                        {
+                            jsonString = jsonString.Replace("%1/", URL);
+                            data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
+                            if (data != null)
+                            {
+                                foreach (Software software in data.Softwares)
+                                {
+                                    string version =
+                                    Regex.Replace(Convert.ToInt32(software.SoftwareVersion).ToString("D4"), @"(.{1})(.{1})(.{1})(.{1})", "$1.$2.$3.$4");
+                                    software.ServerPath = software.ServerPath.Replace("%2", $"{software.SoftwareName}-Setup-v{version}-Debug");
+                                    software.MiniInstallerServer_path = software.MiniInstallerServer_path.Replace("%21", $"MiniInstaller");
+                                }
+                                info = $"{nameof(GetSWMetadata)} done";
+                            }
+                            else
+                            {
+                                info = $"{nameof(GetSWMetadata)} done but Deserialize fail";
+                            }
+                        }
+                        else
+                        {
+                            info = $"{nameof(GetSWMetadata)} done but jsonString is null or empty";
+                        }
                     }
-                    info = $"{nameof(GetSWMetadata)} done";
-                    return data;
-                }
-                catch (Exception ex)
-                {
-                    info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
+                    catch (JsonException ex)
+                    {
+                        info = $"{nameof(GetSWMetadata)} JSON Deserialize error:{ex.Message}";
+                    }
                 }
             }
-            return new SWUpdateHelper();
+            catch (Exception ex)
+            {
+                info = $"{nameof(GetSWMetadata)} error:{ex.Message}";
+            }
+            return data;
         }
     }
 }
