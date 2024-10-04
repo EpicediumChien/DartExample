@@ -5,7 +5,9 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using DPeMPublic.Common.Enums;
 using Moq;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Policy;
 using System.Windows.Media;
 using System.Xml.Linq;
@@ -543,10 +545,229 @@ namespace DDPM.UI.Common.Tests
             Assert.That(homeDevice.AudioBleText, Is.EqualTo("AudioBleText"));
         }
 
+        [Test]
+        public void TestGetConnectionTypeFromDeviceInfo()
+        {
+            // Act
+            var result = HomeDevice.GetConnectionTypeFromDeviceInfo(new DeviceInfo());
+            // Assert
+            Assert.That(result, Is.EqualTo("Unknown"));
 
+            // Act
+            result = HomeDevice.GetConnectionTypeFromDeviceInfo(new DeviceInfo() { PhysicalDeviceType = DeviceType.PhysicalWebcam });
+            // Assert
+            Assert.That(result, Is.EqualTo("Wired"));
+        }
 
+        [Test]
+        public void TestGetDeviceCategoryFromDeviceInfo()
+        {
+            // Act
+            var result = HomeDevice.GetDeviceCategoryFromDeviceInfo(new DeviceInfo() { Type= DeviceType.LogicalKeyboard });
+            // Assert
+            Assert.That(result, Is.EqualTo(eDeviceCategory.KB));
 
+            // Act
+            result = HomeDevice.GetDeviceCategoryFromDeviceInfo(new DeviceInfo());
+            // Assert
+            Assert.That(result, Is.EqualTo(eDeviceCategory.Unknown));
+        }
 
+        [Test]
+        public void TestCreateFromDeviceInfo()
+        {
+            // Act
+            var result = HomeDevice.CreateFromDeviceInfo(new DeviceInfo() { Name="A"});
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result,Is.InstanceOf<HomeDevice>());
+        }
 
+        [Test]
+        public void TestHasCapability_PipPbp()
+        {
+            // Act
+            var result = homeDevice.HasCapability_PipPbp;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+
+            // Act
+            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = new Dictionary<string, List<string>>() };
+            result = homeDevice.HasCapability_PipPbp;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestHasCapability_KVM()
+        {
+            // Act
+            var result = homeDevice.HasCapability_KVM;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestHasCapability_UsbKvm()
+        {
+            // Act
+            var result = homeDevice.HasCapability_UsbKvm;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+
+            // Act
+            var dictionary = new Dictionary<string, List<string>>();
+            dictionary.Add("EE",new List<string>());
+            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = dictionary } ;
+            result = homeDevice.HasCapability_UsbKvm;
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestHasCapability_NetworkKvm()
+        {
+            // Act
+            var result = homeDevice.HasCapability_NetworkKvm;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestHasCapability_Gaming()
+        {
+            // Act
+            var result = homeDevice.HasCapability_Gaming;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+
+            // Act
+            var dictionary = new Dictionary<string, List<string>>();
+            dictionary.Add("F4", new List<string>());
+            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = dictionary };
+            result = homeDevice.HasCapability_Gaming;
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestHasCapability_VisionEngine()
+        {
+            // Act
+            var result = homeDevice.HasCapability_VisionEngine;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+
+            // Act
+            var dictionary = new Dictionary<string, List<string>>();
+            dictionary.Add("EC", new List<string>());
+            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = dictionary ,modelName="GS"};
+            result = homeDevice.HasCapability_VisionEngine;
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestHasCapability_Contrast()
+        {
+            // Act
+            var result = homeDevice.HasCapability_Contrast;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+
+            // Act
+            var dictionary = new Dictionary<string, List<string>>();
+            dictionary.Add("12", new List<string>());
+            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = dictionary };
+            result = homeDevice.HasCapability_Contrast;
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestIsSameMonitor()
+        {
+            // Act
+            MonitorInfo mi1 = new MonitorInfo() {AliasDeviceName = "mi1" };
+            MonitorInfo mi2 = new MonitorInfo() { };
+            var result = HomeDevice.IsSameMonitor(mi1, mi2, "");
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+
+            // Act
+            mi1 = new MonitorInfo() {  };
+            mi2 = new MonitorInfo() { };
+            result = HomeDevice.IsSameMonitor(mi1, mi2, "");
+            // Assert
+            Assert.That(result, Is.EqualTo(true));
+
+        }
+
+        [Test]
+        public void TestDumpInfoToLog()
+        {
+            try
+            {
+                homeDevice.DumpInfoToLog(null);
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+
+            var logMock = new Mock<ILog>();
+            var log = logMock.Object;
+            homeDevice.DeviceInfo = new DeviceInfo() { Name = "Name" };
+            try
+            {
+                homeDevice.DumpInfoToLog(log);
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+
+            homeDevice.MonitorInfo = new MonitorInfo() { MarketingName = "MarketingName" };
+            try
+            {
+                homeDevice.DumpInfoToLog(log);
+                Assert.True(true);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("not invoked");
+            }
+        }
+
+        [Test]
+        public void TestLandingMarketName()
+        {
+            // Act
+            var result = homeDevice.LandingMarketName;
+            // Assert
+            Assert.That(result, Is.EqualTo("(Noname)"));
+
+            // Act
+            homeDevice.DeviceInfo = new DeviceInfo() { Name = "Name" };
+            result = homeDevice.LandingMarketName;
+            // Assert
+            Assert.That(result, Is.EqualTo("Name"));
+
+            // Act
+            homeDevice.MonitorInfo = new MonitorInfo();
+            result = homeDevice.LandingMarketName;
+            // Assert
+            Assert.That(result, Is.EqualTo("Display"));
+            // Act
+
+            homeDevice.MonitorInfo = new MonitorInfo() { MarketingName = "MarketingName" };
+            result = homeDevice.LandingMarketName;
+            // Assert
+            Assert.That(result, Is.EqualTo("MarketingName"));
+        }
+
+        
     }
 }
