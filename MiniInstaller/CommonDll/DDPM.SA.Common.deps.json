@@ -17,23 +17,23 @@
           "Microsoft-WindowsAPICodePack-Shell": "1.1.5",
           "VcpCore.Interfaces": "2.0.0.5",
           "DdmLibrary": "1.0.0.0",
-          "DPeMClientBroker": "0.0.0.0",
-          "DPeMPublic.Common": "0.0.0.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
+          "DPeMClientBroker": "1.7.6.0",
+          "DPeMPublic.Common": "1.7.6.0",
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.34"
         },
         "runtime": {
           "DDPM.SA.Common.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.19041.24",
-            "fileVersion": "10.0.19041.31"
+            "fileVersion": "10.0.19041.34"
           },
           "WinRT.Runtime.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.0.4.44211"
+            "fileVersion": "2.0.8.46841"
           }
         }
       },
@@ -405,7 +405,10 @@
       "System.ValueTuple/4.5.0": {},
       "DDPM.SA.Obfuscation/1.0.0": {
         "runtime": {
-          "DDPM.SA.Obfuscation.dll": {}
+          "DDPM.SA.Obfuscation.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "VcpCore.Common/2.0.0.5": {
@@ -413,7 +416,10 @@
           "DellClientFramework": "6.4.5.1"
         },
         "runtime": {
-          "VcpCore.Common.dll": {}
+          "VcpCore.Common.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "VcpCore.Interfaces/2.0.0.5": {
@@ -422,7 +428,10 @@
           "VcpCore.Common": "2.0.0.5"
         },
         "runtime": {
-          "VcpCore.Interfaces.dll": {}
+          "VcpCore.Interfaces.dll": {
+            "assemblyVersion": "2.0.0.5",
+            "fileVersion": "2.0.0.5"
+          }
         }
       },
       "DdmLibrary/1.0.0.0": {
@@ -433,19 +442,19 @@
           }
         }
       },
-      "DPeMClientBroker/0.0.0.0": {
+      "DPeMClientBroker/1.7.6.0": {
         "runtime": {
           "DPeMClientBroker.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
+            "assemblyVersion": "1.7.6.0",
+            "fileVersion": "1.7.6.0"
           }
         }
       },
-      "DPeMPublic.Common/0.0.0.0": {
+      "DPeMPublic.Common/1.7.6.0": {
         "runtime": {
           "DPeMPublic.Common.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
+            "assemblyVersion": "1.7.6.0",
+            "fileVersion": "1.7.6.0"
           }
         }
       },
@@ -497,7 +506,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.31": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.19041.34": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
@@ -788,12 +797,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "DPeMClientBroker/0.0.0.0": {
+    "DPeMClientBroker/1.7.6.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "DPeMPublic.Common/0.0.0.0": {
+    "DPeMPublic.Common/1.7.6.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

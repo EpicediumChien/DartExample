@@ -38,6 +38,12 @@ namespace DDPM.SA.Common
 
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
+        #region EaM
+        Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
+
+        Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
+        #endregion
+
         #region public for SchedulerManger
 
         Task StartSchedulerManger(int millisecond);
@@ -249,6 +255,15 @@ namespace DDPM.SA.Common
         public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue);
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
         #endregion EasyArrange
+
+        #region EasyMemory
+
+        public Task<List<EAProfileDDPM>> ReadEzProfiles();
+
+        public Task<bool> WriteEzProfiles(MonitorInfo monitorInfo, EAProfileDDPM eaProfile);
+
+        public Task<bool> CleanEzProfiles();
+        #endregion EasyMemory
 
         #endregion public for Displays
 

@@ -67,7 +67,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
     [PluginRequires(Id = IDs.DDPM_PERIPHERALS_PLUGIN_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.DDPM_SETTINGSMANAGER_SA_PLUGIN_ID, AllowDynamicResolving = true)]
     [PluginRequires(Id = IDs.CLI_Manager_Plugin, AllowDynamicResolving = true)]
-    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService) })]
+    [PluginRequires(Id = IDs.DDPM_EMPlugin_PLUGIN_ID, AllowDynamicResolving = true)]
+    [DependencyKnownTypes(new[] { typeof(IDisplayService), typeof(ISchedulerManager), typeof(IDPeMPlugin), typeof(ISettingsManagerDev), typeof(IFWUpdateService), typeof(ISWUpdateService), typeof(IEzMemoryPlugin) })]
     public class DeviceMangerPlugin : BaseAgentPlugin, IDisposableObservable, IDeviceManagerSA
     {
         #region Private Members
@@ -92,6 +93,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private ISWUpdateService _SWUpdatePlugin;
         private ISchedulerManager _ScheduleManagerPlugin;
         private IDTPProxyPlugin _DTPProxyPlugin;
+        private IEzMemoryPlugin _IEzMemoryPlugin;
 
         private readonly object _PluginConditionLock = new object();
         private readonly object _PluginConditionLock_Display = new object();
@@ -102,6 +104,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private readonly object _PluginConditionLock_Hotkey = new object();
         private readonly object _PluginConditionLock_ScheduleManager = new object();
         private readonly object _PluginConditionLock_DTPProxy = new object();
+        private readonly object _PluginConditionLock_EzMemory = new object();
         private DisplayChange displayChange;
         //private static Dell.Client.Framework.Common.Log _log;
         // ColorPreset objects
@@ -209,6 +212,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             InitializeSWUpdatePlugin();
             InitializeSchedulerManagerPlugin();
             InitializeDTPProxyPlugin();
+            InitializeEzMemoryPlugin();
 
             PluginCondition = new PluginStartedCondition();
             writelog("DeviceManager plugin started");
@@ -3285,6 +3289,75 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         #endregion EasyArrage
 
+        #region EasyMemory
+
+        public Task<List<EAProfileDDPM>> ReadEzProfiles()
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                return Task.FromResult(ddpmSettings.UserSettings.EAProfile);
+            }
+            return Task.FromResult(new List<EAProfileDDPM>());
+        }
+
+        public Task<bool> WriteEzProfiles(MonitorInfo monitorInfo, EAProfileDDPM eaProfile)
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                if (ddpmSettings.UserSettings.EAProfile == null)
+                {
+                    ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
+                }
+
+                // 找相同 Name
+                var existingProfile = ddpmSettings.UserSettings.EAProfile.FirstOrDefault(p => p.Name == eaProfile.Name);
+
+                if (existingProfile != null)
+                {
+                    // 更新
+                    existingProfile.Name = eaProfile.Name;
+                    existingProfile.Layout = eaProfile.Layout;
+                    existingProfile.AppInfos = eaProfile.AppInfos;
+                    existingProfile.SelectedHour = eaProfile.SelectedHour;
+                    existingProfile.SelectedMinute = eaProfile.SelectedMinute;
+                    existingProfile.SelectedAMPM = eaProfile.SelectedAMPM;
+                    existingProfile.IsManualLaunch = eaProfile.IsManualLaunch;
+                    existingProfile.IsAutoLaunch = eaProfile.IsAutoLaunch;
+                    existingProfile.IsLaunchAtStartup = eaProfile.IsLaunchAtStartup;
+                }
+                else
+                {
+                    // 新增
+                    ddpmSettings.UserSettings.EAProfile.Add(eaProfile);
+                }
+
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> CleanEzProfiles()
+        {
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
+            {
+                if (ddpmSettings.UserSettings.EAProfile == null)
+                {
+                    ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
+                }
+                else
+                {
+                    ddpmSettings.UserSettings.EAProfile.Clear();
+                }
+
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+        #endregion EasyMemory
+
         #region SW Update implementation
 
         public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isDefer = false, bool isForce = false)
@@ -5222,7 +5295,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 GetCurrentSWUpdatePluginCondition();
             }
         }
+        private void InitializeEzMemoryPlugin()
+        {
+            if (_IEzMemoryPlugin != null)
+                return;
 
+            _IEzMemoryPlugin = _agent.PluginManager.FindPluginByType<IEzMemoryPlugin>(PluginResolution.Dynamic);
+
+            if (_IEzMemoryPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnEzMemoryPluginConditionChangeHandler;
+                GetCurrentEzMemoryPluginCondition();
+            }
+        }
         private void GetCurrentScheduleManagerCondition()
         {
             _ = Task.Run(async () =>
@@ -5829,6 +5914,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentDTPProxyPluginCondition)} - DTPProxy Plugin is in a started condition");
+                    }
+                }
+            });
+        }
+
+        private void GetCurrentEzMemoryPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_IEzMemoryPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+                //PluginCondition _DisplayManagerPluginCondition;
+                lock (_PluginConditionLock_EzMemory)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        writelog($"{nameof(GetCurrentEzMemoryPluginCondition)} - EzMemory Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition)
+                    {
+                        writelog($"{nameof(GetCurrentEzMemoryPluginCondition)} - EzMemory Plugin is in a running condition");
+                    }
+                    else if (pluginCondition is PluginStartedCondition)
+                    {
+                        writelog($"{nameof(GetCurrentEzMemoryPluginCondition)} - EzMemory Plugin is in a started condition");
                     }
                 }
             });
@@ -7934,7 +8043,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             GetCurrentDTPProxyPluginCondition();
         }
-
+        private void OnEzMemoryPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentEzMemoryPluginCondition();
+        }
         //Bruce, 2024-08-09 add new event
         private void OnHDRStatusChangeHandler(object sender, bool e)
         {
@@ -7979,6 +8091,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (e.ChangedPlugins.OfType<IDTPProxyPlugin>().Any())
                 InitializeDTPProxyPlugin();
+
+            if (e.ChangedPlugins.OfType<IEzMemoryPlugin>().Any())
+                InitializeEzMemoryPlugin();
         }
 
         //Jim, 2024-09-05 add new event
@@ -8191,7 +8306,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             if (State)
                                             {
                                                 if (MuteWinx != null)
-                                                    MuteWinx.Close();
+                                                    MuteWinx.CloseWindow();
 
                                                 MuteWinx = new MuteWin(Content);
 
@@ -8199,13 +8314,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 {
                                                     MuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                     MuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    MuteWinx.Show();
+                                                    MuteWinx.ShowWindow();
                                                 }
                                                 catch (Exception)
                                                 {
                                                     MuteWinx.Top = sreen.WorkingArea.Top;
                                                     MuteWinx.Left = sreen.WorkingArea.Left;
-                                                    MuteWinx.Show();
+                                                    MuteWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
@@ -8215,7 +8330,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                             else
                                             {
                                                 if (UnMuteWinx != null)
-                                                    UnMuteWinx.Close();
+                                                    UnMuteWinx.CloseWindow();
 
                                                 UnMuteWinx = new UnMuteWin(Content);
 
@@ -8223,13 +8338,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 {
                                                     UnMuteWinx.Top = sreen.WorkingArea.Top / (double)dpiX;
                                                     UnMuteWinx.Left = sreen.WorkingArea.Left / (double)dpiX;
-                                                    UnMuteWinx.Show();
+                                                    UnMuteWinx.ShowWindow();
                                                 }
                                                 catch (Exception)
                                                 {
                                                     UnMuteWinx.Top = sreen.WorkingArea.Top;
                                                     UnMuteWinx.Left = sreen.WorkingArea.Left;
-                                                    UnMuteWinx.Show();
+                                                    UnMuteWinx.ShowWindow();
                                                 }
                                                 finally
                                                 {
@@ -8611,5 +8726,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion OSD
+
+        #region EzM
+        public Task<Dictionary<string, InstalledAppInfo>> GetAllAppList()
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.GetAllAppList().Result);
+            else
+                return null;
+        }
+        public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
+        {
+            if (_IEzMemoryPlugin != null)
+                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
+            else
+                return null;
+        }
+        #endregion EzM
     }
 }

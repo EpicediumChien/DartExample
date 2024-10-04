@@ -33,9 +33,9 @@ namespace DDPM.UI.Module.EzMemory
                 _selHomeDevice = _vmDisplay.SelectedHomeDevice;
                 if (_selHomeDevice != null)
                 {
-                    if (_selHomeDevice.vmEzMemory == null)
+                    if (_selHomeDevice.vmEzArrange == null)
                     {
-                        _selHomeDevice.vmEzMemory = new EzMemoryViewModel(_selHomeDevice);
+                        _selHomeDevice.vmEzArrange = new EzArrangeViewModel(_selHomeDevice);
                     }
                 }
 
