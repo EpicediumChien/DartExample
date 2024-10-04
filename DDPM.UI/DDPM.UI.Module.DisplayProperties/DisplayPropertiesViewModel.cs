@@ -35,7 +35,7 @@ namespace DDPM.UI.Module.DisplayProperties
                     ).Wait();
             }
         }
-
+        public Visibility Orientation_IsVisibility { get; set; } = Visibility.Visible;
         public List<UI_Orientation> Orientation_ItemsCollection { get; set; }
 
         public UI_Orientation SelectedOrientation
@@ -267,6 +267,10 @@ namespace DDPM.UI.Module.DisplayProperties
                 DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(currentMonitorInfo).Result;
                 //Add return to let program continue running
                 //return;
+                if (displayPropertiesInfo.CurrentOrientation == DisplayOrientation.Unknow)
+                {
+                    Orientation_IsVisibility = Visibility.Collapsed;
+                }
                 _SupportedHDR = displayPropertiesInfo.SupportedHDR;
                 _HDRStatus = displayPropertiesInfo.isHDREnable;
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
@@ -357,6 +361,7 @@ namespace DDPM.UI.Module.DisplayProperties
             OnPropertyChanged("SupportedUSBCPrioeitization");
             OnPropertyChanged("IsHighDataSpeed");
             OnPropertyChanged("IsHighResolution");
+            OnPropertyChanged("Orientation_IsVisibility");
         }
 
         public void UpdateHDRStatus()
