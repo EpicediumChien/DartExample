@@ -8,7 +8,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
              xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common" 
              xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common"
-             d:DataContext="{d:DesignInstance Type=viewmodels:EzMemoryViewModel}"
+             d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
              mc:Ignorable="d" 
              Background="#FF0D121A"
              d:DesignHeight="671" 

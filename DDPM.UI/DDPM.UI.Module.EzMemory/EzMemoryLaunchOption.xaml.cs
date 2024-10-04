@@ -142,11 +142,15 @@ namespace DDPM.UI.Module.EzMemory
         #region Private Members
         private HomeDevice _homeDevice;
         private IDeviceManagerSA _deviceManagerSA;
-        private DDPM.UI.Common.ViewModels.EzMemoryViewModel _vm;
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
         #endregion Private Members
+
+        String ezMemoryStartupErrorTitleString = "Error";
+        String ezMemoryStartupErrorString = "Another profile is set to launch during PC startup. Do you want to replace it with this profile?";
+
         public EzMemoryLaunchOption(DisplayViewModel vmDisplay)
         {
             _vmDisplay = vmDisplay;
@@ -156,12 +160,12 @@ namespace DDPM.UI.Module.EzMemory
 
             InitializeComponent();
 
-            if (_homeDevice.vmEzMemory == null)
+            if (_homeDevice.vmEzArrange == null)
             {
-                _homeDevice.vmEzMemory = new DDPM.UI.Common.ViewModels.EzMemoryViewModel(_homeDevice);
+                _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzMemory;
-            DataContext = _homeDevice.vmEzMemory;
+            _vm = _homeDevice.vmEzArrange;
+            DataContext = _homeDevice.vmEzArrange;
 
             InitializeComponent();
 
@@ -197,8 +201,7 @@ namespace DDPM.UI.Module.EzMemory
         private void FinishBtn_Click(object sender, RoutedEventArgs e)
         {
             if (_vm._sortApps.Count >= 2)
-            {
-                
+            {               
                 int profileID = 0; 
                 string profileName = _vm.InputText;
                 int layout = 0; // Layout 可以先設為 0 
@@ -209,7 +212,7 @@ namespace DDPM.UI.Module.EzMemory
                     app.Value.AppPath,
                     app.Value.AppType == "False", // 判斷是否為 UWP 應用程式
                     app.Value.AppUserModelID,
-                    string.Empty  // 假設 Param 預設為空，根據需求填入
+                    string.Empty  // 假設為空
                 )).ToList();
 
                 // 收集 UI 資料
@@ -232,10 +235,12 @@ namespace DDPM.UI.Module.EzMemory
                     selectedAMPM,
                     isLaunchAtStartup);
 
+                DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(_homeDevice.MonitorInfo, newProfile);
+
                 _deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
                 //LaunchAndArrangeApps();
             }
-
+            _vm.ClearTextBlockAppName();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
 
@@ -394,7 +399,7 @@ namespace DDPM.UI.Module.EzMemory
 
                     await Task.Delay(2000);
                 }
-                _vm.ClearTextBlockAppName();
+                //_vm.ClearTextBlockAppName();
             });
         }
 
@@ -500,6 +505,11 @@ namespace DDPM.UI.Module.EzMemory
             StringBuilder className = new StringBuilder(256);
             EzMemoryGetClassName(hWnd, className, className.Capacity);
             return className.ToString();
+        }
+
+        private void StartupCB_Checked(object sender, RoutedEventArgs e)
+        {
+            DdpmCommonHelper.DDPMMesssageBox(ezMemoryStartupErrorTitleString, ezMemoryStartupErrorString);
         }
     }
 }

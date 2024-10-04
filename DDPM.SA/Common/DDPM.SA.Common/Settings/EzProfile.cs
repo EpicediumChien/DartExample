@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DdmLibrary.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,16 @@ using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.Settings
 {
+    public class ProfileDDPM
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public int Layout { get; set; }
+        public bool Auto { get; set; }
+        public long? AutoStartTime { get; set; }
+        public bool StartUpLaunch { get; set; }
+        public List<EAAppInfoDDPM> AppInfos { get; set; }
+    }
     public class EAProfileDDPM
     {
         public int ID { get; set; }
@@ -16,7 +27,7 @@ namespace DDPM.SA.Common.Settings
 
         public List<EAAppInfoDDPM> AppInfos { get; set; }
 
-        // 新增欄位
+        //// 新增欄位
         public bool IsManualLaunch { get; set; } // ManulRB
 
         public bool IsAutoLaunch { get; set; }   // AutoRB
