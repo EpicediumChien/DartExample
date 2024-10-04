@@ -177,6 +177,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _vmArrange.IsMoving = true;
             _vmArrange.StartMovingMsg = "OK";
             _vmArrange.IsShiftPressed = WinEventHook.IsShiftPressed();
+
+            
+            //Temporary always update
+            if (_vmArrange.IsAwsWindowVisible)
+            {
+                if (_vmArrange.AwsWindow != null)
+                {
+                    _vmArrange.AwsWindow.OnStartMoving();
+                }
+            }
             //_vmArrange.DetermineWorkWindowVisibility();
 
             _vmArrange.RefreshCellRects();
@@ -212,9 +222,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             Rect rcArrange = _vmArrange.HoveringCellObj.rc;
 
+            if (_vmArrange.HoveringWindow.Equals("aws"))
+                rcArrange = _vmArrange.AwsWindow.CalculateHoveringCellArrangeRect();
+
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
-            rcArrange.Inflate(6, 6);
-            WinEventHook.SetWindowPosition(hWnd, rcArrange);
+            if (_vmArrange.EzSettings.IsWidthoutGap)
+            {
+                rcArrange.Inflate(6, 6);
+            }
+            if (!rcArrange.IsEmpty)
+                WinEventHook.SetWindowPosition(hWnd, rcArrange);
         }
 
         private void OnLocationChangedProc(int x, int y)
