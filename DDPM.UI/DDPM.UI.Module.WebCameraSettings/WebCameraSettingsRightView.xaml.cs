@@ -197,13 +197,6 @@ namespace DDPM.UI.Module.WebCameraSettings
             }
         }
 
-        //  Jim add 20240628
-        private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            return;
-            SetZoomLevel((float)ZoomSlider.Value);
-        }
-
         private void SetZoomLevel(float level)
         {
             if (_vm != null && _vm.MediaCapture != null)
@@ -336,6 +329,18 @@ namespace DDPM.UI.Module.WebCameraSettings
         {
             _vm.VbarSelectedIndex = 1;
             _vm.SelectVBar();
+        }
+
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image elm)
+            {
+                var val = elm.Tag.ToString();
+                if (val == "0")
+                    _vm.Undo();
+                else
+                    _vm.Redo();
+            }
         }
     }
 }

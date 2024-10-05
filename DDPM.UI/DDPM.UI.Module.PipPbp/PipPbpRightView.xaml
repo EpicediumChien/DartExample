@@ -238,7 +238,8 @@
                                 Width="132" Margin="0,0,4,0"
                                 IsEnabled="{Binding IsVideoSwapButtonEnabled, Mode=OneWay}"
                                 Visibility="{Binding IsVideoSwapButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}" 
-                                MouseLeftButtonDown="videoSwapButton_MouseLeftButtonDown"/>
+                                MouseLeftButtonDown="videoSwapButton_MouseLeftButtonDown"
+                                Click="videoSwapButton_Click"/>
 
                         <!-- USB Switch Button -->
                         <!-- Using Border + TextBlock solution 
@@ -257,7 +258,7 @@
                                 Width="132" Margin="4,0,0,0"
                                 IsEnabled="{Binding IsUsbSwitchButtonEnabled, Mode=OneWay}"
                                 Visibility="{Binding IsUsbSwitchButtonVisible, Converter={StaticResource BoolToVisibilityConverter}}"
-                                MouseLeftButtonDown="usbSwitchButton_MouseLeftButtonDown"/>
+                                MouseLeftButtonDown="usbSwitchButton_MouseLeftButtonDown" Click="usbSwitchButton_Click"/>
                     </StackPanel>
                 </StackPanel>
 

@@ -29,6 +29,7 @@ using System.Windows.Shapes;
 using static DDPM.UI.Common.User32;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
+
 namespace DDPM.UI.Module.EzMemory
 {
     /// <summary>
@@ -39,8 +40,7 @@ namespace DDPM.UI.Module.EzMemory
         #region Private Members
         private HomeDevice _homeDevice;
         private IDeviceManagerSA _deviceManagerSA;
-        private DDPM.UI.Common.ViewModels.EzMemoryViewModel _vm;
-        //private EzMemoryViewModel _vm;      
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;    
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
@@ -57,44 +57,44 @@ namespace DDPM.UI.Module.EzMemory
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
             //DataContext = vm;
-            if (_homeDevice.vmEzMemory == null)
+            if (_homeDevice.vmEzArrange == null)
             {
-                _homeDevice.vmEzMemory = new DDPM.UI.Common.ViewModels.EzMemoryViewModel(_homeDevice);
+                _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzMemory;
-            DataContext = _homeDevice.vmEzMemory;
+            _vm = _homeDevice.vmEzArrange;
+            DataContext = _homeDevice.vmEzArrange;
 
             Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
 
-            //splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-            //splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
-            //splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_3w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_4w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_5w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            //splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+            splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+            splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_3w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_4w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_5w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
 
-            //splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_2w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_3w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_4w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_5w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
-            //splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_2w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_3w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_4w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_5w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
+            splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
 
-            //splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            //splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
 
-            //splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
+            splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
 
 
@@ -108,11 +108,29 @@ namespace DDPM.UI.Module.EzMemory
 
         public void InitializePage()
         {
+            //Read other settings
+
+            List<EAProfileDDPM> eaProfile = DdpmCommonHelper.DeviceManagerSA.ReadEzProfiles().Result;
+            List<EAAppInfoDDPM> lea = new List<EAAppInfoDDPM>();
+            EAAppInfoDDPM ea = new EAAppInfoDDPM();
+            ea.IsUWP = false;
+            ea.Name = "11";
+            lea.Add( ea );
+
+            EAAppInfoDDPM ea2 = new EAAppInfoDDPM();
+            ea2.IsUWP = false;
+            ea2.Name = "22";
+            lea.Add(ea2);
+
+
+            EAProfileDDPM test = new EAProfileDDPM(9, "test", 8, true, 111, true, "TEST", "TEST", lea);
+            EAProfileDDPM test2 = new EAProfileDDPM(11, "test", 11, true, 111, true, "TEST1", "TEST1", lea);
+            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test);
+            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test2);
             _vm._currentTotalPage = 0;
             _vm._currentPageIndex = 0;
             _vm.ProgressValue = 1;
             _vm.ezPages = _vm.GetEzPages();
-            RightGridPage2.Visibility = Visibility.Collapsed;
 
             if (_vm.ezPages.ContainsKey(_vm._currentDeviceModel))
             {
@@ -130,9 +148,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             _vm._currentPageIndex++;
             EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
-            _ezMemoryAssignProgram.DataContext = _vmDisplay;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
-            //UpdatePageContent();
         }
 
         /// <summary>
@@ -158,21 +174,8 @@ namespace DDPM.UI.Module.EzMemory
             var pageData = _vm.ezPages["EzMemory"][_vm._currentPageIndex];
             MainText.Text = pageData.MainText!;
             SubText.Text = pageData.SubText!;
-            ControlPageGrid(_vm._currentPageIndex);
         }
-        public void ControlPageGrid(int _currentPageIndex)
-        {
-            //if (_vm._currentPageIndex == 0)
-            //{
-            //    RightGridPage1.Visibility = Visibility.Visible;
-            //    RightGridPage2.Visibility = Visibility.Collapsed;
-            //}
-            //if (_vm._currentPageIndex == 1)
-            //{
-            //    RightGridPage1.Visibility = Visibility.Collapsed;
-            //    RightGridPage2.Visibility = Visibility.Visible;
-            //}
-        }
+
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
             if (_vm._currentPageIndex == 0)
@@ -580,7 +583,7 @@ namespace DDPM.UI.Module.EzMemory
         private static DisplayOrientation GetDisplayOrientation(string deviceName)
         {
             int ENUM_CURRENT_SETTINGS = -1;
-            DEVMODE devMode = new DEVMODE();
+            Common.User32.DEVMODE devMode = new Common.User32.DEVMODE();
             if (User32._EnumDisplaySettings(deviceName, ENUM_CURRENT_SETTINGS, ref devMode))
             {
                 return (DisplayOrientation)devMode.dmDisplayOrientation;

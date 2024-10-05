@@ -70,6 +70,7 @@ namespace DDPM.SA.Common
             sb.AppendLine($"{index}.----------");
             sb.AppendLine($"{nameof(item.ID)}                         : {item.ID}");
             sb.AppendLine($"{nameof(item.Name)}                       : {item.Name}");
+            sb.AppendLine($"{nameof(item.FirmwareVersion)}            : {item.FirmwareVersion}");
             sb.AppendLine("----------");
         }
 

@@ -285,7 +285,7 @@ namespace DDPM.UI.Common
         public static object ImportActionList(eDeviceCategory type, string model, int instanceID = 0)
         {
             //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\Actions\{model}.json");
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
             var hasFile = File.Exists(filePath);
             string info = string.Empty;
 

@@ -94,5 +94,8 @@
 
         //DTPProxy
         public const string DDPM_DTP_Proxy_Plugin = "{d034ee8f-7c8a-4296-8b5b-33b4e978c6b5}";
+
+        //EzMemory
+        public const string DDPM_EMPlugin_PLUGIN_ID = "{388F486D-2A86-421C-B571-3AAF9F839BA2}";
     }
 }
