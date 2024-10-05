@@ -7,16 +7,6 @@ using System.Threading.Tasks;
 
 namespace DDPM.SA.Common.Settings
 {
-    public class ProfileDDPM
-    {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public int Layout { get; set; }
-        public bool Auto { get; set; }
-        public long? AutoStartTime { get; set; }
-        public bool StartUpLaunch { get; set; }
-        public List<EAAppInfoDDPM> AppInfos { get; set; }
-    }
     public class EAProfileDDPM
     {
         public int ID { get; set; }
@@ -25,27 +15,33 @@ namespace DDPM.SA.Common.Settings
 
         public int Layout { get; set; }
 
+        public bool Auto { get; set; }// Auto 為 true 代表自動啟動，false 代表手動啟動
+
+        public long? AutoStartTime { get; set; }// AutoStartTime 為自動啟動的時間，單位為秒
+
+        public bool StartUpLaunch { get; set; }
+
+        public string Model { get; set; }
+
+        public string ServiceTag { get; set; }
+
         public List<EAAppInfoDDPM> AppInfos { get; set; }
 
-        //// 新增欄位
-        public bool IsManualLaunch { get; set; } // ManulRB
+        public EAProfileDDPM()
+        {
+        }
 
-        public bool IsAutoLaunch { get; set; }   // AutoRB
-
-        public string SelectedHour { get; set; } // HourCB
-
-        public string SelectedMinute { get; set; } // MinuteCB
-
-        public string SelectedAMPM { get; set; } // AMPMCB
-
-        public bool IsLaunchAtStartup { get; set; } // StartupCB
-
-        public EAProfileDDPM(int id, string name, int layout, List<EAAppInfoDDPM> apps, bool isManualLaunch, bool isAutoLaunch, string selectedHour, string selectedMinute, string selectedAMPM, bool isLaunchAtStartup)
+        public EAProfileDDPM(int id, string name, int layout, bool Auto, long? autoStartTime, bool startUpLaunch, string model, string serviceTag, List<EAAppInfoDDPM> apps)
         {
             ID = id;
             Name = name;
             Layout = layout;
+            AutoStartTime = autoStartTime;
+            StartUpLaunch = startUpLaunch;
+            Model = model;
+            ServiceTag = serviceTag;
             AppInfos = apps == null ? new List<EAAppInfoDDPM>() : apps.ConvertAll(app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param));
+            
         }
     }
 

@@ -3301,9 +3301,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(new List<EAProfileDDPM>());
         }
 
-        public Task<bool> WriteEzProfiles(MonitorInfo monitorInfo, EAProfileDDPM eaProfile)
+        public Task<bool> WriteEzProfiles(EAProfileDDPM eaProfile)
         {
             DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+
             if (ddpmSettings != null)
             {
                 if (ddpmSettings.UserSettings.EAProfile == null)
@@ -3311,7 +3312,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
                 }
 
-                // 找相同 Name
                 var existingProfile = ddpmSettings.UserSettings.EAProfile.FirstOrDefault(p => p.Name == eaProfile.Name);
 
                 if (existingProfile != null)
@@ -3320,21 +3320,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     existingProfile.Name = eaProfile.Name;
                     existingProfile.Layout = eaProfile.Layout;
                     existingProfile.AppInfos = eaProfile.AppInfos;
-                    existingProfile.SelectedHour = eaProfile.SelectedHour;
-                    existingProfile.SelectedMinute = eaProfile.SelectedMinute;
-                    existingProfile.SelectedAMPM = eaProfile.SelectedAMPM;
-                    existingProfile.IsManualLaunch = eaProfile.IsManualLaunch;
-                    existingProfile.IsAutoLaunch = eaProfile.IsAutoLaunch;
-                    existingProfile.IsLaunchAtStartup = eaProfile.IsLaunchAtStartup;
+                    existingProfile.AutoStartTime = eaProfile.AutoStartTime;
+                    existingProfile.Auto = eaProfile.Auto;
+                    existingProfile.ID = eaProfile.ID;
+                    existingProfile.StartUpLaunch = eaProfile.StartUpLaunch;
+                    existingProfile.Model = eaProfile.Model;
+                    existingProfile.ServiceTag = eaProfile.ServiceTag;
                 }
                 else
                 {
                     // 新增
-                    ddpmSettings.UserSettings.EAProfile.Add(eaProfile);
+                    ddpmSettings.UserSettings.EAProfile.Add(new EAProfileDDPM
+                    {
+                        ID = eaProfile.ID,
+                        Name = eaProfile.Name,
+                        Layout = eaProfile.Layout,
+                        AppInfos = eaProfile.AppInfos,
+                        AutoStartTime = eaProfile.AutoStartTime,
+                        Auto = eaProfile.Auto,
+                        StartUpLaunch = eaProfile.StartUpLaunch,
+                        Model = eaProfile.Model,
+                        ServiceTag = eaProfile.ServiceTag 
+                    });
                 }
+
+                _SettingsPlugin.SetAppConfigData(ddpmSettings);
 
                 return Task.FromResult(true);
             }
+
             return Task.FromResult(false);
         }
 
@@ -7881,6 +7895,78 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region Migration
+
+        public Task<bool> DDMtoDDPM_EzMemory(DDMMonitorSettings dDMMonitorSettings, DDMUserSettings dDMUserSettings)//USER (EaProfile)去對應每個Monitor (EaSettings)
+        {
+            bool result = false;
+
+            if (dDMMonitorSettings != null && dDMMonitorSettings.EasyArrangement != null && dDMMonitorSettings.EasyArrangement.Desktops.Count != 0)
+            {
+                if (dDMUserSettings != null && dDMUserSettings.Profiles != null)
+                {
+                    // 讀取
+                    List<EAProfileDDPM> currentProfiles = ReadEzProfiles().Result;
+
+                    foreach (var desktop in dDMMonitorSettings.EasyArrangement.Desktops)
+                    {
+                        if (desktop.ProfileSettings != null && desktop.ProfileSettings.Count > 0)
+                        {
+                            foreach (var profileSetting in desktop.ProfileSettings)
+                            {
+                                // 找ID
+                                var matchingProfile = dDMUserSettings.Profiles.FirstOrDefault(p => p.ID == profileSetting.ID);
+
+                                if (matchingProfile != null)
+                                {
+                                    var currentProfile = currentProfiles.FirstOrDefault(p => p.ID == profileSetting.ID);
+
+                                    string model = dDMMonitorSettings.Model;
+                                    string serviceTag = dDMMonitorSettings.ServiceTag;
+
+                                    if (currentProfile != null)
+                                    {
+                                        // 更新
+                                        currentProfile.Auto = profileSetting.Auto;
+                                        currentProfile.AutoStartTime = profileSetting.AutoStartTime;
+                                        currentProfile.StartUpLaunch = profileSetting.StartUpLaunch;
+                                        currentProfile.Layout = matchingProfile.Layout;
+                                        currentProfile.AppInfos = matchingProfile.AppInfos.ConvertAll(app =>new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param));
+                                        currentProfile.Model = model;
+                                        currentProfile.ServiceTag = serviceTag;
+
+                                        WriteEzProfiles(currentProfile);
+                                        result = true;
+                                    }
+                                    else
+                                    {
+                                        // 新增
+                                        var newProfile = new EAProfileDDPM
+                                        {
+                                            ID = profileSetting.ID,
+                                            Name = matchingProfile.Name,
+                                            Layout = matchingProfile.Layout,
+                                            Auto = profileSetting.Auto,
+                                            AutoStartTime = profileSetting.AutoStartTime,
+                                            StartUpLaunch = profileSetting.StartUpLaunch,
+                                            AppInfos = matchingProfile.AppInfos.ConvertAll(app =>new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)),
+                                            Model = model,
+                                            ServiceTag = serviceTag
+                                        };
+
+                                        currentProfiles.Add(newProfile);
+                                        WriteEzProfiles(newProfile);
+
+                                        result = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return Task.FromResult(result);
+        }
+
         private void DDMMigration()
         {
             if (_SettingsPlugin != null)
