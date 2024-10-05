@@ -500,10 +500,10 @@ namespace DDPM.UI.Common.Models
             string name = DeviceInfo.Name; //"Dell Mobile Wireless Mouse MS3320W"
             var arr = name.Split(' ');
             string model = DeviceInfo.ModelNumber;
-            if (arr.Length > 0)
-            {
-                model = arr[arr.Length - 1];
-            }
+            //if (arr.Length > 0)
+            //{
+            //    model = arr[arr.Length - 1];
+            //}
             var colorCode = DeviceInfo.ColorCode == 0 ? "" : $"_{DeviceInfo.ColorCode}";
 
             DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{model}{colorCode}.png", assemblyName);
