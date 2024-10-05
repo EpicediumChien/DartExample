@@ -11,6 +11,7 @@
 #endregion
 
 using DDPM.SA.Common;
+using DDPM.SA.Obfuscation;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -33,6 +34,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using VcpCore.Common;
 using VcpCore.Interfaces;
+using DDPM.SA.Common.Settings;
 using static VcpCore.Common.dxva2;
 using static VcpCore.Common.User32;
 using IDs = VcpCore.Common.IDs;
@@ -55,6 +57,7 @@ namespace VcpCore.Plugins
         private const string publisherSupport = "This plugin implements Vcp Core Plugin.";
 
         private bool _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
+        private static bool _Isinitializing = true;
 
         private IAgent _agent;
         private const string PluginLogId = "VcpCore";
@@ -87,6 +90,10 @@ namespace VcpCore.Plugins
         private static readonly string targetFile = "SupportEncrypted.txt";
 
         private static Dictionary<EDID, Dictionary<object, object>> _CacheTable;
+
+        private ISettingsManagerSA? _SysSettingsPlugin;
+        private static string _settingsAccessInfo = string.Empty;
+        private readonly object _PluginConditionLock_SysSettings = new object();
 
         #endregion
 
@@ -159,9 +166,10 @@ namespace VcpCore.Plugins
 
             _logs.DebugMsg("[VcpCorePlugin] Does VcpCorePlugin have Administrator: " + _IsAdministrator.ToString());
 
-            DecryptSupportListFile();
-            InitialColorPresets();
-            InitializeMonitorsList().Wait();
+            InitializeSysSettingsPlugin();
+            //DecryptSupportListFile();
+            //InitialColorPresets();
+            //InitializeMonitorsList().Wait();
         }
 
         #endregion
@@ -211,6 +219,14 @@ namespace VcpCore.Plugins
             else
             {
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Monitors List requested ...");
+
+                int count = 0;
+                do
+                {
+                    if (!_Isinitializing) break;
+                    SpinWait.SpinUntil(() => false, 250);
+                    count++;
+                } while ((_Isinitializing) || (count < 40));
 
                 List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
                 if (_AllInfoMonitors_Mix.Count > 0)
@@ -1831,6 +1847,7 @@ namespace VcpCore.Plugins
                         _AllInfoMonitors.Add(x);
                 }
             }
+            _Isinitializing = false;
             _logs.DebugMsg("[VcpCorePlugin] Initialize2TypesMonitorInfo finishi : count => " + _AllInfoMonitors_Mix.Count);
         }
 
@@ -2192,6 +2209,7 @@ namespace VcpCore.Plugins
                                                 _TargetMonitor.series = kv.Key;
                                                 _TargetMonitor.ImageFileName = tx.ImageFileName;
                                                 _TargetMonitor.MarketingName = tx.MarketingName;
+                                                _TargetMonitor.edid.Display_DeviceName = _TargetMonitor.Display_DeviceName;
                                                 break;
                                             }
                                         }
@@ -2201,9 +2219,9 @@ namespace VcpCore.Plugins
 
                                 if (string.IsNullOrWhiteSpace(_TargetMonitor.series))
                                 {
-                                    if (CheckIsSupportDisplayByBit(_TargetMonitor.hPhysicalMonitor))
+                                    if (CheckIsSupportDisplayByBit(_TargetMonitor.hPhysicalMonitor, _TargetMonitor.modelName))
                                     {
-                                        _TargetMonitor.series = "UnKnown";
+                                        _TargetMonitor.series = ChekSeries(_TargetMonitor.modelName);
                                         _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.series: " + _TargetMonitor.series);
                                     }
                                     else
@@ -3218,7 +3236,7 @@ namespace VcpCore.Plugins
             return ColorPresetDescriptions;
         }
 
-        private bool CheckIsSupportDisplayByBit(IntPtr hPhyMonitor)
+        private bool CheckIsSupportDisplayByBit(IntPtr hPhyMonitor, string model)
         {
             try
             {
@@ -3231,7 +3249,7 @@ namespace VcpCore.Plugins
 
                     if (F1supportBit != null)
                     {
-                        uint r = ((Convert.ToUInt32(F1supportBit)) & 0x2000);
+                        uint r = ((Convert.ToUInt32(F1supportBit)) & 0xA000);
                         if (r > 0)
                         {
                             _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return true");
@@ -3239,8 +3257,19 @@ namespace VcpCore.Plugins
                         }
                         else
                         {
-                            _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
-                            return false;
+                            uint rr = ((Convert.ToUInt32(F1supportBit)) & 0x0001);
+                            int CY = ChekCY(model);
+
+                            if (CY >= 19 && rr > 0)
+                            {
+                                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return true");
+                                return true;
+                            }
+                            else
+                            {
+                                _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit return false");
+                                return false;
+                            }
                         }
                     }
 
@@ -3256,6 +3285,61 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg($"[VcpCorePlugin] CheckIsSupportDisplayByBit into catch: " + ex.Message);
                 return false;
+            }
+        }
+
+        private int ChekCY(string model)
+        {
+            string number = new string(model.SkipWhile(c => !char.IsDigit(c))
+                             .TakeWhile(c => char.IsDigit(c))
+                             .ToArray());
+
+            var r = number.Trim().Substring(number.Length - 2);
+
+            if (!string.IsNullOrWhiteSpace(r))
+            {
+                var IsNumeric = int.TryParse(r, out int result);
+
+                if (IsNumeric)
+                    return result;
+                else
+                    return 0x0;
+            }
+            return 0x0;
+        }
+
+        private string ChekSeries(string model)
+        {
+            string Series = new string(model.SkipWhile(c => char.IsDigit(c))
+                             .TakeWhile(c => !char.IsDigit(c))
+                             .ToArray());
+
+            var result = Series.Trim();
+
+            switch (Series.Trim().ToUpper())
+            {
+                case "AW":
+                    return "Alienware Monitors";
+                case "G":
+                    return "Dell Gaming Monitors";
+                case "C":
+                    return "Dell C Series Displays";
+                case "SE":
+                    return "Dell SE Series Monitors";
+                case "P":
+                    return "Dell P Series Monitors";
+                case "S":
+                    return "Dell S Series Monitors";
+                case "E":
+                    return "Dell E Series Monitors";
+                case "U":
+                    return "Dell UltraSharp (U) Series Monitors";
+                case "UP":
+                    return "Dell Ultrasharp Premier Color (UP) Series Monitors";
+                case "D":
+                    return "Dell ODM Series Monitors";
+                default:
+                    return string.Empty;
             }
         }
 
@@ -3669,46 +3753,57 @@ namespace VcpCore.Plugins
             }
         }
 
-        private string WhichMarketingName(string Model)
-        {
-            switch (Model)
-            {
-                case "U3225QE": return "Dell UltraSharp 32 4K Thunderbolt™ Hub Monitor";
-                case "U2725QE": return "Dell UltraSharp 27 4K Thunderbolt™ Hub Monitor";
-                case "P7525QT": return "Dell Pro 75 Plus 4K Touch Monitor";
-                case "P2425D": return "Dell Pro 24 Plus QHD Monitor";
-                case "P2425DE": return "Dell Pro 24 Plus QHD USB-C® Hub Monitor";
-                case "P2725D": return "Dell Pro 27 Plus QHD Monitor";
-                case "P2725DE": return "Dell Pro 27 Plus QHD USB-C® Hub Monitor";
-                case "P3225DE": return "Dell Pro 32 Plus QHD USB-C® Hub Monitor";
-                case "P2725QE": return "Dell Pro 27 Plus 4K USB-C® Hub monitor";
-                case "P3225QE": return "Dell Pro 32 Plus 4K USB-C® Hub Monitor";
-                case "P3425WE": return "Dell Pro 34 Plus USB-C® Hub Monitor";
-                case "P1425": return "Dell Pro 14 Plus Portable Monitor";
-                case "S2725QC": return "Dell 27 Plus 4K USB-C® Monitor";
-                case "S2725QS": return "Dell 27 Plus 4K Monitor";
-                case "S3225QC": return "Dell 32 Plus 4K QD-OLED Monitor";
-                case "S3225QS": return "Dell 32 Plus 4K Monitor";
-                case "S3425DW": return "Dell 34 Plus USB-C® Monitor";
-                case "E2725HM": return "Dell Pro 27 Monitor";
-                case "E2425HM": return "Dell Pro 24 Monitor";
-                case "E2425HSM": return "Dell Pro 24 Adjustable Stand Monitor";
-                case "E2225HM": return "Dell Pro 22 Monitor";
-                case "E2225HSM": return "Dell Pro 22 Adjustable Stand Monitor";
-                default: return string.Empty; //Robert_Lin 2024-0830, help Jarvis to fix.
-            }
-        }
+        //private string WhichMarketingName(string Model)
+        //{
+        //    switch (Model)
+        //    {
+        //        case "U3225QE": return "Dell UltraSharp 32 4K Thunderbolt™ Hub Monitor";
+        //        case "U2725QE": return "Dell UltraSharp 27 4K Thunderbolt™ Hub Monitor";
+        //        case "P7525QT": return "Dell Pro 75 Plus 4K Touch Monitor";
+        //        case "P2425D": return "Dell Pro 24 Plus QHD Monitor";
+        //        case "P2425DE": return "Dell Pro 24 Plus QHD USB-C® Hub Monitor";
+        //        case "P2725D": return "Dell Pro 27 Plus QHD Monitor";
+        //        case "P2725DE": return "Dell Pro 27 Plus QHD USB-C® Hub Monitor";
+        //        case "P3225DE": return "Dell Pro 32 Plus QHD USB-C® Hub Monitor";
+        //        case "P2725QE": return "Dell Pro 27 Plus 4K USB-C® Hub monitor";
+        //        case "P3225QE": return "Dell Pro 32 Plus 4K USB-C® Hub Monitor";
+        //        case "P3425WE": return "Dell Pro 34 Plus USB-C® Hub Monitor";
+        //        case "P1425": return "Dell Pro 14 Plus Portable Monitor";
+        //        case "S2725QC": return "Dell 27 Plus 4K USB-C® Monitor";
+        //        case "S2725QS": return "Dell 27 Plus 4K Monitor";
+        //        case "S3225QC": return "Dell 32 Plus 4K QD-OLED Monitor";
+        //        case "S3225QS": return "Dell 32 Plus 4K Monitor";
+        //        case "S3425DW": return "Dell 34 Plus USB-C® Monitor";
+        //        case "E2725HM": return "Dell Pro 27 Monitor";
+        //        case "E2425HM": return "Dell Pro 24 Monitor";
+        //        case "E2425HSM": return "Dell Pro 24 Adjustable Stand Monitor";
+        //        case "E2225HM": return "Dell Pro 22 Monitor";
+        //        case "E2225HSM": return "Dell Pro 22 Adjustable Stand Monitor";
+        //        default: return string.Empty; //Robert_Lin 2024-0830, help Jarvis to fix.
+        //    }
+        //}
 
         private void DecryptSupportListFile()
         {
-            if (File.Exists(targetFile))
-            {
-                string readText = File.ReadAllText(targetFile);
-                _supportClassification = RsaEncrypt.Decrypt(readText, privateKey);
-            }
+            var path = System.AppDomain.CurrentDomain.BaseDirectory + targetFile;
+            var r = DDPMFileSecurity.IsFilePathValid(path, out string log);
+            _logs.DebugMsg("[VCPCore plugin] DecryptSupportListFile IsFilePathValid : " + log);
 
-            if (!string.IsNullOrEmpty(_supportClassification))
-                _supportDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<modelinfos>>>(_supportClassification);
+            if (r)
+            {
+                if (File.Exists(targetFile))
+                {
+                    //string readText = File.ReadAllText(targetFile);
+                    //_supportClassification = RsaEncrypt.Decrypt(readText, privateKey);
+
+                    byte[] data = File.ReadAllBytes(targetFile);
+                    if (data != null)
+                        _supportClassification = EncryptionHelper.DecryptJsonFromFile(data, _settingsAccessInfo);
+                }
+
+                if (!string.IsNullOrEmpty(_supportClassification))
+                    _supportDictionary = JsonConvert.DeserializeObject<Dictionary<string, List<modelinfos>>>(_supportClassification);
+            }
         }
 
         //---------------------------------------------------
@@ -3753,8 +3848,83 @@ namespace VcpCore.Plugins
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
+
+            if (e.ChangedPlugins.OfType<ISettingsManagerSA>().Any())
+                InitializeSysSettingsPlugin();
         }
 
+        #endregion
+
+        #region Info Key
+        private void InitializeSysSettingsPlugin()
+        {
+            if (_SysSettingsPlugin != null)
+                return;
+
+            _SysSettingsPlugin = _agent.PluginManager.FindPluginByType<ISettingsManagerSA>(PluginResolution.Dynamic);
+
+            if (_SysSettingsPlugin is IFrameworkPluginConditionNotification pluginCondition)
+            {
+                pluginCondition.PluginConditionChangeHandler += OnSysSettingsManagerPluginConditionChangeHandler;
+                GetCurrentSysSettingsManagerPluginCondition();
+            }
+        }
+        private void OnSysSettingsManagerPluginConditionChangeHandler(object sender, EventArgs e)
+        {
+            GetCurrentSysSettingsManagerPluginCondition();
+        }
+
+        private void GetCurrentSysSettingsManagerPluginCondition()
+        {
+            _ = Task.Run(async () =>
+            {
+                var pluginCondition = await (_SysSettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
+
+                lock (_PluginConditionLock_SysSettings)
+                {
+                    if (pluginCondition is PluginErrorCondition)
+                    {
+                        _logs.DebugMsg($"[VCPCore plugin] {nameof(GetCurrentSysSettingsManagerPluginCondition)} - Sys SettingsManager Plugin is in an error condition");
+                    }
+                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
+                    {
+                        _logs.DebugMsg($"[VCPCore plugin] {nameof(GetCurrentSysSettingsManagerPluginCondition)} - Sys SettingsManager Plugin is in a {nameof(pluginCondition)} condition");
+                        if (_SysSettingsPlugin != null)
+                        {
+                            DoRelayRegister();
+                        }
+                    }
+                }
+            });
+        }
+
+        private void DoRelayRegister()
+        {
+            if (_SysSettingsPlugin == null)
+            {
+                _logs.DebugMsg("[VCPCore plugin] System Settings Manager is null, do not register its relay");
+                return;
+            }
+
+            int count = 0;
+            do
+            {
+                _settingsAccessInfo = _SysSettingsPlugin.QueryAccessInfo().Result;
+
+                if (!string.IsNullOrWhiteSpace(_settingsAccessInfo))
+                {
+                    //move init functions from constructer to here
+                    DecryptSupportListFile();
+                    InitialColorPresets();
+                    InitializeMonitorsList().Wait();
+                    break;
+                }
+
+                count++;
+                _logs.DebugMsg("[VCPCore plugin] DoRelayRegister retry " + count.ToString());
+
+            } while (count < 5);
+        }
         #endregion
     }
 }
