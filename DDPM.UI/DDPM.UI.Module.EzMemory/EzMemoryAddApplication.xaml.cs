@@ -1,6 +1,8 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Plugin.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
@@ -30,7 +32,7 @@ namespace DDPM.UI.Module.EzMemory
         #region Private Members
         private HomeDevice _homeDevice;
         private IDeviceManagerSA _deviceManagerSA;
-        private DDPM.UI.Common.ViewModels.EzMemoryViewModel _vm;
+        private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
@@ -41,6 +43,8 @@ namespace DDPM.UI.Module.EzMemory
 
         private IList<Bind_AddFullPage_AppCollectionData> _apps_all = new List<Bind_AddFullPage_AppCollectionData>();
 
+        public ObservableCollection<ApplicationItem> InstalledApplications { get; set; } = new ObservableCollection<ApplicationItem>();
+        //public ObservableCollection<ApplicationItem> InstalledApplications { get; set; }
         public EzMemoryAddApplication(DisplayViewModel vmDisplay)
         {
             _vmDisplay = vmDisplay;
@@ -50,12 +54,12 @@ namespace DDPM.UI.Module.EzMemory
 
             InitializeComponent();
 
-            if (_homeDevice.vmEzMemory == null)
+            if (_homeDevice.vmEzArrange == null)
             {
-                _homeDevice.vmEzMemory = new DDPM.UI.Common.ViewModels.EzMemoryViewModel(_homeDevice);
+                _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
-            _vm = _homeDevice.vmEzMemory;
-            DataContext = _homeDevice.vmEzMemory;
+            _vm = _homeDevice.vmEzArrange;
+            DataContext = _homeDevice.vmEzArrange;
 
             InitializeComponent();
         }
@@ -164,83 +168,77 @@ namespace DDPM.UI.Module.EzMemory
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            //AppsCollectShell appshell = new AppsCollectShell();
+            //Dictionary<string, InstalledAppInfo> data = appshell.FindAppsbyShellForEzMemoryFullPathKey();
 
+            //Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.FindAppsbyShell().Result;
+            Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
+
+
+            string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
+            strFolder += "\\";
+
+            if (!System.IO.Directory.Exists(strFolder))
+                System.IO.Directory.CreateDirectory(strFolder);
+
+            foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
+            {
+                Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
+
+                new_Appdata.AppName = kvp.Value.AppName;
+                new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
+                new_Appdata.AppPath = kvp.Value.AppInstallPath;
+                new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
+                new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
+
+                if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                {
+                    new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
+                }
+                else
+                {
+                    new_Appdata.AppIcon = "Assets/palette.png";
+                }
+
+                _bind_apps.Add(new_Appdata);
+                _apps_all.Add(new_Appdata);
+
+                ApplicationItem newAdd = new ApplicationItem();
+                newAdd.AppName = new_Appdata.AppName;
+                newAdd.AppIcon = new_Appdata.AppIcon;
+                newAdd.AppPath = new_Appdata.AppPath;
+                InstalledApplications.Add(newAdd);
+            }
+            lb_Installed_App.ItemsSource = _bind_apps;
+            //lb_Installed_App.ItemsSource = InstalledApplications;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
-            _ezMemoryAssignProgram.DataContext = _vmDisplay;
+            //_ezMemoryAssignProgram.DataContext = _vmDisplay;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
-        private void btnAdd_Click(object sender, EventArgs e)
+
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            _vm._currentPageIndex++;
-            EzMemoryLaunchOption _ezMemoryLaunchOption = new EzMemoryLaunchOption(_vmDisplay);
-            _ezMemoryLaunchOption.DataContext = _vmDisplay;
-            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryLaunchOption);
+            if (lb_Installed_App.SelectedItems.Count == 0)
+                return;
+            var app = lb_Installed_App.SelectedItems.Cast<Bind_AddFullPage_AppCollectionData>().ToList();
 
-            //ColorViewModel vm = (ColorViewModel)DataContext;
+            if(_vm._sortApps.ContainsKey(_vm.ButtonName))
+            {
+                _vm._sortApps.Remove(_vm.ButtonName);
+            }
 
-            //Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
+            _vm._sortApps.Add(_vm.ButtonName, app[0]);
 
-            //int index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+            //_vm._seletcApps.Add(app[0]);
 
-            //if (index < 0)
-            //{
-            //    Test_AddAppCollectionData.GetInstance()._monitorConfigs.Add(new ColorPresetSettings()
-            //    {
-            //        RunType = (int)ColorPresetRunType.Auto,
-            //        AppInfo = new Dictionary<string, ColorPresetSettings_AppInfo>(),
-            //        PresetForManual = "Standard/Native"
-            //    });
+            _vm.UpdateTextBlockAppName(_vm.ButtonName, app[0].AppName);
 
-            //    index = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
-            //}
-
-            //_supported_preset = vm.SupportColorPresets;
-
-            //foreach (var item in lb_Installed_App.SelectedItems)
-            //{
-            //    Bind_AddFullPage_AppCollectionData temp_selApps = (Bind_AddFullPage_AppCollectionData)item;
-
-            //    AppData? be = Test_AddAppCollectionData.GetInstance().AppsList.FirstOrDefault(x => x.AppName == (temp_selApps.AppName));
-
-            //    if (be != null)
-            //    { }
-            //    else
-            //    {
-            //        Test_AddAppCollectionData.GetInstance().AppsList.Add(new AppData
-            //        {
-            //            AppIcon = temp_selApps.AppIcon,
-            //            AppName = temp_selApps.AppName,
-            //            AppPresetIdx = 0,
-            //            IsDeleteAble = System.Windows.Visibility.Visible,
-            //            SupportPreset = new List<string>(_supported_preset),
-            //        });
-            //    }
-
-            //    if (!(Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.ContainsKey(temp_selApps.AppName)))
-            //    {
-            //        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(temp_selApps.AppName, new ColorPresetSettings_AppInfo()
-            //        {
-            //            ColorPresetName = "Standard/Native",
-            //            IconName = temp_selApps.AppIcon,
-            //        });
-            //    }
-            //}
-
-            //DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-            //Thread.Sleep(500);
-
-
-            //DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
-            //Thread.Sleep(100);
-
-
-            //DdpmCommonHelper.ModuleOwner?.CloseFullView();
-
-            //vm.ModuleOwner?.CloseFullView();
+            EzMemoryAssignProgram _ezMemoryAssignProgram = new EzMemoryAssignProgram(_vmDisplay);
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(_ezMemoryAssignProgram);
         }
     }
 }

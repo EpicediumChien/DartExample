@@ -30,12 +30,12 @@ namespace DDPM.UI.Module.DisplayProperties
             set
             {
                 SetProperty(ref _selectedResolution, value);
-                DdpmCommonHelper.DeviceManagerSA.SetResolutions(MyModule.SelectedHomeDevice.MonitorInfo,
+                DdpmCommonHelper.DeviceManagerSA.SetResolutions(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                     _selectedResolution.Properties
                     ).Wait();
             }
         }
-
+        public Visibility Orientation_IsVisibility { get; set; } = Visibility.Visible;
         public List<UI_Orientation> Orientation_ItemsCollection { get; set; }
 
         public UI_Orientation SelectedOrientation
@@ -44,11 +44,11 @@ namespace DDPM.UI.Module.DisplayProperties
             set
             {
                 SetProperty(ref _selectedOrientation, value);
-                if (DdpmCommonHelper.DeviceManagerSA.SetOrientation(MyModule.SelectedHomeDevice.MonitorInfo,
+                if (DdpmCommonHelper.DeviceManagerSA.SetOrientation(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                     _selectedOrientation.Orientation
                     ).Result)
                 {
-                    DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                     Resolution_ItemsCollection.Clear();
                     MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                     {
@@ -72,7 +72,7 @@ namespace DDPM.UI.Module.DisplayProperties
             set
             {
                 SetProperty(ref _HDRStatus, value);
-                DdpmCommonHelper.DeviceManagerSA.SetHDRStatus(MyModule.SelectedHomeDevice.MonitorInfo, _HDRStatus).Wait();
+                DdpmCommonHelper.DeviceManagerSA.SetHDRStatus(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, _HDRStatus).Wait();
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
                 DdpmCommonHelper.MyConsole.RaiseEvent("DisplayHDRStatusChanged", this, args);
                 RefreshUI();
@@ -95,7 +95,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 SetProperty(ref _IsHighDataSpeed, value);
                 if (_IsHighDataSpeed)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.SetUSBCPrioritizationType(MyModule.SelectedHomeDevice.MonitorInfo,
+                    DdpmCommonHelper.DeviceManagerSA.SetUSBCPrioritizationType(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                     USBCPrioritizationType.HighDataSpeed).Wait();
                 }
             }
@@ -109,7 +109,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 SetProperty(ref _IsHighResolution, value);
                 if (_IsHighResolution)
                 {
-                    DdpmCommonHelper.DeviceManagerSA.SetUSBCPrioritizationType(MyModule.SelectedHomeDevice.MonitorInfo,
+                    DdpmCommonHelper.DeviceManagerSA.SetUSBCPrioritizationType(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                     USBCPrioritizationType.HighResolution).Wait();
                 }
             }
@@ -267,6 +267,14 @@ namespace DDPM.UI.Module.DisplayProperties
                 DisplayPropertiesInfo displayPropertiesInfo = DdpmCommonHelper.DeviceManagerSA.GetDisplayPropertiesInfo(currentMonitorInfo).Result;
                 //Add return to let program continue running
                 //return;
+                if (displayPropertiesInfo.CurrentOrientation == DisplayOrientation.Unknow)
+                {
+                    Orientation_IsVisibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Orientation_IsVisibility = Visibility.Visible;
+                }
                 _SupportedHDR = displayPropertiesInfo.SupportedHDR;
                 _HDRStatus = displayPropertiesInfo.isHDREnable;
                 EventManagerArgs args = new EventManagerArgs(_HDRStatus);
@@ -357,6 +365,7 @@ namespace DDPM.UI.Module.DisplayProperties
             OnPropertyChanged("SupportedUSBCPrioeitization");
             OnPropertyChanged("IsHighDataSpeed");
             OnPropertyChanged("IsHighResolution");
+            OnPropertyChanged("Orientation_IsVisibility");
         }
 
         public void UpdateHDRStatus()
@@ -367,7 +376,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 if (_SupportedHDR)
                 {
                     UInt16 PipMode_Off = 0;
-                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(MyModule.SelectedHomeDevice.MonitorInfo).Result;
+                    ObjGetVCP ret = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
                     if (ret.result)
                     {
                         UInt16 _curPxpMode = Convert.ToUInt16(ret.value);

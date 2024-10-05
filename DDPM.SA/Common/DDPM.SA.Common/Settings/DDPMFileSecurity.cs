@@ -804,6 +804,19 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+        public static bool IsFilePathValid(string filePath, PathCheckOption option, out string info)
+        {
+            info = "Valid";
+            //check return code with Enum PathCheckErrorCodes
+            PathCheckErrorCodes result = PathHelper.ValidateFilePath(filePath, option);
+            if (result != PathCheckErrorCodes.SUCCESS)
+            {
+                info = $"IsFilePathValid: {nameof(result)}";
+                return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Check if the path redirected/junction/Mountpoint
         /// </summary>
@@ -1927,15 +1940,17 @@ namespace DDPM.SA.Common.Settings
                 }
                 else
                 {
-                    info = "The Folder is not a Symbolic";
+                    //info = "The Folder is not a Symbolic";
                     string tmpParentPath = string.Empty;
                     tmpParentPath = Path.GetDirectoryName(filePath); // to check parent 
                     if (tmpParentPath != null && SRemoveSymbolicFolder(tmpParentPath, out info))
                     {
+                        Directory.CreateDirectory(filePath);
                         return true;
                     }
                     else
                     {
+                        Directory.CreateDirectory(filePath);
                         return false;
                     }
                 }

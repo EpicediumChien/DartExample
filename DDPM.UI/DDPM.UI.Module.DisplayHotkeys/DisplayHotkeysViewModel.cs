@@ -114,7 +114,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 SetProperty(ref _switchInput1Selected, value);
                 OnPropertyChanged("SwitchInput1_Selected");
                 //bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, "Input Select", _selectInput.inputSource).Result;
-                SaveHotkeySettings(new InputSourceObj(value.inputDisplayText), "1");
+                if(value != null)
+                    SaveHotkeySettings(new InputSourceObj(value.inputDisplayText), "1");
             }
         }
 
@@ -127,7 +128,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
             {
                 SetProperty(ref _switchInput2Selected, value);
                 OnPropertyChanged("SwitchInput2_Selected");
-                SaveHotkeySettings(new InputSourceObj(value.inputDisplayText), "2");
+                if (value != null)
+                    SaveHotkeySettings(new InputSourceObj(value.inputDisplayText), "2");
             }
         }
 
@@ -141,7 +143,8 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 SetProperty(ref _FavoriteInputSelect, value);
                 OnPropertyChanged("FavoriteInput_Selected");
                 //save
-                SaveHotkeySettings(new InputSourceObj(value.inputDisplayText), "0");
+                if(value != null)
+                    SaveHotkeySettings(new InputSourceObj(value.inputDisplayText), "0");
             }
         }
 

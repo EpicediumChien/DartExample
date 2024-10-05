@@ -25,6 +25,9 @@
         //CLI Manager Plugin
         public const string CLI_Manager_Plugin = "{2B76DC4B-39E7-4DBE-946E-5112CDAF37EA}";//Used to relay elevated CLI subagent command to SA device manager
 
+        //PlatinumSDK Plugin
+        public const string PlatinumSDK_Plugin = "{BFAA77E8-CADF-4CE4-9473-363E65C6B4E0}";
+
         //CMA Manager Plugin, open interface for CMA team to get/set config and receive event from DDPM
         public const string CMA_Manager_Plugin = "{A9C07BA5-6499-4730-B5E1-3143F6A9409F}";
         //-----------------------
@@ -91,5 +94,8 @@
 
         //DTPProxy
         public const string DDPM_DTP_Proxy_Plugin = "{d034ee8f-7c8a-4296-8b5b-33b4e978c6b5}";
+
+        //EzMemory
+        public const string DDPM_EMPlugin_PLUGIN_ID = "{388F486D-2A86-421C-B571-3AAF9F839BA2}";
     }
 }

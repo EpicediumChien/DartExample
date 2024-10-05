@@ -121,7 +121,7 @@ namespace DDPM.UI.Module.Brightness
 
         public CancellationTokenSource PreviewToken = new CancellationTokenSource();
 
-        public List<scheduleInfo> ScheduleMaps = new List<scheduleInfo>();
+        public scheduleInfo ScheduleMap = new scheduleInfo();
 
         public bool IsMouseEnterSchedule_1 { get; set; }
         public bool IsMouseEnterSchedule_2 { get; set; }
@@ -1185,6 +1185,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 PR1_Name = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Pre1Name = PR1_Name;
+                else
+                    ScheduleMap = new scheduleInfo() { Pre1Name = PR1_Name };
+
                 NotifyPropertyChanged("PR1Name");
             }
         }
@@ -1198,6 +1204,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 PR2_Name = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Pre2Name = PR2_Name;
+                else
+                    ScheduleMap = new scheduleInfo() { Pre2Name = PR2_Name };
+
                 NotifyPropertyChanged("PR2Name");
             }
         }
@@ -1211,6 +1223,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 hOurs_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Hours1 = hOurs_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Hours1 = hOurs_1 };
+
                 NotifyPropertyChanged("hOurs1");
             }
         }
@@ -1224,6 +1242,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 mIns_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Mins1 = mIns_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Mins1 = mIns_1 };
+
                 NotifyPropertyChanged("mIns1");
             }
         }
@@ -1237,6 +1261,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 dUration_1 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Duration1 = dUration_1;
+                else
+                    ScheduleMap = new scheduleInfo() { Duration1 = dUration_1 };
+
                 NotifyPropertyChanged("dUration1");
             }
         }
@@ -1250,6 +1280,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 hOurs_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Hours2 = hOurs_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Hours2 = hOurs_2 };
+
                 NotifyPropertyChanged("hOurs2");
             }
         }
@@ -1263,6 +1299,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 mIns_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Mins2 = mIns_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Mins2 = mIns_2 };
+
                 NotifyPropertyChanged("mIns2");
             }
         }
@@ -1276,6 +1318,12 @@ namespace DDPM.UI.Module.Brightness
             set
             {
                 dUration_2 = value;
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Duration2 = dUration_2;
+                else
+                    ScheduleMap = new scheduleInfo() { Duration2 = dUration_2 };
+
                 NotifyPropertyChanged("dUration2");
             }
         }
@@ -1309,6 +1357,12 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR1Brightness_Value = value;
                 PR1Brightness_Debouncer.Debounce(value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Brightness1 = PR1Brightness_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Brightness1 = PR1Brightness_Value };
+
                 NotifyPropertyChanged("PR1BrightnessValue");
             }
         }
@@ -1342,6 +1396,12 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR2Brightness_Value = value;
                 PR2Brightness_Debouncer.Debounce(value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Brightness2 = PR2Brightness_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Brightness2 = PR2Brightness_Value };
+
                 NotifyPropertyChanged("PR2BrightnessValue");
             }
         }
@@ -1375,6 +1435,12 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR1Contrast_Value = (value < 25) ? 25 : value;
                 PR1Contrast_Debouncer.Debounce(PR1Contrast_Value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Contrast1 = PR1Contrast_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Contrast1 = PR1Contrast_Value };
+
                 NotifyPropertyChanged("PR1ContrastValue");
             }
         }
@@ -1408,87 +1474,74 @@ namespace DDPM.UI.Module.Brightness
             {
                 PR2Contrast_Value = (value < 25) ? 25 : value;
                 PR2Contrast_Debouncer.Debounce(PR2Contrast_Value);
+
+                if (ScheduleMap != null)
+                    ScheduleMap.Contrast2 = PR2Contrast_Value;
+                else
+                    ScheduleMap = new scheduleInfo() { Contrast2 = PR2Contrast_Value };
+
                 NotifyPropertyChanged("PR2ContrastValue");
             }
         }
 
         public void GetScheduleInfo()
         {
-            var ScheduleMaps_string = string.Empty;
-
             if (SelectedHomeDevice == null)
                 return;
 
-            if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
+            if (ScheduleMap == null)
+                ScheduleMap = new scheduleInfo();
 
-            if (ScheduleMaps == null)
-                ScheduleMaps = new List<scheduleInfo>();
+            ScheduleMap = DdpmCommonHelper.DeviceManagerSA.ReadScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo).Result;
 
-            if (ScheduleMaps.Count < 1)
+            if (ScheduleMap != null)
             {
-                ScheduleMaps_string = DdpmCommonHelper.Settings_Cache.UserSettings.Schedule;
-                if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
-                    ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
-            }
-
-            if (ScheduleMaps != null && ScheduleMaps.Count > 0)
-            {
-                bool find = false;
-
-                foreach (scheduleInfo TMP in ScheduleMaps)
-                {
-                    if (TMP.Monitor.Equals(SelectedHomeDevice.MonitorInfo.edid))
-                    {
-                        find = true;
-
-                        PR1Name = TMP.Pre1Name;
-                        PR2Name = TMP.Pre2Name;
-                        hOurs1 = TMP.Hours1;
-                        mIns1 = TMP.Mins1;
-                        dUration1 = TMP.Duration1;
-                        hOurs2 = TMP.Hours2;
-                        mIns2 = TMP.Mins2;
-                        dUration2 = TMP.Duration2;
-                        PR1Brightness_Value = TMP.Brightness1;
-                        PR1Contrast_Value = TMP.Contrast1;
-                        PR2Brightness_Value = TMP.Brightness2;
-                        PR2Contrast_Value = TMP.Contrast2;
-
-                        break;
-                    }
-                }
-
-                if (!find)
-                {
-                    PR1Name = string.Empty;
-                    PR2Name = string.Empty;
-                    hOurs1 = 8;
-                    mIns1 = 0;
-                    dUration1 = 60;
-                    hOurs2 = 5;
-                    mIns2 = 0;
-                    dUration2 = 60;
-                    PR1Brightness_Value = 75;
-                    PR1Contrast_Value = 75;
-                    PR2Brightness_Value = 50;
-                    PR2Contrast_Value = 50;
-                }
+                PR1Name = ScheduleMap.Pre1Name;
+                PR2Name = ScheduleMap.Pre2Name;
+                hOurs1 = ScheduleMap.Hours1;
+                mIns1 = ScheduleMap.Mins1;
+                dUration1 = ScheduleMap.Duration1;
+                hOurs2 = ScheduleMap.Hours2;
+                mIns2 = ScheduleMap.Mins2;
+                dUration2 = ScheduleMap.Duration2;
+                PR1Brightness_Value = ScheduleMap.Brightness1;
+                PR1Contrast_Value = ScheduleMap.Contrast1;
+                PR2Brightness_Value = ScheduleMap.Brightness2;
+                PR2Contrast_Value = ScheduleMap.Contrast2;
             }
             else
             {
-                PR1Name = string.Empty;
-                PR2Name = string.Empty;
-                hOurs1 = 8;
-                mIns1 = 0;
-                dUration1 = 60;
-                hOurs2 = 5;
-                mIns2 = 0;
-                dUration2 = 60;
-                PR1Brightness_Value = 75;
-                PR1Contrast_Value = 75;
-                PR2Brightness_Value = 50;
-                PR2Contrast_Value = 50;
+                ScheduleMap = new scheduleInfo()
+                {
+                    model = SelectedHomeDevice.MonitorInfo.modelName ?? string.Empty,
+                    serviceTag = SelectedHomeDevice.MonitorInfo.edid.ServiceTag ?? string.Empty,
+                    IsEnable = true,
+                    Pre1Name = string.Empty,
+                    Pre2Name = string.Empty,
+                    Hours1 = 8,
+                    Mins1 = 0,
+                    Duration1 = 60,
+                    Hours2 = 5,
+                    Mins2 = 0,
+                    Duration2 = 60,
+                    Brightness1 = 75,
+                    Contrast1 = 75,
+                    Brightness2 = 50,
+                    Contrast2 = 50,
+                };
+
+                PR1Name = ScheduleMap.Pre1Name;
+                PR2Name = ScheduleMap.Pre2Name;
+                hOurs1 = ScheduleMap.Hours1;
+                mIns1 = ScheduleMap.Mins1;
+                dUration1 = ScheduleMap.Duration1;
+                hOurs2 = ScheduleMap.Hours2;
+                mIns2 = ScheduleMap.Mins2;
+                dUration2 = ScheduleMap.Duration2;
+                PR1Brightness_Value = ScheduleMap.Brightness1;
+                PR1Contrast_Value = ScheduleMap.Contrast1;
+                PR2Brightness_Value = ScheduleMap.Brightness2;
+                PR2Contrast_Value = ScheduleMap.Contrast2;
             }
 
             NotifyPropertyChanged("PR1Name");
@@ -1507,37 +1560,31 @@ namespace DDPM.UI.Module.Brightness
 
         public void CloseSchedule()
         {
-            var ScheduleMaps_string = string.Empty;
-
-            if (DdpmCommonHelper.Settings_Cache == null)
-                DdpmCommonHelper.Settings_Cache = DdpmCommonHelper.ReadDDPMSettings();// DeviceManagerSA.ReloadAppConfigData().Result;
-
-            if (ScheduleMaps == null)
-                ScheduleMaps = new List<scheduleInfo>();
-
-            if (ScheduleMaps.Count < 1)
+            if (ScheduleMap == null)
             {
-                ScheduleMaps_string = DdpmCommonHelper.Settings_Cache.UserSettings.Schedule;
-                if (!string.IsNullOrWhiteSpace(ScheduleMaps_string))
-                    ScheduleMaps.AddRange(JsonConvert.DeserializeObject<List<scheduleInfo>>(ScheduleMaps_string));
-            }
-
-            if (ScheduleMaps != null && ScheduleMaps.Count > 0)
-            {
-                foreach (scheduleInfo TMP in ScheduleMaps)
+                ScheduleMap = new scheduleInfo()
                 {
-                    if (TMP.Monitor.Equals(SelectedHomeDevice.MonitorInfo.edid))
-                    {
-                        TMP.IsEnable = false;
-                        break;
-                    }
-                }
-
-                ScheduleMaps_string = JsonConvert.SerializeObject(ScheduleMaps, Formatting.Indented);
+                    model = SelectedHomeDevice.MonitorInfo.modelName ?? string.Empty,
+                    serviceTag = SelectedHomeDevice.MonitorInfo.edid.ServiceTag ?? string.Empty,
+                    IsEnable = false,
+                    Pre1Name = string.Empty,
+                    Pre2Name = string.Empty,
+                    Hours1 = 8,
+                    Mins1 = 0,
+                    Duration1 = 60,
+                    Hours2 = 5,
+                    Mins2 = 0,
+                    Duration2 = 60,
+                    Brightness1 = 75,
+                    Contrast1 = 75,
+                    Brightness2 = 50,
+                    Contrast2 = 50,
+                };
             }
+            else
+                ScheduleMap.IsEnable = false;
 
-            DdpmCommonHelper.Settings_Cache.UserSettings.Schedule = ScheduleMaps_string;
-            DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);//DeviceManagerSA.SetAppConfigData(DdpmCommonHelper.Settings_Cache);
+            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
         }
 
         public bool CheckIsTimeOverlap()

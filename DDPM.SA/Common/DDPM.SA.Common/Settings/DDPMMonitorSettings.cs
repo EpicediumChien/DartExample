@@ -64,7 +64,7 @@ namespace DDPM.SA.Common.Settings
         /// The Recent list, the first item should be the SelectedSplit.
         /// So the SelectedSplit could be removed.
         /// </summary>
-        public List<SplitJson> RecentList { get; set; }
+        public List<SplitJson> RecentList { get; set; } = SplitJson.DefaultRecentList;
 
         //Robert_Lin, 2024-9-18 Move these flags to DDPMUserSettings
         /*
@@ -93,6 +93,11 @@ namespace DDPM.SA.Common.Settings
         */
     }
 
+    public class ImpExpSettings
+    {
+        public bool SameModel { get; set; } = false;
+    }
+
     public class DDPMMonitorSettings
     {
         public double Version { get; set; }
@@ -104,5 +109,7 @@ namespace DDPM.SA.Common.Settings
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
         public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
         public HotkeySettings hotkeySettings { get; set; }
+        public scheduleInfo scheduleInfo { get; set; }
+        public ImpExpSettings ImpExpSettings { get; set; }
     }
 }

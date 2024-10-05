@@ -1,8 +1,12 @@
+using DdmLibrary.Utility;
 using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VcpCore.Common;
+
+using DdmLibrary;
+
 
 //using VcpCore.Common;
 //using VcpCore.Interfaces;
@@ -27,7 +31,7 @@ namespace DDPM.SA.Common
 
         Task<List<ColorPresetSettings>> DeleteColorPresetForMonitorConfig(MonitorInfo mo, string AppName, List<ColorPresetSettings> config);
                
-        Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin);
+        Task<bool> AutoSetColorPresetForMonitorConfig(MonitorInfo mo, string on_off, ISettingsManagerDev _SettingsPlugin, IDeviceManagerSA _DeviceManagerPlugin , bool SmartHDR_ON = false);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, ISettingsManagerDev _SettingsPlugin = null);
         Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, ISettingsManagerDev _SettingsPlugin = null, int colorPresetRunType = 0);
@@ -46,6 +50,16 @@ namespace DDPM.SA.Common
         Task<bool> AutoColorManagementForMonitorConfig(MonitorInfo monitorInfo, string off_bymonitor_byhost, ISettingsManagerDev _SettingsPlugin, string ColorPreset_Name = "", string ICC_profile_Name = "");
 
         Task<string> GetColorManagementStatus(MonitorInfo mo, ISettingsManagerDev _SettingsPlugin);
+
+        Task<string> GetColorPresetName(int Color_VCPCore_E2);
+
+        Task<int> GetColorVCPCoreValue(string ColorPreset_Name);
+
+        Task<bool> Migration(DdmLibrary.Utility.ColorPreset colorPresetSetting_Migration, string Model, string ServiceTag, ISettingsManagerDev _SettingsPlugin, int ColorForManual_VCPE2Code_value =0);
+
+        Task<bool> Import(MonitorInfo MonitorInfo, ColorPresetSettings colorPresetSetting_Import, ISettingsManagerDev _SettingsPlugin);
+
+        Task<ColorPresetSettings> Export(MonitorInfo MonitorInfo, ISettingsManagerDev _SettingsPlugin);
 
         #endregion public for  Color Preset Plugin
     }

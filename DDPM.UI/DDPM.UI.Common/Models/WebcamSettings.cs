@@ -30,7 +30,9 @@ namespace DDPM.UI.Common
             try
             {
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
-                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings");
+                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
+                string info = string.Empty;
+                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
 
@@ -45,10 +47,12 @@ namespace DDPM.UI.Common
 
         public static WebcamSettings ImportWebcamSettings(string model)
         {
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
             var hasFile = File.Exists(filePath);
             if (hasFile)
             {
+                string info = string.Empty;
+                DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
                 return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
             }
             else
@@ -85,5 +89,20 @@ namespace DDPM.UI.Common
         public int FieldOfView { get; set; }
         public bool IsHDROn { get; set; }
 
+    }
+
+    public enum OperationModule
+    {
+        CameraControl,
+        ColorAndImage,
+        Other
+    }
+
+    public class WebcamOperation
+    {
+        public OperationModule OPModule;
+        public required string Property;
+        public required object OldValue;
+        public required object NewValue;
     }
 }

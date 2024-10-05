@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Cryptography.Xml;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
 using static System.Net.Mime.MediaTypeNames;
@@ -85,6 +86,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 bool isChanged = (value != _isMoving);
                 SetProperty(ref _isMoving, value);
                 OnPropertyChanged("IsWorkUIShowing");
+                OnPropertyChanged("IsAwsWindowVisible");
                 if (isChanged)
                 {
                     if (IsMovingChanged != null)
@@ -105,6 +107,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 SetProperty(ref _isShiftPressed, value);
                 OnPropertyChanged("IsWorkUIShowing");
+                OnPropertyChanged("IsAwsWindowVisible");
             }
         }
 
@@ -182,7 +185,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public CellObj? HoveringCellObj
         {
             get => _hoveringCellObj;
-            set => SetProperty(ref _hoveringCellObj, value);
+            set
+            {
+                SetProperty(ref _hoveringCellObj, value);
+                OnPropertyChanged();
+            }
         }
 
         private string _hoveringCell = "";
@@ -198,31 +205,35 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public CellObj? DetermineHoveringCellObj(int x, int y)
         {
-            //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
-            //{
-            //    EAWorkWindow workWin = keyValuePair.Value;
-            //    if (workWin == null) continue;
 
-            //    CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
-            //    if (cellObj != null)
-            //    {
-            //        HoveringScreen = keyValuePair.Key;
-            //        HoveringCellObj = cellObj;
-            //        return cellObj;
-            //    }
-            //}
-            
+            if (IsAwsWindowVisible)
+            {
+                if (AwsWindow !=null)
+                {
+                    CellObj? cellObj = AwsWindow.DetermineHoveringCellObj(x, y);
+                    if (cellObj != null)
+                    {
+                        HoveringScreen = AwsWindow.ScreenDeviceName;
+                        HoveringWindow = "aws";
+                        HoveringCellObj = cellObj;
+                        return cellObj;
+                    }
+                }
+            }
+
+            int idxWorkWin = -1;
             foreach (EAWorkWindow workWin in _workWindows2)
             {
+                idxWorkWin++;
                 if (!workWin.IsUsed)
                     continue;
-
 
                 CellObj? cellObj = workWin.DetermineHoveringCellObj(x, y);
                 if (cellObj != null)
                 {
                     HoveringScreen = workWin.ScreenDeviceName;
                     HoveringCellObj = cellObj;
+                    HoveringWindow = $"w{idxWorkWin}";
                     return cellObj;
                 }
             }
@@ -236,6 +247,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private string _hoveringScreen = "";
 
+        /// <summary>
+        /// The Screen.DeviceName of the hovering cell.
+        /// When hover on EAWorkWindow, then HoveringScreen is the Screen of mouse cursor.
+        /// When hover on AwsWindow, then the HoveringScreen is the Screen of the selected monitor in
+        ///    AwsWindow, Icon0.
+        /// </summary>
         public string HoveringScreen
         {
             get => _hoveringScreen;
@@ -243,6 +260,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #endregion HoveringScreen
+
+        #region Hovering Window
+        //Values:
+        //"" : no hovering Window;
+        //"w0" : WorkWindows[0]; "w1" : WorkWindows[1], ...
+        //"aws : AWS Window
+        public string HoveringWindow { get; set; } = "";
+        #endregion
 
         #region WorkWindowList
         public const int maxWorkWindowCount = 5;
@@ -548,7 +573,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     if (workWin.IsUsed)
                     {
-                        workWin.DispatcherClose();
+                        //Robert_Lin, 2024-10-3 don't close the window, we need to reused it
+                        //workWin.DispatcherClose();
                         workWin.IsUsed = false;
                     }
                 }
@@ -569,6 +595,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public int RefreshWorkWindows2()
         {
+            bool isSupportNonDellMonitors = false;
+
             LogInfo("@ ArrangeVM.RefreshWorkWindows2()");
 
             //1 Get all supported monitors from DeviceManager
@@ -577,14 +605,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (monitors == null)
             {
                 LogInfo($"  * Monitors is null.");
-                return -1;
+                if (!isSupportNonDellMonitors)
+                    return -1;
             }
-            if (monitors.Count <= 0)
+            else
             {
-                LogInfo($"  * Monitors is empty.");
-                return -1;
+                if (monitors.Count <= 0)
+                {
+                    LogInfo($"  * Monitors is empty.");
+                    if (!isSupportNonDellMonitors)
+                        return -1;
+                }
+                LogInfo($"  * Monitors.Count={monitors.Count}");
             }
-            LogInfo($"  * Monitors.Count={monitors.Count}");
 
             //2 Prepare to refresh WorkWindows
             //
@@ -623,19 +656,26 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     LogInfo($"    - No attached Monitor for this screen[{idxScr}] => No WorkWindow to create for it.");
                     idxScr++;
-                    continue;
+                    if (!isSupportNonDellMonitors) 
+                        continue;
                 }
-
-                //Dump attached monitors
-                LogInfo($"    - Dump AttachedMonitors for screen[{idxScr}]");
-                int idxMonitor = 0;
-                foreach (MonitorInfo mi in attachedMonitors)
+                else
                 {
-                    LogInfo($"        [{mi.Index}] Name=[{mi.AliasDeviceName}], Model=[{mi.modelName}], ServiceTag=[{mi.edid.ServiceTag}], MarketName=[{mi.MarketingName}]");
-                    idxMonitor++;
+                    //Dump attached monitors
+                    LogInfo($"    - Dump AttachedMonitors for screen[{idxScr}]");
+                    int idxMonitor = 0;
+                    foreach (MonitorInfo mi in attachedMonitors)
+                    {
+                        LogInfo($"        [{mi.Index}] Name=[{mi.AliasDeviceName}], Model=[{mi.modelName}], ServiceTag=[{mi.edid.ServiceTag}], MarketName=[{mi.MarketingName}]");
+                        idxMonitor++;
+                    }
                 }
                 //5 Select the first monitor to read its settings
-                MonitorInfo miWork = attachedMonitors[0];
+                MonitorInfo? miWork = null;
+                if ((attachedMonitors != null) && (attachedMonitors.Count > 0)) 
+                {
+                    miWork = attachedMonitors[0];
+                }
 
                 //6 Find an available WorkWindow work for it
                 //
@@ -650,16 +690,34 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     workWin.IsUsed = true;
                     workWin.SetScreen(scr);
-                    workWin.AttachedMonitor = miWork;
+                    if (miWork != null) 
+                        workWin.AttachedMonitor = miWork;
                     usedCount++;
                 }
 
                 //10 Read settings for the target monitor
-                LogInfo($"  * ReadEAMonitorSettings({miWork.modelName}/{miWork.edid.ServiceTag})");
-                EAMonitorSettings? eaSettings = ReadEAMonitorSettings(miWork);
+                EAMonitorSettings? eaSettings = null;
+                if (miWork != null)
+                {
+                    LogInfo($"  * ReadEAMonitorSettings({miWork.modelName}/{miWork.edid.ServiceTag})");
+                    eaSettings = ReadEAMonitorSettings(miWork);
+                }
                 if (eaSettings == null)
                 {
                     //Should be never to here
+                    if (isSupportNonDellMonitors)
+                    {
+                        //int cellCount = 2;
+                        //char splitKey = 'C';
+                        //List<double> settings = new List<double>() { 7, 3 };
+                        //int cellCount = 2;
+                        //char splitKey = 'A';
+                        //List<double> settings = new List<double>() { 1, 1 };
+                        int cellCount = 4;
+                        char splitKey = 'A';
+                        List<double> settings = new List<double>() { 1, 1, 1, 1, 1 };
+                        workWin.SetWorkingSplit(cellCount, splitKey, settings);
+                    }
                 }
                 else
                 {
@@ -811,6 +869,13 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public void RefreshCellRects()
         {
+            if (IsAwsWindowVisible)
+            {
+                if (AwsWindow != null)
+                {
+                    AwsWindow.RefreshCellRects();
+                }
+            }
             //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
             //{
             //    EAWorkWindow workWin = keyValuePair.Value;
@@ -1034,6 +1099,31 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
         }
 
+        //
+        /// <summary>
+        /// Get the Rect of the specific FrameworkElement.
+        /// It will reference ScreenScale property to fix the coordinate.
+        /// </summary>
+        /// <param name="ele"></param>
+        /// <returns>Return the Rect based on Screen coordinate</returns>
+        public Rect GetFrameworkElementRect(FrameworkElement ele)
+        {
+            if (ele == null)
+                return Rect.Empty;
+
+            if ((ele.ActualWidth == 0) && (ele.ActualHeight == 0))
+                return Rect.Empty;
+
+            PresentationSource preSrc = PresentationSource.FromVisual(ele);
+            if (preSrc == null)
+                return Rect.Empty;
+
+            System.Windows.Point ptTopLeft = ele.PointToScreen(new System.Windows.Point(0, 0));
+            double w = ele.ActualWidth * ScreenScale;
+            double h = ele.ActualHeight * ScreenScale;
+            //Trace.WriteLine($"ctrlActual={ele.ActualWidth}x{ele.ActualHeight}; Scale={_vm.ScreenScale} => {w}x{h}");
+            return new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
+        }
         #endregion Helper Functions
 
         #region DDPM.SA Interfaces
@@ -1085,6 +1175,110 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion WorkWindow FadeOut
 
+        #region AWS Window
+        private bool _isAwsEnabled = true;
+        //AWS Window width x height
+        //public const double cxAws = 788.000;
+        //public const double cyAws = 134.000;
+        //The gap between AWS window bottom to cursor when AWS showing up
+        public const double dyAwsShow = 96;
+
+        //AWS Window position
+        private double _xAws = 0;
+        private double _yAws = 0;
+
+        public bool IsAwsEnabled
+        {
+            get => _isAwsEnabled;
+            set
+            {
+                SetProperty(ref _isAwsEnabled, value);
+                OnPropertyChanged("IsAwsWindowVisible");
+            }
+        }
+        public bool IsAwsWindowVisible
+        {
+            get
+            {
+                if (!IsMoving)
+                    return false;
+                if (!IsAwsEnabled) 
+                    return false;
+
+                if (EzSettings.IsOnlyAllowWhenShiftKeyPressed)
+                {
+                    //LogInfo($"@ ArrangeVM.IsWorkUIShowing: IsShiftPressed={IsShiftPressed}");
+                    return IsShiftPressed;
+                }
+                return true;
+            }
+        }
+
+        public AwsWindow AwsWindow { get; set; }
+
+        /// <summary>
+        /// Return the Screen from current mouse cursor position
+        /// Need to update ArrangeVM.xCursor and yCursor at first
+        /// </summary>
+        /// <returns></returns>
+        public Screen? GetScreenFromCursor()
+        {
+            foreach (System.Windows.Forms.Screen scr in Screen.AllScreens)
+            {
+                if (scr.Bounds.Contains(xCursor, yCursor))
+                {
+                    return scr;
+                }
+            }
+            return null;
+        }
+
+        public double cxAws { get => 788.000; }
+        public double cyAws { get => 134.000; }
+
+        public double xAws
+        {
+            get => _xAws;
+            set => SetProperty(ref _xAws, value);
+        }
+        public double yAws
+        {
+            get => _yAws;
+            set => SetProperty(ref _yAws, value);
+        }
+
+        #endregion
+
+        #region AWS Icons
+
+        private ISplitCtrl _awsIcon1;
+        private ISplitCtrl _awsIcon2;
+        private ISplitCtrl _awsIcon3;
+        private ISplitCtrl _awsIcon4;
+
+        public ISplitCtrl AwsIcon1
+        {
+            get => _awsIcon1;
+            set => SetProperty(ref _awsIcon1, value);
+        }
+        public ISplitCtrl AwsIcon2
+        {
+            get => _awsIcon2;
+            set => SetProperty(ref _awsIcon2, value);
+        }
+        public ISplitCtrl AwsIcon3
+        {
+            get => _awsIcon3;
+            set => SetProperty(ref _awsIcon3, value);
+        }
+        public ISplitCtrl AwsIcon4
+        {
+            get => _awsIcon4;
+            set => SetProperty(ref _awsIcon4, value);
+        }
+
+        #endregion AWS Icons
+
         public void DetermineWorkWindowVisibility()
         {
             //foreach (EAWorkWindow workWin in _workWindows2)
@@ -1097,7 +1291,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         #region EzSettings
-        private EzSettings _ezSettings = new EzSettings();
+        private EzSettings _ezSettings = new EzSettings() { IsOnlyAllowWhenShiftKeyPressed = true };
         public EzSettings EzSettings 
         {
             get => _ezSettings;
@@ -1146,6 +1340,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return false;
         }
 
-
+ 
     }
 }

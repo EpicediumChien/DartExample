@@ -21,6 +21,8 @@ namespace DDPM.MonitorBorker
         // jim add 20240605
         private bool b_AUTO_ColorPresetConfig = true;// Dean 0626 SAST issue. change to private without static
 
+        private bool b_SmartHDR_ON= false;
+
         public MainWindow(IDeviceManagerSA _ddmLib, MonitorInfo m)
         {
             InitializeComponent();
@@ -58,12 +60,13 @@ namespace DDPM.MonitorBorker
         }
 
         // jim add 20240605
-        public void Set_AUTO_ColorPresetConfig(bool blAUTO)
+        public void Set_AUTO_ColorPresetConfig(bool blAUTO, bool blSmartHDR_ON)
         {
             b_AUTO_ColorPresetConfig = blAUTO;
+            b_SmartHDR_ON = blSmartHDR_ON;
 
             if (ColorPresetWin != null) // 20240809 jim add
-                ColorPresetWin.Set_AUTO_ColorPresetConfig(b_AUTO_ColorPresetConfig);
+                ColorPresetWin.Set_AUTO_ColorPresetConfig(b_AUTO_ColorPresetConfig, b_SmartHDR_ON);
         }
 
         // jim add 20240620

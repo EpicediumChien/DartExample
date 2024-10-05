@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dell.Client.Framework.Security.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,57 +60,54 @@ namespace DDPM.SA.Common.Security
             return true;
         }
 
-        public static bool InputValidation_FilePathFileName(string FilePathFileName, bool bLongPath, out string info)
+        public static bool InputValidation_FilePathFileName(string filePathFileName, bool ImportExistFileTrue, out string info)
         {
             info = "Valid";
-            bool bResult = true;
-            string FileName = FilePathFileName.Substring(FilePathFileName.LastIndexOf("\\")+1);
-            int len = FilePathFileName.Length;
-            if ((!bLongPath && (len < 1 || len > 260)) || (bLongPath && (len < 1 || len > 32767)))
+            PathCheckOption opt = PathCheckOption.None;
+            if (ImportExistFileTrue == false)
             {
-                info = $"InputValidation:  ({FilePathFileName}) length does not match";
-                Console.WriteLine(" Fail " + info);
+                opt = PathCheckOption.IgnoreFileExists;
+            }
+
+            if (!Settings.DDPMFileSecurity.IsFilePathValid(filePathFileName, opt, out info))
+            {
+#if DEBUG 
+                Console.WriteLine(info);
+#endif
                 return false;
             }
 
-            for (int idx = 0; idx < FileName.Length; idx++)
+            if (!Settings.DDPMFileSecurity.IsPathSymbolicLinked(filePathFileName, out info))
             {
-                char temp = FileName[idx];
-                switch (temp)
-                {
-                    case '<':
-                    case '>':
-                    case ':':
-                    case '"':
-                    case '/':
-                    case '\\':
-                    case '|':
-                    case '?':
-                        info = $"InputValidation:  ({FileName}) invalid character";
-                        Console.WriteLine(" Fail " + info);
-                        bResult = false;
-                        break;
-                }
-            }
-
-            if (!bResult)
-            {
+#if DEBUG
+                Console.WriteLine(info);
+#endif
                 return false;
             }
 
-            if (FileName.Contains("CON") || FileName.Contains("PRN") || FileName.Contains("AUX") || FileName.Contains("NUL") ||
-                FileName.Contains("COM0") || FileName.Contains("COM1") || FileName.Contains("COM2") || FileName.Contains("COM3") ||
-                FileName.Contains("COM4") || FileName.Contains("COM5") || FileName.Contains("COM6") || FileName.Contains("COM7") ||
-                FileName.Contains("COM8") || FileName.Contains("COM9") || FileName.Contains("LPT0") || FileName.Contains("LPT1") ||
-                FileName.Contains("LPT2") || FileName.Contains("LPT3") || FileName.Contains("LPT4") || FileName.Contains("LPT5") ||
-                FileName.Contains("LPT6") || FileName.Contains("LPT7") || FileName.Contains("LPT8") || FileName.Contains("LPT9"))
+            string filename = System.IO.Path.GetFileName(filePathFileName);
+            if (filename == null || string.IsNullOrEmpty(filename))
             {
-                bResult = false;
-                info = $"InputValidation:  ({FileName}) reserved character";
-                return bResult;
+                info = "File name - Invalid.";
+                return false;
+            }
+            if (filename.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
+            {
+                info = "File name - Invalid File Name Char.";
+                return false;
             }
 
-            Console.WriteLine("InputValidation_FilePathFileName: Pass");
+            if (filename.Equals("CON") || filename.Equals("PRN") || filename.Equals("AUX") || filename.Equals("NUL") ||
+                filename.Equals("COM0") || filename.Equals("COM1") || filename.Equals("COM2") || filename.Equals("COM3") ||
+                filename.Equals("COM4") || filename.Equals("COM5") || filename.Equals("COM6") || filename.Equals("COM7") ||
+                filename.Equals("COM8") || filename.Equals("COM9") || filename.Equals("LPT0") || filename.Equals("LPT1") ||
+                filename.Equals("LPT2") || filename.Equals("LPT3") || filename.Equals("LPT4") || filename.Equals("LPT5") ||
+                filename.Equals("LPT6") || filename.Equals("LPT7") || filename.Equals("LPT8") || filename.Equals("LPT9"))
+            {
+                info = $"File name - ({filename}) reserved character.";
+                return false;
+            }
+
             return true;
         }
 
