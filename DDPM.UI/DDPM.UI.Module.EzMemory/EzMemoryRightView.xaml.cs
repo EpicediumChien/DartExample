@@ -50,8 +50,13 @@ namespace DDPM.UI.Module.EzMemory
 
         private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
         {
+            //EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
+            //DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
+        }
+
+        private void AddNewButton_Click(object sender, RoutedEventArgs e)
+        {
             EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
-            //ezFirst.DataContext = _vm;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 

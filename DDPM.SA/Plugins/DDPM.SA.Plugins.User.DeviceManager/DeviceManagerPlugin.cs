@@ -55,6 +55,7 @@ using System.IO.Compression;
 using DDPM.SA.Common.Method;
 using DdmLibrary;
 using DdmLibrary.Utility;
+using static VcpCore.Common.User32;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -3291,84 +3292,198 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region EasyMemory
 
-        public Task<List<EAProfileDDPM>> ReadEzProfiles()
+        /// <summary>
+        /// Update Monitorsettings EasyArrangement
+        /// </summary>
+        /// <param name="eaProfile"></param>
+        /// <returns></returns>
+        public Task<bool> WriteMonitorEasyArrangement(MonitorInfo monitorInfo, EasyArrangementDDPM easyArrangementDDPM)
         {
-            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-            if (ddpmSettings != null)
+            if (_SettingsPlugin == null)
             {
-                return Task.FromResult(ddpmSettings.UserSettings.EAProfile);
+                writelog("@ WriteMonitorEasyArrangement: _SettingsPlugin is null.");
+                return Task.FromResult(false);
             }
-            return Task.FromResult(new List<EAProfileDDPM>());
+
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
+
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null)
+            {
+                writelog($"@ WriteMonitorEasyArrangement: ReloadMonitorSettings(model={model}) return null.");
+                return Task.FromResult(false);
+            }
+
+            //Find the previous saved device settings
+            DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(monitorInfo.edid.ServiceTag));
+
+            if (monitorSettings == null)
+            {
+                writelog($"@ WriteMonitorEasyArrangement: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
+                return Task.FromResult(false);
+            }
+
+            monitorSettings.easyArrangementDDPM = easyArrangementDDPM;
+
+            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+            {
+                writelog($"@ WriteMonitorEasyArrangement(model={model}, serviceTage={serviceTag}) OK.");
+                return Task.FromResult(true);
+            }
+            writelog($"@ WriteMonitorEasyArrangement: WriteMonitorSettings(model={model}, serviceTage={serviceTag}) failed.");
+            return Task.FromResult(false);
         }
 
-        public Task<bool> WriteEzProfiles(EAProfileDDPM eaProfile)
+        /// <summary>
+        /// Read Monitorsettings EasyArrangement
+        /// </summary>
+        /// <param name="eaProfile"></param>
+        /// <returns></returns>
+        public Task<EasyArrangementDDPM> ReadMonitorEasyArrangement(MonitorInfo monitorInfo)
         {
-            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            //Create a default output
+            EasyArrangementDDPM defaultOutput = null;
 
-            if (ddpmSettings != null)
+            if (_SettingsPlugin == null)
             {
-                if (ddpmSettings.UserSettings.EAProfile == null)
-                {
-                    ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
-                }
+                writelog("@ ReadMonitorEasyArrangement: _SettingsPlugin is null.");
+                return Task.FromResult(defaultOutput);
+            }
 
-                var existingProfile = ddpmSettings.UserSettings.EAProfile.FirstOrDefault(p => p.Name == eaProfile.Name);
+            //Keep the device ID for usage
+            string model = monitorInfo.modelName;
+            string serviceTag = monitorInfo.edid.ServiceTag;
 
-                if (existingProfile != null)
+            //Read all settings for this model
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(model).Result;
+            if (settings == null) //never, but check for safe
+            {
+                writelog($"@ ReadMonitorEasyArrangement: ReloadMonitorSettings(model={model}) is null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            //Find the settings for the specified device
+            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+            //There is no settings found for this device
+            if (monitorSetting == null)
+            {
+                writelog($"@ ReadMonitorEasyArrangement: Settings for (model={model}, serviceTag={serviceTag}) is not found (never be saved before).");
+                return Task.FromResult(defaultOutput);
+            }
+            defaultOutput = new EasyArrangementDDPM();
+            defaultOutput = monitorSetting.easyArrangementDDPM;
+            //Return the EA settings from the settings file
+            return Task.FromResult(defaultOutput);
+        }
+
+        /// <summary>
+        /// Update Usersettings eaProfile
+        /// </summary>
+        /// <param name="eaProfile"></param>
+        /// <returns></returns>
+        public Task<bool> WriteUserEAProfileDDPM(EAProfileDDPM eaProfile)
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ WriteUserEAProfileDDPM: _SettingsPlugin is null.");
+                return Task.FromResult(false);
+            }
+
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings == null)
+            {
+                writelog($"@ WriteUserEAProfileDDPM: ReloadAppConfigData return null.");
+                return Task.FromResult(false);
+            }
+
+            //Find the previous saved device settings
+            if (ddpmSettings.UserSettings.EAProfile != null)
+            {
+                EAProfileDDPM existingProfile = ddpmSettings.UserSettings.EAProfile.FirstOrDefault(p => p.ID == eaProfile.ID);
+                if (existingProfile == null)
                 {
-                    // 更新
-                    existingProfile.Name = eaProfile.Name;
-                    existingProfile.Layout = eaProfile.Layout;
+                    existingProfile = new EAProfileDDPM();
                     existingProfile.AppInfos = eaProfile.AppInfos;
-                    existingProfile.AutoStartTime = eaProfile.AutoStartTime;
-                    existingProfile.Auto = eaProfile.Auto;
                     existingProfile.ID = eaProfile.ID;
-                    existingProfile.StartUpLaunch = eaProfile.StartUpLaunch;
-                    existingProfile.Model = eaProfile.Model;
-                    existingProfile.ServiceTag = eaProfile.ServiceTag;
+                    existingProfile.Layout = eaProfile.Layout;
+                    existingProfile.Name = eaProfile.Name;
+                    ddpmSettings.UserSettings.EAProfile.Add(existingProfile);
+                    writelog($"@ WriteUserEAProfileDDPM Update OK.");
                 }
-                else
-                {
-                    // 新增
-                    ddpmSettings.UserSettings.EAProfile.Add(new EAProfileDDPM
-                    {
-                        ID = eaProfile.ID,
-                        Name = eaProfile.Name,
-                        Layout = eaProfile.Layout,
-                        AppInfos = eaProfile.AppInfos,
-                        AutoStartTime = eaProfile.AutoStartTime,
-                        Auto = eaProfile.Auto,
-                        StartUpLaunch = eaProfile.StartUpLaunch,
-                        Model = eaProfile.Model,
-                        ServiceTag = eaProfile.ServiceTag 
-                    });
-                }
-
-                _SettingsPlugin.SetAppConfigData(ddpmSettings);
-
+            }
+            else
+            {
+                ddpmSettings.UserSettings = new DDPMUserSettings();
+                ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM> { eaProfile };
+                //ddpmSettings.UserSettings.EAProfile.Add(eaProfile);
+                writelog($"@ WriteUserEAProfileDDPM Add OK.");
+            }
+            if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+            {
+                writelog($"@ WriteUserEAProfileDDPM OK.");
                 return Task.FromResult(true);
             }
-
             return Task.FromResult(false);
         }
 
-        public Task<bool> CleanEzProfiles()
+        public Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM()
         {
-            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-            if (ddpmSettings != null)
-            {
-                if (ddpmSettings.UserSettings.EAProfile == null)
-                {
-                    ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
-                }
-                else
-                {
-                    ddpmSettings.UserSettings.EAProfile.Clear();
-                }
+            List<EAProfileDDPM> defaultOutput = null;
 
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ ReadUserEAProfileDDPM: _SettingsPlugin is null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+
+            if (ddpmSettings == null) //never, but check for safe
+            {
+                writelog($"@ ReadUserEAProfileDDPM: null.");
+                return Task.FromResult(defaultOutput);
+            }
+
+            defaultOutput = new List<EAProfileDDPM>();
+            defaultOutput = ddpmSettings.UserSettings.EAProfile;
+            //Return the EA settings from the settings file
+            return Task.FromResult(defaultOutput);
+        }
+
+        public Task<bool> CleanUserEzProfiles()
+        {
+            if (_SettingsPlugin == null)
+            {
+                writelog("@ CleanUserEzProfiles: _SettingsPlugin is null.");
+                return Task.FromResult(false);
+            }
+
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+
+            if (ddpmSettings == null)
+            {
+                writelog("@ CleanUserEzProfiles: ddpmSettings is null.");
+                return Task.FromResult(false);
+            }
+
+            if (ddpmSettings.UserSettings.EAProfile == null)
+            {
+                ddpmSettings.UserSettings.EAProfile = new List<EAProfileDDPM>();
+            }
+            else
+            {
+                ddpmSettings.UserSettings.EAProfile.Clear();
+            }
+            if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+            {
+                writelog($"@ CleanUserEzProfiles OK.");
                 return Task.FromResult(true);
             }
-            return Task.FromResult(false);
+            writelog("@ CleanUserEzProfiles: fail.");
+            return Task.FromResult(true);
+
         }
         #endregion EasyMemory
 
@@ -7896,73 +8011,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Migration
 
-        public Task<bool> DDMtoDDPM_EzMemory(DDMMonitorSettings dDMMonitorSettings, DDMUserSettings dDMUserSettings)//USER (EaProfile)去對應每個Monitor (EaSettings)
+        public Task<bool> DDMtoDDPM_EzMemory(DDMMonitorSettings dDMMonitorSettings, DDMUserSettings dDMUserSettings)
         {
             bool result = false;
-
-            if (dDMMonitorSettings != null && dDMMonitorSettings.EasyArrangement != null && dDMMonitorSettings.EasyArrangement.Desktops.Count != 0)
+            try
             {
-                if (dDMUserSettings != null && dDMUserSettings.Profiles != null)
+                //DDMUserSettings
+                if (dDMUserSettings.Profiles.Count != 0)
                 {
-                    // 讀取
-                    List<EAProfileDDPM> currentProfiles = ReadEzProfiles().Result;
+                    List<EAProfileDDPM> userEAProfileDDPMList = ReadUserEAProfileDDPM().Result;
 
-                    foreach (var desktop in dDMMonitorSettings.EasyArrangement.Desktops)
+                    if (userEAProfileDDPMList == null)
+                        userEAProfileDDPMList = new List<EAProfileDDPM>();
+
+                    foreach (var dDMuserProfile in dDMUserSettings.Profiles)
                     {
-                        if (desktop.ProfileSettings != null && desktop.ProfileSettings.Count > 0)
+                        var currentProfile = userEAProfileDDPMList.FirstOrDefault(p => p.ID == dDMuserProfile.ID);
+
+                        if (currentProfile != null)
                         {
-                            foreach (var profileSetting in desktop.ProfileSettings)
-                            {
-                                // 找ID
-                                var matchingProfile = dDMUserSettings.Profiles.FirstOrDefault(p => p.ID == profileSetting.ID);
-
-                                if (matchingProfile != null)
-                                {
-                                    var currentProfile = currentProfiles.FirstOrDefault(p => p.ID == profileSetting.ID);
-
-                                    string model = dDMMonitorSettings.Model;
-                                    string serviceTag = dDMMonitorSettings.ServiceTag;
-
-                                    if (currentProfile != null)
-                                    {
-                                        // 更新
-                                        currentProfile.Auto = profileSetting.Auto;
-                                        currentProfile.AutoStartTime = profileSetting.AutoStartTime;
-                                        currentProfile.StartUpLaunch = profileSetting.StartUpLaunch;
-                                        currentProfile.Layout = matchingProfile.Layout;
-                                        currentProfile.AppInfos = matchingProfile.AppInfos.ConvertAll(app =>new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param));
-                                        currentProfile.Model = model;
-                                        currentProfile.ServiceTag = serviceTag;
-
-                                        WriteEzProfiles(currentProfile);
-                                        result = true;
-                                    }
-                                    else
-                                    {
-                                        // 新增
-                                        var newProfile = new EAProfileDDPM
-                                        {
-                                            ID = profileSetting.ID,
-                                            Name = matchingProfile.Name,
-                                            Layout = matchingProfile.Layout,
-                                            Auto = profileSetting.Auto,
-                                            AutoStartTime = profileSetting.AutoStartTime,
-                                            StartUpLaunch = profileSetting.StartUpLaunch,
-                                            AppInfos = matchingProfile.AppInfos.ConvertAll(app =>new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param)),
-                                            Model = model,
-                                            ServiceTag = serviceTag
-                                        };
-
-                                        currentProfiles.Add(newProfile);
-                                        WriteEzProfiles(newProfile);
-
-                                        result = true;
-                                    }
-                                }
-                            }
+                            // 將更新後的 currentProfile 寫入
+                            result = WriteUserEAProfileDDPM(currentProfile).Result;
                         }
                     }
                 }
+
+                //DDMMonitorSettings
+                if (dDMMonitorSettings != null && dDMMonitorSettings.EasyArrangement != null)
+                {
+                    //WriteMonitorEasyArrangement(dDMMonitorSettings);
+                    MonitorInfo moinfo = new MonitorInfo();
+                    moinfo.modelName = dDMMonitorSettings.Model;
+                    moinfo.edid.ModelName = dDMMonitorSettings.Model;
+                    moinfo.edid.ServiceTag = dDMMonitorSettings.ServiceTag;
+
+                    EasyArrangementDDPM easyArrangementDDPM = ReadMonitorEasyArrangement(moinfo).Result;
+
+                    foreach (var desktop in dDMMonitorSettings.EasyArrangement.Desktops)
+                    {
+                        DesktopDDPM newDesktop = new DesktopDDPM(desktop.ID, desktop.ActiveLayout)
+                        {
+                            LayoutMRU = new List<int>(desktop.LayoutMRU),
+                            ProfileMRU = new List<int>(desktop.ProfileMRU),
+                            Profiles = new List<EzProfileDDPM>(),
+                            ProfileSettings = new List<EzProfileSettingDDPM>()
+                        };
+
+                        foreach (var profileSetting in desktop.ProfileSettings)
+                        {
+                            EzProfileSettingDDPM newProfileSetting = new EzProfileSettingDDPM(
+                                profileSetting.ID,
+                                profileSetting.Auto,
+                                profileSetting.AutoStartTime ?? 0,
+                                profileSetting.StartUpLaunch
+                            );
+                        }
+                        // 將轉換後的 Desktop 加入到 EasyArrangementDDPM
+                        easyArrangementDDPM.Desktops.Add(newDesktop);
+                    }
+                    result = WriteMonitorEasyArrangement(moinfo, easyArrangementDDPM).Result;
+                }
+                writelog($"@ DDMtoDDPM_EzMemory: PASS");
+            }
+            catch (Exception ex)
+            {
+                writelog($"@ DDMtoDDPM_EzMemory: {ex.Message}");
             }
             return Task.FromResult(result);
         }

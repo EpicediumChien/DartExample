@@ -25,6 +25,7 @@ using Windows.Management.Deployment;
 using Microsoft.VisualBasic.Logging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Windows.ApplicationModel;
+using VcpCore.Common;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -201,92 +202,80 @@ namespace DDPM.UI.Module.EzMemory
 
         private void FinishBtn_Click(object sender, RoutedEventArgs e)
         {
+            bool result = false;
             if (_vm._sortApps.Count >= 2)
             {
                 int profileID = 0;
                 string profileName = _vm.InputText;
                 int layout = 0; // Layout 可以先設為 0 
-
-                List<EAAppInfoDDPM> appInfos = new List<EAAppInfoDDPM>();
-                foreach (var app in _vm._sortApps.Values)
+                int _number = 0;
+                List<EAProfileDDPM> newEAProfileDDPM = new List<EAProfileDDPM>();
+                newEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+                if(newEAProfileDDPM != null)
                 {
-                    appInfos.Add(new EAAppInfoDDPM(app.AppName, app.AppPath, bool.Parse(app.AppType), app.AppUserModelID, String.Empty));
+                    _number = newEAProfileDDPM.Count;
                 }
 
-                bool isAutoLaunch = _vm.IsAutoLaunch;  // 自動啟動
-                bool startUpLaunch = _vm.IsLaunchAtStartup;  // 開機啟動
+
+                List<EAAppInfoDDPM> _appInfos = new List<EAAppInfoDDPM>();
+                foreach (var app in _vm._sortApps.Values)
+                {
+                    _appInfos.Add(new EAAppInfoDDPM(app.AppName, app.AppPath, bool.Parse(app.AppType), app.AppUserModelID, String.Empty));
+                }
+
+
+                EAProfileDDPM _eAProfileDDPM = new EAProfileDDPM(
+                    id: _number,
+                    name: _vm.InputText,
+                    layout: layout,
+                    apps: _appInfos);
+                //newEAProfileDDPM.Add(_eAProfileDDPM);
+                result = DdpmCommonHelper.DeviceManagerSA.WriteUserEAProfileDDPM(_eAProfileDDPM).Result;
+
+                List<EAProfileDDPM> newEAProfileDDPM11 = new List<EAProfileDDPM>();
+                newEAProfileDDPM11 = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
                 // 計算 AutoStartTime
-                long? autostarttime = null;
-                if (isAutoLaunch)
+                long autoLaunchtime = default(long);
+                if (_vm.IsAutoLaunch)
                 {
                     int hour = int.TryParse(_vm.SelectedHour, out var h) ? h : 0;
                     int minute = int.TryParse(_vm.SelectedMinute, out var m) ? m : 0;
-                    autostarttime = (long)(hour * 3600 + minute * 60); // 將小時和分鐘轉換為秒數
+                    autoLaunchtime = (long)(hour * 3600 + minute * 60); // 將小時和分鐘轉換為秒數
                 }
 
-                EAProfileDDPM profile = new EAProfileDDPM(
+                EasyArrangementDDPM _easyArrangementDDPM = new EasyArrangementDDPM();
+                EzProfileSettingDDPM _ezProfileSettingDDPM = new EzProfileSettingDDPM(
                     id: profileID,
-                    name: profileName,
-                    layout: layout,
-                    Auto: _vm.IsAutoLaunch,
-                    autoStartTime: autostarttime,
-                    startUpLaunch = _vm.IsLaunchAtStartup,
-                    model: _homeDevice.MonitorInfo.edid.ModelName,
-                    serviceTag: _homeDevice.MonitorInfo.edid.ServiceTag,
-                    apps: appInfos
-                );
+                    auto: _vm.IsAutoLaunch,
+                    autostarttime: autoLaunchtime,
+                    startuplaunch: _vm.IsLaunchAtStartup
+                    );
 
-                DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(profile);
+                DesktopDDPM _desktopDDPM = new DesktopDDPM(string.Empty ,0);
+                _easyArrangementDDPM.Desktops.Add( _desktopDDPM );
+                //_easyArrangementDDPM.Desktops = _ezProfileSettingDDPM.
+                //_easyArrangementDDPM.Desktops
+
+                if (_easyArrangementDDPM.Desktops[0].ProfileSettings == null)
+                {
+                    List<EzProfileSettingDDPM> profileSettings = new List<EzProfileSettingDDPM>();
+                    _easyArrangementDDPM.Desktops[0].ProfileSettings = profileSettings;
+                }
+                else
+                {
+                    _easyArrangementDDPM.Desktops[0].ProfileSettings.Add(_ezProfileSettingDDPM);
+                }
+
+                result = DdpmCommonHelper.DeviceManagerSA.WriteMonitorEasyArrangement(_homeDevice.MonitorInfo, _easyArrangementDDPM).Result;
+
+                //DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(profile);
 
                 _deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
 
             }
             _vm.ClearTextBlockAppName();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
-
-            //if (_vm._sortApps.Count >= 2)
-            //{               
-            //    int profileID = 0; 
-            //    string profileName = _vm.InputText;
-            //    int layout = 0; // Layout 可以先設為 0 
-
-            //    // 準備應用程式資訊
-            //    List<EAAppInfoDDPM> appInfos = _vm._sortApps.Select(app => new EAAppInfoDDPM(
-            //        app.Value.AppName,
-            //        app.Value.AppPath,
-            //        app.Value.AppType == "False", // 判斷是否為 UWP 應用程式
-            //        app.Value.AppUserModelID,
-            //        string.Empty  // 假設為空
-            //    )).ToList();
-
-            //    // 收集 UI 資料
-            //    bool isManualLaunch = ManulRB.IsChecked ?? false;
-            //    bool isAutoLaunch = AutoRB.IsChecked ?? false;
-            //    string selectedHour = isAutoLaunch ? HourCB.SelectedItem?.ToString() : string.Empty;
-            //    string selectedMinute = isAutoLaunch ? MinuteCB.SelectedItem?.ToString() : string.Empty;
-            //    string selectedAMPM = isAutoLaunch ? AMPMCB.SelectedItem?.ToString() : string.Empty;
-            //    bool isLaunchAtStartup = StartupCB.IsChecked ?? false;
-
-            //    EAProfileDDPM newProfile = new EAProfileDDPM(
-            //        profileID,
-            //        profileName,
-            //        layout,
-            //        appInfos,
-            //        isManualLaunch,
-            //        isAutoLaunch,
-            //        selectedHour,
-            //        selectedMinute,
-            //        selectedAMPM,
-            //        isLaunchAtStartup);
-
-            //    DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(_homeDevice.MonitorInfo, newProfile);
-
-            //    _deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
-            //    //LaunchAndArrangeApps();
-            //}
-            //_vm.ClearTextBlockAppName();
-            //DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
