@@ -35,9 +35,8 @@ namespace DDPM.UI.Module.Gaming
             {
                 SetProperty(ref _selectedResolution, value);
                 MonitorInfo currentMonitorInfo = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
-                DdpmCommonHelper.DeviceManagerSA.SetDisplayPropertiest(currentMonitorInfo,
-                    _selectedResolution.Properties,
-                    DisplayOrientation.Unknow
+                DdpmCommonHelper.DeviceManagerSA.SetResolutions(currentMonitorInfo,
+                    _selectedResolution.Properties
                     ).Wait();
             }
         }
