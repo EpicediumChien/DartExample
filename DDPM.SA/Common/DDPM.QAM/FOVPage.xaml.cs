@@ -55,7 +55,6 @@ namespace DDPM.QAM
                         break;
                 }
             }
-
         }
         private void FOV_Click(object sender, MouseButtonEventArgs e)
         {
@@ -66,7 +65,7 @@ namespace DDPM.QAM
                 var val = vm.FOVs[index];
                 if (val == vm.FieldOfView)
                 { return; }
-
+                vm.FOV_Selected(index);
                 vm.FieldOfView = val;
             }
         }

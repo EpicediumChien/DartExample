@@ -70,7 +70,7 @@
     <GradientStop Color="#5051DA" Offset="1.0" />
   </LinearGradientBrush>
   <Style x:Key="BorderUnpair" TargetType="Border">
-    <Setter Property="Background" Value="#0E1C2F" />
+    <Setter Property="Background" Value="#141D28" />
     <Setter Property="CornerRadius" Value="2" />
     <Setter Property="Width" Value="105" />
     <Setter Property="Height" Value="40" />

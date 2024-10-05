@@ -20,15 +20,34 @@
             CornerRadius="0,0,10,10">
         <StackPanel>
             <Border x:Name="btnFOV0"
-                    Style="{StaticResource BorderUnpair}"
-                    Background="Transparent"
                     Width="256"
                     Height="36"
                     MouseLeftButtonDown="FOV_Click"
                     Cursor="Hand"
                     Margin="8,30,8,10"
-                    Tag="0"
-                    Visibility="{Binding FOV_Visibility[0]}">
+                    Tag="0">
+                <Border.Style>
+                    <Style TargetType="Border"
+                           BasedOn="{StaticResource BorderUnpair}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FOV_IsSelected[0]}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </Trigger>
+                            <Trigger Property="IsMouseCaptured"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <Grid>
                     <UXControls:UXTextBlock Foreground="#F5F6F7"
                                             VerticalAlignment="Center"
@@ -39,15 +58,34 @@
                 </Grid>
             </Border>
             <Border x:Name="btnFOV1"
-                    Style="{StaticResource BorderUnpair}"
-                    Background="Transparent"
                     Width="256"
                     Height="36"
                     MouseLeftButtonDown="FOV_Click"
                     Cursor="Hand"
                     Margin="8,10,8,10"
-                    Tag="1"
-                    Visibility="{Binding FOV_Visibility[1]}">
+                    Tag="1">
+                <Border.Style>
+                    <Style TargetType="Border"
+                           BasedOn="{StaticResource BorderUnpair}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FOV_IsSelected[1]}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </Trigger>
+                            <Trigger Property="IsMouseCaptured"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <Grid>
                     <UXControls:UXTextBlock Foreground="#F5F6F7"
                                             VerticalAlignment="Center"
@@ -58,15 +96,34 @@
                 </Grid>
             </Border>
             <Border x:Name="btnFOV2"
-                    Style="{StaticResource BorderUnpair}"
-                    Background="Transparent"
                     Width="256"
                     Height="36"
                     MouseLeftButtonDown="FOV_Click"
                     Cursor="Hand"
                     Margin="8,10,8,10"
-                    Tag="2"
-                    Visibility="{Binding FOV_Visibility[2]}">
+                    Tag="2">
+                <Border.Style>
+                    <Style TargetType="Border"
+                           BasedOn="{StaticResource BorderUnpair}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FOV_IsSelected[2]}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </Trigger>
+                            <Trigger Property="IsMouseCaptured"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#293B4D" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <Grid>
                     <UXControls:UXTextBlock Foreground="#F5F6F7"
                                             VerticalAlignment="Center"

@@ -27,9 +27,30 @@ namespace DDPM.QAM
         {
             InitializeComponent();
             DataContext = DdpmCommonHelper.QAMPageViewModel;
+            InitializeSettings();
             vm.RefreshUI();
         }
-
+        private void InitializeSettings()
+        {
+            QAMPageViewModel vm = DataContext as QAMPageViewModel;
+            if (vm != null && vm.CurrentDeviceInfo != null)
+            {
+                if (vm.CurrentDeviceInfo.IsPropertyAutoFramingSupported)
+                {
+                    btnRes0.Width = 72;
+                    btnRes1.Width = 72;
+                    btnRes2.Width = 72;
+                    btnRes3.Width = 72;
+                }
+                else
+                {
+                    btnRes0.Width = 96;
+                    btnRes1.Width = 96;
+                    btnRes2.Width = 96;
+                    btnRes3.Width = 96;
+                }
+            }
+        }
         private void Presets_Click(object sender, MouseButtonEventArgs e)
         {
             if (vm != null)
