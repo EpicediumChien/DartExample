@@ -152,8 +152,12 @@ namespace DDPM.UI.Common
 
             if (newKeys.Count > 0 && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift) || (x == VirtualKey.Menu)))
             {
-                //second single key
-                return;
+                int i = newKeys.FindIndex(x => x >= VirtualKey.A && x <= VirtualKey.Z);
+                //remove exist key and then update new alphabetKey
+                if (i >= 0)
+                    newKeys.RemoveAt(i);
+                else
+                    return;
             }
             if (newKeys.Count == 2 && newKeys.Any(x => (x == VirtualKey.Menu)) && !newKeys.Any(x => (x == VirtualKey.Control) || (x == VirtualKey.Shift)))
             {
@@ -174,10 +178,17 @@ namespace DDPM.UI.Common
             }
 
             //only on alphabet Key
-            if (alphabetKey) return;
+            if (alphabetKey)
+            {
+                int i = newKeys.FindIndex(x => x >= VirtualKey.A && x <= VirtualKey.Z);
+                //remove exist key and then update new alphabetKey
+                if(i>=0)
+                    newKeys.RemoveAt(i);
+                //return;
+            }
             if (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z)
             {
-                alphabetKey = true;
+                alphabetKey = true;                
             }
 
             /*  if (!alphabetKey)
