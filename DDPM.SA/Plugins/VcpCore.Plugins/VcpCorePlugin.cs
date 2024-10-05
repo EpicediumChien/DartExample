@@ -2933,6 +2933,7 @@ namespace VcpCore.Plugins
             VCPF0.Add("Metro", "07");
             //VCPF0.Add("Raper", "08");
             VCPF0.Add("Paper", "08");
+            VCPF0.Add("Rec.709 / BT.709", "09"); //add 10/04
             VCPF0.Add("Rec. 709 / BT.709", "09");
             VCPF0.Add("Rec. 709/BT.709", "09");
             VCPF0.Add("Rec.709/BT.709", "09");
@@ -3017,6 +3018,7 @@ namespace VcpCore.Plugins
             VCPE2.Add("CAL2", "15");
             VCPE2.Add("Metro", "18");
             VCPE2.Add("Paper", "19");
+            VCPE2.Add("Rec.709 / BT.709", "1A"); // 20241004 jim add
             VCPE2.Add("Rec. 709 / BT.709", "1A"); // 20240731 jim add
             VCPE2.Add("Rec. 709/BT.709", "1A"); // 20240731 jim add
             VCPE2.Add("Rec.709/BT.709", "1A"); // 20240731 jim add

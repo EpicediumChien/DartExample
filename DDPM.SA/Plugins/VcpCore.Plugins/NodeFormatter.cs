@@ -396,7 +396,8 @@ namespace VcpCore.Plugins
                 case "08": return "Paper";
                 //case "09": return "Rec 709";
                 //case "09": return "Rec.709";
-                case "09": return "Rec. 709 / BT.709";
+                //case "09": return "Rec. 709 / BT.709";
+                case "09": return "Rec.709 / BT.709"; // 1004 jim add
                 case "0a": return "DCI-P3";
                 case "0b": return "Rec2020";
                 case "0c": return "ComfortView";
@@ -460,7 +461,8 @@ namespace VcpCore.Plugins
                 case "19": return "Paper";
                 //case "1a": return "Rec. 709"; // 20240731 jim remove
                 //case "1a": return "Rec.709"; // 20240731 jim add
-                case "1a": return "Rec. 709 / BT.709";
+                //case "1a": return "Rec. 709 / BT.709";
+                case "1a": return "Rec.709 / BT.709"; // 10/04 add
                 case "1b": return "DCI-P3";
                 case "1c": return "Rec2020";
                 case "1d": return "ComfortView";
