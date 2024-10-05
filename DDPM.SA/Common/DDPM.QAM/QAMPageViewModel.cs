@@ -15,6 +15,8 @@ using DPeMPublic.Common.Enums;
 using System.Windows.Media;
 using Newtonsoft.Json;
 using System.IO;
+using System.Windows.Shapes;
+using System.Collections.ObjectModel;
 
 namespace DDPM.QAM
 {
@@ -27,7 +29,7 @@ namespace DDPM.QAM
         public Visibility[] Settings_IsVisibility { get; set; } = { Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible };
 
         public new event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -44,6 +46,7 @@ namespace DDPM.QAM
             {
                 CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
                 DeviceModel = CurrentDeviceInfo.Name;
+                ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber);
                 ZoomMax = CurrentDeviceInfo.ZoomMax;
                 ZoomMin = CurrentDeviceInfo.ZoomMin;
                 if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
@@ -77,25 +80,51 @@ namespace DDPM.QAM
             OnPropertyChanged(nameof(Settings_IsSelected));
         }
         #region Presets
-        public Dictionary<string, WebcamProfile> Profiles = new();
+        public ObservableCollection<UI_Profile> UI_ProfileList { get; set; }
+        public Dictionary<string, WebcamProfile> Profiles = new Dictionary<string, WebcamProfile>();
         private WebcamProfile CurrentProfile;
-        public void ImportWebcamSettings(string model)
+        public void ImportWebcamProfiles(string model)
         {
             try
             {
-                var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
-                if (Directory.Exists(filePath))
+                var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+                if (File.Exists(filePath))
                 {
-                    var hasFile = File.Exists(filePath);
-                    if (hasFile)
+                    Dictionary<string, WebcamProfile> presetProfiles = new();
+                    Dictionary<string, WebcamProfile> customProfiles = new();
+                    string json = File.ReadAllText(filePath);
+                    var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    string presetProfilesString = jsonObject["PresetProfiles"].ToString();
+                    if (!string.IsNullOrEmpty(presetProfilesString))
                     {
-                        return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                        presetProfiles = JsonConvert.DeserializeObject<Dictionary<string, WebcamProfile>>(presetProfilesString);
+                        if (presetProfiles != null)
+                        {
+                            foreach (var profile in presetProfiles)
+                            {
+                                Profiles.Add(profile.Key, profile.Value);
+                            }
+                        }
                     }
-                    else
+                    string customProfilesString = jsonObject["CustomProfiles"].ToString();
+                    if (!string.IsNullOrEmpty(customProfilesString))
                     {
-                        var ka = new WebcamSettings();
-                        ExportWebcamSettings(ka, model);
-                        return ka;
+                        customProfiles = JsonConvert.DeserializeObject<Dictionary<string, WebcamProfile>>(customProfilesString);
+                        if (customProfiles != null)
+                        {
+                            foreach (var profile in customProfiles)
+                            {
+                                Profiles.Add(profile.Key, profile.Value);
+                            }
+                        }
+                    }
+                    UI_ProfileList = new ObservableCollection<UI_Profile>();
+                    foreach (var profile in Profiles)
+                    {
+                        UI_ProfileList.Add(new UI_Profile
+                        {
+                            Profile_Name = profile.Key
+                        });
                     }
                 }
             }
@@ -104,88 +133,73 @@ namespace DDPM.QAM
 
             }
         }
-    }
-    //public void SetProfile()
-    //{
-    //    if (Profiles.ContainsKey(CurrentProfileName))
-    //        CurrentProfile = Profiles[CurrentProfileName];
-    //    else
-    //        CurrentProfile = Profiles[CurrentProfileName];
 
-    //    if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
-    //    {
-    //        DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
-    //        OnPropertyChanged(nameof(IsAutoFramingOn));
-    //        OnPropertyChanged(nameof(IsAutoFramingOnText));
-    //        if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
-    //        {
-    //            DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn);
-    //            OnPropertyChanged(nameof(IsAutoFramingTransitionOn));
-    //            OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
-    //        }
-    //        if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
-    //        {
-    //            DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity);
-    //            OnPropertyChanged(nameof(AutoFramingSensitivity));
-    //        }
-    //        if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
-    //        {
-    //            DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize);
-    //            OnPropertyChanged(nameof(AutoFramingFrameSize));
-    //            OnPropertyChanged(nameof(IsAutoFramingTransitionOnText));
-    //        }
-    //    }
-
-    //    if (CurrentDeviceInfo.IsPropertyFOVSupported)
-    //    {
-    //        if (_fOVs[0] == CurrentProfile.FieldOfView)
-    //            SetFOV_Selected(0);
-    //        else if (_fOVs[1] == CurrentProfile.FieldOfView)
-    //            SetFOV_Selected(1);
-    //        else
-    //            SetFOV_Selected(2);
-
-    //    }
-
-    //    if (CurrentDeviceInfo.IsPropertyZoomSupported)
-    //    {
-    //        DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
-    //        OnPropertyChanged(nameof(Zoom));
-    //    }
-
-    //    if (CurrentDeviceInfo.IsPropertyFocusSupported)
-    //    {
-    //        DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
-    //        DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus);
-    //        OnPropertyChanged(nameof(IsFocusOn));
-    //        OnPropertyChanged(nameof(IsFocusOnText));
-    //        OnPropertyChanged(nameof(Focus));
-    //    }
-
-    //    if (CurrentDeviceInfo.IsPropertyPrioritySupported)
-    //    {
-    //        DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority);
-    //        OnPropertyChanged(nameof(Priority));
-    //    }
-
-    //    if (CurrentDeviceInfo.IsPropertyHDRSupported)
-    //    {
-    //        DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
-    //        OnPropertyChanged(nameof(IsHDROn));
-    //    }
-    //    if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
-    //    {
-    //        DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn);
-    //        DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance);
-    //        OnPropertyChanged(nameof(IsAutoWhiteBalanceOn));
-    //        OnPropertyChanged(nameof(IsAutoWhiteBalanceOnText));
-    //        OnPropertyChanged(nameof(AutoWhiteBalance));
-    //    }
-
-    //}
-    #endregion
-    #region AutoFraming
-    bool _AutoFramingStatus;
+        public void SetProfile(UI_Profile CurrentProfileName)
+        {
+            if (Profiles.ContainsKey(CurrentProfileName.Profile_Name))
+            {
+                CurrentProfile = Profiles[CurrentProfileName.Profile_Name];
+                if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
+                    _AutoFramingStatus = CurrentProfile.IsAutoFramingOn;
+                    if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn);
+                    }
+                    if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity);
+                    }
+                    if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize);
+                    }
+                }
+                if (CurrentDeviceInfo.IsPropertyFOVSupported)
+                {
+                    if (_fOVs[0] == CurrentProfile.FieldOfView)
+                    {
+                        FOV_Selected(0);
+                    }
+                    else if (_fOVs[1] == CurrentProfile.FieldOfView)
+                    {
+                        FOV_Selected(1);
+                    }
+                    else
+                    {
+                        FOV_Selected(2);
+                    }
+                }
+                if (CurrentDeviceInfo.IsPropertyZoomSupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
+                    _ZoomValue = CurrentProfile.Zoom;
+                }
+                if (CurrentDeviceInfo.IsPropertyFocusSupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
+                    DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus);
+                }
+                if (CurrentDeviceInfo.IsPropertyPrioritySupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority);
+                }
+                if (CurrentDeviceInfo.IsPropertyHDRSupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
+                }
+                if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn);
+                    DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance);
+                }
+                RefreshUI();
+            }
+        }
+        #endregion
+        #region AutoFraming
+        bool _AutoFramingStatus;
         public bool AutoFramingStatus
         {
             get => _AutoFramingStatus;
@@ -193,16 +207,6 @@ namespace DDPM.QAM
             {
                 _AutoFramingStatus = value;
                 DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), _AutoFramingStatus);
-                if (_AutoFramingStatus)
-                {
-                    Settings_IsEnable[2] = false;
-                    Settings_IsEnable[3] = false;
-                }
-                else
-                {
-                    Settings_IsEnable[2] = true;
-                    Settings_IsEnable[3] = true;
-                }
                 RefreshUI();
             }
         }
@@ -253,7 +257,7 @@ namespace DDPM.QAM
                         SetZoom();
                     }
                 }
-                OnPropertyChanged();
+                RefreshUI();
             }
         }
         public void SetZoom()
@@ -263,10 +267,25 @@ namespace DDPM.QAM
         #endregion
         public void RefreshUI()
         {
+            if (_AutoFramingStatus)
+            {
+                Settings_IsEnable[2] = false;
+                Settings_IsEnable[3] = false;
+            }
+            else
+            {
+                Settings_IsEnable[2] = true;
+                Settings_IsEnable[3] = true;
+            }
             OnPropertyChanged(nameof(DeviceModel));
             OnPropertyChanged(nameof(Settings_IsEnable));
             OnPropertyChanged(nameof(ZoomValue));
             OnPropertyChanged(nameof(FullView_Height));
+            OnPropertyChanged(nameof(UI_ProfileList));
         }
+    }
+    public class UI_Profile
+    {
+        public string Profile_Name { get; set; }
     }
 }

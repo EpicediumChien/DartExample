@@ -181,6 +181,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool isInitMonitorSettings = false;
 
+        private QAMPage _QAM;
+
         #endregion
 
         #region Constructor
@@ -2409,18 +2411,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread1.SetApartmentState(ApartmentState.STA);
             thread1.Start();
             return tcs.Task;
-        }
-        QAMPage qam;
-        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
-        {
-            Thread thread1 = new Thread(() =>
-            {
-                qam = new QAMPage(deviceMangerPlugin);
-                qam.Dispatcher.Invoke(() => qam.Show());
-                Dispatcher.Run();
-            });
-            thread1.SetApartmentState(ApartmentState.STA);
-            thread1.Start();
         }
 
         private void CallPopup(object o, PopupContentPackage popupContentPackage)
@@ -4751,6 +4741,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
         #endregion
 
+        #region WebCamera
+        private void CallQAM_UI(DeviceMangerPlugin deviceMangerPlugin)
+        {
+            Thread thread1 = new Thread(() =>
+            {
+                _QAM = new QAMPage(deviceMangerPlugin);
+                _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                Dispatcher.Run();
+            });
+            thread1.SetApartmentState(ApartmentState.STA);
+            thread1.Start();
+        }
+        #endregion
         #endregion
 
         #region Private Methods
@@ -5272,7 +5275,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     CheckDocks();
                 });
                 thread.Start();
-                CallQAM_UI(this);
             }
             //>>
 
