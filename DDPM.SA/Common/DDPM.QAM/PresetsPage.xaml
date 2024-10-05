@@ -19,74 +19,37 @@
             Height="216"
             CornerRadius="0,0,10,10">
         <StackPanel>
-            <Border Style="{StaticResource BorderUnpair}"
-                    Background="Transparent"
-                    Width="256"
-                    Height="40"
-                    MouseLeftButtonDown="Default_Click"
-                    Cursor="Hand"
-                    Margin="8,15,8,5"
-                    Visibility="Visible">
-                <Grid>
-                    <UXControls:UXTextBlock Foreground="#F5F6F7"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
-                                            FontFamily="Roboto"
-                                            FontSize="14"
-                                            Text="Default" />
-                </Grid>
-            </Border>
-            <Border Style="{StaticResource BorderUnpair}"
-                    Background="Transparent"
-                    Width="256"
-                    Height="40"
-                    MouseLeftButtonDown="Smooth_Click"
-                    Cursor="Hand"
-                    Margin="8,5,8,5"
-                    Visibility="Visible">
-                <Grid>
-                    <UXControls:UXTextBlock Foreground="#F5F6F7"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
-                                            FontFamily="Roboto"
-                                            FontSize="14"
-                                            Text="Smooth" />
-                </Grid>
-            </Border>
-            <Border Style="{StaticResource BorderUnpair}"
-                    Background="Transparent"
-                    Width="256"
-                    Height="40"
-                    MouseLeftButtonDown="Vibrant_Click"
-                    Cursor="Hand"
-                    Margin="8,5,8,5"
-                    Visibility="Visible">
-                <Grid>
-                    <UXControls:UXTextBlock Foreground="#F5F6F7"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
-                                            FontFamily="Roboto"
-                                            FontSize="14"
-                                            Text="Vibrant" />
-                </Grid>
-            </Border>
-            <Border Style="{StaticResource BorderUnpair}"
-                    Background="Transparent"
-                    Width="256"
-                    Height="40"
-                    MouseLeftButtonDown="Warm_Click"
-                    Cursor="Hand"
-                    Margin="8,5,8,10"
-                    Visibility="Visible">
-                <Grid>
-                    <UXControls:UXTextBlock Foreground="#F5F6F7"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
-                                            FontFamily="Roboto"
-                                            FontSize="14"
-                                            Text="Warm" />
-                </Grid>
-            </Border>
+            <ItemsControl ItemsSource="{Binding VisionEngineList}"
+                          IsEnabled="{Binding VisionEngineIsEnable}"
+                          Name="listTopics"
+                          Background="Transparent"
+                          BorderThickness="0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <Border Style="{StaticResource BorderUnpair}"
+                                    Background="Transparent"
+                                    Width="256"
+                                    Height="40"
+                                    MouseLeftButtonDown="SetProfile_Click"
+                                    Cursor="Hand"
+                                    Margin="8,15,8,5"
+                                    Visibility="Visible">
+                                <Grid>
+                                    <UXControls:UXTextBlock Foreground="#F5F6F7"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Center"
+                                                            FontFamily="Roboto"
+                                                            FontSize="14"
+                                                            Text="{Binding ProfileName}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            
         </StackPanel>
     </Border>
 </UserControl>
