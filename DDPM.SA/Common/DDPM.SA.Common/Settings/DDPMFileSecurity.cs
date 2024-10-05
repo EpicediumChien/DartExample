@@ -2023,7 +2023,6 @@ namespace DDPM.SA.Common.Settings
                 folderValid = DDPMFileSecurity.IsFolderPathValid(folderPath, out folderInfo) && folderValid;
                 if (!folderValid)
                 {
-                    Directory.Delete(folderPath, true);
                     Directory.CreateDirectory(folderPath);
                     count++;
                 }
