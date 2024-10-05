@@ -6689,7 +6689,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
             string output = string.Empty;
-            List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+            List<PowerNapSetting> read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
             if (type == "SET")
