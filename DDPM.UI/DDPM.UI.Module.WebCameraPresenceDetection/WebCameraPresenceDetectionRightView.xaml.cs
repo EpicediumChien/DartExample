@@ -2,7 +2,9 @@
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
+using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.WebCameraPresenceDetection
@@ -68,7 +70,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             if (isLocked != null)
             {
                 Dispatcher.Invoke(new Action(() =>
-                {                   
+                {
                     if (_vm != null)
                     {
                         _vm.IsTabStoppable = !(bool)isLocked;
@@ -131,6 +133,18 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
             psi.UseShellExecute = true;
 
             System.Diagnostics.Process.Start(psi);
+        }
+
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Image elm)
+            {
+                var val = elm.Tag!.ToString();
+                if (val == "0")
+                    _vm.Undo();
+                else
+                    _vm.Redo();
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DDPM.Easy.Common"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!-- Key Synax: SplitCtrl_{ElementName}_{Propertty}_{Mode}_{State}
@@ -8,6 +9,7 @@
     <!-- OuterBorder -->
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Icon_Normal" Color="White" />
     <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Edit_Normal" Color="#FF7AA809" />
+    <SolidColorBrush x:Key="SplitCtrl_OuterBorder_BdColor_Aws_Normal" Color="White" />
 
     <Style x:Key="OuterBorderStyle" TargetType="Border">
         <Setter Property="BorderThickness" Value="1" />
@@ -22,12 +24,18 @@
                 <Setter Property="BorderThickness" Value="6" />
                 <Setter Property="BorderBrush" Value="Yellow" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="Background" Value="#F20D121A"/>
+                <Setter Property="BorderBrush" Value="White" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
     <!-- CellBorder -->
     <SolidColorBrush x:Key="SplitCtrl_CellBorder_BdColor_Work_Normal" Color="#FFE6AC28" />
     <SolidColorBrush x:Key="SplitCtrl_CellBorder_BdColor_Work_Hover" Color="#FF0672CB" />
+    <SolidColorBrush x:Key="SplitCtrl_CellBorder_BkColor_Aws_Hover" Color="#8031A2E3" />
 
     <Style x:Key="CellBorderStyle" TargetType="Border">
         <Setter Property="BorderThickness" Value="0" />
@@ -35,6 +43,39 @@
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsWorkMode}" Value="True">
                 <Setter Property="BorderThickness" Value="6" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                <Setter Property="BorderThickness" Value="0" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CellBorderStyle2" TargetType="local:CellBorder">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Normal}"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsWorkMode}" Value="True">
+                <Setter Property="BorderThickness" Value="6" />
+            </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsWorkMode}" Value="True"/>
+                    <Condition Binding="{Binding IsHover, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <Setter Property="BorderBrush" Value="{StaticResource SplitCtrl_CellBorder_BdColor_Work_Hover}"/>
+            </MultiDataTrigger>
+            <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                <Setter Property="BorderThickness" Value="0" />
+            </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsAwsMode}" Value="True"/>
+                    <Condition Binding="{Binding IsHover, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <Setter Property="BkBrush" Value="{StaticResource SplitCtrl_CellBorder_BkColor_Aws_Hover}"/>
+            </MultiDataTrigger>
+            <DataTrigger Binding="{Binding IsHover, RelativeSource={RelativeSource AncestorType=local:CellBorder}}" Value="True">
+                <Setter Property="BkBrush" Value="Yellow"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -86,6 +127,14 @@
             <DataTrigger Binding="{Binding IsWorkMode}" Value="True">
                 <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
+            
+            <!-- When in AWS mode, Splitter is disabled and color is white -->
+            <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                <Setter Property="IsEnabled" Value="False" />
+                <Setter Property="Height" Value="1.5" />
+                <Setter Property="Background" Value="White" />
+            </DataTrigger>
+
         </Style.Triggers>
     </Style>
 
@@ -128,6 +177,12 @@
             <!-- Collapsed the Splitter when in Work mode -->
             <DataTrigger Binding="{Binding IsWorkMode}" Value="True">
                 <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+            <!-- When in AWS mode, Splitter is disabled and color is white -->
+            <DataTrigger Binding="{Binding IsAwsMode}" Value="True">
+                <Setter Property="IsEnabled" Value="False" />
+                <Setter Property="Width" Value="1.5" />
+                <Setter Property="Background" Value="White" />
             </DataTrigger>
         </Style.Triggers>
     </Style>

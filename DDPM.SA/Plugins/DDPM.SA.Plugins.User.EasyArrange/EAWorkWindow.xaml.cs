@@ -18,7 +18,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     {
         #region Private members
 
-        private ArrangeVM VM;
+        private ArrangeVM _vm;
         private MonitorInfo _attachedMonitor;
         private Screen _screen;
         private readonly List<MonitorInfo> _monitors;
@@ -34,18 +34,18 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         public EAWorkWindow(ArrangeVM vm, Screen scr, List<MonitorInfo> monitors)
         {
             InitializeComponent();
-            VM = vm;
+            _vm = vm;
             _screen = scr;
             _monitors = monitors;
             DataContext = vm;
-            VM.IsMovingChanged += VM_IsMovingChanged;
+            _vm.IsMovingChanged += VM_IsMovingChanged;
         }
         public EAWorkWindow(ArrangeVM vm)
         {
             InitializeComponent();
-            VM = vm;
+            _vm = vm;
             DataContext = vm;
-            VM.IsMovingChanged += VM_IsMovingChanged;
+            _vm.IsMovingChanged += VM_IsMovingChanged;
             Left = -99999;
             Top = -99999;
             Width = 10;
@@ -109,9 +109,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             this.Dispatcher.Invoke(() =>
             {
-                //canvasWorker.Children.Clear();
-                //canvasFader.Children.Clear();
-
                 if ((cellCount == 0) && (splitKey == 'A'))
                 {
                     _workingSplit = null;
@@ -324,10 +321,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             this.Dispatcher.Invoke(() =>
             {
-                //DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
-                //double scale = dpiScale.PixelsPerDip;
-                //VM.ScreenScale = scale;
-                //Trace.WriteLine($"WorkWin.Scale={scale}");
+                /*
+                if (_workingSplit.CtrlClass.Equals("SplitCtrl2A"))
+                {
+                    SplitCtrl2A ctrl = _workingSplit as SplitCtrl2A;
+                    foreach (CellBorder cellBd in ctrl.CellBorders)
+                    {
+                        cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+                    }
+                }
+                if (_vm.AwsIcon1.CtrlClass.Equals("SplitCtrl2C"))
+                {
+                    SplitCtrl2C ctrl = _vm.AwsIcon1 as SplitCtrl2C;
+                    foreach (CellBorder cellBd in ctrl.CellBorders)
+                    {
+                        cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+                    }
+                }
+                */
+                foreach(CellBorder cellBd in _workingSplit.CellBorders)
+                {
+                    cellBd.rect = _vm.GetFrameworkElementRect(cellBd);
+                }
 
                 foreach (CellObj objCell in _workingSplit.CellList)
                 {
@@ -354,9 +369,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 return Rect.Empty;
 
             System.Windows.Point ptTopLeft = ctrl.PointToScreen(new System.Windows.Point(0, 0));
-            double w = ctrl.ActualWidth * VM.ScreenScale;
-            double h = ctrl.ActualHeight * VM.ScreenScale;
-            Trace.WriteLine($"ctrlActual={ctrl.ActualWidth}x{ctrl.ActualHeight}; Scale={VM.ScreenScale} => {w}x{h}");
+            double w = ctrl.ActualWidth * _vm.ScreenScale;
+            double h = ctrl.ActualHeight * _vm.ScreenScale;
+            Trace.WriteLine($"ctrlActual={ctrl.ActualWidth}x{ctrl.ActualHeight}; Scale={_vm.ScreenScale} => {w}x{h}");
             return new Rect(ptTopLeft.X, ptTopLeft.Y, w, h);
         }
 
@@ -377,13 +392,52 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             if (_workingSplit == null)
                 return null;
-            //if (!IsShown)
-            //    return null;
+
 
             DpiScale dpiScale = VisualTreeHelper.GetDpi(this);
             double scale = dpiScale.PixelsPerDip;
 
+            bool isHandled = false;
+
             _workingSplit.HoveringCell = "";
+
+            /*
+            if (_workingSplit.CtrlClass.Equals("SplitCtrl2C"))
+            {
+                SplitCtrl2C ctrl = _workingSplit as SplitCtrl2C;
+                foreach (CellBorder cellBd in ctrl.CellBorders)
+                {
+                    if (cellBd.rect.Contains(x, y))
+                    {
+                        _vm.AwsIcon1.HoveringCell = cellBd.CellName;
+                        cellBd.IsHover = true;
+                        isHandled = true;
+                    }
+                    else
+                    {
+                        cellBd.IsHover = false;
+                    }
+                }
+            }
+
+            if (_workingSplit.CtrlClass.Equals("SplitCtrl2A"))
+            {
+                SplitCtrl2A ctrl = _workingSplit as SplitCtrl2A;
+                foreach (CellBorder cellBd in ctrl.CellBorders)
+                {
+                    if (cellBd.rect.Contains(x, y))
+                    {
+                        _vm.AwsIcon1.HoveringCell = cellBd.CellName;
+                        cellBd.IsHover = true;
+                        isHandled = true;
+                    }
+                    else
+                    {
+                        cellBd.IsHover = false;
+                    }
+                }
+            }
+            */
 
             //For AddedCustomLayout
             if (_workingSplit.IsAddedCustomLayout)
@@ -399,6 +453,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             hoverCell = objCell;
                             tag = "H";
                             _workingSplit.HoveringCell = objCell.Name;
+                            isHandled = true;
                         }
                     }
 
@@ -409,6 +464,26 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 }
                 return hoverCell; ;
+            }
+
+            foreach(CellBorder cellBd in _workingSplit.CellBorders)
+            {
+                if (isHandled)
+                {
+                    cellBd.IsHover = false;
+                    continue;
+                }
+
+                if (cellBd.rect.Contains(x, y))
+                {
+                    _vm.AwsIcon1.HoveringCell = cellBd.CellName;
+                    cellBd.IsHover = true;
+                    isHandled = true;
+                }
+                else
+                {
+                    cellBd.IsHover = false;
+                }
             }
 
             //For other layouts
@@ -507,7 +582,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             sb.Completed += (o, s) =>
             {
-                VM.RefreshCellRects();
+                _vm.RefreshCellRects();
                 this.IsFading = false;
                 fadeOutGrid.Visibility = Visibility.Collapsed;
                 //Visibility = Visibility.Hidden;
