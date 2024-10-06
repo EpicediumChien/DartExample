@@ -269,7 +269,7 @@ namespace DDPM.SA.Common
 
         #region public for Peripherals
 
-        Task<DeviceHelper> GetDevices();
+        Task<DeviceHelper> GetDevices(bool Rescan = false);
 
         Task<CTKMessageHelper> GetCTKMessageHelper();
 

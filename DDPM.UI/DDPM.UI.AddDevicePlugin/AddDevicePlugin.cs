@@ -138,7 +138,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 return;
             }
             _log.Debug($"GetPeripherals is invoked");
-            Task<DeviceHelper> tsk = _deviceManagerPlugin!.GetDevices();
+            Task<DeviceHelper> tsk = _deviceManagerPlugin!.GetDevices(true);
             _viewModel!.WacomVersion = tsk.Result.IsdDriverVersion;
 
             Task<RFDeviceHelper> task = _deviceManagerPlugin!.GetRFDongleDevices();

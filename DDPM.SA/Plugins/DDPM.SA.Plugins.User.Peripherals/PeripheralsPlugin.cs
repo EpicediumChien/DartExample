@@ -127,9 +127,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             throw new NotImplementedException();
         }
 
-        public async Task<DeviceHelper> GetDevices()
+        public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
-            //ScanDevices();
+            if (Rescan)
+                ScanDevices();
+
             if (_deviceHelper != null)
             {
                 return await Task.Run(() => _deviceHelper);

@@ -38,7 +38,7 @@ namespace DDPM.SA.Common
 
         void NotifyNow();
 
-        Task<DeviceHelper> GetDevices();
+        Task<DeviceHelper> GetDevices(bool Rescan = false);
 
         Task<CTKMessageHelper> GetCTKMessageHelper();
 

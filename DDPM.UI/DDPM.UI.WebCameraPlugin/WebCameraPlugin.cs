@@ -87,7 +87,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void GetPeripheralsAsync()
         {
             _log.Debug($"GetPeripherals is invoked");
-            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices();
+            Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             _deviceHelper = task.Result;
 
             _viewModel?.PrepareDeviceInfo(_deviceHelper.deviceInfo);

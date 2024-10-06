@@ -1467,9 +1467,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Peripherals implementation
 
-        public async Task<DeviceHelper> GetDevices()
+        public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
-            return await Task.Run(() => _PeripheralsPlugin.GetDevices());
+            return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
         }
 
         public async Task<CTKMessageHelper> GetCTKMessageHelper()
