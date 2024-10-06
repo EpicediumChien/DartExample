@@ -457,14 +457,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             Guid FOLDERID_AppsFolder = new Guid("1e87508d-89c2-42f0-8a7e-645a0f50ca58");
 
             AppListDictionary tmpAppListDictionary = AppListDictionary.GetInstance();
-            //AppsCollectShell appshell = new AppsCollectShell();
-            //Dictionary<string, InstalledAppInfo> data = appshell.FindAppsbyShellForEzMemoryFullPathKey();
-            //return data;
-
-            //logger.SetLogModule("ColorApp");
 
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
-            //logger.WriteLog($"[ColorApp][FindAppsbyShell] App Icon folder: {IconFolder}");
 
             if (!System.IO.Directory.Exists(IconFolder))
                 System.IO.Directory.CreateDirectory(IconFolder);
@@ -475,18 +469,17 @@ namespace DDPM.SA.Plugins.User.EzMemory
             {
                 ikf = KnownFolderHelper.FromKnownFolderId(FOLDERID_AppsFolder);
             }
-            catch (ArgumentException)// ae)
+            catch (Exception ex)
             {
-                //logger.WriteLog($"[ColorApp][FindAppsbyShell] try to query [FOLDERID_AppsFolder], exception: {ae.Message}");
+                _logs.Info($"[EzMemoryLaunchOption], FromKnownFolderId Exception {ex}");
                 return Task.FromResult(installedApp);
             }
             if (ikf == null)
             {
-                //logger.WriteLog($"[ColorApp][FindAppsbyShell] KnownFolderHelper.FromKnownFolderId got null return");
+                _logs.Info($"[EzMemoryLaunchOption], ikf nul");
                 return Task.FromResult(installedApp);
             }
 
-            //logger.WriteLog($"[ColorApp][FindAppsbyShell] Step ShellObject loop, count:{ikf.ToList().Count}");
             foreach (ShellObject item in (IKnownFolder)(ShellObject)ikf)
             {
                 string name = string.IsNullOrEmpty(item.Name) ? string.Empty : item.Name;
@@ -498,8 +491,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     value = item.Properties.System.Link.TargetParsingPath.Value;
                     value2 = item.Properties.System.Link.Arguments.Value;
                 }
-                catch (Exception)// ex)
+                catch (Exception ex)// ex)
                 {
+                    _logs.Info($"[EzMemoryLaunchOption], value and value2 {ex}");
                 }
 
                 //
@@ -511,7 +505,6 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     string text = value.Split('\\')[^1].ToLower();
                     if (!text.ToLower().Contains("exe"))
                     {
-                        //logger.WriteLog($"[ColorApp][FindAppsbyShell] Desktop:({value}), not end with exe, next loop");
                         continue;
                     }
                     try
@@ -521,7 +514,6 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         if (!File.Exists(IconFolder + text + ".png"))
                         {
                             System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
-                            //logger.WriteLog($"[ColorApp][FindAppsbyShell] Save icon to [{IconFolder}{text}.png] (Desktop)");
                         }
                         if (!dictionary.ContainsKey(value))
                         {
@@ -538,7 +530,6 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                                     }
                             );
                             //Console.WriteLine("Desktop01******************** " + name.ToString() + " || " + text.ToString() + " || " + value.ToString());
-                            //logger.WriteLog($"[ColorApp][FindAppsbyShell] Add installed app AppName[{name}]AppExeName[{text}]Date[{lastAccessTime}]ModelID[{parsingName}]");
                         }
                         else
                         {
@@ -551,18 +542,17 @@ namespace DDPM.SA.Plugins.User.EzMemory
                                 AppUserModelID = parsingName
                             });
                             //Console.WriteLine("Desktop02******************** " + name.ToString() + " || " + text.ToString() + " || " + value.ToString());
-                            //logger.WriteLog($"[ColorApp][FindAppsbyShell] Add installed app Exist[{value}]: AppName[{name}]AppExeName[{text}]Date[{lastAccessTime}]ModelID[{parsingName}]");
                         }
                     }
-                    catch (Exception)// ex1)
+                    catch (Exception ex)
                     {
-                        //logger.WriteLog($"[ColorApp][FindAppsbyShell] Desktop:({ex1.Message})");
+                        _logs.Info($"[EzMemoryLaunchOption], Desktop application parsing Exception {ex}");
                     }
                     continue;
                 }
                 else
                 {
-                    //logger.WriteLog($"[ColorApp][FindAppsbyShell] item:({item}), got null [item.Properties.System.Link.TargetParsingPath.Value], not desktop app");
+                    _logs.Info($"[EzMemoryLaunchOption], not desktop app");
                 }
                 //
                 // UWP application parsing
@@ -588,19 +578,17 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         if (!File.Exists(IconFolder + filename + ".png"))
                         {
                             bitmap.Save(IconFolder + filename + ".png");
-                            //logger.WriteLog($"[ColorApp][FindAppsbyShell] Save icon to [{IconFolder}{filename}.png] (UWP)");
                         }
                         if (!installedApp.ContainsKey(text2))
                         {
                             installedApp.Add(text2, new InstalledAppInfo(name, text2, filename, now, bDesktopApp: false, parsingName));
                             //Console.WriteLine("UWP0******************** " + name.ToString() + " || " + text2.ToString() + " || " + filename.ToString());
-                            //logger.WriteLog($"[ColorApp][FindAppsbyShell] Add installed app AppName[{name}]AppExeName[{text2}]Date[{now}]ModelID[{parsingName}]");
                         }
                     }
                 }
-                catch (Exception)// ex2)
+                catch (Exception ex)
                 {
-                    //logger.WriteLog($"[ColorApp][FindAppsbyShell] UWP:({ex2.Message})");
+                    _logs.Info($"[EzMemoryLaunchOption], UWP Exception {ex}");
                 }
                 finally
                 {
@@ -641,9 +629,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     }
                 }
             }
-            catch (Exception)// ex3)
+            catch (Exception ex)
             {
-                //logger.WriteLog($"[ColorApp][FindAppsbyShell] Merge:({ex3.Message})");
+                _logs.Info($"[EzMemoryLaunchOption], KeyValuePair<string, List<AppItemInfo>> Exception {ex}");
             }
             AppListDictionary.GetInstance().LoadFile();
             tmpAppListDictionary = AppListDictionary.GetInstance();
@@ -764,190 +752,255 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
         {
-            int appCount = sortApps.Count;
-            if (appCount == 0)
-                return Task.FromResult(false);
-
-             List<Bind_AddFullPage_AppCollectionData> seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
-            double screenWidth = SystemParameters.PrimaryScreenWidth;
-            double screenHeight = SystemParameters.PrimaryScreenHeight;
-            double widthPerApp = screenWidth / appCount; // 平均分配寬度
-
-            var sortedByKey = sortApps.OrderBy(x => x.Key).ToList();
-            seletcApps = sortedByKey.Select(x => x.Value).ToList();
-
-            Task.Run(async () =>
+            try
             {
-                List<IntPtr> windowHandles = new List<IntPtr>();
-
-                for (int i = 0; i < appCount; i++)
+                int appCount = sortApps.Count;
+                if (appCount == 0)
                 {
-                    var app = seletcApps[i];
-                    IntPtr handle = IntPtr.Zero;
+                    _logs.Info("[EzMemoryLaunchOption] LaunchAndArrangeApps, No apps to launch and arrange.");
+                    return Task.FromResult(false);
+                }
 
-                    // 檢查應用程式是否已經存在
-                    Process[] processes = GetProcessesByName(app);
-                    Trace.WriteLine("GetProcessesByName(app); " + app.AppName);
-                    //Process[] processes = GetProcessesByName(app.AppType == "True" ? System.IO.Path.GetFileNameWithoutExtension(app.AppPath) : app.AppUserModelID);
-                    if (processes.Length > 0)
+                List<Bind_AddFullPage_AppCollectionData> seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
+                double screenWidth = SystemParameters.PrimaryScreenWidth;
+                double screenHeight = SystemParameters.PrimaryScreenHeight;
+                double widthPerApp = screenWidth / appCount; // 平均分配寬度
+
+                var sortedByKey = sortApps.OrderBy(x => x.Key).ToList();
+                seletcApps = sortedByKey.Select(x => x.Value).ToList();
+
+                Task.Run(async () =>
+                {
+                    List<IntPtr> windowHandles = new List<IntPtr>();
+
+                    for (int i = 0; i < appCount; i++)
                     {
-                        handle = processes[0].MainWindowHandle;
-                        Trace.WriteLine("GetProcessesByName(app); " + app.AppName + " || " + handle.ToString());
-                        EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
-                    }
-                    else
-                    {
-                        Process process = LaunchApp(app);
-                        process.WaitForInputIdle();
-                        for (int attempt = 0; attempt < 10; attempt++)
+                        var app = seletcApps[i];
+                        IntPtr handle = IntPtr.Zero;
+
+                        try
                         {
-                            if (app.AppType == "True")
+                            // 檢查應用程式是否已經存在
+                            Process[] processes = GetProcessesByName(app);
+                            _logs.Info($"[EzMemoryLaunchOption] LaunchAndArrangeApps, GetProcessesByName(app): {app.AppName}");
+
+                            if (processes.Length > 0)
                             {
-                                handle = process.MainWindowHandle;
+                                handle = processes[0].MainWindowHandle;
+                                _logs.Info($"[EzMemoryLaunchOption] LaunchAndArrangeApps, App {app.AppName} is already running, handle: {handle}");
+                                EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
                             }
                             else
                             {
-                                handle = GetWindowHandle(app);
+                                Process process = LaunchApp(app);
+
+                                if (process == null)
+                                {
+                                    _logs.Error($"[EzMemoryLaunchOption] LaunchAndArrangeApps, Failed to launch app: {app.AppName}");
+                                    continue;
+                                }
+
+                                // 等待應用程式的窗口初始化
+                                for (int attempt = 0; attempt < 10; attempt++)
+                                {
+                                    handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
+
+                                    if (handle != IntPtr.Zero && !windowHandles.Contains(handle))
+                                        break;
+
+                                    await Task.Delay(500);
+                                }
+
+                                if (handle == IntPtr.Zero)
+                                {
+                                    _logs.Error($"[EzMemoryLaunchOption] LaunchAndArrangeApps, App {app.AppName} failed to get window handle after launch.");
+                                    continue;
+                                }
                             }
 
-                            if (handle != IntPtr.Zero && !windowHandles.Contains(handle))
-                                break;
+                            // 取得視窗的 DPI 設定
+                            float dpiScale = GetDpiScaleForWindow(handle);
 
-                            await Task.Delay(500);
-                        }
+                            // 調整視窗位置與大小，考慮 DPI 比例
+                            EzMemorySetWindowPos(handle, IntPtr.Zero,
+                                (int)((i * widthPerApp) * dpiScale),
+                                0,
+                                (int)(widthPerApp * dpiScale),
+                                (int)(screenHeight * dpiScale),
+                                SWP_SHOWWINDOW);
 
-                        if (handle == IntPtr.Zero)
-                        {
-                            _logs.Info($"[EzMemoryLaunchOption], {i} handle null");
-                            return;
-                        }
-                    }
-
-                    // 取得視窗的 DPI 設定
-                    float dpiScale = GetDpiScaleForWindow(handle);
-
-                    // 調整視窗位置與大小，考慮 DPI 比例
-                    EzMemorySetWindowPos(handle, IntPtr.Zero,
-                        (int)((i * widthPerApp) * dpiScale),
-                        0,
-                        (int)(widthPerApp * dpiScale),
-                        (int)(screenHeight * dpiScale),
-                        SWP_SHOWWINDOW);
-
-                    // 確認視窗是否已移動到預期的位置
-                    for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
-                    {
-                        if (EzMemoryGetWindowRect(handle, out RECT rect))
-                        {
-                            if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
-                                rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
+                            // 確認視窗是否已移動到預期的位置
+                            for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
                             {
-                                break;
-                            }
-                        }
+                                if (EzMemoryGetWindowRect(handle, out RECT rect))
+                                {
+                                    if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
+                                        rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
+                                    {
+                                        _logs.Info($"[EzMemoryLaunchOption] LaunchAndArrangeApps, App {app.AppName} positioned correctly.");
+                                        break;
+                                    }
+                                }
 
-                        await Task.Delay(500);
+                                await Task.Delay(500);
+                            }
+
+                            await Task.Delay(500); // 延遲以確保窗口已經穩定
+                        }
+                        catch (Exception ex)
+                        {
+                            _logs.Error($"[EzMemoryLaunchOption] LaunchAndArrangeApps, Error arranging app {app.AppName}: {ex}");
+                        }
                     }
 
-                    await Task.Delay(500);
-                }
-                //_vm.ClearTextBlockAppName();
-            });
-            return Task.FromResult(true);
+                });
+
+                return Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                _logs.Error($"[EzMemoryLaunchOption] LaunchAndArrangeApps, Unexpected error: {ex}");
+                return Task.FromResult(false);
+            }
         }
 
         private Process LaunchApp(Bind_AddFullPage_AppCollectionData appData)
         {
-            if (appData.AppType == "False")
+            Process process = null;
+            try
             {
-                // UWP
-                try
+                if (appData.AppType == "False")
                 {
+                    // UWP 應用程式
                     ProcessStartInfo startInfo = new ProcessStartInfo
                     {
                         FileName = "explorer.exe",
                         Arguments = $"shell:AppsFolder\\{appData.AppUserModelID}",
                         UseShellExecute = true
                     };
-                    return Process.Start(startInfo);
+                    _logs.Info($"[EzMemoryLaunchOption] LaunchApp, Launching UWP app: {appData.AppName}");
+                    process = Process.Start(startInfo);
                 }
-                catch (Exception ex)
+                else
                 {
-                    _logs.Info($"[EzMemoryLaunchOption], UWP Process.Start Exception {ex}");
+                    // Desktop exe或檔案
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = appData.AppPath,
+                        UseShellExecute = true,  // 系統自動選擇應用程式來開啟
+                        Verb = "open"            // 指定開啟檔案的動作
+                    };
+                    _logs.Info($"[EzMemoryLaunchOption] LaunchApp, Launching desktop app or file: {appData.AppName}");
+                    process = Process.Start(startInfo);
+                }
+
+                if (process != null)
+                {
+                    if (!appData.AppPath.EndsWith(".png") && !appData.AppPath.EndsWith(".jpg") && !appData.AppPath.EndsWith(".txt"))
+                    {
+                        process.WaitForInputIdle();
+                        _logs.Info($"[EzMemoryLaunchOption] LaunchApp, App {appData.AppName} is now idle.");
+                    }
+                }
+                else
+                {
+                    _logs.Error($"[EzMemoryLaunchOption] LaunchApp, Failed to launch app or file: {appData.AppName}");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                // Desktop
-                try
-                {
-                    return Process.Start(appData.AppPath);
-                }
-                catch (Exception ex)
-                {
-                    _logs.Info($"[EzMemoryLaunchOption], Desktop Process.Start Exception {ex}");
-                }
+                _logs.Error($"[EzMemoryLaunchOption] LaunchApp, Exception while launching app or file: {appData.AppName}, Error: {ex}");
             }
 
-            return null;
+            return process;
         }
 
         private IntPtr GetWindowHandle(Bind_AddFullPage_AppCollectionData appData)
         {
             IntPtr windowHandle = IntPtr.Zero;
 
-            EzMemoryEnumWindows((hWnd, lParam) =>
+            try
             {
-                int length = EzMemoryGetWindowTextLength(hWnd);
-                if (length == 0) return true;
-
-                StringBuilder windowName = new StringBuilder(length);
-                EzMemoryGetWindowText(hWnd, windowName, length + 1);
-
-                if (appData.AppType == "False")
+                EzMemoryEnumWindows((hWnd, lParam) =>
                 {
-                    string className = GetWindowClassName(hWnd);
-                    if (className.Contains("ApplicationFrameWindow"))
-                    {
-                        windowHandle = hWnd;
-                        return false;
-                    }
-                }
+                    int length = EzMemoryGetWindowTextLength(hWnd);
+                    if (length == 0) return true;
 
-                return true;
-            }, IntPtr.Zero);
+                    StringBuilder windowName = new StringBuilder(length);
+                    EzMemoryGetWindowText(hWnd, windowName, length + 1);
+
+                    if (appData.AppType == "False")
+                    {
+                        string className = GetWindowClassName(hWnd);
+                        if (className.Contains("ApplicationFrameWindow"))
+                        {
+                            windowHandle = hWnd;
+                            _logs.Info($"[EzMemoryLaunchOption] GetWindowHandle, Found window for {appData.AppName}, handle: {windowHandle}");
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }, IntPtr.Zero);
+
+                if (windowHandle == IntPtr.Zero)
+                {
+                    _logs.Error($"[EzMemoryLaunchOption] GetWindowHandle, Failed to get window handle for {appData.AppName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.Error($"[EzMemoryLaunchOption] GetWindowHandle, Exception while retrieving window handle for {appData.AppName}, Error: {ex}");
+            }
 
             return windowHandle;
         }
 
         private Process[] GetProcessesByName(Bind_AddFullPage_AppCollectionData appData)
         {
-            if (appData.AppType == "False")
+            Process[] processes = Array.Empty<Process>();
+            try
             {
-                // UWP 
-                return Process.GetProcessesByName(appData.AppUserModelID);
+                if (appData.AppType == "False")
+                {
+                    // UWP 
+                    processes = Process.GetProcessesByName(appData.AppUserModelID);
+                    _logs.Info($"[EzMemoryLaunchOption] GetProcessesByName, UWP app {appData.AppName} process count: {processes.Length}");
+                }
+                else
+                {
+                    // Desktop
+                    processes = Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(appData.AppPath));
+                    _logs.Info($"[EzMemoryLaunchOption] GetProcessesByName, Desktop app {appData.AppName} process count: {processes.Length}");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Desktop
-                return Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(appData.AppPath));
+                _logs.Error($"[EzMemoryLaunchOption] GetProcessesByName, Exception while getting processes for {appData.AppName}, Error: {ex}");
             }
+
+            return processes;
         }
 
         private float GetDpiScaleForWindow(IntPtr hWnd)
         {
-            // 預設的 DPI scaling 值是 1.0（即 100% scaling）
-            float dpiScale = 1.0f;
-
-            // 獲取螢幕 DPI，並轉換為比例
-            IntPtr monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
-            if (monitor != IntPtr.Zero)
+            float dpiScale = 1.0f; // Default DPI scaling is 1.0 (100%)
+            try
             {
-                uint dpiX, dpiY;
-                if (GetDpiForMonitor(monitor, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out dpiX, out dpiY) == 0)
+                IntPtr monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+                if (monitor != IntPtr.Zero)
                 {
-                    dpiScale = dpiX / 96.0f; // 96 DPI 是預設的 100% scaling
+                    uint dpiX, dpiY;
+                    if (GetDpiForMonitor(monitor, MONITOR_DPI_TYPE.MDT_EFFECTIVE_DPI, out dpiX, out dpiY) == 0)
+                    {
+                        dpiScale = dpiX / 96.0f; // 96 DPI is the default 100% scaling
+                        _logs.Info($"[EzMemoryLaunchOption] GetDpiScaleForWindow, DPI scaling for window: {dpiScale}");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _logs.Error($"[EzMemoryLaunchOption] GetDpiScaleForWindow, Exception while getting DPI scale for window, Error: {ex}");
             }
 
             return dpiScale;
@@ -956,7 +1009,16 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private string GetWindowClassName(IntPtr hWnd)
         {
             StringBuilder className = new StringBuilder(256);
-            EzMemoryGetClassName(hWnd, className, className.Capacity);
+            try
+            {
+                EzMemoryGetClassName(hWnd, className, className.Capacity);
+                _logs.Info($"[EzMemoryLaunchOption] GetWindowClassName, Window class name: {className}");
+            }
+            catch (Exception ex)
+            {
+                _logs.Error($"[EzMemoryLaunchOption] GetWindowClassName, Exception while getting window class name, Error: {ex}");
+            }
+
             return className.ToString();
         }
     }

@@ -45,6 +45,8 @@ namespace DDPM.UI.Module.EzMemory
             _vmDisplay = vmDisplay;
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
+            _log = vmDisplay.Console.CreateLog("EzMemoryAssignProgram");
+            _log.Info($"{nameof(EzMemoryAssignProgram)} - Constructed");
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
 
             InitializeComponent();
