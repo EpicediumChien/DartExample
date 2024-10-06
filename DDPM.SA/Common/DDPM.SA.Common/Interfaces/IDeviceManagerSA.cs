@@ -412,7 +412,7 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings);
 
-        public Task<HotkeySettings> ReadCurrentHotkey(EDID monitorEdid);
+        public Task<(HotkeySettings, List<InputSourceObj>)> ReadCurrentHotkey(MonitorInfo mo);// EDID monitorEdid);
 
         public Task<bool> ReloadHotkeyConfigData();
 
@@ -422,7 +422,8 @@ namespace DDPM.SA.Common
 
         public Task<bool> Hook();
 
-        public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
+        //public Task<bool> SaveHotkeySetting(EDID monitorEdid, HotkeyInfo info);
+        public Task<bool> SaveHotkeySetting(MonitorInfo mo, HotkeyInfo info);
 
         public Task<bool> SaveHotkeyOptionOnly(HotkeySettings hotkeySettings);
 
