@@ -95,19 +95,7 @@ namespace DDPM.UI.Module.Brightness
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
             BrightnessViewModel x = (BrightnessViewModel)DataContext;
-            bool r = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(x.SelectedHomeDevice.MonitorInfo, 0x05, 1).Result;
-            if (r)
-            {
-                ObjGetVCP rb_10 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(x.SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
-                if (rb_10.result)
-                {
-                    B_slider.Value = (uint)((long)rb_10.value);
-                    LuminanceSlider.Value = (uint)((long)rb_10.value);
-                }
-                ObjGetVCP rb_12 = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(x.SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
-                if (rb_12.result)
-                    C_slider.Value = (uint)((long)rb_12.value);
-            }
+            x.ResetClick();
         }
 
         private void SynchronizeSwitch_Click(object sender, RoutedEventArgs e)

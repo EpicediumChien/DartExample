@@ -389,6 +389,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     "KEYBOARD",
                     "AUDIO",
                     "PEN",
+                    "DOCK",
                     "WEBCAM",
                 };
                 List<string> Display_Lock_WithoutAction = new List<string>()
