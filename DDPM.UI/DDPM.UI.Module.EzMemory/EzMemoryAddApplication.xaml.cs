@@ -24,6 +24,7 @@ using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
+using Microsoft;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -56,7 +57,7 @@ namespace DDPM.UI.Module.EzMemory
             _log = vmDisplay.Console.CreateLog("EzMemoryAddApplication");
             _log.Info($"{nameof(EzMemoryAddApplication)} - Constructed");
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-
+            Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
 
             if (_homeDevice.vmEzArrange == null)
@@ -64,9 +65,10 @@ namespace DDPM.UI.Module.EzMemory
                 _homeDevice.vmEzArrange = new DDPM.UI.Common.ViewModels.EzArrangeViewModel(_homeDevice);
             }
             _vm = _homeDevice.vmEzArrange;
+
             DataContext = _homeDevice.vmEzArrange;
 
-            InitializeComponent();
+            //InitializeComponent();
         }
         private void edFilter_TextChanged(object sender, TextChangedEventArgs e)
         {

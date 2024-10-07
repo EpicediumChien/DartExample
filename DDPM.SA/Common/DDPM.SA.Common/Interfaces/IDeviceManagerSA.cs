@@ -262,6 +262,8 @@ namespace DDPM.SA.Common
 
         public Task<EasyArrangementDDPM> ReadMonitorEasyArrangement(MonitorInfo monitorInfo);
 
+        public Task<bool> WriteUserListEAProfileDDPM(List<EAProfileDDPM> eaProfileList);
+
         public Task<bool> WriteUserEAProfileDDPM(EAProfileDDPM eaProfile);
 
         public Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM();
