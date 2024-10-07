@@ -286,6 +286,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                                 SWUpdateInfo? delayFUpdateInfo = _DelaySWUpdateInfoPackage.SWUpdateInfo.Find(o => o.Equals(swUpdateInfo));
                                 if (delayFUpdateInfo != null)
                                 {
+                                    delayFUpdateInfo.ServerPath = swUpdateInfo.ServerPath;
+                                    delayFUpdateInfo.SHA256 = swUpdateInfo.SHA256;
+                                    delayFUpdateInfo.SHA512 = swUpdateInfo.SHA512;
+                                    delayFUpdateInfo.Thumbprint = swUpdateInfo.Thumbprint;
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelaySWUpdateInfoPackage.SaveTime;
                                     if (_isDefer)
                                     {
@@ -551,6 +555,10 @@ namespace DDPM.SA.Plugins.SWUpdate
                     {
                         if (!_DelaySWUpdateInfoPackage.SWUpdateInfo.Exists(o => o.Equals(newSWUpdateInfo)))
                         {
+                            newSWUpdateInfo.ServerPath = "";
+                            newSWUpdateInfo.SHA256 = "";
+                            newSWUpdateInfo.SHA512 = "";
+                            newSWUpdateInfo.Thumbprint = "";
                             _DelaySWUpdateInfoPackage.SWUpdateInfo.Add(newSWUpdateInfo);
                         }
                     }
@@ -560,6 +568,13 @@ namespace DDPM.SA.Plugins.SWUpdate
                 else if (_DelaySWUpdateInfoPackage != null && _DelaySWUpdateInfoPackage.SaveTime == null)
                 {
                     _DelaySWUpdateInfoPackage = _SWUpdateInfoPackage;
+                    foreach (SWUpdateInfo newSWUpdateInfo in _DelaySWUpdateInfoPackage.SWUpdateInfo)
+                    {
+                        newSWUpdateInfo.ServerPath = "";
+                        newSWUpdateInfo.SHA256 = "";
+                        newSWUpdateInfo.SHA512 = "";
+                        newSWUpdateInfo.Thumbprint = "";
+                    }
                     _DelaySWUpdateInfoPackage.DelayTimesAvailable = 2;
                     _DelaySWUpdateInfoPackage.SaveTime = DateTime.Now;
                     CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
@@ -578,11 +593,9 @@ namespace DDPM.SA.Plugins.SWUpdate
             string json = JsonConvert.SerializeObject(e);
             // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
             SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
+            _logs.DebugMsg_1(sWUpdateInfoPackage.SWUpdateInfo.Count.ToString());
             List<SWUpdateInfo> sWUpdateInfo = sWUpdateInfoPackage.SWUpdateInfo;
-            if (sWUpdateInfo.Count > 0)
-            {
-                Install(sWUpdateInfo[0]);
-            }
+            DownloadAndInstall(sWUpdateInfo, "").Wait();
         }
         private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {

@@ -510,6 +510,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 if (delayFUpdateInfo != null)
                                 {
                                     delayFUpdateInfo.ServerPath = fwUpdateInfo.ServerPath;
+                                    delayFUpdateInfo.SHA256 = fwUpdateInfo.SHA256;
                                     delayFUpdateInfo.SHA512 = fwUpdateInfo.SHA512;
                                     delayFUpdateInfo.Thumbprint = fwUpdateInfo.Thumbprint;
                                     TimeSpan difference = DateTime.Now - (DateTime)_DelayFWUpdateInfoPackage.SaveTime;
