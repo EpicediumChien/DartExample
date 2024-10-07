@@ -37,15 +37,18 @@ namespace DDPM.SA.Common.Settings
                 }
             }
         }
-        public static SWUpdateHelper GetSWMetadata(out string info)
+        public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info)
         {
             SWUpdateHelper data = new SWUpdateHelper();
             SetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck();
-            if (!certificateCheck.CheckURLCACertificate(URL))
+            if (!isSkipCA)
             {
-                info = $"{nameof(GetSWMetadata)} URL CA check fail";
-                return data;
+                if (!certificateCheck.CheckURLCACertificate(URL))
+                {
+                    info = $"{nameof(GetSWMetadata)} URL CA check fail";
+                    return data;
+                }
             }
             try
             {
