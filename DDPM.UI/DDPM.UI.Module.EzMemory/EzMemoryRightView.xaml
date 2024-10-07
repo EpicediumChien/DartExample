@@ -24,6 +24,28 @@
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="Margin" Value="0,0,8,0" />
             </Style>
+
+            <Style x:Key="TransparentButtonStyle" TargetType="UXControls:UXButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="UXControls:UXButton">
+                            <Grid>
+                                <Image Source="pack://application:,,,/DDPM.UI.Common;component/Resources/EzAdd.png" Width="30" Height="30"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <!-- 透明遮罩 -->
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -63,10 +85,21 @@
                                         <UXControls:UXTextBlock x:Name="AppDocumentTextBlock" Grid.Row="2" Grid.Column="0" Margin="190,0,10,10"/>
                                         <UXControls:UXTextBlock x:Name="AppDocumentValueTextBlock" Grid.Row="2" Grid.Column="1" Margin="16,0,10,10" Text="{Binding AppDocumentValue}" />
                                     </Grid>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Margin="0,10,0,10">
+                                    <Grid Margin="10,0">
+                                        <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
-                                    <commonCtrl:SplitListView Name="splitListView_Recent" Margin="0,10,0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
 
-                                    <UXControls:UXButton x:Name="applybtn" Width="99" Height="40" Content="Apply" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" Click="EzMemoryStart_Click"/>
+
+                                        <commonCtrl:SplitListView Name="splitListView_Recent" Grid.Row="0" Margin="0,10,0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+                                        <UXControls:UXButton x:Name="AddNewButton" Grid.Row="0" Style="{StaticResource TransparentButtonStyle}" HorizontalAlignment="Left" Margin="60,8,16,0" Click="AddNewButton_Click"/>
+                                        <UXControls:UXButton x:Name="applybtn" Grid.Row="2" Width="99" Height="40" Content="Apply" Background="#596067" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0" Click="EzMemoryStart_Click"/>
+                                    </Grid>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>

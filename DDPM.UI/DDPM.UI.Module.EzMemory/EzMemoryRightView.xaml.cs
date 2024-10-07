@@ -6,6 +6,8 @@ using System.Windows;
 using DDPM.UI.Plugin.Common.ViewModels;
 using DDPM.SA.Common;
 using DDPM.UI.Common.Models;
+using DDPM.SA.Common.Settings;
+using System.Windows.Media.Media3D;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -23,6 +25,9 @@ namespace DDPM.UI.Module.EzMemory
         private readonly ILog _log;
         #endregion Private Members
 
+        string msgboxTitle = "Error";
+        string subTitle = "You can only save up to 9 profiles. Delete an existing profile or edit it in the main menu.";
+
         public EzMemoryRightView(DisplayViewModel vmDisplay)
         {
             InitializeComponent();
@@ -31,7 +36,8 @@ namespace DDPM.UI.Module.EzMemory
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-
+            _log = vmDisplay.Console.CreateLog("EzMemoryRightView");
+            _log.Info($"{nameof(EzMemoryRightView)} - Constructed");
             InitializeTextBlocks();
         }
 
@@ -44,14 +50,30 @@ namespace DDPM.UI.Module.EzMemory
             LaunchByTimeValueTextBlock.Text = "N/A";
             AppDocumentTextBlock.Text = "App/Document:";
             AppDocumentValueTextBlock.Text = "N/A";
-
             applybtn.Content = "Apply";
         }
 
         private void EzMemoryStart_Click(object sender, RoutedEventArgs e)
         {
+            //EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
+            //DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
+        }
+
+        private void AddNewButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+            if (checkEAProfileDDPM != null)
+            {
+                if (checkEAProfileDDPM.Count >= 9)
+                {
+                    Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    Thickness subMargin = new Thickness(24, -16, 24, 8);
+                    DdpmCommonHelper.DDPMEzMesssageBox(msgboxTitle, subTitle, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                    return;
+
+                }
+            }
             EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay);
-            //ezFirst.DataContext = _vm;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
 

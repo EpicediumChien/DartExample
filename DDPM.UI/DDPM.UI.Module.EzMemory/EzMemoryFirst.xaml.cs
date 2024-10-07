@@ -44,7 +44,7 @@ namespace DDPM.UI.Module.EzMemory
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
         private readonly ILog _log;
-        private const string CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
+
         #endregion Private Members
 
         public EzMemoryFirst(DisplayViewModel vmDisplay)
@@ -53,7 +53,8 @@ namespace DDPM.UI.Module.EzMemory
             _homeDevice = vmDisplay.SelectedHomeDevice;
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-
+            _log = vmDisplay.Console.CreateLog("EzMemoryFirst");
+            _log.Info($"{nameof(EzMemoryFirst)} - Constructed");
             Requires.NotNull(vmDisplay, nameof(vmDisplay));
             InitializeComponent();
             //DataContext = vm;
@@ -101,32 +102,33 @@ namespace DDPM.UI.Module.EzMemory
             //InitRecentListView();
             InitListViewItems();
 
-            customListTooltipText.Text = CustomListTooltipText;
+            customListTooltipText.Text = _vm.CustomListTooltipText;
 
             InitializePage();
+            CheckInputText();
         }
 
         public void InitializePage()
         {
             //Read other settings
 
-            List<EAProfileDDPM> eaProfile = DdpmCommonHelper.DeviceManagerSA.ReadEzProfiles().Result;
-            List<EAAppInfoDDPM> lea = new List<EAAppInfoDDPM>();
-            EAAppInfoDDPM ea = new EAAppInfoDDPM();
-            ea.IsUWP = false;
-            ea.Name = "11";
-            lea.Add( ea );
+            //List<EAProfileDDPM> eaProfile = DdpmCommonHelper.DeviceManagerSA.ReadEzProfiles().Result;
+            //List<EAAppInfoDDPM> lea = new List<EAAppInfoDDPM>();
+            //EAAppInfoDDPM ea = new EAAppInfoDDPM();
+            //ea.IsUWP = false;
+            //ea.Name = "11";
+            //lea.Add( ea );
 
-            EAAppInfoDDPM ea2 = new EAAppInfoDDPM();
-            ea2.IsUWP = false;
-            ea2.Name = "22";
-            lea.Add(ea2);
+            //EAAppInfoDDPM ea2 = new EAAppInfoDDPM();
+            //ea2.IsUWP = false;
+            //ea2.Name = "22";
+            //lea.Add(ea2);
 
 
-            EAProfileDDPM test = new EAProfileDDPM(9, "test", 8, true, 111, true, "TEST", "TEST", lea);
-            EAProfileDDPM test2 = new EAProfileDDPM(11, "test", 11, true, 111, true, "TEST1", "TEST1", lea);
-            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test);
-            DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test2);
+            //EAProfileDDPM test = new EAProfileDDPM(9, "test", 8, true, 111, true, "TEST", "TEST", lea);
+            //EAProfileDDPM test2 = new EAProfileDDPM(11, "test", 11, true, 111, true, "TEST1", "TEST1", lea);
+            //DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test);
+            //DdpmCommonHelper.DeviceManagerSA.WriteEzProfiles(test2);
             _vm._currentTotalPage = 0;
             _vm._currentPageIndex = 0;
             _vm.ProgressValue = 1;
@@ -138,6 +140,59 @@ namespace DDPM.UI.Module.EzMemory
                 var pageData = _vm.ezPages[_vm._currentDeviceModel][0];
                 MainText.Text = pageData.MainText!;
                 SubText.Text = pageData.SubText!;
+            }
+        }
+
+        public void CheckInputText()
+        {
+            try
+            {
+                List<EAProfileDDPM> newEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+                if (newEAProfileDDPM != null)
+                {
+                    int profileNumber = 1;
+                    bool isDuplicate = false;
+
+                    // 檢查並自動跳號
+                    do
+                    {
+                        string profileNameToCheck = $"Profile {profileNumber}";
+                        isDuplicate = newEAProfileDDPM.Any(p => p.Name.Equals(profileNameToCheck, StringComparison.OrdinalIgnoreCase));
+
+                        if (isDuplicate)
+                        {
+                            profileNumber++;
+                        }
+
+                        // 超過 Profile 9設為string.Empty
+                        if (profileNumber > 9)
+                        {
+                            _vm.InputText = string.Empty;
+                            _log.Error($"{nameof(EzMemoryFirst)} Exceeded Profile 9. InputText set to string.Empty.");
+                            break;
+                        }
+                        else
+                        {
+                            _vm.InputText = profileNameToCheck;
+                        }
+                    }
+                    while (isDuplicate);
+
+                    if (!isDuplicate)
+                    {
+                        _log.Info($"{nameof(EzMemoryFirst)} Unique profile name found: {_vm.InputText}");
+                    }
+                }
+                else
+                {
+                    _log.Info($"{nameof(EzMemoryFirst)} No EAProfileDDPM found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"{nameof(EzMemoryFirst)} Error in CheckInputText: {ex.Message}");
+                _vm.InputText = string.Empty; 
             }
         }
 
@@ -188,6 +243,23 @@ namespace DDPM.UI.Module.EzMemory
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (_vm.SelectedSplitItem.CellCount < 2)
+            {
+                return;
+            }
+            List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+
+            if (checkEAProfileDDPM != null)
+            {
+                if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    Thickness subMargin = new Thickness(24, -16, 24, 8);
+                    DdpmCommonHelper.DDPMEzMesssageBox(_vm.msgboxTitleForFirstPage, _vm.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                    return;
+                }
+            }
+
             NextPage();
             DoProgressAnimation(true);
         }
