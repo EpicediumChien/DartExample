@@ -1086,12 +1086,11 @@ namespace NetworkKVM.Plugins
 
         private void CreateNamedPipe()
         {
-            //#if Debug_NKVM
-            //            namedpipeName = "VCPNamedPipe";
-            //#else
-            //            namedpipeName = Guid.NewGuid().ToString("D");
-            //#endif
+#if DEBUG
             namedpipeName = "VCPNamedPipe";
+#else
+            namedpipeName = Guid.NewGuid().ToString("D");
+#endif
             _logs.DebugMsg("[NetworkKVM] Name: " + namedpipeName);
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
 
@@ -1120,8 +1119,8 @@ namespace NetworkKVM.Plugins
             {
 #endif
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
-                    ResponseSupportedMonitor().Wait();
-                    OnNKVM().Wait();
+                ResponseSupportedMonitor().Wait();
+                OnNKVM().Wait();
 #if RELEASE
             }
             else
@@ -1131,7 +1130,6 @@ namespace NetworkKVM.Plugins
                 CreateNamedPipe();
             }
 #endif
-
         }
 
         private void Stop()
