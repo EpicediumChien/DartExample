@@ -2802,7 +2802,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (ison)
                             {
                                 _SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                _NKVMPlugin.OnNKVM().Wait();
+                                //_NKVMPlugin.OnNKVM().Wait();
                             }
                             else
                             {
