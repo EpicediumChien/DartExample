@@ -164,6 +164,7 @@ namespace DDPM.UI.Module.EzMemory
                     {
                         clickedEAProfileDDPM.Remove(profileToRemove);
                         DdpmCommonHelper.DeviceManagerSA.WriteUserListEAProfileDDPM(clickedEAProfileDDPM);
+                        splitListView_RecentForEzM.DeleteSplitItem(spItem);
                         _log.Info($"@[EzMemoryRightView] OnListViewItemDeleted, Profile with ID {spItem.LayoutID} removed from UserSettings.");
                     }
                     else

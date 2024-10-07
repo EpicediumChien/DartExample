@@ -26,6 +26,10 @@ using Microsoft.VisualBasic.Logging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Windows.ApplicationModel;
 using VcpCore.Common;
+using DDPM.Easy.Common;
+using DDPM.UI.Common.UserControls;
+using System.Windows.Forms;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.EzMemory
 {
