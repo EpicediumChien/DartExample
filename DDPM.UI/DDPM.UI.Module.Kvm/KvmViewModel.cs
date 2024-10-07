@@ -296,7 +296,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     _isNoKVM = false;
                     _isNKVM = true;
-                    isOnNKVM(true);
+                    //isOnNKVM(true);
                 }
             }
         }

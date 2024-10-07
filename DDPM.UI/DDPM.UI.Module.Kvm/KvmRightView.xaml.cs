@@ -203,6 +203,7 @@ namespace DDPM.UI.Module.Kvm
                 DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
             }
             vm.OpenNKVMUI(0, 100, 100);
+            vm.isOnNKVM(true);
         }
 
         private void USBKVMHotkeys_Click(object sender, RoutedEventArgs e)
