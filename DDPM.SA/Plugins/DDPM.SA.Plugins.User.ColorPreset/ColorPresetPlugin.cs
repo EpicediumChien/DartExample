@@ -1533,21 +1533,22 @@ namespace ColorPreset.Plugins
             jsonfilepath = filepath;    // .json: current no_signature from server
             Console.WriteLine("[CheckICC_JSON_Security] :" + jsonfilepath);
             writelog("[CheckICC_JSON_Security] :" + jsonfilepath);
-            if (ret)
-            {
-                return ret;
-            }
-            else
-            {   // Currently the server can not provide json file with signature. Add code here for further use.
-                // (for debugging) Public_Key from file. Generate Public/Private Key then generate signature in json file.
-                publickeyfilepath = "C:\\Dell\\Dell Display and Peripheral Manager\\public_key.txt";
-                // (for debugging) .json: with signature 
-                //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
-                jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_key2info_key1sig.json";
+            // Currently the server can not provide json file with signature.  DDPMFileSecurity.LoadFileToVerifyJson_2 will return if signature is null.
+            // (for debugging) Public_Key from Info.cs.
 
+            // (for debugging) .json: with signature 
+            //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_new2.json";
+            //jsonfilepath = "C:\\Users\\XPS0026\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager\\icc_profile_sha256_key2info_key1sig.json";
+            //jsonfilepath = "C:\\Users\\XPS0026\\j123\\wendymeatadata\\metaadata_icc_pk1.json";
+            jsonfilepath = "C:\\Users\\XPS0026\\j123\\wendymeatadata\\dean\\metaadata_icc2.json";
 
-                ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson(jsonfilepath, publickeyfilepath, out strJson);
-            }
+            // **** (1/3) for Dean **** we should check both a.Info.cs and b.local_setting_file 
+            List<string> InfoPkey = new List<string>();
+            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+            // **** for Dean end ****
+
+            //ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson(jsonfilepath, publickeyfilepath, out strJson);
+            ret = DDPM.SA.Common.Settings.DDPMFileSecurity.LoadFileToVerifyJson_2(jsonfilepath, InfoPkey, out strJson);
 
             // Handle "Info" section
             if (ret && (strJson.Length > 1))
@@ -1559,6 +1560,13 @@ namespace ColorPreset.Plugins
                 {
                     szInfo = (string)jObject["Info"];
 
+                    if (string.IsNullOrEmpty(szInfo))
+                    {
+#if DEBUG
+                        Console.WriteLine("*** No Info Key.");
+#endif
+                        return true;
+                    }
                     jObject.Remove("Info");
                     // Convert the modified JObject back to a JSON string
                     modifiedJson = jObject.ToString();
@@ -1567,8 +1575,10 @@ namespace ColorPreset.Plugins
                     List<string> Pub_Key_List_From_DBase = new List<string>();
 
                     // Load the base64-encoded public key from a text file
+                    // **** (2/3) fake data start - for Dean **** load Info_Key from  b.local_setting_file 
                     string publicKeyBase64 = File.ReadAllText(publickeyfilepath);
                     Pub_Key_List_From_DBase.Add(publicKeyBase64);
+                    // **** fake data end - for Dean end ****
 
                     int nIndexFound = -1;
                     Console.WriteLine("*** (Remote) Public Key 1: " + Pub_Key_List_From_DBase.Count.ToString() + " " + szInfo);
@@ -1590,7 +1600,7 @@ namespace ColorPreset.Plugins
                     else
                     {   // Key Not found. Current Key != Remote Key
                         Pub_Key_List_From_DBase.Insert(0, publicKeyBase64);
-                        // *** ToDo: Must Store Remote Key to DBase ***
+                        // *** ToDo: (3/3) We should append Info_Key to b.local_setting_file ***
                     }
 
                     ret = true;
@@ -1604,6 +1614,7 @@ namespace ColorPreset.Plugins
 
             return ret;
         }
+
 
         /// <summary>
         /// 從伺服端下載ICC.json檔，下載後會 Run Deserialize接續下載ICC profile .icm檔
