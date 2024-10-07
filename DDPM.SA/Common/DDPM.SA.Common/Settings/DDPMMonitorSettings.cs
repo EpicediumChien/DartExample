@@ -111,5 +111,6 @@ namespace DDPM.SA.Common.Settings
         public HotkeySettings hotkeySettings { get; set; }
         public scheduleInfo scheduleInfo { get; set; }
         public ImpExpSettings ImpExpSettings { get; set; }
+        public EasyArrangementDDPM easyArrangementDDPM { get; set; }
     }
 }

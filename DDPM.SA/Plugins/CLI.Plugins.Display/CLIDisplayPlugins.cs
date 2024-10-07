@@ -6689,7 +6689,7 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
             string output = string.Empty;
-            List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+            List<PowerNapSetting> read_list = (devMgr.ReadPowerNapSettings().Result).ToList();
             DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
 
             if (type == "SET")
@@ -8967,10 +8967,13 @@ namespace DDPM.CLI.Plugins.Display
             string filepath = commandLineInput.Options[0].Option_Value;
             string filepath_ = @$"{commandLineInput.Options[0].Option_Value}\Temp";
             string file = @$"{commandLineInput.Options[0].Option_Value}\Temp.zip";
+            string folderinfo =string.Empty;
+            string symblinkinfo = string.Empty;
 
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = await devMgr.GetMonitors();
 
+            DDPMFileSecurity.CheckFold(filepath, out folderinfo, out symblinkinfo);
             if (!Directory.Exists(filepath))
             {
                 Directory.CreateDirectory(filepath);
