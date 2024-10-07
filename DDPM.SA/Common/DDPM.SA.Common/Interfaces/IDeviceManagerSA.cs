@@ -464,6 +464,8 @@ namespace DDPM.SA.Common
         void SetUILockStatus(bool isLockFWU_UI);
 
         Task<bool> GetUILockStatus();
+        Task<bool> SetSkipCA(bool isSkipCA);
+        Task<bool> GetSkipCA();
 
         #endregion public for FW Update by Bruce
 

@@ -180,6 +180,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private GlobalSettingParam _GlobalSettingParam = new GlobalSettingParam();
 
         private bool isInitMonitorSettings = false;
+        private static bool _IsSkipCA = false;
 
         #endregion
 
@@ -1996,7 +1997,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-        #region Bruce display properties implementation
+        #region display properties implementation
 
         public Task<DisplayPropertiesInfo> GetDisplayPropertiesInfo(MonitorInfo monitorInfos)
         {
@@ -2230,7 +2231,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #endregion
 
-        #region Bruce FW Update implementation
+        #region FW Update implementation
 
         public Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false)
         {
@@ -2238,7 +2239,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
                 //0612 Bruce 將傳入值null移除因已不需使用，不會影響UI和CLI
-                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate().Result).Result);
+                return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result).Result);
             }
             return Task.FromResult(new FWUpdateInfoPackage());
         }
@@ -2292,6 +2293,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult(config.UserSettings.LockFWU_UI);
         }
+        public Task<bool> SetSkipCA(bool isSkipCA)
+        {
+            bool ret = false;
+            string isSkipCA_int = isSkipCA ? "1" : "0";
+            ret = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "SkipCA", isSkipCA_int).Result;
+            writelog($"[SetSkipCA], ret={ret}.");
+            if (ret)
+            {
+                _IsSkipCA = isSkipCA;
+                if (_FWUpdatePlugin != null)
+                {
+                    _FWUpdatePlugin.SetSkipCA(_IsSkipCA);
+                }
+                if (_SWUpdatePlugin != null)
+                {
+                    _SWUpdatePlugin.SetSkipCA(_IsSkipCA);
+                }
+            }
+            return Task.FromResult(ret);
+        }
+        public Task<bool> GetSkipCA()
+        {
+            object o = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "SkipCA").Result;
+            writelog($"[GetSkipCA], o={o}.");
+            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            {
+                _IsSkipCA = o.ToString().Equals("1") ? true : false;
+                if (_FWUpdatePlugin != null)
+                {
+                    _FWUpdatePlugin.SetSkipCA(_IsSkipCA);
+                }
+                if (_SWUpdatePlugin != null)
+                {
+                    _SWUpdatePlugin.SetSkipCA(_IsSkipCA);
+                }
+            }
+            return Task.FromResult(_IsSkipCA);
+        }
 
         private Task<bool> SetFWUpdateInfoPackage(FWUpdateInfoPackage fwUpdateInfoPackage)
         {
@@ -2314,7 +2353,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             UpdateHelper updateHelper = _PeripheralsPlugin.GetFWUpdateInfo().Result;
             if (_DisplayManagerPlugin == null)
                 return Task.FromResult(false);
-            DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate().Result;
+            DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA).Result;
             if (_FWUpdatePlugin == null)
                 return Task.FromResult(false);
             SetDelayFWUpdateInfoPackage();
@@ -4521,6 +4560,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             ReloadHotkeyConfigData();
             ToNKVM_initHotKeys();
             DeleteMiniInstallerFolder();
+            GetSkipCA().Wait();
             //hook keyboard
             //if (_HotkeyPlugin != null)
             //{
@@ -5035,7 +5075,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void OnCheckUpdateScheduleEvent()
         {
-            CheckUpdate();
+            DDPMSettings data = ReloadAppConfigData().Result;
+            if (data != null)
+            {
+                if (!data.LockSettings.Lock_Settings_Updates)
+                {
+                    CheckUpdate();
+                }
+            }
         }
 
         private void OnGetDeviceinfos()
@@ -5071,7 +5118,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void OnCheckSWUpdateScheduleEvent()
         {
-            SW_CheckSWUpdate();
+            DDPMSettings data = ReloadAppConfigData().Result;
+            if (data != null)
+            {
+                if (!data.LockSettings.Lock_Settings_Updates)
+                {
+                    SW_CheckSWUpdate();
+                }
+            }
         }
 
         #endregion

@@ -3319,11 +3319,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #endregion
 
         #region Display FWU Metadata
-        public Task<DisplayUpdateHelper> GetDisplayFWUpdate()
+        public Task<DisplayUpdateHelper> GetDisplayFWUpdate(bool isSkipCA)
         {
             DisplayUpdateHelper displayUpdateHelper = new DisplayUpdateHelper();
             SetDisplayFWUServer();
-            displayUpdateHelper = GetDisplayFWMetadata();
+            displayUpdateHelper = GetDisplayFWMetadata(isSkipCA);
             return Task.FromResult(displayUpdateHelper);
         }
         private void SetDisplayFWUServer()
@@ -3347,13 +3347,20 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
         }
-        private DisplayUpdateHelper GetDisplayFWMetadata()
+        private DisplayUpdateHelper GetDisplayFWMetadata(bool isSkipCA)
         {
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
             CertificateCheck certificateCheck = new CertificateCheck();
-            if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
+            if (!isSkipCA) 
             {
-                return ret;
+                if (!certificateCheck.CheckURLCACertificate(Display_FWU_URL))
+                {
+                    return ret;
+                }
+            }
+            else
+            {
+                _logs.DebugMsg(nameof(GetDisplayFWMetadata) + " is skip CA");
             }
             List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
             monitorInfos = GetMonitors().Result;

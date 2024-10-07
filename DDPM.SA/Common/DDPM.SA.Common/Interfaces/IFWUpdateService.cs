@@ -45,5 +45,6 @@ namespace DDPM.SA.Common
         void DelayEvent(object e);
 
         void UpdateEvent(object e);
+        void SetSkipCA(bool isSkipCA);
     }
 }
