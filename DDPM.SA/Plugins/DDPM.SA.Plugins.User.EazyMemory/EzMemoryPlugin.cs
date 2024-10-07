@@ -459,7 +459,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
             AppListDictionary tmpAppListDictionary = AppListDictionary.GetInstance();
 
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
-
+            string fileinfo = string.Empty, info = string.Empty;
+            DDPMFileSecurity.CheckFold(IconFolder, out fileinfo, out info);
             if (!System.IO.Directory.Exists(IconFolder))
                 System.IO.Directory.CreateDirectory(IconFolder);
 
