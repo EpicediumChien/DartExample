@@ -836,8 +836,10 @@ namespace ColorPreset.Plugins
                 return Task.FromResult(ColorPresetSupportList);
             }
 
-            Log.Info($"ReadColorPreset requested [vcp_capbilities] = {vcp_capbilities}");
-
+            if (Log != null)
+            {
+                Log.Info($"ReadColorPreset requested [vcp_capbilities] = {vcp_capbilities}");
+            }
             // 20240619 jim add
             if (!string.IsNullOrEmpty(vcp_capbilities))
             {
