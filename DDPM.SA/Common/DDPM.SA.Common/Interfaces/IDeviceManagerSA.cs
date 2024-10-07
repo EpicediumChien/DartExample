@@ -258,11 +258,16 @@ namespace DDPM.SA.Common
 
         #region EasyMemory
 
-        public Task<List<EAProfileDDPM>> ReadEzProfiles();
+        public Task<bool> WriteMonitorEasyArrangement(MonitorInfo monitorInfo, EasyArrangementDDPM easyArrangementDDPM);
 
-        public Task<bool> WriteEzProfiles(EAProfileDDPM eaProfile);
+        public Task<EasyArrangementDDPM> ReadMonitorEasyArrangement(MonitorInfo monitorInfo);
 
-        public Task<bool> CleanEzProfiles();
+        public Task<bool> WriteUserEAProfileDDPM(EAProfileDDPM eaProfile);
+
+        public Task<List<EAProfileDDPM>> ReadUserEAProfileDDPM();
+
+        public Task<bool> CleanUserEzProfiles();
+
         #endregion EasyMemory
 
         #endregion public for Displays

@@ -66,6 +66,12 @@ namespace DDPM.UI.Common
             msgBox.ShowDialog();
         }
 
+        public static void DDPMEzMesssageBox(string title, string text, bool IsCloseButton, Window Owner, int width, int height, Thickness titlemargin, Thickness submargin)
+        {
+            DDPMMsgBox msgBox = new DDPMMsgBox(title, text, IsCloseButton, Owner, width, height, titlemargin, submargin);
+            msgBox.ShowDialog();
+        }
+
         public static bool IsMainWindowAtPrimaryScreen = true;
 
         /// <summary>

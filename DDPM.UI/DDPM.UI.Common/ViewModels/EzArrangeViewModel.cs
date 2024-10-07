@@ -29,7 +29,17 @@ namespace DDPM.UI.Common.ViewModels
         public string _currentDeviceModel = "EzMemory";
         public List<Bind_AddFullPage_AppCollectionData> _seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
         public Dictionary<String, Bind_AddFullPage_AppCollectionData> _sortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
-        
+        public readonly String msgboxTitleForFirstPage = "Warning";
+        public readonly String subTitleForFirstPage = "Duplicate entries. Enter different documentation or applications for Easy Memory profile.";
+        public readonly String CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
+
+        public readonly String ezMemoryStartupErrorTitleStringForLaunchOptionPage = "Error";
+        public readonly String ezMemoryStartupErrorStringForLaunchOptionPage = "Another profile is set to launch during PC startup. Do you want to replace it with this profile?";
+        public readonly String TitleTBForLaunchOptionPage = "Select a launch option";
+        public readonly String StartupCBContentForLaunchOptionPage = "Launch during PC startup";
+        public readonly String ManulRBContentForLaunchOptionPage = "Manually select the profiles created";
+        public readonly String AutoRBContentForLaunchOptionPage = "Automatically launch by time";
+
         #endregion
 
         public EzArrangeViewModel(HomeDevice homeDev)
