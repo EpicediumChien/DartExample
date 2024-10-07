@@ -152,7 +152,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
 
         private void SaveHotkeySettings(InputSourceObj inputSourceObj, string inputNo)
         {
-            HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+            var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo).Result;
+            HotkeySettings curHotkey = temp.Item1;
+            List<InputSourceObj> list = temp.Item2;
             if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
             {
                 List<InputSourceObj> updateInputSourceList = new List<InputSourceObj>();
@@ -161,48 +163,48 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     //FavoriteInputSource
                     case "0":
                         HotkeyInfo? FavoriteHotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(HotkeyType.FavoriteInputSource));
-                        if (FavoriteHotkeyInfo != null && FavoriteHotkeyInfo.InputSource.Count > 0)
+                        if (FavoriteHotkeyInfo != null && list != null && list.Count > 0)//FavoriteHotkeyInfo.InputSource.Count > 0)
                         {
-                            InputSourceList? inputSourceList = _inputsList.Find(x => x.inputDisplayText.Equals(FavoriteHotkeyInfo.InputSource[0].Name));
+                            InputSourceList? inputSourceList = _inputsList.Find(x => x.inputDisplayText.Equals(list[0].Name));//FavoriteHotkeyInfo.InputSource[0].Name));
                             if (inputSourceList != null && !inputSourceList.inputDisplayText.Equals(inputSourceObj.Name))
                             {
                                 updateInputSourceList.Add(inputSourceObj);
                                 FavoriteHotkeyInfo.InputSource = updateInputSourceList;
-                                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid, FavoriteHotkeyInfo).Result;
+                                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, FavoriteHotkeyInfo).Result;
                             }
                         }
                         break;
                     case "1":
                         //switch input 1
                         HotkeyInfo? SwitchHotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(HotkeyType.SwitchInputSource));
-                        if (SwitchHotkeyInfo != null && SwitchHotkeyInfo.InputSource.Count > 0)
+                        if (SwitchHotkeyInfo != null && list != null && list.Count > 0)// SwitchHotkeyInfo.InputSource.Count > 0)
                         {
-                            InputSourceList? input1 = _inputsList.Find(x => x.inputDisplayText.Equals(SwitchHotkeyInfo.InputSource[0].Name));
-                            InputSourceList? input2 = _inputsList.Find(x => x.inputDisplayText.Equals(SwitchHotkeyInfo.InputSource[1].Name));
+                            InputSourceList? input1 = _inputsList.Find(x => x.inputDisplayText.Equals(list[0].Name));// SwitchHotkeyInfo.InputSource[0].Name));
+                            InputSourceList? input2 = _inputsList.Find(x => x.inputDisplayText.Equals(list[1].Name));//SwitchHotkeyInfo.InputSource[1].Name));
 
                             if (input1 != null && !input1.inputDisplayText.Equals(inputSourceObj.Name))
                             {
                                 updateInputSourceList.Add(inputSourceObj);
                                 updateInputSourceList.Add(new InputSourceObj(input2.inputDisplayText));
                                 SwitchHotkeyInfo.InputSource = updateInputSourceList;
-                                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid, SwitchHotkeyInfo).Result;
+                                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, SwitchHotkeyInfo).Result;
                             }
                         }
                         break;
                     case "2":
                         //switch input 2
                         HotkeyInfo? SwitchHotkeyInfo2 = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(HotkeyType.SwitchInputSource));
-                        if (SwitchHotkeyInfo2 != null && SwitchHotkeyInfo2.InputSource.Count > 0)
+                        if (SwitchHotkeyInfo2 != null && list != null && list.Count > 0)//SwitchHotkeyInfo2.InputSource.Count > 0)
                         {
-                            InputSourceList? input1 = _inputsList.Find(x => x.inputDisplayText.Equals(SwitchHotkeyInfo2.InputSource[0].Name));
-                            InputSourceList? input2 = _inputsList.Find(x => x.inputDisplayText.Equals(SwitchHotkeyInfo2.InputSource[1].Name));
+                            InputSourceList? input1 = _inputsList.Find(x => x.inputDisplayText.Equals(list[0].Name));//SwitchHotkeyInfo2.InputSource[0].Name));
+                            InputSourceList? input2 = _inputsList.Find(x => x.inputDisplayText.Equals(list[1].Name));//SwitchHotkeyInfo2.InputSource[1].Name));
 
                             if (input2 != null && !input2.inputDisplayText.Equals(inputSourceObj.Name))
                             {
                                 updateInputSourceList.Add(new InputSourceObj(input1.inputDisplayText));
                                 updateInputSourceList.Add(inputSourceObj);
                                 SwitchHotkeyInfo2.InputSource = updateInputSourceList;
-                                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid, SwitchHotkeyInfo2).Result;
+                                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo, SwitchHotkeyInfo2).Result;
                             }
                         }
                         break;
@@ -240,7 +242,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 InputsList.Clear();
                 inputList = new Dictionary<string, InputInfo>();
                 //load hotkey setting
-                HotkeySettings curHotkey = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.edid).Result;
+                var temp = DdpmCommonHelper.DeviceManagerSA.ReadCurrentHotkey(this.DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo).Result;
+                HotkeySettings curHotkey = temp.Item1;
+                List<InputSourceObj> list = temp.Item2;
                 //0708 error handling for non-EE support monitor
                 try
                 {
@@ -265,9 +269,9 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                     {
                         HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(HotkeyType.FavoriteInputSource));
-                        if (hotkeyInfo != null && hotkeyInfo.InputSource.Count > 0)
+                        if (hotkeyInfo != null && list != null && list.Count > 0)// hotkeyInfo.InputSource.Count > 0)
                         {
-                            FavoriteInput_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(hotkeyInfo.InputSource[0].Name));
+                            FavoriteInput_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(list[0].Name));// hotkeyInfo.InputSource[0].Name));
                         }
                         else
                         {
@@ -282,10 +286,10 @@ namespace DDPM.UI.Module.DisplayHotkeys
                     if (curHotkey != null && curHotkey.HotkeyInfo.Count > 0)
                     {
                         HotkeyInfo? hotkeyInfo = curHotkey.HotkeyInfo.Find(x => x.Job.Equals(HotkeyType.SwitchInputSource));
-                        if (hotkeyInfo != null && hotkeyInfo.InputSource.Count > 0)
+                        if (hotkeyInfo != null && list != null && list.Count > 0)//hotkeyInfo.InputSource.Count > 0)
                         {
-                            SwitchInput1_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(hotkeyInfo.InputSource[0].Name));
-                            SwitchInput2_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(hotkeyInfo.InputSource[1].Name));
+                            SwitchInput1_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(list[0].Name));//hotkeyInfo.InputSource[0].Name));
+                            SwitchInput2_Selected = _inputsList.Find(x => x.inputDisplayText.Equals(list[1].Name));//hotkeyInfo.InputSource[1].Name));
                         }
                         else
                         {
