@@ -48,13 +48,43 @@ namespace DDPM.UI.Module.DisplayHotkeys
         {
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
-
+        bool newAgain = false;
         private void tbToggleInputSource_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             /*string swHortcutText = string.Empty;
             KeysHelper.ReSetHotKeyText(ref swHortcutText, ref ToggleInputSourceNewKeys);
             vm.ToggleInputSourceKey = swHortcutText;*/
-            e.Handled = true;
+            //e.Handled = true;
+            VirtualKey thisVirtualKey;
+            VirtualKey thisVirtualKey_system = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.SystemKey);
+            if (thisVirtualKey_system != VirtualKey.None)
+            {
+                thisVirtualKey = thisVirtualKey_system;
+            }
+            else
+            {
+                thisVirtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.Key);
+            }
+            if (thisVirtualKey == VirtualKey.LeftControl || thisVirtualKey == VirtualKey.RightControl)
+            {
+                thisVirtualKey = VirtualKey.Control;
+            }
+            else if (thisVirtualKey == VirtualKey.LeftShift || thisVirtualKey == VirtualKey.RightShift)
+            {
+                thisVirtualKey = VirtualKey.Shift;
+            }
+            else if (thisVirtualKey == VirtualKey.LeftMenu || thisVirtualKey == VirtualKey.RightMenu)
+            {
+                thisVirtualKey = VirtualKey.Menu;
+            }
+            Debug.WriteLine($"tbToggleInputSource_PreviewKeyUp:{thisVirtualKey}");
+            if (newKeys.Contains(thisVirtualKey))
+            {
+
+                newKeys.Remove(thisVirtualKey);
+                Debug.WriteLine($"{newKeys.Count}");
+            }
+
         }
 
         private void tbToggleInputSource_ContextMenuOpening(object sender, ContextMenuEventArgs e)

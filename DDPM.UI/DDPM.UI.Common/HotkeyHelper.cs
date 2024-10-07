@@ -109,13 +109,15 @@ namespace DDPM.UI.Common
         public static void setUXTextBoxPreviewKey(object sender, System.Windows.Input.KeyEventArgs e, ref List<VirtualKey> newKeys, ref List<VirtualKey> BundleNewKeys, ref bool alphabetKey)
         {
             e.Handled = true;
-            newKeys = newKeys.Distinct().ToList();
-            BundleNewKeys = BundleNewKeys.Distinct().ToList();
-            if (newKeys.Count >= 4) return;
             var texBox = (sender as UXTextBox);
             if (texBox == null) return;
             var texBoxName = texBox?.Name;
             if (string.IsNullOrEmpty(texBoxName)) return;
+            Debug.WriteLine($"{texBoxName}_PreviewKeyDown-newKeys.Count---{newKeys.Count}");
+            if (e.IsRepeat) return;
+            newKeys = newKeys.Distinct().ToList();
+            BundleNewKeys = BundleNewKeys.Distinct().ToList();
+            if (newKeys.Count >= 4) return;
             Debug.WriteLine($"{texBoxName}_PreviewKeyDown---Key---{e.Key}");
             Debug.WriteLine($"{texBoxName}_PreviewKeyDown---SystemKey---{e.SystemKey}");
             VirtualKey thisVirtualKey;
@@ -174,11 +176,12 @@ namespace DDPM.UI.Common
             }
 
             //only on alphabet Key
-            if (alphabetKey) return;
+            Debug.WriteLine($"{texBoxName}_PreviewKeyDown_alphabetKey: {alphabetKey}");
+            /*if (alphabetKey) return;
             if (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z)
             {
                 alphabetKey = true;
-            }
+            }*/
 
             /*  if (!alphabetKey)
               {
@@ -194,6 +197,7 @@ namespace DDPM.UI.Common
                 if ((thisVirtualKey == VirtualKey.Menu) ||
                     (thisVirtualKey == VirtualKey.Control) ||
                     (thisVirtualKey == VirtualKey.Shift) ||
+                    (thisVirtualKey >= VirtualKey.Number0 && thisVirtualKey <= VirtualKey.Number9) ||
                     (thisVirtualKey >= VirtualKey.A && thisVirtualKey <= VirtualKey.Z))
                 {
                     newKeys.Add(thisVirtualKey);
@@ -213,6 +217,7 @@ namespace DDPM.UI.Common
             texBox.Text = swHortcutText;
             texBox.Select(swHortcutText.Length, 1);
             BundleNewKeys.AddRange(newKeys);
+            Debug.WriteLine($"{texBoxName}-->swHortcutText--{swHortcutText}");
             /*switch (texBoxName)
             {
                 case "tbToggleInputSource":
