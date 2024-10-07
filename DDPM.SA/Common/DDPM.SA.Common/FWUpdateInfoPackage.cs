@@ -149,6 +149,8 @@ namespace DDPM.SA.Common
         public string fileName { get; set; }
         public string SHA256 { get; set; }
         public string SHA512 { get; set; }
+        [JsonPropertyName("thumbprint")]
+        public string Thumbprint { get; set; }
         public string url { get; set; }
         public string date { get; set; }
         [JsonPropertyName("Supported platform")]

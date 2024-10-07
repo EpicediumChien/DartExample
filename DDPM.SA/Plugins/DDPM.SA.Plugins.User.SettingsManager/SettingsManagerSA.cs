@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using DdmLibrary;
 using DdmLibrary.Utility;
 using System.Linq.Expressions;
+using Windows.Devices.Bluetooth.Background;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -379,8 +380,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 string folder_appdatapath_display = folder + "\\" + folder_product + "\\" + folder_localappdata_Display;
                 //create display folder if not exist
                 _display_path = folder_appdatapath_display;
+                string folderInfo = string.Empty, info = string.Empty;
                 try
                 {
+                    DDPMFileSecurity.CheckFold(_display_path, out folderInfo, out info);
                     if (!Directory.Exists(_display_path))
                     {
                         DirectoryInfo di = System.IO.Directory.CreateDirectory(_display_path);
@@ -1790,8 +1793,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             WriteLog($"GetActiveUserLocalAppDataPath: {folder}");
             string folder_appdatapath_ddpm = folder + "\\" + folder_product;
             WriteLog($"folder_appdatapath_ddpm: {folder_appdatapath_ddpm}");
+            string folderInfo = string.Empty, info = string.Empty;
             try
             {
+                DDPMFileSecurity.CheckFold(folder_appdatapath_ddpm, out folderInfo, out info);
                 DirectoryInfo di = System.IO.Directory.CreateDirectory(folder_appdatapath_ddpm);
                 WriteLog($"create folder {folder_appdatapath_ddpm} success");
             }
@@ -1807,7 +1812,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             DDPMAppSettings ddpm_app = new DDPMAppSettings();
             DDPMUserSettings ddpm_user = new DDPMUserSettings();
-            string info;
+
             if (File.Exists(file_appdatapath_userconfig))
             {
                 // DDPMSettings.getSettingsforImport(file_appdatapath_userconfig, ref ddpm_app, ref ddpm_user);

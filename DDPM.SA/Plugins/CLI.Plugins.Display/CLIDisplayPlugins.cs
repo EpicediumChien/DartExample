@@ -9171,11 +9171,15 @@ namespace DDPM.CLI.Plugins.Display
             }
             else
             {
+                //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
                 string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                if (commandLineInput.Options.Count == 1)
+                string info = string.Empty;
+                string filename = ss_1[1];
+                if (commandLineInput.Options.Count == 1)   
                 {
-                    string filename = ss_1[1];
-                    if (!File.Exists(filename))
+                    
+                    //if (!File.Exists(filename))
+                    if (!DDPM.SA.Common.Security.InputHelper.InputValidation_FilePathFileName(filename, true, out info))
                     {
                         CLI_RESPONSE cli_Response = new CLI_RESPONSE();
                         cli_Response.Command = commandLineInput.Command;
@@ -9575,11 +9579,21 @@ namespace DDPM.CLI.Plugins.Display
         private static string get_SpeakerVolume_status(int value)
         {
             string output = string.Empty;
-            output += ((value & 0xFF) == 0xFF) ? "OSDDISABLE," : "";
-            output += ((value & 0xFE) == 0xFE) ? "OSDENABLE," : "";
-            if ((value & 0xFF) != 0xFE && (value & 0xFF) != 0xFF)
-                output += $"Volume:{value & 0xFF}";
 
+            int value_tmp = value;
+            if (value_tmp == 0xFF)
+            {
+                output += "OSDDISABLE";
+            }
+            else if (value_tmp == 0xFE)
+            {
+                output += "OSDENABLE";
+            }
+
+            if (value_tmp < 0x65)
+            {
+                output = $"Volume:{value & 0xFF}";
+            }
             return output;
         }
 

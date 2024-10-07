@@ -962,39 +962,55 @@ namespace ColorPreset.Plugins
 
                 }
 
-                if (ColorPresetSupportList.Contains("Rec.709 / BT.709"))
+                int numFY = 0;
+                try
                 {
-                    if (strFY == "23")
+                    numFY = Int32.Parse(strFY);
+
+                    if (ColorPresetSupportList.Contains("Rec.709 / BT.709"))
                     {
-                        index = ColorPresetSupportList.FindIndex(x => x == "Rec.709 / BT.709");
-                        if (index >= 0)
-                            ColorPresetSupportList[index] = "Rec.709";
+                        if (numFY <= 23)
+                        {
+                            index = ColorPresetSupportList.FindIndex(x => x == "Rec.709 / BT.709");
+                            if (index >= 0)
+                                ColorPresetSupportList[index] = "Rec.709";
+                        }
+                        else if (numFY >= 25)
+                        {
+                            index = ColorPresetSupportList.FindIndex(x => x == "Rec.709 / BT.709");
+                            if (index >= 0)
+                                ColorPresetSupportList[index] = "BT.709";
+                        }
                     }
-                    else if (strFY == "25")
-                    {
-                        index = ColorPresetSupportList.FindIndex(x => x == "Rec.709 / BT.709");
-                        if (index >= 0)
-                            ColorPresetSupportList[index] = "BT.709";
-                    }
+                }
+                catch (FormatException e)
+                {
+                    Log?.Error("check Color Preset Strings Rec.709 or BT.709 / Rec.709 or BT.709..." + e.Message);
                 }
 
                 // check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020
-
-                if (ColorPresetSupportList.Contains("Rec.2020 / BT.2020"))
+                try
                 {
-                    if (strFY == "23")
+                    if (ColorPresetSupportList.Contains("Rec.2020 / BT.2020"))
                     {
-                        index = ColorPresetSupportList.FindIndex(x => x == "Rec.2020 / BT.2020");
-                        if (index >= 0)
-                            ColorPresetSupportList[index] = "Rec.2020";
-                    }
-                    else if (strFY == "25")
-                    {
-                        index = ColorPresetSupportList.FindIndex(x => x == "Rec.2020 / BT.2020");
-                        if (index >= 0)
-                            ColorPresetSupportList[index] = "BT.2020";
+                        if (numFY <= 23)
+                        {
+                            index = ColorPresetSupportList.FindIndex(x => x == "Rec.2020 / BT.2020");
+                            if (index >= 0)
+                                ColorPresetSupportList[index] = "Rec.2020";
+                        }
+                        else if (numFY >= 25)
+                        {
+                            index = ColorPresetSupportList.FindIndex(x => x == "Rec.2020 / BT.2020");
+                            if (index >= 0)
+                                ColorPresetSupportList[index] = "BT.2020";
+                        }
                     }
                 }
+                catch (FormatException e)
+                {
+                    Log?.Error("check Color Preset Strings Rec.2020 or BT.2020 / Rec.2020 or BT.2020..." + e.Message);
+                }                
             }
 
             index = 0;

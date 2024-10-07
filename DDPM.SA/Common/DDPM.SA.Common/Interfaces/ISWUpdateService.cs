@@ -12,6 +12,10 @@ namespace DDPM.SA.Common
         event EventHandler<SWUpdateInfoPackage> CallSaveUpdateInfoPackage;
 
         event EventHandler<PopupContentPackage> CallPopup;
+        /// <summary>
+        /// for CLI use
+        /// </summary>
+        event EventHandler<List<SWUpdateInfo>> DownloadAndInstall_Result_Notify;
 
         void StartCheckUpdateScheduleTimer();
 
@@ -26,5 +30,6 @@ namespace DDPM.SA.Common
         void DelayEvent(object e);
 
         void UpdateEvent(object e);
+        void SetSkipCA(bool isSkipCA);
     }
 }
