@@ -26,6 +26,10 @@ using Microsoft.VisualBasic.Logging;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Windows.ApplicationModel;
 using VcpCore.Common;
+using DDPM.Easy.Common;
+using DDPM.UI.Common.UserControls;
+using System.Windows.Forms;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -59,8 +63,6 @@ namespace DDPM.UI.Module.EzMemory
             }
             _vm = _homeDevice.vmEzArrange;
             DataContext = _homeDevice.vmEzArrange;
-
-            InitializeComponent();
 
             InitializePage();
 
@@ -103,9 +105,8 @@ namespace DDPM.UI.Module.EzMemory
                     // 讀取 User 的 EasyArrangement Profile
                     int profileID = 0;
                     string profileName = _vm.InputText;
-                    int layout = 0;
+                    int layout = _vm.ConvertToLayout(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey);
                     int _number = 0;
-
                     // 取得現有的 EAProfile
                     List<EAProfileDDPM> newEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
                     if (newEAProfileDDPM != null)
@@ -200,7 +201,7 @@ namespace DDPM.UI.Module.EzMemory
 
                     #endregion
                     //LaunchAndArrangeApps(_vm._sortApps);
-                    _deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
+                    //_deviceManagerSA.LaunchAndArrangeApps(_vm._sortApps);
                 }
 
                 // 清除TextBlock
